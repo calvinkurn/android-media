@@ -7,7 +7,7 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20">
+        android:layout_marginTop="20dp">
 
         <LinearLayout
             android:layout_width="@dimen/bu_item_large_width"
@@ -16,13 +16,13 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productName"
-                android:layout_width="@dimen/dp_110"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/unify_space_8"
                 android:layout_marginRight="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:gravity="right"
-                android:textSize="@dimen/sp_10"
+                android:textSize="10sp"
                 android:textColor="@color/Unify_N700_68"
                 android:letterSpacing="0.02"
                 android:layout_gravity="end"
@@ -33,7 +33,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="@dimen/unify_space_8"
                 android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginLeft="@dimen/unify_space_8"
@@ -54,10 +54,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginBottom="@dimen/dp_2"
+                    android:layout_marginBottom="2dp"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="@dimen/sp_12"
+                    android:textSize="12sp"
                     android:textColor="@color/Unify_N700_68"
                     tools:text="Nilai investasi" />
 
@@ -67,14 +67,14 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginBottom="@dimen/dp_2"
+                    android:layout_marginBottom="2dp"
                     android:layout_toEndOf="@id/title1st"
                     android:layout_toRightOf="@id/title1st"
                     android:ellipsize="end"
                     android:gravity="end"
                     android:maxLines="1"
                     android:textColor="@color/Unify_N700_96"
-                    android:textSize="@dimen/sp_12"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     tools:text="Rp999.000.000" />
 
@@ -87,9 +87,9 @@
                     android:layout_below="@id/title1st"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="@dimen/sp_12"
+                    android:textSize="12sp"
                     android:textColor="@color/Unify_N700_68"
-                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:lineSpacingExtra="6sp"
                     tools:text="Keuntungan Harian" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -103,7 +103,7 @@
                     android:layout_below="@id/desc1st"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="@dimen/sp_12"
+                    android:textSize="12sp"
                     android:textColor="@color/Unify_N700_96"
                     android:gravity="end"
                     android:textStyle="bold"

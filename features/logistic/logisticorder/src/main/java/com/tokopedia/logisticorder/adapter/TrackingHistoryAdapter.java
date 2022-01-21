@@ -58,7 +58,6 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
     }
 
 
-
     @NonNull
     @Override
     public TrackingHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -76,6 +75,12 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
+
+        if (!trackingHistoryData.get(position).getPartnerName().isEmpty()) {
+            holder.courierName.setText(holder.context.getString(R.string.label_kurir_rekomendasi, trackingHistoryData.get(position).getPartnerName()));
+        } else {
+            holder.courierName.setVisibility(View.GONE);
+        }
 
         if (position == 0) {
             holder.dot.setColorFilter(holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
@@ -97,9 +102,14 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             UserSessionInterface userSession = new UserSession(holder.context);
             String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small",
                     userSession.getUserId(), 1, userSession.getDeviceId());
+            String authKey = String.format("%s %s", TrackingPageUtil.INSTANCE.getHEADER_VALUE_BEARER(), userSession.getAccessToken());
+
+            GlideUrl newUrl = new GlideUrl(url, new LazyHeaders.Builder()
+                    .addHeader(TrackingPageUtil.INSTANCE.getHEADER_KEY_AUTH(), authKey)
+                    .build());
 
             Glide.with(holder.context)
-                    .load(url)
+                    .load(newUrl)
                     .centerCrop()
                     .placeholder(holder.context.getDrawable(R.drawable.ic_image_error))
                     .error(holder.context.getDrawable(R.drawable.ic_image_error))
@@ -142,6 +152,8 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private ImageUnify imageProof;
 
+        private Typography courierName;
+
         TrackingHistoryViewHolder(Context context, View itemView) {
             super(itemView);
 
@@ -158,6 +170,8 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             dotTrail = itemView.findViewById(R.id.dot_trail);
 
             imageProof = itemView.findViewById(R.id.img_proof);
+
+            courierName = itemView.findViewById(R.id.courier_name_history);
 
         }
     }

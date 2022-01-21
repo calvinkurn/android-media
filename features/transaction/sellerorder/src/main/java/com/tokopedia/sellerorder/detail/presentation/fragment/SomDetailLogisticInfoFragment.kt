@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.FragmentSomDetailLogisticInfoBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLogisticInfoAdapter
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
@@ -57,9 +58,14 @@ class SomDetailLogisticInfoFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
         initToolbar()
         initView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     private fun initView() {

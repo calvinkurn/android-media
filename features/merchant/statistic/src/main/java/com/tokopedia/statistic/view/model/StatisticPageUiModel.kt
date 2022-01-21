@@ -13,5 +13,6 @@ data class StatisticPageUiModel(
         val pageSource: String = "",
         val tickerPageName: String = "",
         val actionMenu: List<ActionMenuUiModel> = emptyList(),
-        val dateFilters: List<DateFilterItem> = emptyList()
+        val dateFilters: List<DateFilterItem> = emptyList(),
+        val exclusiveIdentifierDateFilterDesc: String = ""
 ) : Parcelable

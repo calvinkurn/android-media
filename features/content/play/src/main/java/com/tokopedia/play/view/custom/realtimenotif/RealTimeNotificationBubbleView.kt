@@ -1,12 +1,10 @@
 package com.tokopedia.play.view.custom.realtimenotif
 
 import android.content.Context
-import android.graphics.Color
 import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography

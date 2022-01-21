@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -39,10 +39,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
-                app:cardCornerRadius="@dimen/dp_8"
-                app:cardElevation="@dimen/dp_0"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -61,8 +61,8 @@
                 style="@style/TextView.Medium.FontMedium.BlackPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:includeFontPadding="false"
                 android:maxLines="3"
                 app:layout_constraintLeft_toRightOf="@+id/card_view_brand"
@@ -75,7 +75,7 @@
                 style="@style/TextView.Small.Black40"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="8dp"
                 android:includeFontPadding="false"
                 app:layout_constraintBottom_toBottomOf="@+id/card_view_brand"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_deal_details"
@@ -85,7 +85,7 @@
                 android:id="@+id/divider1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="16dp"
                 android:background="@color/Unify_N75"
                 app:layout_constraintTop_toBottomOf="@+id/card_view_brand" />
 
@@ -95,8 +95,8 @@
                 style="@style/TextView.Medium.FontMedium.BlackPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/text_purchase_detail"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider1" />
@@ -106,17 +106,17 @@
                 android:textColor="@color/Unify_N700_68"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/deal_quantity"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_purchase_details" />
 
             <ImageView
                 android:id="@+id/iv_add"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="16dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_quantity"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_purchase_details"
@@ -128,7 +128,7 @@
                 android:textColor="@color/Unify_N700_68"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_4"
+                android:layout_marginRight="4dp"
                 android:gravity="center_horizontal"
                 android:minWidth="40dp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_add"
@@ -139,8 +139,8 @@
             <View
                 android:id="@+id/divider3"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_2"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_height="2dp"
+                android:layout_marginTop="4dp"
                 android:background="@color/Unify_G400"
                 app:layout_constraintLeft_toLeftOf="@id/tv_no_quantity"
                 app:layout_constraintRight_toRightOf="@+id/tv_no_quantity"
@@ -149,9 +149,9 @@
 
             <ImageView
                 android:id="@+id/iv_subtract"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_4"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="4dp"
                 android:tint="@color/Unify_N150"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_add"
                 app:layout_constraintRight_toLeftOf="@+id/tv_no_quantity"
@@ -163,8 +163,8 @@
                 android:textColor="@color/Unify_N700_68"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/price"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_quantity" />
@@ -174,13 +174,13 @@
                 style="@style/TextView.Micro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginRight="8dp"
                 android:gravity="end"
                 android:textColor="@color/Unify_N700_32"
                 app:layout_constraintBottom_toBottomOf="@id/tv_price"
                 app:layout_constraintRight_toLeftOf="@+id/tv_sales_price"
                 app:layout_constraintTop_toTopOf="@id/tv_price"
-                app:layout_goneMarginRight="@dimen/dp_16"
+                app:layout_goneMarginRight="16dp"
                 tools:text="Rp 1.200.000" />
 
             <TextView
@@ -188,7 +188,7 @@
                 style="@style/TextView.Small.FontMedium.BlackPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginRight="16dp"
                 android:includeFontPadding="false"
                 app:layout_constraintBottom_toBottomOf="@id/tv_price"
                 app:layout_constraintRight_toRightOf="parent"
@@ -200,7 +200,7 @@
                 android:id="@+id/divider5"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="16dp"
                 android:background="@color/Unify_N75"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sales_price" />
 
@@ -210,8 +210,8 @@
                 style="@style/TextView.Medium.FontMedium.BlackPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/total_amount"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider5" />
@@ -221,8 +221,8 @@
                 style="@style/TextView.Medium.FontMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="2dp"
                 android:includeFontPadding="false"
                 android:textColor="@color/Unify_Y500"
                 app:layout_constraintBottom_toBottomOf="@id/tv_total_payment"
@@ -241,7 +241,7 @@
         android:layout_height="@dimen/bottom_view_height"
         android:layout_gravity="bottom"
         app:cardBackgroundColor="@color/Unify_N0"
-        app:cardElevation="@dimen/dp_0">
+        app:cardElevation="0dp">
 
 
         <TextView
@@ -250,7 +250,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_14"
+            android:layout_margin="14dp"
             android:background="@drawable/button_continue"
             android:gravity="center"
             android:text="@string/button_continue" />

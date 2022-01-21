@@ -11,6 +11,7 @@ class TrackingPageMapperNew @Inject constructor() {
         return TrackingDataModel().apply {
             trackOrder = mapTrackOrder(data.trackOrder)
             page = mapPage(data.page)
+            tipping = mapTippingData(data.tipping)
         }
     }
 
@@ -39,6 +40,7 @@ class TrackingPageMapperNew @Inject constructor() {
             receiverName = detail.receiverName
             serviceCode = detail.serviceCode
             trackingUrl = detail.trackingUrl
+            eta = mapEta(detail.eta)
         }
     }
 
@@ -54,6 +56,7 @@ class TrackingPageMapperNew @Inject constructor() {
                     it.status,
                     it.city,
                     it.time,
+                    it.partnerName,
                     mapProofOrder(it.proof)
             )
         }
@@ -76,8 +79,35 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
+    private fun mapTippingData(tipping: Tipping): TippingModel {
+        return TippingModel().apply {
+            status = tipping.status
+            statusTitle = tipping.statusTitle
+            statusSubtitle = tipping.statusSubtitle
+            lastDriver = mapLastDriverData(tipping.lastDriver)
+        }
+    }
+
+    private fun mapLastDriverData(lastDriver: LastDriver): LastDriverModel {
+        return LastDriverModel().apply {
+            phone = lastDriver.phone
+            name = lastDriver.name
+            photo = lastDriver.photo
+            licenseNumber = lastDriver.licenseNumber
+            isChanged = lastDriver.isChanged
+        }
+    }
+
     private fun switchInteger(value: Int): Boolean {
         return value == 1
+    }
+
+    private fun mapEta(eta: Eta) : EtaModel {
+        return EtaModel().apply {
+            userInfo = eta.userInfo
+            userUpdatedInfo = eta.userUpdatedInfo
+            isChanged = eta.isUpdated
+        }
     }
 }
 

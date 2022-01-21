@@ -19,14 +19,18 @@ class ClassBuilder {
             chatMapper: PlayChatUiMapper = PlayChatUiMapper(userSession),
             channelStatusMapper: PlayChannelStatusMapper = PlayChannelStatusMapper(),
             channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
-            interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper()
+            interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(),
+            cartMapper: PlayCartMapper = PlayCartMapper(),
+            playUserReportMapper : PlayUserReportReasoningMapper =  PlayUserReportReasoningMapper()
     ) = PlayUiModelMapper(
             productTagMapper = productTagMapper,
             merchantVoucherMapper = merchantVoucherMapper,
             chatMapper = chatMapper,
             channelStatusMapper = channelStatusMapper,
             channelInteractiveMapper = channelInteractiveMapper,
-            interactiveLeaderboardMapper = interactiveLeaderboardMapper
+            interactiveLeaderboardMapper = interactiveLeaderboardMapper,
+            cartMapper = cartMapper,
+            playUserReportMapper = playUserReportMapper
     )
 
     fun getPlayChannelDetailsRecomMapper(
@@ -39,7 +43,7 @@ class ClassBuilder {
         multipleLikesMapper = multipleLikesMapper,
     )
 
-    fun getPlayRealTimeNotificationMapper(
+    private fun getPlayRealTimeNotificationMapper(
             userSession: UserSessionInterface = mockk(relaxed = true),
             htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer()
     ) = PlayRealTimeNotificationMapper(
@@ -47,13 +51,17 @@ class ClassBuilder {
             htmlTextTransformer = htmlTextTransformer,
     )
 
-    fun getPlayMultipleLikesMapper() = PlayMultipleLikesMapper()
+    private fun getPlayMultipleLikesMapper() = PlayMultipleLikesMapper()
 
     fun getMapperExtraParams(
             channelId: String? = null,
-            videoStartMillis: Long? = null
+            videoStartMillis: Long? = null,
+            shouldTrack: Boolean = true,
+            sourceType: String = "",
     ) = PlayChannelDetailsWithRecomMapper.ExtraParams(
             channelId = channelId,
-            videoStartMillis = videoStartMillis
+            videoStartMillis = videoStartMillis,
+            shouldTrack = shouldTrack,
+            sourceType = sourceType,
     )
 }

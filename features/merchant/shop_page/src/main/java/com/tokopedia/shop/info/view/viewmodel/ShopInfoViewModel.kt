@@ -28,6 +28,8 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
 ): BaseViewModel(coroutineDispatcherProvider.main){
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
+    fun userId() : String = userSessionInterface.userId
+
 
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopInfo = MutableLiveData<ShopInfoData>()
@@ -54,46 +56,38 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
 
     fun getShopNotes(shopId: String) {
         launchCatchError(block = {
-            coroutineScope{
+            coroutineScope {
                 val shopNotes = withContext(coroutineDispatcherProvider.io) {
                     getShopNoteUseCase.params = GetShopNoteUseCase.createParams(shopId)
                     getShopNoteUseCase.isFromCacheFirst = false
-
-                    try {
-                        Success(getShopNoteUseCase.executeOnBackground().map {
-                            ShopNoteUiModel().apply {
-                                shopNoteId = it.id?.toLongOrNull() ?: 0
-                                title = it.title
-                                position = it.position.toLong()
-                                url = it.url
-                                lastUpdate = it.updateTime
-                            }
-                        })
-                    } catch (t: Throwable){
-                        Fail(t)
-                    }
+                    Success(getShopNoteUseCase.executeOnBackground().map {
+                        ShopNoteUiModel().apply {
+                            shopNoteId = it.id?.toLongOrNull() ?: 0
+                            title = it.title
+                            position = it.position.toLong()
+                            url = it.url
+                            lastUpdate = it.updateTime
+                        }
+                    })
                 }
-
                 shopNotesResp.postValue(shopNotes)
             }
-        }){}
+        }){
+            shopNotesResp.postValue(Fail(it))
+        }
     }
 
     fun getShopReputationBadge(shopId: String) {
         launchCatchError(coroutineDispatcherProvider.io, block = {
-            getShopReputation(shopId)?.let {
-                shopBadgeReputation.postValue(Success(it))
-            }
-        }) {}
+            shopBadgeReputation.postValue(Success(getShopReputation(shopId)))
+        }) {
+            shopBadgeReputation.postValue(Fail(it))
+        }
     }
 
-    private suspend fun getShopReputation(shopId: String) : ShopBadge?{
+    private suspend fun getShopReputation(shopId: String): ShopBadge {
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
-        return try {
-            getShopReputationUseCase.executeOnBackground()
-        } catch (t: Throwable){
-            null
-        }
+        return getShopReputationUseCase.executeOnBackground()
     }
 
 }

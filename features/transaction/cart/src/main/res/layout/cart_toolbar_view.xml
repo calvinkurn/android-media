@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginStart="4dp"
         android:text="@string/cart"
         app:typographyType="heading_4"
         tools:text="Keranjang" />
@@ -24,7 +24,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginEnd="8dp"
         app:srcCompat="@drawable/ic_wishlist_checkout_off"
         app:unifyImageButtonVariant="image" />
 
@@ -36,7 +36,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical|end"
-        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginEnd="10dp"
         android:scaleType="fitCenter"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

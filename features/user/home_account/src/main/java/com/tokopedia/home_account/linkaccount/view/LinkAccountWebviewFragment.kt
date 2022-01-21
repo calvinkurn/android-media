@@ -75,8 +75,10 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     }
 
     fun hideToolbar() {
-        (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
-        (activity as LinkAccountWebViewActivity).hideToolbar()
+        getLinkAccountActivity()?.run {
+            hideSkipBtnToolbar()
+            hideToolbar()
+        }
     }
 
     fun checkPageFinished() {
@@ -85,19 +87,31 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
             mUrl.contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP, ignoreCase = true) -> {
                 // Check gojek accounts page, show toolbar
                 analytics.trackViewGojekOTP()
-                (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
-                (activity as LinkAccountWebViewActivity).showToolbar()
-                (activity as LinkAccountWebViewActivity).setToolbarTitle(getString(R.string.label_toolbar_verifikasi_akun))
+                getLinkAccountActivity()?.run {
+                    hideSkipBtnToolbar()
+                    showToolbar()
+                    setToolbarTitle(getString(R.string.label_toolbar_verifikasi_akun))
+                }
             }
             mUrl.contains(TokopediaUrl.Companion.getInstance().GOPAY_PIN, ignoreCase = true) -> {
                 analytics.trackViewGopayPin()
                 // Check gopay input pin page, and hide back btn
-                (activity as LinkAccountWebViewActivity).showToolbar()
-                (activity as LinkAccountWebViewActivity).hideToolbarBackBtn()
-                (activity as LinkAccountWebViewActivity).showSkipBtnToolbar()
-                (activity as LinkAccountWebViewActivity).setToolbarTitle(getString(R.string.label_toolbar_aktifasi_gopay))
+                getLinkAccountActivity()?.run {
+                    showToolbar()
+                    hideToolbarBackBtn()
+                    showSkipBtnToolbar()
+                    setToolbarTitle(getString(R.string.label_toolbar_aktifasi_gopay))
+                }
             }
             else -> { hideToolbar() }
+        }
+    }
+
+    private fun getLinkAccountActivity(): LinkAccountWebViewActivity? {
+        return try {
+            activity as LinkAccountWebViewActivity?
+        } catch (e: Exception) {
+            null
         }
     }
 

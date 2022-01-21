@@ -9,6 +9,8 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmode
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -34,6 +36,19 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
 
         verifyGetProductManageFilterOptionsUseCaseCalled()
         verifyFilterOptionsResponse(expectedResponse)
+    }
+
+    @Test
+    fun `when getData error should set live data value Fail`() {
+        val error = NullPointerException()
+        onGetProductManageFilterOptions_thenThrow(error)
+
+        viewModel.getData("0")
+
+        val expectedResponse = Fail(error)
+
+        verifyGetProductManageFilterOptionsUseCaseCalled()
+        viewModel.filterOptionsResponse.verifyErrorEquals(expectedResponse)
     }
 
     @Test
@@ -499,6 +514,10 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
 
     private fun onGetProductManageFilterOptions_thenReturn(filterOptionsResponse: FilterOptionsResponse) {
         coEvery { getProductManageFilterOptionsUseCase.executeOnBackground() } returns filterOptionsResponse
+    }
+
+    private fun onGetProductManageFilterOptions_thenThrow(ex: Exception) {
+        coEvery { getProductManageFilterOptionsUseCase.executeOnBackground() } throws ex
     }
 
     private fun verifyGetProductManageFilterOptionsUseCaseCalled() {

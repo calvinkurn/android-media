@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_100"
+    android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_lego_auto"
@@ -14,8 +14,8 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:textColor="@color/Unify_N0"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
         app:typographyType="heading_5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -29,8 +29,8 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:textColor="@color/Unify_N0"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:typographyType="body_3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/item_name"
@@ -42,11 +42,11 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
-        app:cardCornerRadius="@dimen/dp_10"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        app:cardCornerRadius="10dp"
         app:cardBackgroundColor="@color/transparent"
         app:cardElevation="0dp"
         app:layout_constraintWidth_default="percent"
@@ -59,7 +59,8 @@
             android:id="@+id/item_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/content_desc_lego_image"/>
     </androidx.cardview.widget.CardView>
 
 

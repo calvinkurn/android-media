@@ -3,6 +3,7 @@ package com.tokopedia.topupbills.telco.common.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
@@ -31,6 +32,14 @@ class DigitalTelcoRecentTransactionWidget @JvmOverloads constructor(@NotNull con
             override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int) {
                 listenerTelco.onClickRecentNumber(topupBillsRecommendation, topupBillsRecommendation.categoryId,
                         position)
+            }
+        })
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    getVisibleRecentItemsToUsersTracking(recentNumbers)
+                }
             }
         })
     }

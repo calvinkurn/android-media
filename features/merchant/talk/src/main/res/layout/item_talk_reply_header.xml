@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/replyUserImage"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
@@ -69,18 +69,18 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/replyHeaderKebab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:visibility="gone"
         android:contentDescription="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/reply_header_user_details_container"
-        app:srcCompat="@drawable/talk_ic_kebab"
+        app:icon_name="MENU_KEBAB_VERTICAL"
+        app:icon_color_light_enable="@color/Unify_N200"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -103,8 +103,8 @@
         android:id="@+id/replyQuestionTicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:closeButtonVisibility="gone"
@@ -115,8 +115,8 @@
         android:id="@+id/replyUnmaskCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage"/>
 

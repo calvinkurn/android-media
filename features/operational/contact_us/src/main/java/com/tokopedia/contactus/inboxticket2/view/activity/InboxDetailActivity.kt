@@ -450,7 +450,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun exitSearchMode() {
-        detailAdapter.exitSearchMode()
+        if (::detailAdapter.isInitialized) detailAdapter.exitSearchMode()
     }
 
     override fun showImagePreview(position: Int, imagesURL: ArrayList<String>) {
@@ -486,6 +486,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     override val userMessage: String
         get() = edMessage.text.toString()
+
 
     override val ticketID: String
         get() = intent.getStringExtra(PARAM_TICKET_ID)?:""
@@ -636,6 +637,20 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     override fun onClickClose() {
         servicePrioritiesBottomSheet?.dismiss()
+    }
+
+    override fun setMessageMaxLengthReached() {
+
+        with(Toaster) {
+            make(
+                getRootView(),
+                getString(R.string.contact_us_maximum_length_error_text),
+                Snackbar.LENGTH_LONG,
+                TYPE_ERROR,
+                SNACKBAR_OK,
+                View.OnClickListener { })
+        }
+
     }
 
     private fun sendMessage(isSendButtonEnabled: Boolean) {

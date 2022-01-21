@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="@dimen/dp_5"
-    android:layout_marginBottom="@dimen/dp_10"
-    android:layout_marginTop="@dimen/dp_10"
+    android:padding="5dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
     android:background="@drawable/cards_ui_2"
     android:orientation="vertical">
 
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/shop_phone_number_title"
-        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginLeft="10dp"
         android:textSize="@dimen/sp_18"
         android:visibility="gone"
         app:typographyType="body_1"
@@ -56,10 +56,9 @@
         android:text="@string/title_delivery_location"
         app:typographyType="body_2"
         android:textColor="@color/Unify_N300"
-        android:layout_marginStart="@dimen/dp_5"
-        android:layout_marginLeft="@dimen/dp_5"
-        tools:visibility="visible"
-        />
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        tools:visibility="visible"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/address_text_input_layout"
@@ -67,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/location_field_title"
         android:layout_below="@id/location_field_title"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         android:hint="@string/title_activity_shop_address_form">
         <EditText
             android:id="@+id/address_text_field"

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.presentation.adapter.FeedbackPageAdapter
+import com.tokopedia.sellerfeedback.presentation.util.ScreenShootPageHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import kotlinx.coroutines.*
@@ -70,7 +71,7 @@ class SellerFeedbackPageChooserBottomSheet(private val selectedTitle: String) : 
         rvListPage = view.findViewById(R.id.rv_list_page)
     }
 
-    private fun initList() {
+    private fun initList() = view?.run{
 
         adapter = FeedbackPageAdapter { onItemClicked(it) }
 
@@ -79,9 +80,9 @@ class SellerFeedbackPageChooserBottomSheet(private val selectedTitle: String) : 
             adapter = this@SellerFeedbackPageChooserBottomSheet.adapter
         }
 
-        stringPages = resources.getStringArray(R.array.feedback_pages).toList()
+        stringPages = ScreenShootPageHelper.getPageList(context)
 
-        val stringPages = stringPages ?: return
+        val stringPages = stringPages ?: return@run
         adapter?.apply {
             setSelected(selectedTitle)
             updateList(stringPages)

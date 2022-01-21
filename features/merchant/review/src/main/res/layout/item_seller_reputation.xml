@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_9">
+    android:paddingTop="9dp">
 
     <LinearLayout
         android:id="@+id/ly_reputation_group"
-        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginEnd="5dp"
         android:layout_toStartOf="@+id/tv_score"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,17 +1,12 @@
 package com.tokopedia.play.model
 
 import com.google.gson.Gson
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.VariantSheetUiModel
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -961,38 +956,42 @@ class ModelBuilder {
               }
         }""".trimIndent()
 
-    fun buildChannel() = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
+    fun buildChannel(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
-    fun buildSocketCredential() = gson.fromJson(socketCredential, SocketCredential::class.java)
+    fun buildSocketCredential(): SocketCredential = gson.fromJson(socketCredential, SocketCredential::class.java)
 
-    fun buildChannelWithShop() = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
+    fun buildChannelWithShop(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
-    fun buildShopInfo() = gson.fromJson(shopInfoJson, ShopInfo::class.java)
+    fun buildShopInfo(): ShopInfo = gson.fromJson(shopInfoJson, ShopInfo::class.java)
 
-    fun buildNewChat() = gson.fromJson(newChatJson, PlayChat::class.java)
+    fun buildNewChat(): PlayChat = gson.fromJson(newChatJson, PlayChat::class.java)
 
-    fun buildTotalLike() = gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
+    fun buildTotalLike(): TotalLikeContent.Response = gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
 
-    fun buildIsLike() = gson.fromJson(isLike, IsLikedContent.Data::class.java)
+    fun buildIsLike(): IsLikedContent.Data = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 
-    fun buildProductTagging() = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
+    fun buildProductTagging(): ProductTagging = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
 
-    fun buildProductVariant() = gson.fromJson(productVariant, GetProductVariantResponse::class.java)
+    fun buildProductVariant(): GetProductVariantResponse = gson.fromJson(productVariant, GetProductVariantResponse::class.java)
 
-    fun buildProduct() = gson.fromJson(product, Product::class.java)
+    fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
-    fun buildAddToCartModelResponseSuccess() = AddToCartDataModel(data = DataModel(cartId = "123", success = 1))
-    fun buildAddToCartModelResponseFail() = AddToCartDataModel(
-            errorMessage = arrayListOf("error message"),
-            data = DataModel(cartId = "", success = 0)
+    fun buildAddToCartModelResponseSuccess() =  CartFeedbackResponseModel(
+        isSuccess = true,
+        errorMessage = IllegalStateException(""),
+        cartId = "123"
     )
-
+    fun buildAddToCartModelResponseFail() = CartFeedbackResponseModel(
+        isSuccess = false,
+        errorMessage = IllegalStateException("error message "),
+        cartId = ""
+    )
     fun buildCartUiModel(
             product: PlayProductUiModel.Product,
             action: ProductAction,
             bottomInsetsType: BottomInsetsType,
             isSuccess: Boolean = true,
-            errorMessage: String = "",
+            errorMessage: Throwable = IllegalStateException(""),
             cartId: String = "123"
     ) = CartFeedbackUiModel(
             isSuccess = isSuccess,
@@ -1165,5 +1164,23 @@ class ModelBuilder {
                         && channel.configuration.active
                         && !channel.configuration.freezed
         )
+    }
+
+    fun buildUserReportList(
+        reasoningId: Int = 1,
+        title: String = "Harga Detail",
+        detail: String = "Harga Tidak Wajar",
+        submissionData: UserReportOptions.OptionAdditionalField = UserReportOptions.OptionAdditionalField(
+            key = "report_reason",
+            label = "Detail Laporan",
+            max = 255,
+            min = 10,
+            type = "textarea"
+        )
+    ) : PlayUserReportUiModel.Loaded{
+        val userReportOpt = PlayUserReportReasoningUiModel.Reasoning(
+            title = title, reasoningId = reasoningId, detail = detail, submissionData = submissionData
+        )
+        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt))
     }
 }

@@ -96,9 +96,9 @@ class KolCommentNewCardView : LinearLayout {
         element.time?.let {
             if (it == context.getString(com.tokopedia.kolcommon.R.string.post_time_just_now))
                 time.text =
-                    context.getString(com.tokopedia.feedcomponent.R.string.post_time_just_now_new)
+                    context.getString(com.tokopedia.feedcomponent.R.string.post_time_few_moments_ago)
             else
-                time.text = TimeConverter.generateTimeNew(context, it)
+                time.text = TimeConverter.generateTimeNewForComment(context, it)
         }
         avatar.setOnClickListener {
             val profileUrl = element.userUrl

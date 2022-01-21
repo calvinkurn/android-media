@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/group_title"

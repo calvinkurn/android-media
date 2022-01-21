@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <FrameLayout
         android:id="@+id/feed_background_frame"
@@ -68,7 +68,7 @@
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="40dp"
             android:visibility="visible"
             app:layout_scrollFlags="enterAlways"
             app:tabMode="fixed"

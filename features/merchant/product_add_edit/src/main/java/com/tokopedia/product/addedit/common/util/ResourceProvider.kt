@@ -36,12 +36,16 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     // product price string properties
 
-    fun getEmptyProductPriceErrorMessage(): String? {
-        return getString(R.string.error_empty_product_price)
+    fun getPriceTipsMessage(): String {
+        return getString(R.string.label_add_product_price_tips).orEmpty()
     }
 
-    fun getMinLimitProductPriceErrorMessage(): String? {
-        return getString(R.string.error_product_price_less_than_min_limit)
+    fun getEmptyProductPriceErrorMessage(): String {
+        return getString(R.string.error_empty_product_price).orEmpty()
+    }
+
+    fun getMinLimitProductPriceErrorMessage(): String {
+        return getString(R.string.error_product_price_less_than_min_limit).orEmpty()
     }
 
     // product whole sale quantity string properties
@@ -82,16 +86,16 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     // product stock string properties
 
-    fun getEmptyProductStockErrorMessage(): String? {
-        return getString(R.string.error_empty_product_stock)
+    fun getEmptyProductStockErrorMessage(): String {
+        return getString(R.string.error_empty_product_stock).orEmpty()
     }
 
-    fun getMinLimitProductStockErrorMessage(minStock: Int = 1): String? {
+    fun getMinLimitProductStockErrorMessage(minStock: Int = 1): String {
         return try {
             context?.getString(R.string.error_minimum_stock_quantity, minStock)
         } catch (e: Resources.NotFoundException) {
             null
-        }
+        }.orEmpty()
     }
 
     fun getMaxLimitProductStockErrorMessage(): String? {
@@ -190,11 +194,19 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     // admin multi location string properties
 
-    fun getAddProductMultiLocationMessage(): String? {
+    fun getAddProductPriceMultiLocationMessage(): String {
+        return getString(R.string.message_add_product_price_only_main_location).orEmpty()
+    }
+
+    fun getEditProductPriceMultiLocationMessage(): String {
+        return getString(R.string.message_edit_product_price_only_main_location).orEmpty()
+    }
+
+    fun getAddProductStockMultiLocationMessage(): String? {
         return getString(R.string.message_add_product_stock_only_main_location)
     }
 
-    fun getEditProductMultiLocationMessage(): String? {
+    fun getEditProductStockMultiLocationMessage(): String? {
         return getString(R.string.message_edit_product_stock_only_main_location)
     }
 

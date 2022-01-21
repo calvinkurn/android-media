@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 /**
@@ -39,7 +39,7 @@ constructor(
         var redirectUrlBottom: String,
         val broadcastBlastId: Long,
         source: String
-) : BaseChatViewModel(
+) : BaseChatUiModel(
         messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source
 ), Visitable<TopChatTypeFactory> {
 

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_smart_reply_setting_title"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
@@ -19,7 +19,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_smart_reply_setting_subtitle"
         android:layout_width="@dimen/dp_168"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
         app:custom_color="@color/Unify_N50"
@@ -29,7 +29,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_smart_reply_setting_subtitle_2"
         android:layout_width="@dimen/layout_lvl8"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
         app:custom_color="@color/Unify_N50"
@@ -48,7 +48,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_smart_reply_setting_subtitle_3"
         android:layout_width="@dimen/dp_204"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="8"
         app:custom_color="@color/Unify_N50"
@@ -58,7 +58,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_smart_reply_setting_subtitle_4"
         android:layout_width="@dimen/layout_lvl8"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
         app:custom_color="@color/Unify_N50"
@@ -84,8 +84,8 @@
                 android:id="@+id/talk_smart_reply_setting_image"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
                 app:corners="8"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintStart_toStartOf="parent"
@@ -94,9 +94,9 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/talk_smart_reply_setting_info"
                 android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="@dimen/dp_12"
+                android:layout_height="12dp"
                 android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginEnd="12dp"
                 app:corners="8"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_setting_image"
@@ -107,8 +107,8 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/talk_smart_reply_setting_amount"
                 android:layout_width="@dimen/layout_lvl5"
-                android:layout_height="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_height="12dp"
+                android:layout_marginEnd="12dp"
                 app:corners="8"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_setting_image"
@@ -119,15 +119,15 @@
                 android:id="@+id/talk_smart_reply_card_item_divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="12dp"
                 app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_setting_image" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/talk_smart_reply_setting_image_2"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
                 app:corners="8"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintStart_toStartOf="parent"
@@ -136,9 +136,9 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/talk_smart_reply_setting_info_2"
                 android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="@dimen/dp_12"
+                android:layout_height="12dp"
                 android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginEnd="12dp"
                 app:corners="8"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_setting_image_2"
@@ -149,8 +149,8 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/talk_smart_reply_setting_amount_2"
                 android:layout_width="@dimen/layout_lvl5"
-                android:layout_height="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_height="12dp"
+                android:layout_marginEnd="12dp"
                 app:corners="8"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_setting_image_2"
@@ -161,14 +161,14 @@
                 android:id="@+id/talk_smart_reply_card_item_divider_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="12dp"
                 app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_setting_image_2"  />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/talk_smart_reply_setting_image_3"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
-                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="@dimen/layout_lvl1"
                 app:corners="8"
                 app:custom_color="@color/Unify_N50"
@@ -178,9 +178,9 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/talk_smart_reply_setting_info_3"
                 android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="@dimen/dp_12"
+                android:layout_height="12dp"
                 android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginEnd="12dp"
                 app:corners="8"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_setting_image_3"
@@ -191,8 +191,8 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/talk_smart_reply_setting_amount_3"
                 android:layout_width="@dimen/layout_lvl5"
-                android:layout_height="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_height="12dp"
+                android:layout_marginEnd="12dp"
                 app:corners="8"
                 app:custom_color="@color/Unify_N50"
                 app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_setting_image_3"
@@ -206,7 +206,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_smart_reply_setting_subtitle_5"
         android:layout_width="@dimen/dp_204"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="8"
         app:custom_color="@color/Unify_N50"
@@ -216,7 +216,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_smart_reply_setting_subtitle_6"
         android:layout_width="@dimen/layout_lvl7"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
         app:custom_color="@color/Unify_N50"
@@ -227,7 +227,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_smart_reply_setting_subtitle_7"
         android:layout_width="@dimen/dp_234"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="8"
         app:custom_color="@color/Unify_N50"
@@ -237,7 +237,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_smart_reply_setting_subtitle_8"
         android:layout_width="@dimen/dp_168"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
         app:custom_color="@color/Unify_N50"

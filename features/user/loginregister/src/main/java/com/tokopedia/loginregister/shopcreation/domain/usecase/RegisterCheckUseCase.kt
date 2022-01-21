@@ -1,61 +1,24 @@
 package com.tokopedia.loginregister.shopcreation.domain.usecase
 
-import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
-import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
-import com.tokopedia.profilecommon.domain.usecase.BaseUseCaseWithParam
-import com.tokopedia.sessioncommon.domain.query.LoginQueries
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
+import com.tokopedia.loginregister.shopcreation.domain.query.MutationRegisterCheck
 import javax.inject.Inject
 
-/**
- * Created by Ade Fulki on 2019-12-27.
- * ade.hadian@tokopedia.com
- */
-
 class RegisterCheckUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val dispatcherProvider: CoroutineDispatchers
-) : BaseUseCaseWithParam<RegisterCheckParam, Result<RegisterCheckData>>() {
+    private val graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<RegisterCheckParam, RegisterCheckPojo>(dispatcher.io) {
 
-    override suspend fun getData(parameter: RegisterCheckParam): Result<RegisterCheckData> {
-        val response = withContext(dispatcherProvider.io) {
-            val cacheStrategy =
-                    GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-
-            val request = GraphqlRequest(
-                    LoginQueries.registerCheckQuery,
-                    RegisterCheckPojo::class.java,
-                    parameter.toMap()
-            )
-
-            return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
-        }
-
-        response.getError(RegisterCheckPojo::class.java)?.let {
-            if (it.isNotEmpty()) {
-                if (!TextUtils.isEmpty(it[0].message)) {
-                    return onFailedRegisterCheck(Throwable(it[0].message))
-                }
-            }
-        }
-
-        return onSuccessRegisterCheck(response.getSuccessData())
+    override fun graphqlQuery(): String {
+        return MutationRegisterCheck.getQuery()
     }
 
-    private fun onSuccessRegisterCheck(registerCheck: RegisterCheckPojo)
-            : Result<RegisterCheckData> = Success(registerCheck.data)
-
-    private fun onFailedRegisterCheck(throwable: Throwable): Result<RegisterCheckData> =
-            Fail(throwable)
+    override suspend fun execute(params: RegisterCheckParam): RegisterCheckPojo {
+        return graphqlRepository.request(graphqlQuery(), params.toMap())
+    }
 }

@@ -14,7 +14,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -28,11 +27,13 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.*
+import com.tokopedia.review.databinding.FragmentRatingProductBinding
 import com.tokopedia.review.feature.inboxreview.presentation.viewholder.InboxReviewEmptyViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
@@ -49,7 +50,6 @@ import com.tokopedia.review.feature.reviewlist.view.viewholder.ReviewSummaryView
 import com.tokopedia.review.feature.reviewlist.view.viewholder.SellerReviewListViewHolder
 import com.tokopedia.review.feature.reviewlist.view.viewmodel.SellerReviewListViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
@@ -57,24 +57,22 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_rating_product.*
-import kotlinx.android.synthetic.main.item_empty_state_list_rating_product.*
-import kotlinx.android.synthetic.main.item_search_rating_product.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 
-class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
-        HasComponent<ReviewProductListComponent>,
-        ReviewSummaryViewHolder.ReviewSummaryViewListener,
-        SellerReviewListViewHolder.SellerReviewListListener,
-        ReviewSellerPerformanceMonitoringContract {
+open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
+    HasComponent<ReviewProductListComponent>,
+    ReviewSummaryViewHolder.ReviewSummaryViewListener,
+    SellerReviewListViewHolder.SellerReviewListListener,
+    ReviewSellerPerformanceMonitoringContract {
 
     companion object {
         const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
+        const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
+        const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
-        private const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
-        private const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
 
         private const val IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating"
 
@@ -93,7 +91,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     @Inject
     lateinit var tracking: ProductReviewTracking
 
-    private var linearLayoutManager: LinearLayoutManager? = null
+    private var binding by autoClearedNullable<FragmentRatingProductBinding>()
 
     private val reviewSellerAdapter: ReviewSellerAdapter
         get() = adapter as ReviewSellerAdapter
@@ -104,12 +102,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private val prefKey = this.javaClass.name + ".pref"
 
-    private var prefs: SharedPreferences? = null
+    protected var prefs: SharedPreferences? = null
 
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
-
-    private var chipsSort: ChipsUnify? = null
-    private var chipsFilter: ChipsUnify? = null
 
     private var sortListUnify: ListUnify? = null
     private var filterListUnify: ListUnify? = null
@@ -140,16 +135,19 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var coachMarkSummary: CoachMarkItem? = null
     private var coachMarkItemRatingProduct: CoachMarkItem? = null
-    private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? = null
+    private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? =
+        null
 
-    private val coachMark: CoachMark by lazy {
+    val coachMark: CoachMark by lazy {
         initCoachMark()
     }
 
     private val coachMarkFilterAndSort: CoachMarkItem by lazy {
-        CoachMarkItem(view?.findViewById(R.id.filter_and_sort_layout),
-                getString(R.string.label_filter_and_sort),
-                getString(R.string.desc_filter_and_sort))
+        CoachMarkItem(
+            view?.findViewById(R.id.filter_and_sort_layout),
+            getString(R.string.label_filter_and_sort),
+            getString(R.string.desc_filter_and_sort)
+        )
     }
 
     private val isNeedToShowCoachMark by lazy {
@@ -158,37 +156,48 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        reviewSellerPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+        reviewSellerPerformanceMonitoringListener =
+            castContextToTalkPerformanceMonitoringListener(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tracking.sendScreen(userSession.shopId.orEmpty())
-        viewModelListReviewList = ViewModelProvider(this, viewModelFactory).get(SellerReviewListViewModel::class.java)
-        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        viewModelListReviewList =
+            ViewModelProvider(this, viewModelFactory).get(SellerReviewListViewModel::class.java)
         prefs = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
-        sortBy = ReviewConstants.mapSortReviewProduct().getKeyByValue(getString(R.string.most_review))
-        filterBy = ReviewConstants.mapFilterReviewProduct().getKeyByValue(getString(R.string.last_week))
+        sortBy =
+            ReviewConstants.mapSortReviewProduct().getKeyByValue(getString(R.string.most_review))
+        filterBy =
+            ReviewConstants.mapFilterReviewProduct().getKeyByValue(getString(R.string.last_week))
         filterAllText = filterBy
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_rating_product, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentRatingProductBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         startNetworkRequestPerformanceMonitoring()
         stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        activity?.window?.decorView?.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
         initTickerReviewReminder()
         initSearchBar()
         initViewBottomSheet()
         initChipsSort(view)
         initChipsFilter(view)
         initEmptyState()
+        scrollRecyclerViewSendTracking()
         observeLiveData()
     }
 
@@ -202,7 +211,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     override fun onPause() {
         super.onPause()
         fragmentManager?.fragments?.forEach {
-            if((it as? BottomSheetUnify)?.isVisible == true) {
+            if ((it as? BottomSheetUnify)?.isVisible == true) {
                 it.dismiss()
             }
         }
@@ -229,11 +238,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun startRenderPerformanceMonitoring() {
         reviewSellerPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        rvRatingProduct?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        binding?.rvRatingProduct?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 reviewSellerPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewSellerPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                rvRatingProduct.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding?.rvRatingProduct?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -250,8 +260,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         when (requestCode) {
             ReviewConstants.RESULT_INTENT_DETAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val stringData = data?.getStringExtra(SellerReviewDetailFragment.SELECTED_DATE_CHIP)
-                    val updatedPosition = data?.getIntExtra(SellerReviewDetailFragment.SELECTED_DATE_POSITION, 0)
+                    val stringData =
+                        data?.getStringExtra(SellerReviewDetailFragment.SELECTED_DATE_CHIP)
+                    val updatedPosition =
+                        data?.getIntExtra(SellerReviewDetailFragment.SELECTED_DATE_POSITION, 0)
                             ?: 0
 
                     if (chipsFilterText == stringData) return
@@ -287,10 +299,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     override fun getComponent(): ReviewProductListComponent? {
         return activity?.run {
             DaggerReviewProductListComponent
-                    .builder()
-                    .reviewComponent(ReviewInstance.getComponent(application))
-                    .reviewProductListModule(ReviewProductListModule())
-                    .build()
+                .builder()
+                .reviewComponent(ReviewInstance.getComponent(application))
+                .reviewProductListModule(ReviewProductListModule())
+                .build()
         }
     }
 
@@ -298,11 +310,13 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         isLoadingInitialData = true
         endlessRecyclerViewScrollListener?.resetState()
         reviewSellerAdapter.clearAllElements()
-        rvRatingProduct?.show()
-        search_bar_layout?.hide()
-        filter_and_sort_layout?.hide()
-        globalError_reviewSeller?.hide()
-        emptyState_reviewProduct?.hide()
+        binding?.apply {
+            rvRatingProduct.show()
+            searchBarLayout.root.hide()
+            filterAndSortLayout.root.hide()
+            globalErrorReviewSeller.hide()
+            emptyStateReviewProduct.root.hide()
+        }
         showLoading()
         viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
     }
@@ -312,7 +326,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return swipeToRefreshRatingProduct
+        return binding?.swipeToRefreshRatingProduct
     }
 
     override fun onSwipeRefresh() {
@@ -325,8 +339,19 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         return view.findViewById(R.id.rvRatingProduct)
     }
 
+    private fun scrollRecyclerViewSendTracking() {
+        binding?.rvRatingProduct?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+                    tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
+                }
+            }
+        })
+    }
+
     private fun initSearchBar() {
-        searchBarRatingProduct?.apply {
+        binding?.searchBarLayout?.searchBarRatingProduct?.apply {
             isClearable = true
             iconListener = {
                 if (searchBarPlaceholder.isNotEmpty()) {
@@ -343,16 +368,20 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    val query = searchBarRatingProduct?.searchBarTextField?.text.toString()
+                    val query = searchBarTextField.text.toString()
 
                     tracking.eventSubmitSearchBar(userSession.shopId.orEmpty(), query)
 
                     if (query.length < MAX_LENGTH_SEARCH) {
                         showEmptyState()
-                        tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_keyword)
+                        binding?.emptyStateReviewProduct?.tvContentNoReviewsYet?.text =
+                            getString(R.string.empty_state_message_wrong_keyword)
                     } else {
                         searchFilterText = "$searchQuery=$query"
-                        filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
+                        filterAllText = ReviewUtil.setFilterJoinValueFormat(
+                            filterBy.orEmpty(),
+                            searchFilterText.orEmpty()
+                        )
                         searchBarPlaceholder = query
                         loadInitialData()
                     }
@@ -365,9 +394,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onSearchKeywordEmpty() {
         searchFilterText = "$searchQuery="
-        filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
-        searchBarRatingProduct?.searchBarTextField?.text?.clear()
-        searchBarRatingProduct?.searchBarPlaceholder = getString(R.string.product_search)
+        filterAllText =
+            ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
+        binding?.searchBarLayout?.searchBarRatingProduct?.apply {
+            searchBarTextField.text.clear()
+            searchBarPlaceholder = getString(R.string.product_search)
+        }
         loadInitialData()
     }
 
@@ -402,9 +434,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onSuccessGetProductRatingOverallData(data: ProductRatingOverallUiModel) {
         reviewSellerAdapter.hideLoading()
-        search_bar_layout?.show()
+        binding?.searchBarLayout?.root?.show()
         swipeToRefresh?.isRefreshing = false
-        filter_and_sort_layout?.show()
+        binding?.filterAndSortLayout?.root?.show()
         reviewSellerAdapter.setProductRatingOverallData(data)
     }
 
@@ -413,41 +445,54 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         swipeToRefresh?.isRefreshing = false
         if (reviewSellerAdapter.itemCount.isZero()) {
             if (throwable.message?.isNotEmpty() == true) {
-                globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
+                binding?.globalErrorReviewSeller?.setType(GlobalError.SERVER_ERROR)
             } else if (throwable.message?.isEmpty() == true) {
-                globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
+                binding?.globalErrorReviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
 
             showErrorState()
 
-            globalError_reviewSeller.setActionClickListener {
-                tracking.eventClickRetryError(userSession.shopId.orEmpty(), throwable.message.orEmpty())
+            binding?.globalErrorReviewSeller?.setActionClickListener {
+                tracking.eventClickRetryError(
+                    userSession.shopId.orEmpty(),
+                    throwable.message.orEmpty()
+                )
                 loadInitialData()
             }
         } else {
-            onErrorLoadMoreToaster(getString(R.string.error_message_load_more_review_product), getString(R.string.action_retry_toaster_review_product))
+            onErrorLoadMoreToaster(
+                getString(R.string.error_message_load_more_review_product),
+                getString(R.string.action_retry_toaster_review_product)
+            )
         }
     }
 
     private fun showErrorState() {
-        filter_and_sort_layout?.gone()
-        rvRatingProduct?.gone()
-        emptyState_reviewProduct?.gone()
-        search_bar_layout?.show()
-        scrollView_globalError_reviewSeller?.show()
-        globalError_reviewSeller?.show()
+        binding?.apply {
+            filterAndSortLayout.root.gone()
+            rvRatingProduct.gone()
+            emptyStateReviewProduct.root.gone()
+            searchBarLayout.root.show()
+            scrollViewGlobalErrorReviewSeller.show()
+            globalErrorReviewSeller.show()
+        }
     }
 
-    private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
+    private fun onSuccessGetReviewProductListData(
+        hasNextPage: Boolean,
+        reviewProductList: List<ProductReviewUiModel>
+    ) {
         reviewSellerAdapter.hideLoading()
         swipeToRefresh?.isRefreshing = false
         if ((reviewProductList.isEmpty() && reviewSellerAdapter.itemCount.isZero()) && isEmptyFilter) {
             showEmptyState()
-            tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_filter)
+            binding?.emptyStateReviewProduct?.tvContentNoReviewsYet?.text =
+                getString(R.string.empty_state_message_wrong_filter)
             isEmptyFilter = false
         } else if ((reviewProductList.isEmpty() && reviewSellerAdapter.itemCount.isZero()) && !isEmptyFilter) {
             showEmptyState()
-            tvContentNoReviewsYet?.text = getString(R.string.content_no_reviews_yet)
+            binding?.emptyStateReviewProduct?.tvContentNoReviewsYet?.text =
+                getString(R.string.content_no_reviews_yet)
         } else {
             reviewSellerAdapter.setProductListReviewData(reviewProductList)
             updateScrollListenerState(hasNextPage)
@@ -455,17 +500,18 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun showEmptyState() {
-        rvRatingProduct?.hide()
-        scrollView_emptyState_reviewSeller?.show()
-        emptyState_reviewProduct?.show()
+        binding?.apply {
+            rvRatingProduct.hide()
+            scrollViewEmptyStateReviewSeller.show()
+            emptyStateReviewProduct.root.show()
+        }
     }
 
     private fun loadNextPage(page: Int) {
-        tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList?.getNextProductReviewList(
-                sortBy = sortBy.orEmpty(),
-                filterBy = filterAllText.orEmpty(),
-                page = page
+            sortBy = sortBy.orEmpty(),
+            filterBy = filterAllText.orEmpty(),
+            page = page
         )
     }
 
@@ -502,7 +548,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         val coachMark = CoachMarkBuilder().build()
 
         coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
-            override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
+            override fun onShowCaseGoTo(
+                previousStep: Int,
+                nextStep: Int,
+                coachMarkItem: CoachMarkItem
+            ): Boolean {
                 val countCoachMarkItem = coachMarkItems.size - 1
                 coachMark.enableSkip = (nextStep < countCoachMarkItem)
                 return false
@@ -519,16 +569,20 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onAddedCoachMarkOverallRating(view: View) {
         itemViewSummary = view
-        coachMarkSummary = CoachMarkItem(itemViewSummary?.findViewById(R.id.cardSummary),
-                getString(R.string.average_rating_title),
-                getString(R.string.average_rating_desc))
+        coachMarkSummary = CoachMarkItem(
+            itemViewSummary?.findViewById(R.id.cardSummary),
+            getString(R.string.average_rating_title),
+            getString(R.string.average_rating_desc)
+        )
     }
 
     override fun onAddedCoachMarkItemProduct(view: View) {
 
-        coachMarkItemRatingProduct = CoachMarkItem(view.findViewById(R.id.itemRatingProduct),
-                getString(R.string.full_summary_of_product_ratings),
-                getString(R.string.desc_full_summary_of_product_ratings))
+        coachMarkItemRatingProduct = CoachMarkItem(
+            view.findViewById(R.id.itemRatingProduct),
+            getString(R.string.full_summary_of_product_ratings),
+            getString(R.string.desc_full_summary_of_product_ratings)
+        )
 
         if (productItemList?.isNotEmpty() == true) {
             coachMarkItemRatingProduct()
@@ -549,9 +603,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun initChipsSort(view: View) {
-        chipsSort = view.findViewById(R.id.review_sort_chips)
         chipsSortText = getString(R.string.most_review)
-        chipsSort?.apply {
+        binding?.filterAndSortLayout?.reviewSortChips?.apply {
             chip_text.ellipsize = TextUtils.TruncateAt.END
             centerText = true
             chip_text.text = chipsSortText
@@ -563,45 +616,50 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         sortListUnify?.setData(sortListItemUnify)
 
-        chipsSort?.apply {
+        binding?.filterAndSortLayout?.reviewSortChips?.apply {
             setOnClickListener {
-                chipsSort?.toggle()
+                toggle()
                 initBottomSheetSort(sortListItemUnify, getString(R.string.title_bottom_sheet_sort))
             }
             setChevronClickListener {
-                chipsSort?.toggle()
+                toggle()
                 initBottomSheetSort(sortListItemUnify, getString(R.string.title_bottom_sheet_sort))
             }
         }
     }
 
     private fun initChipsFilter(view: View) {
-        chipsFilter = view.findViewById(R.id.review_period_filter_chips)
         chipsFilterText = getString(R.string.last_week)
-        chipsFilter?.apply {
+        binding?.filterAndSortLayout?.reviewPeriodFilterChips?.apply {
             chip_text.ellipsize = TextUtils.TruncateAt.END
             centerText = true
             chip_text.text = chipsFilterText
-        }
-
-        chipsFilter?.apply {
             setOnClickListener {
-                chipsFilter?.toggle()
-                initBottomSheetFilter(populateFilterDate(), getString(R.string.title_bottom_sheet_filter))
+                toggle()
+                initBottomSheetFilter(
+                    populateFilterDate(),
+                    getString(R.string.title_bottom_sheet_filter)
+                )
             }
             setChevronClickListener {
-                chipsFilter?.toggle()
-                initBottomSheetFilter(populateFilterDate(), getString(R.string.title_bottom_sheet_filter))
+                toggle()
+                initBottomSheetFilter(
+                    populateFilterDate(),
+                    getString(R.string.title_bottom_sheet_filter)
+                )
             }
         }
     }
 
     private fun initEmptyState() {
-        icEmptyStateRatingProduct.loadImage(InboxReviewEmptyViewHolder.EMPTY_STATE_IMAGE_URL)
+        binding?.emptyStateReviewProduct?.icEmptyStateRatingProduct?.loadImage(
+            InboxReviewEmptyViewHolder.EMPTY_STATE_IMAGE_URL
+        )
     }
 
     private fun populateFilterDate(): ArrayList<ListItemUnify> {
-        val filterList: Array<String> = resources.getStringArray(R.array.filter_review_product_array)
+        val filterList: Array<String> =
+            resources.getStringArray(R.array.filter_review_product_array)
         val filterListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterList)
 
         filterListUnify?.setData(filterListItemUnify)
@@ -623,17 +681,23 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onErrorLoadMoreToaster(message: String, action: String) {
         view?.let {
-            Toaster.build(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
-                loadInitialData()
-            })
+            Toaster.build(
+                it,
+                message,
+                actionText = action,
+                type = Toaster.TYPE_ERROR,
+                clickListener = {
+                    loadInitialData()
+                })
         }
     }
 
     override fun onItemProductReviewClicked(productId: String, position: Int, imageUrl: String) {
         tracking.eventClickItemRatingProduct(
-                shopId = userSession.shopId.orEmpty(),
-                productId = productId.toString(),
-                productPosition = position.toString())
+            shopId = userSession.shopId.orEmpty(),
+            productId = productId,
+            productPosition = position.toString()
+        )
         startActivityForResult(Intent(context, SellerReviewDetailActivity::class.java).apply {
             putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
             putExtra(SellerReviewDetailFragment.CHIP_FILTER, chipsFilterText)
@@ -641,7 +705,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }, ReviewConstants.RESULT_INTENT_DETAIL)
     }
 
-    private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
+    private fun initBottomSheetFilter(
+        filterListItemUnify: ArrayList<ListItemUnify>,
+        title: String
+    ) {
         tracking.eventClickFilterRatingProduct(userSession.shopId.orEmpty())
         try {
             setFilterListUnifyData(filterListItemUnify)
@@ -655,7 +722,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         fragmentManager?.let { fragmentManager ->
             bottomSheetFilter?.apply {
                 setOnDismissListener {
-                    chipsFilter?.toggle()
+                    binding?.filterAndSortLayout?.reviewPeriodFilterChips?.toggle()
                 }
                 setTitle(title)
                 showCloseIcon = true
@@ -699,7 +766,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         fragmentManager?.let { fragmentManager ->
             bottomSheetSort?.apply {
                 setOnDismissListener {
-                    chipsSort?.toggle()
+                    binding?.filterAndSortLayout?.reviewSortChips?.toggle()
                 }
                 setTitle(title)
                 showCloseIcon = true
@@ -728,20 +795,28 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
-                                               filterListUnify: ListUnify) {
+    private fun onItemFilterClickedBottomSheet(
+        position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
+        filterListUnify: ListUnify
+    ) {
         try {
             isEmptyFilter = true
             positionFilter = position
             chipsFilterText = filterListItemUnify[position].listTitleText
-            tracking.eventClickFilterBottomSheet(userSession.shopId.orEmpty(), chipsFilterText.orEmpty())
-            reviewSellerAdapter.updateDatePeriod(ReviewConstants.mapFilterReviewProduct().getKeyByValue(chipsFilterText))
-            chipsFilter?.chip_text?.text = chipsFilterText
+            tracking.eventClickFilterBottomSheet(
+                userSession.shopId.orEmpty(),
+                chipsFilterText.orEmpty()
+            )
+            reviewSellerAdapter.updateDatePeriod(
+                ReviewConstants.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
+            )
+            binding?.filterAndSortLayout?.reviewPeriodFilterChips?.chip_text?.text = chipsFilterText
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             filterBy = ReviewConstants.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
-            filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
+            filterAllText =
+                ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
             loadInitialData()
-            if(bottomSheetFilter?.isVisible == true) {
+            if (bottomSheetFilter?.isVisible == true) {
                 bottomSheetFilter?.dismiss()
             }
         } catch (e: Exception) {
@@ -749,17 +824,24 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
+    private fun onItemSortClickedBottomSheet(
+        position: Int,
+        sortListItemUnify: ArrayList<ListItemUnify>,
+        sortListUnify: ListUnify
+    ) {
         try {
             isEmptyFilter = true
             positionSort = position
             chipsSortText = sortListItemUnify[position].listTitleText
-            tracking.eventClickSortBottomSheet(userSession.shopId.orEmpty(), chipsSortText.orEmpty())
-            chipsSort?.chip_text?.text = chipsSortText
+            tracking.eventClickSortBottomSheet(
+                userSession.shopId.orEmpty(),
+                chipsSortText.orEmpty()
+            )
+            binding?.filterAndSortLayout?.reviewSortChips?.chip_text?.text = chipsSortText
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             sortBy = ReviewConstants.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
-            if(bottomSheetSort?.isVisible == true) {
+            if (bottomSheetSort?.isVisible == true) {
                 bottomSheetSort?.dismiss()
             }
         } catch (e: Exception) {
@@ -770,22 +852,26 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun initTickerReviewReminder() {
         prefs?.let {
             if (!it.getBoolean(ReviewConstants.HAS_TICKER_REVIEW_REMINDER, false)) {
-                tickerReviewReminder?.apply {
+                binding?.searchBarLayout?.tickerReviewReminder?.apply {
                     setHtmlDescription(getString(R.string.review_reminder_ticker_description))
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            RouteManager.route(context, ApplinkConstInternalSellerapp.REVIEW_REMINDER)
+                            RouteManager.route(
+                                context,
+                                ApplinkConstInternalSellerapp.REVIEW_REMINDER
+                            )
                         }
 
                         override fun onDismiss() {
                             hide()
-                            it.edit().putBoolean(ReviewConstants.HAS_TICKER_REVIEW_REMINDER, true).apply()
+                            it.edit().putBoolean(ReviewConstants.HAS_TICKER_REVIEW_REMINDER, true)
+                                .apply()
                         }
                     })
                     show()
                 }
             } else {
-                tickerReviewReminder.hide()
+                binding?.searchBarLayout?.tickerReviewReminder?.hide()
             }
         }
     }

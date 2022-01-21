@@ -1,10 +1,8 @@
 package com.tokopedia.productcard
 
-import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.parcel.Parcelize
 
 data class ProductCardModel (
         val productImageUrl: String = "",
@@ -57,6 +55,9 @@ data class ProductCardModel (
         val variant: Variant? = null,
         val nonVariant: NonVariant? = null,
         val hasSimilarProductButton: Boolean = false,
+        val hasButtonThreeDotsWishlist: Boolean = false,
+        val hasAddToCartWishlist: Boolean = false,
+        val hasSimilarProductWishlist: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -82,18 +83,12 @@ data class ProductCardModel (
             val imageUrl: String = ""
     )
 
-    @Parcelize
     data class LabelGroup(
             val position: String = "",
             val title: String = "",
             val type: String = "",
             val imageUrl: String = ""
-    ):Parcelable {
-
-        fun isShowLabelCampaign(): Boolean {
-            return imageUrl.isNotEmpty() && title.isNotEmpty()
-        }
-    }
+    )
 
     data class LabelGroupVariant(
             val typeVariant: String = "",
@@ -256,6 +251,8 @@ data class ProductCardModel (
     fun isShowLabelCostPerUnit() = getLabelCostPerUnit()?.title?.isNotEmpty() == true
 
     fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
+
+    fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()

@@ -1,7 +1,6 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.TrackProductTagBroadcasterUseCase
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayMapperBuilder
@@ -10,10 +9,9 @@ import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.*
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
@@ -84,7 +82,7 @@ class PlayViewModelTest {
     @Test
     fun `when get new product, track product should be called`() {
         val trackProductUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true)
-        val mockSocket: PlayChannelWebSocket = mockk(relaxed = true)
+        val mockSocket: PlayWebSocket = mockk(relaxed = true)
         val socketFlow = MutableStateFlow<WebSocketAction?>(null)
 
         var isCalled = false
@@ -106,7 +104,7 @@ class PlayViewModelTest {
             createPage(channelData)
             focusPage(channelData)
         } thenVerify {
-            isCalled.isFalse()
+            isCalled.assertFalse()
         } andThen {
             runBlockingTest(testDispatcher.coroutineDispatcher) {
                 socketFlow.emit(
@@ -114,7 +112,7 @@ class PlayViewModelTest {
                 )
             }
         } thenVerify {
-            isCalled.isTrue()
+            isCalled.assertTrue()
         }
     }
 }

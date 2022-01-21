@@ -38,7 +38,7 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
         private const val URL_WELCOME_ILLUSTRATION = "https://images.tokopedia.net/img/android/sellerorder/ic_som_welcome_page_illustration.png"
     }
 
-    private val binding by viewBinding(FragmentSomContainerBinding::bind)
+    private var binding by viewBinding(FragmentSomContainerBinding::bind)
 
     private var somListFragment: SomListFragment? = null
     private var somDetailFragment: SomDetailFragment? = null
@@ -96,24 +96,13 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
         binding?.ivSomDetailWelcomeIllustration?.loadImage(URL_WELCOME_ILLUSTRATION)
     }
 
-    private fun setupSomListWidth() {
-        binding?.fragmentList?.let {
-            val layoutParamCopy = it.layoutParams
-            layoutParamCopy.width = it.width
-            it.layoutParams = layoutParamCopy
-        }
-    }
-
     private fun attachFragments() {
-        binding?.fragmentList?.post {
-            setupSomListWidth()
-            initiateListFragment()
-            attachListFragment()
-            arguments?.let {
-                it.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).let { orderId ->
-                    if (!orderId.isNullOrEmpty()) {
-                        attachDetailFragment(orderId, true)
-                    }
+        initiateListFragment()
+        attachListFragment()
+        arguments?.let {
+            it.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).let { orderId ->
+                if (!orderId.isNullOrEmpty()) {
+                    attachDetailFragment(orderId, true)
                 }
             }
         }

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
-    android:paddingTop="@dimen/dp_16"
+    android:background="@color/Unify_Background"
+    android:paddingTop="16dp"
     android:foreground="?selectableItemBackground"
     tools:ignore="Overdraw">
 
@@ -17,8 +17,8 @@
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         tools:text="Barang akan dikirim mulai xx Januari" />
 
     <com.tokopedia.unifycomponents.Label
@@ -26,11 +26,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_pre_order"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="2dp"
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="visible"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:labelType="general_light_grey" />
 
     <View
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_below="@+id/lbl_pre_order"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:background="@color/Unify_N100" />
 
 </RelativeLayout>

@@ -81,14 +81,12 @@ class YouTubeViewComponent(
         }
     }
 
-    private val onFullscreenListener = object : YouTubePlayer.OnFullscreenListener {
-        override fun onFullscreen(isFullscreen: Boolean) {
+    private val onFullscreenListener = YouTubePlayer.OnFullscreenListener { isFullscreen ->
             mIsInternalOrientationChanged = true
 
             if (isFullscreen) listener.onEnterFullscreen(this@YouTubeViewComponent)
             else listener.onExitFullscreen(this@YouTubeViewComponent)
         }
-    }
 
     fun safeInit() = synchronized(this) {
         if (isAlreadyInit.get()) return@synchronized
@@ -160,8 +158,8 @@ class YouTubeViewComponent(
         youtubeFragment?.let {
             it.initialize(object : YouTubePlayer.OnInitializedListener {
                 override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, wasRestored: Boolean) {
-                    player?.let {
-                        youTubePlayer = configYouTubePlayer(it)
+                    player?.let { youtubePlayer ->
+                        youTubePlayer = configYouTubePlayer(youtubePlayer)
                         mVideoId?.let { videoId -> playYouTubeFromId(videoId, mStartMillis) }
                     }
                 }

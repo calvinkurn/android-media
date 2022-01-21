@@ -109,7 +109,7 @@ class AddEditProductShipmentFragment:
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
     private var selectedWeightPosition: Int = 0
-    private var shipperServicesIds: ArrayList<Int>? = arrayListOf()
+    private var shipperServicesIds: ArrayList<Long>? = arrayListOf()
     private var isCPLActivated: Boolean = false
 
     private var radiosInsurance: RadioGroup? = null
@@ -189,8 +189,7 @@ class AddEditProductShipmentFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(
-                requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setFragmentToUnifyBgColor()
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
@@ -255,7 +254,10 @@ class AddEditProductShipmentFragment:
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_CPL) {
-                shipperServicesIds = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
+                val shipperServicesIdsInt = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
+                shipperServicesIdsInt?.forEach { ids ->
+                    shipperServicesIds?.add(ids.toLong())
+                }
             }
         }
     }
@@ -481,8 +483,8 @@ class AddEditProductShipmentFragment:
         }
     }
 
-    private fun getListActivatedSpIds(onDemandList: List<Int>, conventionalList: List<Int>): List<Int> {
-        val activatedListShipperIds = mutableListOf<Int>()
+    private fun getListActivatedSpIds(onDemandList: List<Long>, conventionalList: List<Long>): List<Long> {
+        val activatedListShipperIds = mutableListOf<Long>()
         activatedListShipperIds.addAll(onDemandList)
         activatedListShipperIds.addAll(conventionalList)
         return activatedListShipperIds
@@ -508,14 +510,9 @@ class AddEditProductShipmentFragment:
 
     private fun setupSubmitButton() {
         btnEnd?.setOnClickListener {
-            var isEligible = true
-            var productLimitationModel = ProductLimitationModel()
-
-            if (RollenceUtil.getProductLimitationRollence()) {
-                productLimitationModel = SharedPreferencesUtil.getProductLimitationModel(requireActivity())
-                        ?: ProductLimitationModel()
-                isEligible = productLimitationModel.isEligible
-            }
+            val productLimitationModel = SharedPreferencesUtil
+                .getProductLimitationModel(requireActivity()) ?: ProductLimitationModel()
+            val isEligible = productLimitationModel.isEligible
 
             if (isEligible) {
                 btnEnd?.isLoading = true

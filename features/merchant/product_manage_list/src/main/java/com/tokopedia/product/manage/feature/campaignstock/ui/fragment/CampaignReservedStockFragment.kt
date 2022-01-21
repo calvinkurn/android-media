@@ -13,6 +13,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
+import com.tokopedia.product.manage.databinding.FragmentCampaignStockTabBinding
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
@@ -20,7 +21,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Ca
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockRedirectionUiModel
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_campaign_stock_tab.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
@@ -56,8 +57,11 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
         arguments?.getParcelableArrayList<ReservedEventInfoUiModel>(EXTRA_RESERVED_EVENT_INFO_LIST)?.toList().orEmpty()
     }
 
+    private var binding by autoClearedNullable<FragmentCampaignStockTabBinding>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_campaign_stock_tab, container, false)
+        binding = FragmentCampaignStockTabBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -124,7 +128,7 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
     private fun onVariantAccordionStateChanged(position: Int) {
         activity?.runOnUiThread {
             adapter.notifyItemChanged(position)
-            rv_campaign_stock?.smoothScrollToPosition(position)
+            binding?.rvCampaignStock?.smoothScrollToPosition(position)
         }
     }
 }

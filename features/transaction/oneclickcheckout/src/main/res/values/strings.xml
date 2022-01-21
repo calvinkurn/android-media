@@ -55,10 +55,11 @@
 
     <string name="lbl_activate_ovo_now">Aktivasi OVO Sekarang</string>
     <string name="message_ovo_activation_success">Yay, aktivasi OVO berhasil. Sekarang kamu bisa bayar pakai OVO.</string>
-
-    <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="message_ovo_activation_failed">Yaah, aktivasi OVO gagal. Coba lagi dalam beberapa saat.</string>
     <string name="button_ok_message_ovo_activation">Oke</string>
+
+    <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
+    <string name="title_one_click_checkout_top_up">Top-up</string>
 
     <string name="lbl_reload_shipping">Refresh</string>
 
@@ -73,8 +74,8 @@
     <string name="occ_pinpoint_error_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
     <string name="occ_pinpoint_error_action">Atur</string>
 
-    <string name="occ_lbl_notes_placeholder">Tulis catatan</string>
-    <string name="occ_lbl_notes_label">Catatan untuk barang ini</string>
+    <string name="occ_lbl_notes_placeholder">Tulis Catatan</string>
+    <string name="occ_lbl_notes_label">Tulis Catatan untuk Barang Ini</string>
     <string name="occ_lbl_notes_edit">Ubah</string>
 
     <!--AFPB-->

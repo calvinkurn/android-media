@@ -2,12 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_16"
+    android:layout_margin="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/searchResultGlobalSearchInTokopediaTitle"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/search_result_global_search_text"
         android:ellipsize="end"
@@ -18,9 +18,9 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/searchResultGlobalSearchInTokopediaButton"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:text="@string/search_result_global_search_button_text"
         android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"

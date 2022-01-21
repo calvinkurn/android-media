@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.gm.common.constant.*
@@ -92,6 +93,16 @@ open class PowerMerchantSubscriptionFragment :
             PowerMerchantPrefManager(context)
         }
     }
+
+    private val isUpgradePm by lazy {
+        activity?.intent?.data?.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_IS_UPGRADE)
+            .toBoolean()
+    }
+
+    private val indexOfUpgradePmProWidget: Int
+        get() = adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
+
+    private var isAlreadyScrolled = false
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_SUBSCRIBE
 
@@ -340,8 +351,6 @@ open class PowerMerchantSubscriptionFragment :
     private fun setupPmProUpgradeView() = binding?.run {
         viewPmUpgradePmPro.setOnClickListener {
             val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
-            val indexOfUpgradePmProWidget =
-                adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
             layoutManager?.scrollToPositionWithOffset(indexOfUpgradePmProWidget, 0)
             hideUpgradePmProStickyView()
         }
@@ -651,7 +660,11 @@ open class PowerMerchantSubscriptionFragment :
         adapter.clearAllElements()
         renderList(widgets, false)
         recyclerView?.post {
-            recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
+            if (isUpgradePm && !isAlreadyScrolled) {
+                smoothScrollToPmProSection()
+            } else {
+                recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
+            }
         }
     }
 
@@ -782,6 +795,20 @@ open class PowerMerchantSubscriptionFragment :
                         coachMark?.showCoachMark(getCoachMarkItems().value)
                     }
                 }, COACH_MARK_RENDER_SHOW)
+            }
+        }
+    }
+
+    private fun smoothScrollToPmProSection() {
+        if (indexOfUpgradePmProWidget != RecyclerView.NO_POSITION) {
+            context?.let {
+                val smoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int = SNAP_TO_START
+                }
+                val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
+                smoothScroller.targetPosition = indexOfUpgradePmProWidget
+                layoutManager?.startSmoothScroll(smoothScroller)
+                isAlreadyScrolled = true
             }
         }
     }

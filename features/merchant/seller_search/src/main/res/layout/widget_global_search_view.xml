@@ -2,8 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:paddingTop="@dimen/dp_4"
-    android:paddingBottom="@dimen/dp_4"
     android:gravity="center_vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -13,16 +11,15 @@
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         app:srcCompat="@drawable/ic_back_searchbar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="@dimen/dp_12" />
+        app:layout_constraintTop_toTopOf="@id/searchBarView"
+        app:layout_constraintBottom_toBottomOf="@id/searchBarView"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="12dp" />
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchBarView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:search_bar_clearable="true"

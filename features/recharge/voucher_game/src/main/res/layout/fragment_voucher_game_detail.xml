@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView
@@ -157,7 +157,7 @@
                         android:layout_marginBottom="@dimen/unify_space_4"
                         android:text="@string/vg_input_field_label_message"
                         android:textColor="@color/Unify_N700_96"
-                        android:textSize="@dimen/sp_14"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/input_field_1"

@@ -3,7 +3,6 @@ package com.tokopedia.play.model
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
@@ -28,7 +27,6 @@ class PlayChannelDataModelBuilder {
         partnerInfo: PlayPartnerInfo = partnerInfoBuilder.buildPlayPartnerInfo(),
         likeInfo: PlayLikeInfoUiModel = likeModelBuilder.buildLikeInfo(),
         channelReportInfo: PlayChannelReportUiModel = channelReportBuilder.buildChannelReport(),
-        cartInfo: PlayCartInfoUiModel = cartInfoBuilder.build(),
         pinnedInfo: PlayPinnedInfoUiModel = pinnedBuilder.buildInfo(),
         quickReplyInfo: PlayQuickReplyInfoUiModel = quickReplyBuilder.build(),
         videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
@@ -40,7 +38,6 @@ class PlayChannelDataModelBuilder {
             channelDetail = channelDetail,
             partnerInfo = partnerInfo,
             likeInfo = likeInfo,
-            cartInfo = cartInfo,
             pinnedInfo = pinnedInfo,
             quickReplyInfo = quickReplyInfo,
             videoMetaInfo = videoMetaInfo,

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,8 +11,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.URLUtil;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.work.Configuration;
+import androidx.work.InitializationExceptionHandler;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
@@ -33,11 +39,10 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
-import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
-import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -53,11 +58,14 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.SlicePermission;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
@@ -72,8 +80,7 @@ import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHOR
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends SellerRouterApplication implements
-        MoengagePushListener, MoengageInAppListener {
+public class SellerMainApplication extends SellerRouterApplication implements Configuration.Provider{
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
@@ -86,40 +93,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
-    @Override
-    public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName, extras, deepLinkUri);
-    }
-
-    @Override
-    public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName, extras, deepLinkUri);
-    }
-
-    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        if (deepLinkUri != null) {
-            Timber.d("FCM moengage SELLER clicked " + deepLinkUri.toString());
-            if (URLUtil.isNetworkUrl(deepLinkUri.toString())) {
-                Intent intent = new Intent(this, DeepLinkActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setData(Uri.parse(deepLinkUri.toString()));
-                startActivity(intent);
-
-            } else if (Constants.Schemes.APPLINKS_SELLER.equals(deepLinkUri.getScheme())) {
-                Intent intent = new Intent(this, DeepLinkHandlerActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setData(Uri.parse(deepLinkUri.toString()));
-                startActivity(intent);
-            } else {
-                Timber.d("FCM entered no one");
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-
-    }
 
     @Override
     public void onCreate() {
@@ -130,6 +103,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
+        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
@@ -141,7 +115,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
         initFileDirConfig();
         FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
-        generateSellerAppNetworkKeys();
         initRemoteConfig();
         initCacheManager();
 
@@ -154,11 +127,9 @@ public class SellerMainApplication extends SellerRouterApplication implements
 
         super.onCreate();
         initLogManager();
-        MoengageInteractor.INSTANCE.setPushListener(SellerMainApplication.this);
-        MoengageInteractor.INSTANCE.setInAppListener(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
         GraphqlClient.setContextData(this);
-        GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
+        GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false), getAuthenticator());
         NetworkClient.init(this);
         initializeAbTestVariant();
 
@@ -168,6 +139,10 @@ public class SellerMainApplication extends SellerRouterApplication implements
         initSlicePermission();
 
         Loader.init(this);
+    }
+
+    private TkpdAuthenticatorGql getAuthenticator() {
+        return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
     }
 
     private void initCacheManager() {
@@ -335,11 +310,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
         }
     }
 
-    private void generateSellerAppNetworkKeys() {
-        AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = SellerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
-        AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
-    }
-
     public int getCurrentVersion(Context context) {
         PackageInfo pInfo = null;
         try {
@@ -370,4 +340,16 @@ public class SellerMainApplication extends SellerRouterApplication implements
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
     }
 
+    @SuppressLint("RestrictedApi")
+    @NonNull
+    @Override
+    public Configuration getWorkManagerConfiguration() {
+        return new Configuration.Builder().setInitializationExceptionHandler(throwable -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("type", "init");
+            map.put("error", Log.getStackTraceString(throwable));
+            ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
+            throw new RuntimeException("WorkManager failed to initialize", throwable);
+        }).build();
+    }
 }

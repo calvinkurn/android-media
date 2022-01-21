@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
+import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.domain.usecase.CheckWhitelistedStatusUseCase
@@ -24,6 +26,7 @@ class StatisticActivityViewModel @Inject constructor(
     private val userSession: Lazy<UserSessionInterface>,
     private val checkWhitelistedStatusUseCase: Lazy<CheckWhitelistedStatusUseCase>,
     private val getUserRoleUseCase: Lazy<GetUserRoleUseCase>,
+    private val getPMStatusUseCase: Lazy<GetPMStatusUseCase>,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -40,10 +43,10 @@ class StatisticActivityViewModel @Inject constructor(
             val whiteListPageSource = Const.WHITE_LIST_KEY_OPERATIONAL_STATISTIC
             val useCase = checkWhitelistedStatusUseCase.get()
             val requestParams = useCase.createParam(whiteListPageSource)
-            val result = withContext(dispatchers.io) {
+            val result = Success(withContext(dispatchers.io) {
                 useCase.execute(requestParams)
-            }
-            _whitelistedStatus.postValue(Success(result))
+            })
+            _whitelistedStatus.postValue(result)
         }, onError = {
             _whitelistedStatus.postValue(Fail(it))
         })
@@ -60,5 +63,23 @@ class StatisticActivityViewModel @Inject constructor(
         }, onError = {
             _userRole.postValue(Fail(it))
         })
+    }
+
+    fun fetchPMStatus() {
+        launchCatchError(block = {
+            val useCase = getPMStatusUseCase.get()
+            val shopId = userSession.get().shopId
+            useCase.params = GetPMStatusUseCase.createParams(shopId)
+            val pmStatusData = useCase.executeOnBackground()
+            updateUserSession(pmStatusData)
+        }, onError = {})
+    }
+
+    private fun updateUserSession(pmStatusData: PMStatusUiModel) {
+        with(userSession.get()) {
+            setIsShopOfficialStore(pmStatusData.isOfficialStore)
+            setIsGoldMerchant(pmStatusData.isPowerMerchant())
+            setIsPowerMerchantIdle(pmStatusData.isPowerMerchantIdle())
+        }
     }
 }

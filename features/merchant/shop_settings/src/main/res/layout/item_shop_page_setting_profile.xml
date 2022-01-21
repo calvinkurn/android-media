@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <ImageView
         android:id="@+id/iv_shop"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_merchant"
@@ -20,12 +20,12 @@
         android:id="@+id/tv_shop_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_profile"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         app:layout_constraintLeft_toRightOf="@id/iv_shop"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +34,7 @@
         android:id="@+id/tv_change_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginTop="14dp"
         android:clickable="true"
         android:focusable="true"
         android:lineSpacingExtra="@dimen/sp_6"
@@ -49,7 +49,7 @@
         android:id="@+id/tv_change_note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:clickable="true"
         android:focusable="true"
         android:lineSpacingExtra="@dimen/sp_6"
@@ -64,7 +64,7 @@
         android:id="@+id/tv_edit_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:clickable="true"
         android:focusable="true"
         android:lineSpacingExtra="@dimen/sp_6"

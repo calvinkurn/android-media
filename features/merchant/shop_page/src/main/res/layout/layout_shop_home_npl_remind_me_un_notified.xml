@@ -8,8 +8,8 @@
     android:gravity="center"
     android:minWidth="@dimen/dp_32"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/dp_8"
-    android:paddingRight="@dimen/dp_8">
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_notification_un_notified"
@@ -27,7 +27,7 @@
         android:minWidth="@dimen/dp_34"
         android:layout_marginStart="@dimen/dp_7"
         android:layout_marginLeft="@dimen/dp_7"
-        android:text="@string/shop_home_npl_remind_me"
+        android:text="@string/shop_page_label_remind_me"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,8 +39,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_remind_me_un_notified"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

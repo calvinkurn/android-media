@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -18,19 +18,19 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_write_title_header_shimmer"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginStart="@dimen/dp_14"
+        android:layout_marginStart="14dp"
         android:layout_marginEnd="@dimen/layout_lvl6"
         android:layout_marginRight="@dimen/layout_lvl6"
-        android:layout_marginLeft="@dimen/dp_14"
+        android:layout_marginLeft="14dp"
         app:layout_constraintStart_toEndOf="@id/talk_write_image_shimmer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/talk_write_image_shimmer" />
     
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl7"
         android:layout_marginRight="@dimen/layout_lvl7"
@@ -48,7 +48,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_write_body_title_shimmer"
         android:layout_width="@dimen/dp_168"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/dp_19"
         app:layout_constraintTop_toBottomOf="@id/talk_write_header_divider_shimmer"
         app:layout_constraintStart_toStartOf="@id/talk_write_image_shimmer"/>
@@ -102,7 +102,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_write_item_title_shimmer"
         android:layout_width="@dimen/dp_168"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl4"
         app:layout_constraintTop_toBottomOf="@id/talk_write_large_block_shimmer_5"
         app:layout_constraintStart_toStartOf="@id/talk_write_image_shimmer" />
@@ -110,7 +110,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_write_item_subtitle_shimmer"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
@@ -121,7 +121,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_write_item_subtitle_2_shimmer"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
@@ -132,7 +132,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/reply_item_subtitle_3_shimmer"
         android:layout_width="@dimen/dp_204"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintTop_toBottomOf="@id/talk_write_item_subtitle_2_shimmer"
         app:layout_constraintStart_toStartOf="@id/talk_write_item_subtitle_2_shimmer"/>

@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.ActivitySomSubFilterBinding
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomSubFilterCheckboxAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomSubFilterRadioButtonAdapter
@@ -71,11 +72,16 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         val somSubFilterListWrapper: SomSubFilterListWrapper? = cacheManager.get(KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
         somSubFilterList = somSubFilterListWrapper?.somSubFilterList
         super.onCreate(savedInstanceState)
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         btnSaveSubFilter()
         setToolbarSubFilter()
         setToggleResetSubFilter()
         setupToggleShadowToolbar()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -131,14 +137,10 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun setToolbarSubFilter() {
+        supportActionBar?.hide()
         setSupportActionBar(binding.somSubFilterToolbar)
-        supportActionBar?.apply {
-            title = "$ALL_FILTER $idFilter"
-            setDisplayShowHomeEnabled(true)
-        }
         binding.somSubFilterToolbar.apply {
-            isShowBackButton = true
-            isShowShadow = false
+            title = "$ALL_FILTER $idFilter"
             setNavigationOnClickListener {
                 onBackPressed()
             }

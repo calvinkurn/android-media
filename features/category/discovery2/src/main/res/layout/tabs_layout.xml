@@ -4,13 +4,13 @@
     android:id="@+id/discovery_tab_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_5"
+    android:layout_marginTop="5dp"
     android:orientation="vertical">
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/discovery_tabs_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabBackground="@color/Unify_N0"
-        app:tabPaddingEnd="@dimen/dp_0"
+        app:tabPaddingEnd="0dp"
         app:tabMode="scrollable" />
 </LinearLayout>

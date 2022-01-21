@@ -40,10 +40,10 @@ class SubmitDVTokenUseCase @Inject constructor(val repository: dagger.Lazy<Graph
     suspend fun execute(key: String, retryCount: Int, errorMessage: String, deviceType: String = ANDROID): SubmitDeviceInitResponse {
         val useCase = getOrCreateUseCase()
         val params: Map<String, Any?> = mutableMapOf(
-                PARAM_KEY to key,
-                PARAM_RETRY_COUNT to retryCount,
-                PARAM_ERROR_MESSAGE to errorMessage,
-                PARAM_DEVICE_TYPE to deviceType
+            PARAM_KEY to key,
+            PARAM_RETRY_COUNT to retryCount,
+            PARAM_ERROR_MESSAGE to errorMessage,
+            PARAM_DEVICE_TYPE to deviceType
         )
         useCase.setRequestParams(params)
         return useCase.executeOnBackground()

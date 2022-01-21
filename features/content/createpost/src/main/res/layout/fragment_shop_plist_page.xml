@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     tools:context="com.tokopedia.createpost.view.plist.ShopProductListActivity">
 
     <com.tokopedia.unifycomponents.SearchBarUnify
@@ -37,9 +37,9 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/dp_140"
-        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginEnd="12dp"
         android:layout_marginBottom="@dimen/dp_32"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

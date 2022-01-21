@@ -24,7 +24,7 @@
 
     <ImageView
         android:id="@+id/rating_icon"
-        android:layout_marginRight="@dimen/dp_2"
+        android:layout_marginRight="2dp"
         android:layout_width="@dimen/chip_rating_icon_size"
         android:layout_height="@dimen/chip_rating_icon_size"
         android:src="@drawable/ic_app_rating_filled"
@@ -32,7 +32,7 @@
 
     <com.tokopedia.filter.widget.ColorSampleView
         android:id="@+id/color_icon"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginRight="8dp"
         android:layout_width="@dimen/chip_color_item_icon_size"
         android:layout_height="@dimen/chip_color_item_icon_size"
         android:visibility="gone"

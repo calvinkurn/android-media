@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.data
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
@@ -18,10 +18,10 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
 
@@ -68,6 +68,56 @@ fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
     )
 }
 
+fun createHomeLayoutListForQuestOnly(): List<HomeLayoutResponse> {
+    return listOf(
+        HomeLayoutResponse(
+            id = "55678",
+            layout = "tokonow_main_quest",
+            header = Header(
+                name = "Main Quest",
+                serverTimeUnix = 0
+            ),
+            token = "==aff1ed" // Dummy token
+        )
+    )
+}
+
+fun createQuestWidgetListEmpty(code: String, reason: String = ""): GetQuestListResponse {
+    return GetQuestListResponse(
+        questWidgetList = QuestListResponse(
+            questWidgetList = listOf(),
+            resultStatus = ResultStatus(
+                code = code,
+                reason = reason
+            )
+        )
+    )
+}
+
+fun createQuestWidgetList(code: String, reason: String = ""): GetQuestListResponse {
+    return GetQuestListResponse(
+        questWidgetList = QuestListResponse(
+            questWidgetList = listOf(
+                QuestList(
+                    id = "1233",
+                    title = "dummy title",
+                    description = "dummy desc",
+                    config = "{}",
+                    questUser = QuestUser(
+                        id = "1111",
+                        status = "Idle"
+                    ),
+                    task = listOf()
+                )
+            ),
+            resultStatus = ResultStatus(
+                code = code,
+                reason = reason
+            )
+        )
+    )
+}
+
 fun createHomeLayoutData(): HomeLayoutResponse {
     return HomeLayoutResponse(
             id = "2222",
@@ -81,9 +131,9 @@ fun createHomeLayoutData(): HomeLayoutResponse {
 }
 
 fun createLoadingState(): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
+    val mutableList = mutableListOf<Visitable<*>>()
     val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
-    mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
+    mutableList.add(loadingStateUiModel)
     return HomeLayoutListUiModel(
             items = mutableList,
             state = TokoNowLayoutState.LOADING
@@ -91,11 +141,11 @@ fun createLoadingState(): HomeLayoutListUiModel {
 }
 
 fun createEmptyState(id: String): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
+    val mutableList = mutableListOf<Visitable<*>>()
     val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
-    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, eventCategory = "tokonow - homepage")
-    mutableList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
-    mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
+    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, hostSource = TokoNowRepurchaseFragment.SOURCE)
+    mutableList.add(chooseAddressUiModel)
+    mutableList.add(emptyStateUiModel)
     return HomeLayoutListUiModel(
             mutableList,
             state = TokoNowLayoutState.HIDE
@@ -256,7 +306,7 @@ fun createHomeProductCardUiModel(
     quantity: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.RECENT_PURCHASE
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
 ): TokoNowProductCardUiModel {
     return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
 }

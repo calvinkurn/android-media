@@ -45,11 +45,11 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     }
 
     override fun initInjector() {
-        activity?.application?.let {
+        activity?.let { activity ->
             DaggerSomDetailComponent.builder()
-                    .somComponent(SomComponentInstance.getSomComponent(it))
-                    .build()
-                    .inject(this)
+                .somComponent(SomComponentInstance.getSomComponent(activity.application))
+                .build()
+                .inject(this)
         }
     }
 
@@ -144,13 +144,13 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     override fun onSuccessSetDelivered(deliveredData: SetDelivered) {
         if (deliveredData.success == SomConsts.SOM_SET_DELIVERED_SUCCESS_CODE) {
             showToaster(getString(R.string.message_set_delivered_success), view, Toaster.TYPE_NORMAL, "")
-            dismissBottomSheets()
+            bottomSheetManager?.dismissBottomSheets()
             shouldRefreshOrderList = true
             loadDetail()
         } else {
             val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() } ?: getString(R.string.global_error)
             showToaster(message, view, Toaster.TYPE_ERROR, "")
-            bottomSheetSetDelivered?.onFailedSetDelivered()
+            bottomSheetManager?.getSomBottomSheetSetDelivered()?.onFailedSetDelivered()
         }
     }
 
@@ -170,11 +170,36 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
+    override fun observeOrderExtensionRequestInfo() {
+        orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
+            if (result.message.isNotBlank() || result.throwable != null) {
+                if (result.success) {
+                    showCommonToaster(result.message)
+                } else {
+                    if (result.throwable == null) {
+                        showErrorToaster(result.message)
+                    } else {
+                        result.throwable?.showErrorToaster()
+                    }
+                }
+            }
+            if (result.completed && result.refreshOnDismiss) {
+                shouldRefreshOrderList
+                loadDetail()
+            }
+            onRequestExtensionInfoChanged(result)
+        }
+    }
+
     override fun showBackButton(): Boolean = false
+
+    override fun doOnResume() {
+        // noop
+    }
 
     fun setOrderIdToShow(orderId: String) {
         if (orderId != this.orderId) {
-            dismissBottomSheets()
+            bottomSheetManager?.dismissBottomSheets()
             this.orderId = orderId
             loadDetail()
         }
@@ -182,7 +207,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     fun refreshOrder(orderId: String) {
         if (orderId == this.orderId) {
-            dismissBottomSheets()
+            bottomSheetManager?.dismissBottomSheets()
             loadDetail()
         }
     }
@@ -192,7 +217,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     }
 
     fun closeOrderDetail() {
-        dismissBottomSheets()
+        bottomSheetManager?.dismissBottomSheets()
         orderId = ""
     }
 

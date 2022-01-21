@@ -15,19 +15,27 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.cassava.BuyerOrderDetailTrackerValidationConstant
-import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
+import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
+import com.tokopedia.buyerorderdetail.stub.common.graphql.coroutines.domain.repository.GraphqlRepositoryStub
+import com.tokopedia.buyerorderdetail.stub.detail.presentation.activity.BuyerOrderDetailActivityStub
+import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.CoreMatchers.allOf
@@ -35,6 +43,7 @@ import org.hamcrest.CoreMatchers.startsWith
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
 import org.junit.Assert.assertTrue
+import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
 
 class BuyerOrderDetailAction {
@@ -102,7 +111,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun scrollToCopyInvoice(activity: AppCompatActivity) {
-        scrollThroughUntilViewVisible(activity, firstView(withId(R.id.icBuyerOrderDetailCopyInvoice)))
+        scrollThroughUntilViewVisible(activity, firstView(withId(R.id.maskTriggerCopyArea)))
     }
 
     private fun scrollToSeeInvoice(activity: AppCompatActivity) {
@@ -126,7 +135,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun scrollToCopyAWB(activity: AppCompatActivity) {
-        scrollThroughUntilViewVisible(activity, firstView(allOf(withId(R.id.icBuyerOrderDetailCopy), withTagStringValue(activity.getString(R.string.copy_label_awb_number)))))
+        scrollThroughUntilViewVisible(activity, firstView(allOf(withId(R.id.maskTriggerCopyArea), withTagStringValue(activity.getString(R.string.copy_label_awb_number)))))
     }
 
     private fun waitUntilViewVisible(matcher: Matcher<View>) {
@@ -200,7 +209,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickCopyInvoice() {
-        clickView(firstView(withId(R.id.icBuyerOrderDetailCopyInvoice)))
+        clickView(firstView(withId(R.id.maskTriggerCopyArea)))
     }
 
     private fun clickSeeInvoice() {
@@ -224,7 +233,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickCopyAWB(context: Context) {
-        clickView(firstView(allOf(withId(R.id.icBuyerOrderDetailCopy), withTagStringValue(context.getString(R.string.copy_label_awb_number)))))
+        clickView(firstView(allOf(withId(R.id.maskTriggerCopyArea), withTagStringValue(context.getString(R.string.copy_label_awb_number)))))
     }
 
     private fun clickPrimaryActionButton() {
@@ -248,12 +257,8 @@ class BuyerOrderDetailAction {
         clickView(matcher)
     }
 
-    fun login() {
-        Utils.login()
-    }
-
-    fun launchBuyerOrderDetailActivity(activityRule: ActivityTestRule<BuyerOrderDetailActivity>) {
-        activityRule.launchActivity(BuyerOrderDetailActivity.createIntent(
+    fun launchBuyerOrderDetailActivity(activityRule: ActivityTestRule<BuyerOrderDetailActivityStub>) {
+        activityRule.launchActivity(BuyerOrderDetailActivityStub.createIntent(
                 InstrumentationRegistry.getInstrumentation().targetContext,
                 BuyerOrderDetailTrackerValidationConstant.cartString,
                 BuyerOrderDetailTrackerValidationConstant.orderId,
@@ -345,50 +350,117 @@ class BuyerOrderDetailAction {
 class BuyerOrderDetailMock {
     data class BuyerOrderDetailMockResponseData(
         val id: Int,
-        val name: String
+        val type: Type
     )
 
     enum class BuyerOrderDetailMockResponse(val mocks: List<BuyerOrderDetailMockResponseData>) {
         MOCK_RESPONSE_700(
             listOf(
-                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_700, "MPBOMDetail"),
-                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_add_to_cart, "add_to_cart_multi")
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_700,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                ),
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_add_to_cart,
+                    AtcMultiData::class.java
+                )
             )
         ),
-        MOCK_RESPONSE_601(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_601, "MPBOMDetail"))),
+        MOCK_RESPONSE_601(
+            listOf(
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_601,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                )
+            )
+        ),
         MOCK_RESPONSE_600(
             listOf(
-                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_600, "MPBOMDetail"),
-                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_finish_order, "FinishOrderBuyer")
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_600,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                ),
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_finish_order,
+                    FinishOrderResponse.Data::class.java
+                )
             )
         ),
         MOCK_RESPONSE_530(
             listOf(
-                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_530, "MPBOMDetail"),
-                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_finish_order, "FinishOrderBuyer")
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_530,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                ),
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_finish_order,
+                    FinishOrderResponse.Data::class.java
+                )
             )
         ),
-        MOCK_RESPONSE_450(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_450, "MPBOMDetail"))),
-        MOCK_RESPONSE_400(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_400, "MPBOMDetail"))),
-        MOCK_RESPONSE_220(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_220, "MPBOMDetail"))),
-        MOCK_RESPONSE_10(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_10, "MPBOMDetail"))),
-        MOCK_RESPONSE_0(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_0, "MPBOMDetail")))
+        MOCK_RESPONSE_450(
+            listOf(
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_450,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                )
+            )
+        ),
+        MOCK_RESPONSE_400(
+            listOf(
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_400,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                )
+            )
+        ),
+        MOCK_RESPONSE_220(
+            listOf(
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_220,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                )
+            )
+        ),
+        MOCK_RESPONSE_10(
+            listOf(
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_10,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                )
+            )
+        ),
+        MOCK_RESPONSE_0(
+            listOf(
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_0,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                )
+            )
+        )
     }
 
-    fun mockOrderDetail(mockResponse: BuyerOrderDetailMockResponse) {
-        val mockModelConfig = object : MockModelConfig() {
-            override fun createMockModel(context: Context): MockModelConfig {
-                mockResponse.mocks.forEach {
-                    addMockResponse(it.name, InstrumentationMockHelper.getRawString(context, it.id), FIND_BY_CONTAINS)
-                }
-                return this
-            }
+    fun mockOrderDetail(
+        mockResponse: BuyerOrderDetailMockResponse,
+        graphqlRepositoryStub: GraphqlRepositoryStub,
+        context: Context
+    ) {
+        mockResponse.mocks.forEach {
+            graphqlRepositoryStub.createMapResult(
+                it.type,
+                GsonSingleton.instance.fromJson(
+                    InstrumentationMockHelper.getRawString(
+                        context,
+                        it.id
+                    ), it.type
+                )
+            )
         }
-        setupGraphqlMockResponse(mockModelConfig)
-        Thread.sleep(5000)
+        graphqlRepositoryStub.createErrorMapResult(DigitalRecommendationResponse::class.java, "")
     }
 
-    infix fun actionTest(action: BuyerOrderDetailAction.() -> Unit) = BuyerOrderDetailAction().apply(action)
+    infix fun actionTest(action: BuyerOrderDetailAction.() -> Unit) =
+        BuyerOrderDetailAction().apply(action)
 }
 
 class BuyerOrderDetailValidator {
@@ -412,12 +484,12 @@ class BuyerOrderDetailValidator {
             } catch (e: AssertionError) {
                 if (errorMessage.isEmpty()) {
                     errorMessage.appendLine()
-                            .append("Begin Buyer Order Detail Analytic Error Message")
+                        .append("Begin Buyer Order Detail Analytic Error Message")
                 }
                 errorMessage.appendLine()
-                        .append("Error when validating query ${it.split("/").last()}")
-                        .appendLine()
-                        .append(e.message)
+                    .append("Error when validating query ${it.split("/").last()}")
+                    .appendLine()
+                    .append(e.message)
             }
         }
         assertTrue(errorMessage.toString(), errorMessage.isBlank())

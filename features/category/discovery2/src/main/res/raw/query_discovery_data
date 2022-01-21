@@ -1,5 +1,5 @@
-query DiscoPageLayoutQuery($identifier: String!, $version: String!, $device: String!) {
-  discoveryPageInfo(identifier: $identifier, version: $version, device: $device) {
+query DiscoPageLayoutQuery($identifier: String!, $version: String!, $device: String!, $filters: String) {
+  discoveryPageInfo(identifier: $identifier, version: $version, device: $device,filters: $filters) {
     data {
       title
       components

@@ -7,12 +7,12 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/productImage"
-        android:layout_width="@dimen/unify_space_48"
-        android:layout_height="@dimen/unify_space_48"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
         android:layout_marginLeft="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/dp_20"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/productPrice"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
@@ -23,24 +23,24 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_8"
         android:ellipsize="end"
-        android:maxLines="1"
-        android:layout_marginBottom="@dimen/dp_2"
-       app:layout_constraintTop_toTopOf="@id/productImage"
-        app:layout_constraintLeft_toRightOf="@id/productImage"
+        android:maxLines="2"
+        app:layout_constraintBottom_toTopOf="@+id/productVariant"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toRightOf="@+id/productImage"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/productImage"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="Product name  jkef eersdljkbfjsidnsdbf sdbffljksdnkfnsdkjfnsdffknekjrf" />
-
+        tools:text="Product name"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/unify_space_2"
-        app:layout_constraintLeft_toRightOf="@id/productImage"
-        app:layout_constraintTop_toBottomOf="@id/productName"
+        app:layout_constraintBottom_toTopOf="@+id/productPrice"
+        app:layout_constraintLeft_toRightOf="@+id/productImage"
+        app:layout_constraintTop_toBottomOf="@+id/productName"
         app:typographyType="small"
         tools:text="0.5m" />
 
@@ -49,10 +49,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/unify_space_2"
         android:layout_marginBottom="@dimen/unify_space_16"
-        app:layout_constraintLeft_toRightOf="@id/productImage"
-        app:layout_constraintTop_toBottomOf="@id/productVariant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/productImage"
+        app:layout_constraintTop_toBottomOf="@+id/productVariant"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Rp 100" />

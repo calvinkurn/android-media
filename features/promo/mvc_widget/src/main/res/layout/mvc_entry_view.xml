@@ -26,10 +26,10 @@
         android:outlineProvider="none"
         android:id="@+id/mvc_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="48dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_0"
-        android:layout_marginEnd="@dimen/dp_0"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
         android:clipChildren="false">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:clipChildren="true"
@@ -54,10 +54,10 @@
                 android:layout_marginStart="@dimen/dp_3"
                 android:id="@+id/image_coupon_bg"
                 app:srcCompat="@drawable/mvc_ic_intersect"
-                android:layout_width="@dimen/dp_48"
+                android:layout_width="48dp"
                 android:layout_height="match_parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:layout_height="@dimen/dp_48" />
+                tools:layout_height="48dp" />
 
             <com.tokopedia.mvcwidget.views.MvcTextContainer
                 android:id="@+id/mvc_text_container_first"
@@ -70,7 +70,7 @@
 
             <com.tokopedia.mvcwidget.views.MvcTextContainer
                 android:id="@+id/mvc_text_container_second"
-                android:translationY="@dimen/dp_48"
+                android:translationY="48dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/image_chevron"
                 app:layout_constraintTop_toTopOf="parent"
@@ -97,8 +97,8 @@
 <!--            android:id="@+id/tvTitle"-->
 <!--            android:layout_width="0dp"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/dp_12"-->
-<!--            android:layout_marginTop="@dimen/dp_6"-->
+<!--            android:layout_marginStart="12dp"-->
+<!--            android:layout_marginTop="6dp"-->
 <!--            android:lines="1"-->
 <!--            android:textColor="@color/Unify_N700"-->
 <!--            app:layout_constraintLeft_toRightOf="@id/image_coupon"-->
@@ -112,7 +112,7 @@
 <!--            android:id="@+id/tvSubTitle"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="@dimen/dp_6"-->
+<!--            android:layout_marginBottom="6dp"-->
 <!--            app:layout_constraintBottom_toBottomOf="parent"-->
 <!--            app:layout_constraintLeft_toLeftOf="@+id/tvTitle"-->
 <!--            app:layout_constraintTop_toBottomOf="@+id/tvTitle"-->

@@ -133,6 +133,7 @@
     <string name="contact_us_label_clear_cache_cancel">Batal</string>
     <string name="contact_us_clear_cache_warning">Peringatan</string>
     <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
+    <string name="contact_us_maximum_length_error_text">Pesan telah memenuhi batas maksimal 1,000 karakter.</string>
 
 
     <string-array name="contactus_csat_question">

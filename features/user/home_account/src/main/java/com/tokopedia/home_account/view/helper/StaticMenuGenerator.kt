@@ -49,7 +49,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
         CommonDataView(id = AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID, title = context?.getString(R.string.menu_account_title_safe_mode), body = context?.getString(R.string.menu_account_desc_safe_mode), type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.PROTECTION,
                 isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false)))
 
-        if(showDarkModeToggle && showDarkModeSetting()) {
+        if(showDarkModeToggle) {
             listSetting.add(CommonDataView(id = AccountConstants.SettingCode.SETTING_DARK_MODE,
                     title = context?.getString(R.string.menu_account_title_dark_mode),
                     body = context?.getString(R.string.menu_account_desc_dark_mode),
@@ -86,16 +86,8 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
     fun generateDeveloperOptionsSettingMenu(): SettingDataView {
         return  SettingDataView(context.getString(R.string.menu_account_section_title_developer), mutableListOf(
                 CommonDataView(title = context.getString(R.string.menu_account_title_dev_options), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_DEV_OPTIONS),
-                CommonDataView(title = context.getString(R.string.menu_account_title_feedback_form), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_FEEDBACK_FORM),
-                CommonDataView(title = context.getString(R.string.menu_account_old_account), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_OLD_ACCOUNT))
-
-        , showArrowDown = true)
-    }
-
-    //Request to hide Dark Mode regardless RemoteConfig
-    private fun showDarkModeSetting(): Boolean {
-        val showDarkModeSetting = false
-        return showDarkModeSetting
+                CommonDataView(title = context.getString(R.string.menu_account_title_feedback_form), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_FEEDBACK_FORM)
+        ), showArrowDown = true)
     }
 
     private fun getLabelText(id: Int): String {

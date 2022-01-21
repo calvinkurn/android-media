@@ -5,6 +5,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 
+data class FooInput(val id: Int, val isSorted: Boolean) {
+    fun toMap(): Map<String, Any> = mapOf(
+        "id" to id,
+        "isSorted" to isSorted
+    )
+}
+
 class GetWithParamUseCase(private val repository: GraphqlRepository, dispatcher: CoroutineDispatcher) :
     CoroutineUseCase<FooInput, FooModel>(dispatcher) {
 

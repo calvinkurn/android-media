@@ -3,7 +3,7 @@ package com.tokopedia.promotionstarget.cm.pushIntent
 import android.app.Activity
 import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.notifications.inApp.PushIntentContract
+import com.tokopedia.notifications.inApp.external.PushIntentContract
 import com.tokopedia.promotionstarget.cm.dialog.GratificationDialogHandler
 import timber.log.Timber
 

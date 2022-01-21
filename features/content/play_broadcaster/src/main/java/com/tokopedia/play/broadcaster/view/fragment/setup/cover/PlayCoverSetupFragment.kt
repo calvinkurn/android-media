@@ -539,7 +539,7 @@ class PlayCoverSetupFragment @Inject constructor(
      * Observe
      */
     private fun observeCropState() {
-        viewModel.observableCropState.observe(viewLifecycleOwner, Observer {
+        viewModel.observableCropState.observe(viewLifecycleOwner) {
             when (it) {
                 CoverSetupState.Blank -> showInitCoverLayout(null)
                 is CoverSetupState.Cropping -> handleCroppingState(it)
@@ -550,11 +550,11 @@ class PlayCoverSetupFragment @Inject constructor(
                     if (!isEditCoverMode) showInitCoverLayout(it.localImage)
                 }
             }
-        })
+        }
     }
 
     private fun observeUploadCover() {
-        viewModel.observableUploadCoverEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.observableUploadCoverEvent.observe(viewLifecycleOwner) {
             when (it) {
                 NetworkResult.Loading -> {
                     coverSetupView.setLoading(true)
@@ -566,7 +566,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     if (data != null) onUploadSuccess()
                 }
             }
-        })
+        }
     }
     //endregion
 

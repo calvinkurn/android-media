@@ -6,11 +6,12 @@ object ProductTrackingConstant {
         const val PDP = "product detail page"
         const val PDP_VARIANT_BOTTOMSHEET = "product detail page - global variant bottomsheet"
         const val PDP_AFTER_ATC = "product detail page after atc"
-        const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
         const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
         const val PRODUCT_DETAIL_PAGE_SHIPPING = "pdp courier section"
         const val GLOBAL_VARIANT_BOTTOM_SHEET = "%s - global variant bottomsheet" //page source
+        const val ITEM_CATEGORY_BUILDER = "%s / %s / %s / %s "
+        const val KEY_UNDEFINED = "undefined"
     }
 
     object Tracking {
@@ -35,6 +36,21 @@ object ProductTrackingConstant {
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
         const val KEY_CATEGORY_ID = "categoryId"
+
+        /**
+         * Tracking Key - Product Level
+         * is using snake_case
+         */
+        const val KEY_PRODUCT_CATEGORY_ID = "category_id"
+        const val KEY_PRODUCT_SHOP_ID = "shop_id"
+        const val KEY_PRODUCT_SHOP_NAME = "shop_name"
+        const val KEY_PRODUCT_SHOP_TYPE = "shop_type"
+
+        /**
+         * Tracking Key - Hit Level
+         * is using camelCase
+         */
+        const val KEY_HIT_USER_ID = "userId"
 
         const val VALUE_BUSINESS_UNIT_SHARING = "sharingexperience"
 
@@ -93,15 +109,20 @@ object ProductTrackingConstant {
         const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
         const val TRADEIN_TRUE_NON_DIAGNOSTIC = "true non diagnostic"
 
-        const val KEY_DIMENSION_81 = "dimension81"
-        const val KEY_DIMENSION_83 = "dimension83"
-        const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_10 = "dimension10"
+        const val KEY_DIMENSION_12 = "dimension12"
+        const val KEY_DIMENSION_14 = "dimension14"
+        const val KEY_DIMENSION_16 = "dimension16"
         const val KEY_DIMENSION_38 = "dimension38"
         const val KEY_DIMENSION_40 = "dimension40"
-        const val KEY_DIMENSION_82 = "dimension82"
-        const val KEY_DIMENSION_80 = "dimension80"
-        const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_45 = "dimension45"
+        const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_79 = "dimension79"
+        const val KEY_DIMENSION_80 = "dimension80"
+        const val KEY_DIMENSION_81 = "dimension81"
+        const val KEY_DIMENSION_82 = "dimension82"
+        const val KEY_DIMENSION_83 = "dimension83"
+        const val KEY_DIMENSION_120 = "dimension120"
 
         const val CONTENT_TYPE = "product"
         const val BRANCH_QUANTITY ="1"
@@ -118,15 +139,11 @@ object ProductTrackingConstant {
         const val TOPADS_CLICK = "click - product recommendation"
         const val TOPADS_ATC_CLICK = "click add to cart on product card after atc"
         const val TOPADS_IMPRESSION = "impression - product recommendation"
-        const val CLICK_BY_ME = "click - by.me"
         const val CLICK_VARIANT = "click - variant"
-        const val CLICK_RATE_ESTIMATE = "click - estimasi ongkir"
         const val CLICK_PRODUCT_PICTURE = "click - product picture"
         const val CLICK_PRODUCT_IMAGE = "click - product image"
         const val SWIPE_PRODUCT_PICTURE = "click - swipe product picture"
         const val ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION = " - wishlist on product recommendation"
-        const val CLICK_APPLY_LEASING = "click - ajukan kredit"
-        const val CLICK_SEARCH_BOX = "click search box"
         const val CLICK_RIBBON_TRADE_IN = "click - ribbon trade in"
         const val CLICK_SEE_MORE_WIDGET = "click - see more on widget %s"
         const val CLICK_ANNOTATION_RECOM_CHIP = "click annotation chips"
@@ -257,7 +274,6 @@ object ProductTrackingConstant {
         const val EVENT_CLICK_PDP = "clickPDP"
         const val EVENT_CLICK_RECOMMENDATION = "clickRecommendation"
         const val EVENT_VIEW_PDP = "viewPDP"
-        const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
         const val EVENT_CLICK_COURIER = "clickCourier"
     }

@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_72"
-    android:background="@color/Unify_N0"
+    android:layout_height="72dp"
+    android:background="@color/Unify_Background"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginLeft="12dp"
             android:layout_marginRight="@dimen/dp_128"
             android:layout_centerVertical="true"
             android:orientation="vertical">

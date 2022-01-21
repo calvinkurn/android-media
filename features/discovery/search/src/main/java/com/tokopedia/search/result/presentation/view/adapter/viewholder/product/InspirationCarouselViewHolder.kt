@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.*
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -18,6 +20,7 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchInspirationCarouselBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselChipsAdapter
@@ -29,8 +32,12 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
-import kotlinx.android.synthetic.main.search_inspiration_carousel.view.*
-import kotlinx.coroutines.*
+import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class InspirationCarouselViewHolder(
         itemView: View,
@@ -41,7 +48,12 @@ class InspirationCarouselViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.search_inspiration_carousel
+
+        private const val LEFT_OFFSET_NOT_FIRST_DIVISOR = 4
+        private const val RIGHT_OFFSET_NOT_LAST_DIVISOR = 4
     }
+
+    private var binding: SearchInspirationCarouselBinding? by viewBinding()
 
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
@@ -67,7 +79,7 @@ class InspirationCarouselViewHolder(
     }
 
     private fun bindTitle(element: InspirationCarouselDataView) {
-        itemView.inspirationCarousel?.inspirationCarouselTitle?.text = element.title
+        binding?.inspirationCarouselTitle?.text = element.title
     }
 
     private fun bindChipsCarousel(element: InspirationCarouselDataView) {
@@ -78,31 +90,35 @@ class InspirationCarouselViewHolder(
     }
 
     private fun configureInspirationCarouselChipsVisibility() {
-        itemView.inspirationCarousel?.inspirationCarouselSeeAllButton?.gone()
-        itemView.inspirationCarousel?.inspirationCarouselOptionList?.gone()
+        binding?.let {
+            it.inspirationCarouselSeeAllButton.gone()
+            it.inspirationCarouselOptionList.gone()
+        }
     }
 
     private fun bindCarouselChipsList(element: InspirationCarouselDataView) {
         if (element.options.size == 1) {
-            itemView.inspirationCarousel?.inspirationCarouselChipsList?.gone()
+            binding?.inspirationCarouselChipsList?.gone()
             return
         }
 
-        itemView.inspirationCarousel?.inspirationCarouselChipsList?.visible()
+        binding?.inspirationCarouselChipsList?.let {
+            it.visible()
 
-        itemView.inspirationCarousel?.inspirationCarouselChipsList?.layoutManager = createLayoutManager()
-        itemView.inspirationCarousel?.inspirationCarouselChipsList?.adapter = InspirationCarouselChipsAdapter(
+            it.layoutManager = createLayoutManager()
+            it.adapter = InspirationCarouselChipsAdapter(
                 adapterPosition, element, inspirationCarouselListener
-        )
-        itemView.inspirationCarousel?.inspirationCarouselChipsList?.addItemDecorationIfNotExists(
+            )
+            it.addItemDecorationIfNotExists(
                 InspirationCarouselChipsListItemDecoration(
-                        getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                        getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                 )
-        )
+            )
 
-        val scrollPosition = element.options.indexOfFirst { it.isChipsActive }
-        itemView.inspirationCarousel?.inspirationCarouselChipsList?.scrollToPosition(scrollPosition)
+            val scrollPosition = element.options.indexOfFirst { option -> option.isChipsActive }
+            it.scrollToPosition(scrollPosition)
+        }
     }
 
     private fun bindChipsCarouselProducts(element: InspirationCarouselDataView) {
@@ -117,13 +133,14 @@ class InspirationCarouselViewHolder(
     private fun bindInspirationCarouselChipProducts(
             activeOption: InspirationCarouselDataView.Option
     ) {
-        itemView.inspirationCarousel?.inspirationCarouselChipsShimmeringView?.gone()
-        itemView.inspirationCarousel?.inspirationCarouselChipsContent?.visible()
+        binding?.let {
+            it.inspirationCarouselChipsShimmeringView.root.gone()
+            it.inspirationCarouselChipsContent.visible()
 
-        val activeOptionsProducts = activeOption.product
-        val chipsProductCardModels = activeOptionsProducts.map { it.toProductCardModel() }
+            val activeOptionsProducts = activeOption.product
+            val chipsProductCardModels = activeOptionsProducts.map { it.toProductCardModel() }
 
-        itemView.inspirationCarousel?.inspirationCarouselChipsContent?.bindCarouselProductCardViewGrid(
+            it.inspirationCarouselChipsContent.bindCarouselProductCardViewGrid(
                 productCardModelList = chipsProductCardModels,
                 recyclerViewPool = inspirationCarouselListener.carouselRecycledViewPool,
                 showSeeMoreCard = activeOption.applink.isNotEmpty(),
@@ -151,18 +168,21 @@ class InspirationCarouselViewHolder(
                         inspirationCarouselListener.onInspirationCarouselChipsSeeAllClicked(activeOption)
                     }
                 }
-        )
+            )
+        }
     }
 
     private fun bindInspirationCarouselChipProductsLoading() {
-        itemView.inspirationCarousel?.inspirationCarouselChipsShimmeringView?.visible()
-        itemView.inspirationCarousel?.inspirationCarouselChipsContent?.gone()
+        binding?.let {
+            it.inspirationCarouselChipsShimmeringView.root.visible()
+            it.inspirationCarouselChipsContent.gone()
+        }
     }
 
     private fun bindContent(element: InspirationCarouselDataView) {
         configureInspirationCarouselNonChipsVisibility()
 
-        itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
+        binding?.inspirationCarouselOptionList?.let {
             if (it.itemDecorationCount == 0) it.addItemDecoration(createItemDecoration())
 
             if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID) {
@@ -179,11 +199,13 @@ class InspirationCarouselViewHolder(
     }
 
     private fun configureInspirationCarouselNonChipsVisibility() {
-        itemView.inspirationCarousel?.inspirationCarouselSeeAllButton?.gone()
-        itemView.inspirationCarousel?.inspirationCarouselOptionList?.visible()
-        itemView.inspirationCarousel?.inspirationCarouselChipsShimmeringView?.gone()
-        itemView.inspirationCarousel?.inspirationCarouselChipsList?.gone()
-        itemView.inspirationCarousel?.inspirationCarouselChipsContent?.gone()
+        binding?.let {
+            it.inspirationCarouselSeeAllButton.gone()
+            it.inspirationCarouselOptionList.visible()
+            it.inspirationCarouselChipsShimmeringView.root.gone()
+            it.inspirationCarouselChipsList.gone()
+            it.inspirationCarouselChipsContent.gone()
+        }
     }
 
     private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselDataView.Option, productList: List<ProductCardModel>) {
@@ -264,11 +286,11 @@ class InspirationCarouselViewHolder(
     }
 
     private fun showSeeAllButton() {
-        itemView.inspirationCarouselSeeAllButton?.visibility = View.VISIBLE
+        binding?.inspirationCarouselSeeAllButton?.visibility = View.VISIBLE
     }
 
     private fun bindSeeAllButtonListener(option: InspirationCarouselDataView.Option) {
-        itemView.inspirationCarouselSeeAllButton?.setOnClickListener {
+        binding?.inspirationCarouselSeeAllButton?.setOnClickListener {
             inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
         }
     }
@@ -342,7 +364,7 @@ class InspirationCarouselViewHolder(
 
         private fun getLeftOffsetFirstItem(): Int { return left - (cardViewHorizontalOffset / 2) }
 
-        private fun getLeftOffsetNotFirstItem(): Int { return (left / 4) - (cardViewHorizontalOffset / 2) }
+        private fun getLeftOffsetNotFirstItem(): Int { return (left / LEFT_OFFSET_NOT_FIRST_DIVISOR) - (cardViewHorizontalOffset / 2) }
 
         private fun getRightOffset(view: View, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(view) == (parent.adapter?.itemCount ?: 0) - 1) getRightOffsetLastItem()
@@ -351,6 +373,6 @@ class InspirationCarouselViewHolder(
 
         private fun getRightOffsetLastItem(): Int { return right - (cardViewHorizontalOffset / 2) }
 
-        private fun getRightOffsetNotLastItem(): Int { return (right / 4) - (cardViewHorizontalOffset / 2) }
+        private fun getRightOffsetNotLastItem(): Int { return (right / RIGHT_OFFSET_NOT_LAST_DIVISOR) - (cardViewHorizontalOffset / 2) }
     }
 }

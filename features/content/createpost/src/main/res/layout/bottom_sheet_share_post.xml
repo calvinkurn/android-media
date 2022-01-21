@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shareSheetTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="heading_4"
         tools:text="@string/cp_share_title" />
@@ -20,7 +20,7 @@
         android:id="@+id/shareSheetSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="2dp"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_3"
         tools:text="@string/cp_share_subtitle" />
@@ -29,13 +29,13 @@
         android:id="@+id/shareList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24" />
+        android:layout_marginTop="24dp" />
 
     <LinearLayout
         android:id="@+id/shareBtn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_af_btn_share"
         android:clickable="true"
         android:focusable="true"

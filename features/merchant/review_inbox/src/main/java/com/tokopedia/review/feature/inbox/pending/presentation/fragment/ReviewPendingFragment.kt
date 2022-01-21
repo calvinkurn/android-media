@@ -21,9 +21,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -40,15 +40,19 @@ import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.common.util.ReviewInboxUtil
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
+import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackLabelAndImage
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapter
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityCarouselUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
+import com.tokopedia.review.feature.inbox.pending.presentation.coachmark.CoachMarkManager
+import com.tokopedia.review.feature.inbox.pending.presentation.scroller.ReviewPendingRecyclerViewScroller
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.inbox.pending.util.ReviewPendingPreference
@@ -56,11 +60,10 @@ import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDoma
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.review.inbox.R
+import com.tokopedia.review.inbox.databinding.FragmentReviewPendingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_review_pending.*
-import kotlinx.android.synthetic.main.partial_review_connection_error.*
-import kotlinx.android.synthetic.main.partial_review_empty.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSucess
@@ -76,6 +79,7 @@ class ReviewPendingFragment :
         const val CREATE_REVIEW_REQUEST_CODE = 420
         const val INBOX_SOURCE = "inbox"
         const val COACH_MARK_SHOWN = false
+        const val PARAM_WRITE_FORM_SOURCE = "source"
         fun createNewInstance(reviewInboxListener: ReviewInboxListener): ReviewPendingFragment {
             return ReviewPendingFragment().apply {
                 this.reviewInboxListener = reviewInboxListener
@@ -92,6 +96,15 @@ class ReviewPendingFragment :
     private var source: String = ""
     private var containerListener: InboxFragmentContainer? = null
     private var reviewPendingPreference: ReviewPendingPreference? = null
+
+    private var binding by autoClearedNullable<FragmentReviewPendingBinding>()
+
+    private val smoothScroller by lazy(LazyThreadSafetyMode.NONE) {
+        binding?.reviewPendingRecyclerView?.let { ReviewPendingRecyclerViewScroller(it) }
+    }
+    private val coachMarkManager by lazy(LazyThreadSafetyMode.NONE) {
+        binding?.root?.let { CoachMarkManager(it, smoothScroller) }
+    }
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -150,7 +163,7 @@ class ReviewPendingFragment :
             viewModel.markAsSeen(inboxReviewId)
             containerListener?.decreaseReviewUnreviewedCounter()
         }
-        goToCreateReviewActivity(reputationId, productId, rating, inboxReviewId.toString())
+        goToCreateReviewActivity(reputationId, productId, rating)
     }
 
     override fun getComponent(): ReviewPendingComponent? {
@@ -176,12 +189,12 @@ class ReviewPendingFragment :
 
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        reviewPendingRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+        binding?.reviewPendingRecyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                reviewPendingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                binding?.reviewPendingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -200,8 +213,8 @@ class ReviewPendingFragment :
             castContextToTalkPerformanceMonitoringListener(context)
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        return reviewPendingRecyclerView
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        return binding?.reviewPendingRecyclerView
     }
 
     override fun onCreateView(
@@ -209,7 +222,8 @@ class ReviewPendingFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_review_pending, container, false)
+        binding = FragmentReviewPendingBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -226,11 +240,12 @@ class ReviewPendingFragment :
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return reviewPendingSwipeRefresh
+        return binding?.reviewPendingSwipeRefresh
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        coachMarkManager?.dismissCoachMark()
         removeObservers(viewModel.reviewList)
     }
 
@@ -255,6 +270,7 @@ class ReviewPendingFragment :
         hideLoading()
         adapter.addElement(list)
         updateScrollListenerState(hasNextPage)
+        coachMarkManager?.notifyUpdatedAdapter(!isLoadingInitialData)
         isLoadingInitialData = false
         if (adapter.dataSize < minimumScrollableNumOfItems && isAutoLoadEnabled
             && hasNextPage && endlessRecyclerViewScrollListener != null
@@ -268,14 +284,17 @@ class ReviewPendingFragment :
         if (requestCode == CREATE_REVIEW_REQUEST_CODE) {
             reviewInboxListener?.reloadCounter()
             if (resultCode == Activity.RESULT_OK) {
-                onSuccessCreateReview()
+                onSuccessCreateReview(
+                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE)
+                        ?: getString(R.string.review_create_success_toaster, viewModel.getUserName())
+                )
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(
-                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE)
+                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE)
                         ?: getString(R.string.review_pending_invalid_to_review)
                 )
             }
-            loadInitialData()
+            refresh()
         }
     }
 
@@ -294,10 +313,6 @@ class ReviewPendingFragment :
         // No Op
     }
 
-    override fun onClickReviewAnother() {
-        // No Op
-    }
-
     override fun onDismissOvoIncentiveTicker(subtitle: String) {
         ReviewTracking.onClickDismissIncentiveOvoTracker(
             subtitle,
@@ -305,12 +320,21 @@ class ReviewPendingFragment :
         )
     }
 
-    override fun onReviewCredibilityWidgetClicked() {
-        goToCredibility()
-        ReviewPendingTracking.trackOnCredibilityClicked(viewModel.getUserId())
+    override fun onReviewCredibilityWidgetClicked(appLink: String, title: String, position: Int) {
+        if (appLink.isBlank()) {
+            goToCredibility()
+        } else {
+            RouteManager.route(context, appLink)
+        }
+        ReviewPendingTracking.trackCredibilityCarouselItemClick(position, title, viewModel.getUserId())
+    }
+
+    override fun onReviewCredibilityWidgetImpressed(title: String, position: Int) {
+        ReviewPendingTracking.trackCredibilityCarouselItemImpression(position, title, viewModel.getUserId())
     }
 
     override fun onSwipeRefresh() {
+        coachMarkManager?.resetCoachMarkState()
         super.onSwipeRefresh()
         reviewInboxListener?.reloadCounter()
     }
@@ -345,62 +369,60 @@ class ReviewPendingFragment :
     }
 
     private fun setupErrorPage() {
-        reviewConnectionErrorRetryButton.setOnClickListener {
+        binding?.reviewPendingConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
             getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
         }
     }
 
     private fun setupEmptyState() {
-        reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
-        reviewEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
-        reviewEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
-        reviewEmptyButton.setOnClickListener {
-            goToHome()
+        binding?.reviewPendingEmpty?.apply {
+            reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
+            reviewEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
+            reviewEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
+            reviewEmptyButton.setOnClickListener {
+                goToHome()
+            }
         }
     }
 
     private fun showError() {
-        reviewPendingConnectionError.show()
+        binding?.reviewPendingConnectionError?.root?.show()
     }
 
     private fun hideError() {
-        reviewPendingConnectionError.hide()
+        binding?.reviewPendingConnectionError?.root?.hide()
     }
 
     private fun showList() {
-        reviewPendingSwipeRefresh.show()
+        binding?.reviewPendingSwipeRefresh?.show()
     }
 
     private fun hideList() {
-        reviewPendingSwipeRefresh.hide()
+        binding?.reviewPendingSwipeRefresh?.hide()
     }
 
     private fun showEmptyState() {
-        reviewPendingEmpty.show()
+        binding?.reviewPendingEmpty?.root?.show()
     }
 
     private fun hideEmptyState() {
-        reviewPendingEmpty.hide()
+        binding?.reviewPendingEmpty?.root?.hide()
     }
 
     private fun showFullPageLoading() {
-        reviewPendingLoading.show()
+        binding?.reviewPendingLoading?.root?.show()
     }
 
     private fun hideFullPageLoading() {
-        reviewPendingLoading.hide()
+        binding?.reviewPendingLoading?.root?.hide()
     }
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit = {}) {
         try {
             view?.let {
                 Toaster.build(
-                    it,
-                    errorMessage,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    ctaText,
-                    View.OnClickListener { action() }).show()
+                    it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText
+                ) { action() }.show()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -451,13 +473,12 @@ class ReviewPendingFragment :
                     hideError()
                     hideLoading()
                     if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && shouldShowCredibility()) {
-                        with(it.data.credibilityWidget) {
-                            addCredibilityWidget(imageURL, labelTitle, labelSubtitle)
-                        }
+                        addCredibilityCarouselWidget(it.data.banners)
                     }
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         with(it.data.emptyState) {
                             handleEmptyState(imageURL, labelTitle, labelSubtitle)
+                            renderList(listOf(), it.data.hasNext)
                         }
                     } else {
                         renderReviewData(
@@ -508,10 +529,12 @@ class ReviewPendingFragment :
         if (ovoIncentiveBottomSheet == null) {
             ovoIncentiveBottomSheet = context?.let {
                 IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                    it,
-                    productRevIncentiveOvoDomain,
-                    this,
-                    ReviewInboxTrackingConstants.PENDING_TAB
+                    context = it,
+                    productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
+                    hasIncentive = true,
+                    hasOngoingChallenge = false,
+                    incentiveOvoListener = this,
+                    category = ReviewInboxTrackingConstants.PENDING_TAB
                 )
             }
         }
@@ -524,11 +547,8 @@ class ReviewPendingFragment :
         }
     }
 
-    private fun onSuccessCreateReview() {
-        showToaster(
-            getString(R.string.review_create_success_toaster, viewModel.getUserName()),
-            getString(R.string.review_oke)
-        )
+    private fun onSuccessCreateReview(message: String) {
+        showToaster(message, getString(R.string.review_oke))
     }
 
     private fun onFailCreateReview(errorMessage: String) {
@@ -544,8 +564,7 @@ class ReviewPendingFragment :
     private fun goToCreateReviewActivity(
         reputationId: String,
         productId: String,
-        rating: Int,
-        inboxId: String
+        rating: Int
     ) {
         context?.let {
             val intent = RouteManager.getIntent(
@@ -559,6 +578,7 @@ class ReviewPendingFragment :
                 )
                     .buildUpon()
                     .appendQueryParameter(PARAM_RATING, rating.toString())
+                    .appendQueryParameter(PARAM_WRITE_FORM_SOURCE, INBOX_SOURCE)
                     .build()
                     .toString()
             )
@@ -593,12 +613,17 @@ class ReviewPendingFragment :
         )
     }
 
-    private fun addCredibilityWidget(imageUrl: String, title: String, subtitle: String) {
-        (adapter as? ReviewPendingAdapter)?.insertCredibilityWidget(
-            ReviewPendingCredibilityUiModel(
-                imageUrl,
-                title,
-                subtitle
+    private fun addCredibilityCarouselWidget(banners: List<ProductrevWaitForFeedbackLabelAndImage>) {
+        (adapter as? ReviewPendingAdapter)?.insertCredibilityCarouselWidget(
+            ReviewPendingCredibilityCarouselUiModel(
+                banners.map {
+                    ReviewPendingCredibilityUiModel(
+                        it.imageURL,
+                        it.labelTitle,
+                        it.labelSubtitle,
+                        it.appLink
+                    )
+                }
             )
         )
     }
@@ -608,7 +633,7 @@ class ReviewPendingFragment :
     }
 
     private fun shouldShowCredibility(): Boolean {
-        return isNewCredibilityEnabled() && isNewReadingExperienceEnabled()
+        return isNewCredibilityEnabled()
     }
 
     private fun isNewCredibilityEnabled(): Boolean {
@@ -617,16 +642,6 @@ class ReviewPendingFragment :
                 RollenceKey.EXPERIMENT_NAME_REVIEW_CREDIBILITY,
                 RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET
             ) == RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET
-        }
-        return false
-    }
-
-    private fun isNewReadingExperienceEnabled(): Boolean {
-        getAbTestPlatform()?.let {
-            return it.getString(
-                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING,
-                RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
-            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
         }
         return false
     }
@@ -656,5 +671,10 @@ class ReviewPendingFragment :
         } else {
             showEmptyState()
         }
+    }
+
+    private fun refresh() {
+        coachMarkManager?.resetCoachMarkState()
+        loadInitialData()
     }
 }

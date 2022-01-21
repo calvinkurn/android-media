@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <LinearLayout
@@ -17,10 +17,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/avatar_shop"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginStart="16dp"
             app:unify_image_type="circle" />
 
         <com.tokopedia.feedcomponent.view.custom.MentionEditText
@@ -28,18 +28,18 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_36"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@drawable/bg_round_corner_comment"
             android:fontFamily="sans-serif"
             android:hint="@string/write_comment"
             android:inputType="textVisiblePassword|textMultiLine"
             android:maxLines="5"
-            android:paddingStart="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_4"
-            android:textSize="@dimen/sp_14"
+            android:paddingStart="12dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="4dp"
+            android:textSize="14sp"
             android:textStyle="normal" />
 
         <ImageView
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="null"
-            android:padding="@dimen/dp_10"
+            android:padding="10dp"
             app:srcCompat="@drawable/kol_comment_send" />
 
     </LinearLayout>

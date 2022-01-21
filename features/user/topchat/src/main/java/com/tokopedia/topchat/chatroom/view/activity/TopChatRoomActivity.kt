@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -22,20 +21,20 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.window.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.R
@@ -151,7 +150,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun initWindowBackground() {
-        val color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         window.decorView.setBackgroundColor(color)
     }
 
@@ -176,7 +175,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                     val source = it.getQueryParameter(ApplinkConst.Chat.SOURCE) ?: "deeplink"
                     intent.putExtra(ApplinkConst.Chat.SOURCE, source)
 
-                    val model = ChatRoomHeaderViewModel()
+                    val model = ChatRoomHeaderUiModel()
                     model.name = shopName
                     model.label = LABEL_SELLER
                     model.senderId = toShopId
@@ -200,7 +199,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                     val source = it.getQueryParameter(ApplinkConst.Chat.SOURCE) ?: SOURCE_ASK_BUYER
                     intent.putExtra(ApplinkConst.Chat.SOURCE, source)
 
-                    val model = ChatRoomHeaderViewModel()
+                    val model = ChatRoomHeaderUiModel()
                     model.name = shopName
                     model.label = LABEL_USER
                     model.senderId = toUserId
@@ -258,10 +257,8 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun setupDummyToolbar() {
-        intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let { header ->
-            chatRoomToolbarAvatar?.let { imageView ->
-                ImageHandler.loadImageCircle2(this, imageView, header.image)
-            }
+        intent.getParcelableExtra<ChatRoomHeaderUiModel>(ApplinkConst.Chat.PARAM_HEADER)?.let { header ->
+            chatRoomToolbarAvatar?.loadImageCircle(header.image)
             chatRoomToolbarTitle?.text = header.name
             chatRoomToolbarLabel?.hide()
             chatRoomToolbarSubtitle?.hide()
@@ -486,7 +483,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 ColorDrawable(
                     MethodChecker.getColor(
                         this@TopChatRoomActivity,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        com.tokopedia.unifyprinciples.R.color.Unify_Background)
                 )
             )
             setDisplayHomeAsUpEnabled(true)

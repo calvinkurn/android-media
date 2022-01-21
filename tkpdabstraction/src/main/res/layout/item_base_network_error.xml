@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/dp_10">
+    android:padding="10dp">
 
     <View
         android:layout_width="wrap_content"
@@ -21,8 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="5dp"
         android:gravity="center_horizontal"
         tools:src="@drawable/unify_globalerrors_connection" />
 
@@ -30,7 +30,7 @@
         android:id="@+id/retry_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_5"
+        android:layout_margin="5dp"
         android:gravity="center"
         android:textColor="@color/Unify_N700_68"
         android:text="@string/msg_network_error_1"
@@ -41,7 +41,7 @@
         android:id="@+id/retry_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_5"
+        android:layout_margin="5dp"
         android:gravity="center"
         android:textColor="@color/Unify_N700_32"
         android:text="@string/msg_network_error_2"
@@ -52,7 +52,7 @@
         android:id="@+id/retry_but"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_20"
+        android:layout_margin="20dp"
         android:gravity="center"
         android:textColor="@color/Unify_G400"
         android:text="@string/title_try_again_caps"

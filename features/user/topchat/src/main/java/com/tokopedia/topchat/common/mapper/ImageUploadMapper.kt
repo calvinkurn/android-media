@@ -1,32 +1,40 @@
 package com.tokopedia.topchat.common.mapper
 
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 
 object ImageUploadMapper {
-    fun mapToImageUploadServer(imageUploadViewModel: ImageUploadViewModel): ImageUploadServiceModel {
+    fun mapToImageUploadServer(imageUploadUiModel: ImageUploadUiModel): ImageUploadServiceModel {
+        val parentReply = CommonUtil.toJson(imageUploadUiModel.parentReply)
         return ImageUploadServiceModel(
-                messageId = imageUploadViewModel.messageId,
-                fromUid = imageUploadViewModel.fromUid?: "",
-                from = imageUploadViewModel.from,
-                fromRole = imageUploadViewModel.fromRole,
-                attachmentId = imageUploadViewModel.attachmentId,
-                attachmentType = imageUploadViewModel.attachmentType,
-                replyTime = imageUploadViewModel.replyTime?: "",
-                startTime = imageUploadViewModel.startTime,
-                isRead = imageUploadViewModel.isRead,
-                isDummy = imageUploadViewModel.isDummy,
-                isSender = imageUploadViewModel.isSender,
-                message = imageUploadViewModel.message,
-                source = imageUploadViewModel.source,
-                imageUrl = imageUploadViewModel.imageUrl?: "",
-                imageUrlThumbnail = imageUploadViewModel.imageUrlThumbnail?: "",
-                isRetry = imageUploadViewModel.isRetry
+                messageId = imageUploadUiModel.messageId,
+                fromUid = imageUploadUiModel.fromUid?: "",
+                from = imageUploadUiModel.from,
+                fromRole = imageUploadUiModel.fromRole,
+                attachmentId = imageUploadUiModel.attachmentId,
+                attachmentType = imageUploadUiModel.attachmentType,
+                replyTime = imageUploadUiModel.replyTime?: "",
+                startTime = imageUploadUiModel.startTime,
+                isRead = imageUploadUiModel.isRead,
+                isDummy = imageUploadUiModel.isDummy,
+                isSender = imageUploadUiModel.isSender,
+                message = imageUploadUiModel.message,
+                source = imageUploadUiModel.source,
+                imageUrl = imageUploadUiModel.imageUrl?: "",
+                imageUrlThumbnail = imageUploadUiModel.imageUrlThumbnail?: "",
+                isRetry = imageUploadUiModel.isRetry,
+                parentReply = parentReply,
+                localId = imageUploadUiModel.localId
         )
     }
 
-    fun mapToImageUploadViewModel(imageUploadServiceModel: ImageUploadServiceModel): ImageUploadViewModel {
-        return ImageUploadViewModel.Builder()
+    fun mapToImageUploadUiModel(imageUploadServiceModel: ImageUploadServiceModel): ImageUploadUiModel {
+        val parentReply: ParentReply? = CommonUtil.fromJson(
+            imageUploadServiceModel.parentReply, ParentReply::class.java
+        )
+        return ImageUploadUiModel.Builder()
             .withMsgId(imageUploadServiceModel.messageId)
             .withFromUid(imageUploadServiceModel.fromUid)
             .withFrom(imageUploadServiceModel.from)
@@ -43,6 +51,8 @@ object ImageUploadMapper {
             .withImageUrl(imageUploadServiceModel.imageUrl)
             .withImageUrlThumbnail(imageUploadServiceModel.imageUrlThumbnail)
             .withIsRetry(imageUploadServiceModel.isRetry)
+            .withParentReply(parentReply)
+            .withLocalId(imageUploadServiceModel.localId)
             .build()
     }
 }

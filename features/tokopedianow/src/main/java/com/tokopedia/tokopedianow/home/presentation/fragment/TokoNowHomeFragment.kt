@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.applink.RouteManager
@@ -59,11 +58,9 @@ import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME2
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
@@ -76,7 +73,9 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -96,13 +95,20 @@ import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_LAYOUT
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.LOAD_LAYOUT_ERROR
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
+import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
+import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -136,7 +142,8 @@ class TokoNowHomeFragment: Fragment(),
         ScreenShotListener,
         HomeSharingEducationListener,
         HomeEducationalInformationListener,
-        ServerErrorListener
+        ServerErrorListener,
+        HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 {
 
     companion object {
@@ -149,11 +156,12 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
-        const val SHARE_URL = "https://www.tokopedia.com/tokomart"
-        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/tokomart/thumbnail_image_bottomsheet.png"
-        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/tokomart/TokoMart_share.png"
+        const val SHARE_URL = "https://www.tokopedia.com/now"
+        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
+        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/tokonow/og_tokonow.jpg"
+        const val PAGE_SHARE_NAME = "TokoNow"
         const val SHARE = "Share"
-        const val PAGE_SHARE_NAME = "TokoMart"
+        const val SUCCESS_CODE = "200"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -181,7 +189,9 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowProductCardListener = this,
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
-                serverErrorListener = this
+                serverErrorListener = this,
+                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
+                homeQuestSequenceWidgetListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -200,12 +210,12 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
-    private var isFirstImpressionOnBanner = false
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
     private var hasEducationalInformationAppeared = false
+    private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -225,17 +235,13 @@ class TokoNowHomeFragment: Fragment(),
     private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         firebaseRemoteConfig.let {
             isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             durationAutoTransition = it.getLong(REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
         }
-        TokoNowCommonAnalytics.onOpenScreen(
-            isLoggedInStatus = userSession.isLoggedIn,
-            screenName = HOMEPAGE_TOKONOW,
-            userId = userSession.userId
-        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -341,6 +347,8 @@ class TokoNowHomeFragment: Fragment(),
             adapter.removeHomeChooseAddressWidget()
         }
     }
+
+    override fun onClickChooseAddressWidgetTracker() { }
 
     override fun onCategoryRetried() {
         val item = adapter.getItem(TokoNowCategoryGridUiModel::class.java)
@@ -448,13 +456,13 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
-            RECENT_PURCHASE -> trackRecentPurchaseImpression(data)
+            REPURCHASE_PRODUCT -> trackRepurchaseImpression(data)
         }
     }
 
     override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
-            RECENT_PURCHASE -> trackRecentPurchaseClick(position, data)
+            REPURCHASE_PRODUCT -> trackRepurchaseClick(position, data)
         }
     }
 
@@ -480,21 +488,17 @@ class TokoNowHomeFragment: Fragment(),
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        isFirstImpressionOnBanner = if (!isFirstImpressionOnBanner) {
-            true
-        } else {
-            analytics.onImpressBannerPromo(userSession.userId, channelModel)
-            false
-        }
+        analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
     }
 
     override fun onShareBtnSharingEducationClicked() {
         shareClicked(shareHomeTokonow())
+        analytics.onClickShareToOthers(userSession.userId)
     }
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
         SharedPreferencesUtil.setSharingEducationState(activity)
-        viewModelTokoNow.removeSharingEducationWidget(id)
+        viewModelTokoNow.removeWidget(id)
     }
 
     override fun isEducationInformationLottieStopped(): Boolean = SharedPreferencesUtil.isEducationalInformationStopped(activity)
@@ -521,6 +525,21 @@ class TokoNowHomeFragment: Fragment(),
             .inject(this)
     }
 
+    private fun initPerformanceMonitoring() {
+        pageLoadTimeMonitoring = (activity as? TokoNowHomeActivity)?.pageLoadTimeMonitoring
+        pageLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+    }
+
+    private fun startRenderPerformanceMonitoring() {
+        pageLoadTimeMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderPerformanceMonitoring() {
+        rvHome?.addOneTimeGlobalLayoutListener {
+            pageLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
+        }
+    }
+
     private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
         context?.let {
             when {
@@ -532,6 +551,7 @@ class TokoNowHomeFragment: Fragment(),
                 }
                 else -> {
                     showLayout()
+                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
                 }
             }
         }
@@ -586,6 +606,7 @@ class TokoNowHomeFragment: Fragment(),
         if (localCacheModel?.city_id?.isBlank() == true && localCacheModel?.district_id?.isBlank() == true) {
             showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
         } else {
+            viewModelTokoNow.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
             showEmptyState(EMPTY_STATE_NO_ADDRESS)
         }
     }
@@ -717,6 +738,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun onClickShareButton() {
         shareClicked(shareHomeTokonow())
+        analytics.onClickShareButton()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -734,14 +756,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun isNavOld(): Boolean {
-        return try {
-            getAbTestPlatform().getString(AB_TEST_EXP_NAME, getAbTestPlatform().getString(AB_TEST_EXP_NAME2, AB_TEST_VARIANT_OLD)) == AB_TEST_VARIANT_OLD
-        } catch (e: Exception) {
-            e.printStackTrace()
-            true
-        }
-    }
+    private fun isNavOld(): Boolean = false
 
     private fun getAbTestPlatform(): AbTestPlatform {
         val remoteConfigInstance = RemoteConfigInstance(activity?.application)
@@ -795,19 +810,13 @@ class TokoNowHomeFragment: Fragment(),
             removeAllScrollListener()
 
             when(it) {
-                is Success -> {
-                    onSuccessGetHomeLayout(it.data)
-                }
-                is Fail -> {
-                    showFailedToFetchData()
-                    logHomeLayoutError(it.throwable)
-                }
+                is Success -> onSuccessGetHomeLayout(it.data)
+                is Fail -> onFailedGetHomeLayout(it.throwable)
             }
 
             rvHome?.post {
                 addScrollListener()
                 resetSwipeLayout()
-                stickyLoginLoadContent()
             }
         }
 
@@ -888,7 +897,7 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.homeAddToCartTracker) {
             when(it.data) {
-                is TokoNowProductCardUiModel -> trackRecentPurchaseAddToCart(
+                is TokoNowProductCardUiModel -> trackRepurchaseAddToCart(
                     it.position,
                     it.quantity,
                     it.data
@@ -900,6 +909,13 @@ class TokoNowHomeFragment: Fragment(),
                     it.data
                 )
             }
+        }
+
+        observe(viewModelTokoNow.openScreenTracker) { screenName ->
+            TokoNowCommonAnalytics.onOpenScreen(
+                isLoggedInStatus = userSession.isLoggedIn,
+                screenName = screenName
+            )
         }
     }
 
@@ -940,17 +956,17 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    private fun trackRecentPurchaseImpression(data: TokoNowProductCardUiModel) {
-        val productList = viewModelTokoNow.getRecentPurchaseProducts()
-        analytics.onImpressRecentPurchase(userSession.userId, data, productList)
+    private fun trackRepurchaseImpression(data: TokoNowProductCardUiModel) {
+        val productList = viewModelTokoNow.getRepurchaseProducts()
+        analytics.onImpressRepurchase(userSession.userId, data, productList)
     }
 
-    private fun trackRecentPurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
-        analytics.onClickRecentPurchase(position, userSession.userId, data)
+    private fun trackRepurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
+        analytics.onClickRepurchase(position, userSession.userId, data)
     }
 
-    private fun trackRecentPurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
-        analytics.onRecentPurchaseAddToCart(position, quantity, userSession.userId, data)
+    private fun trackRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
+        analytics.onRepurchaseAddToCart(position, quantity, userSession.userId, data)
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
@@ -1009,7 +1025,15 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
+    private fun onFailedGetHomeLayout(throwable: Throwable) {
+        showFailedToFetchData()
+        stickyLoginLoadContent()
+        logHomeLayoutError(throwable)
+        stopRenderPerformanceMonitoring()
+    }
+
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        startRenderPerformanceMonitoring()
         showHomeLayout(data)
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
@@ -1025,11 +1049,16 @@ class TokoNowHomeFragment: Fragment(),
     private fun onHideHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         hideHeaderBackground()
+        stickyLoginLoadContent()
+        stopRenderPerformanceMonitoring()
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         showHeaderBackground()
+        stickyLoginLoadContent()
+        getProductAddToCartQuantity()
+        stopRenderPerformanceMonitoring()
     }
 
     private fun checkAddressDataAndServiceArea() {
@@ -1040,20 +1069,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        try {
-            val items = mutableListOf<Visitable<*>>()
-            val iterator = data.items.iterator()
-
-            while(iterator.hasNext()) {
-                iterator.next()?.let {
-                    items.add(it.layout)
-                }
-            }
-
-            adapter.submitList(items)
-        } catch (e: Exception) {
-
-        }
+        adapter.submitList(data.items)
     }
 
     private fun addLoadMoreListener() {
@@ -1102,14 +1118,21 @@ class TokoNowHomeFragment: Fragment(),
         localCacheModel?.let {
             val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
             val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, false)
+            val removeAbleWidgets = listOf(
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
+                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+            )
+            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, removeAbleWidgets)
         }
     }
 
     private fun getHomeLayout() {
         localCacheModel?.let {
-            val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
-            viewModelTokoNow.getHomeLayout(it, isSharingRemoved)
+            val removeAbleWidgets = listOf(
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
+                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+            )
+            viewModelTokoNow.getHomeLayout(it, removeAbleWidgets)
         }
     }
 
@@ -1309,12 +1332,18 @@ class TokoNowHomeFragment: Fragment(),
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
-            setUtmCampaignData(PAGE_SHARE_NAME, shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", SHARE)
+            setUtmCampaignData(
+                    pageName = PAGE_SHARE_NAME,
+                    userId = shareHomeTokonow?.userId ?: "",
+                    pageId = shareHomeTokonow?.pageId ?: "",
+                    feature = SHARE
+            )
             setMetaData(
-                shareHomeTokonow?.thumbNailTitle ?: "", shareHomeTokonow?.thumbNailImage ?: ""
+                    tnTitle = shareHomeTokonow?.thumbNailTitle ?: "",
+                    tnImage = shareHomeTokonow?.thumbNailImage ?: "",
             )
             //set the Image Url of the Image that represents page
-            setOgImageUrl(shareHomeTokonow?.ogImageUrl ?: "")
+            setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl ?: "")
         }
         universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
@@ -1346,6 +1375,30 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
+    private fun createTokoNowEmptyStateOocListener(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+            override fun onRefreshLayoutPage() {
+                onRefreshLayout()
+            }
+
+            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
+
+            override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
+        }
+    }
+
+    override fun onClickRefreshQuestWidget() {
+        val item = adapter.getItem(HomeQuestSequenceWidgetUiModel::class.java)
+        if (item is HomeQuestSequenceWidgetUiModel) {
+            viewModelTokoNow.getQuestList(item)
+        }
+    }
+
+    override fun onCloseQuestAllClaimedBtnClicked(id: String) {
+        SharedPreferencesUtil.setQuestAllClaimedRemoved(activity)
+        viewModelTokoNow.removeWidget(id)
+    }
+
     override fun onShareOptionClicked(shareModel: ShareModel) {
         val shareHomeTokonow = shareHomeTokonow()
         val linkerShareData = linkerDataMapper(shareHomeTokonow)
@@ -1353,6 +1406,7 @@ class TokoNowHomeFragment: Fragment(),
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
+            isThrowOnError = false
             if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                 ogImageUrl = shareModel.ogImgUrl
             }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.*
@@ -63,12 +64,17 @@ class MenuItemsViewHolder(
                         RouteManager.route(context, onClickApplink)
                     }
 
-                    if (element.iconUnify == IconUnify.PERFORMANCE) {
-                        clickSendTracker.invoke()
-                    }
+                    clickSendTracker.invoke()
                 }
             }
+            setupTag(element.tag)
         }
+    }
+
+    private fun setupTag(tag: String) {
+        val settingMenuTag = itemView.findViewById<NotificationUnify>(R.id.settingMenuTag)
+        settingMenuTag?.isVisible = tag.isNotBlank()
+        settingMenuTag?.text = tag
     }
 
     private fun setupBinding(isNoIcon: Boolean) {

@@ -11,13 +11,12 @@ import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.mediauploader.di.MediaUploaderModule
-import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
-import com.tokopedia.mediauploader.di.NetworkModule
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.topchat.FakeTopchatCacheManager
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -30,12 +29,10 @@ import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
-import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
-import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.topchat.common.websocket.*
+import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
@@ -47,9 +44,7 @@ import java.util.concurrent.TimeUnit
 @Module(
         includes = arrayOf(
                 ChatNetworkModuleStub::class,
-                MediaUploaderModule::class,
-                MediaUploaderNetworkModule::class,
-                NetworkModule::class
+                MediaUploaderModule::class
         )
 )
 class ChatModuleStub {
@@ -62,7 +57,7 @@ class ChatModuleStub {
     @ChatScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
+        return UserSessionStub(context)
     }
 
     @ChatScope
@@ -108,23 +103,6 @@ class ChatModuleStub {
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
-    }
-
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtil(
-            rxWebSocketUtilStub: RxWebSocketUtilStub
-    ): RxWebSocketUtil {
-        return rxWebSocketUtilStub
-    }
-
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtilStub(
-        mapper: TopChatRoomGetExistingChatMapper,
-        session: UserSessionInterface,
-    ): RxWebSocketUtilStub {
-        return RxWebSocketUtilStub(mapper, session)
     }
 
     @ChatScope
@@ -196,15 +174,8 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @ChatScope
-    @Provides
-    internal fun provideTopchatCacheManager(@TopchatContext context: Context): TopchatCacheManager {
-        val topchatCachePref = context.getSharedPreferences("topchatCache", Context.MODE_PRIVATE)
-        return TopchatCacheManagerImpl(topchatCachePref)
+    internal fun provideTopchatCacheManager(): TopchatCacheManager {
+        return FakeTopchatCacheManager()
     }
 
     @ChatScope
@@ -224,5 +195,43 @@ class ChatModuleStub {
     fun provideChatImageServerUseCase(graphqlRepository: GraphqlRepository)
             : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatImageServerResponse> {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
+    }
+
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketStateHandler(): WebSocketStateHandler {
+        return DefaultWebSocketStateHandler()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideFakeTopChatWebSocket(
+        mapper: TopChatRoomGetExistingChatMapper,
+        session: UserSessionInterface
+    ): FakeTopchatWebSocket {
+        return FakeTopchatWebSocket(mapper, session)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTopChatWebSocket(
+        ws: FakeTopchatWebSocket
+    ): TopchatWebSocket {
+        return ws
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebsocketPayloadGenerator(
+        userSession: UserSessionInterface
+    ): WebsocketPayloadGenerator {
+        return DefaultWebsocketPayloadGenerator(userSession)
     }
 }

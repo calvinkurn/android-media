@@ -52,7 +52,10 @@ import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -67,7 +70,6 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -84,7 +86,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var homepageViewModel: HotelHomepageViewModel
-    private var binding by autoClearedNullable<FragmentHotelHomepageBinding>()
+    private var mbinding: FragmentHotelHomepageBinding? = null
+    private val binding get() = mbinding
 
 
     @Inject
@@ -149,7 +152,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentHotelHomepageBinding.inflate(inflater, container, false)
+        mbinding = FragmentHotelHomepageBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -746,6 +749,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun hideHotelLastSearchContainer() {
         binding?.hotelContainerLastSearch?.visibility = View.GONE
+    }
+
+    override fun onDestroyView() {
+        binding?.bannerHotelHomepagePromo?.timer?.cancel()
+        super.onDestroyView()
+        mbinding = null
     }
 
     companion object {

@@ -6,7 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelPromoAdapter
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.media.loader.loadImageRounded
 import kotlinx.android.synthetic.main.item_hotel_promo.view.*
 
 /**

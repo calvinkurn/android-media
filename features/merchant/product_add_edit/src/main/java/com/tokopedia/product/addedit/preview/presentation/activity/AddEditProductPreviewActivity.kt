@@ -23,6 +23,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_UPLOADING
 import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
+import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSession
 
 open class AddEditProductPreviewActivity : BaseSimpleActivity() {
@@ -54,6 +55,7 @@ open class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private var productId = ""
     private var draftId = ""
     private var isDuplicate = false
+    private var mode = ""
 
     override fun getNewFragment(): Fragment? = null
 
@@ -69,7 +71,7 @@ open class AddEditProductPreviewActivity : BaseSimpleActivity() {
             val uri = toString()
             val params = UriUtil.uriQueryParamsToMap(uri)
             if (params.isNotEmpty()) {
-                val mode = params[ApplinkConstInternalMechant.QUERY_PARAM_MODE].orEmpty()
+                mode = params[ApplinkConstInternalMechant.QUERY_PARAM_MODE].orEmpty()
                 val id = params[ApplinkConstInternalMechant.QUERY_PARAM_ID].orEmpty()
                 when (mode) {
                     ApplinkConstInternalMechant.MODE_EDIT_PRODUCT -> productId = id
@@ -95,6 +97,7 @@ open class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
         updateActivityToolbar()
         setupNavController()
+        setupScreenShootGlobalFeedback()
     }
 
     private fun setupNavController() {
@@ -129,5 +132,16 @@ open class AddEditProductPreviewActivity : BaseSimpleActivity() {
                 it.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
             }
         }
+    }
+
+    private fun setupScreenShootGlobalFeedback() {
+        val isEditing = mode == ApplinkConstInternalMechant.MODE_EDIT_PRODUCT || mode == ApplinkConstInternalMechant.MODE_EDIT_DRAFT
+        val currentPage = if (isEditing) {
+            SellerFeedbackUtil.EDIT_PRODUCT
+        } else {
+            SellerFeedbackUtil.ADD_PRODUCT
+        }
+        SellerFeedbackUtil(applicationContext)
+            .setSelectedPage(currentPage)
     }
 }

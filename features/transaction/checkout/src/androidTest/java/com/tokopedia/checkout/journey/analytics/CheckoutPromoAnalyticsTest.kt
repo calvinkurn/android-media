@@ -7,9 +7,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.checkout.old.OldShipmentActivity
-import com.tokopedia.checkout.test.R
+import com.tokopedia.checkout.ShipmentActivity
 import com.tokopedia.checkout.robot.checkoutPage
+import com.tokopedia.checkout.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -22,7 +22,7 @@ import org.junit.Test
 class CheckoutPromoAnalyticsTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<OldShipmentActivity>(OldShipmentActivity::class.java, false, false) {
+    var activityRule = object : IntentsTestRule<ShipmentActivity>(ShipmentActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -37,7 +37,7 @@ class CheckoutPromoAnalyticsTest {
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
-            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_analytics_promo_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_bundle_analytics_promo_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -62,7 +62,7 @@ class CheckoutPromoAnalyticsTest {
     }
 
     companion object {
-        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form"
+        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form_v3"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout_promo.json"
     }

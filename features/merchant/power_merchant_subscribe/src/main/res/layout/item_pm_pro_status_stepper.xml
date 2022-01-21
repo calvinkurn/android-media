@@ -26,7 +26,7 @@
         android:id="@+id/tv_title_status_stepper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         app:typographyType="small"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"

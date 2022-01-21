@@ -81,7 +81,7 @@
         android:layout_marginTop="@dimen/spacing_lvl7"
         android:visibility="gone"
         tools:visibility="visible"
-        android:text="@string/smart_bills_add_bills_product_button_label"
+        android:text="@string/smart_bills_add_bills_product_button_inquiry"
         />
 
     <com.tokopedia.unifycomponents.LoaderUnify

@@ -44,7 +44,14 @@ object SharedPreferencesUtil {
     fun getProductLimitationModel(activity: Activity): ProductLimitationModel? {
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
         val json = sharedPref.getString(MA_SA_ADDEDITPRODUCT_PRODUCT_LIMITATION_MODEL, "").orEmpty()
-        return mapJsonToObject(json, ProductLimitationModel::class.java)
+
+        return try {
+            mapJsonToObject(json, ProductLimitationModel::class.java)
+        } catch (e: Exception) {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
+            AddEditProductErrorHandler.logMessage(json)
+            null // catch error parsing exception
+        }
     }
 
     fun setProductLimitationModel(activity: Activity, productLimitationModel: ProductLimitationModel) {

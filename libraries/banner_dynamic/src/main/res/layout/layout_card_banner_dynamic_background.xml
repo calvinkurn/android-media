@@ -7,7 +7,7 @@
     tools:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <FrameLayout
         android:id="@+id/container_background"
@@ -44,7 +44,7 @@
         android:layout_gravity="bottom"
         android:id="@+id/white_space"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="20dp"
         android:background="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +62,7 @@
         android:id="@+id/card_banner_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         tools:layout_height="wrap_content" />

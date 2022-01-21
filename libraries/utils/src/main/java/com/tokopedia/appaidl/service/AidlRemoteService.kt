@@ -17,11 +17,13 @@ abstract class AidlRemoteService: Service() {
     }
 
     protected fun broadcastResult(tag: String, data: Bundle?) {
-        sendBroadcast(Intent().apply {
-            `package` = componentTargetName()
-            action = tag
-            data?.let { putExtras(it) }
-        })
+        try {
+            sendBroadcast(Intent().apply {
+                `package` = componentTargetName()
+                action = tag
+                data?.let { putExtras(it) }
+            })
+        } catch (ignored: Exception) {}
     }
 
 }

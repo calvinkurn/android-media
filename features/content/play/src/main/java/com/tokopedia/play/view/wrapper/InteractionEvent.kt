@@ -1,10 +1,8 @@
 package com.tokopedia.play.view.wrapper
 
-import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel.Product
 
 /**
  * Created by jegul on 18/12/19
@@ -23,6 +21,9 @@ sealed class InteractionEvent {
         override val needLogin: Boolean = false
     }
     object CartPage : InteractionEvent() {
+        override val needLogin: Boolean = true
+    }
+    object OpenUserReport : InteractionEvent() {
         override val needLogin: Boolean = true
     }
 }

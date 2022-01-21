@@ -5,26 +5,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_16"
+    android:layout_margin="16dp"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="-8dp"
-        app:cardCornerRadius="@dimen/dp_10"
+        app:cardCornerRadius="10dp"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="@dimen/dp_16">
+            android:layout_margin="16dp">
 
             <ImageView
                 android:id="@+id/iv_onboarding_user"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:foregroundGravity="center" />
 
@@ -32,7 +32,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginLeft="12dp"
                 android:orientation="vertical">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -49,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:typographyType="body_2"
-                    android:layout_marginTop="@dimen/dp_4"
+                    android:layout_marginTop="4dp"
                     android:maxLines="2"
                     android:ellipsize="end"
                     tools:text="Mungkin Kamu Suka"/>
@@ -64,7 +64,7 @@
         android:id="@+id/tv_onboarding_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         app:typographyType="heading_2"
         tools:text="Mungkin Kamu Suka"/>
 
@@ -72,13 +72,13 @@
         android:id="@+id/rv_interest_pick"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"/>
+        android:layout_marginTop="12dp"/>
     
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_onboarding"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
         tools:text="Mungkin Kamu Suka"/>
 
 </LinearLayout>

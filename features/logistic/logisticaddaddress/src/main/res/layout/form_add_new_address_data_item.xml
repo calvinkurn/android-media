@@ -5,10 +5,10 @@
     android:id="@+id/edit_add_address_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginStart="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginRight="16dp"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
@@ -16,7 +16,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="24dp"
         android:text="@string/address_based_on_pinpoint"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3" />
@@ -25,7 +25,7 @@
         android:id="@+id/tv_address_based_on_pinpoint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginBottom="24dp"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2" />
 
@@ -49,7 +49,7 @@
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="14sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -11,24 +11,27 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataM
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 
 /**
  * Created by yfsx on 5/6/21.
  */
-class ProductRecomWidgetViewHolder (
-        private val view: View,
-        private val listener: DynamicProductDetailListener)
-    : AbstractViewHolder<ProductRecomWidgetDataModel>(view),
-        RecommendationCarouselWidgetListener {
+class ProductRecomWidgetViewHolder(
+    private val view: View,
+    private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductRecomWidgetDataModel>(view),
+    RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_widget_recom
     }
+
     private var productRecom: ProductRecomWidgetDataModel? = null
 
-    private val recomWidget : RecommendationCarouselWidgetView = itemView.findViewById(R.id.widget_recom)
+    private val recomWidget: RecommendationCarouselWidgetView =
+        itemView.findViewById(R.id.widget_recom)
 
     override fun bind(element: ProductRecomWidgetDataModel) {
         productRecom = element
@@ -38,9 +41,14 @@ class ProductRecomWidgetViewHolder (
         } else {
             element.recomWidgetData?.let {
                 recomWidget.bind(
-                        carouselData = RecommendationCarouselData(it, RecommendationCarouselData.STATE_READY),
-                        adapterPosition = adapterPosition,
-                        widgetListener = this)
+                    carouselData = RecommendationCarouselData(
+                        recommendationData = it,
+                        state = RecommendationCarouselData.STATE_READY
+                    ),
+                    adapterPosition = adapterPosition,
+                    basicListener = this,
+                    tokonowListener = this
+                )
             }
         }
     }
@@ -50,7 +58,6 @@ class ProductRecomWidgetViewHolder (
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
         listener.onSeeAllRecomClicked(data.recommendationData, data.recommendationData.pageName, applink, getComponentTrackData(productRecom))
-        listener.goToApplink(applink)
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
@@ -117,6 +124,12 @@ class ProductRecomWidgetViewHolder (
 
     override fun onChannelWidgetEmpty() {
         listener.onChannelRecommendationEmpty(adapterPosition, productRecom?.recomWidgetData)
+    }
+
+    override fun onWidgetFail(pageName: String, e: Throwable) {
+    }
+
+    override fun onShowError(pageName: String, e: Throwable) {
     }
 
     private fun getComponentTrackData(element: ProductRecomWidgetDataModel?) = ComponentTrackDataModel(element?.type

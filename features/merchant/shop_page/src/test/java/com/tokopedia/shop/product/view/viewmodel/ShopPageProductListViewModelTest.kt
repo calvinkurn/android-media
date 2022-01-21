@@ -1,6 +1,9 @@
 package com.tokopedia.shop.product.view.viewmodel
 
+import androidx.lifecycle.Observer
+import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.mvcwidget.ResultStatus
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
@@ -16,11 +19,9 @@ import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -78,6 +79,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getProductListData(
                     anyString(),
                     anyInt(),
+                    anyInt(),
                     anyString(),
                     ShopProductFilterParameter(),
                     addressWidgetData
@@ -102,6 +104,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getProductListData(
                     anyString(),
                     anyInt(),
+                    anyInt(),
                     anyString(),
                     ShopProductFilterParameter(),
                     addressWidgetData
@@ -120,7 +123,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response  get product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData)
+            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData)
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
@@ -173,6 +176,24 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             verifyGetMerchantVoucerUseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.newMerchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
+        }
+    }
+
+    @Test
+    fun `check getNewMerchantVoucher is Fail is exception thrown`() {
+        runBlocking {
+
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "200", listOf("success"), null, null), true, null, null))
+            val observer = mockk<Observer<Result<ShopMerchantVoucherUiModel>>>(relaxed = true)
+            viewModelShopPageProductListViewModel.newMerchantVoucherData.observeForever(observer)
+            every { observer.onChanged(any<Success<ShopMerchantVoucherUiModel>>()) } throws Exception()
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123", context)
+
+            verifyGetMerchantVoucerUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.newMerchantVoucherData.value is Fail)
         }
     }
 
@@ -337,9 +358,79 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     @Test
+    fun `check getShopFilterData is Fail when mapper throw exception`() {
+        runBlocking {
+
+            coEvery {
+                getShopEtalaseByShopUseCase.createObservable(any())
+            } returns Observable.just(arrayListOf(ShopEtalaseModel()))
+
+            coEvery {
+                gqlGetShopSortUseCase.executeOnBackground()
+            } returns listOf(ShopProductSort())
+            val observer = mockk<Observer<Result<ShopStickySortFilter>>>(relaxed = true)
+            viewModelShopPageProductListViewModel.shopSortFilterData.observeForever(observer)
+//            val slot = slot<Result<ShopStickySortFilter>>()
+            every { observer.onChanged(any<Success<ShopStickySortFilter>>()) } throws Exception()
+            viewModelShopPageProductListViewModel.getShopFilterData("123")
+
+            verifyGetShopEtalaseByShopUseCaseCalled()
+            verifyGetShopSortUseCaseCalled()
+
+            Assert.assertNotNull(viewModelShopPageProductListViewModel.shopSortFilterData.value)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopSortFilterData.value is Fail)
+
+        }
+    }
+
+    @Test
+    fun `check getShopFilterData shopSortFilterData value is fail if both shopEtalaseData response is error`() {
+        runBlocking {
+
+            coEvery {
+                getShopEtalaseByShopUseCase.createObservable(any())
+            } throws Exception()
+
+            coEvery {
+                gqlGetShopSortUseCase.executeOnBackground()
+            } returns listOf()
+            viewModelShopPageProductListViewModel.getShopFilterData("123")
+
+            verifyGetShopEtalaseByShopUseCaseCalled()
+            verifyGetShopSortUseCaseCalled()
+
+            Assert.assertNotNull(viewModelShopPageProductListViewModel.shopSortFilterData.value)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopSortFilterData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `check getShopFilterData shopSortFilterData value is fail if both shopSortData response is error`() {
+        runBlocking {
+
+            coEvery {
+                getShopEtalaseByShopUseCase.createObservable(any())
+            } returns Observable.just(arrayListOf(ShopEtalaseModel()))
+
+            coEvery {
+                gqlGetShopSortUseCase.executeOnBackground()
+            } throws Exception()
+            viewModelShopPageProductListViewModel.getShopFilterData("123")
+
+            verifyGetShopEtalaseByShopUseCaseCalled()
+            verifyGetShopSortUseCaseCalled()
+
+            Assert.assertNotNull(viewModelShopPageProductListViewModel.shopSortFilterData.value)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopSortFilterData.value is Fail)
+        }
+    }
+
+    @Test
     fun `check setInitialProductList is Success`() {
-        viewModelShopPageProductListViewModel.setInitialProductList("123", ShopProduct.GetShopProduct(
-                data = listOf(ShopProduct())
+        viewModelShopPageProductListViewModel.setInitialProductList(
+                "123",
+                productPerPage = mockProductPerPage,
+                ShopProduct.GetShopProduct(data = listOf(ShopProduct())
         ))
         Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
     }
@@ -350,14 +441,34 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             coEvery {
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
-            } returns DynamicFilterModel()
-
+            } returns DynamicFilterModel(
+                    data = DataValue(
+                            listOf(Filter(title = "pengiriman"), Filter(title = "Rating"))
+                    )
+            )
             viewModelShopPageProductListViewModel.getBottomSheetFilterData()
 
             verifyGetShopFilterBottomSheetDataUseCaseCalled()
 
             Assert.assertNotNull(viewModelShopPageProductListViewModel.bottomSheetFilterLiveData.value)
             Assert.assertTrue(viewModelShopPageProductListViewModel.bottomSheetFilterLiveData.value is Success<DynamicFilterModel>)
+
+        }
+    }
+
+    @Test
+    fun `check getBottomSheetFilterData bottomSheetFilterLiveData value is null if response error`() {
+        runBlocking {
+
+            coEvery {
+                getShopFilterBottomSheetDataUseCase.executeOnBackground()
+            } throws Exception()
+
+            viewModelShopPageProductListViewModel.getBottomSheetFilterData()
+
+            verifyGetShopFilterBottomSheetDataUseCaseCalled()
+
+            Assert.assertNull(viewModelShopPageProductListViewModel.bottomSheetFilterLiveData.value)
 
         }
     }
@@ -372,6 +483,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             viewModelShopPageProductListViewModel.getFilterResultCount(
                     shopId = "123",
+                    productPerPage = mockProductPerPage,
                     tempShopProductFilterParameter = ShopProductFilterParameter(),
                     widgetUserAddressLocalData = addressWidgetData
             )
@@ -381,6 +493,27 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             Assert.assertNotNull(viewModelShopPageProductListViewModel.shopProductFilterCountLiveData.value)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFilterCountLiveData.value is Success<Int>)
 
+        }
+    }
+
+    @Test
+    fun `check getFilterResultCount is Fail`() {
+        runBlocking {
+
+            coEvery {
+                getShopFilterProductCountUseCase.executeOnBackground()
+            } throws Exception()
+
+            viewModelShopPageProductListViewModel.getFilterResultCount(
+                    shopId = "123",
+                    productPerPage = mockProductPerPage,
+                    tempShopProductFilterParameter = ShopProductFilterParameter(),
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetShopFilterProductCountUseCaseCalled()
+
+            Assert.assertNull(viewModelShopPageProductListViewModel.shopProductFilterCountLiveData.value)
         }
     }
 
@@ -794,6 +927,208 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value == null)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
 
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData membershipData value is null if getMembershipData throw exception`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } throws Exception()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, true, null, null))
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf()
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "sold",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
+            )
+            assert(viewModelShopPageProductListViewModel.membershipData.value == null)
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData merchantVoucherData value is null if getMerchantVoucherCoupon throw exception`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } throws Exception()
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf()
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "sold",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
+            )
+            assert(viewModelShopPageProductListViewModel.merchantVoucherData.value == null)
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData if home tab is shown`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, true, null, null))
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf()
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "sold",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = true,
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
+            )
+            assert(viewModelShopPageProductListViewModel.merchantVoucherData.value == null)
+            assert(viewModelShopPageProductListViewModel.shopProductFeaturedData.value == null)
+            assert(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value == null)
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData productListData value is Fail if exception is thrown`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, true, null, null))
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } throws Exception()
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+            val observer = mockk<Observer<Result<MembershipStampProgressUiModel>>>(relaxed = true)
+            viewModelShopPageProductListViewModel.membershipData.observeForever(observer)
+            val slot = slot<Result<MembershipStampProgressUiModel>>()
+            every { observer.onChanged(any<Success<MembershipStampProgressUiModel>>()) } throws Exception()
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "sold",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
+            )
+            assert(viewModelShopPageProductListViewModel.productListData.value is Fail)
         }
     }
 

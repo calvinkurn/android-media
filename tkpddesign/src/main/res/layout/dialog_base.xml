@@ -3,19 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_margin="@dimen/dp_16"
+              android:layout_margin="16dp"
               android:orientation="vertical"
-              android:background="@color/Unify_N0"
-              android:paddingTop="@dimen/dp_16"
-              android:paddingLeft="@dimen/dp_16"
-              android:paddingRight="@dimen/dp_16">
+              android:background="@color/Unify_Background"
+              android:paddingTop="16dp"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp">
 
     <TextView
         android:id="@+id/tv_title_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:lineSpacingExtra="@dimen/dp_6"
+        android:layout_marginBottom="16dp"
+        android:lineSpacingExtra="6dp"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         android:textColor="@color/Unify_N700_68"
@@ -27,12 +27,12 @@
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/sp_5"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         tools:text="Make the copy compact to communicate what you want, approx 50 character like this"/>
 
     <LinearLayout
-        android:layout_marginBottom="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -45,8 +45,8 @@
             android:background="@null"
             android:textAllCaps="false"
             android:textColor="@color/Unify_N700_44"
-            android:textSize="@dimen/sp_14"
-            android:padding="@dimen/dp_8"
+            android:textSize="14sp"
+            android:padding="8dp"
             android:textStyle="bold"
             tools:text="CTA Here"/>
 
@@ -57,9 +57,9 @@
             android:background="@null"
             android:textAllCaps="false"
             android:textColor="@color/Unify_G400"
-            android:textSize="@dimen/sp_14"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:padding="@dimen/dp_8"
+            android:padding="8dp"
             tools:text="CTA Here"/>
 
     </LinearLayout>

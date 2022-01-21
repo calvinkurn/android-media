@@ -29,6 +29,7 @@ data class ProductMiniSocialProofDataModel(
         const val WISHLIST = "wishlist"
         const val VIEW_COUNT = "viewCount"
         const val BUYER_PHOTOS = "buyerPhotos"
+        private const val MAX_SOCIAL_PROOF_ITEM = 4
     }
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -81,7 +82,7 @@ data class ProductMiniSocialProofDataModel(
         appendChipIfNotZero(ratingCount.toFloat(), RATING, socialProofBuilder, rating.toString())
         appendChipIfNotZero(buyerPhotosCount.toFloat(), BUYER_PHOTOS, socialProofBuilder)
         appendChipIfNotZero(talkCount.toFloat(), TALK, socialProofBuilder)
-        socialProofData = socialProofBuilder.take(4)
+        socialProofData = socialProofBuilder.take(MAX_SOCIAL_PROOF_ITEM)
     }
 
     private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>, ratingTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {

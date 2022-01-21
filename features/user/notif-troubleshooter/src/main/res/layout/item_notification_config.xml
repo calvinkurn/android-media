@@ -5,12 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_8">
+    android:padding="8dp">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/pg_loader"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:visibility="invisible"
         tools:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,12 +18,12 @@
 
     <ImageView
         android:id="@+id/img_status"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_ts_notif_checked"
         android:visibility="invisible"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
@@ -35,7 +35,7 @@
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_16"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_status"
         app:layout_constraintTop_toTopOf="parent"
@@ -44,9 +44,9 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_action"
         android:layout_width="@dimen/dp_88"
-        android:layout_height="@dimen/dp_24"
+        android:layout_height="24dp"
         android:text="@string/btn_notif_test_play"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/txt_title"
         app:layout_constraintTop_toTopOf="parent"

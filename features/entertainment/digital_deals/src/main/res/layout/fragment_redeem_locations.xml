@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/base_main_content"
@@ -37,11 +37,11 @@
             <com.tokopedia.digital_deals.view.customview.SearchInputView
                 android:id="@+id/search_input_view"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8" />
+                android:layout_height="40dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp" />
 
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -77,7 +77,7 @@
                 style="@style/TextView.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="8dp"
                 android:gravity="center_horizontal"
                 android:text="@string/empty_location_list_text_lower"
                 android:textColor="@color/Unify_N700_32" />

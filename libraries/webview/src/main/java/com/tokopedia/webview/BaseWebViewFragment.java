@@ -98,7 +98,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
-
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
@@ -108,12 +107,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
     private static final int REQUEST_CODE_LOGOUT = 1234;
+    private static final int REQUEST_CODE_LIVENESS = 1235;
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PRINT_AWB_URL = "tokopedia.com/shipping-label";
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
+    private static final String FDL_HOST = "tkpd.page.link";
+    private static String ENABLE_FDL_HOST_WEBVIEW = "android_enable_fdl_host_webview";
     private static final String SCHEME_INTENT = "intent";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
@@ -296,6 +298,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+            webView.loadUrl(kycRedirectionUrl);
+            return;
+        }
+
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
@@ -719,7 +727,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
             return true;
-        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
+        } else if ((BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) || isFDLHostEnabled(uri))
+                && !GlobalConfig.isSellerApp()) {
             //Avoid crash in app that doesn't support branch IO
             try {
                 Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
@@ -763,6 +772,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isExternalAppLink(url)) {
             return redirectToExternalAppAndFinish(activity, uri);
         }
+        if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
+            gotoAlaCarteKyc(uri);
+            return true;
+        }
 
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
@@ -785,6 +798,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private void gotoAlaCarteKyc(Uri uri) {
+        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+        String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
+        Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
+        startActivityForResult(intent, REQUEST_CODE_LIVENESS);
+    }
+
+    private boolean isFDLHostEnabled(Uri uri){
+        if(remoteConfig != null){
+            return remoteConfig.getBoolean(ENABLE_FDL_HOST_WEBVIEW, true)
+                    && FDL_HOST.equalsIgnoreCase(uri.getHost());
+        }else{
+            return FDL_HOST.equalsIgnoreCase(uri.getHost());
+        }
     }
 
     private void routeToHomeCredit(String appLink, String overlayUrl, String headerText) {

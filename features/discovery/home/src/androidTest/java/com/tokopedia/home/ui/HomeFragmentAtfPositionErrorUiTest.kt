@@ -20,6 +20,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.espresso_component.CommonAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -31,6 +32,7 @@ import org.junit.Test
 /**
  * Created by devarafikry on 02/07/21.
  */
+@UiTest
 class HomeFragmentAtfPositionErrorUiTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -43,6 +45,7 @@ class HomeFragmentAtfPositionErrorUiTest {
         InstrumentationHomeRevampTestActivity::class.java
     ) {
         override fun beforeActivityLaunched() {
+            InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -62,7 +65,6 @@ class HomeFragmentAtfPositionErrorUiTest {
             limitCountToIdle = totalData
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
-        activityRule.deleteHomeDatabase()
     }
 
     @After

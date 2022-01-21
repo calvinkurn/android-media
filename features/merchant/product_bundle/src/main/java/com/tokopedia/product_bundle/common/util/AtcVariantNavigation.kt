@@ -6,22 +6,17 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product_bundle.R
-import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 
 object AtcVariantNavigation {
 
-    fun showVariantBottomSheet(fragment: Fragment, bundleItem: BundleItem) {
-        val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
-        showVariantBottomSheet(fragment, productVariant)
-    }
-
-    fun showVariantBottomSheet(fragment: Fragment, productVariant: ProductVariant) {
+    fun showVariantBottomSheet(fragment: Fragment, productVariant: ProductVariant, variantProductId: String) {
         val saveButtonText = fragment.getString(R.string.action_save)
         val cartRedirections = AtcVariantHelper.generateSimpanCartRedirection(productVariant, saveButtonText)
             ?: emptyMap()
 
         AtcVariantHelper.pdpToAtcVariant(
             context = fragment.requireContext(),
+            productId = variantProductId,
             productInfoP1 = DynamicProductInfoP1(),
             warehouseId = "",
             pdpSession = "",

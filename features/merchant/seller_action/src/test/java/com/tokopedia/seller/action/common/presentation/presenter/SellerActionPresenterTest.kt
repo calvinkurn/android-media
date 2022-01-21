@@ -132,6 +132,21 @@ class SellerActionPresenterTest : SellerActionPresenterTestFixture() {
     }
 
     @Test
+    fun `not attached view will not run onErrorGetOrderList even if error catched`() {
+        val sliceHashMap = HashMap<Uri, SellerSlice?>()
+        val date = "10/10/2020"
+
+        coEvery {
+            provider.getFormattedDate(date)
+        } throws Exception()
+
+        presenter.getOrderList(sliceUri, date, sliceHashMap)
+
+        verifyOnErrorGetOrderListNotCalled()
+        verifyOnSuccessGetOrderListNotCalled()
+    }
+
+    @Test
     fun `not null hash map will not execute use case`() {
         val expectedSlice = SellerLoadingSlice(context, sliceUri)
         val sliceHashMap = HashMap<Uri, SellerSlice?>().apply {

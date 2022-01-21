@@ -5,30 +5,34 @@
     android:id="@+id/ll_shop_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error"
-        tools:visibility="gone" />
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp" />
 
     <RelativeLayout
         android:id="@+id/rl_shop_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10">
+        android:paddingLeft="10dp"
+        android:paddingTop="16dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp">
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_select_shop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_6"
-            android:paddingStart="@dimen/dp_0"
-            android:paddingEnd="@dimen/dp_10" />
+            android:layout_marginStart="6dp"
+            android:paddingStart="0dp"
+            tools:visibility="gone"
+            android:paddingEnd="10dp" />
 
         <LinearLayout
             android:id="@+id/ll"
@@ -42,7 +46,7 @@
                 android:id="@+id/image_shop_badge"
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginEnd="4dp"
                 tools:ignore="ContentDescription"
                 tools:src="@drawable/ic_badge_shop_official"
                 tools:visibility="visible" />
@@ -72,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:layout_toEndOf="@+id/cb_select_shop"
             android:foregroundGravity="center_vertical"
             app:flexWrap="wrap">
@@ -100,8 +104,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_4"
-                android:paddingRight="@dimen/dp_4"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
                 android:text="@string/label_separator_line"
                 android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_3" />
@@ -121,8 +125,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_4"
-                android:paddingRight="@dimen/dp_4"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
                 android:text="@string/label_separator_line"
                 android:textColor="@color/Unify_N700_68"
                 app:typographyType="small" />
@@ -168,7 +172,7 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/img_free_shipping"
                 android:layout_width="@dimen/dp_100"
-                android:layout_height="@dimen/dp_20"
+                android:layout_height="20dp"
                 android:gravity="center_vertical"
                 android:scaleType="fitStart"
                 tools:src="@color/Unify_G500" />
@@ -186,7 +190,7 @@
         android:id="@+id/separator_accordion"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:background="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -198,7 +202,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_12"
+        android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view2">
@@ -207,7 +211,7 @@
             android:id="@+id/text_accordion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/dp_4"
+            android:drawablePadding="4dp"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

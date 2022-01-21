@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:background="@color/Unify_Background"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_disabled_item_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginBottom="12dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -26,8 +26,8 @@
         android:id="@+id/text_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_12"
-        android:paddingStart="@dimen/dp_16"
+        android:layout_marginBottom="12dp"
+        android:paddingStart="16dp"
         android:text="@string/label_menu_cart_remove"
         android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="parent"

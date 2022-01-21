@@ -2,14 +2,10 @@ package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.play.data.Voucher
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.fake.FakePlayWebSocket
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andThen
-import com.tokopedia.play.robot.andWhen
-import com.tokopedia.play.robot.play.andWhenExpectEvent
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
@@ -23,7 +19,6 @@ import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.websocket.response.*
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -33,9 +28,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -61,7 +54,6 @@ class PlayViewModelWebSocketTest {
         )
     )
     private val mapperBuilder = PlayMapperBuilder()
-    private lateinit var playChannelWebSocket: PlayChannelWebSocket
     private lateinit var fakePlayWebSocket: FakePlayWebSocket
     private val repo: PlayViewerRepository = mockk(relaxed = true)
     private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
@@ -74,7 +66,6 @@ class PlayViewModelWebSocketTest {
         Dispatchers.setMain(testDispatcher.coroutineDispatcher)
 
         fakePlayWebSocket = FakePlayWebSocket(testDispatcher)
-        playChannelWebSocket = PlayChannelWebSocket(fakePlayWebSocket, mockk(relaxed = true))
 
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
@@ -87,7 +78,7 @@ class PlayViewModelWebSocketTest {
     @Test
     fun `when get total like data from web socket, then it should update the data`() {
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         ) {
@@ -105,7 +96,7 @@ class PlayViewModelWebSocketTest {
     @Test
     fun `when get total view data from web socket, then it should update the data`() {
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         ) {
@@ -127,7 +118,7 @@ class PlayViewModelWebSocketTest {
         val message2 = "Message 2"
 
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         ) {
@@ -150,12 +141,12 @@ class PlayViewModelWebSocketTest {
 
         val mockResponse = pinnedMessageModelBuilder.buildPinnedMessage(
             id = PlayPinnedMessageSocketResponse.pinnedMessageId.toString(),
-            applink = PlayPinnedMessageSocketResponse.redirectUrl,
+            appLink = PlayPinnedMessageSocketResponse.redirectUrl,
             title = PlayPinnedMessageSocketResponse.title
         )
 
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         ) {
@@ -185,7 +176,7 @@ class PlayViewModelWebSocketTest {
         )
 
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         ) {
@@ -217,7 +208,7 @@ class PlayViewModelWebSocketTest {
         )
 
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
@@ -244,7 +235,7 @@ class PlayViewModelWebSocketTest {
         every { mockUserSession.userId } returns "1"
 
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
@@ -270,7 +261,7 @@ class PlayViewModelWebSocketTest {
         every { mockUserSession.userId } returns "1"
 
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
@@ -308,7 +299,7 @@ class PlayViewModelWebSocketTest {
         )
 
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
@@ -348,10 +339,15 @@ class PlayViewModelWebSocketTest {
 
         val mockSize = 3
         val mockTitle = "Diskon Testing"
+        val quota = 5
+        val expiredDate = "2018-12-07T23:30:00Z"
+
         val mockVoucher = productTagModelBuilder.buildCompleteData(
             voucherList = List(mockSize) {
                 productTagModelBuilder.buildMerchantVoucher(
-                    title = "$mockTitle ${it+1}%"
+                    title = "$mockTitle ${it+1}%",
+                    voucherStock = quota,
+                    expiredDate = expiredDate,
                 )
             }
         )
@@ -360,7 +356,7 @@ class PlayViewModelWebSocketTest {
         )
 
         givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
@@ -370,7 +366,14 @@ class PlayViewModelWebSocketTest {
             createPage(channelData)
             focusPage(channelData)
         } andThen {
-            fakePlayWebSocket.fakeReceivedMessage(PlayMerchantVoucherSocketResponse.generateResponse(size = 3, title = mockTitle))
+            fakePlayWebSocket.fakeReceivedMessage(
+                PlayMerchantVoucherSocketResponse.generateResponse(
+                    size = 3,
+                    title = mockTitle,
+                    quota = quota,
+                    expiredDate = expiredDate,
+                )
+            )
         } thenVerify {
             when(val merchantVoucher = viewModel.observablePinnedProduct.value?.productTags) {
                 is PlayProductTagsUiModel.Complete -> {
@@ -400,7 +403,7 @@ class PlayViewModelWebSocketTest {
         coEvery { repo.hasJoined(any()) } returns true
 
         val robot = createPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             repo = repo,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
@@ -408,20 +411,20 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val state = robot.recordState {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val state = robot.recordState {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        state.winnerBadge.shouldShow.assertTrue()
+            state.winnerBadge.shouldShow.assertTrue()
+        }
     }
 
     @Test
@@ -438,7 +441,7 @@ class PlayViewModelWebSocketTest {
         coEvery { repo.hasJoined(any()) } returns true
 
         val robot = createPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             repo = repo,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
@@ -446,25 +449,25 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val event = robot.recordEvent {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        event.last().isEqualTo(
-            ShowWinningDialogEvent(PlayUserWinnerStatusSocketResponse.imageUrl,
-                PlayUserWinnerStatusSocketResponse.winnerTitle,
-                PlayUserWinnerStatusSocketResponse.winnerText
+            event.last().isEqualTo(
+                ShowWinningDialogEvent(PlayUserWinnerStatusSocketResponse.imageUrl,
+                    PlayUserWinnerStatusSocketResponse.winnerTitle,
+                    PlayUserWinnerStatusSocketResponse.winnerText
+                )
             )
-        )
+        }
     }
 
     @Test
@@ -481,7 +484,7 @@ class PlayViewModelWebSocketTest {
         coEvery { repo.hasJoined(any()) } returns true
 
         val robot = createPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             repo = repo,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
@@ -489,25 +492,25 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("2")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("2")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val event = robot.recordEvent {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        event.last().isEqualTo(
-            ShowCoachMarkWinnerEvent(
-                PlayUserWinnerStatusSocketResponse.loserTitle,
-                PlayUserWinnerStatusSocketResponse.loserText
+            event.last().isEqualTo(
+                ShowCoachMarkWinnerEvent(
+                    PlayUserWinnerStatusSocketResponse.loserTitle,
+                    PlayUserWinnerStatusSocketResponse.loserText
+                )
             )
-        )
+        }
     }
 
     @Test
@@ -524,7 +527,7 @@ class PlayViewModelWebSocketTest {
         coEvery { repo.hasJoined(any()) } returns true
 
         val robot = createPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             repo = repo,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
@@ -532,19 +535,19 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val event = robot.recordEvent {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        event.isEqualTo(emptyList())
+            event.isEqualTo(emptyList())
+        }
     }
 
     @Test
@@ -561,7 +564,7 @@ class PlayViewModelWebSocketTest {
         coEvery { repo.hasJoined(any()) } returns false
 
         val robot = createPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             repo = repo,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
@@ -569,20 +572,20 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val event = robot.recordEvent {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        event.isEqualTo(emptyList())
+            event.isEqualTo(emptyList())
+        }
     }
 
     @Test
@@ -599,7 +602,7 @@ class PlayViewModelWebSocketTest {
         coEvery { repo.hasJoined(any()) } returns false
 
         val robot = createPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
+            playChannelWebSocket = fakePlayWebSocket,
             repo = repo,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
@@ -607,18 +610,18 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val state = robot.recordState {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-        }
+            val state = robot.recordState {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+            }
 
-        state.winnerBadge.shouldShow.assertTrue()
+            state.winnerBadge.shouldShow.assertTrue()
+        }
     }
 }

@@ -4,7 +4,7 @@
 
     <solid android:color="@color/Unify_G500" />
     <stroke
-        android:width="@dimen/dp_2"
+        android:width="2dp"
         android:color="@color/Unify_N0" />
 
 </shape>

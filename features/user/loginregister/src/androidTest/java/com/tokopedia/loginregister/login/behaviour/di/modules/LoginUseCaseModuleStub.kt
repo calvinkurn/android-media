@@ -12,7 +12,6 @@ import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.behaviour.data.*
 import com.tokopedia.loginregister.login.di.LoginScope
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -68,18 +67,6 @@ class LoginUseCaseModuleStub {
     @Provides
     @LoginScope
     fun provideUserSessionInterface(): UserSessionInterface = UserSessionStub()
-
-    @Provides
-    @LoginScope
-    fun provideGetFacebookCredentialUseCase(
-            stub: GetFacebookCredentialUseCaseStub
-    ): GetFacebookCredentialUseCase = stub
-
-    @LoginScope
-    @Provides
-    fun provideGetFacebookCredentialUseCaseStub(): GetFacebookCredentialUseCaseStub {
-        return GetFacebookCredentialUseCaseStub()
-    }
 
     @Provides
     @LoginScope

@@ -7,11 +7,11 @@
     android:orientation="horizontal"
     android:background="@color/Unify_N50"
     android:gravity="center"
-    android:padding="@dimen/dp_9">
+    android:padding="9dp">
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         app:srcCompat="@drawable/ic_lock" />
 
     <TextView
@@ -23,7 +23,7 @@
 
     <ImageView
         android:layout_width="@dimen/dp_36"
-        android:layout_height="@dimen/dp_12"
-        android:paddingLeft="@dimen/dp_5"
+        android:layout_height="12dp"
+        android:paddingLeft="5dp"
         app:srcCompat="@drawable/ic_ovo_logo_purple" />
 </LinearLayout>

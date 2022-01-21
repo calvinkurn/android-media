@@ -91,6 +91,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -347,9 +348,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
             AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
                 homeAccountAnalytic.eventClickAppSettingSafeMode(isActive)
-                if (isActive) {
-                    createAndShowSafeModeAlertDialog(isActive)
-                }
+                switch.isChecked = !isActive
+                createAndShowSafeModeAlertDialog(isActive)
             }
             AccountConstants.SettingCode.SETTING_DARK_MODE -> {
                 setupDarkMode(isActive)
@@ -584,21 +584,15 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
         })
 
-        viewModel.walletEligible.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessGetWalletEligible(it.data)
-                }
-                is Fail -> {
-                    onFailedGetWalletEligible()
-                }
-            }
-        })
 
         viewModel.phoneNo.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()) {
                 getData()
             }
+        })
+
+        viewModel.safeModeStatus.observe(viewLifecycleOwner, Observer {
+            updateSafeModeSwitch(it)
         })
 
     }
@@ -619,11 +613,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfig.forEach {
-            if (it.id != AccountConstants.WALLET.GOPAY
-            ) {
-                viewModel.getBalanceAndPoint(it.id)
-            } else {
-                viewModel.getGopayWalletEligible()
+            viewModel.getBalanceAndPoint(it.id)
+
+            if(it.id == AccountConstants.WALLET.GOPAY) {
+                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
             }
         }
     }
@@ -643,24 +636,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
         balanceAndPointAdapter?.changeItemToFailedById(walletId)
-        adapter?.notifyItemChanged(0)
-    }
-
-    private fun onSuccessGetWalletEligible(walletappWalletEligibility: WalletappWalletEligibility) {
-        val eligibility = walletappWalletEligibility.data
-        if (eligibility.isNotEmpty()) {
-            if (eligibility[0].isEligible) {
-                viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
-                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
-            } else {
-                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
-            }
-            adapter?.notifyItemChanged(0)
-        }
-    }
-
-    private fun onFailedGetWalletEligible() {
-        balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
         adapter?.notifyItemChanged(0)
     }
 
@@ -837,6 +812,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         viewModel.getBuyerData()
         setupSettingList()
         getFirstRecommendation()
+        viewModel.getSafeModeValue()
     }
 
     private fun onRefresh() {
@@ -878,6 +854,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
+        val isRollenceEnabledDarkMode = getAbTestPlatform().getString(
+            RollenceKey.USER_DARK_MODE_TOGGLE, "").isNotEmpty()
+
         userSettingsMenu.items.forEach {
             if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
                 userSettingsMenu.items.remove(it)
@@ -885,7 +864,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         }
         addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
-                accountPref, permissionChecker, isShowDarkModeToggle, isShowScreenRecorder),
+                accountPref, permissionChecker,
+                isShowDarkModeToggle || isRollenceEnabledDarkMode, isShowScreenRecorder),
                 addSeparator = true)
         addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -960,7 +940,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             getString(R.string.new_home_account_safe_mode_selected_dialog_positive_button)
         val dialogNegativeButton = getString(R.string.new_home_account_label_cancel)
 
-        if (currentValue) {
+        if (!currentValue) {
             dialogTitleMsg = getString(R.string.new_home_account_safe_mode_unselected_dialog_title)
             dialogBodyMsg = getString(R.string.new_home_account_safe_mode_unselected_dialog_msg)
             dialogPositiveButton =
@@ -975,10 +955,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 setPrimaryCTAText(dialogPositiveButton)
                 setPrimaryCTAClickListener {
                     viewModel.setSafeMode(currentValue)
+                    dismiss()
                 }
                 setSecondaryCTAText(dialogNegativeButton)
                 setSecondaryCTAClickListener { dismiss() }
             }
+            dialog.show()
         }
 
     }
@@ -1080,9 +1062,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
                 RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
-            AccountConstants.SettingCode.SETTING_OLD_ACCOUNT -> if (GlobalConfig.isAllowDebuggingTools()) {
-                RouteManager.route(activity, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
-            }
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
@@ -1127,7 +1106,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun showDialogLogout() {
-
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.new_home_account_label_logout))
@@ -1185,6 +1163,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked =
             isEnable
         commonAdapter?.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun updateSafeModeSwitch(isEnable: Boolean) {
+        commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
+            isEnable
+        commonAdapter?.notifyItemChanged(2)
         adapter?.notifyDataSetChanged()
     }
 

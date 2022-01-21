@@ -345,10 +345,10 @@ class LottieBottomNavbar : LinearLayout {
         addView(navbarContainer)
     }
 
-    private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
+    private fun handleItemClicked(index: Int, bottomMenu: BottomMenu, isNotFromBottom : Boolean = false) {
         // invoke listener
         Handler().post {
-            if (listener?.menuClicked(index, bottomMenu.id) == true) {
+            if (listener?.menuClicked(index, bottomMenu.id,isNotFromBottom) == true) {
                 changeColor(index)
                 selectedItem = index
             }
@@ -427,9 +427,16 @@ class LottieBottomNavbar : LinearLayout {
         selectedItem = newPosition
     }
 
-    fun setSelected(position: Int) {
+    fun setSelected(position: Int, isNotFromBottom : Boolean = false) {
         if (menu.size > position) {
-            handleItemClicked(position, menu[position])
+            handleItemClicked(position, menu[position],isNotFromBottom)
+        }
+    }
+
+    fun selectBottomTab(position: Int) {
+        if (menu.size > position) {
+            changeColor(position)
+            selectedItem = position
         }
     }
 
@@ -478,7 +485,7 @@ data class BottomMenu(val id: Int,
                       val animSpeed: Float = 1f,
                       val animToEnabledSpeed: Float = 1f)
 interface IBottomClickListener {
-    fun menuClicked(position: Int, id: Int): Boolean
+    fun menuClicked(position: Int, id: Int,isNotFromBottom: Boolean = false): Boolean
     fun menuReselected(position: Int, id: Int)
 }
 

@@ -237,6 +237,14 @@ class CatalogDetailPageFragment : Fragment(),
             )
             setupSearchbar(listOf(HintData(context.getString(R.string.catalog_nav_bar_search_hint))))
             setBadgeCounter(IconList.ID_CART, getCartCounter())
+            setOnBackButtonClickListener {
+                CatalogDetailAnalytics.sendEvent(
+                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                        CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                        CatalogDetailAnalytics.ActionKeys.CLICK_BACK_BUTTON,
+                        catalogId,userSession.userId)
+                activity?.onBackPressed()
+            }
             show()
         }
     }
@@ -291,6 +299,11 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun generateCatalogShareData(catalogId: String) {
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
+                catalogId,userSession.userId)
         val linkerData = LinkerData()
         linkerData.id = catalogId
         linkerData.name = getString(R.string.catalog_message_share_catalog)

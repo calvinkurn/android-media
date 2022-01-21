@@ -35,7 +35,6 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -320,8 +319,10 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun writeImageToTkpdPath(bitmap: Bitmap): File {
-        val cacheDir = File(context?.externalCacheDir, FileUtil.generateUniqueFileName() + ImageProcessingUtil.JPG_EXT)
-        val cachePath = cacheDir.absolutePath
+        val cacheDir = getTkpdCacheDir()
+        val fileName = FileUtil.generateUniqueFileName() + ImageProcessingUtil.JPG_EXT
+        val cacheFile = File(cacheDir,  fileName)
+        val cachePath = cacheFile.absolutePath
         val file = File(cachePath)
         if (file.exists()) {
             file.delete()
@@ -334,9 +335,17 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         } catch (e: Throwable) {
             e.printStackTrace()
             ServerLogger.log(Priority.P2, "LIVENESS_IMAGE_ERROR",
-                    mapOf("type" to "TryCatchWriteImageToTkpdPath", "cacheDir" to "$cacheDir", "cachePath" to cachePath, "fileExists" to "${file.exists()}", "stack_trace" to "$e"))
+                    mapOf("type" to "TryCatchWriteImageToTkpdPath", "cachePath" to cachePath, "fileExists" to "${file.exists()}", "stack_trace" to "$e"))
         }
         return file
+    }
+
+    private fun getTkpdCacheDir(): File {
+        val cacheDir = File(context?.externalCacheDir, FILE_NAME_KYC)
+        if(!cacheDir.exists()) {
+            cacheDir.mkdirs()
+        }
+        return cacheDir
     }
 
     override fun onDetectionFrameStateChanged(warnCode: Detector.WarnCode) {
@@ -396,6 +405,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     companion object {
+        private const val FILE_NAME_KYC = "/KYC"
         fun newInstance(bundle: Bundle): LivenessFragment {
             val fragment = LivenessFragment()
             fragment.arguments = bundle

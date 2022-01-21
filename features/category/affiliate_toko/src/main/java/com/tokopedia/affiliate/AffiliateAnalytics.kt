@@ -1,5 +1,8 @@
 package com.tokopedia.affiliate
 
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.EVENT_PROMO_CLICK
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.KEY_PROMOTIONS
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.PROMO_CLICK
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -24,6 +27,53 @@ object AffiliateAnalytics {
         }
     }
 
+    fun sendOpenScreenEvent(event: String, screenName: String, isLoggedIn: Boolean, userId : String) {
+        HashMap<String,Any>().apply {
+            put(EventKeys.KEY_EVENT,event)
+            put(EventKeys.SCREEN_NAME,screenName)
+            put(EventKeys.IS_LOGGED_IN,isLoggedIn.toString())
+            put(EventKeys.KEY_USER_ID,userId)
+            put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
+            put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+        }.also {
+            getTracker().sendGeneralEvent(it)
+        }
+    }
+
+    fun trackEventImpression(
+        event: String,
+        action: String,
+        category: String,
+        userId: String,
+        productId: String,
+        shopId : String,
+        productImage: String,
+        position: Int,
+        itemName: String
+    ){
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        productMap[EventKeys.KEY_ITEM_ID] = productId
+        productMap[EventKeys.KEY_CREATIVE_NAME] = productImage
+        productMap[EventKeys.KEY_CREATIVE_SLOT] = (position + 1).toString()
+        productMap[EventKeys.KEY_ITEM_NAME] = itemName
+        list.add(productMap)
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        val map = HashMap<String,Any>()
+        map[EventKeys.KEY_EVENT] = PROMO_CLICK
+        map[EventKeys.KEY_EVENT_CATEGORY] = category
+        map[EventKeys.KEY_EVENT_ACTION] = action
+        map[EventKeys.KEY_EVENT_LABEL] = "$shopId - $productId"
+        map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
+        map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
+        map[EventKeys.KEY_ECOMMERCE] = eCommerce
+        map[EventKeys.KEY_USER_ID] = userId
+
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
     interface EventKeys {
         companion object {
             const val KEY_EVENT = "event"
@@ -31,6 +81,9 @@ object AffiliateAnalytics {
             const val KEY_EVENT_ACTION = "eventAction"
             const val KEY_EVENT_LABEL = "eventLabel"
             const val KEY_USER_ID = "userId"
+            const val SCREEN_NAME = "screenName"
+            const val IS_LOGGED_IN = "isLoggedInStatus"
+            const val OPEN_SCREEN = "openScreen"
 
             const val KEY_BUSINESS_UNIT = "businessUnit"
             const val KEY_CURRENT_SITE = "currentSite"
@@ -40,6 +93,20 @@ object AffiliateAnalytics {
 
             const val EVENT_VALUE_CLICK = "clickAffiliate"
             const val EVENT_VALUE_VIEW = "viewAffiliateIris"
+
+            const val KEY_CREATIVE_NAME = "creative_name"
+            const val KEY_CREATIVE_SLOT = "creative_slot"
+            const val KEY_ITEM_ID = "item_id"
+            const val KEY_ITEM_NAME = "item_name"
+
+            const val KEY_PROMOTIONS = "promotions"
+            const val SELECT_CONTENT = "selectContent"
+            const val PROMO_CLICK = "promoclick"
+
+            const val KEY_ECOMMERCE = "ecommerce"
+            const val EVENT_PROMO_CLICK = "promoClick"
+
+            const val CLICK_REGISTER = "clickRegister"
         }
     }
 
@@ -49,12 +116,18 @@ object AffiliateAnalytics {
             const val HOME_PORTAL_B_S = "home portal - bottom sheet"
             const val PROMOSIKAN_SRP = "promosikan srp"
             const val HOME_PORTAL = "home portal"
+            const val PROMOSIKAN_PAGE = "promosikan page"
+            const val PROMOSIKAN_BOTTOM_SHEET = "promosikan page - bottom sheet"
+            const val PENDAPATAN_PAGE = "pendapatan page"
+            const val REGISTRATION_PAGE = "registration page"
         }
     }
 
     interface ActionKeys {
         companion object {
             const val CLICK_SALIN_LINK = "click - salin link"
+            const val CLICK_SALIN_LINK_PERNAH_DIABEL = "click - salin link - pernah dibeli"
+            const val CLICK_SALIN_LINK_PERNAH_DILIHAT = "click - salin link - pernah dilihat"
             const val IMPRESSION_LINK_GEN_ERROR = "impression - link generation error"
             const val IMPRESSION_NOT_LINK_ERROR = "impression - not link error"
             const val IMPRESSION_NOT_FOUND_ERROR = "impression - not found error"
@@ -65,6 +138,38 @@ object AffiliateAnalytics {
             const val IMPRESSION_HOME_PORTAL = "impression - home portal"
             const val IMPRESSION_HOME_PORTAL_B_S = "impression - home portal - bottom sheet"
             const val CLICK_SEARCH = "click - search"
+            const val HOME_NAV_BAR_CLICK = "click - home - navbar"
+            const val PROMOSIKAN_NAV_BAR_CLICK = "click - promosikan - navbar"
+            const val BANUTAN_NAV_BAR_CLICK = "click - bantuan - navbar"
+            const val CLICK_PROMOSIKAN_PERNAH_DIABEL = "click - promosikan - pernah dibeli"
+            const val CLICK_PROMOSIKAN_PERNAH_DILIHAT = "click - promosikan - pernah dilihat"
+            const val CLICK_TRANSACTION_CARD = "click - transaction card"
+            const val CLICK_DAFTAR_SEKARANG = "click - daftar sekarang"
+            const val CLICK_SELANJUTNYA = "click - selanjutnya"
+            const val CLICK_DAFTAR = "click - daftar"
+            const val CLICK_TARIK_SALDO = "click - tarik saldo"
         }
     }
+
+    interface ScreenKeys{
+        companion object{
+            const val AFFILIATE_HOME_SCREEN_NAME = "/affiliate portal - home page"
+            const val AFFILIATE_LOGIN_SCREEN_NAME = "/affiliate portal - registration page - "
+        }
+    }
+
+    interface ItemKeys{
+        companion object{
+            const val AFFILIATE_PERNAH_DIBEL = "/affiliate - promosikan pernah dibeli"
+            const val AFFILIATE_PERNAH_DILIHAT = "/affiliate - promosikan pernah dilihat"
+        }
+    }
+
+    interface LabelKeys {
+        companion object {
+            const val INCOMING = "incoming"
+            const val OUTGOING = "outgoing"
+        }
+    }
+
 }

@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.OtpUtils.removeErrorCode
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
@@ -88,6 +89,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     protected var isMoreThanOneMethod = true
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
+    protected var isOnValidation = false
 
     private var handler: Handler = Handler()
 
@@ -169,7 +171,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         return true
     }
 
-    protected fun sendOtp() {
+    open fun sendOtp() {
         if (isCountdownFinished()) {
             if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
                 viewModel.sendOtp2FA(
@@ -195,7 +197,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    protected fun validate(code: String) {
+    open fun validate(code: String) {
         when (otpData.otpType) {
             OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                 analytics.trackClickVerificationRegisterPhoneButton()
@@ -241,6 +243,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             }
         })
         viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
+            isOnValidation = false
             when (it) {
                 is Success -> onSuccessOtpValidate(it.data)
                 is Fail -> onFailedOtpValidate(it.throwable)
@@ -314,12 +317,12 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
+    open fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
         when {
             otpValidateData.success -> {
                 // tracker auto submit success
-                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
                 viewModel.done = true
+                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
                 trackSuccess()
                 resetCountDown()
                 val bundle = Bundle().apply {
@@ -395,7 +398,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         handler?.postDelayed(characterAdder, DELAY_ANIMATE_TEXT.toLong())
     }
 
-    private fun isCountdownFinished(): Boolean {
+    open fun isCountdownFinished(): Boolean {
         return verificationPref.isExpired() || !verificationPref.hasTimer
     }
 
@@ -518,10 +521,11 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
                         sendOtp()
                         viewBound.pin?.value = ""
+                        analytics.trackClickResendOtp(otpData, modeListData)
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -541,7 +545,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -561,7 +565,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -587,8 +591,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         private const val INTERVAL = 1000
         private const val COUNTDOWN_LENGTH = 30
         private const val DELAY_ANIMATE_TEXT = 350
-
-        const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = VerificationFragment()

@@ -49,5 +49,4 @@ class ScreenshotManager(private val context: Context) {
         val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
         return ScreenshotData(id, fileName, path)
     }
-
 }

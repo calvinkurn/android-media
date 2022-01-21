@@ -5,8 +5,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_chat_scroll"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:background="@drawable/bg_play_chat_scroll_down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -15,11 +15,11 @@
 
     <View
         android:id="@+id/v_indicator_red"
-        android:layout_width="@dimen/dp_5"
-        android:layout_height="@dimen/dp_5"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_6"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="6dp"
         android:background="@drawable/shape_play_red_dots"
         app:layout_constraintTop_toTopOf="@id/iv_chat_scroll"
         app:layout_constraintEnd_toEndOf="@id/iv_chat_scroll"

@@ -35,7 +35,7 @@ class RecommendationAnalytics @Inject constructor(
                                 KEY_EVENT_LABEL to "",
                                 KEY_PROFILE_ID to thanksPageData.profileCode,
                                 KEY_USER_ID to userSession.get().userId,
-                                KEY_PAYMENT_ID to thanksPageData.paymentID.toString(),
+                                KEY_PAYMENT_ID to thanksPageData.paymentID,
                                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_PHYSICAL,
                                 KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
@@ -58,7 +58,7 @@ class RecommendationAnalytics @Inject constructor(
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                                 KEY_EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT,
                                 KEY_USER_ID to userSession.get().userId,
-                                KEY_PAYMENT_ID to thanksPageData.paymentID.toString(),
+                                KEY_PAYMENT_ID to thanksPageData.paymentID,
                                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_PHYSICAL,
                                 KEY_EVENT_LABEL to "",
                                 KEY_PROFILE_ID to thanksPageData.profileCode,

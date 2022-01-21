@@ -45,7 +45,8 @@ class SingleProductBundleAdapter(
         viewHolder.spinnerItemVariant.setOnClickListener {
             val position = viewHolder.adapterPosition
             val selectedVariant = data.getOrNull(position)?.productVariant
-            listener.onVariantSpinnerClicked(selectedVariant)
+            val selectedProductId = selectedData.getOrNull(position)?.productId
+            listener.onVariantSpinnerClicked(selectedVariant, selectedProductId)
             viewHolder.layoutItem.performClick()
         }
     }

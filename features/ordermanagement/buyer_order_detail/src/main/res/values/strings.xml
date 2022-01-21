@@ -21,7 +21,7 @@
     <string name="label_product_price_and_quantity">%1$d x %2$s</string>
     <string name="failed_to_get_information">Informasi gagal dimuat</string>
     <string name="bottomsheet_finish_order_description">Dengan klik Selesai, dana akan diteruskan ke penjual dan kamu tidak dapat mengajukan komplain.</string>
-    <string name="bottomsheet_finish_order_product_description">Pastikan kamu sudah menerima barang yang sesuai dengan pesananmu.</string>
+    <string name="bottomsheet_finish_order_product_description">Pastikan barang pesanan yang kamu terima sudah benar. Lakukan transaksi hanya di Tokopedia dan laporkan jika ada indikasi penipuan.</string>
     <string name="bottomsheet_finish_order_cashback_description"><![CDATA[Jika memenuhi Syarat & Ketentuan, cashback dari transaksi yang pakai promo akan dikirim maks. 24 jam ke depan.]]></string>
     <string name="label_complaint">Ajukan Komplain</string>
     <string name="label_finish">Selesai</string>
@@ -44,4 +44,19 @@
 
     <!--Product Bundling-->
     <string name="buyer_order_detail_bundling_price_total">Total Harga Paket</string>
+
+    <!--Order Extension-->
+    <string name="order_extension_title_order_has_been_sent">Oops, penjual telah mengirim pesananmu</string>
+    <string name="order_extension_desc_order_has_been_sent">Pesanan yang sudah masuk proses pengiriman tidak dapat dibatalkan.</string>
+    <string name="order_extension_title_confirmed_order_cancelled">Yakin ingin membatalkan pesanan?</string>
+    <string name="order_extension_desc_confirmed_order_cancelled"><![CDATA[%1s <font color="%2$s"><b>%3$s</b></font>]]></string>
+    <string name="order_extension_order_cancelled">Batalkan Pesanan</string>
+    <string name="order_extension_btn_secondary">Perpanjang Pesanan</string>
+    <string name="order_extension_title_submission_extends">Estimasi proses pesananmu akan diperpanjang 2x24 jam hari kerja. Barangmu tiba menyesuaikan durasi proses, ya.</string>
+    <string name="order_extension_reason_submission_extends">Alasan perpanjangan pesanan:</string>
+    <string name="order_extension_reason_submission_extends_value">" Kendala operasional "</string>
+    <string name="order_extension_title_submission_extends_bottom_sheet">Bersediakah kamu untuk memperpanjang waktu pesanan?</string>
+    <string name="order_extension_message_error_connection">Oops, koneksi internetmu terganggu. Silakan cek koneksi internet dan coba lagi, ya.</string>
+    <string name="buyer_order_extension_label">Buyer Order Extension</string>
+
 </resources>

@@ -3,29 +3,21 @@ package com.tokopedia.kyc_centralized.view.fragment
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycUrl
-import com.tokopedia.utils.file.FileUtil
 
 /**
  * @author by alvinatin on 02/11/18.
  */
 class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>(), UserIdentificationFormActivity.Listener {
-    private var bulletTextLayout: LinearLayout? = null
-
-    override fun initView(view: View) {
-        super.initView(view)
-        bulletTextLayout = view.findViewById(R.id.layout_info_bullet)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,7 +32,7 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         onboardingImage?.setPadding(0, (paddingDp * scale + 0.5f).toInt(), 0, 0)
         setTextView()
         setButtonView()
-        ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_KTP)
+        onboardingImage?.loadImage(KycUrl.SCAN_KTP)
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                     .updateToolbarTitle(getString(R.string.title_kyc_info))
@@ -78,7 +70,6 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
     }
 
     override fun trackOnBackPressed() {
-        FileUtil.deleteFile(stepperModel?.ktpFile)
         analytics?.eventClickBackKtpPage()
     }
 

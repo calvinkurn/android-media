@@ -1,16 +1,22 @@
 package com.tokopedia.home.component
 
 import android.app.Activity
-import android.app.Instrumentation.ActivityResult
 import android.app.Instrumentation
 import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
+import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
@@ -19,21 +25,24 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.reflect.KClass
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
-import androidx.test.espresso.intent.rule.IntentsTestRule
 
 
 private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
@@ -44,19 +53,20 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     @get:Rule
     var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
-            gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
+            disableCoachMark(context)
             setupGraphqlMockResponse(HomeMockResponseConfig())
         }
     }
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
     @Before
     fun resetAll() {
         disableCoachMark(context)
-        gtmLogDBSource.deleteAll().subscribe()
         intending(isInternal()).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
@@ -65,64 +75,63 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         )
     }
 
+    @After
+    fun tearDown() {
+        visibilityIdlingResource?.let {
+            IdlingRegistry.getInstance().unregister(visibilityIdlingResource)
+        }
+    }
+
     @Test
     fun testComponentProductHighlight() {
-        initTest()
-
-        doActivityTestByModelClass(dataModelClass = ProductHighlightDataModel::class) { _: RecyclerView.ViewHolder, _: Int ->
-            clickOnProductHighlightItem()
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = ProductHighlightDataModel::class) { _: RecyclerView.ViewHolder, _: Int ->
+                clickOnProductHighlightItem()
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_PRODUCT_HIGHLIGHT)
         }
-
-        getAssertProductHighlight(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testComponentPopularKeyword() {
-        initTest()
-
-        doActivityTestByModelClass(delayBeforeRender = 2000, dataModelClass = PopularKeywordListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnPopularKeywordSection(viewHolder)
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(delayBeforeRender = 2000, dataModelClass = PopularKeywordListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnPopularKeywordSection(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_POPULAR_KEYWORD)
         }
-
-        getAssertPopularKeyword(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testComponentMixLeft() {
-        initTest()
-
-        doActivityTestByModelClass(dataModelClass = MixLeftDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnMixLeftSection(viewHolder, i)
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = MixLeftDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnMixLeftSection(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT)
         }
-
-        getAssertMixLeft(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testComponentMixTop() {
-        initTest()
-
-        doActivityTestByModelClass(dataModelClass = MixTopDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnMixTopSection(viewHolder, i)
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = MixTopDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnMixTopSection(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP)
         }
-
-        getAssertMixTop(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
 //    @Test
@@ -142,36 +151,33 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testComponentLegoBanner() {
-        initTest()
-        doActivityTest(
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTest(
                 listOf(
-                        DynamicLegoBannerViewHolder::class.simpleName!!,
-                        Lego4AutoBannerViewHolder::class.simpleName!!,
-                        DynamicLegoBannerSixAutoViewHolder::class.simpleName!!)
-        ){ viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnLegoBannerSection(viewHolder, i)
+                    DynamicLegoBannerViewHolder::class.simpleName!!,
+                    Lego4AutoBannerViewHolder::class.simpleName!!,
+                    DynamicLegoBannerSixAutoViewHolder::class.simpleName!!)
+            ){ viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnLegoBannerSection(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_BANNER)
         }
-
-        getAssertLegoBanner(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testRecommendationFeedBanner() {
-        initTest()
-
-        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnRecommendationFeedSection(viewHolder)
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnRecommendationFeedSection(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_BANNER)
         }
-
-        getAssertRecommendationFeedBanner(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
 //    @Test
@@ -193,132 +199,148 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testRecommendationFeedProductLogin() {
-        initTest()
-
-        login()
-
-        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnRecommendationFeedSection(viewHolder)
+        HomeDCCassavaTest {
+            initTest()
+            login()
+            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnRecommendationFeedSection(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN)
         }
-
-        getAssertRecommendationFeedProductLogin(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testOpenScreenHomepage() {
-        initTest()
-
-        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnRecommendationFeedSection(viewHolder)
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnRecommendationFeedSection(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN)
         }
-
-        getAssertHomepageScreen(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testTicker() {
-        initTest()
+        visibilityIdlingResource = ViewVisibilityIdlingResource(
+                activity = activityRule.activity,
+                viewId = R.id.ticker_description,
+                expectedVisibility = View.VISIBLE
+        )
+        IdlingRegistry.getInstance().register(visibilityIdlingResource)
 
+        initTest()
         doActivityTestByModelClass(dataModelClass = TickerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnTickerSection(viewHolder)
         }
 
-        getAssertTicker(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
+        MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER), hasAllSuccess())
     }
 
     @Test
     fun testCloseReminderWidget(){
-        initTest()
-
-        doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
-            //close salam widget
-            clickCloseOnReminderWidget(viewHolder, i, homeRecycleView)
-            //close digital widget
-            clickCloseOnReminderWidget(viewHolder, i, homeRecycleView)
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
+                //close salam widget
+                clickCloseOnReminderWidget(viewHolder, i, homeRecycleView)
+                //close digital widget
+                clickCloseOnReminderWidget(viewHolder, i, homeRecycleView)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE)
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE)
         }
-
-        getAssertCloseReminderWidget(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testReminderWidget(){
-        initTest()
-
-        doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
-            //click salam widget
-            clickOnReminderWidget(viewHolder, i, homeRecycleView)
-            //click digital widget
-            clickOnReminderWidget(viewHolder, i, homeRecycleView)
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
+                //click salam widget
+                clickOnReminderWidget(viewHolder, i, homeRecycleView)
+                //click digital widget
+                clickOnReminderWidget(viewHolder, i, homeRecycleView)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE)
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM)
         }
-
-        getAssertReminderWidget(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testRecommendationFeedProductNonLogin() {
-        initTest()
-
-        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnRecommendationFeedSection(viewHolder)
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnRecommendationFeedSection(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN)
         }
-
-        getAssertRecommendationFeedProductNonLogin(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testComponentCategoryWidget() {
-        initTest()
-
-        doActivityTestByModelClass(dataModelClass = DynamicChannelDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnCategoryWidgetSection(viewHolder, i)
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = DynamicChannelDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnCategoryWidgetSection(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET)
         }
-
-        getAssertCategoryWidget(gtmLogDBSource, context)
-
-        onFinishTest()
-
-        addDebugEnd()
     }
 
     @Test
     fun testRechargeBUWidget() {
-        initTest()
-
-        login()
-
-        doActivityTestByModelClass(dataModelClass = RechargeBUWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            checkRechargeBUWidget(viewHolder, i)
+        HomeDCCassavaTest {
+            initTest()
+            login()
+            doActivityTestByModelClass(dataModelClass = RechargeBUWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                checkRechargeBUWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECHARGE_BU_WIDGET)
         }
+    }
 
-        getAssertRechargeBUWidget(gtmLogDBSource, context)
+    @Test
+    fun testComponentListCarousel() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = RecommendationListCarouselDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.buttonAddToCart).performClick() }
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+                onView(withId(R.id.buy_again_close_image_view)).perform(ViewActions.click())
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL)
+        }
+    }
 
-        onFinishTest()
-
-        addDebugEnd()
+    @Test
+    fun testBannerComponentWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = BannerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBannerCarouselWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL)
+        }
     }
 
     private fun initTest() {
@@ -407,10 +429,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
         val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
-    }
-
-    private fun onFinishTest() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     private fun logTestMessage(message: String) {
