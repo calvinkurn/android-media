@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class TopupBillsPersoFavNumber(
     @SerializedName("items")
-    val items: List<TopupBillsPersoFavNumberItem>,
+    val items: List<TopupBillsPersoFavNumberItem> = listOf(),
     @SerializedName("trackingData")
-    val trackingData: TopupBillsPersoTrackingData
+    val trackingData: TopupBillsPersoTrackingData = TopupBillsPersoTrackingData()
 ): Parcelable

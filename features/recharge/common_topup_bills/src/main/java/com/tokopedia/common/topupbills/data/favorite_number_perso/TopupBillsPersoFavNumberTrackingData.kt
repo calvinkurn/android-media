@@ -7,9 +7,9 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class TopupBillsPersoFavNumberTrackingData(
     @SerializedName("clientNumber")
-    val clientNumber: String,
+    val clientNumber: String = "",
     @SerializedName("lastOrderDate")
-    val lastOrderDate: String,
+    val lastOrderDate: String = "",
     @SerializedName("totalTransaction")
-    val totalTransaction: String
+    val totalTransaction: String = ""
 ): Parcelable

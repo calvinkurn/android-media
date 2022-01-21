@@ -7,5 +7,5 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class TopupBillsPersoFavNumberData(
     @SerializedName("digiPersoGetPersonalizedItems")
-    val persoFavoriteNumber: TopupBillsPersoFavNumber
+    val persoFavoriteNumber: TopupBillsPersoFavNumber = TopupBillsPersoFavNumber()
 ): Parcelable

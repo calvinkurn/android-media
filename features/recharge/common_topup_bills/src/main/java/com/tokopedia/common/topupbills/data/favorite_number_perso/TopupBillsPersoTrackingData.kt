@@ -7,5 +7,5 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class TopupBillsPersoTrackingData(
     @SerializedName("userType")
-    val userType: String
+    val userType: String = ""
 ): Parcelable

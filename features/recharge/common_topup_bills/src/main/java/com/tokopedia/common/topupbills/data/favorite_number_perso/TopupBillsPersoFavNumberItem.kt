@@ -7,13 +7,13 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class TopupBillsPersoFavNumberItem(
     @SerializedName("id")
-    val id: String,
+    val id: String = "",
     @SerializedName("mediaURL")
-    val mediaUrl: String,
+    val mediaUrl: String = "",
     @SerializedName("title")
-    val clientName: String,
+    val clientName: String = "",
     @SerializedName("subtitle")
-    val clientNumber: String,
+    val clientNumber: String = "",
     @SerializedName("trackingData")
-    val trackingData: TopupBillsPersoFavNumberTrackingData
+    val trackingData: TopupBillsPersoFavNumberTrackingData = TopupBillsPersoFavNumberTrackingData()
 ): Parcelable
