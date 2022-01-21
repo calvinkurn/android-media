@@ -116,7 +116,6 @@ dependencies {
 
     //Payment
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
-    implementation projectOrAar(rootProject.ext.features.instantDebitBca)
     implementation projectOrAar(rootProject.ext.features.pms)
     implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)

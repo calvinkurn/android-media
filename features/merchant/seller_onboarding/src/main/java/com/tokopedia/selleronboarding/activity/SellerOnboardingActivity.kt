@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
@@ -45,6 +46,9 @@ class SellerOnboardingActivity : BaseActivity() {
         private const val SLIDER_LAT_INDEX = 4
         private const val OFF_SCREEN_PAGE_LIMIT = 2
         private const val ADDITIONAL_INDEX = 1
+
+        private const val PARAM_COACH_MARK = "coachmark"
+        private const val DISABLED = "disabled"
     }
 
     private val sobAdapter by lazy { SobAdapter() }
@@ -64,6 +68,7 @@ class SellerOnboardingActivity : BaseActivity() {
         binding = ActivitySobOnboardingBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
+        handleAppLink()
         setPageBackground()
         setWhiteStatusBar()
         setupViewsTopMargin()
@@ -73,6 +78,16 @@ class SellerOnboardingActivity : BaseActivity() {
         setupButtonClickListener()
 
         binding?.pageIndicatorSob?.setIndicator(sobAdapter.dataSize)
+    }
+
+    private fun handleAppLink() {
+        val uri = intent?.data
+        val coachMarkStatus = uri?.getQueryParameter(PARAM_COACH_MARK)
+        val shouldDisableCoachMark = coachMarkStatus == DISABLED
+        if (shouldDisableCoachMark) {
+            CoachMark2.isCoachmmarkShowAllowed = false
+            finish()
+        }
     }
 
     private fun setPageBackground() {

@@ -7,11 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.*
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationSizeViewHolder
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
 import com.tokopedia.search.result.presentation.view.listener.*
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.topads.sdk.base.Config
 
 @Suppress("LongParameterList")

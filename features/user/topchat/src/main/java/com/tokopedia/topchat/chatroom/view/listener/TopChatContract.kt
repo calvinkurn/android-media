@@ -81,62 +81,13 @@ interface TopChatContract {
         fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
         fun notifyPreviewRemoved(model: SendablePreview)
-        fun onReceiveWsEventDeleteMsg(replyTimeNano: String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
-        fun connectWebSocket(messageId: String)
-
-        fun startTyping()
-
-        fun stopTyping()
-
-        fun readMessage()
-
-        fun startCompressImages(it: ImageUploadUiModel)
-
-        fun startUploadImages(image: ImageUploadUiModel)
-
-        fun isUploading(): Boolean
-
-        fun sendAttachmentsAndMessage(
-            sendMessage: String, referredMsg: ParentReply? = null
-        )
-
-        fun sendAttachmentsAndSticker(
-            sticker: Sticker, referredMsg: ParentReply?
-        )
-
-        fun sendAttachmentsAndSrw(
-            question: QuestionUiModel, referredMsg: ParentReply?
-        )
-
-        fun initAttachmentPreview()
-
-        fun clearAttachmentPreview()
-
-        fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
-
-        fun isInTheMiddleOfThePage(): Boolean
-
-        fun resetUnreadMessage()
-
-        fun addAttachmentPreview(sendablePreview: SendablePreview)
-
-        fun hasEmptyAttachmentPreview(): Boolean
-
         fun addOngoingUpdateProductStock(
             productId: String,
             product: ProductAttachmentUiModel, adapterPosition: Int,
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
-
-        fun initUserLocation(userLocation: LocalCacheModel?)
-        fun getProductIdPreview(): List<String>
-        fun getAttachmentsPreview(): List<SendablePreview>
-        fun sendSrwBubble(
-            question: QuestionUiModel, products: List<SendablePreview>
-        )
-        fun sendSrwFrom(attachment: HeaderCtaButtonAttachment)
     }
 }

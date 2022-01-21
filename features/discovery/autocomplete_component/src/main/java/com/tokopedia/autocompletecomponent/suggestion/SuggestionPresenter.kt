@@ -22,8 +22,10 @@ import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.usecase.UseCase as RxUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -74,22 +76,23 @@ class SuggestionPresenter @Inject constructor(
     override fun getSuggestion(searchParameter: Map<String, String>) {
         this.searchParameter = searchParameter.toMutableMap()
 
-        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
         getSuggestionUseCase.execute(
             ::onSuccessReceivedSuggestion,
             Throwable::printStackTrace,
-            createGetSuggestionParams(warehouseId)
+            createGetSuggestionParams()
         )
     }
 
-    private fun createGetSuggestionParams(
-        warehouseId: String,
-    ) = SuggestionRequestUtils.getParams(
-        searchParameter,
-        userSession,
-        isTyping,
-        warehouseId,
-    )
+    private fun createGetSuggestionParams(): RequestParams {
+        val chooseAddressData = view?.chooseAddressData ?: LocalCacheModel()
+
+        return SuggestionRequestUtils.getParams(
+            searchParameter,
+            userSession,
+            isTyping,
+            chooseAddressData,
+        )
+    }
 
     private fun onSuccessReceivedSuggestion(suggestionUniverse: SuggestionUniverse) {
         clearListVisitable()
