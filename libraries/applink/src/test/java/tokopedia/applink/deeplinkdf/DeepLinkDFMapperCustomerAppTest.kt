@@ -613,18 +613,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check install debit bca entry pattern appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/instantdebitbca"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check edit bca one click entry pattern appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/editbcaoneklik"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
     fun `check internal toko points appLink then should return DF_PROMO_TOKOPOINTS in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_PROMO_TOKOPOINTS)

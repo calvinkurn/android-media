@@ -41,6 +41,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -76,7 +77,7 @@ import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
-import com.tokopedia.search.result.presentation.model.SearchInTokopediaDataView
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
@@ -181,8 +182,6 @@ class ProductListPresenter @Inject constructor(
 
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
-    override var isTickerHasDismissed = false
-        private set
     override var startFrom = 0
         private set
     override var isBottomSheetFilterEnabled = true
@@ -227,6 +226,24 @@ class ProductListPresenter @Inject constructor(
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
     }
 
+    //region AB Test booleans
+    private val isABTestNegativeNoAds : Boolean  by lazy {
+        getABTestNegativeNoAds()
+    }
+
+    private fun getABTestNegativeNoAds() :Boolean {
+        return try {
+            val abTestKeywordAdvNeg = view.abTestRemoteConfig?.getString(
+                RollenceKey.SEARCH_ADVANCED_KEYWORD_ADV_NEG,
+                ""
+            )
+            RollenceKey.SEARCH_ADVANCED_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
+        } catch (e: Exception) {
+            false
+        }
+    }
+    //endregion
+
     override val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else DEFAULT_USER_ID
 
@@ -236,10 +253,16 @@ class ProductListPresenter @Inject constructor(
     override val deviceId: String
         get() = userSession.deviceId
 
+    //region Ticker
+    override var isTickerHasDismissed = false
+        private set
+
     override fun onPriceFilterTickerDismissed() {
         isTickerHasDismissed = true
     }
+    //endregion
 
+    //region Load Data / Load More / Recommendations
     override fun hasNextPage(): Boolean {
         return startFrom < totalData
     }
@@ -449,6 +472,14 @@ class ProductListPresenter @Inject constructor(
         totalData = productDataView.totalData
     }
 
+    private fun isDisableAdsNegativeKeywords(productDataView: ProductDataView) :Boolean {
+        return isABTestNegativeNoAds && productDataView.isAdvancedNegativeKeywordSearch()
+    }
+
+    private fun isHideProductAds(productDataView: ProductDataView) : Boolean {
+        return isLocalSearch() || isDisableAdsNegativeKeywords(productDataView)
+    }
+
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
         pageTitleEventLabel: String = "",
@@ -528,15 +559,16 @@ class ProductListPresenter @Inject constructor(
 
     private fun createProductItemVisitableList(productDataView: ProductDataView): MutableList<Visitable<*>> {
         val list: MutableList<Visitable<*>> = productDataView.productList.toMutableList()
-        if (isLocalSearch()) return list
+        if (isHideProductAds(productDataView)) return list
+        val adsModel = productDataView.adsModel ?: return list
 
         var j = 0
         for (i in 0 until productDataView.getTotalItem()) {
             try {
                 // Already surrounded by try catch per looping, safe to force nullable
-                if (productDataView.adsModel!!.templates.size <= 0) continue
-                if (productDataView.adsModel!!.templates[i].isIsAd) {
-                    val topAds = productDataView.adsModel!!.data[j]
+                if (adsModel.templates.size <= 0) continue
+                if (adsModel.templates[i].isIsAd) {
+                    val topAds = adsModel.data[j]
                     val item = ProductItemDataView()
                     item.productID = topAds.product.id
                     item.isTopAds = true
@@ -1062,6 +1094,7 @@ class ProductListPresenter @Inject constructor(
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
         processBroadMatch(searchProduct, list)
+
         topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList().toMutableList()
         processTopAdsImageViewModel(searchParameter, list)
 
@@ -1720,7 +1753,9 @@ class ProductListPresenter @Inject constructor(
 
         return isResponseCodeForSuggestion && suggestionIsNotEmpty
     }
+    //endregion
 
+    //region Wishlist
     override fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
         if (isViewNotAttached) return
         productCardOptionsModel ?: return
@@ -1803,7 +1838,9 @@ class ProductListPresenter @Inject constructor(
         ))
         view.launchLoginActivity(productCardOptionsModel.productId)
     }
+    //endregion
 
+    //region Product Impression, Click, and Three Dots
     override fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int) {
         if (isViewNotAttached || item == null) return
 
@@ -1899,6 +1936,48 @@ class ProductListPresenter @Inject constructor(
         view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
     }
 
+    override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {
+        if (isViewNotAttached) return
+
+        threeDotsProductItem = item
+
+        view.trackEventLongPress(item.productID)
+        view.showProductCardOptions(createProductCardOptionsModel(item))
+    }
+
+    private fun createProductCardOptionsModel(item: ProductItemDataView): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+
+        productCardOptionsModel.hasWishlist = item.isWishlistButtonEnabled
+        productCardOptionsModel.hasSimilarSearch = true
+
+        productCardOptionsModel.isWishlisted = item.isWishlisted
+        productCardOptionsModel.keyword = view.queryKey
+        productCardOptionsModel.productId = item.productID
+        productCardOptionsModel.isTopAds = item.isTopAds || item.isOrganicAds
+        productCardOptionsModel.topAdsWishlistUrl = item.topadsWishlistUrl ?: ""
+        productCardOptionsModel.isRecommendation = false
+        productCardOptionsModel.screenName = SearchEventTracking.Category.SEARCH_RESULT
+        productCardOptionsModel.seeSimilarProductEvent = SearchTracking.EVENT_CLICK_SEARCH_RESULT
+        productCardOptionsModel.addToCartParams = AddToCartParams(item.minOrder)
+        productCardOptionsModel.categoryName = item.categoryString!!
+        productCardOptionsModel.productName = item.productName
+        productCardOptionsModel.formattedPrice = item.price
+        productCardOptionsModel.productImageUrl = item.imageUrl
+        productCardOptionsModel.productUrl = item.productUrl
+
+        val shop = ProductCardOptionsModel.Shop()
+        shop.shopId = item.shopID
+        shop.shopName = item.shopName
+        shop.shopUrl = item.shopUrl
+
+        productCardOptionsModel.shop = shop
+
+        return productCardOptionsModel
+    }
+    //endregion
+
+    //region BottomSheet Filter
     override fun getProductCount(mapParameter: Map<String, String>?) {
         if (isViewNotAttached) return
         if (mapParameter == null) {
@@ -2013,7 +2092,9 @@ class ProductListPresenter @Inject constructor(
         if (currentKeyword != keywordFromFilter)
             dynamicFilterModel = null
     }
+    //endregion
 
+    //region Broad Match impression and click
     override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
         if (isViewNotAttached) return
 
@@ -2094,47 +2175,9 @@ class ProductListPresenter @Inject constructor(
 
         view.redirectionStartActivity(applink, broadMatchDataView.url)
     }
+    //endregion
 
-    override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {
-        if (isViewNotAttached) return
-
-        threeDotsProductItem = item
-
-        view.trackEventLongPress(item.productID)
-        view.showProductCardOptions(createProductCardOptionsModel(item))
-    }
-
-    private fun createProductCardOptionsModel(item: ProductItemDataView): ProductCardOptionsModel {
-        val productCardOptionsModel = ProductCardOptionsModel()
-
-        productCardOptionsModel.hasWishlist = item.isWishlistButtonEnabled
-        productCardOptionsModel.hasSimilarSearch = true
-
-        productCardOptionsModel.isWishlisted = item.isWishlisted
-        productCardOptionsModel.keyword = view.queryKey
-        productCardOptionsModel.productId = item.productID
-        productCardOptionsModel.isTopAds = item.isTopAds || item.isOrganicAds
-        productCardOptionsModel.topAdsWishlistUrl = item.topadsWishlistUrl ?: ""
-        productCardOptionsModel.isRecommendation = false
-        productCardOptionsModel.screenName = SearchEventTracking.Category.SEARCH_RESULT
-        productCardOptionsModel.seeSimilarProductEvent = SearchTracking.EVENT_CLICK_SEARCH_RESULT
-        productCardOptionsModel.addToCartParams = AddToCartParams(item.minOrder)
-        productCardOptionsModel.categoryName = item.categoryString!!
-        productCardOptionsModel.productName = item.productName
-        productCardOptionsModel.formattedPrice = item.price
-        productCardOptionsModel.productImageUrl = item.imageUrl
-        productCardOptionsModel.productUrl = item.productUrl
-
-        val shop = ProductCardOptionsModel.Shop()
-        shop.shopId = item.shopID
-        shop.shopName = item.shopName
-        shop.shopUrl = item.shopUrl
-
-        productCardOptionsModel.shop = shop
-
-        return productCardOptionsModel
-    }
-
+    //region Change View
     override fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType) {
         if (isViewNotAttached) return
 
@@ -2159,7 +2202,9 @@ class ProductListPresenter @Inject constructor(
         view.switchSearchNavigationLayoutTypeToSmallGridView(position)
         view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_SMALL_GRID)
     }
+    //endregion
 
+    //region Choose Address / LCA
     override fun onLocalizingAddressSelected() {
         if (isViewNotAttached) return
 
@@ -2168,6 +2213,7 @@ class ProductListPresenter @Inject constructor(
 
         view.reloadData()
     }
+    //endregion
 
     override fun onViewResumed() {
         if (isViewNotAttached) return
@@ -2178,6 +2224,7 @@ class ProductListPresenter @Inject constructor(
             onLocalizingAddressSelected()
     }
 
+    //region Inspiration Carousel Chips
     override fun onInspirationCarouselChipsClick(
             adapterPosition: Int,
             inspirationCarouselViewModel: InspirationCarouselDataView,
@@ -2303,7 +2350,9 @@ class ProductListPresenter @Inject constructor(
             )
         }
     }
+    //endregion
 
+    //region Save Last Filter
     override fun updateLastFilter(
         searchParameter: Map<String, Any>,
         savedOptionList: List<SavedOption>,
@@ -2332,6 +2381,7 @@ class ProductListPresenter @Inject constructor(
     override fun closeLastFilter(searchParameter: Map<String, Any>) {
         updateLastFilter(searchParameter, listOf())
     }
+    //endregion
 
     override fun shopAdsImpressionCount(impressionCount: Int) {
         topAdsHeadlineHelper.seenAds = impressionCount

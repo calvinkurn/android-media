@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
@@ -40,6 +41,7 @@ import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SomFilterBottomSheet : BottomSheetUnify(),
@@ -48,6 +50,9 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     @Inject
     lateinit var somFilterViewModel: SomFilterViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var rvSomFilter: RecyclerView? = null
     private var btnShowOrder: UnifyButton? = null
@@ -337,6 +342,13 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                 }
             }
             is Fail -> {
+                SomErrorHandler.logExceptionToServer(
+                    errorTag = SomErrorHandler.SOM_TAG,
+                    throwable = it.throwable,
+                    errorType =
+                    SomErrorHandler.SomMessage.GET_FILTER_DATA_ERROR,
+                    deviceId = userSession.deviceId.orEmpty()
+                )
             }
         }
     }

@@ -88,7 +88,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         super.onCreate(savedInstanceState)
         initInjector()
 
-        checkWhiteListStatus()
+        if (savedInstanceState == null) {
+            checkWhiteListStatus()
+        }
+
         binding = ActivityStcStatisticBinding.inflate(layoutInflater).apply {
             root.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setContentView(root)

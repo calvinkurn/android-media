@@ -290,14 +290,14 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     private fun getUserProfile(taskId: String){
-        if(service != null) {
+        if(service != null && activity?.isDestroyed == false) {
             activity?.registerReceiver(broadcastReceiver, IntentFilter().apply { addAction(taskId) })
             service?.getUserProfile(taskId)
         }
     }
 
     private fun getKey(taskId: String){
-        if(service != null) {
+        if(service != null && activity?.isDestroyed == false) {
             activity?.registerReceiver(broadcastReceiver, IntentFilter().apply { addAction(taskId) })
             service?.getDummyKey(taskId)
         }
