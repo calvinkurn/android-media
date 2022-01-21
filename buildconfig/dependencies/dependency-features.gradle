@@ -249,7 +249,7 @@ ext {
             groupchat                       : ":features:user:groupchat",
             homeAccountUser                 : ":features:user:home_account",
             inbox                           : ":features:communication:inbox",
-            inboxCommon                     : ":features:user:inbox_common",
+            inboxCommon                     : ":features:communication:inbox_common",
             kyccentralized                  : ":features:user:kyc_centralized",
             liveness                        : ":features:user:liveness",
             logout                          : ":features:user:logout",

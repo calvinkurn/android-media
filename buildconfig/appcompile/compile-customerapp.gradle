@@ -251,7 +251,7 @@ includeIfEnabled("features:user:kyc_centralized")
 includeIfEnabled("features:user:home_account")
 includeIfEnabled("features:user:seamless_login_common")
 includeIfEnabled("features:communication:inbox")
-includeIfEnabled("features:user:inbox_common")
+includeIfEnabled("features:communication:inbox_common")
 
 includeIfEnabled("features:user:vote")
 includeIfEnabled("features:user:telephony_masking")
