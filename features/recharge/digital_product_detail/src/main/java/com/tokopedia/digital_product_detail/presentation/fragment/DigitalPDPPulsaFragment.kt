@@ -23,9 +23,9 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
+import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
@@ -525,31 +525,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun setAnimationAppBarLayout() {
-        binding?.rechargePdpPulsaAppbar?.run {
-            addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-                var lastOffset = -1
-                var lastIsCollapsed = false
-
-                override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
-                    if (lastOffset == verticalOffSet) return
-
-                    lastOffset = verticalOffSet
-                    if (abs(verticalOffSet) >= totalScrollRange && !lastIsCollapsed) {
-                        if (binding?.rechargePdpPulsaClientNumberWidget?.isErrorMessageShown() == false
-                            && binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber()
-                                ?.isNotEmpty() == true
-                        ) {
-                            //Collapsed
-                            lastIsCollapsed = true
-                            onCollapseAppBar()
-                        }
-                    } else if (verticalOffSet == 0 && lastIsCollapsed) {
-                        //Expanded
-                        lastIsCollapsed = false
-                        onExpandAppBar()
-                    }
-                }
-            })
+        binding?.run {
+            rechargePdpPulsaAppbar.setupDynamicAppBar(
+                { rechargePdpPulsaClientNumberWidget.isErrorMessageShown() },
+                { rechargePdpPulsaClientNumberWidget.getInputNumber().isEmpty() },
+                { onCollapseAppBar() },
+                { onExpandAppBar() }
+            )
         }
     }
 
@@ -565,14 +547,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.rechargePdpPulsaDynamicBannerSpacer?.requestLayout()
     }
 
-    fun onCollapseAppBar() {
+    private fun onCollapseAppBar() {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(true)
             showDynamicSpacer()
         }
     }
 
-    fun onExpandAppBar() {
+    private fun onExpandAppBar() {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(false)
             hideDynamicSpacer()
@@ -654,9 +636,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         const val MINIMUM_OPERATOR_PREFIX = 4
         const val MINIMUM_VALID_NUMBER_LENGTH = 10
         const val MAXIMUM_VALID_NUMBER_LENGTH = 14
-
-        const val FADE_IN_DURATION: Long = 300
-        const val FADE_OUT_DURATION: Long = 300
 
         const val DEFAULT_SPACE_HEIGHT = 81
 
