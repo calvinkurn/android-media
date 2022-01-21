@@ -86,6 +86,7 @@ class GetLayoutUseCase(
                   ctaText
                   maxData
                   maxDisplay
+                  gridSize
                   emptyState {
                     imageUrl
                     title

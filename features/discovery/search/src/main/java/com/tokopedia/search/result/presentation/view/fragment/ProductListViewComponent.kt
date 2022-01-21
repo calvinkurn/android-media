@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.view.fragment
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
-import com.tokopedia.search.di.module.GraphqlRepositoryModule
 import com.tokopedia.search.di.module.IrisModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
@@ -30,7 +29,6 @@ import dagger.Component
     GetProductCountUseCaseModule::class,
     GetDynamicFilterGqlUseCaseModule::class,
     GetLocalSearchRecommendationUseCaseModule::class,
-    GraphqlRepositoryModule::class,
     SearchOnBoardingLocalCacheModule::class,
     TopAdsUrlHitterModule::class,
     ProductionSchedulersProviderModule::class,

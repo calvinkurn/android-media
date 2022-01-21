@@ -10,6 +10,7 @@ import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet.Companion.SOM_FILTER_DATE_BOTTOM_SHEET_TAG
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -70,6 +71,11 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         setDefaultSelectedDate()
         btnSaveCalendar()
         toggleBtnShowOrder()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     fun show() {

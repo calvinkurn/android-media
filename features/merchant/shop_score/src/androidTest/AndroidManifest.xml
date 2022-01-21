@@ -8,7 +8,13 @@
         android:label="Shop Score Test"
         tools:replace="android:label">
         <activity
-            android:name=".uitest.stub.performance.presentation.activity.ShopPerformanceActivityStub"
+            android:name=".stub.performance.presentation.activity.ShopPerformanceActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".stub.penalty.presentation.activity.ShopPenaltyPageActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />

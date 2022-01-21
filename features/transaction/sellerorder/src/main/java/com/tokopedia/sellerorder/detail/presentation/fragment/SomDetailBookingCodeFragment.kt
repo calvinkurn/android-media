@@ -21,6 +21,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_COPY_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.FragmentSomBookingCodeBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailBookingCodeMessageAdapter
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -72,6 +73,11 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initLayout()
         initListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     private fun initLayout() {
