@@ -29,7 +29,6 @@ class FintechWidgetViewModel @Inject constructor
         productCategory: String, listOfAmount: List<Double>,
         listOfUrls: ArrayList<String?>
     ) {
-        fintchWidgetUseCase.cancelJobs()
         fintchWidgetUseCase.getWidgetData(
             ::onSuccessWidgetData,
             ::onFailWidgetData, productCategory, listOfAmount, listOfUrls

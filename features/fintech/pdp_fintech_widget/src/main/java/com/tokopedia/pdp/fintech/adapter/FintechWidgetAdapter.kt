@@ -78,7 +78,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         chipsData[position].subheader?.let {
             if (it.isNotBlank()) {
                 holder.subheaderPartner.visibility = View.VISIBLE
-                holder.subheaderPartner.text = it
+                holder.subheaderPartner.text = it.parseAsHtml()
             } else
                 removeViewVisibility(holder.subheaderPartner)
         } ?: run {
