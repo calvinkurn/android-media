@@ -76,6 +76,8 @@ data class MilestoneData(
         @Expose
         @SerializedName("title")
         val title: String? = "",
+        @Expose
+        @SerializedName("progress")
         val progress: MissionProgressModel? = MissionProgressModel()
     )
 
