@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.util.Log
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -226,7 +225,6 @@ class BroadcastInteractiveSetupViewComponent(
     }
 
     private fun showKeyboard(shouldShow: Boolean) {
-        Log.d("<LOG>", "showKeyboard: $shouldShow")
         val imm = editTextTitle.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (shouldShow) imm.showSoftInput(editTextTitle, InputMethodManager.SHOW_IMPLICIT)
         else imm.hideSoftInputFromWindow(editTextTitle.windowToken, 0)
