@@ -1,6 +1,11 @@
 package com.tokopedia.digital_product_detail.data.repository
 
-import com.tokopedia.digital_product_detail.domain.repository.*
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
 import javax.inject.Inject
 
 class DigitalPDPRepositoryImpl @Inject constructor(
