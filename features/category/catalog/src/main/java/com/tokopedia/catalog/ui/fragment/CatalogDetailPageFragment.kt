@@ -339,7 +339,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun onCatalogShareButtonClicked(isUniversalShare : Boolean = false, linkerShareData : LinkerShareData) {
         if(isUniversalShare){
-            CatalogUniversalShareAnalytics.navBarShareButtonClickedGTM(catalogId)
+            CatalogUniversalShareAnalytics.navBarShareButtonClickedGTM(catalogId,userSession.userId)
             showUniversalShareBottomSheet(catalogImages)
         }else {
             CatalogDetailAnalytics.sendEvent(
