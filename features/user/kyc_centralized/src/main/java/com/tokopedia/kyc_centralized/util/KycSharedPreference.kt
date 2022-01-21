@@ -16,9 +16,9 @@ class KycSharedPreference @Inject constructor(
             .apply()
     }
 
-    fun getByteArrayCache(key: String): ByteArray {
+    fun getByteArrayCache(key: String): ByteArray? {
         val cacheString = sharedPreferences.getString(key, "")
-        return cacheString!!.toPreservedByteArray //expected to use !!
+        return cacheString?.toPreservedByteArray //expected to use !!
     }
 
     fun removeCache(key: String) {
