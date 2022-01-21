@@ -98,12 +98,12 @@ class ShareExperienceViewComponent(
                 universalShareBottomSheet.apply {
                     imageSaved(imgSaveFilePath)
                 }
-                withContext(Dispatchers.Main) {
+                withContext(dispatchers.main) {
                     listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
                 }
             }
             else {
-                withContext(Dispatchers.Main) {
+                withContext(dispatchers.main) {
                     listener.onHandleShareFallback(this@ShareExperienceViewComponent)
                 }
             }
