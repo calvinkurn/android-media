@@ -104,10 +104,6 @@ open class FilterController {
         else false
     }
 
-    private fun isSizeOptionSelected(parameter: Map<String, String>, option: Option): Boolean {
-        return parameter.containsKey(option.key) && parameter[option.key].equals(option.value)
-    }
-
     private fun isOptionValuesExistsInFilterParameter(parameter: Map<String, String>, option: Option) : Boolean {
         val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
         val optionValuesInParameter = parameter[option.key]?.split(OptionHelper.OPTION_SEPARATOR)
@@ -174,10 +170,6 @@ open class FilterController {
         loadFilterList(filterList)
         loadParameter(parameter)
         loadFilterViewState(parameter)
-    }
-
-    fun addFilterList(filter: Filter) {
-        filterList.add(filter)
     }
 
     fun refreshMapParameter(parameter: Map<String, String>) {
