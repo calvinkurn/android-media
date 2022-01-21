@@ -60,7 +60,7 @@ subscription.add(subsribeWebsocket)
 
 ## Modules that implements this library
 - features/content/play
-- features/user/chat_common
+- features/communication/chat_common
 - features/user/chatbot
 - features/user/topchat
 

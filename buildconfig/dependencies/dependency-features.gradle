@@ -244,7 +244,7 @@ ext {
             attachcommon                    : ":features:communication:attachcommon",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
-            chatcommon                      : ":features:user:chat_common",
+            chatcommon                      : ":features:communication:chat_common",
             fcm_common                      : ":features:user:fcm_common",
             groupchat                       : ":features:user:groupchat",
             homeAccountUser                 : ":features:user:home_account",
