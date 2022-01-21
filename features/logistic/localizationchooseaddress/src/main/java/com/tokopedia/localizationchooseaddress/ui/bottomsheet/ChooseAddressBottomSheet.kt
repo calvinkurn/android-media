@@ -399,7 +399,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
 
                 is Fail -> {
-                    showToaster(it.throwable.message ?: getString(R.string.default_error_message), Toaster.TYPE_ERROR)
+                    showToaster(it.throwable.message ?: getString(com.tokopedia.abstraction.R.string.default_request_error_internal_server), Toaster.TYPE_ERROR)
                 }
             }
         })
