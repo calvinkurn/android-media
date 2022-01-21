@@ -865,7 +865,7 @@ data class SearchProductModel(
 
             @SerializedName("tracking_option")
             @Expose
-            val trackingOption: Int = 0
+            val trackingOption: Int = 0,
     )
 
     data class InspirationCardOption (
@@ -895,7 +895,7 @@ data class SearchProductModel(
 
             @SerializedName("component_id")
             @Expose
-            val componentId: String
+            val componentId: String,
     )
 
     data class InspirationCardOptionFilter (
