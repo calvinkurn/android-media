@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -204,13 +206,19 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     }
 
     private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkResult.Success -> openFinalPreparationPage()
-                NetworkResult.Loading -> {} //showLoading(true)
-                is NetworkResult.Fail -> view?.showErrorToaster(it.error)
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, object: Observer<NetworkResult<ChannelInfoUiModel>> {
+            override fun onChanged(t: NetworkResult<ChannelInfoUiModel>?) {
+                Log.d("<LOG>", "PlayBroadcastPrepareFragment observableChannelInfo $t")
+                when (t) {
+                    is NetworkResult.Success -> {
+                        parentViewModel.observableChannelInfo.removeObserver(this)
+                        openFinalPreparationPage()
+                    }
+                    NetworkResult.Loading -> {} //showLoading(true)
+                    is NetworkResult.Fail -> view?.showErrorToaster(t.error)
+                }
             }
-        }
+        })
     }
     //endregion
 
