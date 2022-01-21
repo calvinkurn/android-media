@@ -181,7 +181,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         listOf(
             createAisleItem(navigation?.prev),
             createAisleItem(navigation?.next),
-        )
+        ),
+        chooseAddressData?.service_type.orEmpty()
     )
 
     private fun createAisleItem(navigationItem: NavigationItem?): CategoryAisleItemDataView {

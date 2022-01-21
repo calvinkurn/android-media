@@ -6,11 +6,14 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.CATEGORY_AISLE_HEADER_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryAisleBinding
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.binding.viewBinding
@@ -51,6 +54,10 @@ class CategoryAisleViewHolder(
         binding?.tokoNowSearchCategoryAisleImageLeft
     }
 
+    private val txtCategoryAisleHeader by lazy {
+        binding?.tokoNowSearchCategoryAisleHeader
+    }
+
     init {
         setContainerBackground(itemView)
     }
@@ -77,10 +84,23 @@ class CategoryAisleViewHolder(
             1 -> {
                 rightAisleCard?.visibility = View.INVISIBLE
                 bindLeftAisle(aisle.items[0])
+                bindHeaderAisle(aisle.serviceType)
             }
             else -> {
                 bindLeftAisle(aisle.items[0])
                 bindRightAisle(aisle.items[1])
+                bindHeaderAisle(aisle.serviceType)
+            }
+        }
+    }
+
+    private fun bindHeaderAisle(serviceType: String) {
+        binding?.root?.context?.let {
+            getString(getServiceTypeRes(
+                key = CATEGORY_AISLE_HEADER_ID,
+                serviceType = serviceType).orZero()
+            )?.apply {
+                txtCategoryAisleHeader?.text = this
             }
         }
     }
