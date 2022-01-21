@@ -57,8 +57,8 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
 
             verifyUpdateReviewReplyUseCaseCalled()
             val expectedValue = Success(ReviewReplyUpdateUiModel(anyBoolean()))
-            assertTrue(viewModel.reviewReviewReply.value is Success)
-            viewModel.reviewReviewReply.verifyValueEquals(expectedValue)
+            assertTrue(viewModel.updateReviewReply.value is Success)
+            viewModel.updateReviewReply.verifyValueEquals(expectedValue)
         }
     }
 
@@ -120,7 +120,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
 
             viewModel.updateReviewReply(anyString(), anyString())
             val expectedResult = Fail(error)
-            viewModel.reviewReviewReply.verifyErrorEquals(expectedResult)
+            viewModel.updateReviewReply.verifyErrorEquals(expectedResult)
         }
     }
 
