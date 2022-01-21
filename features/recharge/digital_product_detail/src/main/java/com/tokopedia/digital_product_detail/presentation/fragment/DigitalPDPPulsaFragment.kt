@@ -215,15 +215,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.addToCartResult.observe(viewLifecycleOwner,{ atcData ->
             when(atcData) {
                 is RechargeNetworkResult.Success -> {
+                    onLoadingBuyWidget(false)
                     navigateToCart(atcData.data)
                 }
 
                 is RechargeNetworkResult.Fail -> {
+                    onLoadingBuyWidget(false)
                     //TODO Fail
                 }
 
                 is RechargeNetworkResult.Loading -> {
-                    //TODO LOading
+                    onLoadingBuyWidget(true)
                 }
             }
         })
@@ -481,6 +483,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun onLoadingBuyWidget(isLoading: Boolean){
+        binding?.let {
+            it.rechargePdpPulsaBuyWidget.isLoadingButton(isLoading)
+        }
+    }
+
     private fun renderTicker(tickers: List<TopupBillsTicker>) {
         if (tickers.isNotEmpty()) {
             val messages = ArrayList<TickerData>()
@@ -633,6 +641,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    /**
+     * RechargeBuyWidgetListener
+     */
+
+
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
@@ -647,6 +660,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             userSession.userId
         )
     }
+
+    override fun onClickedChevron(denom: DenomData) {
+        fragmentManager?.let {
+            SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
+        }
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -685,12 +705,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 // [Misael] shouldRefreshInputNumber nnti gaperlu karena prefill ambil dari tempat lain
                 getFavoriteNumber(shouldRefreshInputNumber = false)
             }
-        }
-    }
-
-    override fun onClickedChevron(denom: DenomData) {
-        fragmentManager?.let {
-            SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
         }
     }
 
