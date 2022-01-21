@@ -8,7 +8,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -20,6 +26,15 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val repo: DigitalPDPRepository,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
+
+    val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
+        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+        .instantCheckout("0")
+        .utmContent(GlobalConfig.VERSION_NAME)
+        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+        .voucherCodeCopied("")
+        .isFromPDP(true).build()
 
     private val _menuDetailData = MutableLiveData<RechargeNetworkResult<MenuDetailModel>>()
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
@@ -44,6 +59,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val _observableMCCMData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
     val observableMCCMData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
         get() = _observableMCCMData
+
+    private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
+    val addToCartResult: LiveData<RechargeNetworkResult<String>>
+        get() = _addToCartResult
 
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         _menuDetailData.postValue(RechargeNetworkResult.Loading)
@@ -86,6 +105,37 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }) {
             _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
         }
+    }
+
+    fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
+                  digitalIdentifierParam: RequestBodyIdentifier,
+                  digitalSubscriptionParams: DigitalSubscriptionParams,
+                  userId: String
+    ){
+        _addToCartResult.postValue(RechargeNetworkResult.Loading)
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
+            _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
+        }) {
+            _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
+        }
+    }
+
+    fun updateCheckoutPassData(denomData: DenomData, idemPotencyKeyActive: String, clientNumberWidget: String, operatorActiveId: String){
+        digitalCheckoutPassData.apply {
+            categoryId = denomData.categoryId
+            clientNumber = clientNumberWidget
+            isPromo = denomData.promoStatus
+            operatorId = operatorActiveId
+            productId = denomData.id
+            utmCampaign = denomData.categoryId
+            isSpecialProduct = denomData.isSpecialPromo
+            idemPotencyKey = idemPotencyKeyActive
+        }
+    }
+
+    fun updateCategoryCheckoutPassData(categoryId: String){
+        digitalCheckoutPassData.categoryId = categoryId
     }
 
     companion object {

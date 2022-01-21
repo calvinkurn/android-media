@@ -4,4 +4,5 @@ interface DigitalPDPRepository :
         RechargeCatalogRepository,
         RechargeFavoriteNumberRepository,
         RechargeCatalogPrefixSelectRepository,
-        RechargeCatalogMenuDetailRepository
+        RechargeCatalogMenuDetailRepository,
+        RechargeAddToCartRepository

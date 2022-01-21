@@ -27,6 +27,13 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
             listDenomData = if (!productsDenom.isNullOrEmpty()){
                 productsDenom.map {
                     DenomData(
+                        id = it.id,
+                        promoStatus = if (it.attributes.promo != null) PROMO_STATUS_TRUE else PROMO_STATUS_FALSE,
+                        categoryId = it.attributes.categoryId,
+                        operatorId = it.attributes.operatorId,
+                        isSpecialPromo = if (it.attributes.productLabels.isNotEmpty())
+                            it.attributes.productLabels[0].equals(SPECIAL_PROMO_LABEL, true)
+                        else false,
                         title = it.attributes.desc,
                         price = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPrice ?: "0" else it.attributes.price,
                         pricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.promo?.newPricePlain ?: 0 else it.attributes.pricePlain.toIntOrZero(),
@@ -43,6 +50,13 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
             listDenomData = if (!productsDenom.isNullOrEmpty()){ //TODO Change to MCCM Data
                 productsDenom.map {
                     DenomData(
+                        id = it.id,
+                        promoStatus = if (it.attributes.promo != null) PROMO_STATUS_TRUE else PROMO_STATUS_FALSE,
+                        categoryId = it.attributes.categoryId,
+                        operatorId = it.attributes.operatorId,
+                        isSpecialPromo = if (it.attributes.productLabels.isNotEmpty())
+                            it.attributes.productLabels[0].equals(SPECIAL_PROMO_LABEL, true)
+                        else false,
                         title = it.attributes.desc,
                         discountLabel = "10%", //TODO Change to real data
                         price = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPrice ?: "0" else it.attributes.price,
@@ -60,5 +74,8 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
 
     companion object {
         const val CLUSTER_MCCM_TYPE = "MCCM"
+        const val SPECIAL_PROMO_LABEL: String = "Traktiran Pengguna Baru"
+        const val PROMO_STATUS_TRUE = "1"
+        const val PROMO_STATUS_FALSE = "0"
     }
 }

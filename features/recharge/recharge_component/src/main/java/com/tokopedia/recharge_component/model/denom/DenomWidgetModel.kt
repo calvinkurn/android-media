@@ -8,6 +8,11 @@ data class DenomWidgetModel(
 )
 
 data class DenomData(
+    val id: String = "",
+    val isSpecialPromo: Boolean = false,
+    val promoStatus: String = "0",
+    val categoryId: String = "",
+    val operatorId: String = "",
     val title: String = "",
     val description: String = "",
     val quotaInfo: String = "",

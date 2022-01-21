@@ -79,4 +79,12 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
             root.hide()
         }
     }
+
+    fun isLoadingButton(isLoadingActive: Boolean){
+        with(rechargeBuyWidgetBinding){
+            btnBuyWidget.run {
+                isLoading = isLoadingActive
+            }
+        }
+    }
 }

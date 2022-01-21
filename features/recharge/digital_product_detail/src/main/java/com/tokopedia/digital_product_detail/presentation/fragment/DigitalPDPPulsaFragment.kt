@@ -11,12 +11,19 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
+import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.utils.DeviceUtil
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
@@ -34,7 +41,6 @@ import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.denom.DenomData
-import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
@@ -44,6 +50,7 @@ import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
@@ -64,6 +71,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: DigitalPDPPulsaViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
@@ -198,6 +208,24 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             when (mccmData) {
                 is RechargeNetworkResult.Success -> {
                     onSuccessMCCM(mccmData.data)
+                }
+            }
+        })
+
+        viewModel.addToCartResult.observe(viewLifecycleOwner,{ atcData ->
+            when(atcData) {
+                is RechargeNetworkResult.Success -> {
+                    onLoadingBuyWidget(false)
+                    navigateToCart(atcData.data)
+                }
+
+                is RechargeNetworkResult.Fail -> {
+                    onLoadingBuyWidget(false)
+                    //TODO Fail
+                }
+
+                is RechargeNetworkResult.Loading -> {
+                    onLoadingBuyWidget(true)
                 }
             }
         })
@@ -455,6 +483,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun onLoadingBuyWidget(isLoading: Boolean){
+        binding?.let {
+            it.rechargePdpPulsaBuyWidget.isLoadingButton(isLoading)
+        }
+    }
+
     private fun renderTicker(tickers: List<TopupBillsTicker>) {
         if (tickers.isNotEmpty()) {
             val messages = ArrayList<TickerData>()
@@ -579,6 +613,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun navigateToCart(categoryId: String) {
+        context?.let { context ->
+                val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
+                viewModel.updateCategoryCheckoutPassData(categoryId)
+                intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, viewModel.digitalCheckoutPassData)
+                startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        }
+    }
+
+
     /**
      * RechargeDenomGridListener
      */
@@ -597,9 +641,32 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickedButtonLanjutkan(denom: DenomData) {
+    /**
+     * RechargeBuyWidgetListener
+     */
 
+
+    override fun onClickedButtonLanjutkan(denom: DenomData) {
+        viewModel.updateCheckoutPassData(
+            denom, userSession.userId.generateRechargeCheckoutToken(),
+            binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?:"",
+            operatorId
+        )
+
+        viewModel.addToCart(
+            viewModel.digitalCheckoutPassData,
+            DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+            DigitalSubscriptionParams(),
+            userSession.userId
+        )
     }
+
+    override fun onClickedChevron(denom: DenomData) {
+        fragmentManager?.let {
+            SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
+        }
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -638,12 +705,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 // [Misael] shouldRefreshInputNumber nnti gaperlu karena prefill ambil dari tempat lain
                 getFavoriteNumber(shouldRefreshInputNumber = false)
             }
-        }
-    }
-
-    override fun onClickedChevron(denom: DenomData) {
-        fragmentManager?.let {
-            SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
         }
     }
 

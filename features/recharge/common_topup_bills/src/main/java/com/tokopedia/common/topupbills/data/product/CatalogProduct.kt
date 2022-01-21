@@ -45,7 +45,13 @@ open class CatalogProduct(
                 var detailUrl: String = "",
                 @SerializedName("detail_url_text")
                 @Expose
-                var detailUrlText: String = ""
+                var detailUrlText: String = "",
+                @SerializedName("category_id")
+                @Expose
+                val categoryId: String = "0",
+                @SerializedName("operator_id")
+                @Expose
+                val operatorId: String = "0",
         )
 
         class Promo(
