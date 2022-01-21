@@ -183,7 +183,6 @@
 /features/user/topchat/                         		@tokopedia/android-minionkevin-dev
 /features/user/inbox/                         		    @tokopedia/android-minionkevin-dev
 /features/user/inbox_common/                         	@tokopedia/android-minionkevin-dev
-/features/user/orderhistory/                         	@tokopedia/android-minionkevin-dev
 /features/user/topchat_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/profilecompletion/                       @tokopedia/android-minionkevin-dev
 /features/user/vote/                            		@tokopedia/android-minionkevin-dev
@@ -222,6 +221,7 @@
 /features/communication/attachinvoice/                  @tokopedia/android-minionkevin-dev
 /features/communication/attachproduct/                  @tokopedia/android-minionkevin-dev
 /features/communication/chat_common/                    @tokopedia/android-minionkevin-dev
+/features/communication/orderhistory/                   @tokopedia/android-minionkevin-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionsolo-dev
 /features/operational/csat_rating        				@tokopedia/android-minionsolo-dev

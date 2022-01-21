@@ -260,7 +260,7 @@ ext {
             managepassword                  : ":features:user:managepassword",
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
             notifCenter                     : ":features:user:notifcenter",
-            orderhistory                    : ":features:user:orderhistory",
+            orderhistory                    : ":features:communication:orderhistory",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
