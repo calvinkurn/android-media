@@ -19,6 +19,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -99,6 +100,12 @@ class DigitalPDPModule {
     @DigitalPDPScope
     fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl {
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @Provides
+    @DigitalPDPScope
+    fun providePermissionCheckerHelper(): PermissionCheckerHelper {
+        return PermissionCheckerHelper()
     }
 
     @Provides
