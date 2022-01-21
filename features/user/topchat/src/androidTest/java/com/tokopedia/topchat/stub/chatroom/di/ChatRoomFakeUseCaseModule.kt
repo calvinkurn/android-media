@@ -459,20 +459,4 @@ class ChatRoomFakeUseCaseModule {
     ): ChatToggleBlockChatUseCaseStub {
         return ChatToggleBlockChatUseCaseStub(repository, dispatchers)
     }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideCompressImageUseCase(
-        stub: CompressImageUseCaseStub
-    ): CompressImageUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideCompressImageUseCaseStub(
-        dispatchers: CoroutineDispatchers
-    ): CompressImageUseCaseStub {
-        return CompressImageUseCaseStub(dispatchers)
-    }
 }

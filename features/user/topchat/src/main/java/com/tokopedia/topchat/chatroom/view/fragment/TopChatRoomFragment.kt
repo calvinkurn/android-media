@@ -1392,16 +1392,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             return
         }
         processImagePathToUpload(data)?.let { model ->
-            remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
-                if (it == null || it == false) {
-                    onSendAndReceiveMessage()
-                    viewModel.startUploadImages(model)
-                    topchatViewState?.scrollToBottom()
-                } else {
-                    viewModel.startCompressImages(model)
-                }
-                sellerReviewHelper.hasRepliedChat = true
-            }
+            onSendAndReceiveMessage()
+            viewModel.startUploadImages(model)
+            topchatViewState?.scrollToBottom()
+            sellerReviewHelper.hasRepliedChat = true
         }
     }
 

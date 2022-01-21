@@ -114,7 +114,6 @@ open class TopChatViewModel @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var payloadGenerator: WebsocketPayloadGenerator,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private var compressImageUseCase: CompressImageUseCase,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
 ) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
@@ -1072,30 +1071,6 @@ open class TopChatViewModel @Inject constructor(
 
     fun isUploading(): Boolean {
         return uploadImageUseCase.isUploading
-    }
-
-    fun startCompressImages(imageUploadUiModel: ImageUploadUiModel) {
-        launchCatchError(block = {
-            val isValidImage = validateImageAttachment(imageUploadUiModel)
-            if (isValidImage.first) {
-                imageUploadUiModel.imageUrl?.let { imageUrl ->
-                    val compressedImageUrl = compressImageUseCase.compressImage(imageUrl)
-                    imageUploadUiModel.imageUrl = compressedImageUrl
-                    startUploadImages(imageUploadUiModel)
-                }
-            } else {
-                when (isValidImage.second) {
-                    ImageUtil.IMAGE_UNDERSIZE -> showErrorSnackbar(R.string.undersize_image)
-                    ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> showErrorSnackbar(R.string.oversize_image)
-                }
-            }
-        }, onError = {
-            showErrorSnackbar(R.string.error_compress_image)
-        })
-    }
-
-    protected open fun validateImageAttachment(imageUploadUiModel: ImageUploadUiModel): Pair<Boolean, Int> {
-        return ImageUtil.validateImageAttachment(imageUploadUiModel.imageUrl)
     }
 
     private fun <T> updateLiveDataOnMainThread(liveData: MutableLiveData<T>, value: T) {
