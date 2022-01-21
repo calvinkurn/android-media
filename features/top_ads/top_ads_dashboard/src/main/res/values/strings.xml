@@ -373,9 +373,9 @@
     <string name="topads_dash_grp_bs_item_desc">%d Produk • %d Kata Kunci</string>
     <string name="topads_dash_budget_recom_error">Biaya terbaik Rp%s</string>
     <string name="topads_dash_potential_click_text">Maks. +%s klik/hari</string>
-    <string name="topads_dash_total_search_pattern"><![CDATA["<font color='#fa31353b'><b> %s</b></font> ]]> .%s</string>
     <string name="topads_dash_product_recomm_min_budget_error">Oops, biaya terlalu rendah!</string>
     <string name="topads_dash_product_recomm_max_budget_error">Oops, biaya terlalu tinggi!</string>
+    <string name="topads_dash_max_times_month">%s kali/bulan</string>
 
     <string name="topads_dash_success_daily_budget_toast">Berhasil menerapkan anggaran baru untuk grup Kemeja Kerja!</string>
     <string name="topads_dash_success_product_toast">%d Produk berhasil diiklankan!</string>

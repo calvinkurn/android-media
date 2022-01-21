@@ -10,6 +10,9 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -18,7 +21,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: ChooseAddressRepository,
-                                                 private val chooseAddressMapper: ChooseAddressMapper) : ViewModel(){
+                                                 private val chooseAddressMapper: ChooseAddressMapper,
+                                                 private val eligibleForAddressUseCase: EligibleForAddressUseCase) : ViewModel(){
 
     private val _chosenAddressList = MutableLiveData<Result<List<ChosenAddressList>>>()
     val chosenAddressList: LiveData<Result<List<ChosenAddressList>>>
@@ -36,6 +40,10 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
     private val _getDefaultAddress = MutableLiveData<Result<DefaultChosenAddressModel>>()
     val getDefaultAddress: LiveData<Result<DefaultChosenAddressModel>>
         get() = _getDefaultAddress
+
+    private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
+    val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeature>>
+        get() = _eligibleForAnaRevamp
 
     fun getChosenAddressList(source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetChosenAddressList) {
@@ -63,6 +71,18 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
             val getDefaultChosenAddress = chooseAddressRepo.getDefaultChosenAddress(latLong, source, isTokonow)
             _getDefaultAddress.value  = Success(chooseAddressMapper.mapDefaultChosenAddress(getDefaultChosenAddress.response))
         }
+    }
+
+    fun checkUserEligibilityForAnaRevamp() {
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
+            },
+            {
+                _eligibleForAnaRevamp.value = Fail(it)
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
     }
 
     private val onErrorGetChosenAddressList = CoroutineExceptionHandler{ _, e ->

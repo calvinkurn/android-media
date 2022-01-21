@@ -13,6 +13,9 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenA
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
+import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +38,7 @@ class ChooseAddressViewModelTest {
 
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper = ChooseAddressMapper()
+    private val eligibleForAddressUseCase: EligibleForAddressUseCase = mockk(relaxed = true)
 
     private lateinit var chooseAddressViewModel: ChooseAddressViewModel
 
@@ -42,17 +46,19 @@ class ChooseAddressViewModelTest {
     private val setChosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val getChosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val getDefaultAddressObserver: Observer<Result<DefaultChosenAddressModel>> = mockk(relaxed = true)
+    private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeature>> = mockk(relaxed = true)
 
     private val defaultThrowable = Throwable("test error")
 
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper)
+        chooseAddressViewModel = ChooseAddressViewModel(chooseAddressRepo, chooseAddressMapper, eligibleForAddressUseCase)
         chooseAddressViewModel.chosenAddressList.observeForever(chosenAddressListObserver)
         chooseAddressViewModel.setChosenAddress.observeForever(setChosenAddressObserver)
         chooseAddressViewModel.getChosenAddress.observeForever(getChosenAddressObserver)
         chooseAddressViewModel.getDefaultAddress.observeForever(getDefaultAddressObserver)
+        chooseAddressViewModel.eligibleForAnaRevamp.observeForever(eligibleForAddressFeatureObserver)
     }
 
     @Test
@@ -120,5 +126,35 @@ class ChooseAddressViewModelTest {
         coEvery { chooseAddressRepo.getDefaultChosenAddress(any(), any(), any()) } throws defaultThrowable
         chooseAddressViewModel.getDefaultChosenAddress("-6.22119739999998,106.81941940000002", "address", false)
         verify { getDefaultAddressObserver.onChanged(match { it is Fail }) }
+    }
+
+    @Test
+    fun `Get Eligible For Revamp Ana Success`() {
+        onCheckEligibility_thenReturn()
+        chooseAddressViewModel.checkUserEligibilityForAnaRevamp()
+        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Success }) }
+    }
+
+    @Test
+    fun `Get Eligible For Revamp Ana Fail`() {
+        onCheckEligibility_thenThrow()
+        chooseAddressViewModel.checkUserEligibilityForAnaRevamp()
+        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Fail }) }
+    }
+
+    private fun onCheckEligibility_thenReturn() {
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureData())
+        }
+    }
+
+    private fun onCheckEligibility_thenThrow() {
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            secondArg<(Throwable)-> Unit>().invoke(defaultThrowable)
+        }
     }
 }

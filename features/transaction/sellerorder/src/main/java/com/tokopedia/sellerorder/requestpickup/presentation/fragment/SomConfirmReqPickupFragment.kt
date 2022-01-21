@@ -22,6 +22,7 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.FragmentSomConfirmReqPickupBinding
 import com.tokopedia.sellerorder.requestpickup.data.mapper.SchedulePickupMapper
 import com.tokopedia.sellerorder.requestpickup.data.model.ScheduleTime
@@ -109,6 +110,11 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         super.onViewCreated(view, savedInstanceState)
         setupHeader()
         observingConfirmReqPickup()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     override fun getScreenName(): String = ""
