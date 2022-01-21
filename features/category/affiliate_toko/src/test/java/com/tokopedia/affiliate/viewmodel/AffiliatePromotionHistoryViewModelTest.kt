@@ -45,12 +45,15 @@ class AffiliatePromotionHistoryViewModelTest{
         val affiliatePerformanceData: AffiliatePerformanceData = mockk(relaxed = true)
         val item : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData.Item = mockk(relaxed = true)
         val sectionData = AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData(
-                null,null,null,null,null,
+                null,null,null,0,null,
                 arrayListOf(item),null,null)
         affiliatePerformanceData.getAffiliateItemsPerformanceList?.data?.sectionData = sectionData
         coEvery { affiliatePerformanceUseCase.affiliatePerformance(any(),any()) } returns affiliatePerformanceData
 
+        val response = affiliatePromotionHistoryViewModel.convertDataToVisitables(affiliatePerformanceData.getAffiliateItemsPerformanceList?.data?.sectionData!!)
         affiliatePromotionHistoryViewModel.getAffiliatePerformance(0)
+        assertEquals(affiliatePromotionHistoryViewModel.getAffiliateDataItems().value,response)
+        assertEquals(affiliatePromotionHistoryViewModel.getAffiliateItemCount().value,sectionData.itemTotalCount)
 
     }
 

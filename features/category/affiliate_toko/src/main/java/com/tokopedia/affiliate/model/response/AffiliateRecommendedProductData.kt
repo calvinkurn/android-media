@@ -8,7 +8,7 @@ data class AffiliateRecommendedProductData(
 ) {
     data class RecommendedAffiliateProduct(
             @SerializedName("data")
-            val `data`: Data?,
+            var `data`: Data?,
             @SerializedName("error")
             val error: Error?
     ) {

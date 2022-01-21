@@ -30,9 +30,9 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     private var rangeChanged = MutableLiveData<Boolean>()
     var hasNext = true
 
-    private val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
-    private val affiliateTransactionHistoryUseCase = AffiliateTransactionHistoryUseCase(AffiliateRepository())
-    private val affiliatKycHistoryUseCase = AffiliateKycUseCase(AffiliateRepository())
+     val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
+     val affiliateTransactionHistoryUseCase = AffiliateTransactionHistoryUseCase(AffiliateRepository())
+     val affiliatKycHistoryUseCase = AffiliateKycUseCase(AffiliateRepository())
 
 
     fun getAffiliateBalance() {
@@ -75,9 +75,9 @@ class AffiliateIncomeViewModel : BaseViewModel(){
         })
     }
 
-    private fun convertDataToVisitables(data: AffiliateTransactionHistoryData.GetAffiliateTransactionHistory.Data): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
+     fun convertDataToVisitables(data: AffiliateTransactionHistoryData.GetAffiliateTransactionHistory.Data?): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        data.transaction?.let { items ->
+        data?.transaction?.let { items ->
             for (transaction in items) {
                 transaction.let {
                     tempList.add(AffiliateTransactionHistoryItemModel(transaction))
