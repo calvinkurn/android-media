@@ -23,7 +23,7 @@ object WidgetHeight {
     private const val MILESTONE = 320f
 
     fun getWidgetHeight(widgetType: String): Float {
-        return when(widgetType) {
+        return when (widgetType) {
             WidgetType.CARD -> CARD
             WidgetType.CAROUSEL -> CAROUSEL
             WidgetType.DESCRIPTION -> DESCRIPTION

@@ -132,9 +132,8 @@ class SellerHomeLayoutHelper @Inject constructor(
             val requestedHeight = WidgetHeight.getWidgetHeight(widget.widgetType)
             if (remainingHeight > 0f) {
                 widget.apply { isLoading = true }
-            } else {
-                widget
-            }.also {
+            }
+            return@map widget.also {
                 if (widget.widgetType == WidgetType.CARD) {
                     if (!hasCardCalculated) {
                         remainingHeight -= requestedHeight
@@ -156,13 +155,13 @@ class SellerHomeLayoutHelper @Inject constructor(
      */
     private fun getLoadedInitialWidgetData(widgetList: List<BaseWidgetUiModel<*>>): Flow<List<BaseWidgetUiModel<*>>> {
         val loadedWidgetList = widgetList.filter { it.isLoading }
-        val newWidgetList = loadedWidgetList.toMutableList()
-        loadedWidgetList.forEachIndexed { index, widget ->
-            if (widget.widgetType == WidgetType.SECTION) {
-                newWidgetList[index] = widget.copyWidget().apply { isLoaded = true }
+            .map {
+                if (it.widgetType == WidgetType.SECTION) {
+                    it.isLoaded = true
+                }
+                return@map it
             }
-        }
-        return getWidgetsData(newWidgetList)
+        return getWidgetsData(loadedWidgetList)
     }
 
     /**
@@ -524,11 +523,15 @@ class SellerHomeLayoutHelper @Inject constructor(
         useCase: BaseGqlUseCase<T>,
         useCache: Boolean
     ): T {
+        useCase.isFirstLoad = false
         useCase.setUseCache(useCache)
-        return useCase.executeUseCase()
-    }
-
-    private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
-        executeOnBackground()
+        return withContext(dispatcher.io) {
+            try {
+                useCase.executeOnBackground()
+            } catch (e: Exception) {
+                useCase.setUseCache(false)
+                useCase.executeOnBackground()
+            }
+        }
     }
 }
