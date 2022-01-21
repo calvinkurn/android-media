@@ -230,7 +230,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
         )
     }
-    private var inspirationSizeFilter: Filter? = null
 
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
@@ -1091,11 +1090,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>) {
-        val filterList = quickFilterList.toMutableList()
-        inspirationSizeFilter?.let {
-            filterList.add(it)
-        }
-        filterController.initFilterController(searchParameter?.getSearchParameterHashMap(), filterList)
+        filterController.initFilterController(searchParameter?.getSearchParameterHashMap(), quickFilterList)
     }
 
     override fun hideQuickFilterShimmering() {
@@ -1957,19 +1952,25 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun initSizeOptionFilter(dataView: MutableList<InspirationSizeDataView>) {
-        if (dataView.size > 0) {
-            inspirationSizeFilter = Filter(
-                title = dataView[0].data.title,
-                options = dataView[0].data.optionSizeData.mapIndexed { index, option ->
-                    Option(
-                        name = option.filters.name,
-                        key = option.filters.key,
-                        value = option.filters.value,
-                    )
-                }
-            )
-        }
+    override fun initSizeOptionFilter(inspirationSizeDataViewList: MutableList<InspirationSizeDataView>) {
+        if (inspirationSizeDataViewList.size <= 0) return
+
+        val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
+
+        filterController.appendFilterList(
+            searchParameterMap,
+            inspirationSizeDataViewList.map { dataView ->
+                Filter(
+                    options = dataView.data.optionSizeData.map { optionSize ->
+                        Option(
+                            key = optionSize.filters.key,
+                            value = optionSize.filters.value,
+                            name = optionSize.filters.name
+                        )
+                    }
+                )
+            }
+        )
     }
 
     override fun setSelectedSizeOption(dataView: MutableList<InspirationSizeDataView>) {
