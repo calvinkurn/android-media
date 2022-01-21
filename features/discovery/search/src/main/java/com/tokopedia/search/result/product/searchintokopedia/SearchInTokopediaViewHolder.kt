@@ -1,11 +1,9 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.searchintokopedia
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultGlobalSearchViewHolderBinding
-import com.tokopedia.search.result.presentation.model.SearchInTokopediaDataView
-import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SearchInTokopediaViewHolder(
