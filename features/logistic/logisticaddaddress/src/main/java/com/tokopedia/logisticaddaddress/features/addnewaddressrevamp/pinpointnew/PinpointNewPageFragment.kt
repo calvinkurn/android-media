@@ -258,8 +258,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun initData() {
         arguments?.let {
-            // TODO disini hrus investigate sesuatu
-            // yg bedain dr searchpage apa dr formpage
             currentPlaceId = it.getString(EXTRA_PLACE_ID)
             currentLat = it.getDouble(EXTRA_LAT)
             currentLong = it.getDouble(EXTRA_LONG)
@@ -461,17 +459,12 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             bottomsheetLocation.btnSecondary.setOnClickListener {
-                // TODO disini harusnya saveaddressdatamodel nya diapus
-                // tapi kalo misalnya diapus, misalnya dia pinpoint dari addressform
-                // nanti address formnya kosong lg, data sblm dia pinpoint (yg dibawa dr addressform)
-                // gak balik lg
                 AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
                 if (isPositiveFlow) {
                     isPositiveFlow = false
                     viewModel.setAddress(SaveAddressDataModel())
                     goToAddressForm()
                 } else {
-//                    if (isFromAddressForm) {}
                     activity?.run {
                         setResult(Activity.RESULT_OK, Intent().apply {
                             putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
@@ -503,7 +496,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             chipsSearch.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
             chipsSearch.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
-                // harusnya disini reset semua?? krn kan ngulang lagi
                 goToSearchPage()
             }
         }
@@ -772,6 +764,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private fun goToSearchPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
         if (!isPositiveFlow) {
+            // back to addressform, reset ana state to search page
             activity?.run {
                 setResult(Activity.RESULT_OK, Intent().apply {
                     putExtra(EXTRA_RESET_TO_SEARCH_PAGE, true)
@@ -779,21 +772,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 finish()
             }
         } else {
-//            startActivity(intent)
             activity?.finish()
         }
-//        if (!isPositiveFlow) {
-//            intent.putExtra(EXTRA_IS_POLYGON, isPolygon)
-//            intent.putExtra(EXTRA_FROM_PINPOINT, true)
-//            intent.putExtra(EXTRA_DISTRICT_ID, districtId)
-//        }
-//        intent.putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-//        intent.putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-//        intent.putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
-        // ini harus di oper ke addressform dulu terus baru move ke add_address_v3
-//        RouteManager.route(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-//        activity?.finish()
-//        startActivityForResult(intent, REQUEST_SEARCH_PAGE)
     }
 
     private fun goToAddressForm() {
@@ -801,11 +781,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         Intent(context, AddressFormActivity::class.java).apply {
             putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
             putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-            // ini jg kenapa for result?? kan dia kalo balik lg kesini ntr yg minta result address form dong?.. T_T
             startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
-//            startActivity(this)
         }
-//        activity?.finish()
     }
 
     private fun setResultAddressFormNegative() {

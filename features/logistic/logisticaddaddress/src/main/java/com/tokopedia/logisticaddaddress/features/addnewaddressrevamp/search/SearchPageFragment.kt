@@ -135,7 +135,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 if (isFromAddressForm != null && newAddress != null) {
                     finishActivity(newAddress, isFromAddressForm)
                 }
-//                isFromAddressForm?.let { finishActivity(newAddress, it) }
             } else if (requestCode == REQUEST_ADDRESS_FORM_PAGE) {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 newAddress?.let { finishActivity(it, false) }
@@ -208,8 +207,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 putExtra(EXTRA_IS_POSITIVE_FLOW, false)
                 putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
                 putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-//                startActivity(this)
-                // ini jg gausah minta result gak sih? tinggal oper aja ke depan? gak minta ke belakang lg jadinya
                 startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
             }
         }
@@ -481,8 +478,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         distrcitId?.let { bundle.putLong(EXTRA_DISTRICT_ID, it) }
-        // ini harusnya finish aja activitynya terus langsung ke pinpoint, gak minta result lagi
-//        startActivity(context?.let { PinpointNewPageActivity.createIntent(it, bundle) } )
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
     }
 
