@@ -1219,6 +1219,11 @@ class ProductListPresenter @Inject constructor(
         while (inspirationCardViewModelIterator.hasNext()) {
             val data = inspirationCardViewModelIterator.next()
 
+            if (data.data.position <= 0) {
+                inspirationCardViewModelIterator.remove()
+                continue
+            }
+
             if (data.data.position <= productList.size && shouldShowInspirationCard(data.data.type)) {
                 try {
                     val product = productList[data.data.position - 1]
