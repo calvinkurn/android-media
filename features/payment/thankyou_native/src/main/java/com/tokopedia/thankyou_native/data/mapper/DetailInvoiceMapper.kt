@@ -251,6 +251,12 @@ object PaymentItemKey {
     const val DONATION = "donation"
 }
 
+object StoreItemKey {
+    const val MARKETPLACE = "marketplace"
+    const val GOLD_MERCHANT = "gold_merchant"
+    const val OFFICIAL_STORE = "official_store"
+}
+
 object PaymentDeductionKey {
     const val TOTAL_SHIPPING_DISCOUNT = "total_logistic_discount"
     const val TOTAL_DISCOUNT = "total_discount"

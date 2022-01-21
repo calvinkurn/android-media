@@ -5,6 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.thankyou_native.data.mapper.PaymentItemKey
+import com.tokopedia.thankyou_native.data.mapper.StoreItemKey
 import com.tokopedia.thankyou_native.domain.model.*
 import com.tokopedia.thankyou_native.domain.query.GQL_GYRO_RECOMMENDATION
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,7 +45,9 @@ class GyroEngineRequestUseCase @Inject constructor(
                 thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
                 FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
                         mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
-                        isDonation(thanksPageData).toString(), userSession.userId),
+                        isDonation(thanksPageData).toString(), userSession.userId,
+                        isMarketplace(thanksPageData).toString(), isGoldMerchant(thanksPageData).toString(),
+                        isOfficialStore(thanksPageData).toString()),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds())))
     }
@@ -62,6 +65,33 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData.paymentItems?.forEach {
             when (it.itemName) {
                 PaymentItemKey.DONATION -> return true
+            }
+        }
+        return false
+    }
+
+    private fun isMarketplace(thanksPageData: ThanksPageData): Boolean {
+        thanksPageData.shopOrder?.forEach {
+            when (it.storeType) {
+                StoreItemKey.MARKETPLACE -> return true
+            }
+        }
+        return false
+    }
+
+    private fun isGoldMerchant(thanksPageData: ThanksPageData): Boolean {
+        thanksPageData.shopOrder?.forEach {
+            when (it.storeType) {
+                StoreItemKey.GOLD_MERCHANT -> return true
+            }
+        }
+        return false
+    }
+
+    private fun isOfficialStore(thanksPageData: ThanksPageData): Boolean {
+        thanksPageData.shopOrder?.forEach {
+            when (it.storeType) {
+                StoreItemKey.OFFICIAL_STORE -> return true
             }
         }
         return false

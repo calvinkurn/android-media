@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
+import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper.TYPE_TOKOMEMBER
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
@@ -71,16 +72,42 @@ class GyroView @JvmOverloads constructor(
 
     override fun onItemDisplayed(gyroRecommendationListItem: GyroRecommendationListItem,
                                  position: Int) {
-        if (::analytics.isInitialized || ::thanksPageData.isInitialized)
-            analytics.onGyroRecommendationListView(gyroRecommendationListItem,
-                    thanksPageData, position + 1)
+        if (::analytics.isInitialized || ::thanksPageData.isInitialized) {
+            when(gyroRecommendationListItem.type) {
+                TYPE_TOKOMEMBER -> {
+                    analytics.onGyroRecommendationTokomemberView(
+                        gyroRecommendationListItem,
+                        thanksPageData, position + 1
+                    )
+                }
+                else -> {
+                    analytics.onGyroRecommendationListView(
+                        gyroRecommendationListItem,
+                        thanksPageData, position + 1
+                    )
+                }
+            }
+        }
     }
 
     override fun onItemClicked(gyroRecommendationListItem: GyroRecommendationListItem,
                                position: Int) {
-        if (::analytics.isInitialized || ::thanksPageData.isInitialized)
-            analytics.onGyroRecommendationListClick(gyroRecommendationListItem,
-                    thanksPageData, position + 1)
+        if (::analytics.isInitialized || ::thanksPageData.isInitialized) {
+            when (gyroRecommendationListItem.type) {
+                TYPE_TOKOMEMBER -> {
+                    analytics.onGyroRecommendationTokomemberClick(
+                        gyroRecommendationListItem,
+                        thanksPageData, position + 1
+                    )
+                }
+                else -> {
+                    analytics.onGyroRecommendationListClick(
+                        gyroRecommendationListItem,
+                        thanksPageData, position + 1
+                    )
+                }
+            }
+        }
     }
 
     override fun openAppLink(appLink: String) {

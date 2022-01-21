@@ -1,7 +1,10 @@
 package com.tokopedia.thankyou_native.analytics
 
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.BUSINESS_UNIT_TOKOPOINTS
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLICK_GYRO_RECOM
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLICK_TOKOMEMBER_ACION
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_BUSINESS_UNIT
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_EVENT
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_EVENT_ACTION
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_EVENT_CATEGORY
@@ -10,6 +13,7 @@ import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_PAYMENT_ID
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_PROFILE_ID
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_USER_ID
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_CLICK
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_CLICK_TOKOMEMBER
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_KEY_CATEGORY
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_KEY_CREATIVE
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_KEY_CREATIVE_URL
@@ -18,8 +22,11 @@ import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_KEY_NAME
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_KEY_POSITION
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_KEY_PROMOTIONS
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_VIEW
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_VIEW_TOKOMEMBER
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VALUE_ORDER_COMPLETE
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_GYRO_RECOM
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_ACION
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_CATEGORY
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -57,6 +64,17 @@ class GyroRecommendationAnalytics @Inject constructor(
         }, onError = {})
     }
 
+    fun onGyroRecommendationTokomemberView(gyroRecommendationListItem: GyroRecommendationListItem,
+                                     thanksPageData: ThanksPageData, position: Int) {
+        CoroutineScope(mainDispatcher).launchCatchError(block = {
+            withContext(bgDispatcher) {
+                val data = getParentTrackingNodeTokoMember(
+                    PROMO_VIEW_TOKOMEMBER, VIEW_TOKOMEMBER_ACION,
+                    thanksPageData, gyroRecommendationListItem)
+                analyticTracker.sendGeneralEvent(data)
+            }
+        }, onError = {})
+    }
 
     fun onGyroRecommendationListClick(gyroRecommendationListItem: GyroRecommendationListItem,
                                       thanksPageData: ThanksPageData, position: Int) {
@@ -67,6 +85,17 @@ class GyroRecommendationAnalytics @Inject constructor(
                 data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(PROMO_CLICK,
                         gyroRecommendationListItem, position)
                 analyticTracker.sendEnhanceEcommerceEvent(data)
+            }
+        }, onError = {})
+    }
+
+    fun onGyroRecommendationTokomemberClick(gyroRecommendationListItem: GyroRecommendationListItem,
+                                      thanksPageData: ThanksPageData, position: Int) {
+        CoroutineScope(mainDispatcher).launchCatchError(block = {
+            withContext(bgDispatcher) {
+                val data = getParentTrackingNodeTokoMember(PROMO_CLICK_TOKOMEMBER, CLICK_TOKOMEMBER_ACION,
+                    thanksPageData, gyroRecommendationListItem)
+                analyticTracker.sendGeneralEvent(data)
             }
         }, onError = {})
     }
@@ -99,8 +128,20 @@ class GyroRecommendationAnalytics @Inject constructor(
                 KEY_PROFILE_ID to thanksPageData.profileCode
         )
     }
-}
 
+    private fun getParentTrackingNodeTokoMember(eventName: String, eventAction: String,
+                                      thanksPageData: ThanksPageData,
+                                      gyroRecommendationListItem: GyroRecommendationListItem): MutableMap<String, Any> {
+        return mutableMapOf(
+            KEY_EVENT to eventName,
+            KEY_EVENT_CATEGORY to VIEW_TOKOMEMBER_CATEGORY,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_LABEL to "${gyroRecommendationListItem.id}-${thanksPageData.paymentID}",
+            KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPOINTS,
+
+        )
+    }
+}
 
 object GyroTrackingKeys {
     val KEY_EVENT = "event"
@@ -110,12 +151,20 @@ object GyroTrackingKeys {
     val KEY_USER_ID = "userId"
     val KEY_PAYMENT_ID = "paymentId"
     val KEY_PROFILE_ID = "profileId"
+    val KEY_BUSINESS_UNIT = "businessUnit"
 
     val VALUE_ORDER_COMPLETE = "order complete"
     val PROMO_CLICK = "promoClick"
     val PROMO_VIEW = "promoView"
+    val PROMO_VIEW_TOKOMEMBER = "viewBGPIris"
+    val PROMO_CLICK_TOKOMEMBER = "clickBGP"
     val VIEW_GYRO_RECOM = "view gyro recommendation"
     val CLICK_GYRO_RECOM = "click gyro recommendation"
+    val VIEW_TOKOMEMBER_ACION = "open membership - view widget"
+    val CLICK_TOKOMEMBER_ACION = "open membership - click widget"
+    val VIEW_TOKOMEMBER_CATEGORY = "tokomember - thank you page"
+    val BUSINESS_UNIT_TOKOPOINTS = "tokopoints"
+
 
     val PROMO_KEY_ID = "id"
     val PROMO_KEY_PROMOTIONS = "promotions"

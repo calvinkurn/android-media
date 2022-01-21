@@ -60,7 +60,7 @@ object FeatureRecommendationMapper {
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
                     when (jsonObject[KEY_TYPE].toString().lowercase()) {
-                        TYPE_LIST -> {
+                        TYPE_LIST, TYPE_TOKOMEMBER -> {
                             add(getFeatureRecommendationListItem(featureEngineItem))
                         }
                     }
@@ -79,7 +79,8 @@ object FeatureRecommendationMapper {
     }
 
     private const val KEY_TYPE = "type"
-    private const val TYPE_LIST = "list"
+    const val TYPE_LIST = "list"
+    const val TYPE_TOKOMEMBER = "tokomember"
     private const val TYPE_TDN_USER = "tdn_user"
     const val TYPE_TDN_PRODUCT = "tdn_product"
 

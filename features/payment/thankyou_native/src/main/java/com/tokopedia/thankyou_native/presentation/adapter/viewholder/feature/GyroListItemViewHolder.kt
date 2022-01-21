@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper.TYPE_TOKOMEMBER
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
+import com.tokopedia.tokomember.TokomemberActivity
 import kotlinx.android.synthetic.main.thank_item_feature_list.view.*
 
 class GyroListItemViewHolder(val view: View, val listener: GyroAdapterListener)
@@ -34,10 +36,17 @@ class GyroListItemViewHolder(val view: View, val listener: GyroAdapterListener)
 
             view.setOnClickListener {
                 listener.onItemClicked(element, adapterPosition)
-                if (!urlApp.isNullOrBlank()) {
-                    listener.openAppLink(urlApp)
-                } else if (!url.isNullOrBlank()) {
-                    listener.openWebUrl(url)
+                when(element.type) {
+                    TYPE_TOKOMEMBER -> {
+                        itemView.context.startActivity(TokomemberActivity.getIntent(itemView.context))
+                    }
+                    else -> {
+                        if (!urlApp.isNullOrBlank()) {
+                            listener.openAppLink(urlApp)
+                        } else if (!url.isNullOrBlank()) {
+                            listener.openWebUrl(url)
+                        }
+                    }
                 }
             }
         }
