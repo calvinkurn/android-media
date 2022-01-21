@@ -28,6 +28,7 @@ import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
 import com.tokopedia.catalog.adapter.decorators.DividerItemDecorator
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogUniversalShareAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
@@ -152,6 +153,18 @@ class CatalogDetailPageFragment : Fragment(),
         setupRecyclerView(view)
         setObservers()
         setUpBottomSheet()
+        setUpUniversalShare()
+    }
+
+    private fun initViews() {
+        shimmerLayout = view?.findViewById(R.id.shimmer_layout)
+        activity?.let {
+            cartLocalCacheHandler = LocalCacheHandler(it, CatalogConstant.CART_LOCAL_CACHE_NAME)
+        }
+        initNavToolbar()
+    }
+
+    private fun setUpUniversalShare() {
         context?.let {
             screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
                     it,
@@ -161,14 +174,6 @@ class CatalogDetailPageFragment : Fragment(),
                     permissionListener = this
             )
         }
-    }
-
-    private fun initViews() {
-        shimmerLayout = view?.findViewById(R.id.shimmer_layout)
-        activity?.let {
-            cartLocalCacheHandler = LocalCacheHandler(it, CatalogConstant.CART_LOCAL_CACHE_NAME)
-        }
-        initNavToolbar()
     }
 
     private fun setUpBottomSheet(){
@@ -334,7 +339,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun onCatalogShareButtonClicked(isUniversalShare : Boolean = false, linkerShareData : LinkerShareData) {
         if(isUniversalShare){
-            navBarShareButtonClickedGTM()
+            CatalogUniversalShareAnalytics.navBarShareButtonClickedGTM(catalogId)
             showUniversalShareBottomSheet(catalogImages)
         }else {
             CatalogDetailAnalytics.sendEvent(
@@ -373,7 +378,7 @@ class CatalogDetailPageFragment : Fragment(),
                 this@CatalogDetailPageFragment, screenshotDetector)
         shareType = UniversalShareBottomSheet.getShareBottomSheetType()
         if(UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET){
-            shareBottomSheetAppearGTM()
+            CatalogUniversalShareAnalytics.shareBottomSheetAppearGTM(catalogId,userSession.userId)
         }
     }
 
@@ -389,9 +394,9 @@ class CatalogDetailPageFragment : Fragment(),
             }
         }
         if(UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET){
-            sharingChannelSelectedGTM(shareModel.channel ?: "")
+            CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(shareModel.channel ?: "",catalogId,userSession.userId)
         }else  {
-            sharingChannelScreenShotSelectedGTM(shareModel.channel ?: "")
+            CatalogUniversalShareAnalytics.sharingChannelScreenShotSelectedGTM(shareModel.channel ?: "",catalogId,userSession.userId)
         }
 
         LinkerManager.getInstance().executeShareRequest(
@@ -419,15 +424,15 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onCloseOptionClicked() {
         if(UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET){
-            dismissShareBottomSheetGTM()
+            CatalogUniversalShareAnalytics.dismissShareBottomSheetGTM(catalogId,userSession.userId)
         }else  {
-            userClosesScreenShotBottomSheetGTM()
+            CatalogUniversalShareAnalytics.userClosesScreenShotBottomSheetGTM(catalogId,userSession.userId)
         }
         universalShareBottomSheet?.dismiss()
     }
 
     override fun screenShotTaken() {
-        userTakenScreenShotGTM()
+        CatalogUniversalShareAnalytics.userTakenScreenShotGTM(catalogId,userSession.userId)
         showUniversalShareBottomSheet(catalogImages)
     }
 
@@ -441,7 +446,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun permissionAction(action: String, label: String) {
-        allowPopupGTM(label)
+        CatalogUniversalShareAnalytics.allowPopupGTM(label,catalogId,userSession.userId)
     }
 
     private fun linkerDataMapper(catalogId: String): LinkerShareData {
@@ -454,102 +459,6 @@ class CatalogDetailPageFragment : Fragment(),
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
-    }
-
-    private fun navBarShareButtonClickedGTM(){
-        CatalogDetailAnalytics.sendSharingExperienceEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.ActionKeys.CLICK_SHARE_BUTTON,
-                CatalogDetailAnalytics.CategoryKeys.TOP_NAV_CATALOG,
-                catalogId,
-                catalogId,
-                "${CatalogConstant.CATALOG_PAGE}.${CatalogConstant.NULL_STRING}.${CatalogConstant.NULL_STRING}.$catalogId",
-                userSession.userId
-        )
-    }
-
-    private fun dismissShareBottomSheetGTM(){
-        CatalogDetailAnalytics.sendSharingExperienceEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.ActionKeys.CLICK_CLOSE_SHARE_BOTTOM_SHEET,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                catalogId,
-                catalogId,
-                "",
-                userSession.userId
-        )
-    }
-
-    private fun sharingChannelSelectedGTM(channel: String){
-        CatalogDetailAnalytics.sendSharingExperienceEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.ActionKeys.CLICK_SHARING_CHANNEL,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                "$channel - $catalogId",
-                catalogId,
-                "",
-                userSession.userId
-        )
-    }
-
-    private fun shareBottomSheetAppearGTM(){
-        CatalogDetailAnalytics.sendSharingExperienceEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_VIEW_CATALOG_IRIS,
-                CatalogDetailAnalytics.ActionKeys.VIEW_ON_SHARING_CHANNEL,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                catalogId,
-                catalogId,
-                "",
-                userSession.userId
-        )
-    }
-
-    private fun userTakenScreenShotGTM(){
-        CatalogDetailAnalytics.sendSharingExperienceEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_VIEW_CATALOG_IRIS,
-                CatalogDetailAnalytics.ActionKeys.VIEW_SCREENSHOT_SHARE_BOTTOM_SHEET,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                catalogId,
-                catalogId,
-                "",
-                userSession.userId
-        )
-    }
-
-    private fun userClosesScreenShotBottomSheetGTM(){
-        CatalogDetailAnalytics.sendSharingExperienceEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.ActionKeys.CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                catalogId,
-                catalogId,
-                "",
-                userSession.userId
-        )
-    }
-
-    private fun sharingChannelScreenShotSelectedGTM(channel : String){
-        CatalogDetailAnalytics.sendSharingExperienceEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.ActionKeys.CLICK_CHANNEL_SBS_SCREENSHOT,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                "$channel - $catalogId",
-                catalogId,
-                "",
-                userSession.userId
-        )
-    }
-
-    private fun allowPopupGTM(state : String) {
-        CatalogDetailAnalytics.sendSharingExperienceEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.ActionKeys.CLICK_ACCESS_PHOTO_FILES,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                "$state - $catalogId",
-                catalogId,
-                "",
-                userSession.userId
-        )
     }
 
     private fun showImage(currentItem: Int) {
@@ -647,5 +556,4 @@ class CatalogDetailPageFragment : Fragment(),
         } else {
             0
         }
-
 }
