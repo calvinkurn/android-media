@@ -426,7 +426,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
             )
         }
-        if (!forceStopDialog.isShowing) forceStopDialog.show()
+        if (!forceStopDialog.isShowing) {
+            analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+            forceStopDialog.show()
+        }
     }
 
     private fun showDialogContinueLiveStreaming() {
@@ -583,7 +586,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             when(it)  {
                 is PlayLiveTimerState.Active -> showCounterDuration(it.remainingInMs)
                 is PlayLiveTimerState.Finish -> {
-                    analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                     showDialogWhenTimeout()
                 }
             }
