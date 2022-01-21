@@ -75,7 +75,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
@@ -833,12 +832,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData shipmentAddressFormData) {
+    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData shipmentAddressFormData, boolean isEligibleForRevampAna) {
         Token token = new Token();
         token.setUt(shipmentAddressFormData.getKeroUnixTime());
         token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
 
-        if (LogisticCommonUtil.INSTANCE.isRollOutUserANARevamp()) {
+        if (isEligibleForRevampAna) {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
             intent.putExtra(KERO_TOKEN, token);
             intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
