@@ -4,18 +4,25 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.domain.usecase.*
+import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
+import com.tokopedia.cart.domain.usecase.FollowShopUseCase
+import com.tokopedia.cart.domain.usecase.GetCartRevampV3UseCase
+import com.tokopedia.cart.domain.usecase.SetCartlistCheckboxStateUseCase
+import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
+import com.tokopedia.cart.domain.usecase.UpdateCartAndValidateUseUseCase
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.logisticcart.boaffordability.usecase.BoAffordabilityUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -53,6 +60,8 @@ abstract class BaseCartTest {
     var updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     var setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     var followShopUseCase: FollowShopUseCase = mockk()
+    val boAffordabilityUseCase: BoAffordabilityUseCase = mockk()
+    val coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
     var view: ICartListView = mockk(relaxed = true)
     lateinit var cartListPresenter: ICartListPresenter
 
@@ -68,7 +77,7 @@ abstract class BaseCartTest {
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
                 seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndValidateUseUseCase,
                 validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase,
-                TestSchedulers
+                boAffordabilityUseCase, TestSchedulers, coroutineTestDispatchers
         )
         every { addWishListUseCase.unsubscribe() } just Runs
         every { removeWishListUseCase.unsubscribe() } just Runs
