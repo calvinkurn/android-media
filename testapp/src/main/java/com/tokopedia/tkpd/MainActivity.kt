@@ -125,6 +125,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
+        return ""
     }
 }
