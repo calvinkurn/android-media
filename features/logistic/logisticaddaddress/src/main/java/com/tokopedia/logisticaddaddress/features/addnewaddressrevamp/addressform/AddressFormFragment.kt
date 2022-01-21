@@ -153,28 +153,33 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     finish()
                 }
             }
-            saveDataModel = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
-            if (saveDataModel == null) {
-                saveDataModel = data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
-            }
-            currentKotaKecamatan = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
-            binding.formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
-            saveDataModel?.let {
-                if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
-                    currentLat = it.latitude.toDouble()
-                    currentLong = it.longitude.toDouble()
-                    binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
-                    binding.cardAddressNegative.addressDistrict.text = context?.let {
-                        HtmlLinkHelper(
-                            it,
-                            getString(R.string.tv_pinpoint_defined)
-                        ).spannedString
-                    }
-                    if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode =
-                        currentPostalCode
-                }
+
+            var addressDataFromPinpoint = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)
+            if (addressDataFromPinpoint == null) {
+                addressDataFromPinpoint = data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
             }
 
+            // if user make any changes from pinpoint page, then update data in this page
+            if (addressDataFromPinpoint != null) {
+                saveDataModel = addressDataFromPinpoint
+                currentKotaKecamatan = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
+                binding.formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
+                saveDataModel?.let {
+                    if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
+                        currentLat = it.latitude.toDouble()
+                        currentLong = it.longitude.toDouble()
+                        binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
+                        binding.cardAddressNegative.addressDistrict.text = context?.let {
+                            HtmlLinkHelper(
+                                it,
+                                getString(R.string.tv_pinpoint_defined)
+                            ).spannedString
+                        }
+                        if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode =
+                            currentPostalCode
+                    }
+                }
+            }
         }
     }
 
