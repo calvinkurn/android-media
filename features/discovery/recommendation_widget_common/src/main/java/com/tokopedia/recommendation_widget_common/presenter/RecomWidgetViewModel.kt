@@ -33,7 +33,6 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**

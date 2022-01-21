@@ -84,6 +84,8 @@ class TestRecomWidgetViewModel {
     private val mockMiniCartWithPageData = MiniCartSimplifiedData(
         miniCartItems = listOf(miniCartItem)
     )
+    private val mockUserLoggedIn = true
+    private val mockUserNonLoggedIn = false
     private val mockAtcResponseSuccess = AddToCartDataModel(
         data = DataModel(
             success = 1,
@@ -91,6 +93,7 @@ class TestRecomWidgetViewModel {
             message = arrayListOf("sukses broh")
         ), status = "OK"
     )
+    private val mockThrowableTimeOut = Throwable("Time out")
     val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
     val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
 
@@ -239,7 +242,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test update mini cart on tokonow with given specific product id will update data mini cart`() = runBlockingTest {
+    fun `test update mini cart on tokonow with given specific product id will success update data mini cart`() = runBlockingTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
         } returns mockAtcResponseSuccess
@@ -466,7 +469,7 @@ class TestRecomWidgetViewModel {
     private fun doCommonActionForATCRecomNoUpdate() {
         coEvery {
             userSessionInterface.isLoggedIn
-        } returns true
+        } returns mockUserLoggedIn
 
         coEvery {
             miniCartListSimplifiedUseCase.executeOnBackground()
@@ -474,16 +477,12 @@ class TestRecomWidgetViewModel {
 
         viewModel.getMiniCart("", "")
         viewModel.onAtcRecomNonVariantQuantityChanged(recomItemForAtc, updatedQuantityForDelete)
-
-        coVerify {
-            miniCartListSimplifiedUseCase.executeOnBackground()
-        }
     }
 
     private fun doCommonActionForATCRecomNonLoggedInUser() {
         coEvery {
             userSessionInterface.isLoggedIn
-        } returns false
+        } returns mockUserNonLoggedIn
 
         coEvery {
             miniCartListSimplifiedUseCase.executeOnBackground()
@@ -491,30 +490,19 @@ class TestRecomWidgetViewModel {
 
         viewModel.getMiniCart("", "")
         viewModel.onAtcRecomNonVariantQuantityChanged(recomItemForAtc, updatedQuantityForAtc)
-
-        coVerify {
-            miniCartListSimplifiedUseCase.executeOnBackground()
-        }
     }
 
     private fun doCommonActionFailedMiniCartForATCRecom() {
         coEvery {
             userSessionInterface.isLoggedIn
-        } returns true
+        } returns mockUserLoggedIn
 
         coEvery {
             miniCartListSimplifiedUseCase.executeOnBackground()
-        } throws Throwable("Time out")
+        } throws mockThrowableTimeOut
 
         viewModel.getMiniCart("", "")
         viewModel.onAtcRecomNonVariantQuantityChanged(recomItemForAtc, updatedQuantityForAtc)
-
-        coVerify {
-            miniCartListSimplifiedUseCase.executeOnBackground()
-        }
-        coVerify {
-            addToCartUseCase.executeOnBackground()
-        }
     }
 
     private fun doCommonActionForUpdateCartRecom() {
