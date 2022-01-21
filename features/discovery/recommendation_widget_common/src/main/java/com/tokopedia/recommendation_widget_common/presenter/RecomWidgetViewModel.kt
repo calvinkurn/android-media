@@ -328,8 +328,7 @@ open class RecomWidgetViewModel @Inject constructor(
                 if (result.error.isNotEmpty()) {
                     onFailedATCRecomTokonow(
                         MessageErrorException(
-                            result.error.firstOrNull()
-                                ?: ""
+                            result.error.first()
                         ), recomItem
                     )
                 } else {

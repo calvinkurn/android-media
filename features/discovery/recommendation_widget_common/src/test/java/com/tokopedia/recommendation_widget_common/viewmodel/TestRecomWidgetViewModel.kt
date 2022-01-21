@@ -498,7 +498,6 @@ class TestRecomWidgetViewModel {
         }
     }
 
-
     private fun doCommonActionForUpdateCartRecom() {
         coEvery {
             userSessionInterface.isLoggedIn
