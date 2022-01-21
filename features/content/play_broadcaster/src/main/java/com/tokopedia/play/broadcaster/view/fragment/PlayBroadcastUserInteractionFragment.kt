@@ -219,7 +219,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupView() {
-        actionBarLiveView.setTitle(parentViewModel.channelTitle)
+        observeTitle()
         actionBarLiveView.setShopIcon(parentViewModel.getShopIconUrl())
 
         ivShareLink.setOnClickListener{
@@ -272,6 +272,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         observeLiveInfo()
         observeLiveStats()
+    }
+
+    private fun observeTitle() {
+        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
+            actionBarLiveView.setTitle(it.title)
+        }
     }
 
     private fun observeLiveInfo() {
