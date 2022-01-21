@@ -23,8 +23,8 @@ class TopchatRoomToggleBlockTest: TopchatRoomTest() {
 
         //When
         onView(withId(R.id.header_menu)).perform(click())
-        onView(withText("Blokir Pengguna")).perform(click())
-        onView(withText("Blokir Pengguna")).perform(click())
+        onView(withText("Blokir Pengguna")).perform(click()) //Header menu option
+        onView(withText("Blokir Pengguna")).perform(click()) //Pop-up button
 
         //Then
         assertSnackbarText(context.getString(com.tokopedia.topchat.R.string.title_success_block_chat))
@@ -47,5 +47,23 @@ class TopchatRoomToggleBlockTest: TopchatRoomTest() {
 
         //Then
         assertSnackbarText(context.getString(com.tokopedia.topchat.R.string.title_success_unblock_chat))
+    }
+
+    @Test
+    fun should_show_error_toaster_when_failed_to_block_user(){
+
+        //Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatToggleBlockChatUseCase.isError = true
+        launchChatRoomActivity()
+
+        //When
+        onView(withId(R.id.header_menu)).perform(click())
+        onView(withText("Blokir Pengguna")).perform(click()) //Header menu option
+        onView(withText("Blokir Pengguna")).perform(click()) //Pop-up button
+
+        //Then
+        assertSnackbarWithSubText("Oops!")
     }
 }

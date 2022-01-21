@@ -69,7 +69,6 @@ import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
-import com.tokopedia.topchat.stub.chatroom.view.viewmodel.TopChatRoomViewModelStub
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
@@ -178,6 +177,9 @@ abstract class TopchatRoomTest {
     protected lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseStub
 
     @Inject
+    protected lateinit var compressImageUseCase: CompressImageUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     @Inject
@@ -190,7 +192,7 @@ abstract class TopchatRoomTest {
     lateinit var remoteConfig: RemoteConfig
 
     @Inject
-    lateinit var viewModel: TopChatRoomViewModelStub
+    lateinit var viewModel: TopChatViewModel
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
@@ -544,6 +546,10 @@ abstract class TopchatRoomTest {
         onView(withText(msg)).check(doesNotExist())
     }
 
+    protected fun assertSnackbarWithSubText(msg: String) {
+        onView(withSubstring(msg)).check(matches(isDisplayed()))
+    }
+
     protected fun assertSrwPreviewContentIsVisible() {
         assertSrwPreviewContentContainerVisibility(isDisplayed())
         assertTemplateChatVisibility(not(isDisplayed()))
@@ -567,7 +573,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertSrwPreviewContentIsError() {
         assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
-        assertTemplateChatVisibility(not(isDisplayed()))
+        assertTemplateChatVisibility(isDisplayed())
     }
 
     protected fun assertSrwPreviewContentIsHidden() {

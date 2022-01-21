@@ -20,7 +20,9 @@ import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
+import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.topchat.stub.chatroom.view.viewmodel.TopChatRoomViewModelStub
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -29,14 +31,11 @@ import org.junit.Test
 @UiTest
 class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
-    override fun before() {
-        super.before()
-        enableCompressImage()
-    }
-
     @Test
     fun upload_image_with_compress_and_with_service() {
         // Given
+        enableCompressImage()
+        enableUploadImageByService()
         openChatRoom()
         // When
         openImagePicker()
@@ -47,6 +46,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     @Test
     fun upload_image_with_compress_and_without_service() {
         // Given
+        enableCompressImage()
         disableUploadImageByService()
         openChatRoom()
         // When
@@ -82,6 +82,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     @Test
     fun upload_multiple_images_and_stay_in_chatroom() {
         // Given
+        enableUploadImageByService()
         openChatRoom()
         // When
         val count = getCurrentItemCount()
@@ -154,6 +155,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     fun should_not_showing_chat_status_when_failed_to_upload_image() {
         // Given
         uploadImageUseCase.isError = true
+        enableUploadImageByService()
         openChatRoom()
 
         // When
@@ -161,6 +163,44 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
         // Then
         assertImageReadStatusAtPosition(0, matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun upload_image_but_fail_compress_image() {
+        // Given
+        compressImageUseCase.isError = true
+        enableCompressImage()
+        openChatRoom()
+        // When
+        openImagePicker()
+        // Then
+        assertSnackbarText(context.getString(R.string.error_compress_image))
+    }
+
+    @Test
+    fun upload_image_but_image_not_valid_undersize() {
+        // Given
+        (viewModel as TopChatRoomViewModelStub).errorValidateImage = true
+        (viewModel as TopChatRoomViewModelStub).errorValidateType = ImageUtil.IMAGE_UNDERSIZE
+        enableCompressImage()
+        openChatRoom()
+        // When
+        openImagePicker()
+        // Then
+        assertSnackbarText(context.getString(R.string.undersize_image))
+    }
+
+    @Test
+    fun upload_image_but_image_not_valid_exceed_size_limit() {
+        // Given
+        (viewModel as TopChatRoomViewModelStub).errorValidateImage = true
+        (viewModel as TopChatRoomViewModelStub).errorValidateType = ImageUtil.IMAGE_EXCEED_SIZE_LIMIT
+        enableCompressImage()
+        openChatRoom()
+        // When
+        openImagePicker()
+        // Then
+        assertSnackbarText(context.getString(R.string.oversize_image))
     }
 
     private fun assertImageContainerAtPosition(position: Int, assertions: ViewAssertion) {

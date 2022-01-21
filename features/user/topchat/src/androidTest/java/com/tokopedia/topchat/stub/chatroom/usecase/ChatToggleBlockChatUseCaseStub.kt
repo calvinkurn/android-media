@@ -22,6 +22,14 @@ class ChatToggleBlockChatUseCaseStub @Inject constructor(
             field = value
         }
 
+    var isError = false
+        set(value) {
+            if (value) {
+                repository.createErrorMapResult(response::class.java, "Oops!")
+            }
+            field = value
+        }
+
     fun createResponse(
         isBlocked: Boolean = false,
         isPromoBlocked: Boolean = false,
