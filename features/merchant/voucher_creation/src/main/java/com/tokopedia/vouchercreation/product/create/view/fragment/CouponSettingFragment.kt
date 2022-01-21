@@ -83,7 +83,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        setupChipsListener()
+        setupChipsClickListener()
         setupTextAreaListener()
         observeInputValidationResult()
         observeCouponTypeChange()
@@ -375,7 +375,29 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupChipsListener() {
+    private fun setupChipsClickListener() {
+        setupCouponTypeChips()
+        setupDiscountTypeChips()
+        setupMinimumPurchaseTypeChips()
+    }
+
+    private fun setupCouponTypeChips() {
+        binding.chipCashback.selectedChangeListener = { isActive ->
+            if (isActive) {
+                binding.groupCashback.visible()
+            } else {
+                binding.groupCashback.gone()
+            }
+        }
+
+        binding.chipFreeShipping.selectedChangeListener = { isActive ->
+            if (isActive) {
+                binding.groupFreeShipping.visible()
+            } else {
+                binding.groupFreeShipping.gone()
+            }
+        }
+
         binding.chipCashback.chip_container.setOnClickListener {
             binding.chipCashback.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipFreeShipping.chipType = ChipsUnify.TYPE_NORMAL
@@ -401,29 +423,11 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             showFreeShippingCouponTypeWidget()
         }
+    }
 
-        binding.chipCashback.selectedChangeListener = { isActive ->
-            if (isActive) {
-                binding.groupCashback.visible()
-            } else {
-                binding.groupCashback.gone()
-            }
-        }
-
-        binding.chipFreeShipping.selectedChangeListener = { isActive ->
-            if (isActive) {
-                binding.groupFreeShipping.visible()
-            } else {
-                binding.groupFreeShipping.gone()
-            }
-        }
-
+    private fun setupDiscountTypeChips() {
         binding.chipDiscountTypeNominal.selectedChangeListener = {
             binding.chipDiscountTypeNominal.chipText = getString(R.string.in_rupiah)
-        }
-
-        binding.chipMinimumPurchaseNominal.selectedChangeListener = {
-            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.in_nominal)
         }
 
         binding.chipDiscountTypeNominal.chip_container.setOnClickListener {
@@ -455,6 +459,12 @@ class CouponSettingFragment : BaseDaggerFragment() {
             validateInput()
             calculateMaxExpenseEstimation()
         }
+    }
+
+    private fun setupMinimumPurchaseTypeChips(){
+        binding.chipMinimumPurchaseNominal.selectedChangeListener = {
+            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.in_nominal)
+        }
 
         binding.chipMinimumPurchaseNominal.chip_container.setOnClickListener {
             binding.chipMinimumPurchaseNominal.chipText = getString(R.string.in_nominal)
@@ -462,6 +472,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             binding.groupCashbackMinimumPurchase.visible()
 
+            binding.textAreaMinimumPurchase.textAreaInput.text = null
             binding.textAreaMinimumPurchase.textAreaWrapper.prefixText = getString(R.string.rupiah)
             binding.textAreaMinimumPurchase.textAreaWrapper.suffixText = EMPTY_STRING
 
@@ -482,6 +493,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             binding.groupCashbackMinimumPurchase.visible()
 
+            binding.textAreaMinimumPurchase.textAreaInput.text = null
             binding.textAreaMinimumPurchase.textAreaWrapper.prefixText = EMPTY_STRING
             binding.textAreaMinimumPurchase.textAreaWrapper.suffixText = getString(R.string.pcs)
 
@@ -502,6 +514,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             binding.groupCashbackMinimumPurchase.gone()
 
+            binding.textAreaMinimumPurchase.textAreaInput.text = null
             binding.textAreaMinimumPurchase.textAreaWrapper.prefixText = EMPTY_STRING
             binding.textAreaMinimumPurchase.textAreaWrapper.suffixText = EMPTY_STRING
             binding.textAreaMinimumPurchase.textAreaMessage = EMPTY_STRING
@@ -515,7 +528,6 @@ class CouponSettingFragment : BaseDaggerFragment() {
             validateInput()
         }
     }
-
 
     private fun adjustExpenseEstimationConstraint(@IdRes viewId : Int) {
         val layoutParams = binding.layoutExpenseEstimation.layoutParams as ConstraintLayout.LayoutParams
