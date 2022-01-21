@@ -93,6 +93,11 @@ class TestRecomWidgetViewModel {
             message = arrayListOf("sukses broh")
         ), status = "OK"
     )
+    private val mockAtcRecomErrorWithEmptyErrorMessage = AddToCartDataModel(
+        data = DataModel(success = 0),
+        status = "",
+        errorMessage = arrayListOf()
+    )
     private val mockThrowableTimeOut = Throwable("Time out")
     val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
     val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
@@ -297,22 +302,15 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test 4`() = runBlockingTest {
-        val atcResponseError = AddToCartDataModel(
-            data = DataModel(success = 0),
-            status = "",
-            errorMessage = arrayListOf()
-        )
-
+    fun `test atc recom non variant given atc with error empty message return success atc tokonow with selected add to cart`() = runBlockingTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
-        } returns atcResponseError
+        } returns mockAtcRecomErrorWithEmptyErrorMessage
 
         doCommonActionForATCRecom()
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value?.error != null)
-        Assert.assertTrue(viewModel.atcRecomTokonow.value?.recomItem == recomItemForAtc)
-        Assert.assertTrue(viewModel.atcRecomTokonowResetCard.value == recomItemForAtc)
+        val atcRecomTokonow = viewModel.atcRecomTokonow.value
+        Assert.assertEquals(recomItemForAtc, atcRecomTokonow?.recomItem)
     }
 
     @Test
@@ -426,7 +424,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test given empty recommendation return success null recom chip widget in live data`() {
+    fun `test given empty recommendation return success recom chip widget with null data in live data`() {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value
