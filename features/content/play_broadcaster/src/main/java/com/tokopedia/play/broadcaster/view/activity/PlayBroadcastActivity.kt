@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -143,7 +142,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
 
     override fun onSaveInstanceState(outState: Bundle) {
         try {
-            Log.d("<LOG>", "onSavedInstance channelType: $channelType")
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
         } catch (e: Throwable) {}
@@ -162,7 +160,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
 
     override fun onPostResume() {
         super.onPostResume()
-        Log.d("<LOG>", "onPostResume")
 
         if (isResultAfterAskPermission) {
             if (isRequiredPermissionGranted()) configureChannelType(channelType)
@@ -243,7 +240,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
-        Log.d("<LOG>", "populateSavedState channelType: $channelType")
         channelId?.let { viewModel.setChannelId(it) }
         channelType?.let {
             this.channelType = ChannelType.getByValue(it)
@@ -316,11 +312,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     }
 
     private fun configureChannelType(channelType: ChannelType) {
-        if (isRecreated) {
-            if(channelType == ChannelType.Pause) showDialogContinueLiveStreaming()
-            return
-        }
-
+        if (isRecreated) return
         when (channelType) {
             ChannelType.Pause -> {
                 openBroadcastActivePage()
