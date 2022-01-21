@@ -37,11 +37,9 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
-import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
-import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
@@ -218,7 +216,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         ServerLogger.log(Priority.P2, "KYC_UPLOAD_RESULT",
                 mapOf(
                         "type" to "SuccessUpload",
-                        "isKycSelfie" to isKycSelfie.toString(),
+                        "method" to if (isKycSelfie) "selfie" else "liveness",
                         "ktpPath" to stepperModel?.ktpFile.orEmpty(),
                         "facePath" to stepperModel?.faceFile.orEmpty(),
                         "tkpdProjectId" to projectId.toString())
@@ -539,7 +537,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     override fun trackOnBackPressed() {}
 
     private fun setFailedResult(throwable: Throwable) {
-        val errorCode = KycUploadErrorCodeUtil.getErrorCode(throwable)
         val message = ErrorHandler.getErrorMessage(
                 context,
                 throwable,
@@ -549,41 +546,32 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 }.build()
         )
 
-        if (message.isNotEmpty()) {
-            when {
-                message.contains("timeout") -> {
-                    isSocketTimeoutException = true
-                    analytics?.eventClickConnectionTimeout()
-                    setViews(getString(R.string.kyc_upload_failed_title), message, SCAN_FACE_FAIL_NETWORK)
-                }
-                message.contains(FAILED_ENCRYPTION) -> {
-                    setViews(
-                            getString(R.string.kyc_upload_failed_title),
-                            getString(R.string.kyc_upload_failed_reason_encrypt),
-                            SCAN_FACE_FAIL_GENERAL
-                    )
-                }
-                else -> {
-                    setViews(getString(R.string.kyc_upload_failed_title), message, SCAN_FACE_FAIL_GENERAL)
-                }
+        when {
+            message.contains("timeout") -> {
+                isSocketTimeoutException = true
+                analytics?.eventClickConnectionTimeout()
+                setViews(getString(R.string.kyc_upload_failed_title), message, SCAN_FACE_FAIL_NETWORK)
             }
-        } else {
-            setViews(getString(R.string.kyc_upload_failed_reason_general_title),
-                    "${getString(R.string.kyc_upload_failed_reason_general)} ($errorCode)",
-                    SCAN_FACE_FAIL_GENERAL)
+            message.contains(FAILED_ENCRYPTION) -> {
+                setViews(
+                        getString(R.string.kyc_upload_failed_title),
+                        getString(R.string.kyc_upload_failed_reason_encrypt),
+                        SCAN_FACE_FAIL_GENERAL
+                )
+            }
+            else -> {
+                setViews(getString(R.string.kyc_upload_failed_title), message, SCAN_FACE_FAIL_GENERAL)
+            }
         }
 
         kyc_upload_error_button?.setOnClickListener {
-            when {
-                errorCode == KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT
-                        || message.contains(FAILED_ENCRYPTION)
-                        || message.contains(FILE_PATH_KTP_EMPTY) -> {
+            when {message.contains(FAILED_ENCRYPTION) || message.contains(FILE_PATH_KTP_EMPTY) -> {
                     deleteTmpFile(deleteKtp = true, deleteFace = true)
                     stepperListener?.finishPage()
                 }
                 message.contains(FILE_PATH_FACE_EMPTY) -> {
                     goToLivenessOrSelfie()
-                }
+                }   
                 !isKycSelfie -> {
                     openLivenessView()
                 }

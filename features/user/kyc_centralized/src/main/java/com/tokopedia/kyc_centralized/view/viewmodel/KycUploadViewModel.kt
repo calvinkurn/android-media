@@ -11,7 +11,6 @@ import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
-import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -76,20 +75,15 @@ class KycUploadViewModel @Inject constructor(
     fun encryptImage(originalFilePath: String, ivCache: String) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                try {
-                    val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
-                    val aes = ImageEncryptionUtil.initAesEncrypt()
-                    //save the Ktp IV for decrypt
-                    kycSharedPreference.saveByteArrayCache(ivCache, aes.iv)
-                    val createdFile = writeEncryptedResult(originalFilePath, encryptedImagePath, aes)
-                    _encryptImage.postValue(Success(createdFile))
-                } catch (e: Exception) {
-                    _encryptImage.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on encrypt $originalFilePath; error: ${e.message}")))
-                }
+                val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
+                val aes = ImageEncryptionUtil.initAesEncrypt()
+                //save the Ktp IV for decrypt
+                kycSharedPreference.saveByteArrayCache(ivCache, aes.iv)
+                val createdFile = writeEncryptedResult(originalFilePath, encryptedImagePath, aes)
+                _encryptImage.postValue(Success(createdFile))
             }
         }, onError = {
-            it.printStackTrace()
-            _encryptImage.postValue(Fail(it))
+            _encryptImage.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on encrypt $originalFilePath; error: ${it.message}")))
         })
     }
 
