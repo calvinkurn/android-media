@@ -512,16 +512,21 @@ class CouponSettingFragment : BaseDaggerFragment() {
     }
 
     private fun setupDiscountTypeChips() {
-        binding.chipDiscountTypeNominal.selectedChangeListener = {
-            binding.chipDiscountTypeNominal.chipText = getString(R.string.in_rupiah)
+        binding.chipDiscountTypeNominal.selectedChangeListener = { isSelected ->
+            val label = if (isSelected) getString(R.string.in_nominal) else getString(R.string.nominal)
+            binding.chipDiscountTypeNominal.chipText = label
+        }
+
+        binding.chipDiscountTypePercentage.selectedChangeListener = { isSelected ->
+            val label = if (isSelected) getString(R.string.in_percentage) else getString(R.string.percentage)
+            binding.chipDiscountTypePercentage.chipText = label
         }
 
         binding.chipDiscountTypeNominal.chip_container.setOnClickListener {
-            binding.chipDiscountTypeNominal.chipText = getString(R.string.in_rupiah)
-            binding.chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_SELECTED
+            binding.textAreaDiscountPercentage.textAreaInput.text = null
+            binding.textAreaMaximumDiscount.textAreaInput.text = null
 
-            binding.chipDiscountTypePercentage.chipText =
-                getString(R.string.mvc_create_tips_subtitle_percentage)
+            binding.chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipDiscountTypePercentage.chipType = ChipsUnify.TYPE_NORMAL
 
             binding.textAreaDiscountPercentage.textAreaWrapper.suffixText =
@@ -535,10 +540,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
 
         binding.chipDiscountTypePercentage.chip_container.setOnClickListener {
-            binding.chipDiscountTypeNominal.chipText = getString(R.string.nominal)
-            binding.chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_NORMAL
+            binding.textAreaDiscountAmount.textAreaInput.text = null
 
-            binding.chipDiscountTypePercentage.chipText = getString(R.string.in_percentage)
+            binding.chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipDiscountTypePercentage.chipType = ChipsUnify.TYPE_SELECTED
 
             selectedDiscountType = DiscountType.PERCENTAGE
