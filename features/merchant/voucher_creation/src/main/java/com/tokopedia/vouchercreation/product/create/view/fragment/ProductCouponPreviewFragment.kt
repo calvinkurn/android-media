@@ -141,6 +141,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             val content = binding?.tpgCouponCode?.text.toString().trim()
             copyToClipboard(content)
         }
+
     }
 
     private fun observeCouponImageUrl() {
@@ -210,6 +211,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     fun setCouponInformationData(couponInformation : CouponInformation) {
         this.couponInformation =  couponInformation
     }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+    }
+
 
     override fun onResume() {
         super.onResume()

@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/createMerchantVoucherHeader"
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:unify_header_title="@string/add_product_coupon"
@@ -54,9 +54,12 @@
                         android:id="@+id/imgDropdown"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:layout_marginEnd="@dimen/unify_space_16"
-                        android:layout_marginTop="@dimen/unify_space_8"
+                        android:paddingStart="@dimen/unify_space_16"
+                        android:paddingTop="@dimen/unify_space_8"
+                        android:paddingBottom="@dimen/unify_space_8"
+                        android:paddingEnd="@dimen/unify_space_16"
                         android:src="@drawable/ic_chevron_up"
+                        app:layout_constraintBottom_toBottomOf="@+id/typography5"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/typography5" />
 

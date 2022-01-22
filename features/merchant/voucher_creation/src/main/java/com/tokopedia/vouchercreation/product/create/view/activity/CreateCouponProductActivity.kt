@@ -6,15 +6,16 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import java.util.*
 
 class CreateCouponProductActivity : AppCompatActivity() {
 
-    private val couponPreviewFragment by lazy { ProductCouponPreviewFragment.newInstance() }
+    private val couponPreviewFragment = ProductCouponPreviewFragment()
     private val couponSettingFragment = CouponSettingFragment()
-
+    private var couponSettings : CouponSettings? = null
 
     companion object {
         private const val TAG_FRAGMENT_COUPON_INFORMATION = "coupon_information"
@@ -36,6 +37,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
             //TODO : @Faisal Replace with your coupon information fragment
         }
         couponPreviewFragment.setOnNavigateToCouponSettingsPageListener {
+            couponSettingFragment.setCouponSettings(couponSettings)
             replaceFragment(couponSettingFragment, TAG_FRAGMENT_COUPON_SETTINGS)
         }
         couponPreviewFragment.setOnNavigateToProductListPageListener {
@@ -50,9 +52,11 @@ class CreateCouponProductActivity : AppCompatActivity() {
             couponPreviewFragment.setCouponInformationData(couponInformation)
         }*/
 
-        couponSettingFragment.setOnCouponSaved { coupon ->
+        couponSettingFragment.setOnCouponSaved { couponSettings ->
             popFragment()
-            couponPreviewFragment.setCouponSettingsData(coupon)
+
+            this.couponSettings = couponSettings
+            couponPreviewFragment.setCouponSettingsData(couponSettings)
 
             //Stub the coupon preview data for testing purpose
             val startDate = Calendar.getInstance().apply { set(2022, 0, 20, 22, 30, 0) }
