@@ -22,21 +22,9 @@
         android:layout_height="?actionBarSize"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include layout="@layout/toolbar_media_picker" />
+        <include layout="@layout/ui_component_toolbar_media_picker" />
 
     </androidx.appcompat.widget.Toolbar>
-
-    <com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
-        android:id="@+id/media_picker_preview_widget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:backgroundColorPlaceHolder="@color/Unify_N0"
-        app:canReorder="true"
-        app:layout_constraintBottom_toTopOf="@+id/tab_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:placeholder="@drawable/picker_ic_placeholder_media_preview"
-        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/tab_container"

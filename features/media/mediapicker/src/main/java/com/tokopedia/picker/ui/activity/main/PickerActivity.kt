@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.common.component.uiComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerFragmentType
 import com.tokopedia.picker.common.PickerPageType
@@ -22,13 +23,12 @@ import com.tokopedia.picker.ui.PickerFragmentFactory
 import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
-import com.tokopedia.picker.ui.activity.main.component.NavToolbarComponent
+import com.tokopedia.picker.ui.activity.component.NavToolbarComponent
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
-import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
-import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.view.binding.viewBinding
+import javax.inject.Inject
 
 /**
  * main applink:
@@ -71,17 +71,18 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 open class PickerActivity : BaseActivity()
     , PermissionFragment.Listener
-    , MediaSelectionNavigationWidget.Listener
-    , NavToolbarComponent.Listener {
+    , NavToolbarComponent.Listener
+    , PickerActivityListener {
+
+    @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
 
-    private val param = PickerUiConfig.pickerParam()
-
     private val viewModel by lazy {
         ViewModelProvider(
             this,
+            factory
         )[PickerViewModel::class.java]
     }
 
@@ -113,21 +114,6 @@ open class PickerActivity : BaseActivity()
         initObservable()
     }
 
-    override fun onResume() {
-        super.onResume()
-        binding?.mediaPickerPreviewWidget?.setListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding?.mediaPickerPreviewWidget?.removeListener()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        PickerUiConfig.reset()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList(
@@ -141,25 +127,8 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        // TODO
         navigator?.cameraFragment()?.gestureDetector?.onTouchEvent(ev)
         return super.dispatchTouchEvent(ev)
-    }
-
-    override fun onDataSetChanged(action: ActionType) {
-        when (action) {
-            is ActionType.Add -> {}
-            is ActionType.Remove -> {
-                viewModel.publishSelectionRemovedChanged(
-                    action.mediaToRemove,
-                    action.data
-                )
-                viewModel.publishSelectionDataChanged(action.data)
-            }
-            is ActionType.Reorder -> {
-                viewModel.publishSelectionDataChanged(action.data)
-            }
-        }
     }
 
     override fun onCloseClicked() {
@@ -170,6 +139,10 @@ open class PickerActivity : BaseActivity()
         PickerUiConfig.mediaSelectionList().forEach {
             println("MEDIAPICKER -> ${it.path}")
         }
+    }
+
+    override fun tabVisibility(isShown: Boolean) {
+        binding?.tabContainer?.showWithCondition(!isShown)
     }
 
     private fun setupQueryAndUIConfigBuilder() {
@@ -184,7 +157,7 @@ open class PickerActivity : BaseActivity()
         savedInstanceState?.let {
             // restore the last media selection to the drawer
             it.getParcelableArrayList<Media>(LAST_MEDIA_SELECTION)?.let { elements ->
-                viewModel.publishSelectionDataChanged(elements)
+//                viewModel.publishSelectionDataChanged(elements)
             }
         }
     }
@@ -197,29 +170,24 @@ open class PickerActivity : BaseActivity()
             navigator?.start(PickerFragmentType.PERMISSION)
             permissionDeniedState()
         }
-
-        // setup bottom nav selector widget
-        binding?.mediaPickerPreviewWidget?.setMaxAdapterSize(param.limit)
     }
 
     private fun initObservable() {
         lifecycle.addObserver(viewModel)
 
-        viewModel.finishButtonState.observe(this) {
-            navToolbar.showContinueButtonWithCondition(
-                it && PickerUiConfig.mediaSelectionList().isNotEmpty()
-            )
-        }
-
-        viewModel.selectedMedia.observe(this) {
-            binding?.mediaPickerPreviewWidget?.addData(it)
-            PickerUiConfig.addAllMediaSelection(it)
-        }
-
-        viewModel.cameraCaptured.observe(this) {
-            binding?.mediaPickerPreviewWidget?.addData(it)
-            PickerUiConfig.addMediaSelection(it)
-        }
+//        viewModel.finishButtonState.observe(this) {
+//            navToolbar.showContinueButtonWithCondition(
+//                it && PickerUiConfig.mediaSelectionList().isNotEmpty()
+//            )
+//        }
+//
+//        viewModel.selectedMedia.observe(this) {
+//            PickerUiConfig.addAllMediaSelection(it)
+//        }
+//
+//        viewModel.cameraCaptured.observe(this) {
+//            PickerUiConfig.addMediaSelection(it)
+//        }
     }
 
     private fun permissionGrantedState() {
@@ -273,15 +241,13 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun onCameraTabSelected() {
-        navToolbar.setNavToolbarColorState(true)
-        binding?.mediaPickerPreviewWidget?.hide()
         navigator?.onPageSelected(PickerFragmentType.CAMERA)
+        navToolbar.setNavToolbarColorState(isTransparent = true)
     }
 
     private fun onGalleryTabSelected() {
-        navToolbar.setNavToolbarColorState(false)
-        binding?.mediaPickerPreviewWidget?.show()
         navigator?.onPageSelected(PickerFragmentType.GALLERY)
+        navToolbar.setNavToolbarColorState(isTransparent = false)
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {

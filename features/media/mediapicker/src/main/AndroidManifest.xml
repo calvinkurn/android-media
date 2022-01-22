@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_media_picker"
+                    android:path="@string/host_universal_media_picker"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

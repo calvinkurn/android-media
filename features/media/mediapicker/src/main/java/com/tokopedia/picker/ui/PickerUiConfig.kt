@@ -42,20 +42,18 @@ object PickerUiConfig {
         }
     }
 
-    fun reset() {
-        mediaSelection.clear()
-        pickerParam = null
-    }
-
+    @Deprecated("")
     fun mediaSelectionList(): ArrayList<Media> {
         return mediaSelection
     }
 
+    @Deprecated("")
     fun addAllMediaSelection(list: List<Media>) {
         mediaSelection.clear()
         mediaSelection.addAll(list)
     }
 
+    @Deprecated("")
     fun addMediaSelection(media: Media) {
         val index = mediaSelection.indexOf(media)
         if (index > 0) return

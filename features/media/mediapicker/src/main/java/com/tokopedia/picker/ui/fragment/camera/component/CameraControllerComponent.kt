@@ -1,5 +1,6 @@
 package com.tokopedia.picker.ui.fragment.camera.component
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -8,13 +9,18 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.component.UiComponent
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.camera.recyclers.adapter.CameraSliderAdapter
 import com.tokopedia.picker.ui.fragment.camera.recyclers.managers.SliderLayoutManager
 import com.tokopedia.picker.utils.DEFAULT_DURATION_LABEL
+import com.tokopedia.picker.utils.anim.CameraButton.animStartRecording
+import com.tokopedia.picker.utils.anim.CameraButton.animStopRecording
 import com.tokopedia.picker.utils.pickerLoadImage
 import com.tokopedia.picker.utils.videoDurationLabel
 import com.tokopedia.unifycomponents.dpToPx
@@ -30,6 +36,10 @@ class CameraControllerComponent(
     , ViewTreeObserver.OnScrollChangedListener
     , CameraSliderAdapter.Listener {
 
+    private val adapter by lazy {
+        CameraSliderAdapter(cameraModeList(), this)
+    }
+
     // camera mode slider
     private val lstCameraMode = findViewById<RecyclerView>(R.id.lst_camera_mode)
 
@@ -38,33 +48,24 @@ class CameraControllerComponent(
     private val txtMaxDuration = findViewById<Typography>(R.id.txt_max_duration)
     private val videoDurationContainer = findViewById<LinearLayout>(R.id.video_duration)
 
-    // action button
-    private val btnTakeCamera = findViewById<View>(R.id.btn_take_camera)
-    private val btnFlash = findViewById<ImageView>(R.id.btn_flash)
-    private val btnFlip = findViewById<ImageView>(R.id.btn_flip)
-
     // image preview
     private val imgPreview = findViewById<ImageView>(R.id.img_preview)
 
-    private var countDownTimer: Timer? = null
-
-    private val adapter by lazy {
-        val camerasMode = listOf(
-            context.getString(R.string.picker_camera_picture_mode),
-            context.getString(R.string.picker_camera_video_mode)
-        )
-
-        CameraSliderAdapter(camerasMode, this)
+    // action button
+    private val btnTakeCamera = findViewById<View>(R.id.btn_take_camera).apply {
+        setOnClickListener {
+            onTakeCamera()
+        }
     }
 
-    init {
-        setMaxDuration()
-
-        btnFlash.setOnClickListener {
+    private val btnFlash = findViewById<ImageView>(R.id.btn_flash).apply {
+        setOnClickListener {
             listener.onFlashClicked()
         }
+    }
 
-        btnFlip.setOnClickListener {
+    private val btnFlip = findViewById<ImageView>(R.id.btn_flip).apply {
+        setOnClickListener {
             if (listener.isFrontFacingCamera()) {
                 btnFlash.hide()
             } else {
@@ -73,17 +74,16 @@ class CameraControllerComponent(
 
             listener.onFlipClicked()
         }
-
-        btnTakeCamera.setOnClickListener {
-            onTakeCamera()
-        }
-
-        imgPreview.setOnClickListener {
-
-        }
     }
 
-    override fun onItemClicked(view: View) {
+    private var countDownTimer: Timer? = null
+    private var countDownMills = 0L
+
+    init {
+        setMaxDuration()
+    }
+
+    override fun onCameraSliderItemClicked(view: View) {
         lstCameraMode.smoothScrollToPosition(
             lstCameraMode.getChildLayoutPosition(view)
         )
@@ -102,7 +102,9 @@ class CameraControllerComponent(
 
     override fun release() {
         if (param.isIncludeVideo) {
-            lstCameraMode.viewTreeObserver.removeOnScrollChangedListener(this)
+            lstCameraMode
+                .viewTreeObserver
+                .removeOnScrollChangedListener(this)
         }
     }
 
@@ -131,11 +133,7 @@ class CameraControllerComponent(
     }
 
     fun setThumbnailPreview(file: File) {
-        if (!param.isMultipleSelection) {
-            imgPreview.hide()
-            return
-        }
-
+        if (!param.isMultipleSelection) return
         imgPreview.pickerLoadImage(file.path)
         imgPreview.show()
     }
@@ -147,25 +145,23 @@ class CameraControllerComponent(
     fun startRecording() {
         if (getActiveCameraMode() != VIDEO_MODE && !param.isIncludeVideo) return
 
+        btnTakeCamera.animStartRecording()
         videoDurationContainer.show()
         lstCameraMode.hide()
-        videoStopUiState()
     }
 
     fun stopRecording() {
         if (getActiveCameraMode() != VIDEO_MODE) return
         if (param.isIncludeVideo) scrollToVideoMode()
 
-        videoModeUiState()
         resetVideoDuration()
         countDownTimer?.cancel()
+        btnTakeCamera.animStopRecording()
         videoDurationContainer.hide()
         lstCameraMode.show()
     }
 
     fun onObserveVideoDuration(invoke: (Long) -> Unit) {
-        var countDownMills = 0L
-
         countDownTimer = Timer()
 
         countDownTimer?.schedule(object : TimerTask() {
@@ -176,32 +172,36 @@ class CameraControllerComponent(
                 }
 
                 invoke(countDownMills)
-
                 countDownMills += COUNTDOWN_INTERVAL
             }
         }, COUNTDOWN_PERIOD.toLong(), COUNTDOWN_INTERVAL.toLong())
     }
 
+    @SuppressLint("SetTextI18n")
     fun onChangeVideoDuration(duration: Long) {
-        val separator = context.getString(R.string.picker_video_duration_separator)
-        txtCountDown.text = videoDurationLabel(duration).plus(separator)
+        txtCountDown.text = "${videoDurationLabel(duration)} /"
     }
 
-    fun isCameraFlashSupported(value: Boolean) {
+    fun isFlashSupported(value: Boolean) {
         btnFlash.showWithCondition(value)
     }
 
-    fun isCameraHasFrontCamera(value: Boolean) {
+    fun hasFrontCamera(value: Boolean) {
         btnFlip.showWithCondition(value)
     }
 
-    fun setFlashToggleUiState(isFlashOn: Boolean) {
+    fun setFlashMode(isFlashOn: Boolean) {
         if (isFlashOn) {
             btnFlash.setImageResource(R.drawable.picker_ic_camera_flash_on)
         } else {
             btnFlash.setImageResource(R.drawable.picker_ic_camera_flash_off)
         }
     }
+
+    private fun cameraModeList() = listOf(
+        context.getString(R.string.picker_camera_picture_mode),
+        context.getString(R.string.picker_camera_video_mode)
+    )
 
     private fun onTakeCamera() {
         if (isVideoMode() && PickerUiConfig.hasAtLeastOneVideoOnGlobalSelection()) {
@@ -246,19 +246,12 @@ class CameraControllerComponent(
         lstCameraMode.setPadding(padding, 0, padding, 0)
     }
 
-    // TODO
     private fun photoModeUiState() {
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_photo)
     }
 
-    // TODO
     private fun videoModeUiState() {
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_video)
-    }
-
-    // TODO
-    private fun videoStopUiState() {
-        btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_stop_video)
     }
 
     private fun getActiveCameraMode()

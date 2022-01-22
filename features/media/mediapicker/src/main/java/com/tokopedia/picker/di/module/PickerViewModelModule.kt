@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.picker.di.scope.PickerScope
 import com.tokopedia.picker.ui.activity.album.AlbumViewModel
+import com.tokopedia.picker.ui.activity.main.PickerViewModel
+import com.tokopedia.picker.ui.fragment.camera.CameraViewModel
 import com.tokopedia.picker.ui.fragment.gallery.GalleryViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,9 +25,9 @@ abstract class PickerViewModelModule {
     @Binds
     @IntoMap
     @PickerScope
-    @ViewModelKey(GalleryViewModel::class)
-    internal abstract fun getGalleryViewModel(
-        viewModel: GalleryViewModel
+    @ViewModelKey(PickerViewModel::class)
+    internal abstract fun getPickerViewModel(
+        viewModel: PickerViewModel
     ): ViewModel
 
     @Binds
@@ -34,6 +36,22 @@ abstract class PickerViewModelModule {
     @ViewModelKey(AlbumViewModel::class)
     internal abstract fun getAlbumViewModel(
         viewModel: AlbumViewModel
+    ): ViewModel
+
+    @Binds
+    @IntoMap
+    @PickerScope
+    @ViewModelKey(CameraViewModel::class)
+    internal abstract fun getCameraViewModel(
+        viewModel: CameraViewModel
+    ): ViewModel
+
+    @Binds
+    @IntoMap
+    @PickerScope
+    @ViewModelKey(GalleryViewModel::class)
+    internal abstract fun getGalleryViewModel(
+        viewModel: GalleryViewModel
     ): ViewModel
 
 }

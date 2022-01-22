@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.activity.main.component
+package com.tokopedia.picker.ui.activity.component
 
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat

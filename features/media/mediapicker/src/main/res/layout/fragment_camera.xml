@@ -13,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+<!--    <include layout="@layout/ui_component_camera_preview"/>-->
+
     <View
         android:id="@+id/container_blink"
         android:layout_width="match_parent"
@@ -29,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <include layout="@layout/view_component_camera_picker" />
+        <include layout="@layout/ui_component_camera_picker" />
 
     </RelativeLayout>
 

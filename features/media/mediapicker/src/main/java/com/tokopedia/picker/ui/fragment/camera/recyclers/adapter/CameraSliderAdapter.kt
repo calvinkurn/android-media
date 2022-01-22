@@ -46,7 +46,7 @@ class CameraSliderAdapter(
             )
 
             itemView.setOnClickListener {
-                listener.onItemClicked(it)
+                listener.onCameraSliderItemClicked(it)
             }
         }
 
@@ -65,7 +65,7 @@ class CameraSliderAdapter(
     }
 
     interface Listener {
-        fun onItemClicked(view: View)
+        fun onCameraSliderItemClicked(view: View)
     }
 
 }

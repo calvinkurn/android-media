@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerSelectionType
 import com.tokopedia.picker.data.entity.Media
@@ -22,11 +23,13 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
+import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
+import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-open class GalleryFragment : BaseDaggerFragment() {
+open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidget.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -81,6 +84,32 @@ open class GalleryFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding?.bottomNavDrawer?.setListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding?.bottomNavDrawer?.removeListener()
+    }
+
+    override fun onDataSetChanged(action: ActionType) {
+        when (action) {
+            is ActionType.Add -> {}
+            is ActionType.Remove -> {
+//                viewModel.publishSelectionRemovedChanged(
+//                    action.mediaToRemove,
+//                    action.data
+//                )
+//                viewModel.publishSelectionDataChanged(action.data)
+            }
+            is ActionType.Reorder -> {
+//                viewModel.publishSelectionDataChanged(action.data)
+            }
+        }
+    }
+
     private fun initObservable() {
         lifecycle.addObserver(viewModel)
 
@@ -88,18 +117,32 @@ open class GalleryFragment : BaseDaggerFragment() {
             adapter.setData(it)
         }
 
-        viewModel.mediaRemoved.observe(viewLifecycleOwner) {
-            it?.let { media ->
-                adapter.removeSelected(media)
-            }
+        viewModel.isMediaNotEmpty.observe(viewLifecycleOwner) {
+
         }
+
+//        viewModel.mediaRemoved.observe(viewLifecycleOwner) {
+//            it?.let { media ->
+//                adapter.removeSelected(media)
+//            }
+//        }
     }
 
     private fun initView() {
+        setupSelectionDrawerWidget()
         setupWidgetAlbumSelector()
         setupRecyclerView()
 
         viewModel.fetch(RECENT_ALBUM_ID, param)
+    }
+
+    private fun setupSelectionDrawerWidget() {
+        val isMultipleSelectionType = PickerUiConfig.paramType == PickerSelectionType.MULTIPLE
+
+        if (isMultipleSelectionType) {
+            binding?.bottomNavDrawer?.setMaxAdapterSize(param.limit)
+            binding?.bottomNavDrawer?.show()
+        }
     }
 
     //TODO, create separated view component
@@ -130,7 +173,7 @@ open class GalleryFragment : BaseDaggerFragment() {
         binding?.lstMedia?.adapter = adapter
 
         adapter.setListener {
-            viewModel.publishSelectionDataChanged(it)
+//            viewModel.publishSelectionDataChanged(it)
         }
     }
 

@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize"
@@ -34,5 +35,18 @@
         android:clipToPadding="false"
         android:clipChildren="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
+        android:id="@+id/bottom_nav_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:backgroundColorPlaceHolder="@color/Unify_N0"
+        app:canReorder="true"
+        app:layout_constraintBottom_toTopOf="@+id/tab_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_gravity="bottom"
+        app:placeholder="@drawable/picker_ic_placeholder_media_preview"
+        tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        PickerActivity.start(this)
+        RouteManager.route(this, etAppLink.text.toString())
     }
 
     private fun getDefaultAppLink(): String {

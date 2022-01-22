@@ -1,9 +1,9 @@
 package com.tokopedia.picker.utils
 
 import com.tokopedia.picker.data.entity.Media
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 sealed class EventState {
@@ -15,18 +15,23 @@ sealed class EventState {
 
 object EventBusFactory {
 
-    private val state = MutableStateFlow<EventState>(EventState.Idle)
+    val state = MutableSharedFlow<EventState>(1)
 
-    fun send(stateEvent: EventState) {
+    init {
+        state.distinctUntilChanged()
+        state.tryEmit(EventState.Idle)
+    }
+
+    fun emit(stateEvent: EventState) {
         state.tryEmit(stateEvent)
     }
 
-    suspend fun consumer(stateCallback: (EventState) -> Unit) {
-        state.collectLatest {
-            withContext(Dispatchers.Main) {
-                stateCallback(it)
-            }
-        }
+    fun subscriber(coroutineScope: CoroutineScope): Flow<EventState> {
+        return state.shareIn(
+            coroutineScope,
+            SharingStarted.WhileSubscribed(500),
+            1
+        )
     }
 
 }

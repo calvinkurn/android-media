@@ -15,7 +15,7 @@ import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.adapter.AlbumAdapter
-import com.tokopedia.picker.ui.activity.main.component.NavToolbarComponent
+import com.tokopedia.picker.ui.activity.component.NavToolbarComponent
 import com.tokopedia.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -27,15 +27,15 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     private val binding: ActivityAlbumBinding? by viewBinding()
     private val param = PickerUiConfig.pickerParam()
 
-    private val adapter by lazy {
-        AlbumAdapter(listener = onAlbumClickListener)
-    }
-
     private val viewModel by lazy {
         ViewModelProvider(
             this,
             factory
         )[AlbumViewModel::class.java]
+    }
+
+    private val adapter by lazy {
+        AlbumAdapter(listener = onAlbumClickListener)
     }
 
     private val navToolbar by uiComponent {

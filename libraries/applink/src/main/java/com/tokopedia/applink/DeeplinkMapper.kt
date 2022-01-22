@@ -465,6 +465,7 @@ object DeeplinkMapper {
                     mapOf(STATUS to idList?.getOrNull(0), ApplinkConstInternalOvo.MESSAGE to idList?.getOrNull(1)))
             }),
             DLP.host(ApplinkConst.HOST_PLAY_NOTIF_VIDEO) { _, _, _, _ -> ApplinkConstInternalGlobal.YOUTUBE_VIDEO },
+            DLP.exact(ApplinkConst.MEDIA_PICKER, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER),
         )
 
     fun getTokopediaSchemeList():List<DLP>{

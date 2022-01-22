@@ -21,5 +21,4 @@
 
 <!--    special char-->
     <string name="picker_album_subtitle">%1$d medias</string>
-    <string name="picker_video_duration_separator"> / </string>
 </resources>
