@@ -362,6 +362,7 @@
     <string name="minimum_purchase">Minimum pembelian</string>
     <string name="minimum_purchase_type">Tipe minimum pembelian</string>
     <string name="discount_amount">Nominal Diskon</string>
+    <string name="discount_amount_free_shipping">Nominal Gratis Ongkir</string>
     <string name="discount_type">Tipe Diskon</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="hyphen">-</string>

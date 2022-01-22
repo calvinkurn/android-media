@@ -56,8 +56,8 @@
                         android:layout_height="0dp"
                         android:paddingStart="@dimen/unify_space_16"
                         android:paddingTop="@dimen/unify_space_8"
-                        android:paddingBottom="@dimen/unify_space_8"
                         android:paddingEnd="@dimen/unify_space_16"
+                        android:paddingBottom="@dimen/unify_space_8"
                         android:src="@drawable/ic_chevron_up"
                         app:layout_constraintBottom_toBottomOf="@+id/typography5"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -103,9 +103,9 @@
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/typography7"
                         android:layout_width="0dp"
-                        android:paddingBottom="@dimen/unify_space_12"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_24"
+                        android:paddingBottom="@dimen/unify_space_12"
                         android:text="@string/learn_more"
                         android:textColor="@color/light_N700_68"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -133,7 +133,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:constraint_referenced_ids="tpgBullet,typography6,typography7,tpgReadArticle" />
-                    
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -264,9 +264,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_24"
+                android:layout_marginEnd="@dimen/unify_space_24"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:layout_marginEnd="@dimen/unify_space_24"
                 android:text="@string/hyphen"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintBottom_toBottomOf="@+id/typography"
@@ -296,13 +296,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/unify_space_16"
-                tools:visibility="visible"
-                android:visibility="gone"
                 android:contentDescription="@string/copy_to_clipboard"
                 android:src="@drawable/ic_copy"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/typography"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/typography" />
+                app:layout_constraintTop_toTopOf="@+id/typography"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider"
@@ -340,7 +340,7 @@
                 app:typographyType="body_2" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/typography13"
+                android:id="@+id/tpgDiscountAmountLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/layout_lvl2"
@@ -362,7 +362,7 @@
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/typography13"
+                app:layout_constraintTop_toBottomOf="@+id/tpgDiscountAmountLabel"
                 app:typographyType="body_2" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -510,10 +510,10 @@
                 android:maxLines="1"
                 android:text="@string/hyphen"
                 android:textColor="@color/Neutral_N700_96"
-                app:layout_constraintBottom_toBottomOf="@+id/typography13"
+                app:layout_constraintBottom_toBottomOf="@+id/tpgDiscountAmountLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toTopOf="@+id/typography13"
+                app:layout_constraintTop_toTopOf="@+id/tpgDiscountAmountLabel"
                 tools:text="Rp 20.000" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -713,17 +713,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_24"
+                android:layout_marginTop="@dimen/unify_space_4"
                 android:layout_marginEnd="@dimen/unify_space_24"
-                app:typographyType="heading_5"
-                android:visibility="gone"
-                tools:visibility="visible"
                 android:text="@string/manage_product"
                 android:textColor="@color/Unify_G500"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                android:layout_marginTop="@dimen/unify_space_4"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/tpgProductCount" />
+                app:layout_constraintTop_toBottomOf="@+id/tpgProductCount"
+                app:typographyType="heading_5"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/dividerBottom"
@@ -783,11 +783,27 @@
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupMaxDiscount"
-                android:visibility="gone"
-                tools:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="typography18,tpgMaxDiscount" />
+                android:visibility="gone"
+                app:constraint_referenced_ids="typography18,tpgMaxDiscount"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupMinimumPurchase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="typography14,tpgMinimumPurchaseType"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupDiscountType"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="typography12,tpgDiscountType" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

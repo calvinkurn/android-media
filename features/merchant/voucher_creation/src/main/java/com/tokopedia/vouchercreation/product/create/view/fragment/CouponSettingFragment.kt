@@ -505,6 +505,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipFreeShipping.chipType = ChipsUnify.TYPE_SELECTED
 
             selectedCouponType = CouponType.FREE_SHIPPING
+            selectedDiscountType = DiscountType.NONE
+            selectedMinimumPurchaseType = MinimumPurchaseType.NONE
+
             viewModel.couponTypeChanged(selectedCouponType)
 
             showFreeShippingCouponTypeWidget()

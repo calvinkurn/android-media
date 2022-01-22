@@ -212,10 +212,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         this.couponInformation =  couponInformation
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-    }
-
 
     override fun onResume() {
         super.onResume()
@@ -228,7 +224,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     private fun refreshCouponInformationSection(coupon: CouponInformation) {
         binding?.imgCopyToClipboard?.visible()
-        binding?.labelCouponInformationCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
+        binding?.labelCouponInformationCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
         binding?.labelCouponInformationCompleteStatus?.setLabel(getString(R.string.completed))
 
         val target = when (coupon.target) {
@@ -250,7 +246,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun refreshCouponSettingsSection(coupon: CouponSettings) {
-        binding?.labelCouponSettingCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
+        binding?.labelCouponSettingCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
         binding?.labelCouponSettingCompleteStatus?.setLabel(getString(R.string.completed))
 
         binding?.tpgCouponType?.text = coupon.type.label
@@ -258,16 +254,25 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding?.tpgMinimumPurchaseType?.text = coupon.minimumPurchaseType.label
         binding?.tpgCouponQouta?.text = coupon.quota.splitByThousand()
 
-        handleDiscountAmount(coupon.discountType, coupon.discountAmount, coupon.discountPercentage)
+        handleDiscountType(coupon.type)
+        handleDiscountAmount(coupon.type, coupon.discountType, coupon.discountAmount, coupon.discountPercentage)
         handleMaximumDiscount(coupon.type, coupon.discountType, coupon.maxDiscount)
-        handleMinimumPurchase(coupon.minimumPurchaseType, coupon.minimumPurchase)
+        handleMinimumPurchase(coupon.type, coupon.minimumPurchaseType, coupon.minimumPurchase)
         handleEstimatedMaxExpense(coupon.estimatedMaxExpense)
+    }
+
+    private fun handleDiscountType(couponType: CouponType) {
+        if (couponType == CouponType.FREE_SHIPPING) {
+            binding?.groupDiscountType?.gone()
+        } else {
+            binding?.groupDiscountType?.visible()
+        }
     }
 
     private fun refreshProductsSection(products: List<CouponProduct>) {
         binding?.tpgUpdateProduct?.isVisible = products.isNotEmpty()
         if (products.isNotEmpty()) {
-            binding?.labelProductCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
+            binding?.labelProductCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
             binding?.labelProductCompleteStatus?.setLabel(getString(R.string.completed))
 
             binding?.tpgProductCount?.text = String.format(getString(R.string.placeholder_registered_product), products.size)
@@ -279,18 +284,37 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleDiscountAmount(discountType: DiscountType, discountAmount: Int, discountPercentage: Int) {
-        if (discountType == DiscountType.PERCENTAGE) {
-            binding?.tpgDiscountAmount?.text = String.format(
-                getString(R.string.placeholder_percent),
-                discountPercentage.splitByThousand()
-            )
-        } else {
-            binding?.tpgDiscountAmount?.text = String.format(
+    private fun handleDiscountAmount(
+        couponType: CouponType,
+        discountType: DiscountType,
+        discountAmount: Int,
+        discountPercentage: Int
+    ) {
+        val formattedDiscountAmount = when {
+            couponType == CouponType.FREE_SHIPPING -> String.format(
                 getString(R.string.placeholder_rupiah),
                 discountAmount.splitByThousand()
             )
+            couponType == CouponType.CASHBACK && discountType == DiscountType.PERCENTAGE ->
+                String.format(
+                    getString(R.string.placeholder_percent),
+                    discountPercentage.splitByThousand()
+                )
+            else ->
+                String.format(
+                    getString(R.string.placeholder_rupiah),
+                    discountAmount.splitByThousand()
+                )
         }
+
+        val discountAmountLabel = when (couponType) {
+            CouponType.NONE -> EMPTY_STRING
+            CouponType.CASHBACK -> getString(R.string.discount_amount)
+            CouponType.FREE_SHIPPING -> getString(R.string.discount_amount_free_shipping)
+        }
+
+        binding?.tpgDiscountAmountLabel?.text = discountAmountLabel
+        binding?.tpgDiscountAmount?.text = formattedDiscountAmount
     }
 
     private fun handleMaximumDiscount(couponType : CouponType, discountType: DiscountType, maxDiscount: Int) {
@@ -315,20 +339,33 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun handleMinimumPurchase(
+        couponType: CouponType,
         minimumPurchaseType: MinimumPurchaseType,
         minimumPurchase: Int
     ) {
-        val text = when (minimumPurchaseType) {
-            MinimumPurchaseType.NONE -> EMPTY_STRING
-            MinimumPurchaseType.NOMINAL -> String.format(
+
+        if (couponType == CouponType.FREE_SHIPPING) {
+            binding?.groupMinimumPurchase?.gone()
+        } else {
+            binding?.groupMinimumPurchase?.visible()
+        }
+
+        val text = when {
+            couponType == CouponType.FREE_SHIPPING -> String.format(
                 getString(R.string.placeholder_rupiah),
                 minimumPurchase.splitByThousand()
             )
-            MinimumPurchaseType.QUANTITY -> String.format(
+            couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NONE -> EMPTY_STRING
+            couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOMINAL -> String.format(
+                getString(R.string.placeholder_rupiah),
+                minimumPurchase.splitByThousand()
+            )
+            couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.QUANTITY -> String.format(
                 getString(R.string.placeholder_quantity),
                 minimumPurchase.splitByThousand()
             )
-            MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
+            couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
+            else -> EMPTY_STRING
         }
 
         binding?.tpgMinimumPurchase?.text = text
