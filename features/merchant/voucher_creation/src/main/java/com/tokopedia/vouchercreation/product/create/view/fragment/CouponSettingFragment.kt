@@ -840,9 +840,11 @@ class CouponSettingFragment : BaseDaggerFragment() {
             when (coupon.discountType) {
                 DiscountType.NONE -> {}
                 DiscountType.NOMINAL -> {
+                    showNominalDiscountTypeWidget()
                     chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_SELECTED
                 }
                 DiscountType.PERCENTAGE -> {
+                    showPercentageDiscountTypeWidget()
                     textAreaDiscountPercentage.textAreaInput.setText(coupon.discountPercentage.splitByThousand())
                     textAreaMaximumDiscount.textAreaInput.setText(coupon.maxDiscount.splitByThousand())
                     chipDiscountTypePercentage.chipType = ChipsUnify.TYPE_SELECTED
