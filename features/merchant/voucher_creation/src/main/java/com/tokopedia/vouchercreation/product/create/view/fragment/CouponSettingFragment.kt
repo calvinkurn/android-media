@@ -550,14 +550,21 @@ class CouponSettingFragment : BaseDaggerFragment() {
     }
 
     private fun setupMinimumPurchaseTypeChips() {
-        binding.chipMinimumPurchaseNominal.selectedChangeListener = {
-            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.in_nominal)
+        binding.chipMinimumPurchaseNominal.selectedChangeListener = { isSelected ->
+            val label = if (isSelected) getString(R.string.in_nominal) else getString(R.string.nominal)
+            binding.chipMinimumPurchaseNominal.chipText = label
+        }
+
+        binding.chipMinimumPurchaseQuantity.selectedChangeListener = { isSelected ->
+            val label = if (isSelected) getString(R.string.in_quantity) else getString(R.string.quantity)
+            binding.chipMinimumPurchaseQuantity.chipText = label
+        }
+
+        binding.chipMinimumPurchaseNothing.selectedChangeListener = {
+            binding.chipMinimumPurchaseNothing.chipText = getString(R.string.nothing)
         }
 
         binding.chipMinimumPurchaseNominal.chip_container.setOnClickListener {
-            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.in_nominal)
-            binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.quantity)
-
             binding.groupCashbackMinimumPurchase.visible()
 
             binding.textAreaMinimumPurchase.textAreaInput.text = null
@@ -577,9 +584,6 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
 
         binding.chipMinimumPurchaseQuantity.chip_container.setOnClickListener {
-            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.nominal)
-            binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.in_quantity)
-
             binding.groupCashbackMinimumPurchase.visible()
 
             binding.textAreaMinimumPurchase.textAreaInput.text = null
@@ -599,9 +603,6 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
 
         binding.chipMinimumPurchaseNothing.chip_container.setOnClickListener {
-            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.nominal)
-            binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.quantity)
-
             binding.groupCashbackMinimumPurchase.gone()
 
             binding.textAreaMinimumPurchase.textAreaInput.text = null
