@@ -28,6 +28,7 @@ import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerform
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
+import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.uitest.stub.common.UserSessionStub
 import com.tokopedia.shop.score.uitest.stub.common.graphql.repository.GraphqlRepositoryStub
@@ -41,6 +42,7 @@ import com.tokopedia.shop.score.uitest.stub.common.util.isViewNotDisplayed
 import com.tokopedia.shop.score.uitest.stub.common.util.onClick
 import com.tokopedia.shop.score.uitest.stub.common.util.onContentDescPopup
 import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
+import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
 import com.tokopedia.shop.score.uitest.stub.common.util.smoothScrollTo
 import com.tokopedia.shop.score.uitest.stub.common.util.smoothScrollToFaq
 import com.tokopedia.shop.score.uitest.stub.common.util.withTextStr
@@ -595,6 +597,7 @@ abstract class ShopScoreTest {
         onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_1)).isViewDisplayed()
         onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_1)).isViewDisplayed()
         onContentDescPopup(coachMark2.stepButtonText).onClick()
+        activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
         onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_2)).isViewDisplayed()
         onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_2)).isViewDisplayed()
         onContentDescPopup(coachMark2.stepButtonTextLastChild).onClick()

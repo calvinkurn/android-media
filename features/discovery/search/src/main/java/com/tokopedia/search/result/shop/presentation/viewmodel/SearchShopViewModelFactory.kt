@@ -12,6 +12,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy as daggerLazy
 
+@Suppress("LongParameterList")
 internal class SearchShopViewModelFactory(
         private val coroutineDispatcher: CoroutineDispatchers,
         private val searchParameter: Map<String, Any>,
@@ -21,7 +22,7 @@ internal class SearchShopViewModelFactory(
         private val getShopCountUseCase: daggerLazy<UseCase<Int>>,
         private val shopCpmDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmDataView>>,
         private val shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
-        private val userSession: daggerLazy<UserSessionInterface>
+        private val userSession: daggerLazy<UserSessionInterface>,
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

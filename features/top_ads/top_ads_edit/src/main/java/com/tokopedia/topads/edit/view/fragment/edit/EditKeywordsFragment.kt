@@ -261,12 +261,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun getLatestBid() {
-        val dummyId: MutableList<String> = mutableListOf()
-        productId.forEach {
-            dummyId.add(it)
-        }
         val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
-        suggestionsDefault.add(DataSuggestions(Constants.PRODUCT, dummyId))
+        suggestionsDefault.add(DataSuggestions("", listOf(groupId.toString())))
         viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
     }
 

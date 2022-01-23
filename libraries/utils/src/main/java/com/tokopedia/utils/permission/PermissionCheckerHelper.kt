@@ -374,6 +374,10 @@ class PermissionCheckerHelper {
         }
     }
 
+    fun setListener(listener: PermissionCheckListener) {
+        this.listener = listener
+    }
+
     fun onPermissionDenied(@NonNull context: Context, @NonNull permissionText: String) {
         Toast.makeText(context, String.format(context.getString(TEXT_PERMISSION_DENIED),
                 permissionText),

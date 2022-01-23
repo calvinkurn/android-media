@@ -70,6 +70,7 @@
     <string name="saldo_deposit_app_name">Saldo</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="ovop2p_app_name">Saldo</string>
+    <string name="title_kyc_info_simple">Dokumen Data Diri</string>
     <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
     <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
 
@@ -220,8 +221,6 @@
     <string name="notif_troubleshooter_app_name">Push Notification Troubleshooter</string>
 
     <!-- Payment-Setting-->
-    <string name="df_payment_instant_debit_bca">Instant Debit BCA</string>
-    <string name="instant_debit_bca_title">Tambah Kartu BCA</string>
     <string name="payment_setting_app_name">payment_setting</string>
     <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
     <string name="payment_label_credit_card">Kartu Kredit</string>
