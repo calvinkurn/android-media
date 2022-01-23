@@ -30,11 +30,14 @@ class CatalogReviewContainerViewHolder(private val view : View,
             recyclerView.layoutManager = layoutManager
             recyclerView.adapter = CatalogReviewAdapter(it.take(MIN_SIZE_FOR_LIHAT_BUTTON), catalogDetailListener)
 
-            view.findViewById<Typography>(R.id.txt_see_all_partial_catalog)?.let { lihatView ->
+            view.findViewById<Typography>(R.id.txt_see_all_reviews)?.let { lihatView ->
                 if(it.size <= MIN_SIZE_FOR_LIHAT_BUTTON){
                     lihatView.hide()
                 }else{
                     lihatView.show()
+                    lihatView.setOnClickListener {
+                        catalogDetailListener.readMoreReviewsClicked(element.data.catalogId ?: "")
+                    }
                 }
             }
 

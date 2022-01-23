@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/rating_review_star_catalog"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="6dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:icon_color_light_enable="@color/Unify_Y300"
+            app:icon_color_night_enable="@color/Unify_Y300"
+            app:icon_name="STAR_FILLED"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/review_rating_catalog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyWeight="bold"
+            app:typographyType="body_3"
+            tools:text="2.7"
+            tools:visibility="visible"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/review_count_catalog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_N700_68"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            tools:visibility="visible"
+            tools:text="dari 1205 ulasan" />
+
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/review_rv_catalog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        tools:listitem="@layout/item_catalog_review"
+        tools:itemCount="3"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
+
+</LinearLayout>

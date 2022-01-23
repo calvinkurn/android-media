@@ -39,6 +39,16 @@ interface CatalogDetailListener {
      */
     fun comparisionCatalogClicked(comparisionCatalogId : String)
 
+    /**
+     * CatalogReviewContainerViewHolder
+     */
+    fun readMoreReviewsClicked(catalogId : String)
+
+    /**
+     * CatalogReviewViewHolder
+     */
+    fun onReviewImageClicked(position: Int, items : ArrayList<CatalogImage>)
+
     val childsFragmentManager: FragmentManager?
 
     val windowHeight: Int

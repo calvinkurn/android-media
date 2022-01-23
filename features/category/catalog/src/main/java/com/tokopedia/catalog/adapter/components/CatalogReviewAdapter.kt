@@ -7,7 +7,7 @@ import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
 import com.tokopedia.catalog.viewholder.components.CatalogReviewViewHolder
 
-class CatalogReviewAdapter (val list : List<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>, private val catalogDetailListener: CatalogDetailListener)
+class CatalogReviewAdapter (private var list : List<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>, private val catalogDetailListener: CatalogDetailListener?)
     : RecyclerView.Adapter<CatalogReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatalogReviewViewHolder {
@@ -20,5 +20,10 @@ class CatalogReviewAdapter (val list : List<CatalogProductReviewResponse.Catalog
         list[position]?.let {
             holder.bind(it,catalogDetailListener)
         }
+    }
+
+    fun submitList(data: List<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>){
+        this.list = data
+        notifyItemRangeInserted(0,data.size)
     }
 }

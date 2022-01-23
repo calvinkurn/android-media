@@ -83,6 +83,9 @@
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/layout_lvl2"
         android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_review_image"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.DividerUnify

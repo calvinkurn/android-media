@@ -93,6 +93,7 @@ data class ComparisionModel(
 
 @Parcelize
 data class ReviewComponentData(
+        val catalogId : String?,
         val avgRating: String?,
         val reviews: ArrayList<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>?,
         val totalHelpfulReview: Int?): Parcelable

@@ -41,6 +41,7 @@ import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.activity.CatalogYoutubePlayerActivity
+import com.tokopedia.catalog.ui.bottomsheet.CatalogAllReviewBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
@@ -378,6 +379,15 @@ class CatalogDetailPageFragment : Fragment(),
                     "origin: $catalogId - destination: $comparisionCatalogId",userSession.userId)
             RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisionCatalogId}")
         }
+    }
+
+    override fun readMoreReviewsClicked(catalogId: String) {
+        val catalogAllReviewBottomSheet = CatalogAllReviewBottomSheet.newInstance(catalogId,this)
+        catalogAllReviewBottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun onReviewImageClicked(position: Int, items: ArrayList<CatalogImage>) {
+        context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogId , position, items))
     }
 
     override fun hideFloatingLayout() {

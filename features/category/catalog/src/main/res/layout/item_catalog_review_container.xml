@@ -7,8 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_review_title_catalog"
         android:layout_width="wrap_content"
@@ -91,7 +89,7 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_see_all_partial_catalog"
+        android:id="@+id/txt_see_all_reviews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"

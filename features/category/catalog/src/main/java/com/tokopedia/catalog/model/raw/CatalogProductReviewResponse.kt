@@ -25,7 +25,7 @@ data class CatalogProductReviewResponse(
 
         data class ReviewData(
             @Expose @SerializedName("avgRating")
-            val avgRating: Double?,
+            val avgRating: String?,
             @Expose @SerializedName("reviews")
             val reviews: List<Review?>?,
             @Expose @SerializedName("totalHelpfulReview")
