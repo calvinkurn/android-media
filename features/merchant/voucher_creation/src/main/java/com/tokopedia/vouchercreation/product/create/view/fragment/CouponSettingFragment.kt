@@ -120,7 +120,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
     private fun observeCouponTypeChange() {
         viewModel.couponType.observe(viewLifecycleOwner, { selectedCouponType ->
             binding.btnSave.isEnabled = false
-            calculateMaxExpenseEstimation()
+
             if (selectedCouponType == CouponType.CASHBACK) {
                 clearCashbackSelection()
             } else {
@@ -496,7 +496,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
             selectedMinimumPurchaseType = MinimumPurchaseType.NOMINAL
 
             viewModel.couponTypeChanged(selectedCouponType)
-
+            calculateMaxExpenseEstimation()
             showCashbackCouponTypeWidget()
         }
 
@@ -510,6 +510,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             viewModel.couponTypeChanged(selectedCouponType)
 
+            calculateMaxExpenseEstimation()
             showFreeShippingCouponTypeWidget()
         }
     }
