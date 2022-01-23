@@ -29,13 +29,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.response.DistrictItem
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
@@ -146,37 +146,35 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             val phoneNumberOnly = removeSpecialChars(contact?.contactNumber.toString())
             binding.formAccount.etNomorHp.textFieldInput.setText(phoneNumberOnly)
         } else if (requestCode == REQUEST_PINPONT_PAGE && resultCode == Activity.RESULT_OK) {
-            val isNegativeFullFlow = data?.getBooleanExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
-            val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
+            val isResetToSearchPage = data?.getBooleanExtra(EXTRA_RESET_TO_SEARCH_PAGE, false) ?: false
+            if (isResetToSearchPage) {
+                activity?.run {
+                    setResult(Activity.RESULT_OK, Intent())
+                    finish()
+                }
+            }
             saveDataModel = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
             if (saveDataModel == null) {
                 saveDataModel = data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
             }
-            if (isNegativeFullFlow == true && isFromAddressForm == false) {
-                finishActivity(saveDataModel)
-            } else {
-                currentKotaKecamatan = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
-                binding.formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
-                saveDataModel?.let {
-                    if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
-                        currentLat = it.latitude.toDouble()
-                        currentLong = it.longitude.toDouble()
-                        binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
-                        binding.cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
-                        if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode = currentPostalCode
+            currentKotaKecamatan = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
+            binding.formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
+            saveDataModel?.let {
+                if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
+                    currentLat = it.latitude.toDouble()
+                    currentLong = it.longitude.toDouble()
+                    binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
+                    binding.cardAddressNegative.addressDistrict.text = context?.let {
+                        HtmlLinkHelper(
+                            it,
+                            getString(R.string.tv_pinpoint_defined)
+                        ).spannedString
                     }
+                    if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode =
+                        currentPostalCode
                 }
             }
 
-        }
-    }
-
-    private fun finishActivity(data: SaveAddressDataModel?) {
-        activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
-            })
-            finish()
         }
     }
 
