@@ -790,7 +790,7 @@
                 tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupMinimumPurchase"
+                android:id="@+id/groupMinimumPurchaseType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -800,10 +800,26 @@
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupDiscountType"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="typography12,tpgDiscountType"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupDiscountAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
                 tools:visibility="visible"
+                app:constraint_referenced_ids="tpgDiscountAmount,tpgDiscountAmountLabel" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupMinimumPurchase"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="typography12,tpgDiscountType" />
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:constraint_referenced_ids="typography15,tpgMinimumPurchase" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

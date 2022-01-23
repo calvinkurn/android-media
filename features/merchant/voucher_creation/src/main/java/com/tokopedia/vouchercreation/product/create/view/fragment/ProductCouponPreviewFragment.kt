@@ -251,12 +251,13 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
         binding?.tpgCouponType?.text = coupon.type.label
         binding?.tpgDiscountType?.text = coupon.discountType.label
-        binding?.tpgMinimumPurchaseType?.text = coupon.minimumPurchaseType.label
+
         binding?.tpgCouponQouta?.text = coupon.quota.splitByThousand()
 
         handleDiscountType(coupon.type)
         handleDiscountAmount(coupon.type, coupon.discountType, coupon.discountAmount, coupon.discountPercentage)
         handleMaximumDiscount(coupon.type, coupon.discountType, coupon.maxDiscount)
+        handleMinimumPurchaseType(coupon.type, coupon.minimumPurchaseType)
         handleMinimumPurchase(coupon.type, coupon.minimumPurchaseType, coupon.minimumPurchase)
         handleEstimatedMaxExpense(coupon.estimatedMaxExpense)
     }
@@ -290,6 +291,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         discountAmount: Int,
         discountPercentage: Int
     ) {
+        if (discountAmount > ZERO) {
+            binding?.groupDiscountAmount?.visible()
+        } else {
+            binding?.groupDiscountAmount?.gone()
+        }
+
         val formattedDiscountAmount = when {
             couponType == CouponType.FREE_SHIPPING -> String.format(
                 getString(R.string.placeholder_rupiah),
@@ -338,37 +345,48 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleMinimumPurchase(
+    private fun handleMinimumPurchaseType(
         couponType: CouponType,
-        minimumPurchaseType: MinimumPurchaseType,
-        minimumPurchase: Int
+        minimumPurchaseType: MinimumPurchaseType
     ) {
 
         if (couponType == CouponType.FREE_SHIPPING) {
-            binding?.groupMinimumPurchase?.gone()
+            binding?.groupMinimumPurchaseType?.gone()
         } else {
+            binding?.groupMinimumPurchaseType?.visible()
+            binding?.tpgMinimumPurchaseType?.text = minimumPurchaseType.label
+        }
+
+    }
+
+
+    private fun handleMinimumPurchase(couponType: CouponType, minimumPurchaseType: MinimumPurchaseType, minimumPurchase: Int) {
+        if (minimumPurchase > ZERO) {
             binding?.groupMinimumPurchase?.visible()
+            val text = when {
+                couponType == CouponType.FREE_SHIPPING -> String.format(
+                    getString(R.string.placeholder_rupiah),
+                    minimumPurchase.splitByThousand()
+                )
+                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NONE -> EMPTY_STRING
+                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOMINAL -> String.format(
+                    getString(R.string.placeholder_rupiah),
+                    minimumPurchase.splitByThousand()
+                )
+                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.QUANTITY -> String.format(
+                    getString(R.string.placeholder_quantity),
+                    minimumPurchase.splitByThousand()
+                )
+                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
+                else -> EMPTY_STRING
+            }
+
+            binding?.tpgMinimumPurchase?.text = text
+
+        } else {
+            binding?.groupMinimumPurchase?.gone()
         }
 
-        val text = when {
-            couponType == CouponType.FREE_SHIPPING -> String.format(
-                getString(R.string.placeholder_rupiah),
-                minimumPurchase.splitByThousand()
-            )
-            couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NONE -> EMPTY_STRING
-            couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOMINAL -> String.format(
-                getString(R.string.placeholder_rupiah),
-                minimumPurchase.splitByThousand()
-            )
-            couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.QUANTITY -> String.format(
-                getString(R.string.placeholder_quantity),
-                minimumPurchase.splitByThousand()
-            )
-            couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
-            else -> EMPTY_STRING
-        }
-
-        binding?.tpgMinimumPurchase?.text = text
     }
 
     private fun redirectToSellerEduPage() {
@@ -387,9 +405,9 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     private fun handleCouponProductInformationVisibility() {
         if (isCardExpanded) {
-            expandCouponProductDescription()
-        } else {
             collapseCouponProductDescription()
+        } else {
+            expandCouponProductDescription()
         }
 
         isCardExpanded = !isCardExpanded
