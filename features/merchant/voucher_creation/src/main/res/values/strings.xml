@@ -393,6 +393,7 @@
     <string name="placeholder_percent">%s\%%</string>
     <string name="placeholder_registered_product">(%s/100)</string>
     <string name="placeholder_coupon_period">%s, %s WIB - %s, %s WIB</string>
+    <string name="placeholder_scheduled_coupon_period">Kupon \"%s\" aktif pada %s, %s WIB - %s, %s WIB</string>
     <string name="cashback_percentage">Persentase cashback</string>
     <string name="error_message_discount_percentage_range">Diskon minimal 2%, maksimal 100%</string>
     <string name="error_message_discount_percentage_below_minimum">Min. 2%</string>
@@ -409,6 +410,11 @@
     <string name="max_expense_estimation_1">Biaya promosi akan terhitung setelah pembeli menggunakan Kupon Produk dalam pembelian.</string>
     <string name="max_expense_estimation_2">Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
     <string name="max_expense_estimation_3">Tidak perlu bayar di muka.</string>
+    <string name="coupon_scheduled">Yay, Kupon dijadwalkan!</string>
+    <string name="share_to_buyer">Bagikan ke Calon Pembeli</string>
+    <string name="broadcast_suggestion">Potensi tingkatkan orderan toko 2x lipat.</string>
+    <string name="error_message_create_coupon_product">Yaah, gagal menambahkan Kupon Produk</string>
+    <string name="error_message_create_coupon_description">Kupon kamu gagal ditambahkan. Coba buat ulang atau hubungi Pusat Bantuan.</string>
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
