@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
+import android.widget.ScrollView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
@@ -152,6 +154,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var hasCategoryFromPicker = false
     private var isFragmentVisible = false
     private var needToSetCategoryName = false
+
+    private var scrollViewParent: ScrollView? = null
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -290,6 +294,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
+
+        scrollViewParent = view.findViewById(R.id.scrollViewParent)
 
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
@@ -670,8 +676,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         submitButton?.setOnClickListener {
             submitButton?.isLoading = true
             validateInput()
-            // validate product name before submit data
-            viewModel.validateProductNameInputFromNetwork(productNameField.getText())
+            validateSpecificationList()
         }
 
         setupDefaultFieldMessage()
@@ -1582,6 +1587,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun validateSpecificationList() {
+        if (viewModel.validateSelectedSpecificationList()) {
+            viewModel.validateProductNameInputFromNetwork(productNameField.getText())
+        } else {
+            submitButton?.isLoading = false
+            scrollViewParent?.post {
+                scrollViewParent?.smoothScrollTo(Int.ZERO, productSpecificationLayout?.top.orZero())
+                productSpecificationTextView?.text = MethodChecker.fromHtml(
+                    getString(R.string.error_specification_signal_status_empty_red))
+            }
+        }
     }
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {

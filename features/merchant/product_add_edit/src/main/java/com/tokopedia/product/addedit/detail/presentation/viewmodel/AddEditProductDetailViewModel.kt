@@ -7,7 +7,7 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -43,10 +43,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -201,12 +204,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         addSource(mIsProductSkuInputError) {
             this.value = isInputValid()
         }
-        addSource(mSelectedSpecificationList) {
-            this.value = isInputValid()
-        }
-        addSource(mHasRequiredSpecification) {
-            this.value = isInputValid()
-        }
     }
     val isInputValid: LiveData<Boolean>
         get() = mIsInputValid
@@ -254,15 +251,10 @@ class AddEditProductDetailViewModel @Inject constructor(
         // by default the product sku is allowed to empty
         val isProductSkuError = mIsProductSkuInputError.value ?: false
 
-        val specificationError = hasRequiredSpecification.value.orFalse() &&
-                !mSelectedSpecificationList.value.orEmpty().any {
-                    it.specificationVariant == SIGNAL_STATUS_VARIANT }
-
         return (!isProductPhotoError && !isProductNameError &&
                 !isProductPriceError && !isProductStockError &&
                 !isOrderQuantityError && !isProductWholeSaleError &&
-                !isPreOrderDurationError && !isProductSkuError &&
-                !specificationError)
+                !isPreOrderDurationError && !isProductSkuError)
     }
 
     fun validateProductPhotoInput(productPhotoCount: Int) {
@@ -697,6 +689,12 @@ class AddEditProductDetailViewModel @Inject constructor(
             } else {
                 result
             }
+        }
+    }
+
+    fun validateSelectedSpecificationList(): Boolean {
+        return !hasRequiredSpecification.value.orTrue() || mSelectedSpecificationList.value.orEmpty().any {
+            it.specificationVariant == SIGNAL_STATUS_VARIANT
         }
     }
 

@@ -389,6 +389,7 @@
     <string name="action_specification_refresh">Muat Ulang</string>
     <string name="action_specification_counter">, +%1$d lainnya</string>
     <string name="error_specification_signal_status_empty">Status sinyal wajib diisi, ya.</string>
+    <string name="error_specification_signal_status_empty_red"><![CDATA[<font color=\'#D6001C\'>Status sinyal belum terisi.</font>.]]></string>
 
     <!-- Product Limitation -->
     <string name="label_product_limitation_start_date">10 Mei 2021</string>
