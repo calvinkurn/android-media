@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.inbox.fake.common.FakeUserSession
 import com.tokopedia.inbox.fake.domain.chat.websocket.FakeTopchatWebSocket
 import com.tokopedia.topchat.chatlist.di.ChatListScope
-import com.tokopedia.topchat.chatlist.domain.websocket.*
+import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides

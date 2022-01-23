@@ -20,7 +20,7 @@ class FlightCancellationRefundBottomSheet : BottomSheetUnify() {
 
     init {
         isFullpage = false
-        setTitle(getString(com.tokopedia.flight.orderlist.R.string.flight_order_status_refund_label))
+        setTitle(getString(R.string.flight_order_status_refund_label))
         isDragable = false
     }
 
