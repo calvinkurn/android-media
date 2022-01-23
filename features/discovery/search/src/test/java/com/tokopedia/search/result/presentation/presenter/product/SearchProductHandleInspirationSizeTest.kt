@@ -64,6 +64,10 @@ internal class SearchProductHandleInspirationSizeTest: ProductListPresenterTestF
         }
 
         productListPresenter.loadData(searchParameter)
+
+        val visitableList = visitableListSlot.captured
+
+        `Then init size option filter and set default selected`(visitableList.filterIsInstance<InspirationSizeDataView>())
     }
 
     private fun `Then verify view set product list`() {
@@ -214,6 +218,13 @@ internal class SearchProductHandleInspirationSizeTest: ProductListPresenterTestF
                     "visitable list at index $index should be ProductItemViewModel"
                 )
             }
+        }
+    }
+
+    private fun `Then init size option filter and set default selected`(dataView: List<InspirationSizeDataView>) {
+        verify {
+            productListView.initSizeOptionFilter(dataView.toMutableList())
+            productListView.setSelectedSizeOption(dataView.toMutableList())
         }
     }
 }
