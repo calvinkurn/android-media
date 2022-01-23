@@ -118,9 +118,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         observeValidCoupon()
-
-        observeCouponImageUrl()
-        observeCouponEligibility()
         observeCreateCouponResult()
     }
 
@@ -130,8 +127,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding?.tpgCouponSetting?.setOnClickListener { onNavigateToCouponSettingsPage() }
         binding?.tpgAddProduct?.setOnClickListener { onNavigateToProductListPage() }
         binding?.btnCreateCoupon?.setOnClickListener {
-            viewModel.generateImage(
-                ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL, couponProducts
+            viewModel.createCoupon(
+                ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
+                false,
+                couponInformation ?: return@setOnClickListener,
+                couponSettings ?: return@setOnClickListener,
+                couponProducts,
             )
         }
         binding?.imgExpenseEstimationDescription?.setOnClickListener { displayExpenseEstimationDescription() }
@@ -142,32 +143,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             copyToClipboard(content)
         }
 
-    }
-
-    private fun observeCouponImageUrl() {
-        viewModel.couponImageUrl.observe(viewLifecycleOwner, { imageUrl ->
-            if (imageUrl == null ) {
-                //error
-            } else {
-                viewModel.checkVoucherEligibility()
-            }
-        })
-    }
-
-
-    private fun observeCouponEligibility() {
-        viewModel.couponEligibility.observe(viewLifecycleOwner, { result ->
-            if (result is Success) {
-                viewModel.createCoupon(
-                    couponInformation ?: return@observe,
-                    couponSettings ?: return@observe,
-                    couponProducts,
-                    result.data.token
-                )
-            } else {
-
-            }
-        })
     }
 
     private fun observeValidCoupon() {

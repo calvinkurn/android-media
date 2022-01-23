@@ -42,7 +42,8 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
-        token: String
+        token: String,
+        imageUrl : String
     ): RequestParams {
         val isPublic = if (couponInformation.target == CouponInformation.Target.PUBLIC) 1 else 0
         val startDate =
@@ -74,9 +75,9 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
             dateEnd = endDate,
             hourStart = startHour,
             hourEnd = endHour,
-            image = "819f5677-e6c7-49b9-872c-fe994c94dc9",
-            imageSquare = "819f5677-e6c7-49b9-872c-fe994c94dc9b",
-            imagePortrait = "819f5677-e6c7-49b9-872c-fe994c94dc9b",
+            image = imageUrl,
+            imageSquare = imageUrl,
+            imagePortrait = imageUrl,
             isPublic = isPublic,
             minPurchase = couponSettings.minimumPurchase,
             quota = couponSettings.quota,
@@ -89,7 +90,7 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
             productIdsCsvUrl = ""
         )
 
-        val json = Gson().toJson(params)
+
         return RequestParams.create().apply {
             putObject(CREATE_PARAM_KEY, params)
         }
