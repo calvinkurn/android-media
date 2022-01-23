@@ -11,12 +11,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.otaliastudios.cameraview.*
-import com.otaliastudios.cameraview.controls.Audio
-import com.otaliastudios.cameraview.controls.Facing
-import com.otaliastudios.cameraview.controls.Flash
-import com.otaliastudios.cameraview.controls.Mode
-import com.otaliastudios.cameraview.gesture.Gesture
-import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.component.uiComponent
@@ -30,7 +24,7 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.main.PickerActivity
 import com.tokopedia.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.picker.ui.fragment.camera.component.CameraControllerComponent
-import com.tokopedia.picker.utils.MediaFileUtils
+import com.tokopedia.picker.ui.fragment.camera.component.CameraPreviewComponent
 import com.tokopedia.picker.utils.exceptionHandler
 import com.tokopedia.picker.utils.generateFile
 import com.tokopedia.picker.utils.wrapper.FlingGestureWrapper
@@ -38,7 +32,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
 import javax.inject.Inject
 
-open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.Listener {
+open class CameraFragment : BaseDaggerFragment()
+    , CameraControllerComponent.Listener
+    , CameraPreviewComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -47,7 +43,7 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
 
     private val param = PickerUiConfig.pickerParam()
 
-    private var isPhotoMode = true
+    private var isTakingPictureMode = true
     private var isFlashOn = false
 
     private val viewModel by lazy {
@@ -57,21 +53,16 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
         )[CameraViewModel::class.java]
     }
 
-    private val cameraController by uiComponent {
-        CameraControllerComponent(param, this, it)
-    }
-
-    private val cameraView by lazy {
-        binding?.cameraView
-    }
+    private val preview by uiComponent { CameraPreviewComponent(param, this, it) }
+    private val controller by uiComponent { CameraControllerComponent(param, this, it) }
 
     val gestureDetector by lazy {
         GestureDetector(requireContext(), FlingGestureWrapper(
             swipeLeftToRight = {
-                cameraController.scrollToVideoMode()
+                controller.scrollToVideoMode()
             },
             swipeRightToLeft = {
-                cameraController.scrollToPhotoMode()
+                controller.scrollToPhotoMode()
             }
         ))
     }
@@ -91,34 +82,30 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservable()
-        setupCameraView()
-        cameraController.setupView()
+        preview.setupView(viewLifecycleOwner)
+        controller.setupView()
     }
 
     override fun onResume() {
         super.onResume()
-        exceptionHandler {
-            cameraView?.open()
-        }
+        preview.open()
     }
 
     override fun onPause() {
         super.onPause()
-        exceptionHandler {
-            cameraView?.close()
-        }
+        preview.close()
     }
 
     override fun onCameraModeChanged(mode: Int) {
-        isPhotoMode = mode == CameraControllerComponent.PHOTO_MODE
+        isTakingPictureMode = mode == CameraControllerComponent.PHOTO_MODE
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         exceptionHandler {
             listener = null
-            cameraView?.destroy()
-            cameraController.release()
+            preview.release()
+            controller.release()
         }
     }
 
@@ -127,38 +114,47 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
         listener = (context as PickerActivity)
     }
 
-    override fun isFrontFacingCamera(): Boolean {
-        return cameraView?.facing == Facing.FRONT
+    override fun isFacingCameraIsFront(): Boolean {
+        return preview.isFacingCameraIsFront()
+    }
+
+    override fun isCameraFlashOn(): Boolean {
+        return isFlashOn
     }
 
     override fun onFlashClicked() {
         if (isFlashOn) {
             isFlashOn = false
-            cameraController.setFlashMode(isFlashOn)
+            controller.setFlashMode(isFlashOn)
         } else {
             isFlashOn = true
-            cameraController.setFlashMode(isFlashOn)
+            controller.setFlashMode(isFlashOn)
         }
     }
 
     override fun onFlipClicked() {
-        if (isTakingPicture() || isTakingVideo()) return
-        cameraView?.toggleFacing()
+        if (preview.isTakingPicture() || preview.isTakingVideo()) return
+        preview.toggleFacing()
     }
 
     override fun onTakeMediaClicked() {
-        if (isVideoMode() && isTakingVideo()) {
-            cameraView?.stopVideo()
+        if (preview.isVideoMode() && preview.isTakingVideo()) {
+            preview.stopVideo()
             return
         }
 
         showShutterEffect {
-            enableFlashTorch()
+            preview.enableFlashTorch()
 
-            if (isPhotoMode) {
-                onCapturePhoto()
+            if (isTakingPictureMode) {
+                preview.onStartTakePicture()
             } else {
-                onRecordVideo()
+                preview.onStartTakeVideo()
+                controller.onVideoDurationChanged {
+                    requireActivity().runOnUiThread {
+                        controller.setVideoDurationLabel(it)
+                    }
+                }
             }
         }
     }
@@ -179,6 +175,29 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
         ).show()
     }
 
+    override fun onCameraOpened(options: CameraOptions) {
+        controller.isFlashSupported(preview.hasFlashFeatureOnCamera())
+        controller.hasFrontCamera(preview.hasFrontCamera())
+    }
+
+    override fun onVideoRecordingStart() {
+        onStartRecordVideo()
+    }
+
+    override fun onVideoRecordingEnd() {
+        onStopRecordVideo()
+    }
+
+    override fun onVideoTaken(result: VideoResult) {
+        onRenderThumbnailCameraCaptured(result.file)
+    }
+
+    override fun onPictureTaken(result: PictureResult) {
+        generateFile(preview.pictureSize(), result.data) {
+            onRenderThumbnailCameraCaptured(it)
+        }
+    }
+
     private fun initObservable() {
 //        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
 //            viewModel.uiEvent.collect {
@@ -196,88 +215,20 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
 //        }
     }
 
-    private fun setupCameraView() {
-        binding?.cameraView?.apply {
-            clearCameraListeners()
-            setLifecycleOwner(viewLifecycleOwner)
-            addCameraListener(cameraViewListener())
-            mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
-        }
-    }
-
-    private fun onCapturePhoto() {
-        cameraView?.set(Mode.PICTURE)
-        cameraView?.takePictureSnapshot()
-    }
-
-    private fun onRecordVideo() {
-        cameraView?.set(Mode.VIDEO)
-        cameraView?.set(Audio.ON)
-
-        cameraController.onObserveVideoDuration { countDown ->
-            activity?.runOnUiThread {
-                cameraController.onChangeVideoDuration(countDown)
-            }
-        }
-
-        cameraView?.takeVideoSnapshot(
-            MediaFileUtils.createMediaFile(false),
-            param.maxVideoDuration
-        )
-    }
-
     private fun onStartRecordVideo() {
-        cameraController.startRecording()
-        listener?.tabVisibility(true)
-    }
-
-    private fun onStopRecordVideo() {
-        cameraController.stopRecording()
+        controller.startRecording()
         listener?.tabVisibility(false)
     }
 
-    private fun cameraViewListener() = object : CameraListener() {
-        override fun onCameraOpened(options: CameraOptions) {
-            super.onCameraOpened(options)
-            cameraController.isFlashSupported(hasFlashFeatureOnCamera())
-            cameraController.hasFrontCamera(hasFrontCamera())
-        }
-
-        override fun onVideoRecordingStart() {
-            super.onVideoRecordingStart()
-            onStartRecordVideo()
-        }
-
-        override fun onVideoRecordingEnd() {
-            super.onVideoRecordingEnd()
-            disableFlashTorch()
-            onStopRecordVideo()
-        }
-
-        override fun onVideoTaken(result: VideoResult) {
-            super.onVideoTaken(result)
-            disableFlashTorch()
-            onRenderThumbnailCameraCaptured(result.file)
-        }
-
-        override fun onPictureTaken(result: PictureResult) {
-            super.onPictureTaken(result)
-            disableFlashTorch()
-            generateFile(cameraView?.pictureSize, result.data) {
-                onRenderThumbnailCameraCaptured(it)
-            }
-        }
-
-        override fun onCameraError(exception: CameraException) {
-            super.onCameraError(exception)
-            disableFlashTorch()
-        }
+    private fun onStopRecordVideo() {
+        controller.stopRecording()
+        listener?.tabVisibility(true)
     }
 
     private fun onRenderThumbnailCameraCaptured(file: File?) {
         if (file == null) return
 
-        cameraController.setThumbnailPreview(file)
+        controller.setThumbnailPreview(file)
 //        EventBusFactory.emit(EventState.CameraCaptured(file.createFoCameraCaptured()))
     }
 
@@ -289,34 +240,6 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
             action()
         }, OVERLAY_SHUTTER_DELAY)
     }
-
-    private fun hasFrontCamera() = cameraView
-        ?.cameraOptions
-        ?.supportedFacing
-        ?.isNotEmpty() == true
-
-    private fun hasFlashFeatureOnCamera() = cameraView
-        ?.cameraOptions
-        ?.supportedFlash
-        ?.contains(Flash.TORCH) == true
-
-    private fun enableFlashTorch() {
-        if (hasFlashFeatureOnCamera() && isFlashOn) {
-            cameraView?.flash = Flash.TORCH
-        }
-    }
-
-    private fun disableFlashTorch() {
-        if (hasFlashFeatureOnCamera() && isFlashOn) {
-            cameraView?.flash = Flash.OFF
-        }
-    }
-
-    private fun isVideoMode() = cameraView?.mode == Mode.VIDEO
-
-    private fun isTakingPicture() = cameraView?.isTakingPicture == true
-
-    private fun isTakingVideo() = cameraView?.isTakingVideo == true
 
     override fun initInjector() {
         DaggerPickerComponent.builder()

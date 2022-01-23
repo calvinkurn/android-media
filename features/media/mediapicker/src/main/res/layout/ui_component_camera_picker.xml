@@ -6,7 +6,6 @@
     android:id="@+id/uc_camera_controller"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="?attr/actionBarSize"
     tools:background="@color/black">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -30,7 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lst_camera_mode"
-        android:padding="8dp"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -38,7 +36,14 @@
             android:id="@+id/txt_countdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="00:12 /"
+            tools:text="00:12"
+            android:textColor="@color/Unify_Static_White" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/separator_recording_duration"
+            android:layout_marginStart="4dp"
             android:textColor="@color/Unify_Static_White" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -75,6 +80,7 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/camera_control"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -89,6 +95,8 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:layout_marginEnd="@dimen/unify_space_8"
+            android:visibility="invisible"
+            tools:visibility="visible"
             android:src="@drawable/picker_ic_camera_flash_off"/>
 
         <ImageView
@@ -96,6 +104,8 @@
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:layout_marginStart="@dimen/unify_space_8"
+            android:visibility="invisible"
+            tools:visibility="visible"
             android:src="@drawable/picker_ic_camera_flip_mode" />
 
     </LinearLayout>

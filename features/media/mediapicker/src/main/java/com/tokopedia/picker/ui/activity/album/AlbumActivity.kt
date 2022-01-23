@@ -57,7 +57,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     override fun onCloseClicked() {
-        finish()
+        onBackPressed()
     }
 
     private fun initObservable() {

@@ -13,7 +13,8 @@ import com.tokopedia.picker.databinding.ViewItemSelectionThumbnailBinding
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.picker.utils.pickerLoadImage
-import com.tokopedia.picker.utils.videoDurationFromUri
+import com.tokopedia.picker.utils.extractVideoDuration
+import com.tokopedia.picker.utils.toVideoDurationFormat
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -23,14 +24,17 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(media: MediaUiModel, deletedOnClick: () -> Unit = {}) {
         binding?.imageView?.pickerLoadImage(media.path)
+        renderVideoDuration(media.path)
 
         binding?.ivDelete?.setOnClickListener {
             deletedOnClick()
         }
+    }
 
-        if (isVideoFormat(media.path)) {
-            val durationVideo = videoDurationFromUri(context, Uri.parse(media.path))
-            binding?.tvDuration?.text = durationVideo
+    private fun renderVideoDuration(path: String) {
+        if (isVideoFormat(path)) {
+            val durationVideo = extractVideoDuration(context, Uri.parse(path))
+            binding?.tvDuration?.text = durationVideo.toVideoDurationFormat()
             binding?.tvDuration?.show()
         } else {
             binding?.tvDuration?.hide()

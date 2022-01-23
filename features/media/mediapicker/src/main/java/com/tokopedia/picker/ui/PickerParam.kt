@@ -1,6 +1,7 @@
 package com.tokopedia.picker.ui
 
 import android.annotation.SuppressLint
+import com.tokopedia.picker.common.PickerPageType
 import java.io.File
 
 @SuppressLint("ResponseFieldAnnotation")
@@ -13,8 +14,13 @@ data class PickerParam(
     var isIncludeAnimation: Boolean = false,
     var isMultipleSelection: Boolean = true,
     var excludedImages: List<File> = emptyList(),
+    var pageType: Int = PickerPageType.COMMON,
     var cameraRatio: CameraRatio = CameraRatio.Full
-)
+) {
+
+    fun isCommonPageType() = pageType == PickerPageType.COMMON
+
+}
 
 sealed class CameraRatio {
     object Square: CameraRatio()

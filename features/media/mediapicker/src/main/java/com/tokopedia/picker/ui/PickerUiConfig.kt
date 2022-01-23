@@ -28,12 +28,14 @@ object PickerUiConfig {
     // picker global parameter
     private var pickerParam: PickerParam? = null
 
+    // TODO mode
     fun pickerParam(): PickerParam {
         val isOnlyVideo = paramMode == PickerModeType.VIDEO_ONLY
         val isIncludeVideo = paramMode == PickerModeType.COMMON
         val isMultipleSelection = paramType == PickerSelectionType.MULTIPLE
 
         return pickerParam ?: PickerParam(
+            pageType = paramPage,
             isOnlyVideo = isOnlyVideo,
             isIncludeVideo = isIncludeVideo,
             isMultipleSelection = isMultipleSelection,

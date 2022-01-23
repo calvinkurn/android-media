@@ -29,7 +29,9 @@ object EventBusFactory {
             coroutineScope,
             SharingStarted.WhileSubscribed(500),
             1
-        )
+        ).onCompletion {
+            emit(EventState.Idle)
+        }
     }
 
 }

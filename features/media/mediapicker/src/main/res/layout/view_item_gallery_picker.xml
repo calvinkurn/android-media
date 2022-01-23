@@ -14,25 +14,46 @@
         android:scaleType="centerCrop"/>
 
     <View
-        android:id="@+id/view_alpha"
+        android:id="@+id/bg_video_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:alpha="0.6"
+        android:background="@drawable/bg_picker_video_thumbnail"/>
+
+    <View
+        android:id="@+id/view_selected"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"/>
+        android:alpha="0.2"
+        android:background="@drawable/bg_picker_gallery_selected"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_check"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:background="@drawable/bg_picker_circle_white_color"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_name="CHECK_CIRCLE"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/view_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:background="@android:color/black"
-        android:paddingBottom="@dimen/unify_space_4"
-        android:paddingLeft="@dimen/unify_space_16"
-        android:paddingRight="@dimen/unify_space_16"
-        android:paddingTop="@dimen/unify_space_4"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/unify_font_12"
         android:visibility="gone"
-        app:typographyWeight="reguler"
+        app:typographyType="body_3"
         tools:text="Label"
         tools:visibility="visible"/>
 

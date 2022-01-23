@@ -1,8 +1,6 @@
 package com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter
 
 import android.annotation.SuppressLint
-import android.net.Uri
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +9,17 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.databinding.ViewItemGalleryPickerBinding
 import com.tokopedia.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.MediaDiffUtil
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.picker.utils.extractVideoDuration
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.picker.utils.pickerLoadImage
-import com.tokopedia.picker.utils.videoDurationFromUri
+import com.tokopedia.picker.utils.toVideoDurationFormat
 import com.tokopedia.utils.view.binding.viewBinding
 
 class GalleryAdapter(
@@ -126,7 +126,9 @@ class GalleryAdapter(
         fun bind(element: MediaUiModel, isSelected: Boolean, click: () -> Unit) {
             videoDurationLabel(element)
 
-            binding?.viewAlpha?.alpha = if (isSelected) 0.5f else 0f
+            binding?.icCheck?.showWithCondition(isSelected)
+            binding?.viewSelected?.alpha = if (isSelected) 0.5f else 0f
+
             binding?.imgPreview?.pickerLoadImage(element.uri.toString())
 
             itemView.setOnClickListener {
@@ -135,12 +137,12 @@ class GalleryAdapter(
         }
 
         private fun videoDurationLabel(element: MediaUiModel) {
-            if (isVideoFormat(element.path)) {
-                val uri = Uri.withAppendedPath(
-                    MediaStore.Files.getContentUri("external"), "" + element.id
-                )
+            val isVideo = isVideoFormat(element.path)
+            binding?.bgVideoShadow?.showWithCondition(isVideo)
 
-                binding?.viewLabel?.text = videoDurationFromUri(context, uri)
+            if (isVideo) {
+                val duration = extractVideoDuration(context, element.id)
+                binding?.viewLabel?.text = duration.toVideoDurationFormat()
                 binding?.viewLabel?.show()
             } else {
                 binding?.viewLabel?.hide()

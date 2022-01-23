@@ -8,12 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <com.otaliastudios.cameraview.CameraView
-        android:id="@+id/cameraView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-<!--    <include layout="@layout/ui_component_camera_preview"/>-->
+    <include layout="@layout/ui_component_camera_preview"/>
 
     <View
         android:id="@+id/container_blink"
@@ -27,6 +22,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/picker_page_margin_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

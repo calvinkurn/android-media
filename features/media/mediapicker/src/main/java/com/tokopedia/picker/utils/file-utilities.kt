@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
 import com.otaliastudios.cameraview.CameraUtils
@@ -12,6 +13,7 @@ import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 import java.net.URLConnection
+import android.provider.MediaStore.Files.getContentUri as getContentUri
 
 const val DEFAULT_DURATION_LABEL = "00:00"
 
@@ -66,8 +68,8 @@ fun isVideoFormat(path: String): Boolean {
     return mimeType != null && mimeType.startsWith(prefix)
 }
 
-fun videoDurationFromUri(context: Context?, uri: Uri): String {
-    try {
+fun extractVideoDuration(context: Context?, uri: Uri): Long? {
+    return try {
         val retriever = MediaMetadataRetriever()
         retriever.setDataSource(context, uri)
 
@@ -77,15 +79,22 @@ fun videoDurationFromUri(context: Context?, uri: Uri): String {
 
         retriever.release()
 
-        val duration = durationData?.toLongOrNull() ?: return DEFAULT_DURATION_LABEL
-
-        return videoDurationLabel(duration)
+        durationData?.toLongOrNull()
     } catch (e: Exception) {
-        return DEFAULT_DURATION_LABEL
+        0L
     }
 }
 
-fun videoDurationLabel(duration: Long): String {
+fun extractVideoDuration(context: Context?, mediaId: Long): Long? {
+    val uri = Uri.withAppendedPath(getContentUri("external"), "" + mediaId)
+    return extractVideoDuration(context, uri)
+}
+
+fun Long?.toVideoDurationFormat(): String {
+    val duration = this?: 0L
+
+    if (duration == 0L) return DEFAULT_DURATION_LABEL
+
     val second = duration / 1000 % 60
     val minute = duration / (1000 * 60) % 60
     val hour = duration / (1000 * 60 * 60) % 24

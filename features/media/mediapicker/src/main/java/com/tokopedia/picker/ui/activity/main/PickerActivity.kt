@@ -5,11 +5,13 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
+import androidx.core.view.marginBottom
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.common.component.uiComponent
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
@@ -27,6 +29,7 @@ import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
+import com.tokopedia.picker.utils.dimensionPixelOffsetOf
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -78,6 +81,7 @@ open class PickerActivity : BaseActivity()
 
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
+    private val param = PickerUiConfig.pickerParam()
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -142,7 +146,8 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun tabVisibility(isShown: Boolean) {
-        binding?.tabContainer?.showWithCondition(!isShown)
+        if (!param.isCommonPageType()) return
+        binding?.tabContainer?.showWithCondition(isShown)
     }
 
     private fun setupQueryAndUIConfigBuilder() {
@@ -164,11 +169,11 @@ open class PickerActivity : BaseActivity()
 
     private fun initView() {
         if (hasPermissionGranted) {
-            navigateByPageType()
             permissionGrantedState()
+            navigateByPageType()
         } else {
-            navigator?.start(PickerFragmentType.PERMISSION)
             permissionDeniedState()
+            navigator?.start(PickerFragmentType.PERMISSION)
         }
     }
 
@@ -192,12 +197,10 @@ open class PickerActivity : BaseActivity()
 
     private fun permissionGrantedState() {
         binding?.toolbarContainer?.show()
-        binding?.tabContainer?.show()
     }
 
     private fun permissionDeniedState() {
         binding?.toolbarContainer?.hide()
-        binding?.tabContainer?.hide()
     }
 
     private fun navigateByPageType() {
@@ -221,20 +224,21 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupTabView() {
+        binding?.tabContainer?.show()
+
         // setup as transparent tab layout background
-        binding?.tabContainer?.tabLayout?.setBackgroundColor(Color.TRANSPARENT)
+        binding?.tabPage?.tabLayout?.setBackgroundColor(Color.TRANSPARENT)
 
         // set transparent of nav toolbar
         navToolbar.setNavToolbarColorState(true)
 
-        binding?.tabContainer?.addNewTab(getString(R.string.picker_title_camera))
-        binding?.tabContainer?.addNewTab(getString(R.string.picker_title_gallery))
-        binding?.tabContainer?.show()
+        binding?.tabPage?.addNewTab(getString(R.string.picker_title_camera))
+        binding?.tabPage?.addNewTab(getString(R.string.picker_title_gallery))
 
-        binding?.tabContainer?.tabLayout?.addOnTabSelected { position ->
-            if (position == 0) {
+        binding?.tabPage?.tabLayout?.addOnTabSelected { position ->
+            if (position == PAGE_CAMERA_INDEX) {
                 onCameraTabSelected()
-            } else if (position == 1) {
+            } else if (position == PAGE_GALLERY_INDEX) {
                 onGalleryTabSelected()
             }
         }
@@ -243,11 +247,16 @@ open class PickerActivity : BaseActivity()
     private fun onCameraTabSelected() {
         navigator?.onPageSelected(PickerFragmentType.CAMERA)
         navToolbar.setNavToolbarColorState(isTransparent = true)
+        binding?.container?.setMargin(0, 0, 0, 0)
     }
 
     private fun onGalleryTabSelected() {
+        val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
+
         navigator?.onPageSelected(PickerFragmentType.GALLERY)
         navToolbar.setNavToolbarColorState(isTransparent = false)
+
+        binding?.container?.setMargin(0, 0, 0, marginBottom)
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {
@@ -264,6 +273,9 @@ open class PickerActivity : BaseActivity()
 
     companion object {
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
+
+        private const val PAGE_CAMERA_INDEX = 0
+        private const val PAGE_GALLERY_INDEX = 1
 
         //TODO remove
         fun start(context: Context) {
