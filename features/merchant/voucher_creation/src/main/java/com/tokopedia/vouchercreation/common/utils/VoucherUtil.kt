@@ -220,3 +220,109 @@ private fun shareVoucherByType(context: Context,
 internal fun getTextSizeFromDimens(context: Context, @DimenRes dimensResId : Int): Float {
     return context.resources.getDimension(dimensResId) / context.resources.displayMetrics.density
 }
+
+fun ShopBasicDataResult.shareVoucher(
+    context: Context,
+    @SocmedType socmedType: Int,
+    voucherId: Int,
+    isPublicVoucher: Boolean,
+    voucherCode: String,
+    voucherImageSquare: String,
+    voucherTypeFormatted: String,
+    userId: String,
+    shopId: String
+) {
+    val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopDomain}"
+    val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+        type = LinkerData.MERCHANT_VOUCHER
+        uri = shareUrl
+        id = voucherId.toString()
+        deepLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId)
+    })
+    LinkerManager.getInstance().executeShareRequest(
+        LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                linkerShareData?.url?.let {
+                    shareVoucherByType(
+                        context,
+                        socmedType,
+                        isPublicVoucher,
+                        voucherId,
+                        voucherCode,
+                        voucherImageSquare,
+                        voucherTypeFormatted,
+                        shopName,
+                        shareUrl
+                    )
+                }
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        })
+    )
+
+    VoucherCreationTracking.sendShareClickTracking(
+        socmedType = socmedType,
+        userId = userId,
+        isDetail = true
+    )
+}
+
+
+private fun shareVoucherByType(context: Context,
+                               @SocmedType socmedType: Int,
+                               isPublicVoucher : Boolean,
+                               voucherId: Int,
+                               voucherCode : String,
+                               voucherImageSquare : String,
+                               voucherTypeFormatted : String,
+                               shopName: String,
+                               shareUrl: String) {
+    val shareMessage =
+        if (isPublicVoucher) {
+            StringBuilder().apply {
+                append(String.format(
+                    context.getString(R.string.mvc_share_message_public).toBlankOrString(),
+                    voucherTypeFormatted,
+                    shopName))
+                append("\n")
+                append(shareUrl)
+            }.toString()
+        } else {
+            StringBuilder().apply {
+                append(String.format(
+                    context.getString(R.string.mvc_share_message_private).toBlankOrString(),
+                    voucherTypeFormatted,
+                    voucherCode,
+                    shopName))
+                append("\n")
+                append(shareUrl)
+            }.toString()
+        }
+    when(socmedType) {
+        SocmedType.BROADCAST -> {
+            SharingUtil.shareToBroadCastChat(context, voucherId)
+        }
+        SocmedType.COPY_LINK -> {
+            SharingUtil.copyTextToClipboard(context, VoucherDetailFragment.COPY_PROMO_CODE_LABEL, shareMessage)
+        }
+        SocmedType.INSTAGRAM -> {
+            SharingUtil.shareToSocialMedia(Socmed.INSTAGRAM, context, voucherImageSquare)
+        }
+        SocmedType.WHATSAPP -> {
+            SharingUtil.shareToSocialMedia(Socmed.WHATSAPP, context, voucherImageSquare, shareMessage)
+        }
+        SocmedType.LINE -> {
+            SharingUtil.shareToSocialMedia(Socmed.LINE, context, voucherImageSquare, shareMessage)
+        }
+        SocmedType.TWITTER -> {
+            SharingUtil.shareToSocialMedia(Socmed.TWITTER, context, voucherImageSquare, shareMessage)
+        }
+        SocmedType.FACEBOOK -> {
+            SharingUtil.shareToSocialMedia(Socmed.FACEBOOK, context, voucherImageSquare, shareMessage)
+        }
+        SocmedType.LAINNYA -> {
+            SharingUtil.otherShare(context, shareMessage)
+        }
+    }
+}
