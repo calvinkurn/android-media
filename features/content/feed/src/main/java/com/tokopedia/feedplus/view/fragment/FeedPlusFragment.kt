@@ -40,6 +40,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
@@ -1541,7 +1542,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        isVideo: Boolean,
+        mediaType: String,
         isCaption: Boolean
     ) {
         onGoToLink(redirectUrl)
@@ -1550,7 +1551,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             type,
             isFollowed,
             shopId,
-            isVideo,
+            mediaType,
             isCaption
         )
     }
@@ -1596,13 +1597,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
         authorId: String,
         authorType: String,
         postType: String,
-        isVideo: Boolean,
+        mediaType: String,
         caption: String,
         playChannelId: String
     ) {
         if (context != null) {
             val finalId = if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString()
-            feedAnalytics.evenClickMenu(finalId, postType, isFollowed, authorId, isVideo)
+            feedAnalytics.evenClickMenu(finalId, postType, isFollowed, authorId, mediaType)
             val sheet = MenuOptionsBottomSheet.newInstance(
                 reportable, isFollowed,
                 deletable
@@ -1615,7 +1616,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     postType,
                     isFollowed,
                     authorId,
-                    isVideo
+                    mediaType
                 )
                 if (userSession.isLoggedIn) {
                     context?.let {
@@ -1648,7 +1649,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 feedAnalytics.eventClickThreeDotsOption(
                     finalId, "unfollow",
                     postType,
-                    isFollowed, authorId, isVideo
+                    isFollowed, authorId, mediaType
                 )
                 if (userSession.isLoggedIn)
                     onHeaderActionClick(
@@ -1656,15 +1657,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         authorId,
                         authorType,
                         isFollowed,
-                        isVideo = isVideo
+                        isVideo =mediaType == MediaType.VIDEO
                     ) else onGoToLogin()
             }
             sheet.onDelete = {
-                createDeleteDialog(positionInFeed, postId, authorId, postType, isFollowed, isVideo)
+                createDeleteDialog(positionInFeed, postId, authorId, postType, isFollowed, isVideo =mediaType == MediaType.VIDEO)
                 feedAnalytics.clickDeleteThreeDotsPage(
                     finalId, authorId,
                     postType,
-                    isFollowed, isVideo
+                    isFollowed, mediaType
                 )
 
             }
@@ -1704,7 +1705,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, isVideo: Boolean, playChannelId: String) {
+    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
         feedAnalytics.eventClickLikeButton(
             if(postType == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString(),
             type,
@@ -1712,7 +1713,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             postType,
             isFollowed,
             shopId,
-            isVideo
+            mediaType?:""
         )
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
@@ -1721,13 +1722,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String, isClickIcon: Boolean) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, mediaType: String, shopId: String, playChannelId: String, isClickIcon: Boolean) {
         if (isClickIcon)
-        feedAnalytics.eventClickOpenComment(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString(), type, isFollowed, authorType, isVideo)
+        feedAnalytics.eventClickOpenComment(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString(), type, isFollowed, authorType, mediaType)
         else if (type == TYPE_FEED_X_CARD_PLAY && !isClickIcon)
-        feedAnalytics.eventClickLihatSemuaComment(playChannelId, type, isFollowed, authorType, isVideo)
+        feedAnalytics.eventClickLihatSemuaComment(playChannelId, type, isFollowed, authorType, mediaType)
 
-        gotToKolComment(positionInFeed, id, authorType, isVideo, isFollowed, type)
+        gotToKolComment(positionInFeed, id, authorType, mediaType == MediaType.VIDEO, isFollowed, type)
     }
 
     override fun onShareClick(
@@ -1738,7 +1739,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        video: Boolean,
+        mediaType: String,
         isTopads: Boolean,
         playChannelId: String
     ) {
@@ -1788,9 +1789,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
         }
         if (type == TYPE_FEED_X_CARD_PLAY)
-        feedAnalytics.eventClickOpenShare(playChannelId, type, isFollowed, shopId, video)
+        feedAnalytics.eventClickOpenShare(playChannelId, type, isFollowed, shopId, mediaType)
         else
-        feedAnalytics.eventClickOpenShare(id.toString(), type, isFollowed, shopId, video)
+        feedAnalytics.eventClickOpenShare(id.toString(), type, isFollowed, shopId, mediaType)
     }
 
     override fun onStatsClick(
@@ -1819,7 +1820,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         positionInFeed: Int,
         redirectUrl: String,
         postTagItem: FeedXProduct,
-        itemPosition: Int
+        itemPosition: Int,
+        mediaType: String
     ) {
 
         if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
@@ -1830,7 +1832,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 itemPosition,
                 item.feedXCard.typename,
                 item.feedXCard.followers.isFollowed,
-                item.feedXCard.author.id
+                item.feedXCard.author.id,
+                    item.feedXCard.media.firstOrNull()?.type?:""
             )
         }
 
@@ -1842,7 +1845,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     itemPosition,
                     item.feedXCard.typename,
                     item.feedXCard.followers.isFollowed,
-                    item.feedXCard.author.id
+                    item.feedXCard.author.id,
+                    item.feedXCard.media.firstOrNull()?.type?:""
             )
            sendTopadsUrlClick(getAdClickUrl(positionInFeed))
         }
@@ -1851,9 +1855,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onFullScreenCLick(feedXCard: FeedXCard, positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreenButton: Boolean) {
         if (isFullScreenButton)
-        feedAnalytics.eventClickFullScreenIconVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id)
+        feedAnalytics.eventClickFullScreenIconVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id, feedXCard.media.firstOrNull()?.type?:"")
         else
-        feedAnalytics.eventClicklanjutMenontonVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id)
+        feedAnalytics.eventClicklanjutMenontonVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id, feedXCard.media.firstOrNull()?.type?:"")
         val finalApplink = if (!shouldTrack) {
              Uri.parse(redirectUrl)
                     .buildUpon()
@@ -1877,7 +1881,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun addVODView(feedXCard: FeedXCard, playChannelId: String, rowNumber: Int, time: Long, hitTrackerApi: Boolean) {
         if (!hitTrackerApi)
-        feedAnalytics.eventAddView(playChannelId,feedXCard.typename,feedXCard.followers.isFollowed,feedXCard.author.id,time)
+        feedAnalytics.eventAddView(playChannelId,feedXCard.typename,feedXCard.followers.isFollowed,feedXCard.author.id,time, feedXCard.media.firstOrNull()?.type?:"")
         if (hitTrackerApi)
         feedViewModel.trackVisitChannel(playChannelId, rowNumber)
     }
@@ -1923,14 +1927,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
         products: List<FeedXProduct>,
         type: String,
         shopId: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        mediaType: String
+
     ) {
         feedAnalytics.eventImpressionProductBottomSheet(
             activityId,
             products,
             shopId,
             type,
-            isFollowed
+            isFollowed,
+            mediaType
         )
     }
 
@@ -2065,12 +2072,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         playChannelId: String,
-        shopName : String
+        shopName : String,
+        mediaType: String
     ) {
-        if (type == TYPE_FEED_X_CARD_PLAY || type == TYPE_TOPADS_HEADLINE_NEW)
-            feedAnalytics.eventAddToCartFeedVOD(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else activityId, postTagItem.id, postTagItem.name, postTagItem.priceFmt, 1, shopId, shopName, type, isFollowed)
+        val isLongVideo = mediaType == TYPE_LONG_VIDEO
+        if (type == TYPE_FEED_X_CARD_PLAY || type == TYPE_TOPADS_HEADLINE_NEW || isLongVideo)
+            feedAnalytics.eventAddToCartFeedVOD(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else activityId, postTagItem.id, postTagItem.name, postTagItem.priceFmt, 1, shopId, shopName, type, isFollowed, mediaType)
         else
-        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, mediaType)
         if (userSession.isLoggedIn) {
             if (::productTagBS.isInitialized) {
                 productTagBS.dismissedByClosing = true
@@ -2150,9 +2159,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         type: String,
         isFollowed: Boolean,
-        isVideo: Boolean
+       mediaType: String
     ) {
-        feedAnalytics.eventClickReadMoreNew(postId, shopId, type, isFollowed, isVideo)
+        feedAnalytics.eventClickReadMoreNew(postId, shopId, type, isFollowed, mediaType)
     }
 
     override fun onImageClicked(
@@ -2164,21 +2173,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventImageClicked(activityId, type, isFollowed, shopId)
     }
 
-    override fun onTagClicked(
-            postId: Int,
-            products: List<FeedXProduct>,
-            listener: DynamicPostViewHolder.DynamicPostListener,
-            id: String,
-            type: String,
-            isFollowed: Boolean,
-            isVideo: Boolean,
-            positionInFeed: Int,
-            playChannelId: String,
-            shopName: String
-    ) {
+    override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener, id: String, type: String, isFollowed: Boolean, mediaType: String, positionInFeed: Int, playChannelId: String, shopName: String) {
         val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString()
         productTagBS = ProductItemInfoBottomSheet()
-        feedAnalytics.eventTagClicked(finalId, type, isFollowed, id, isVideo)
+        feedAnalytics.eventTagClicked(finalId, type, isFollowed, id, mediaType)
         productTagBS.show(
             childFragmentManager,
             products,
@@ -2189,13 +2187,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
             isFollowed,
             positionInFeed,
             playChannelId,
-            shopName = shopName
+            shopName = shopName,
+                mediaType = mediaType
         )
         productTagBS.closeClicked = {
-            feedAnalytics.eventClickCloseProductInfoSheet(finalId, type, isFollowed, id)
+            feedAnalytics.eventClickCloseProductInfoSheet(finalId, type, isFollowed, id, mediaType)
         }
         productTagBS.disMissed = {
-            feedAnalytics.eventClickGreyArea(finalId, type, isFollowed, id)
+            feedAnalytics.eventClickGreyArea(finalId, type, isFollowed, id, mediaType)
         }
     }
 
@@ -2205,7 +2204,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        playChannelId: String
+        playChannelId: String,
+        mediaType: String
     ) {
         val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
 
@@ -2214,7 +2214,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productId,
             type,
             isFollowed,
-            shopId
+            shopId,
+            mediaType
         )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
@@ -2264,13 +2265,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        isTopads:Boolean = false
+        isTopads:Boolean = false,
+        mediaType: String
     ) {
         feedAnalytics.eventonShareProductClicked(
             activityId,
             id.toString(),
             type,
-            isFollowed, shopId
+            isFollowed, shopId,
+                mediaType
         )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
@@ -2319,7 +2322,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             finalID,
             item.postType,
             item.isFollowed,
-            item.shopId
+            item.shopId,
+            item.mediaType
         )
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
@@ -2336,7 +2340,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.postType,
                 item.isFollowed,
                 item.shopId,
-                item.isTopads
+                item.isTopads,
+                item.mediaType
             )
         }
         sheet.addToCartCB = {
@@ -2348,19 +2353,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.postType,
                 item.isFollowed,
                 item.playChannelId,
-                item.shopName
+                item.shopName,
+                item.mediaType
             )
         }
         sheet.addToWIshListCB = {
-            addToWishList(finalID, item.id, item.postType, item.isFollowed, item.shopId, item.playChannelId)
+            addToWishList(finalID, item.id, item.postType, item.isFollowed, item.shopId, item.playChannelId, item.mediaType)
         }
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
         if (isVOD)
-        feedAnalytics.clickSoundVOD(postId, mute, id, isFollowed)
+        feedAnalytics.clickSoundVOD(postId, mute, id, isFollowed, mediaType)
         else
-        feedAnalytics.clickMuteButton(postId, mute, id, isFollowed)
+        feedAnalytics.clickMuteButton(postId, mute, id, isFollowed, mediaType)
 
     }
 
@@ -2372,7 +2378,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedXCard.type,
             feedXCard.followers.isFollowed,
             feedXCard.author.id,
-            (feedXCard.media.firstOrNull()?.type != TYPE_IMAGE)
+            feedXCard.media.firstOrNull()?.type?:""
         )
     }
 
@@ -2450,7 +2456,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedXCard.id,
             feedXCard.author.id,
             feedXCard.followers.isFollowed,
-            duration
+            duration,
+                feedXCard.media.firstOrNull()?.type?:""
         )
     }
 

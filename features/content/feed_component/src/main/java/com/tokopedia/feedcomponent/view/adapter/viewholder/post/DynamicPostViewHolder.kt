@@ -238,7 +238,7 @@ open class DynamicPostViewHolder(v: View,
                             "",
                             "",
                             "",
-                            false,
+                            "",
                             ""
                         )
                     }
@@ -267,7 +267,7 @@ open class DynamicPostViewHolder(v: View,
             activityName,
             followCta,
             shopId = shopId,
-            isVideo = false,
+            mediaType = "",
             isCaption = false
         )
     }
@@ -445,7 +445,7 @@ open class DynamicPostViewHolder(v: View,
                         feedXCard.like.isLiked,
                         "",
                         false,
-                        false, "", false
+                        false, "", ""
                     )
                 }
                 itemView.likeText.setOnClickListener {
@@ -454,7 +454,7 @@ open class DynamicPostViewHolder(v: View,
                         feedXCard.id.toIntOrZero(),
                         feedXCard.like.isLiked,
                         "",
-                        isFollowed = false, type = false, "", false
+                        isFollowed = false, type = false, "", ""
                     )
                 }
                 bindLike(feedXCard)
@@ -471,7 +471,7 @@ open class DynamicPostViewHolder(v: View,
                         "",
                         "",
                         isFollowed = false,
-                        false
+                        ""
                     )
                 }
                 itemView.commentText.setOnClickListener {
@@ -480,7 +480,7 @@ open class DynamicPostViewHolder(v: View,
                         feedXCard.id.toIntOrZero(), "",
                         "",
                         isFollowed = false,
-                        isVideo = false
+                        ""
                     )
                 }
                 bindComment(feedXCard.comments)
@@ -505,7 +505,7 @@ open class DynamicPostViewHolder(v: View,
                             feedXCard.typename,
                             feedXCard.followers.isFollowed,
                             feedXCard.author.id,
-                            isVideo(feedXCard.media.firstOrNull())
+                            feedXCard.media.firstOrNull()?.type?:""
                     )
                 }
                 itemView.shareText.setOnClickListener {
@@ -520,7 +520,7 @@ open class DynamicPostViewHolder(v: View,
                             feedXCard.typename,
                             feedXCard.followers.isFollowed,
                             feedXCard.author.id,
-                            isVideo(feedXCard.media.firstOrNull())
+                           feedXCard.media.firstOrNull()?.type?:""
                     )
                 }
 
@@ -697,7 +697,7 @@ open class DynamicPostViewHolder(v: View,
             type: String = "",
             isFollowed: Boolean = false,
             shopId: String,
-            isVideo: Boolean,
+            mediaType: String,
             isCaption: Boolean
         )
 
@@ -720,7 +720,7 @@ open class DynamicPostViewHolder(v: View,
             authorId: String,
             authorType: String,
             postType: String = "",
-            isVideo: Boolean,
+            mediaType: String = "",
             caption: String,
             playChannelId: String = ""
         )
@@ -735,7 +735,7 @@ open class DynamicPostViewHolder(v: View,
             isFollowed: Boolean = false,
             type: Boolean = false,
             shopId: String = "",
-            isVideo: Boolean = false,
+            mediaType: String? = "",
             playChannelId: String = ""
         )
 
@@ -745,7 +745,7 @@ open class DynamicPostViewHolder(v: View,
             authorType: String,
             type: String,
             isFollowed: Boolean = false,
-            isVideo: Boolean,
+            mediaType: String = "",
             shopId: String = "",
             playChannelId: String = "",
             isClickIcon:Boolean = true
@@ -764,7 +764,7 @@ open class DynamicPostViewHolder(v: View,
             type: String = "",
             isFollowed: Boolean = false,
             shopId: String = "",
-            video: Boolean,
+            mediaType: String = "",
             isTopads:Boolean = false,
             playChannelId: String = ""
         )
@@ -777,7 +777,8 @@ open class DynamicPostViewHolder(v: View,
             positionInFeed: Int,
             redirectUrl: String,
             postTagItem: FeedXProduct,
-            itemPosition: Int
+            itemPosition: Int,
+            mediaType: String
         )
         fun onFullScreenCLick(
                 feedXCard: FeedXCard,
@@ -805,7 +806,8 @@ open class DynamicPostViewHolder(v: View,
             postTagItemList: List<FeedXProduct>,
             type: String,
             shopId: String,
-            isFollowed: Boolean
+            isFollowed: Boolean,
+            mediaType: String
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
@@ -829,7 +831,7 @@ open class DynamicPostViewHolder(v: View,
                 id: String,
                 type: String,
                 isFollowed: Boolean,
-                isVideo: Boolean = false,
+                mediaType: String = "",
                 positionInFeed: Int,
                 playChannelId: String = "",
                 shopName: String = ""
@@ -840,7 +842,7 @@ open class DynamicPostViewHolder(v: View,
             shopId: String = "",
             type: String,
             isFollowed: Boolean,
-            isVideo: Boolean
+            mediaType: String
         )
 
         fun onBottomSheetMenuClicked(
@@ -849,7 +851,7 @@ open class DynamicPostViewHolder(v: View,
             shopId: String = ""
         )
 
-        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean)
+        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String)
 
         fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int)
 

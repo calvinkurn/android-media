@@ -83,7 +83,8 @@ class ProductPostTagViewHolderNew(
                     listener,
                     item.positionInFeed,
                     item.product,
-                    adapterPosition
+                    adapterPosition,
+                    mediaType = item.mediaType
             )
         )
         menuBtn.setOnClickListener {
@@ -101,10 +102,11 @@ class ProductPostTagViewHolderNew(
     private fun getItemClickNavigationListener(
         listener: DynamicPostViewHolder.DynamicPostListener,
         positionInFeed: Int,
-        item: FeedXProduct, itemPosition: Int
+        item: FeedXProduct, itemPosition: Int,
+        mediaType: String
     ): View.OnClickListener {
         return View.OnClickListener {
-            listener.onPostTagItemBSClick(positionInFeed, item.appLink, item, itemPosition+1)
+            listener.onPostTagItemBSClick(positionInFeed, item.appLink, item, itemPosition+1, mediaType = mediaType)
         }
     }
 

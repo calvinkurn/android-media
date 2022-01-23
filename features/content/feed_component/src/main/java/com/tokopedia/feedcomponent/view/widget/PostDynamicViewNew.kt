@@ -246,7 +246,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.typename,
                 feedXCard.followers.isFollowed,
                 feedXCard.author.id,
-                isVideo(feedXCard.media.firstOrNull()),
+                feedXCard.media.firstOrNull()?.type?:"",
                 feedXCard.isTopAds,
                 feedXCard.playChannelID
             )
@@ -272,7 +272,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     feedXCard.typename,
                     feedXCard.followers.isFollowed,
                     feedXCard.author.id,
-                    isVideo(feedXCard.media.firstOrNull())
+                    feedXCard.media.firstOrNull()?.type?:""
             )
         }
     }
@@ -377,7 +377,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     type,
                     isFollowed,
                     author.id,
-                    isVideo,
+                    mediaType,
                     false
 
                 )
@@ -465,7 +465,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 type,
                 isFollowed,
                 author.id,
-                isVideo,
+                mediaType,
                 false
             )
             sendHeaderTopadsEvent(positionInFeed,author.appLink,cpmData,true)
@@ -481,7 +481,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 author.id,
                 authorType,
                 type,
-                isVideo,
+                mediaType,
                 caption,
                 channelId.toString())
         }
@@ -519,7 +519,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     feedXCard.typename,
                     feedXCard.followers.isFollowed,
                     shopId = feedXCard.author.id,
-                    isVideo = true,
+                    mediaType = feedXCard.media.firstOrNull()?.type?:"",
                     playChannelId = feedXCard.playChannelID
 
             )
@@ -533,7 +533,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        isVideo: Boolean
+        mediaType: String
     ) {
         if (like.isLiked) {
             val colorGreen =
@@ -587,7 +587,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 type,
                 isFollowed,
                 shopId = shopId,
-                isVideo = isVideo
+                mediaType = mediaType
             )
         }
     }
@@ -626,7 +626,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     caption.typename,
                     caption.followers.isFollowed,
                     caption.author.id,
-                    isVideo(caption.media.firstOrNull()),
+                    caption.media.firstOrNull()?.type?:"",
                     true
                 )
             }
@@ -673,7 +673,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             caption.author.id,
                             caption.typename,
                             caption.followers.isFollowed,
-                            isVideo(caption.media.firstOrNull())
+                            caption.media.firstOrNull()?.type?:""
                         )
                         val txt: String = buildString {
                             append("<b>" + caption.author.name + "</b>" + " - ").appendLine(
@@ -789,15 +789,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
         var authId = ""
         if (authorType != 1)
             authId = authorId
-        val isVideo = mediaType != TYPE_IMAGE
         commentButton.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId, isClickIcon = true)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, mediaType, playChannelId = playChannelId, isClickIcon = true)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId, isClickIcon = false)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, mediaType, playChannelId = playChannelId, isClickIcon = false)
         }
         addCommentHint.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId=playChannelId, isClickIcon = true)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, mediaType, playChannelId=playChannelId, isClickIcon = true)
         }
     }
 
@@ -1045,7 +1044,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                                 feedXCard.followers.isFollowed,
                                                                 type = true,
                                                                 feedXCard.author.id,
-                                                                isVideo(feedMedia)
+                                                                feedMedia.type
                                                         )
                                                     }
 
@@ -1080,7 +1079,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 feedXCard.author.id,
                                                 feedXCard.typename,
                                                 feedXCard.followers.isFollowed,
-                                                false,
+                                                feedMedia.type,
                                                 positionInFeed,
                                                 feedXCard.author.name,
                                                 shopName = feedXCard.author.name
@@ -1263,7 +1262,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 id,
                                 type,
                                 isFollowed,
-                            true,
+                            feedMedia.type,
                             positionInFeed,
                             shopName = shopName
                     )
@@ -1273,7 +1272,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             volumeIcon.setOnClickListener {
                 changeMuteStateVideo(volumeIcon)
-                setMuteUnmuteVOD(volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true)
+                setMuteUnmuteVOD(volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true, feedMedia.type)
             }
         }
         return videoItem
@@ -1320,7 +1319,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
                     changeMuteStateVideo(volumeIcon)
-                    setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true, false)
+                    setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true, false, feedMedia.type)
 
                 }
 
@@ -1408,7 +1407,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             id,
                             type,
                             isFollowed,
-                            true,
+                            feedMedia.type,
                             positionInFeed,
                             playChannelId =   feedXCard.playChannelID,
                             shopName = shopName
@@ -1427,14 +1426,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             vod_volumeIcon?.setOnClickListener {
                 changeMuteStateVideo(vod_volumeIcon)
-                setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true)
+                setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true, feedMedia.type)
 
             }
         }
         return vodItem
     }
 
-    private fun setMuteUnmuteVOD(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean, isVOD: Boolean) {
+    private fun setMuteUnmuteVOD(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean, isVOD: Boolean, mediaType: String) {
         var countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
             override fun onTick(millisUntilFinished: Long) {
 
@@ -1444,7 +1443,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 volumeIcon?.gone()
             }
         }
-        listener?.muteUnmuteVideo(postId, GridPostAdapter.isMute, activityId, isFollowed, isVOD)
+        listener?.muteUnmuteVideo(postId, GridPostAdapter.isMute, activityId, isFollowed, isVOD, mediaType)
         if (!volumeIcon?.isVisible!!)
             volumeIcon.visible()
         if (isVideoTap){
@@ -1523,7 +1522,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 vod_layout_video?.videoSurfaceView?.setOnClickListener {
                     if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
                         changeMuteStateVideo(vod_volumeIcon)
-                        setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true)
+                        setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true, feedMedia.type)
                     }
                 }
                 vod_full_screen_icon?.setOnClickListener {

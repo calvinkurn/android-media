@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
@@ -29,6 +30,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var positionInFeed: Int = 0
     private var shopId: String = "0"
     private var shopName: String = ""
+    private var mediaType: String = ""
     private var playChannelId: String = "0"
     private var postType: String = ""
     private var isFollowed: Boolean = false
@@ -130,6 +132,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             item.postId = postId
             item.positionInFeed = positionInFeed
             item.postType = postType
+            item.mediaType = mediaType
             item.isFollowed = isFollowed
             itemList.add(item)
         }
@@ -146,7 +149,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         isFollowed: Boolean,
         positionInFeed: Int,
         playChannelId: String,
-        shopName:String
+        shopName:String,
+        mediaType: String
     ) {
         this.listProducts = products
         this.listener = dynamicPostListener
@@ -157,6 +161,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.positionInFeed = positionInFeed
         this.playChannelId = playChannelId
         this.shopName = shopName
+        this.mediaType = mediaType
         show(fragmentManager, "")
     }
 }

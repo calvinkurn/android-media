@@ -597,7 +597,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl, int activityId, @NotNull String activityName, @NotNull FollowCta followCta, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean isVideo, boolean isCaption) {
+    public void onAvatarClick(int positionInFeed, @NonNull String redirectUrl, int activityId, @NonNull String activityName, @NonNull FollowCta followCta, @NonNull String type, boolean isFollowed, @NonNull String shopId, String mediaType, boolean isCaption) {
 
         if (followCta.getAuthorType().equals(FollowCta.AUTHOR_SHOP)) {
             feedAnalytics.eventContentDetailClickShopNameAvatar(String.valueOf(activityId), followCta.getAuthorID());
@@ -635,7 +635,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NonNull String authorId, @NonNull String authorType, @NonNull String postType, boolean isVideo, @NonNull String caption, @NonNull String playChannelId) {
+    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NonNull String authorId, @NonNull String authorType, @NonNull String postType,  @NonNull String mediaType, @NonNull String caption, @NonNull String playChannelId) {
         if (getContext() != null) {
             Menus menus = createBottomMenu(getContext(), deletable,
                     reportable, false, new PostMenuListener() {
@@ -689,7 +689,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, boolean isVideo, @NotNull String shopId,@NotNull String playChannelId, boolean isIconClick) {
+    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, @NotNull String mediaType, @NotNull String shopId,@NotNull String playChannelId, boolean isIconClick) {
         onGoToKolComment(positionInFeed, id);
     }
 
@@ -704,7 +704,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean video , boolean isTopads, @NotNull String playChannelId) {
+    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId, @NotNull String mediaType , boolean isTopads, @NotNull String playChannelId) {
         if (getActivity() != null) {
             ShareBottomSheets.Companion.newInstance(packageName -> {
             }, "", imageUrl, url, description, title, "").show(getActivity().getSupportFragmentManager());
@@ -1002,12 +1002,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPostTagItemBSClick(int positionInFeed, @NotNull String redirectUrl, @NotNull FeedXProduct postTagItem, int itemPosition) {
+    public void onPostTagItemBSClick(int positionInFeed, @NotNull String redirectUrl, @NotNull FeedXProduct postTagItem, int itemPosition,@NotNull String mediaType ) {
 
     }
 
     @Override
-    public void onReadMoreClicked(@NotNull String postId, @NotNull String shopId, @NotNull String postType, boolean isFollowed, boolean isVideo) {
+    public void onReadMoreClicked(@NotNull String postId, @NotNull String shopId, @NotNull String postType, boolean isFollowed, @NotNull String mediaType) {
 
     }
 
@@ -1028,22 +1028,22 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void muteUnmuteVideo(@NotNull String postId, boolean mute, @NotNull String id, boolean isFollowed, boolean isVOD) {
+    public void muteUnmuteVideo(@NotNull String postId, boolean mute, @NotNull String id, boolean isFollowed, boolean isVOD, @NotNull String mediaType) {
 
     }
 
     @Override
-    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id, @NotNull String type, boolean isFollowed, boolean isVideo, int positionInFeed, @NotNull String playChannelId, @NotNull String shopName) {
+    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id, @NotNull String type, boolean isFollowed, @NotNull String mediaType, int positionInFeed, @NotNull String playChannelId, @NotNull String shopName) {
 
     }
 
     @Override
-    public void onPostTagItemBSImpression(@NotNull String activityId, @NotNull List<FeedXProduct> postTagItemList, @NotNull String type, @NotNull String shopId, boolean isFollowed) {
+    public void onPostTagItemBSImpression(@NotNull String activityId, @NotNull List<FeedXProduct> postTagItemList, @NotNull String type, @NotNull String shopId, boolean isFollowed,  @NotNull String mediaType) {
 
     }
 
     @Override
-    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId, boolean isVideo, @NotNull String playChannelId) {
+    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId, @NotNull String mediaType, @NotNull String playChannelId) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id);
         } else {
@@ -1094,5 +1094,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void addVODView(@NotNull FeedXCard feedXCard,@NonNull String playChannelId, int rowNumber, long time, boolean hitTrackerApi) {
 
     }
+
+
 
 }
