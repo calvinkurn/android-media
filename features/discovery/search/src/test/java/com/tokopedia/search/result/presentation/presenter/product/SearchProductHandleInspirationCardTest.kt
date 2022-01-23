@@ -127,6 +127,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         data.type shouldBe inspirationWidget.type
         data.position shouldBe inspirationWidget.position
         data.optionCardData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
+        data.optionSizeData.size shouldBe 0
 
         inspirationWidget.inspirationWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
             data.optionCardData[index].assertInspirationCardOptionViewModel(
