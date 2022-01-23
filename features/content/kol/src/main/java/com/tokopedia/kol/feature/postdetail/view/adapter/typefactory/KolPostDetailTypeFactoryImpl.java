@@ -118,6 +118,10 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(DynamicPostViewModel dynamicPostViewModel) {
         return DynamicPostViewHolder.Companion.getLAYOUT();
     }
+    @Override
+    public int type(DynamicPostUiModel dynamicPostUiModel) {
+        return DynamicPostViewHolder.Companion.getLAYOUT();
+    }
 
     @Override
     public int type(KolCommentViewModel kolCommentViewModel) {
@@ -218,10 +222,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         return 0;
     }
 
-    @Override
-    public int type(@NotNull DynamicPostUiModel dynamicPostUiModel) {
-        return 0;
-    }
+
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int viewType) {

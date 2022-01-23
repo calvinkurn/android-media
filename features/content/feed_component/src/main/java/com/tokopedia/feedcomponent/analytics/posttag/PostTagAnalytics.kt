@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.analytics.posttag
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Event.EVENT_CLICK_SOCIAL_COMMERCE
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Action.CLICK_PRODUCT
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -90,7 +91,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     private fun getBasicViewPostTagEvent(screenName: String,
                                          category: String,
                                          label: String,
-                                         postItemList: List<PostTagItem>,
+                                         postItemList: List<FeedXProduct>,
                                          trackingModel: TrackingPostModel,
                                          listSource: String,
                                          action: String = String.format(FORMAT_EVENT_ACTION,
@@ -108,8 +109,8 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                         postItemList.mapIndexed { pos, item ->
                             getProductList(
                                     item.id.toIntOrZero(),
-                                    item.text,
-                                    formatPriceToInt(item.price),
+                                    item.name,
+                                    item.price,
                                     "",
                                     "",
                                     "",
@@ -267,8 +268,8 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     //docs - https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
     fun trackViewPostTagFeed(
             postId: Int,
-            postTagItemList: List<PostTagItem>,
-            author: String,
+            postTagItemList: List<FeedXProduct>,
+            author: Int,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.FEED,
@@ -284,7 +285,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     // docs - https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
     fun trackViewPostTagFeedShop(
             postId: Int,
-            postTagItemList: List<PostTagItem>,
+            postTagItemList: List<FeedXProduct>,
             author: String,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
@@ -316,7 +317,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     fun trackViewPostTagProfileSelf(
             postId: Int,
-            postTagItemList: List<PostTagItem>,
+            postTagItemList: List<FeedXProduct>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.MY_PROFILE,
@@ -344,7 +345,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     fun trackViewPostTagProfileOther(
             postId: Int,
-            postTagItemList: List<PostTagItem>,
+            postTagItemList: List<FeedXProduct>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.PROFILE,
@@ -372,7 +373,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     fun trackViewPostTagProfileDetailSelf(
             postId: Int,
-            postTagItemList: List<PostTagItem>,
+            postTagItemList: List<FeedXProduct>,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.MY_PROFILE_DETAIL,
@@ -400,8 +401,8 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     fun trackViewPostTagProfileDetailOther(
             postId: Int,
-            postTagItemList: List<PostTagItem>,
-            author: String,
+            postTagItemList: List<FeedXProduct>,
+            author: Int,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.PROFILE_DETAIL,

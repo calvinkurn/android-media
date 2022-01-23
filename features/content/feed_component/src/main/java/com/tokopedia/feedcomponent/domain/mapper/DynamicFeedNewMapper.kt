@@ -9,8 +9,10 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
 private const val TYPE_FEED_X_CARD_BANNERS: String = "FeedXCardBanners"
@@ -62,7 +64,7 @@ object DynamicFeedNewMapper {
     }
 
     private fun mapCardPost(posts: MutableList<Visitable<*>>, feedXCard: FeedXCard) {
-        val dynamicPostUiModel = DynamicPostUiModel(feedXCard.copyPostData())
+        val dynamicPostUiModel = DynamicPostUiModel(feedXCard.copyPostData(), mapPostTracking(feedXCard))
         posts.add(dynamicPostUiModel)
     }
     private fun mapCardVOD(posts: MutableList<Visitable<*>>, feedXCard: FeedXCard) {
@@ -103,6 +105,29 @@ object DynamicFeedNewMapper {
             posts.add(dynamicPostUiModel)
         }
     }
+    private fun mapPostTracking(feed: FeedXCard): TrackingPostModel {
+        val media = feed.media.firstOrNull()
+        val mediaType = media?.type ?: ""
+        val mediaUrl = media?.mediaUrl ?: ""
+        val tagsType = ""
+        val authorId = feed.author.id
+        val recomId = feed.id.toIntOrZero()
+
+        return TrackingPostModel(
+                feed.type,
+                feed.typename,
+                "",
+                mediaType,
+                mediaUrl,
+                tagsType,
+                feed.appLink,
+                authorId,
+                feed.id.toIntOrZero(),
+                feed.media.size,
+                recomId
+        )
+    }
+
 }
 
 

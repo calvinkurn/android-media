@@ -65,6 +65,8 @@ class FeedAnalyticTracker
         private const val KEY_CURRENT_SITE_EVENT = "currentSite"
         private const val KEY_EVENT_USER_ID = "userId"
         private const val SGC_IMAGE = "sgc image"
+        private const val LONG_VIDEO_SGC = "long video sgc"
+        private const val LONG_VIDEO_SGC_RECOM = "long video sgc recom"
         private const val SGC_VOD_PLAY = "sgc play long video"
         private const val SGC_VOD_PLAY_RECOM = "sgc play long video recom"
         private const val SGC_IMAGE_RECOM = "sgc image recom"
@@ -74,6 +76,7 @@ class FeedAnalyticTracker
         private const val TOPADS = "topads"
         private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT= "FeedXCardProductsHighlight"
         private const val TYPE_FEED_X_CARD_PLAY= "FeedXCardPlay"
+        private const val TYPE_FEED_X_CARD_POST= "FeedXCardPost"
         private const val TYPE_FEED_X_CARD_PRODUCT_TOPADS= "topads_headline_new"
 
     }
@@ -247,6 +250,10 @@ class FeedAnalyticTracker
             SGC_VOD_PLAY
         else if(type == TYPE_FEED_X_CARD_PRODUCT_TOPADS)
             TOPADS
+        else if(type == TYPE_FEED_X_CARD_POST && isFollowed)
+            LONG_VIDEO_SGC
+        else if(type == TYPE_FEED_X_CARD_POST && !isFollowed)
+            LONG_VIDEO_SGC_RECOM
         else if (isVideo)
             VIDEO
         else if(type!= TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)

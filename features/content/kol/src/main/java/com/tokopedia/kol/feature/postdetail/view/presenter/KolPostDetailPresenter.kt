@@ -1,16 +1,16 @@
 package com.tokopedia.kol.feature.postdetail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
@@ -22,24 +22,31 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract
 import com.tokopedia.kol.feature.postdetail.view.subscriber.FollowUnfollowDetailSubscriber
-import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubscriber
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by milhamj on 27/07/18.
  */
 
 class KolPostDetailPresenter @Inject constructor(
+        private val baseDispatcher: CoroutineDispatchers,
         private val getPostDetailUseCase: GetPostDetailUseCase,
         private val likeKolPostUseCase: LikeKolPostUseCase,
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
@@ -51,7 +58,13 @@ class KolPostDetailPresenter @Inject constructor(
         private val getWhitelistUseCase: GetWhitelistUseCase,
         private val getPostStatisticCommissionUseCase: GetPostStatisticCommissionUseCase,
         private val userSession: UserSessionInterface)
-    : BaseDaggerPresenter<KolPostDetailContract.View>(), KolPostDetailContract.Presenter {
+    : BaseDaggerPresenter<KolPostDetailContract.View>(), KolPostDetailContract.Presenter, CoroutineScope {
+
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + SupervisorJob()
+
+    var getFeedNextPageResp = PostDetailViewModel()
 
     override fun attachView(view: KolPostDetailContract.View) {
         super.attachView(view)
@@ -59,7 +72,6 @@ class KolPostDetailPresenter @Inject constructor(
 
     override fun detachView() {
         super.detachView()
-        getPostDetailUseCase.unsubscribe()
         likeKolPostUseCase.unsubscribe()
         followKolPostGqlUseCase.unsubscribe()
         doFavoriteShopUseCase.unsubscribe()
@@ -73,16 +85,25 @@ class KolPostDetailPresenter @Inject constructor(
     override fun getCommentFirstTime(id: Int) {
         view.showLoading()
 
-        getPostDetailUseCase.execute(
-                GetPostDetailUseCase.createRequestParams(
-                        userSession.userId,
-                        "",
-                        GetDynamicFeedUseCase.FeedV2Source.Detail,
-                        id.toString()
-                ),
-                GetKolPostDetailSubscriber(view)
-        )
+        launchCatchError(context = baseDispatcher.main, block = {
+            getFeedNextPageResp = withContext(baseDispatcher.main) {
+                getFeedDataResult(id.toString())
+            }
 
+            view.onSuccessGetKolPostDetail(getFeedNextPageResp.dynamicPostViewModel.postList, getFeedNextPageResp)
+
+        }) {
+           view.onErrorGetKolPostDetail(it.localizedMessage)
+
+        }
+    }
+    private suspend fun getFeedDataResult(detailId: String): PostDetailViewModel {
+        try {
+            return getPostDetailUseCase.execute(cursor = "", detailId = detailId)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            throw e
+        }
     }
 
     override fun followKol(id: Int, rowNumber: Int) {

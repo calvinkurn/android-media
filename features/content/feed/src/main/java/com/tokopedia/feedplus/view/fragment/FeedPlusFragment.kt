@@ -3016,23 +3016,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val feedPosition = adapter.getlist().size + i
             val userId = userIdInt
 
-            if (visitable is DynamicPostViewModel) {
+            if (visitable is DynamicPostUiModel) {
                 val trackingPostModel = visitable.trackingPostModel
 
-                if (visitable.contentList.size > 0) {
-                    trackPostContentImpression(
-                        visitable,
-                        trackingPostModel,
-                        userId,
-                        feedPosition
-                    )
-                }
-
-                if (visitable.postTag.items.isNotEmpty()) {
+                if (visitable.feedXCard.tags.isNotEmpty()) {
                     postTagAnalytics.trackViewPostTagFeed(
-                        visitable.id,
-                        visitable.postTag.items,
-                        visitable.header.followCta.authorType,
+                        visitable.feedXCard.id.toIntOrZero(),
+                        visitable.feedXCard.tags,
+                        visitable.feedXCard.author.type,
                         trackingPostModel
                     )
                 }
@@ -3065,63 +3056,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun trackPostContentImpression(
-        postViewModel: DynamicPostViewModel,
+        postViewModel: DynamicPostUiModel,
         trackingPostModel: TrackingPostModel,
         userId: Int, feedPosition: Int
     ) {
-        if (postViewModel.contentList.isEmpty()) {
+        if (postViewModel.feedXCard.media.isEmpty()) {
             return
         }
 
-        when {
-            postViewModel.contentList[0] is GridPostViewModel -> {
-                val (itemList) = postViewModel.contentList[0] as GridPostViewModel
-                val productList = ArrayList<ProductEcommerce>()
-                for (position in 0 until itemList.size) {
-                    val (id, text, price) = itemList[position]
-                    productList.add(
-                        ProductEcommerce(
-                            id,
-                            text,
-                            price,
-                            position
-                        )
-                    )
-                }
-                analytics.eventProductGridImpression(
-                    productList,
-                    trackingPostModel.activityName,
-                    trackingPostModel.postId,
-                    userIdInt,
-                    trackingPostModel.recomId
-                )
-            }
-            postViewModel.contentList[0] is PollContentViewModel -> {
-                val (pollId) = postViewModel.contentList[0] as PollContentViewModel
-                analytics.eventVoteImpression(
-                    trackingPostModel.activityName,
-                    trackingPostModel.mediaType,
-                    pollId,
-                    trackingPostModel.postId,
-                    userId
-                )
-            }
-            else -> {
-                analytics.eventCardPostImpression(
-                    trackingPostModel.templateType,
-                    trackingPostModel.activityName,
-                    trackingPostModel.mediaType,
-                    trackingPostModel.redirectUrl,
-                    trackingPostModel.mediaUrl,
-                    trackingPostModel.authorId,
-                    trackingPostModel.totalContent,
-                    trackingPostModel.postId,
-                    userId,
-                    feedPosition,
-                    trackingPostModel.recomId
-                )
-            }
-        }
+
     }
 
     private fun trackCardPostClick(positionInFeed: Int, trackingPostModel: TrackingPostModel) {
