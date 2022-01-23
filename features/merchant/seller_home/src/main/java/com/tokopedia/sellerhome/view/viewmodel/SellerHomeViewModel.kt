@@ -177,16 +177,17 @@ class SellerHomeViewModel @Inject constructor(
             val useCase = getLayoutUseCase.get()
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
                 useCase.run {
+                    val includeCache = isFirstLoad
+                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
                     if (heightDp == null) {
                         startCollectingResult(_widgetLayout)
                     } else {
                         startCollectingResult(_widgetLayout) {
-                            sellerHomeLayoutHelper.get().getInitialWidget(it, heightDp)
+                            sellerHomeLayoutHelper.get()
+                                .getInitialWidget(it, heightDp, includeCache)
                                 .flowOn(dispatcher.io)
                         }
                     }
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
                     executeOnBackground(params, includeCache)
                 }
             } else {
@@ -194,8 +195,8 @@ class SellerHomeViewModel @Inject constructor(
                 if (heightDp == null) {
                     getDataFromUseCase(useCase, _widgetLayout)
                 } else {
-                    getDataFromUseCase(useCase, _widgetLayout) {
-                        sellerHomeLayoutHelper.get().getInitialWidget(it, heightDp)
+                    getDataFromUseCase(useCase, _widgetLayout) { result, isFromCache ->
+                        sellerHomeLayoutHelper.get().getInitialWidget(result, heightDp, isFromCache)
                             .flowOn(dispatcher.io)
                     }
                 }
@@ -508,14 +509,14 @@ class SellerHomeViewModel @Inject constructor(
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
         liveData: MutableLiveData<Result<T>>,
-        getTransformerFlow: suspend (T) -> Flow<T>
+        getTransformerFlow: suspend (result: T, isFromCache: Boolean) -> Flow<T>
     ) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
                 val useCaseResult = useCase.executeOnBackground()
-                getTransformerFlow(useCaseResult).collect {
+                getTransformerFlow(useCaseResult, true).collect {
                     liveData.value = Success(it)
                 }
             } catch (_: Exception) {
@@ -524,7 +525,7 @@ class SellerHomeViewModel @Inject constructor(
         }
         useCase.setUseCache(false)
         val useCaseResult = useCase.executeOnBackground()
-        getTransformerFlow(useCaseResult).collect {
+        getTransformerFlow(useCaseResult, false).collect {
             liveData.value = Success(it)
         }
     }
@@ -546,7 +547,7 @@ class SellerHomeViewModel @Inject constructor(
 
     private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(
         liveData: MutableLiveData<Result<T>>,
-        getTransformedFlow: suspend (T) -> Flow<T>
+        getTransformedFlow: suspend (result: T) -> Flow<T>
     ) {
         if (!collectingResult) {
             collectingResult = true

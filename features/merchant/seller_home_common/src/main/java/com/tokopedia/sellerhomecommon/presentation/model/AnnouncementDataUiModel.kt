@@ -9,6 +9,7 @@ data class AnnouncementDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
+    override val lastUpdated: Long = 0L,
     val subtitle: String = "",
     val title: String = "",
     val appLink: String = "",

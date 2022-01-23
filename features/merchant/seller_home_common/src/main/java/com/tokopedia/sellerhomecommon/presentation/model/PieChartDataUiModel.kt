@@ -9,6 +9,7 @@ class PieChartDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
+    override val lastUpdated: Long = 0,
     val data: PieChartUiModel = PieChartUiModel()
 ) : BaseDataUiModel {
 

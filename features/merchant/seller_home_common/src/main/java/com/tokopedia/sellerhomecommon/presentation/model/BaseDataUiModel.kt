@@ -9,6 +9,7 @@ interface BaseDataUiModel {
     var error: String
     var isFromCache: Boolean
     val showWidget: Boolean
+    val lastUpdated: Long
 
     fun isWidgetEmpty(): Boolean
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetCardDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import javax.inject.Inject
@@ -9,8 +10,9 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 21/05/20
  */
 
-class CardMapper @Inject constructor() :
-    BaseResponseMapper<GetCardDataResponse, List<CardDataUiModel>> {
+class CardMapper @Inject constructor(
+    private val lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
+) : BaseResponseMapper<GetCardDataResponse, List<CardDataUiModel>> {
 
     companion object {
         private const val ZERO = "0"

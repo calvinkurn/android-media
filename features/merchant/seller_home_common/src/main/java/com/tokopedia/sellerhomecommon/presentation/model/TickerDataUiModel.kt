@@ -9,6 +9,7 @@ data class TickerDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = true,
+    override val lastUpdated: Long = 0,
     var tickers: List<TickerItemUiModel> = emptyList()
 ) : BaseDataUiModel {
 

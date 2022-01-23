@@ -2,14 +2,45 @@ package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.seller.menu.common.domain.usecase.*
+import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetUserShopInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
-import com.tokopedia.sellerhomecommon.domain.mapper.*
-import com.tokopedia.sellerhomecommon.domain.usecase.*
+import com.tokopedia.sellerhomecommon.domain.mapper.AnnouncementMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.CardMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.CarouselMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.MilestoneMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.MultiLineGraphMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.RecommendationMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
+import com.tokopedia.sellerhomecommon.domain.mapper.TickerMapper
+import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -131,10 +162,14 @@ class SellerHomeUseCaseModule {
     @Provides
     fun provideGetMultiLineGraphDataUseCase(
         gqlRepository: GraphqlRepository,
-        mapper: MultiLineGraphMapper,
-        dispatchers: CoroutineDispatchers
+        dispatchers: CoroutineDispatchers,
+        mapper: MultiLineGraphMapper
     ): GetMultiLineGraphUseCase {
-        return GetMultiLineGraphUseCase(gqlRepository, mapper, dispatchers)
+        return GetMultiLineGraphUseCase(
+            gqlRepository = gqlRepository,
+            dispatchers = dispatchers,
+            mapper = mapper
+        )
     }
 
     @SellerHomeScope

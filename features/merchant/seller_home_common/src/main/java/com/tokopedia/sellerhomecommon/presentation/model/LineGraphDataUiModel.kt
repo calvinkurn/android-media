@@ -9,6 +9,7 @@ data class LineGraphDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
+    override val lastUpdated: Long = 0,
     val description: String = "",
     val header: String = "",
     val list: List<XYAxisUiModel> = emptyList(),

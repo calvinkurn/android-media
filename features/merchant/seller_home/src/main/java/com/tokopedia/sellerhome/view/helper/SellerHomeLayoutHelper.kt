@@ -104,14 +104,17 @@ class SellerHomeLayoutHelper @Inject constructor(
      */
     suspend fun getInitialWidget(
         widgets: List<BaseWidgetUiModel<*>>,
-        deviceHeightDp: Float
+        deviceHeightDp: Float,
+        isFromCache: Boolean
     ): Flow<List<BaseWidgetUiModel<*>>> {
         val widgetFlow = flow { emit(widgets) }
-        val predictedInitialWidgetFlow = getPredictedInitialWidget(widgets, deviceHeightDp)
+        val predictedInitialWidgetFlow = getPredictedInitialWidget(
+            widgets, deviceHeightDp, isFromCache
+        )
         return widgetFlow.combine(predictedInitialWidgetFlow) { widgetsFromFlow, initialWidgets ->
-            widgetsFromFlow
-                .map { widget -> initialWidgets.find { it.id == widget.id } ?: widget }
-                .filter { !it.isNeedToBeRemoved }
+            widgetsFromFlow.map { widget ->
+                initialWidgets.find { it.id == widget.id } ?: widget
+            }.filter { !it.isNeedToBeRemoved }
         }
     }
 
@@ -124,7 +127,8 @@ class SellerHomeLayoutHelper @Inject constructor(
      */
     private fun getPredictedInitialWidget(
         widgetList: List<BaseWidgetUiModel<*>>,
-        deviceHeightDp: Float
+        deviceHeightDp: Float,
+        isFromCache: Boolean
     ): Flow<List<BaseWidgetUiModel<*>>> {
         var remainingHeight = deviceHeightDp
         var hasCardCalculated = false
@@ -144,7 +148,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                 }
             }
         }
-        return getLoadedInitialWidgetData(newWidgetList)
+        return getLoadedInitialWidgetData(newWidgetList, isFromCache)
     }
 
     /**
@@ -153,7 +157,10 @@ class SellerHomeLayoutHelper @Inject constructor(
      * @param   widgetList  predicted initial widget list
      * @return  flow that return list of all loaded widget
      */
-    private fun getLoadedInitialWidgetData(widgetList: List<BaseWidgetUiModel<*>>): Flow<List<BaseWidgetUiModel<*>>> {
+    private fun getLoadedInitialWidgetData(
+        widgetList: List<BaseWidgetUiModel<*>>,
+        isFromCache: Boolean
+    ): Flow<List<BaseWidgetUiModel<*>>> {
         val loadedWidgetList = widgetList.filter { it.isLoading }
             .map {
                 if (it.widgetType == WidgetType.SECTION) {
@@ -161,7 +168,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                 }
                 return@map it
             }
-        return getWidgetsData(loadedWidgetList)
+        return getWidgetsData(loadedWidgetList, isFromCache)
     }
 
     /**
@@ -170,38 +177,58 @@ class SellerHomeLayoutHelper @Inject constructor(
      * @param   widgets     list of widgets which their data need to be loaded
      * @return  flow that return list of combined widget list that has their data loaded
      */
-    private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>): Flow<List<BaseWidgetUiModel<*>>> {
+    private fun getWidgetsData(
+        widgets: List<BaseWidgetUiModel<*>>,
+        isFromCache: Boolean
+    ): Flow<List<BaseWidgetUiModel<*>>> {
         val groupedWidgets = widgets.groupBy { it.widgetType } as MutableMap
         val lineGraphDataFlow = groupedWidgets.getWidgetDataByType<LineGraphDataUiModel>(
-            WidgetType.LINE_GRAPH
+            WidgetType.LINE_GRAPH,
+            isFromCache
         )
         val announcementDataFlow = groupedWidgets.getWidgetDataByType<AnnouncementDataUiModel>(
-            WidgetType.ANNOUNCEMENT
+            WidgetType.ANNOUNCEMENT,
+            isFromCache
         )
-        val cardDataFlow = groupedWidgets.getWidgetDataByType<CardDataUiModel>(WidgetType.CARD)
+        val cardDataFlow = groupedWidgets.getWidgetDataByType<CardDataUiModel>(
+            WidgetType.CARD,
+            isFromCache
+        )
         val progressDataFlow = groupedWidgets.getWidgetDataByType<ProgressDataUiModel>(
-            WidgetType.PROGRESS
+            WidgetType.PROGRESS,
+            isFromCache
         )
-        val carouselDataFlow =
-            groupedWidgets.getWidgetDataByType<CarouselDataUiModel>(WidgetType.CAROUSEL)
+        val carouselDataFlow = groupedWidgets.getWidgetDataByType<CarouselDataUiModel>(
+            WidgetType.CAROUSEL,
+            isFromCache
+        )
         val postDataFlow = groupedWidgets.getWidgetDataByType<PostListDataUiModel>(
-            WidgetType.POST_LIST
+            WidgetType.POST_LIST,
+            isFromCache
         )
-        val tableDataFlow = groupedWidgets.getWidgetDataByType<TableDataUiModel>(WidgetType.TABLE)
+        val tableDataFlow = groupedWidgets.getWidgetDataByType<TableDataUiModel>(
+            WidgetType.TABLE,
+            isFromCache
+        )
         val pieChartDataFlow = groupedWidgets.getWidgetDataByType<PieChartDataUiModel>(
-            WidgetType.PIE_CHART
+            WidgetType.PIE_CHART,
+            isFromCache
         )
         val barChartDataFlow = groupedWidgets.getWidgetDataByType<BarChartDataUiModel>(
-            WidgetType.BAR_CHART
+            WidgetType.BAR_CHART,
+            isFromCache
         )
         val multiLineGraphDataFlow = groupedWidgets.getWidgetDataByType<MultiLineGraphDataUiModel>(
-            WidgetType.MULTI_LINE_GRAPH
+            WidgetType.MULTI_LINE_GRAPH,
+            isFromCache
         )
         val recommendationDataFlow = groupedWidgets.getWidgetDataByType<RecommendationDataUiModel>(
-            WidgetType.RECOMMENDATION
+            WidgetType.RECOMMENDATION,
+            isFromCache
         )
         val milestoneDataFlow = groupedWidgets.getWidgetDataByType<MilestoneDataUiModel>(
-            WidgetType.MILESTONE
+            WidgetType.MILESTONE,
+            isFromCache
         )
 
         return combine(
@@ -223,7 +250,8 @@ class SellerHomeLayoutHelper @Inject constructor(
      * @return  flow that will emit list of data for current widget type
      */
     private inline fun <reified D : BaseDataUiModel> MutableMap<String, List<BaseWidgetUiModel<*>>>.getWidgetDataByType(
-        widgetType: String
+        widgetType: String,
+        isFromCache: Boolean
     ): Flow<List<BaseDataUiModel>> {
         return flow {
             val widgetList = this@getWidgetDataByType[widgetType]
@@ -231,7 +259,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                 try {
                     widgetList?.let {
                         when (widgetType) {
-                            WidgetType.LINE_GRAPH -> getLineGraphData(it)
+                            WidgetType.LINE_GRAPH -> getLineGraphData(it, isFromCache)
                             WidgetType.ANNOUNCEMENT -> getAnnouncementData(it)
                             WidgetType.CARD -> getCardData(it)
                             WidgetType.PROGRESS -> getProgressData(it)
@@ -336,7 +364,10 @@ class SellerHomeLayoutHelper @Inject constructor(
         return getDataFromUseCase(useCase, shouldUseCache)
     }
 
-    private suspend fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>): List<LineGraphDataUiModel> {
+    private suspend fun getLineGraphData(
+        widgets: List<BaseWidgetUiModel<*>>,
+        shouldUseCache: Boolean
+    ): List<LineGraphDataUiModel> {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
         val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -346,8 +377,6 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
         return getDataFromUseCase(useCase, shouldUseCache)
     }
 

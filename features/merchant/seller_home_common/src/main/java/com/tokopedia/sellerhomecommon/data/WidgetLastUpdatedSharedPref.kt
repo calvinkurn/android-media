@@ -13,7 +13,6 @@ class WidgetLastUpdatedSharedPref(
 
     companion object {
         private const val PREF_NAME = "shc_widget_last_updated_info_pref"
-        private const val DEFAULT = 0L
     }
 
     private val sharedPref: SharedPreferences by lazy {
@@ -26,7 +25,7 @@ class WidgetLastUpdatedSharedPref(
         spe.apply()
     }
 
-    override fun getLastUpdateInfoInMillis(dataKey: String): Long {
-        return sharedPref.getLong(dataKey, DEFAULT)
+    override fun getLastUpdateInfoInMillis(dataKey: String, default: Long): Long {
+        return sharedPref.getLong(dataKey, default)
     }
 }

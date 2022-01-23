@@ -8,6 +8,7 @@ data class MilestoneDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = true,
+    override val lastUpdated: Long = 0,
     val title: String = "",
     val subTitle: String = "",
     val backgroundColor: String = "",

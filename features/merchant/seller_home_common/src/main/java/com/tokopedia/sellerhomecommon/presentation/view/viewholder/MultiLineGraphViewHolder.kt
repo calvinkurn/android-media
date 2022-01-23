@@ -24,6 +24,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.XYAxisUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.MultiLineGraphTooltipView
 import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -264,12 +265,22 @@ class MultiLineGraphViewHolder(
             val metricPosition = metricItems.indexOf(metric)
             scrollMetricToPosition(metricPosition)
 
+            setupLastUpdated(element)
             setupCta(element)
             setTagNotification(element.tag)
             setupTooltip(element)
 
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendMultiLineGraphImpressionEvent(element)
+            }
+        }
+    }
+
+    private fun setupLastUpdated(element: MultiLineGraphWidgetUiModel) {
+        with(binding) {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                tvShcMultiLineLastUpdated.isVisible = true
+                tvShcMultiLineLastUpdated.text = DateTimeUtil.format(lastUpdated, "dd MM yyy, hh:mm")
             }
         }
     }
@@ -295,7 +306,7 @@ class MultiLineGraphViewHolder(
         return with(binding) {
             listOf(
                 rvShcGraphMetrics, lvShcCurrentPeriod, lvShcLastPeriod,
-                chartViewShcMultiLine, imgShcMultiLineCta, tvShcMultiLineCta
+                chartViewShcMultiLine, tvShcMultiLineCta
             )
         }
     }
@@ -304,15 +315,27 @@ class MultiLineGraphViewHolder(
         val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
         tvShcMultiLineCta.visibility = ctaVisibility
-        imgShcMultiLineCta.visibility = ctaVisibility
         if (isCtaVisible) {
             tvShcMultiLineCta.text = element.ctaText
             tvShcMultiLineCta.setOnClickListener {
                 openAppLink(element)
             }
-            imgShcMultiLineCta.setOnClickListener {
-                openAppLink(element)
-            }
+
+            val iconColor = root.context.getResColor(
+                com.tokopedia.unifyprinciples.R.color.Unify_G400
+            )
+            val iconWidth = root.context.resources.getDimension(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+            )
+            val iconHeight = root.context.resources.getDimension(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+            )
+            tvShcMultiLineCta.setUnifyDrawableEnd(
+                IconUnify.CHEVRON_RIGHT,
+                iconColor,
+                iconWidth,
+                iconHeight
+            )
         }
     }
 
