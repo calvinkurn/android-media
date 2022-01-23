@@ -74,9 +74,13 @@ class AddEditProductSpecificationViewModel @Inject constructor(
                 SpecificationInputModel(
                     id = valueResult.id.toString(),
                     data = valueResult.name,
+                    specificationVariant = annotationCategoryData.variant,
                     required = required)
             } else {
-                SpecificationInputModel(required = required)
+                SpecificationInputModel(
+                    required = required,
+                    specificationVariant = annotationCategoryData.variant,
+                )
             }
         }
 

@@ -185,6 +185,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var addProductSpecificationButton: Typography? = null
     private var productSpecificationReloadLayout: View? = null
     private var productSpecificationReloadButton: Typography? = null
+    private var tooltipSpecificationRequired: View? = null
 
     // product price
     private var productPriceField: TextFieldUnify? = null
@@ -354,7 +355,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
-                if (viewModel.selectedSpecificationList.isNotEmpty()) {
+                if (viewModel.selectedSpecificationList.value.orEmpty().isNotEmpty()) {
                     showChangeCategoryDialog {
                         startCategoryActivity(REQUEST_CODE_CATEGORY)
                     }
@@ -371,6 +372,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         addProductSpecificationButton = view.findViewById(R.id.tv_add_product_specification)
         productSpecificationReloadLayout = view.findViewById(R.id.reload_product_specification_layout)
         productSpecificationReloadButton = view.findViewById(R.id.tv_reload_specification_button)
+        tooltipSpecificationRequired = view.findViewById(R.id.tooltipSpecificationRequired)
 
         // add edit product price views
         productPriceField = view.findViewById(R.id.tfu_product_price)
@@ -698,9 +700,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToPreOrderDurationInputStatus()
         subscribeToProductSkuInputStatus()
         subscribeToShopShowCases()
-        subscribeToSpecificationList()
+        subscribeToAnnotationCategoryData()
         subscribeToSpecificationText()
-        subscribeToHasSpecificationSignalStatus()
+        subscribeToHasRequiredSpecification()
+        subscribeToSelectedSpecificationList()
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
         subscribeToProductNameValidationFromNetwork()
@@ -1114,7 +1117,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             wholesaleList = getWholesaleInput()
             productShowCases = viewModel.productShowCases
-            specifications = viewModel.selectedSpecificationList
+            specifications = viewModel.selectedSpecificationList.value
         }
     }
 
@@ -1434,8 +1437,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun subscribeToSpecificationList() {
-        viewModel.annotationCategoryData.observe(viewLifecycleOwner, Observer { result ->
+    private fun subscribeToAnnotationCategoryData() {
+        viewModel.annotationCategoryData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     productSpecificationLayout?.isVisible = result.data.isNotEmpty()
@@ -1443,6 +1446,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     addProductSpecificationButton?.show()
                     productSpecificationReloadLayout?.hide()
                     viewModel.updateSpecificationByAnnotationCategory(result.data)
+                    viewModel.updateHasRequiredSpecification(result.data)
                 }
                 is Fail -> {
                     productSpecificationLayout?.show()
@@ -1455,31 +1459,38 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToSpecificationText() {
-        viewModel.specificationText.observe(viewLifecycleOwner, Observer {
+        viewModel.specificationText.observe(viewLifecycleOwner, {
             productSpecificationTextView?.text = it
-            addProductSpecificationButton?.text = if (viewModel.selectedSpecificationList.isEmpty()) {
+        })
+    }
+
+    private fun subscribeToHasRequiredSpecification() {
+        viewModel.hasRequiredSpecification.observe(viewLifecycleOwner, {
+            productSpecificationHeaderTextView.displayRequiredAsterisk(it)
+        })
+    }
+
+    private fun subscribeToSelectedSpecificationList() {
+        viewModel.selectedSpecificationList.observe(viewLifecycleOwner) {
+            addProductSpecificationButton?.text = if (it.isEmpty()) {
                 getString(R.string.action_specification_add)
             } else {
                 getString(R.string.action_specification_change)
             }
-        })
-    }
-
-    private fun subscribeToHasSpecificationSignalStatus() {
-        viewModel.hasSpecificationSignalStatus.observe(viewLifecycleOwner) {
-            productSpecificationHeaderTextView.displayRequiredAsterisk(it)
+            tooltipSpecificationRequired?.isVisible = it.isEmpty()
+                    && viewModel.hasRequiredSpecification.value.orFalse()
         }
     }
 
     private fun subscribeToInputStatus() {
-        viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
+        viewModel.isInputValid.observe(viewLifecycleOwner, {
             if (it) enableSubmitButton()
             else disableSubmitButton()
         })
     }
 
     private fun subscribeToCategoryRecommendation() {
-        viewModel.productCategoryRecommendationLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.productCategoryRecommendationLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
                 is Fail -> {
@@ -1688,7 +1699,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productInputModel.detailInputModel.apply {
                 if (productCategoryId.isNotBlank()) categoryId = productCategoryId
                 if (productCategoryName.isNotBlank()) categoryName = productCategoryName
-                specifications = viewModel.selectedSpecificationList
+                specifications = viewModel.selectedSpecificationList.value
             }
 
             val cacheManager = SaveInstanceCacheManager(this, true)
@@ -1966,7 +1977,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
 
                 // display confirmation if product has a specs
-                if (viewModel.selectedSpecificationList.isEmpty()) {
+                if (viewModel.selectedSpecificationList.value.orEmpty().isEmpty()) {
                     selectCategoryRecommendation(items, position)
                 } else {
                     showChangeCategoryDialog {

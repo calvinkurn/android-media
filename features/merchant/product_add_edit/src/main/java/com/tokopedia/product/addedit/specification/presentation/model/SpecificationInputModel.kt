@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class SpecificationInputModel (
         var id: String = "",
         var data: String = "",
+        var specificationVariant: String = "",
         var required: Boolean = false,
         @StringRes var errorMessageRes: Int = 0
 ): Parcelable {

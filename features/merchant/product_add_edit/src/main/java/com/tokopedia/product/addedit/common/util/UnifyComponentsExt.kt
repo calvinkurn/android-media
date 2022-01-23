@@ -79,14 +79,12 @@ fun Typography?.setTextOrGone(text: String) {
 
 fun Typography?.displayRequiredAsterisk(visible: Boolean) {
     this?.run {
+        val asterisk = context.getString(com.tokopedia.product.addedit.R.string.label_asterisk)
+        text = text.toString().replace(asterisk, "")
         if (visible) {
-            val asterisk = context.getString(com.tokopedia.product.addedit.R.string.colored_asterisk)
-            val addedAsteriskText = MethodChecker.fromHtml(text.toString() + asterisk)
+            val redAsterisk = context.getString(com.tokopedia.product.addedit.R.string.colored_asterisk)
+            val addedAsteriskText = MethodChecker.fromHtml(text.toString() + redAsterisk)
             text = addedAsteriskText
-        } else {
-            val asterisk = context.getString(com.tokopedia.product.addedit.R.string.label_asterisk)
-            if (text.endsWith(asterisk))
-                text = text.substring(Int.ZERO, text.length - asterisk.length)
         }
     }
 }
