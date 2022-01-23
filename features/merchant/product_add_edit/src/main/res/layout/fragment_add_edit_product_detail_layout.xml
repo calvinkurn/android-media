@@ -198,46 +198,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_sku_layout" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_submit"
+            android:contentDescription="@string/content_desc_tv_submit_text"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/dp_18"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/product_add_edit_rect_green_solid"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:text="@string/action_continue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_edit_product_showcase_layout">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_submit_text"
-                android:contentDescription="@string/content_desc_tv_submit_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/action_continue"
-                android:textAllCaps="false"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/lu_submit_loading_indicator"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:loader_type="circular_white" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_showcase_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
