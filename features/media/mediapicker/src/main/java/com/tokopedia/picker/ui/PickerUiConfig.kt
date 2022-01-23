@@ -5,7 +5,7 @@ import com.tokopedia.applink.ApplinkConst.MediaPicker
 import com.tokopedia.picker.common.PickerModeType
 import com.tokopedia.picker.common.PickerPageType
 import com.tokopedia.picker.common.PickerSelectionType
-import com.tokopedia.picker.data.entity.Media
+import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.utils.isVideoFormat
 
 object PickerUiConfig {
@@ -23,7 +23,7 @@ object PickerUiConfig {
         private set
 
     // the final collection data ready to passing into next page
-    private var mediaSelection = arrayListOf<Media>()
+    private var mediaSelection = arrayListOf<MediaUiModel>()
 
     // picker global parameter
     private var pickerParam: PickerParam? = null
@@ -43,18 +43,18 @@ object PickerUiConfig {
     }
 
     @Deprecated("")
-    fun mediaSelectionList(): ArrayList<Media> {
+    fun mediaSelectionList(): ArrayList<MediaUiModel> {
         return mediaSelection
     }
 
     @Deprecated("")
-    fun addAllMediaSelection(list: List<Media>) {
+    fun addAllMediaSelection(list: List<MediaUiModel>) {
         mediaSelection.clear()
         mediaSelection.addAll(list)
     }
 
     @Deprecated("")
-    fun addMediaSelection(media: Media) {
+    fun addMediaSelection(media: MediaUiModel) {
         val index = mediaSelection.indexOf(media)
         if (index > 0) return
 

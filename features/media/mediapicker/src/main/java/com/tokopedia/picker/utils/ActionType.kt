@@ -1,21 +1,21 @@
 package com.tokopedia.picker.utils
 
-import com.tokopedia.picker.data.entity.Media
+import com.tokopedia.picker.ui.uimodel.MediaUiModel
 
 sealed class ActionType {
     class Add(
-        val data: List<Media>,
+        val data: List<MediaUiModel>,
         val error: String?
     ): ActionType()
 
     class Remove(
-        val data: List<Media>,
-        val mediaToRemove: Media,
+        val data: List<MediaUiModel>,
+        val mediaToRemove: MediaUiModel,
         val error: String?
     ): ActionType()
 
     class Reorder(
-        val data: List<Media>,
+        val data: List<MediaUiModel>,
         val error: String?
     ): ActionType()
 }

@@ -2,21 +2,16 @@ package com.tokopedia.picker.data.entity
 
 import android.content.ContentUris
 import android.net.Uri
-import android.os.Parcelable
 import android.provider.MediaStore
 import com.tokopedia.picker.utils.isVideoFormat
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
 import java.io.File
 
-@Parcelize
 data class Media(
     val id: Long,
     val name: String,
     val path: String
-) : Parcelable {
+) {
 
-    @IgnoredOnParcel
     private var uriHolder: Uri? = null
 
     val uri: Uri

@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerFragmentType
 import com.tokopedia.picker.common.PickerPageType
-import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ActivityPickerBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
@@ -25,6 +24,7 @@ import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.component.NavToolbarComponent
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
+import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.view.binding.viewBinding
@@ -156,7 +156,7 @@ open class PickerActivity : BaseActivity()
     private fun restoreDataState(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
             // restore the last media selection to the drawer
-            it.getParcelableArrayList<Media>(LAST_MEDIA_SELECTION)?.let { elements ->
+            it.getParcelableArrayList<MediaUiModel>(LAST_MEDIA_SELECTION)?.let { elements ->
 //                viewModel.publishSelectionDataChanged(elements)
             }
         }

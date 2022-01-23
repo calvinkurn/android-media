@@ -9,8 +9,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.picker.R
-import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.WidgetSelectionBottomNavBinding
+import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.ui.widget.selectornav.adapter.MediaSelectionAdapter
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.Unify_N0
@@ -120,11 +120,11 @@ class MediaSelectionNavigationWidget : FrameLayout {
         adapter?.canReorder = canReorder
     }
 
-    fun addData(media: Media) {
+    fun addData(media: MediaUiModel) {
         adapter?.setData(media)
     }
 
-    fun addData(medias: List<Media>) {
+    fun addData(medias: List<MediaUiModel>) {
         adapter?.setData(medias.toMutableList())
     }
 

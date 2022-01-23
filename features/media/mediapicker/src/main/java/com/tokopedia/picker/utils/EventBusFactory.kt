@@ -1,16 +1,14 @@
 package com.tokopedia.picker.utils
 
-import com.tokopedia.picker.data.entity.Media
+import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 
 sealed class EventState {
     object Idle: EventState()
-    class CameraCaptured(val data: Media?): EventState()
-    class SelectionChanged(val data: List<Media>): EventState()
-    class SelectionRemoved(val media: Media?, val data: List<Media>): EventState()
+    class CameraCaptured(val data: MediaUiModel?): EventState()
+    class SelectionChanged(val data: List<MediaUiModel>): EventState()
+    class SelectionRemoved(val media: MediaUiModel?, val data: List<MediaUiModel>): EventState()
 }
 
 object EventBusFactory {

@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.picker.data.entity.Media
+import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
 import com.tokopedia.picker.ui.widget.selectornav.viewholder.PlaceholderViewHolder
 import com.tokopedia.picker.ui.widget.selectornav.viewholder.ThumbnailViewHolder
@@ -18,10 +18,10 @@ import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.isVideoFormat
 
 class MediaSelectionAdapter(
-    mediaPathList: List<Media>,
+    mediaPathList: List<MediaUiModel>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val medias: MutableList<Media> = mediaPathList.toMutableList()
+    private val medias: MutableList<MediaUiModel> = mediaPathList.toMutableList()
     private val listRect: MutableMap<Int,Rect> = mutableMapOf()
 
     private var listener: MediaSelectionNavigationWidget.Listener? = null
@@ -94,13 +94,13 @@ class MediaSelectionAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(media: Media) {
+    fun setData(media: MediaUiModel) {
         this.medias.add(media)
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(medias: MutableList<Media>) {
+    fun setData(medias: MutableList<MediaUiModel>) {
         this.medias.clear()
         this.medias.addAll(medias)
         notifyDataSetChanged()

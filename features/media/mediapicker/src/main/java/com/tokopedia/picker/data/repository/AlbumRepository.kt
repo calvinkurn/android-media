@@ -37,7 +37,7 @@ class AlbumRepositoryImpl constructor(
 
                 val album = albumMap[bucket]
 
-                if (album == null) albumMap[bucket] = Album(bucketId, bucket, media.uri)
+                if (album == null) albumMap[bucket] = Album(bucketId, bucket, media.uri, 0)
                 if (album != null) album.count++
             } while (cursor.moveToNext())
         }

@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.common.component.uiComponent
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
-import com.tokopedia.picker.data.entity.Album
 import com.tokopedia.picker.databinding.ActivityAlbumBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
@@ -17,6 +16,7 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.adapter.AlbumAdapter
 import com.tokopedia.picker.ui.activity.component.NavToolbarComponent
 import com.tokopedia.picker.ui.fragment.OnAlbumClickListener
+import com.tokopedia.picker.ui.uimodel.AlbumUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -87,7 +87,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     private val onAlbumClickListener = object : OnAlbumClickListener {
-        override fun invoke(album: Album) {
+        override fun invoke(album: AlbumUiModel) {
             setResult(RESULT_OK, Intent().apply {
                 putExtra(INTENT_BUCKET_ID, album.id)
                 putExtra(INTENT_BUCKET_NAME, album.name)

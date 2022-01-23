@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerSelectionType
-import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
 import com.tokopedia.picker.databinding.FragmentGalleryBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
@@ -23,6 +22,7 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
+import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.isVideoFormat
@@ -177,7 +177,7 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
         }
     }
 
-    private fun selectMedia(media: Media, isSelected: Boolean): Boolean {
+    private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
             if (isVideoFormat(media.path) && PickerUiConfig.hasAtLeastOneVideoOnGlobalSelection()) {
                 Toast.makeText(
