@@ -2,6 +2,9 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.SortUiModel
 import kotlinx.android.synthetic.main.item_mvc_sort.view.*
@@ -22,18 +25,12 @@ class SortViewHolder(
     override fun bind(element: SortUiModel) {
         with(itemView) {
             tvMvcSort.text = element.label
-            radMvcSort.run{
-                setOnCheckedChangeListener(null)
-                isChecked = element.isSelected
-                setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        onApplyClick(element)
-                    }
-                }
-            }
+
+            iv_check.isVisible = element.isSelected
+
             setOnClickListener {
-                if (!radMvcSort.isChecked) {
-                    radMvcSort.isChecked = true
+                if (!iv_check.isVisible) {
+                    onApplyClick(element)
                 }
             }
         }

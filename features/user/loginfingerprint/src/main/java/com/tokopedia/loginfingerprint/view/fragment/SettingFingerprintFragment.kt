@@ -20,7 +20,6 @@ import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.databinding.FragmentSettingFingerprintBinding
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
-import com.tokopedia.loginfingerprint.listener.AuthenticationFingerprintCallback
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
@@ -33,7 +32,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 
-class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback?): BaseDaggerFragment() {
+class SettingFingerprintFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -69,11 +68,11 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
             initObserver()
             loading()
             viewModel.getFingerprintStatus()
-            binding?.fragmentFingerprintSettingSwitch?.setOnCheckedChangeListener { switch, isEnable ->
+            binding?.fragmentFingerprintSettingSwitch?.setOnClickListener {
                 if (enableSwitch) {
-                    if (isEnable) {
+                    if (binding?.fragmentFingerprintSettingSwitch?.isChecked == true) {
                         enableSwitch = false
-                        switch.isChecked = false
+                        binding?.fragmentFingerprintSettingSwitch?.isChecked = false
                         enableSwitch = true
                         showBiometricPrompt()
                     } else {
@@ -227,13 +226,17 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
     }
 
     private fun showBiometricPrompt () {
-        listener?.onShowFingerprintAuthentication(
-            { onSuccessAuthentication() },
-            { onFailedAuthentication() },
-            { code, msg ->
-                onErrorAuthentication(code, msg)
-            }
-        )
+        if(activity != null) {
+            BiometricPromptHelper.showBiometricPromptFragment(requireActivity(), this,
+                {
+                    onSuccessAuthentication()
+                }, {
+                    onFailedAuthentication()
+                }, { err, msg ->
+                    onErrorAuthentication(err, msg)
+                }
+            )
+        }
     }
 
     fun trackBackButton() {
@@ -249,8 +252,8 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
         private const val NORMAL_ALPHA = 1.0F
         private const val LESS_ALPHA = 0.4f
 
-        fun createInstance(bundle: Bundle, listener: AuthenticationFingerprintCallback? = null): Fragment {
-            val fragment = SettingFingerprintFragment(listener)
+        fun createInstance(bundle: Bundle): Fragment {
+            val fragment = SettingFingerprintFragment()
             fragment.arguments = bundle
             return fragment
         }

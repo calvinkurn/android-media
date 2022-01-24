@@ -47,6 +47,10 @@ abstract class PlayBindModule {
 
     @Binds
     @PlayScope
+    abstract fun bindUserReportRepository(repo: PlayViewerUserReportRepositoryImpl): PlayViewerUserReportRepository
+
+    @Binds
+    @PlayScope
     abstract fun bindRepository(repo: PlayViewerRepositoryImpl): PlayViewerRepository
 
     /**

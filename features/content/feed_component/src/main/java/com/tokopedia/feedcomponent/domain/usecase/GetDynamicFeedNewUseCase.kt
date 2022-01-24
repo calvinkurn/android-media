@@ -289,6 +289,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
       }
       ... on FeedXCardProductsHighlight {
         id
+        type
         author {
           id
           type
@@ -370,6 +371,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           mods
         }
         publishedAt
+        deletable
         mods
       }
       ... on FeedXCardPlaceholder {

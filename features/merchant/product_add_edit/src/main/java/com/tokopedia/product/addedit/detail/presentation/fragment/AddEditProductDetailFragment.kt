@@ -1545,7 +1545,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun subscribeToProductNameValidationFromNetwork() {
-        observe(viewModel.productNameValidationFromNetwork) {
+        viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner, Observer {
             submitButton?.isLoading = false
             when(it) {
                 is Success -> {
@@ -1566,7 +1566,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     viewModel.setIsProductNameInputError(true)
                 }
             }
-        }
+        })
     }
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {

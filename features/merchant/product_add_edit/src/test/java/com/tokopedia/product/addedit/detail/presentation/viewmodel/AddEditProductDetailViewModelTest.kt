@@ -325,6 +325,21 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `isInputValid should return true if wholesale params is valid`() {
+        var isValid = false
+
+        isValid = getIsTheLastOfWholeSaleTestResult(true, false)
+        Assert.assertTrue(isValid)
+
+        isValid = getIsTheLastOfWholeSaleTestResult(true, true)
+        Assert.assertFalse(isValid)
+
+        isValid = getIsTheLastOfWholeSaleTestResult(false, false)
+        Assert.assertFalse(isValid)
+
+    }
+
+    @Test
     fun `validateProductPhotoInput should valid when product have photo`() {
         viewModel.validateProductPhotoInput(1)
 
@@ -366,29 +381,39 @@ class AddEditProductDetailViewModelTest {
 
     @Test
     fun `validateProductNameInput should invalid when product name is blacklisted`() = coroutineTestRule.runBlockingTest {
-        val productNameInput = "indodax"
-        val resultMessage = listOf("indodax")
-        val errorMessage = "error blacklist"
+        val errorMessageBlacklist = "error blacklist"
+        val errorMessageTypo = "error typo"
+        val errorMessageNegative = "error blacklist"
 
-        coEvery {
-            getProductTitleValidationUseCase.getDataModelOnBackground()
-        } returns TitleValidationModel(
-                isBlacklistKeyword = true,
-                errorKeywords = resultMessage
+        getValidateProductNameInputTestResult(
+            true,
+            false,
+            false,
+            errorMessageBlacklist,
+            errorMessageTypo,
+            errorMessageNegative
         )
+        Assert.assertEquals(errorMessageBlacklist, viewModel.productNameMessage)
 
-        coEvery {
-            provider.getTitleValidationErrorBlacklisted()
-        } returns errorMessage
+        getValidateProductNameInputTestResult(
+            false,
+            true,
+            false,
+            errorMessageBlacklist,
+            errorMessageTypo,
+            errorMessageNegative
+        )
+        Assert.assertEquals(errorMessageTypo, viewModel.productNameMessage)
 
-        viewModel.validateProductNameInput(productNameInput)
-
-        coVerify {
-            getProductTitleValidationUseCase.getDataModelOnBackground()
-            provider.getTitleValidationErrorBlacklisted()
-        }
-
-        Assert.assertEquals(errorMessage, viewModel.productNameMessage)
+        getValidateProductNameInputTestResult(
+            false,
+            false,
+            true,
+            errorMessageBlacklist,
+            errorMessageTypo,
+            errorMessageNegative
+        )
+        Assert.assertEquals(errorMessageNegative, viewModel.productNameMessage)
     }
 
     @Test
@@ -1565,6 +1590,52 @@ class AddEditProductDetailViewModelTest {
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
         }
 
+    }
+
+    private fun getIsTheLastOfWholeSaleTestResult(
+        isAddingWholeSale: Boolean,
+        isAddingValidationWholeSale: Boolean
+    ): Boolean {
+        viewModel.isAddingWholeSale = isAddingWholeSale
+        viewModel.isAddingValidationWholeSale = isAddingValidationWholeSale
+        viewModel.isTheLastOfWholeSale.value = true
+
+        return viewModel.isInputValid.getOrAwaitValue()
+    }
+
+    private fun getValidateProductNameInputTestResult(
+        blacklistKeyword: Boolean,
+        typoDetected: Boolean,
+        negativeKeyword: Boolean,
+        errorMessageBlacklisted: String,
+        errorMessageTypo: String,
+        errorMessageNegative: String,
+    ) {
+        coEvery {
+            getProductTitleValidationUseCase.getDataModelOnBackground()
+        } returns TitleValidationModel(
+            isBlacklistKeyword = blacklistKeyword,
+            isTypoDetected = typoDetected,
+            isNegativeKeyword = negativeKeyword
+        )
+
+        coEvery {
+            provider.getTitleValidationErrorBlacklisted()
+        } returns errorMessageBlacklisted
+
+        coEvery {
+            provider.getTitleValidationErrorTypo()
+        } returns errorMessageTypo
+
+        coEvery {
+            provider.getTitleValidationErrorNegative()
+        } returns errorMessageNegative
+
+        viewModel.validateProductNameInput("dummy")
+
+        coVerify {
+            getProductTitleValidationUseCase.getDataModelOnBackground()
+        }
     }
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {

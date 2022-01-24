@@ -514,7 +514,7 @@ class PlayFragment @Inject constructor(
         pageMonitoring.stopMonitoring()
     }
 
-    private fun hideKeyboard() {
+    fun hideKeyboard() {
         val view = activity?.currentFocus
         view?.let { v ->
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -529,7 +529,7 @@ class PlayFragment @Inject constructor(
         )
     }
 
-    private fun registerKeyboardListener(view: View) {
+    fun registerKeyboardListener(view: View) {
         keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.onKeyboardShown(estimatedKeyboardHeight)
@@ -542,7 +542,7 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun unregisterKeyboardListener(view: View) {
+    fun unregisterKeyboardListener(view: View) {
         keyboardWatcher.unlisten(view)
     }
 
@@ -626,7 +626,7 @@ class PlayFragment @Inject constructor(
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
-        private const val KEYBOARD_REGISTER_DELAY = 200L
+        const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
     }
 }

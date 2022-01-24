@@ -87,7 +87,8 @@ class MultiLineMetricsAdapter(
 
             val cardSpace = itemView.context.dpToPx(16).toInt()
             val rvLeftAndRightMargin = itemView.context.dpToPx(24).toInt()
-            return (recyclerViewWidth / 2) - (cardSpace + rvLeftAndRightMargin)
+            val divider = itemView.context.resources.getInteger(R.integer.shc_card_metric_width)
+            return (recyclerViewWidth / divider) - (cardSpace + rvLeftAndRightMargin)
         }
     }
 

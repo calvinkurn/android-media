@@ -40,10 +40,10 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import java.util.*
 
 class ProductViewModelMapper {
 
+    @Suppress("LongParameterList")
     fun convertToProductViewModel(
         lastProductItemPosition: Int,
         searchProductModel: SearchProductModel,
@@ -73,7 +73,6 @@ class ProductViewModelMapper {
             pageTitle,
             dimension90,
         )
-        productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
             keyword,

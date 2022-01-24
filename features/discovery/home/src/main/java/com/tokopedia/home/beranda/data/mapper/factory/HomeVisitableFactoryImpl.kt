@@ -97,7 +97,7 @@ class HomeVisitableFactoryImpl(
     override fun addHomeHeaderOvo(): HomeVisitableFactory {
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
 
-        val homeHeader = HomeHeaderOvoDataModel(needToShowUserWallet = needToShowUserWallet)
+        val homeHeader = HomeHeaderDataModel(needToShowUserWallet = needToShowUserWallet)
         val headerViewModel = HeaderDataModel()
         headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
         homeHeader.headerDataModel = headerViewModel
@@ -278,6 +278,16 @@ class HomeVisitableFactoryImpl(
 
                         TYPE_BANNER -> {
                             data.atfStatusCondition (
+                                    onLoading = {
+                                        visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
+                                    },
+                                    onError = {
+                                        when(channelPosition) {
+                                            0 -> visitableList.add(ErrorStateChannelOneModel())
+                                            1 -> visitableList.add(ErrorStateChannelTwoModel())
+                                            2 -> visitableList.add(ErrorStateChannelThreeModel())
+                                        }
+                                    },
                                     onSuccess = {
                                         addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>())
                                     }

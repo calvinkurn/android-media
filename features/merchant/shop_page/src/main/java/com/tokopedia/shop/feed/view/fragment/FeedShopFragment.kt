@@ -865,16 +865,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onGridItemClick(
-        positionInFeed: Int,
-        contentPosition: Int,
-        productPosition: String,
-        redirectLink: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        feedXProduct: FeedXProduct
-    ) {
+    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: String, redirectLink: String, type: String, isFollowed: Boolean, shopId: String, feedXProducts: List<FeedXProduct>, index: Int) {
         onGoToLink(redirectLink)
     }
 
@@ -1184,6 +1175,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     }
 
-    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int) {
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int, feedXCard: FeedXCard) {
     }
 }
