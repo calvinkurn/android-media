@@ -95,6 +95,8 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter.OnItemChangeView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
@@ -116,6 +118,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceM
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
@@ -165,7 +168,8 @@ class ProductListFragment: BaseDaggerFragment(),
         TopAdsImageViewListener,
         ChooseAddressListener,
         BannerListener,
-        LastFilterListener {
+        LastFilterListener,
+        InspirationSizeOptionListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -403,6 +407,7 @@ class ProductListFragment: BaseDaggerFragment(),
             bannerListener = this,
             lastFilterListener = this,
             topAdsConfig = topAdsConfig,
+            inspirationSizeOptionListener = this,
             violationListener = ViolationListenerDelegate(activity)
         )
 
@@ -1935,6 +1940,55 @@ class ProductListFragment: BaseDaggerFragment(),
         trackEventClickInspirationCardOption(optionData)
 
         redirectionStartActivity(optionData.applink, optionData.url)
+    }
+
+    override fun onInspirationSizeOptionClicked(sizeOptionDataView: InspirationSizeOptionDataView, option: Option) {
+        val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
+        filterController.setFilter(option, isQuickFilterSelectedReversed)
+
+        refreshSearchParameter(filterController.getParameter())
+
+        reloadData()
+
+        if (isQuickFilterSelectedReversed) {
+            sizeOptionDataView.click(TrackApp.getInstance().gtm)
+        }
+    }
+
+    override fun initSizeOptionFilter(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
+        if (inspirationSizeDataViewList.isEmpty()) return
+
+        val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
+
+        filterController.appendFilterList(
+            searchParameterMap,
+            inspirationSizeDataViewList.map { dataView ->
+                Filter(
+                    options = dataView.data.optionSizeData.map { optionSize ->
+                        Option(
+                            key = optionSize.filters.key,
+                            value = optionSize.filters.value,
+                            name = optionSize.filters.name
+                        )
+                    }
+                )
+            }
+        )
+    }
+
+    override fun setSelectedSizeOption(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
+        inspirationSizeDataViewList.forEach { element ->
+            element.data.optionSizeData.forEach {
+                val option = Option(
+                    key = it.filters.key,
+                    value = it.filters.value,
+                    name = it.filters.name,
+                    inputState = true.toString(),
+                )
+
+                it.isSelected = isQuickFilterSelected(option)
+            }
+        }
     }
 
     private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {

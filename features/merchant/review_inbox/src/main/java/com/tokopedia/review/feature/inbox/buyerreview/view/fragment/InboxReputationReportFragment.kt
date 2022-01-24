@@ -14,26 +14,29 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.review.common.util.ReviewErrorHandler
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking
 import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationReportActivity
-import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationReport
-import com.tokopedia.review.feature.inbox.buyerreview.view.presenter.InboxReputationReportPresenter
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.report.InboxReputationReportViewModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
  * @author by nisie on 9/13/17.
  */
-class InboxReputationReportFragment : BaseDaggerFragment(),
-    InboxReputationReport.View {
+class InboxReputationReportFragment : BaseDaggerFragment() {
 
     private var sendButton: Button? = null
     private var reportRadioGroup: RadioGroup? = null
@@ -45,10 +48,14 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
     private var feedbackId = ""
 
     @Inject
-    lateinit var presenter: InboxReputationReportPresenter
+    lateinit var tracking: ReputationTracking
 
     @Inject
-    lateinit var tracking: ReputationTracking
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: InboxReputationReportViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(InboxReputationReportViewModel::class.java)
+    }
 
     override fun getScreenName(): String {
         return AppScreen.SCREEN_INBOX_REPUTATION_REPORT
@@ -81,13 +88,24 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
         spamRadioButton = parentView.findViewById(R.id.report_spam)
         saraRadioButton = parentView.findViewById(R.id.report_sara)
         prepareView()
-        presenter.attachView(this)
         feedbackId = arguments?.getString(InboxReputationReportActivity.ARGS_REVIEW_ID) ?: ""
         return parentView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeReportReviewResult()
+    }
+
     private fun prepareView() {
-        reportRadioGroup?.setOnCheckedChangeListener { _: RadioGroup?, _: Int -> setSendButton() }
+        reportRadioGroup?.setOnCheckedChangeListener { _: RadioGroup?, id: Int ->
+            if (id != otherRadioButton?.id) {
+                context?.let { context ->
+                    KeyboardHandler.DropKeyboard(context, otherReason)
+                }
+            }
+            setSendButton()
+        }
         otherReason?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
@@ -104,14 +122,17 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
         }
         sendButton?.setOnClickListener { v: View? ->
             tracking.onSubmitReportAbuse(feedbackId)
-            presenter.reportReview(
-                arguments?.getString(
+            showLoadingProgress()
+            context?.let { context ->
+                KeyboardHandler.DropKeyboard(context, otherReason)
+            }
+            viewModel.reportReview(
+                feedbackId = arguments?.getString(
                     InboxReputationReportActivity.ARGS_REVIEW_ID,
                     ""
                 ) ?: "",
-                arguments?.getString(InboxReputationReportActivity.ARGS_SHOP_ID) ?: "",
-                reportRadioGroup?.checkedRadioButtonId ?: 0,
-                otherReason?.text.toString()
+                checkedRadioId = reportRadioGroup?.checkedRadioButtonId ?: 0,
+                reasonText = otherReason?.text.toString()
             )
         }
         initProgressDialog()
@@ -159,12 +180,7 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
-    }
-
-    override fun showLoadingProgress() {
+    private fun showLoadingProgress() {
         progressDialog?.let {
             if (it.isShowing) {
                 return
@@ -173,25 +189,46 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onErrorReportReview(errorMessage: String?) {
+    private fun onErrorReportReview(errorMessage: String?) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessReportReview() {
+    private fun onSuccessReportReview() {
         activity?.apply {
             setResult(Activity.RESULT_OK)
             finish()
         }
     }
 
-    override fun removeLoadingProgress() {
+    private fun removeLoadingProgress() {
         progressDialog?.let {
             if (it.isShowing) it.dismiss()
         }
     }
 
-    override fun getErrorMessage(throwable: Throwable): String {
-        return context?.let { ReviewErrorHandler.getErrorMessage(it, throwable) } ?: ""
+    private fun observeReportReviewResult() {
+        viewModel.reportReviewResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    removeLoadingProgress()
+                    if (it.data.success) {
+                        onSuccessReportReview()
+                    } else {
+                        val message = ErrorHandler.getErrorMessage(
+                            context,
+                            MessageErrorException(getString(R.string.review_report_unknown_error))
+                        )
+                        onErrorReportReview(
+                            message
+                        )
+                    }
+                }
+                is Fail -> {
+                    removeLoadingProgress()
+                    onErrorReportReview(ErrorHandler.getErrorMessage(context, it.throwable))
+                }
+            }
+        }
     }
 
     companion object {

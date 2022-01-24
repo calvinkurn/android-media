@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.mapper
 
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -40,6 +41,10 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.presentation.model.InspirationData
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeOptionFiltersDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 
 class ProductViewModelMapper {
@@ -97,6 +102,11 @@ class ProductViewModelMapper {
         )
         productDataView.inspirationCardDataView = convertToInspirationCardViewModel(
             searchProductModel.searchInspirationWidget
+        )
+        productDataView.inspirationSizeDataView = convertToInspirationSizeViewModel(
+                searchProductModel.searchInspirationWidget,
+                keyword,
+                dimension90
         )
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
@@ -428,12 +438,37 @@ class ProductViewModelMapper {
     private fun convertToInspirationCardViewModel(
             searchInspirationWidget: SearchInspirationWidget
     ): List<InspirationCardDataView> {
-        return searchInspirationWidget.data.map { data ->
+        return searchInspirationWidget.data.filter { it.type != SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
             InspirationCardDataView(
-                    data.title,
-                    data.type,
-                    data.position,
-                    data.inspiratioWidgetOptions.mapToInspirationCardOptionDataView(data.type)
+                InspirationData(
+                    title = data.title,
+                    type = data.type,
+                    position = data.position,
+                    optionCardData = data.inspirationWidgetOptions.mapToInspirationCardOptionDataView(data.type)
+                )
+            )
+        }
+    }
+
+    private fun convertToInspirationSizeViewModel(
+        searchInspirationWidget: SearchInspirationWidget,
+        keyword: String,
+        dimension90: String
+    ): List<InspirationSizeDataView> {
+        return searchInspirationWidget.data.filter { it.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
+            InspirationSizeDataView(
+                InspirationData(
+                    title = data.title,
+                    type = data.type,
+                    position = data.position,
+                    optionSizeData = data.inspirationWidgetOptions.mapToInspirationSizeOptionDataView(
+                        data.type,
+                        keyword,
+                        dimension90,
+                        data.title,
+                        data.trackingOption
+                    ),
+                )
             )
         }
     }
@@ -450,6 +485,36 @@ class ProductViewModelMapper {
                     inspirationCardType,
             )
         }
+
+    private fun List<InspirationCardOption>.mapToInspirationSizeOptionDataView(
+        inspirationCardType: String,
+        keyword: String,
+        dimension90: String,
+        title: String,
+        trackingOption: Int
+    ) = this.map { optionModel ->
+        InspirationSizeOptionDataView(
+            optionModel.text,
+            optionModel.img,
+            optionModel.url,
+            optionModel.color,
+            optionModel.applink,
+            optionModel.filters.toInspirationSizeOptionFiltersDataView(),
+            inspirationCardType,
+            optionModel.componentId,
+            keyword = keyword,
+            dimension90 = dimension90,
+            valueName = title + " - " +optionModel.text,
+            trackingOption = trackingOption
+        )
+    }
+
+    private fun SearchProductModel.InspirationCardOptionFilter.toInspirationSizeOptionFiltersDataView() =
+        InspirationSizeOptionFiltersDataView(
+            this.key,
+            this.name,
+            this.value
+        )
 
     private fun convertToBannerDataView(bannerModel: Banner): BannerDataView {
         return BannerDataView(

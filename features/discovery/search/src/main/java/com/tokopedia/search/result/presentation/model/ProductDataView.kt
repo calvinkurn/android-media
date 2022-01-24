@@ -24,6 +24,7 @@ class ProductDataView() : Parcelable {
     var globalNavDataView: GlobalNavDataView? = null
     var inspirationCarouselDataView = listOf<InspirationCarouselDataView>()
     var inspirationCardDataView = listOf<InspirationCardDataView>()
+    var inspirationSizeDataView = listOf<InspirationSizeDataView>()
     var defaultView = 0
     var relatedDataView: RelatedDataView? = null
     var totalDataText = ""
