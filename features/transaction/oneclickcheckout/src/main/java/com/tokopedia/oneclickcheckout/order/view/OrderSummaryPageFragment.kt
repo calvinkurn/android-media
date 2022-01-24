@@ -349,12 +349,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
-            val productId = arguments?.getString(QUERY_PRODUCT_ID)
-            if (productId.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
+            val productIds = arguments?.getString(QUERY_PRODUCT_ID)
+            if (productIds.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
                 setSourceFromPDP()
                 refresh()
             } else {
-                atcOcc(productId)
+                atcOcc(productIds)
             }
         }
     }
@@ -947,8 +947,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         } else {
             binding.globalError.setType(GlobalError.SERVER_ERROR)
             binding.globalError.setActionClickListener {
-                arguments?.getString(QUERY_PRODUCT_ID)?.let { productId ->
-                    atcOcc(productId)
+                arguments?.getString(QUERY_PRODUCT_ID)?.let { productIds ->
+                    atcOcc(productIds)
                 }
             }
             if (atcError.errorMessage.isNotBlank()) {
@@ -970,8 +970,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun showAtcGlobalError(type: Int) {
         binding.globalError.setType(type)
         binding.globalError.setActionClickListener {
-            arguments?.getString(QUERY_PRODUCT_ID)?.let { productId ->
-                atcOcc(productId)
+            arguments?.getString(QUERY_PRODUCT_ID)?.let { productIds ->
+                atcOcc(productIds)
             }
         }
         binding.globalError.errorAction.text = context?.getString(R.string.lbl_try_again)
@@ -1465,6 +1465,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         const val QUERY_PRODUCT_ID = "product_id"
         const val QUERY_SOURCE = "source"
+        const val QUERY_GATEWAY_CODE = "gateway_code"
+        const val QUERY_TENURE_TYPE = "tenure_type"
 
         private const val NO_ADDRESS_IMAGE = "https://images.tokopedia.net/img/android/cart/ic_occ_no_address.png"
 
@@ -1473,10 +1475,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
 
         @JvmStatic
-        fun newInstance(productId: String?, source: String?): OrderSummaryPageFragment {
+        fun newInstance(productId: String?, gatewayCode: String?,
+                        tenureType: String?, source: String?): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
                     putString(QUERY_PRODUCT_ID, productId)
+                    putString(QUERY_GATEWAY_CODE, gatewayCode)
+                    putString(QUERY_TENURE_TYPE, tenureType)
                     putString(QUERY_SOURCE, source)
                 }
             }

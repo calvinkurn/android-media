@@ -18,7 +18,12 @@ open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSu
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
     override fun getNewFragment(): Fragment? {
-        return OrderSummaryPageFragment.newInstance(intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PRODUCT_ID), intent?.getStringExtra(OccConstant.SOURCE))
+        return OrderSummaryPageFragment.newInstance(
+            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PRODUCT_ID),
+            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_GATEWAY_CODE),
+            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_TENURE_TYPE),
+            intent?.getStringExtra(OccConstant.SOURCE)
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
