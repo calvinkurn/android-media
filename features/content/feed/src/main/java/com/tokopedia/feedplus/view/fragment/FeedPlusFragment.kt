@@ -1942,7 +1942,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             shopId,
             type,
             isFollowed,
-            mediaType
+            false,
+            mediaType = mediaType
         )
     }
 

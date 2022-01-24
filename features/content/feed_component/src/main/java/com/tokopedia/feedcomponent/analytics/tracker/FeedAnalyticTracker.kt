@@ -1081,7 +1081,7 @@ class FeedAnalyticTracker
         shopId: String,
         type: String,
         isFollowed: Boolean,
-        isProductDetailPage: Boolean
+        isProductDetailPage: Boolean,
         mediaType: String
     ) {
         trackEnhancedEcommerceEventNew(

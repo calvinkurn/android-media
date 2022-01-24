@@ -904,7 +904,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     topAdsCard.show()
                                     topAdsCard.setOnClickListener {
                                         RouteManager.route(context, feedMedia.appLink)
-                                        listener?.onClickSekSekarang(feedXCard.id, feedXCard.shopId, TYPE_TOPADS_HEADLINE_NEW, feedXCard.followers.isFollowed, positionInFeed)
+                                        listener?.onClickSekSekarang(feedXCard.id, feedXCard.shopId, TYPE_TOPADS_HEADLINE_NEW, feedXCard.followers.isFollowed, positionInFeed, feedXCard)
                                     }
                                     if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_CLEAN) {
                                         textViewPrice.hide()
@@ -1132,7 +1132,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             )
                             if (media[current].type == TYPE_IMAGE) {
                                 videoPlayer?.pause()
-                                bindImage(feedXCard.tags, feedXCard.media[current])
+                                bindImage(feedXCard.tags, feedXCard.media[current], feedXCard)
                             } else {
                                 detach(true)
                                 media[current].canPlay = true
@@ -1892,7 +1892,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                         feedXCard.followers.isFollowed,
                                                         type = true,
                                                         feedXCard.author.id,
-                                                        isVideo(feedXMedia)
+                                                        feedXMedia.type
                                                 )
                                             }
 
@@ -1927,7 +1927,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         feedXCard.author.id,
                                         feedXCard.typename,
                                         feedXCard.followers.isFollowed,
-                                        false,
+                                        feedXCard.media.firstOrNull()?.type?:"",
                                         positionInFeed,
                                         feedXCard.playChannelID,
                                         feedXCard.author.name
