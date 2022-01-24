@@ -51,6 +51,7 @@ import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
+import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget.InputNumberActionType
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -801,10 +802,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 getFavoriteNumber(shouldRefreshInputNumber = false)
             }
         }
-    }
-
-    enum class InputNumberActionType {
-        MANUAL, CONTACT, FAVORITE, CHIP, AUTOCOMPLETE
     }
 
     companion object {

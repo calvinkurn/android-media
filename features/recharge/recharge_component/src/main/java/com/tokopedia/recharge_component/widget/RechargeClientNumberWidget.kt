@@ -404,6 +404,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         Emoney(InputType.TYPE_CLASS_NUMBER, IconUnify.CAMERA, false)
     }
 
+
+    enum class InputNumberActionType {
+        MANUAL, CONTACT, FAVORITE, CHIP, AUTOCOMPLETE
+    }
+
     private fun String.isNumeric(): Boolean {
         return this.matches(REGEX_IS_NUMERIC.toRegex())
     }
