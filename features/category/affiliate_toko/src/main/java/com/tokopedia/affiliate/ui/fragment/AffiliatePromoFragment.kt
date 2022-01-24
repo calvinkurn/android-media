@@ -110,7 +110,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
     }
 
     fun handleBack() {
-        if (recommended_layout.isVisible) (activity as? AffiliateActivity)?.handleBackButton()
+        if (recommended_layout.isVisible) (activity as? AffiliateActivity)?.handleBackButton(false)
         else showDefaultState()
     }
 

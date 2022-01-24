@@ -5,7 +5,6 @@ import android.text.TextWatcher
 import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View
-import android.webkit.URLUtil
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
@@ -33,8 +32,9 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
                     s.toString())
+
                 if(s.toString().isNotEmpty()){
-                    element?.portfolioItm?.isError = !Patterns.WEB_URL.matcher(s.toString()).matches()
+                    element?.portfolioItm?.isError = !isValidUrl(s.toString(),element)
                 }else {
                     element?.portfolioItm?.isError = false
                 }
@@ -61,6 +61,15 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
                 return false
             }
         })
+    }
+
+    private fun isValidUrl(text: String, element: AffiliatePortfolioUrlModel?): Boolean {
+        return if(element?.portfolioItm?.regex != null){
+            val regex = Regex(element.portfolioItm.regex!!)
+            regex.matches(text) && Patterns.WEB_URL.matcher(text).matches()
+        } else{
+            Patterns.WEB_URL.matcher(text).matches()
+        }
     }
 
     private fun setState(element: AffiliatePortfolioUrlModel?) {

@@ -141,6 +141,10 @@ class LottieBottomNavbar : LinearLayout {
         invalidate()
     }
 
+    fun getView(position: Int): View? {
+        return (this.getChildAt(0) as? LinearLayout)?.getChildAt(position)
+    }
+
     private fun getLayoutAtr(attrs: AttributeSet) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.LottieBottomNavbar)
         val defaultButtonHeight = DEFAULT_HEIGHT * context.resources.displayMetrics.density

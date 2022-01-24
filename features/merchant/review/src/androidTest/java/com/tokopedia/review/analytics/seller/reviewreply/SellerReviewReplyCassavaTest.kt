@@ -6,12 +6,12 @@ import com.tokopedia.review.R
 import com.tokopedia.review.analytics.common.CassavaTestFixture
 import com.tokopedia.review.analytics.common.actionTest
 import com.tokopedia.review.common.Utils
+import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewResponse
 import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyTemplateListResponse
-import com.tokopedia.review.feature.reviewreply.data.ReviewReplyUpdateResponse
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.review.stub.reviewreply.view.activity.SellerReviewReplyActivityStub
