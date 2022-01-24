@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:padding="8dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -11,6 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintEnd_toStartOf="@id/tokoNowSearchCategorySeeAllCategory"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,8 +25,8 @@
         android:id="@+id/tokoNowSearchCategorySeeAllCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackground"
+        android:layout_marginEnd="16dp"
         android:text="@string/tokopedianow_all_category"
         android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="@+id/tokoNowSearchCategoryTitle"
