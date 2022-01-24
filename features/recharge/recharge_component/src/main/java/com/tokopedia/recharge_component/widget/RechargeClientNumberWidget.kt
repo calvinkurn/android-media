@@ -211,7 +211,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 }
                 icon2.run {
                     setImageDrawable(getIconUnifyDrawable(context, type.iconUnifyId))
-                    setOnClickListener { mFilterChipListener?.onClickIcon(false) }
+                    setOnClickListener { mInputFieldListener?.onClickContact() }
                     show()
                 }
             }
@@ -381,6 +381,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     interface ClientNumberInputFieldListener {
         fun onRenderOperator(isDelayed: Boolean)
         fun onClearInput()
+        fun onClickContact()
     }
 
     interface ClientNumberAutoCompleteListener {
@@ -401,6 +402,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         Telco(InputType.TYPE_CLASS_TEXT, IconUnify.CONTACT, true),
         Listrik(InputType.TYPE_CLASS_TEXT, IconUnify.QR_CODE, false),
         Emoney(InputType.TYPE_CLASS_NUMBER, IconUnify.CAMERA, false)
+    }
+
+
+    enum class InputNumberActionType {
+        MANUAL, CONTACT, FAVORITE, CHIP, AUTOCOMPLETE
     }
 
     private fun String.isNumeric(): Boolean {
