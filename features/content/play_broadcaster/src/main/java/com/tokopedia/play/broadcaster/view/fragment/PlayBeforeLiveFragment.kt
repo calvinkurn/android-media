@@ -367,7 +367,6 @@ class PlayBeforeLiveFragment @Inject constructor(
 
                 isDeleting = false
             }
-
         }
     }
     //endregion
