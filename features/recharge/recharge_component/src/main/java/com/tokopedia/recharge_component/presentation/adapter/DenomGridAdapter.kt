@@ -55,6 +55,10 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
         listener?.onDenomGridClicked(denomGrid, denomWidgetType, position, isNeedtoShowBuyWidget)
     }
 
+    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+        listener?.onDenomGridImpression(denomGrid, layoutType, position)
+    }
+
     fun setDenomGridList(listDenom: List<DenomData>) {
         this.listDenom = listDenom.toMutableList()
         notifyDataSetChanged()

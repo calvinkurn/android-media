@@ -750,7 +750,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
      */
     override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
                                     isShowBuyWidget: Boolean) {
-        if (layoutType == DenomWidgetEnum.MCCM_TYPE){
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE){
             onClearSelectedDenomGrid()
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
             onClearSelectedMCCM()
@@ -760,6 +760,29 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             onShowBuyWidget(denomGrid)
         } else {
             onHideBuyWidget()
+        }
+    }
+
+    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
+            digitalPDPTelcoAnalytics.impressionProductMCCM(
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                "//TODO LOYALTY",
+                userSession.userId,
+                denomGrid,
+                layoutType,
+                position
+            )
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+            digitalPDPTelcoAnalytics.impressionProductCluster(
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                "//TODO LOYALTY",
+                userSession.userId,
+                denomGrid,
+                position
+            )
         }
     }
 
@@ -784,6 +807,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun onClickedChevron(denom: DenomData) {
+        digitalPDPTelcoAnalytics.clickChevronBuyWidget(
+            DigitalPDPTelcoUtil.getCategoryName(denom.categoryId.toInt()),
+            operator.attributes.name,
+            denom.price,
+            denom.slashPrice,
+            userSession.userId
+        )
         fragmentManager?.let {
             SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
         }

@@ -123,6 +123,10 @@ class DigitalPDPDataPlanFragment :
 
     }
 
+    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+
+    }
+
 
     companion object {
         fun newInstance(): DigitalPDPDataPlanFragment {

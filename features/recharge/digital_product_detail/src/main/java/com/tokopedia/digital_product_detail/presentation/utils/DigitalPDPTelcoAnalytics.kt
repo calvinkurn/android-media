@@ -1,6 +1,24 @@
 package com.tokopedia.digital_product_detail.presentation.utils
 
+import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_CHEVRON
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.IMPRESSION_PRODUCT_CLUSTER
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.VIEW_PROMO_CARD
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.INDEX
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEMS
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEM_BRAND
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEM_CATEGORY
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEM_ID
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEM_NAME
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEM_VARIANT
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.PRICE
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.CLICK_DIGITAL
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.SELECT_CONTENT
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.VIEW_DIGITAL_IRIS
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.VIEW_ITEM_LIST
+import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -158,5 +176,126 @@ class DigitalPDPTelcoAnalytics {
                 DigitalPDPEventTracking.Additional.USER_ID, userId,
             )
         )
+    }
+    //1
+    fun impressionProductCluster(categoryName: String,
+                                 operatorName: String,
+                                 loyaltyStatus: String,
+                                 userId: String,
+                                 denomData: DenomData,
+                                 position: Int
+    ){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_PRODUCT_CLUSTER)
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
+            putParcelableArrayList(ITEMS, mapperDenomToItemList(denomData, position, ""))
+        }
+
+        eventDataLayer.viewItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
+    }
+
+    //15
+    fun impressionProductMCCM(categoryName: String,
+                              operatorName: String,
+                              loyaltyStatus: String,
+                              userId: String,
+                              denomData: DenomData,
+                              denomType: DenomWidgetEnum,
+                              position: Int
+
+    ){
+        val isMCCMorFlashSale = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) MCCM else FLASH_SALE
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, VIEW_PROMO_CARD)
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}")
+            putParcelableArrayList(ITEMS, mapperDenomToItemList(denomData, position, isMCCMorFlashSale))
+        }
+
+        eventDataLayer.viewItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
+    }
+
+    //18
+    fun clickChevronBuyWidget(categoryName: String, operatorName: String, discountPrice: String,
+                              normalPrice:String, userId: String){
+        val finalNormalPrice = if (normalPrice.isNullOrEmpty()) discountPrice else normalPrice
+        val finalDiscountPrice = if (normalPrice.isNullOrEmpty()) EMPTY_DISCOUNT_PRICE else discountPrice
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, CLICK_CHEVRON,
+            TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${finalNormalPrice}_${finalDiscountPrice}"
+        )
+        data.clickDigitaltemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    /** Common Tracking Methods*/
+
+    fun Bundle.viewItemList(userId: String): Bundle {
+        addGeneralTracker(userId)
+        this.putString(TrackAppUtils.EVENT, VIEW_ITEM_LIST)
+        return this
+    }
+
+    fun MutableMap<String, Any>.viewDigitalIris(userId: String):  MutableMap<String, Any> {
+        addGeneralTracker(userId)
+        this[TrackAppUtils.EVENT] = VIEW_DIGITAL_IRIS
+        return this
+    }
+
+    fun Bundle.clickGeneralItemList(userId: String): Bundle {
+        addGeneralTracker(userId)
+        this.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
+        return this
+    }
+
+    fun  MutableMap<String, Any>.clickDigitaltemList(userId: String): MutableMap<String, Any> {
+        addGeneralTracker(userId)
+        this[TrackAppUtils.EVENT] = CLICK_DIGITAL
+        return this
+    }
+
+
+    fun Bundle.addGeneralTracker(userId: String): Bundle{
+        this.putString(TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE)
+        this.putString(DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
+        this.putString(DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE)
+        this.putString(DigitalPDPEventTracking.Additional.USER_ID, userId)
+        return this
+    }
+
+    fun MutableMap<String, Any>.addGeneralTracker(userId: String):  MutableMap<String, Any>{
+        this[TrackAppUtils.EVENT_CATEGORY] = DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE
+        this[DigitalPDPEventTracking.Additional.BUSINESS_UNIT] = DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE
+        this[DigitalPDPEventTracking.Additional.CURRENT_SITE] = DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE
+        this[DigitalPDPEventTracking.Additional.USER_ID] = userId
+        return this
+    }
+
+    /** Tracking mapper*/
+
+    fun mapperDenomToItemList(denomData: DenomData, position: Int, isMCCMorFlashSale: String): ArrayList<Bundle> {
+        val listItems = ArrayList<Bundle>()
+        denomData.run{
+            listItems.add(
+                Bundle().apply {
+                    putString(INDEX, (position + 1).toString())
+                    putString(ITEM_BRAND, "")
+                    putString(ITEM_CATEGORY, DigitalPDPTelcoUtil.getCategoryName(denomData.categoryId.toInt()))
+                    putString(ITEM_ID, denomData.id)
+                    putString(ITEM_NAME, denomData.title)
+                    putString(ITEM_VARIANT, isMCCMorFlashSale)
+                    putString(PRICE, denomData.price)
+                }
+            )
+        }
+        return listItems
+    }
+
+
+    companion object {
+        const val EMPTY_DISCOUNT_PRICE = "Rp0"
+        const val MCCM = "mccm"
+        const val FLASH_SALE = "flash sale"
     }
 }

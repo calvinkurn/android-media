@@ -109,7 +109,7 @@ class DenomGridViewHolder (
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                             .toInt()
                     )
-                } else if (denomType == DenomWidgetEnum.MCCM_TYPE) invisible() else hide()
+                } else if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) invisible() else hide()
             }
 
             cardDenomGrid.run {
@@ -117,20 +117,24 @@ class DenomGridViewHolder (
                     ViewGroup.LayoutParams.MATCH_PARENT
                 } else resources.getDimension(R.dimen.widget_denom_grid_width).toInt()
 
-                layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_TYPE){
+                layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE){
                     resources.getDimension(R.dimen.widget_denom_grid_height).toInt()
                 } else ViewGroup.LayoutParams.WRAP_CONTENT
 
                 setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
                 cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else
-                    if (denomType == DenomWidgetEnum.MCCM_TYPE) CardUnify.TYPE_SHADOW
+                    if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) CardUnify.TYPE_SHADOW
                     else CardUnify.TYPE_BORDER
             }
 
             root.setOnClickListener {
                 denomGridListener.onDenomGridClicked(denomGrid, denomType, position, true)
             }
+
+            root.addOnImpressionListener(denomGrid, {
+                denomGridListener.onDenomGridImpression(denomGrid, denomType, position)
+            })
         }
     }
 }
