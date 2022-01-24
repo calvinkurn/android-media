@@ -99,7 +99,7 @@ class KycUploadViewModel @Inject constructor(
         return ImageEncryptionUtil.renameImageToOriginalFileName(resultFilePath)
     }
 
-    private fun decryptImage(originalFilePath: String, iv: ByteArray, ivCache: String): String {
+    fun decryptImage(originalFilePath: String, iv: ByteArray, ivCache: String): String {
         val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
         val aes = ImageEncryptionUtil.initAesDecrypt(iv)
         val resultPath = writeDecryptedResult(originalFilePath, decryptedFilePath, aes)
