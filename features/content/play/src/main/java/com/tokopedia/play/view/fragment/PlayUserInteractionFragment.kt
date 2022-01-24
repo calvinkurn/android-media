@@ -1476,11 +1476,11 @@ class PlayUserInteractionFragment @Inject constructor(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         status: PlayStatusUiModel,
     ) {
-        shareLinkView?.setIsShareable(
-            channel.shareInfo.shouldShow &&
-                    !bottomInsets.isAnyShown &&
-                    status.channelStatus.statusType.isActive
-        )
+        if (channel.shareInfo.shouldShow &&
+            !bottomInsets.isAnyShown &&
+            status.channelStatus.statusType.isActive) {
+            shareExperienceView?.show()
+        } else shareExperienceView?.hide()
     }
 
     private fun renderPartnerInfoView(
@@ -1637,7 +1637,7 @@ class PlayUserInteractionFragment @Inject constructor(
             pinnedView?.hide()
             immersiveBoxView.hide()
             playButtonView.hide()
-            shareLinkView?.setIsShareable(false)
+            shareExperienceView?.hide()
 
             videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
