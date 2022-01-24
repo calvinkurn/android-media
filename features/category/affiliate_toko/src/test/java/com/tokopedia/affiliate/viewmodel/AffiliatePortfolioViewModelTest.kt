@@ -3,6 +3,9 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.AFFILIATE_INSTAGRAM_REGEX
+import com.tokopedia.affiliate.AFFILIATE_TIKTOK_REGEX
+import com.tokopedia.affiliate.AFFILIATE_YT_REGEX
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
 import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioButtonData
@@ -53,11 +56,10 @@ class AffiliatePortfolioViewModelTest{
     fun listForSmTest(){
         val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         itemList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram","","Contoh: instagram.com/tokopedia","Link tidak valid.",false)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(9,"tiktok","Link Tiktok","","Contoh: tiktok.com/tokopedia","Link tidak valid.",false)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"youtube","Link Youtube","","Contoh: youtube.com/tokopedia","Link tidak valid.",false)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram","","Contoh: instagram.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_INSTAGRAM_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(9,"tiktok","Link Tiktok","","Contoh: tiktok.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_TIKTOK_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"youtube","Link Youtube","","Contoh: youtube.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_YT_REGEX)))
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media", UnifyButton.Type.ALTERNATE,UnifyButton.Variant.GHOST)))
-        itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Selanjutnya", UnifyButton.Type.MAIN,UnifyButton.Variant.FILLED,true)))
 
         aff.createDefaultListForSm()
         assertEquals(Gson().toJson(aff.affiliatePortfolioData.value),Gson().toJson(itemList))
