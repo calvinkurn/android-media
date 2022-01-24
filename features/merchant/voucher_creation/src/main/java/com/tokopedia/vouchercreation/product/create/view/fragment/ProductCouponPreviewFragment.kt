@@ -1,9 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.view.fragment
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +11,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
@@ -35,11 +29,13 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCouponBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndConditionBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
@@ -53,10 +49,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val EMPTY_STRING = ""
         private const val SCREEN_NAME = "Product coupon preview page"
         private const val ZERO: Long = 0
-
-        private const val ALPHA_VISIBLE : Float  = 1.0f
-        private const val ALPHA_NOT_VISIBLE : Float  = 0.0f
-        private const val NO_TRANSLATION : Float  = 0.0f
 
         fun newInstance(): ProductCouponPreviewFragment {
             return ProductCouponPreviewFragment()
@@ -86,6 +78,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private val createCouponErrorNotice by lazy {
         CreateProductCouponFailedDialog(requireActivity(), ::onTryAgain, ::onRequestHelp)
     }
+    private var rotationAngle = Int.ZERO
 
     
     private val CouponType.label: String
@@ -151,7 +144,14 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding.tpgAddProduct.setOnClickListener { onNavigateToProductListPage() }
         binding.btnCreateCoupon.setOnClickListener { createCoupon() }
         binding.imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
-        binding.tpgTermAndConditions.movementMethod = LinkMovementMethod.getInstance()
+
+        binding.tpgTermAndConditions.movementMethod = object : HyperlinkClickHandler() {
+            override fun onLinkClick(url: String?) {
+                displayTermAndConditionBottomSheet()
+            }
+
+        }
+
         binding.imgDropdown.setOnClickListener { handleCouponProductInformationVisibility() }
         binding.imgCopyToClipboard.setOnClickListener {
             val content = binding.tpgCouponCode.text.toString().trim()
@@ -411,9 +411,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     private fun handleCouponProductInformationVisibility() {
         if (isCardExpanded) {
-            collapseCouponProductDescription()
+            binding.groupCouponProductInformation.gone()
+            binding.imgDropdown.animate().rotation(180f).setDuration(300).start()
         } else {
-            expandCouponProductDescription()
+            binding.groupCouponProductInformation.visible()
+            binding.imgDropdown.animate().rotation(0f).setDuration(300).start()
         }
 
         isCardExpanded = !isCardExpanded
@@ -425,44 +427,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             binding.root ?: return,
             getString(R.string.coupon_code_copied_to_clipboard)
         ).show()
-    }
-
-    private fun expandCouponProductDescription() {
-        animateExpand()
-        binding.imgDropdown.setImageResource(R.drawable.ic_chevron_up)
-    }
-
-    private fun collapseCouponProductDescription() {
-        binding.imgDropdown.setImageResource(R.drawable.ic_mvc_chevron_down)
-        animateCollapse()
-    }
-
-    private fun animateCollapse() {
-        val view = binding.groupCouponProductInformation
-        view.animate()
-            .translationY(NO_TRANSLATION)
-            .alpha(ALPHA_NOT_VISIBLE)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    view.gone()
-                }
-            })
-    }
-
-    private fun animateExpand() {
-        val view = binding.groupCouponProductInformation
-        view.alpha = ALPHA_NOT_VISIBLE
-
-        view.animate()
-            .translationY(view.height.toFloat())
-            .alpha(ALPHA_VISIBLE)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    view.visible()
-                }
-            })
     }
 
     private fun createCoupon() {
@@ -517,4 +481,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager)
     }
 
+    private fun displayTermAndConditionBottomSheet() {
+        val bottomSheet = TermAndConditionBottomSheet.newInstance(requireActivity(), getString(R.string.coupon_tnc))
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
 }
