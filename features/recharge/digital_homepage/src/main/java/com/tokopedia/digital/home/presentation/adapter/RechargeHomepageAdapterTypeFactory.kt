@@ -163,6 +163,7 @@ class RechargeHomepageAdapterTypeFactory(
             RechargeHomepageCarousellViewHolder.LAYOUT -> RechargeHomepageCarousellViewHolder(parent, listener)
             RechargeHomepageTickerViewHolder.LAYOUT -> RechargeHomepageTickerViewHolder(parent, listener)
             RechargeHomepageSwipeBannerViewHolder.LAYOUT -> RechargeHomepageSwipeBannerViewHolder(parent, listener)
+            RechargeHomepageThreeIconsViewHolder.LAYOUT -> RechargeHomepageThreeIconsViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
