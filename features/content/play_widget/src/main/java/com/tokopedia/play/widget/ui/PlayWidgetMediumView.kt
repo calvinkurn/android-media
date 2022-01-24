@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.medium.PlayWidgetMediumAnalyticListener
@@ -54,6 +55,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private val overlay: FrameLayout
     private val overlayBackground: AppCompatImageView
     private val overlayImage: AppCompatImageView
+    private val topContainer: ConstraintLayout
 
     private val recyclerViewItem: RecyclerView
 
@@ -156,6 +158,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
 
+        topContainer = view.findViewById(R.id.cl_top)
         title = view.findViewById(R.id.play_widget_medium_title)
         actionTitle = view.findViewById(R.id.play_widget_medium_action)
 
@@ -222,12 +225,13 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     }
 
     fun setData(data: PlayWidgetUiModel.Medium) {
-        title.text = data.title
-        actionTitle.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
-        actionTitle.text = data.actionTitle
-        actionTitle.setOnClickListener {
-            mAnalyticListener?.onClickViewAll(this)
-            RouteManager.route(context, data.actionAppLink)
+        topContainer.shouldShowWithAction(data.title.isNotEmpty() && data.isActionVisible){
+            title.text = data.title
+            actionTitle.text = data.actionTitle
+            actionTitle.setOnClickListener {
+                mAnalyticListener?.onClickViewAll(this)
+                RouteManager.route(context, data.actionAppLink)
+            }
         }
 
         configureOverlay(data.background)
