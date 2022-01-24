@@ -9,12 +9,11 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ChatRoomFakePresenterModule {
+class ChatRoomFakeModule {
 
     @ChatScope
     @Provides
     fun provideRemoteConfig(@TopchatContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
-
 }
