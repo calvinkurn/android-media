@@ -56,6 +56,6 @@ class CheckNonTopAdsUserUseCase @Inject constructor(
                 }
             }
         }
-        return true
+        return isNonTopAdsUser
     }
 }
