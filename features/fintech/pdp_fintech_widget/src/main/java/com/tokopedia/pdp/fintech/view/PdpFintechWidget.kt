@@ -165,8 +165,6 @@ class PdpFintechWidget @JvmOverloads constructor(
                 loader.visibility = View.GONE
                 instanceProductUpdateListner.showWidget()
                 fintechWidgetAdapter.setData(chipList)
-                fintechWidgetAdapter.notifyItemRangeChanged(0, fintechWidgetAdapter.itemCount)
-
             } ?: run {
                 instanceProductUpdateListner.removeWidget()
             }

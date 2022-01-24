@@ -127,6 +127,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
     fun setData(chips: ArrayList<ChipsData>) {
         this.chipsData = chips
+        notifyDataSetChanged()
     }
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
