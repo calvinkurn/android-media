@@ -29,6 +29,26 @@ object CatalogDetailAnalytics {
         }
     }
 
+    fun sendSharingExperienceEvent(event: String,
+                  action: String, category: String, label: String, catalogId : String,
+                                   pageSource : String = "",userId : String) {
+        HashMap<String,Any>().apply {
+            put(EventKeys.KEY_EVENT,event)
+            put(EventKeys.KEY_EVENT_ACTION,action)
+            put(EventKeys.KEY_EVENT_CATEGORY,category)
+            put(EventKeys.KEY_EVENT_LABEL,label)
+            put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.SHARING_EXPERIENCE_BUSINESS_UNIT_VALUE)
+            put(EventKeys.KEY_CATALOG_ID,catalogId)
+            put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+            if(pageSource.isNotBlank()){
+                put(EventKeys.KEY_PAGE_SOURCE,pageSource)
+            }
+            put(EventKeys.KEY_USER_ID,userId)
+        }.also {
+            getTracker().sendGeneralEvent(it)
+        }
+    }
+
     fun trackEventImpressionProductCard(catalogId : String, catalogUrl : String, userId : String ,
                                         item : CatalogProductItem, position : String,
                                         searchFilterMap : HashMap<String,String>?){
@@ -114,17 +134,20 @@ object CatalogDetailAnalytics {
             const val KEY_ECOMMERCE = "ecommerce"
             const val KEY_USER_ID = "userId"
             const val KEY_CATALOG_ID = "catalogId"
+            const val KEY_PAGE_SOURCE = "pageSource"
 
             const val KEY_BUSINESS_UNIT = "businessUnit"
             const val KEY_CURRENT_SITE = "currentSite"
 
             const val BUSINESS_UNIT_VALUE= "Physical Goods"
+            const val SHARING_EXPERIENCE_BUSINESS_UNIT_VALUE = "sharingexperience"
             const val CURRENT_SITE_VALUE = "tokopediamarketplace"
 
             const val EVENT_CATEGORY = "catalog page"
 
             const val EVENT_NAME_PRODUCT_CLICK = "productClick"
             const val EVENT_NAME_CATALOG_CLICK = "clickCatalog"
+            const val EVENT_NAME_VIEW_CATALOG_IRIS = "viewCatalogIris"
             const val EVENT_NAME_PRODUCT_VIEW = "productView"
             const val EVENT_NAME_CLICK_PG = "clickPG"
         }
@@ -132,12 +155,21 @@ object CatalogDetailAnalytics {
 
     interface CategoryKeys {
         companion object {
+            const val TOP_NAV_CATALOG = "top nav - catalog page"
             const val PAGE_EVENT_CATEGORY = "catalog page"
         }
     }
 
     interface ActionKeys {
         companion object {
+            const val CLICK_ACCESS_PHOTO_FILES = "click - access photo media and files"
+            const val CLICK_CHANNEL_SBS_SCREENSHOT = "click - channel share bottom sheet - screenshot"
+            const val CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET = "click - close screenshot share bottom sheet"
+            const val VIEW_SCREENSHOT_SHARE_BOTTOM_SHEET = "view - screenshot share bottom sheet"
+            const val VIEW_ON_SHARING_CHANNEL = "view on sharing channel"
+            const val CLICK_SHARING_CHANNEL = "click - sharing channel"
+            const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
+            const val CLICK_SHARE_BUTTON = "click - share button"
             const val CLICK_CATALOG_IMAGE = "click catalog image"
             const val DRAG_IMAGE_KNOB = "drag the knob"
             const val CLICK_DYNAMIC_FILTER = "click filter"

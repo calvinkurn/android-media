@@ -2,6 +2,7 @@ package com.tokopedia.catalog.model.util
 
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.catalog.model.raw.CatalogImage
 
 object CatalogUtil {
 
@@ -18,5 +19,23 @@ object CatalogUtil {
             label = "$label&${map.key}=${map.value}"
         }
         return label.removePrefix("&")
+    }
+
+    fun getShareURI(catalogUrl: String): String {
+        return  if (!catalogUrl.contains("www."))
+            catalogUrl.replace("https://", "https://www.")
+        else
+            catalogUrl
+    }
+
+    fun getImagesFromCatalogImages(catalogImages: ArrayList<CatalogImage>?): ArrayList<String>? {
+        if(catalogImages == null || catalogImages.isEmpty())
+            return null
+        val imagesArray = arrayListOf<String>()
+        catalogImages.forEach {
+            if(!it.imageURL.isNullOrBlank())
+                imagesArray.add(it.imageURL)
+        }
+        return imagesArray
     }
 }

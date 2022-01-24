@@ -3,6 +3,11 @@ package com.tokopedia.catalog.model.util
 object CatalogConstant {
 
 
+    const val KATALOG = "Katalog"
+    const val CATALOG = "Catalog"
+    const val CATALOG_PAGE = "catalog page"
+    const val NULL_STRING = "null"
+
     // Mapper
     const val FULL_CATALOG_SPECIFICATION = "catalog-spec-full-data"
     const val TOP_SPECIFICATIONS = "catalog-spec-horizontal-scroll"
