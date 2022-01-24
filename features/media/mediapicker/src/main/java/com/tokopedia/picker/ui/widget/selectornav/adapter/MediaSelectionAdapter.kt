@@ -94,8 +94,19 @@ class MediaSelectionAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    fun removeData(media: MediaUiModel) {
+        this.medias.remove(media)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(media: MediaUiModel) {
+        if (medias.contains(media)) return
         this.medias.add(media)
+
+        listener?.onDataSetChanged(
+            ActionType.Add(medias, null)
+        )
         notifyDataSetChanged()
     }
 
@@ -104,6 +115,16 @@ class MediaSelectionAdapter(
         this.medias.clear()
         this.medias.addAll(medias)
         notifyDataSetChanged()
+    }
+
+    fun hasAtLeastOneVideo(): Boolean {
+        return this.medias.any {
+            isVideoFormat(it.path)
+        }
+    }
+
+    fun getData(): List<MediaUiModel> {
+        return medias
     }
 
     private fun isItemType(position: Int): Boolean {
@@ -163,7 +184,9 @@ class MediaSelectionAdapter(
                     medias[dragPosition] = targetImagePath
                     medias[position] = draggedImagePath
 
-                    listener?.onDataSetChanged(ActionType.Reorder(medias, null))
+                    listener?.onDataSetChanged(
+                        ActionType.Reorder(medias, null)
+                    )
 
                     notifyDataSetChanged()
                     true

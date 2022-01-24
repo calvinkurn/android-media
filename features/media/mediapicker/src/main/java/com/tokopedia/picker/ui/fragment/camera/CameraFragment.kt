@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.otaliastudios.cameraview.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -25,10 +26,14 @@ import com.tokopedia.picker.ui.activity.main.PickerActivity
 import com.tokopedia.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.picker.ui.fragment.camera.component.CameraControllerComponent
 import com.tokopedia.picker.ui.fragment.camera.component.CameraPreviewComponent
+import com.tokopedia.picker.ui.uimodel.MediaUiModel.Companion.captureToMediaUiModel
+import com.tokopedia.picker.utils.EventState
 import com.tokopedia.picker.utils.exceptionHandler
 import com.tokopedia.picker.utils.generateFile
+import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collect
 import java.io.File
 import javax.inject.Inject
 
@@ -56,16 +61,7 @@ open class CameraFragment : BaseDaggerFragment()
     private val preview by uiComponent { CameraPreviewComponent(param, this, it) }
     private val controller by uiComponent { CameraControllerComponent(param, this, it) }
 
-    val gestureDetector by lazy {
-        GestureDetector(requireContext(), FlingGestureWrapper(
-            swipeLeftToRight = {
-                controller.scrollToVideoMode()
-            },
-            swipeRightToLeft = {
-                controller.scrollToPhotoMode()
-            }
-        ))
-    }
+    val gestureDetector by lazy { gestureDetector() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -159,7 +155,17 @@ open class CameraFragment : BaseDaggerFragment()
         }
     }
 
-    override fun hasReachedLimit() {
+    override fun hasReachedLimit(): Boolean {
+        return listener?.mediaSelected()?.size == param.limit
+    }
+
+    override fun hasVideoAddedOnMediaSelection(): Boolean {
+        return listener?.mediaSelected()?.any {
+            isVideoFormat(it.path)
+        } == true
+    }
+
+    override fun onShowToastMediaLimit() {
         Toast.makeText(
             requireContext(),
             getString(R.string.picker_selection_limit_message, param.limit),
@@ -167,7 +173,7 @@ open class CameraFragment : BaseDaggerFragment()
         ).show()
     }
 
-    override fun hasVideoAddedOnMediaSelection() {
+    override fun onShowToastVideoLimit() {
         Toast.makeText(
             requireContext(),
             getString(R.string.picker_selection_limit_video),
@@ -199,20 +205,20 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     private fun initObservable() {
-//        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-//            viewModel.uiEvent.collect {
-//                when (it) {
-//                    is EventState.SelectionChanged -> {
-//                        val lastItemOfDrawer = File(it.data.last().path)
-//                        cameraController.setThumbnailPreview(lastItemOfDrawer)
-//                    }
-//                    is EventState.SelectionRemoved -> {
-//                        cameraController.removeThumbnailPreview()
-//                    }
-//                    else -> {}
-//                }
-//            }
-//        }
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiEvent.collect {
+                if (it is EventState.SelectionChanged) {
+                    if (it.data.isNotEmpty()) {
+                        val lastItem = File(it.data.last().path)
+                        controller.setThumbnailPreview(lastItem)
+                    } else {
+                        controller.removeThumbnailPreview()
+                    }
+                } else if (it is EventState.SelectionRemoved) {
+                    controller.removeThumbnailPreview()
+                }
+            }
+        }
     }
 
     private fun onStartRecordVideo() {
@@ -229,7 +235,7 @@ open class CameraFragment : BaseDaggerFragment()
         if (file == null) return
 
         controller.setThumbnailPreview(file)
-//        EventBusFactory.emit(EventState.CameraCaptured(file.createFoCameraCaptured()))
+        viewModel.send(file.captureToMediaUiModel())
     }
 
     private fun showShutterEffect(action: () -> Unit) {
@@ -240,6 +246,15 @@ open class CameraFragment : BaseDaggerFragment()
             action()
         }, OVERLAY_SHUTTER_DELAY)
     }
+
+    private fun gestureDetector() = GestureDetector(requireContext(), FlingGestureWrapper(
+        swipeLeftToRight = {
+            controller.scrollToVideoMode()
+        },
+        swipeRightToLeft = {
+            controller.scrollToPhotoMode()
+        }
+    ))
 
     override fun initInjector() {
         DaggerPickerComponent.builder()

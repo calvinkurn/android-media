@@ -7,18 +7,16 @@ import kotlinx.coroutines.flow.*
 sealed class EventState {
     object Idle: EventState()
     class CameraCaptured(val data: MediaUiModel?): EventState()
+    class SelectionAdded(val data: MediaUiModel): EventState()
     class SelectionChanged(val data: List<MediaUiModel>): EventState()
-    class SelectionRemoved(val media: MediaUiModel?, val data: List<MediaUiModel>): EventState()
+    class SelectionRemoved(val media: MediaUiModel): EventState()
 }
 
 object EventBusFactory {
 
     val state = MutableSharedFlow<EventState>(1)
-
-    init {
-        state.distinctUntilChanged()
-        state.tryEmit(EventState.Idle)
-    }
+    private const val TIMEOUT_IN_MILLIS = 500L
+    private const val MAX_REPLAY = 1
 
     fun emit(stateEvent: EventState) {
         state.tryEmit(stateEvent)
@@ -27,8 +25,8 @@ object EventBusFactory {
     fun subscriber(coroutineScope: CoroutineScope): Flow<EventState> {
         return state.shareIn(
             coroutineScope,
-            SharingStarted.WhileSubscribed(500),
-            1
+            SharingStarted.WhileSubscribed(TIMEOUT_IN_MILLIS),
+            MAX_REPLAY
         ).onCompletion {
             emit(EventState.Idle)
         }

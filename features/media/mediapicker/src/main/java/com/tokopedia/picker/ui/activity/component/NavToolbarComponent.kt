@@ -4,6 +4,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.common.component.UiComponent
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.utils.Unify_N700_96
@@ -42,6 +44,14 @@ class NavToolbarComponent(
 
     fun showContinueButtonWithCondition(isShown: Boolean) {
         btnDone.showWithCondition(isShown)
+    }
+
+    fun showContinueButton() {
+        btnDone.show()
+    }
+
+    fun hideContinueButton() {
+        btnDone.hide()
     }
 
     private fun setTitleColor(isTransparent: Boolean) {

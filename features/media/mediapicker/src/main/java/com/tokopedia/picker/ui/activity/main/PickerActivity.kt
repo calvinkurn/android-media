@@ -1,12 +1,10 @@
 package com.tokopedia.picker.ui.activity.main
 
-import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
-import androidx.core.view.marginBottom
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.common.component.uiComponent
@@ -27,10 +25,12 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.component.NavToolbarComponent
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.picker.utils.EventState
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.picker.utils.dimensionPixelOffsetOf
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
@@ -83,6 +83,8 @@ open class PickerActivity : BaseActivity()
     private val hasPermissionGranted: Boolean by permissionGranted()
     private val param = PickerUiConfig.pickerParam()
 
+    private val medias = arrayListOf<MediaUiModel>()
+
     private val viewModel by lazy {
         ViewModelProvider(
             this,
@@ -122,7 +124,7 @@ open class PickerActivity : BaseActivity()
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList(
             LAST_MEDIA_SELECTION,
-            PickerUiConfig.mediaSelectionList()
+            medias
         )
     }
 
@@ -140,7 +142,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        PickerUiConfig.mediaSelectionList().forEach {
+        medias.forEach {
             println("MEDIAPICKER -> ${it.path}")
         }
     }
@@ -148,6 +150,10 @@ open class PickerActivity : BaseActivity()
     override fun tabVisibility(isShown: Boolean) {
         if (!param.isCommonPageType()) return
         binding?.tabContainer?.showWithCondition(isShown)
+    }
+
+    override fun mediaSelected(): List<MediaUiModel> {
+        return medias
     }
 
     private fun setupQueryAndUIConfigBuilder() {
@@ -180,19 +186,32 @@ open class PickerActivity : BaseActivity()
     private fun initObservable() {
         lifecycle.addObserver(viewModel)
 
-//        viewModel.finishButtonState.observe(this) {
-//            navToolbar.showContinueButtonWithCondition(
-//                it && PickerUiConfig.mediaSelectionList().isNotEmpty()
-//            )
-//        }
-//
-//        viewModel.selectedMedia.observe(this) {
-//            PickerUiConfig.addAllMediaSelection(it)
-//        }
-//
-//        viewModel.cameraCaptured.observe(this) {
-//            PickerUiConfig.addMediaSelection(it)
-//        }
+        lifecycleScope.launchWhenResumed {
+            viewModel.uiEvent.collect {
+                when (it) {
+                    is EventState.SelectionChanged -> {
+                        medias.addAll(it.data)
+                        if (it.data.isNotEmpty()) {
+                            navToolbar.showContinueButton()
+                        } else {
+                            navToolbar.hideContinueButton()
+                        }
+                    }
+                    is EventState.CameraCaptured -> {
+                        it.data?.let { media -> medias.add(media) }
+                        navToolbar.showContinueButton()
+                    }
+                    is EventState.SelectionAdded -> {
+                        medias.add(it.data)
+                        navToolbar.showContinueButton()
+                    }
+                    is EventState.SelectionRemoved -> {
+                        medias.remove(it.media)
+                        navToolbar.hideContinueButton()
+                    }
+                }
+            }
+        }
     }
 
     private fun permissionGrantedState() {
@@ -276,11 +295,6 @@ open class PickerActivity : BaseActivity()
 
         private const val PAGE_CAMERA_INDEX = 0
         private const val PAGE_GALLERY_INDEX = 1
-
-        //TODO remove
-        fun start(context: Context) {
-            context.startActivity(Intent(context, PickerActivity::class.java))
-        }
     }
 
 }

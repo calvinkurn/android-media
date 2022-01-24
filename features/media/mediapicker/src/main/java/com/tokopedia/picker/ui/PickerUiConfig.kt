@@ -12,18 +12,12 @@ object PickerUiConfig {
 
     @PickerPageType
     var paramPage = PickerPageType.COMMON
-        private set
 
     @PickerModeType
     var paramMode = PickerModeType.COMMON
-        private set
 
     @PickerSelectionType
     var paramType = PickerSelectionType.MULTIPLE
-        private set
-
-    // the final collection data ready to passing into next page
-    private var mediaSelection = arrayListOf<MediaUiModel>()
 
     // picker global parameter
     private var pickerParam: PickerParam? = null
@@ -42,29 +36,6 @@ object PickerUiConfig {
         ).also {
             pickerParam = it
         }
-    }
-
-    @Deprecated("")
-    fun mediaSelectionList(): ArrayList<MediaUiModel> {
-        return mediaSelection
-    }
-
-    @Deprecated("")
-    fun addAllMediaSelection(list: List<MediaUiModel>) {
-        mediaSelection.clear()
-        mediaSelection.addAll(list)
-    }
-
-    @Deprecated("")
-    fun addMediaSelection(media: MediaUiModel) {
-        val index = mediaSelection.indexOf(media)
-        if (index > 0) return
-
-        mediaSelection.add(media)
-    }
-
-    fun hasAtLeastOneVideoOnGlobalSelection(): Boolean {
-        return mediaSelection.any { isVideoFormat(it.path) }
     }
 
     /**

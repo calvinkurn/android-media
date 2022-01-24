@@ -6,6 +6,9 @@ import com.tokopedia.picker.data.mapper.toUiModel
 import com.tokopedia.picker.data.repository.MediaRepository
 import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.picker.utils.EventBusFactory
+import com.tokopedia.picker.utils.EventState
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,6 +24,10 @@ class GalleryViewModel @Inject constructor(
     private var _isMediaNotEmpty = MediatorLiveData<Boolean>()
     val isMediaNotEmpty: LiveData<Boolean> get() = _isMediaNotEmpty
 
+    val uiEvent = EventBusFactory
+        .subscriber(viewModelScope)
+        .flowOn(dispatchers.computation)
+
     init {
         _isMediaNotEmpty.addSource(_mediaFiles) {
             _isMediaNotEmpty.value = it.isNotEmpty()
@@ -35,6 +42,10 @@ class GalleryViewModel @Inject constructor(
                 _mediaFiles.value = result.toUiModel()
             }
         }
+    }
+
+    fun send(eventState: EventState) {
+        EventBusFactory.emit(eventState)
     }
 
 }

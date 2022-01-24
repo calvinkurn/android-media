@@ -120,12 +120,25 @@ class MediaSelectionNavigationWidget : FrameLayout {
         adapter?.canReorder = canReorder
     }
 
-    fun addData(media: MediaUiModel) {
+    fun getData(): List<MediaUiModel>? {
+        return adapter?.getData()
+    }
+
+    fun removeData(media: MediaUiModel) {
+        adapter?.removeData(media)
+    }
+
+    fun addData(media: MediaUiModel?) {
+        if (media == null) return
         adapter?.setData(media)
     }
 
-    fun addData(medias: List<MediaUiModel>) {
+    fun addAllData(medias: List<MediaUiModel>) {
         adapter?.setData(medias.toMutableList())
+    }
+
+    fun hasAtLeastOneVideo(): Boolean {
+        return adapter?.hasAtLeastOneVideo() == true
     }
 
     fun setPlaceholderPreview(@DrawableRes drawable: Int) {

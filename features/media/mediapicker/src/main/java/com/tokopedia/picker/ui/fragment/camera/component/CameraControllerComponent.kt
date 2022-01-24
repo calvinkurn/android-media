@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
 import com.tokopedia.picker.ui.PickerParam
-import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.camera.recyclers.adapter.CameraSliderAdapter
 import com.tokopedia.picker.ui.fragment.camera.recyclers.managers.SliderLayoutManager
 import com.tokopedia.picker.utils.DEFAULT_DURATION_LABEL
@@ -204,13 +203,13 @@ class CameraControllerComponent(
     }
 
     private fun onTakeCamera() {
-        if (isVideoMode() && PickerUiConfig.hasAtLeastOneVideoOnGlobalSelection()) {
-            listener.hasVideoAddedOnMediaSelection()
+        if (isVideoMode() && listener.hasVideoAddedOnMediaSelection()) {
+            listener.onShowToastVideoLimit()
             return
         }
 
-        if (PickerUiConfig.mediaSelectionList().size >= param.limit) {
-            listener.hasReachedLimit()
+        if (listener.hasReachedLimit()) {
+            listener.onShowToastVideoLimit()
             return
         }
 
@@ -261,8 +260,11 @@ class CameraControllerComponent(
         .findLastCompletelyVisibleItemPosition()
 
     interface Listener {
-        fun hasVideoAddedOnMediaSelection()
-        fun hasReachedLimit()
+        fun hasVideoAddedOnMediaSelection(): Boolean
+        fun hasReachedLimit(): Boolean
+
+        fun onShowToastVideoLimit()
+        fun onShowToastMediaLimit()
 
         fun onCameraModeChanged(mode: Int)
         fun isFacingCameraIsFront(): Boolean

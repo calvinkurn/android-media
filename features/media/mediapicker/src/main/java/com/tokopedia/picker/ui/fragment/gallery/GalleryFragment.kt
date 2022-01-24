@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -25,8 +26,10 @@ import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecorati
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
 import com.tokopedia.picker.utils.ActionType
+import com.tokopedia.picker.utils.EventState
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidget.Listener {
@@ -96,16 +99,15 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
 
     override fun onDataSetChanged(action: ActionType) {
         when (action) {
-            is ActionType.Add -> {}
+            is ActionType.Add -> {
+                viewModel.send(EventState.SelectionChanged(action.data))
+            }
             is ActionType.Remove -> {
-//                viewModel.publishSelectionRemovedChanged(
-//                    action.mediaToRemove,
-//                    action.data
-//                )
-//                viewModel.publishSelectionDataChanged(action.data)
+                viewModel.send(EventState.SelectionRemoved(action.mediaToRemove))
+                viewModel.send(EventState.SelectionChanged(action.data))
             }
             is ActionType.Reorder -> {
-//                viewModel.publishSelectionDataChanged(action.data)
+                viewModel.send(EventState.SelectionChanged(action.data))
             }
         }
     }
@@ -121,11 +123,25 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
 
         }
 
-//        viewModel.mediaRemoved.observe(viewLifecycleOwner) {
-//            it?.let { media ->
-//                adapter.removeSelected(media)
-//            }
-//        }
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiEvent.collect {
+                when (it) {
+                    is EventState.SelectionChanged -> {
+                        binding?.bottomNavDrawer?.addAllData(it.data)
+                    }
+                    is EventState.CameraCaptured -> {
+                        binding?.bottomNavDrawer?.addData(it.data)
+                    }
+                    is EventState.SelectionAdded -> {
+                        binding?.bottomNavDrawer?.addData(it.data)
+                    }
+                    is EventState.SelectionRemoved -> {
+                        binding?.bottomNavDrawer?.removeData(it.media)
+                        adapter.removeSelected(it.media)
+                    }
+                }
+            }
+        }
     }
 
     private fun initView() {
@@ -145,7 +161,6 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
         }
     }
 
-    //TODO, create separated view component
     private fun setupWidgetAlbumSelector() {
         binding?.selector?.container?.setOnClickListener {
             startActivityForResult(Intent(
@@ -171,15 +186,16 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
         )
 
         binding?.lstMedia?.adapter = adapter
-
-        adapter.setListener {
-//            viewModel.publishSelectionDataChanged(it)
-        }
     }
 
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
+        val mediaSelection = binding?.bottomNavDrawer?.getData()?: emptyList()
+
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
-            if (isVideoFormat(media.path) && PickerUiConfig.hasAtLeastOneVideoOnGlobalSelection()) {
+            val hasAtLeastOneVideo = binding?.bottomNavDrawer?.hasAtLeastOneVideo()?: false
+            val mediaSelectionSize = mediaSelection.size
+
+            if (isVideoFormat(media.path) && hasAtLeastOneVideo && !isSelected) {
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.picker_selection_limit_video),
@@ -188,7 +204,7 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
                 return false
             }
 
-            if (PickerUiConfig.mediaSelectionList().size >= param.limit && !isSelected) {
+            if (mediaSelectionSize >= param.limit && !isSelected) {
                 Toast.makeText(
                     requireContext(),
                     getString(
@@ -199,11 +215,19 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
                 ).show()
                 return false
             }
+
+            if (!isSelected) {
+                viewModel.send(EventState.SelectionAdded(media))
+            } else {
+                viewModel.send(EventState.SelectionRemoved(media))
+            }
+
         } else if (PickerUiConfig.paramType == PickerSelectionType.SINGLE) {
-            if (PickerUiConfig.mediaSelectionList().isNotEmpty()) {
+            if (mediaSelection.isNotEmpty()) {
                 adapter.removeAllSelectedSingleClick()
             }
         }
+
         return true
     }
 
