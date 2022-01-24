@@ -14,15 +14,15 @@ data class ViolationDataView(
     companion object {
         fun create(
             violation: SearchProductModel.Violation,
-        ) : ViolationDataView? {
-            return if(violation.isValid()) {
-                ViolationDataView(
-                    violation.headerText,
-                    violation.descriptionText,
-                    violation.imageUrl,
-                    ViolationButtonDataView.create(violation)
-                )
-            } else null
+        ): ViolationDataView? {
+            if (!violation.isValid()) return null
+
+            return ViolationDataView(
+                violation.headerText,
+                violation.descriptionText,
+                violation.imageUrl,
+                ViolationButtonDataView.create(violation)
+            )
         }
     }
 
