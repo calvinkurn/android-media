@@ -48,6 +48,7 @@ import com.tokopedia.product_ar.model.state.ArGlobalErrorMode
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
 import com.tokopedia.product_ar.tracker.ProductArTracker
 import com.tokopedia.product_ar.util.AnimatedTextIcon
+import com.tokopedia.product_ar.util.ArCoachMarkUtil
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_CAMERA_PERMISSION
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_IMAGE_PICKER
 import com.tokopedia.product_ar.view.ProductArActivity
@@ -149,8 +150,8 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
         if (shouldShowCoachmark) {
             val coachMarkList = arrayListOf<CoachMark2Item>()
-
-            partialBottomArView?.rvVariant?.run {
+            val coachMarkView = CoachMark2(requireContext())
+            partialBottomArView?.rvVariant?.apply {
                 val title1 = context.getString(R.string.coachmark_1_title_ar)
                 val desc1 = context.getString(R.string.coachmark_1_desc_ar)
                 coachMarkList.add(CoachMark2Item(this,
@@ -171,10 +172,11 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                         title3, position = POSITION_TOP, description = desc3))
             }
 
-            CoachMark2(requireContext()).showCoachMark(coachMarkList)
+            ArCoachMarkUtil.showCoachMark(coachMarkView, coachMarkList)
             coachMarkSharedPref?.setCoachMarkState(true)
         }
     }
+
 
     private fun initView() {
         binding?.root?.let {
