@@ -5,7 +5,7 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.chat.api.ChatApiKt
 import javax.inject.Inject
 
-class CloudEditTemplateChatDataSourceKt @Inject constructor(private val chatApiKt: ChatApiKt) {
+class CloudEditTemplateChatDataSource @Inject constructor(private val chatApiKt: ChatApiKt) {
 
     suspend fun editTemplate(
         index: Int,

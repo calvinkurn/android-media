@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chattemplate.di
 
 import android.content.Context
 import com.tokopedia.topchat.chatlist.data.TopChatUrl.Companion.BASE_URL
-import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.network.NetworkRouter
@@ -26,10 +25,10 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.chat.api.ChatApiKt
-import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImplKt
-import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryKt
-import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImplKt
-import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryKt
+import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl
+import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
+import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImpl
+import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import dagger.Module
 import dagger.Provides
@@ -143,14 +142,14 @@ class TemplateChatModule {
 
     @ActivityScope
     @Provides
-    fun provideTemplateRepositoryKt(templateRepositoryImplKt: TemplateRepositoryImplKt): TemplateRepositoryKt {
-        return templateRepositoryImplKt
+    fun provideTemplateRepositoryKt(templateRepositoryImpl: TemplateRepositoryImpl): TemplateRepository {
+        return templateRepositoryImpl
     }
 
     @ActivityScope
     @Provides
-    fun provideEditTemplateRepositoryKt(editTemplateRepositoryImplKt: EditTemplateRepositoryImplKt): EditTemplateRepositoryKt {
-        return editTemplateRepositoryImplKt
+    fun provideEditTemplateRepositoryKt(editTemplateRepositoryImpl: EditTemplateRepositoryImpl): EditTemplateRepository {
+        return editTemplateRepositoryImpl
     }
 
     companion object {

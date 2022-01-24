@@ -3,13 +3,13 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryKt
+import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SetAvailabilityTemplateUseCase @Inject constructor(
-    private val templateRepository: TemplateRepositoryKt,
+    private val templateRepository: TemplateRepository,
     private val dispatcher: CoroutineDispatchers
 ) {
     suspend fun setAvailability(params: JsonObject): TemplateData {

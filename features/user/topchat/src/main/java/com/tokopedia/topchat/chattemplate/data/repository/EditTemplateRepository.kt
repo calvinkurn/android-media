@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chattemplate.data.repository
 
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 
-interface EditTemplateRepositoryKt {
+interface EditTemplateRepository {
 
     suspend fun editTemplate(
         index: Int,
