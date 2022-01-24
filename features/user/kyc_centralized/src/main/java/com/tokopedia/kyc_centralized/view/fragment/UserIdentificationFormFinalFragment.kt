@@ -209,10 +209,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun sendSuccessTimberLog() {
-        if (isKycSelfie) {
-            analytics?.eventClickUploadPhotosTradeIn("success")
-        }
-
+        analytics?.eventClickUploadPhotosTradeIn("success")
         ServerLogger.log(Priority.P2, "KYC_UPLOAD_RESULT",
                 mapOf(
                         "type" to "SuccessUpload",
