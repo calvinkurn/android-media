@@ -34,6 +34,7 @@ import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCouponBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.CouponPreviewBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndConditionBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
@@ -49,7 +50,9 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val EMPTY_STRING = ""
         private const val SCREEN_NAME = "Product coupon preview page"
         private const val ZERO: Long = 0
-
+        private const val ROTATION_ANGLE_ZERO = 0f
+        private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
+        private const val ROTATION_ANIM_DURATION_IN_MILLIS : Long = 300
         fun newInstance(): ProductCouponPreviewFragment {
             return ProductCouponPreviewFragment()
         }
@@ -78,9 +81,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private val createCouponErrorNotice by lazy {
         CreateProductCouponFailedDialog(requireActivity(), ::onTryAgain, ::onRequestHelp)
     }
-    private var rotationAngle = Int.ZERO
 
-    
     private val CouponType.label: String
         get() {
             return when (this) {
@@ -108,8 +109,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
                 else -> EMPTY_STRING
             }
         }
-
-
 
     override fun getScreenName() = SCREEN_NAME
     override fun initInjector() {
@@ -143,6 +142,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding.tpgCouponSetting.setOnClickListener { onNavigateToCouponSettingsPage() }
         binding.tpgAddProduct.setOnClickListener { onNavigateToProductListPage() }
         binding.btnCreateCoupon.setOnClickListener { createCoupon() }
+        binding.btnPreviewCouponImage.setOnClickListener { displayCouponPreviewBottomSheet() }
         binding.imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
 
         binding.tpgTermAndConditions.movementMethod = object : HyperlinkClickHandler() {
@@ -412,10 +412,13 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private fun handleCouponProductInformationVisibility() {
         if (isCardExpanded) {
             binding.groupCouponProductInformation.gone()
-            binding.imgDropdown.animate().rotation(180f).setDuration(300).start()
+            binding.imgDropdown.animate().rotation(ROTATION_ANGLE_HALF_CIRCLE).setDuration(
+                ROTATION_ANIM_DURATION_IN_MILLIS
+            ).start()
         } else {
             binding.groupCouponProductInformation.visible()
-            binding.imgDropdown.animate().rotation(0f).setDuration(300).start()
+            binding.imgDropdown.animate().rotation(ROTATION_ANGLE_ZERO)
+                .setDuration(ROTATION_ANIM_DURATION_IN_MILLIS).start()
         }
 
         isCardExpanded = !isCardExpanded
@@ -485,4 +488,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         val bottomSheet = TermAndConditionBottomSheet.newInstance(requireActivity(), getString(R.string.coupon_tnc))
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
+
+    private fun displayCouponPreviewBottomSheet() {
+        val coupon = Coupon(0, "",couponInformation ?: return, couponSettings?: return, couponProducts)
+        val bottomSheet = CouponPreviewBottomSheet.newInstance(coupon)
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
 }

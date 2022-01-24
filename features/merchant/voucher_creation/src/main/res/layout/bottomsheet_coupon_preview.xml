@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipImageHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:paddingStart="@dimen/unify_space_8"
+        android:paddingTop="@dimen/unify_space_2"
+        android:paddingEnd="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:centerText="true"
+        app:chipSize="medium"
+        app:chipText="@string/image_ratio_tall"
+        app:chipType="selected"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipImageRatioSquare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:paddingStart="@dimen/unify_space_8"
+        android:paddingTop="@dimen/unify_space_2"
+        android:paddingEnd="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_2"
+        app:centerText="true"
+        app:chipSize="medium"
+        app:chipText="@string/image_ratio_square"
+        app:chipType="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/chipImageHorizontal"
+        app:layout_constraintStart_toEndOf="@id/chipImageHorizontal"
+        app:layout_constraintTop_toTopOf="@+id/chipImageHorizontal" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipImageVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:paddingStart="@dimen/unify_space_8"
+        android:paddingTop="@dimen/unify_space_2"
+        android:paddingEnd="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_2"
+        app:centerText="true"
+        app:chipSize="medium"
+        app:chipText="@string/image_ratio_wide"
+        app:chipType="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/chipImageRatioSquare"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/chipImageRatioSquare"
+        app:layout_constraintTop_toTopOf="@+id/chipImageHorizontal" />
+
+    <ImageView
+        android:id="@+id/imgCoupon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/unify_space_16"
+        tools:src="@drawable/mvc_view_voucher_status_green"
+        tools:minHeight="@dimen/dp_120"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chipImageHorizontal" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
