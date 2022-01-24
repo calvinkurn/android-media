@@ -42,10 +42,9 @@ class PortraitChatListHeightManager(
             videoOrientation: VideoOrientation,
             videoPlayer: PlayVideoPlayerUiModel,
             forceInvalidate: Boolean,
-            hasProductFeatured: Boolean,
-            hasPinnedVoucher: Boolean
+            hasProductFeatured: Boolean
     ) {
-        val key = getKey(videoOrientation, null, null, hasProductFeatured, hasPinnedVoucher)
+        val key = getKey(videoOrientation, null, null, hasProductFeatured)
         val value = chatListHeightMap[key]
         if (value != null && value.height.orZero() > 0f && value.consistency >= CONSISTENCY_THRESHOLD && !forceInvalidate) {
             rvChatList.setMaxHeight(value.height)
@@ -70,7 +69,7 @@ class PortraitChatListHeightManager(
     }
 
     override suspend fun invalidateHeightChatMode(videoOrientation: VideoOrientation, videoPlayer: PlayVideoPlayerUiModel, maxTopPosition: Int, hasQuickReply: Boolean) {
-        val key = getKey(videoOrientation, maxTopPosition, hasQuickReply, null, null)
+        val key = getKey(videoOrientation, maxTopPosition, hasQuickReply, null)
         val value = chatListHeightMap[key]
         if (value != null && value.height.orZero() > 0f && value.consistency >= CONSISTENCY_THRESHOLD) {
             rvChatList.setMaxHeight(value.height)
@@ -149,8 +148,8 @@ class PortraitChatListHeightManager(
         maxVerticalChatHeight
     }
 
-    private fun getKey(videoOrientation: VideoOrientation, maxTop: Int?, hasQuickReply: Boolean?, hasProductFeatured: Boolean?, hasPinnedVoucher: Boolean?)
-            = ChatHeightMapKey(videoOrientation, maxTop, hasQuickReply, hasProductFeatured, hasPinnedVoucher)
+    private fun getKey(videoOrientation: VideoOrientation, maxTop: Int?, hasQuickReply: Boolean?, hasProductFeatured: Boolean?)
+            = ChatHeightMapKey(videoOrientation, maxTop, hasQuickReply, hasProductFeatured)
 
     companion object {
         private const val CONSISTENCY_THRESHOLD = 5
