@@ -747,8 +747,8 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage()) {
-            // show switcher if there is 15m warehouseId
-            if (chooseAddressData?.warehouses?.find { it.service_type == NOW_15M }?.warehouse_id.orZero() != 0L) {
+            // show switcher only if service type is 15m
+            if (chooseAddressData?.service_type == NOW_15M) {
                 add(SwitcherWidgetDataView())
             }
             addAll(createFooterVisitableList())

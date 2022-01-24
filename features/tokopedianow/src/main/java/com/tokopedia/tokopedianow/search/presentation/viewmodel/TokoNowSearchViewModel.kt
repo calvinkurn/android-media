@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
@@ -130,7 +132,8 @@ class TokoNowSearchViewModel @Inject constructor (
         return TitleDataView(
                 titleType = titleType,
                 hasSeeAllCategoryButton = hasSeeAllCategoryButton,
-                serviceType = chooseAddressData?.service_type.orEmpty()
+                serviceType = chooseAddressData?.service_type.orEmpty(),
+                is15mAvailable = chooseAddressData?.warehouses?.find { it.service_type == NOW_15M }?.warehouse_id.orZero() != 0L
         )
     }
 
@@ -173,10 +176,16 @@ class TokoNowSearchViewModel @Inject constructor (
     override fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
         val broadMatchVisitableList = createBroadMatchVisitableList()
 
-        return broadMatchVisitableList + listOf(
-            createCategoryJumperDataView(),
-            CTATokopediaNowHomeDataView(),
-        )
+        return broadMatchVisitableList + if (chooseAddressData?.service_type == NOW_15M) {
+            listOf(
+                createCategoryJumperDataView(),
+            )
+        } else {
+            listOf(
+                createCategoryJumperDataView(),
+                CTATokopediaNowHomeDataView(),
+            )
+        }
     }
 
     private fun createBroadMatchVisitableList(): List<Visitable<SearchTypeFactory>> {
@@ -232,7 +241,7 @@ class TokoNowSearchViewModel @Inject constructor (
                             quantity = cartService.getProductQuantity(otherRelatedProduct.id)
                         ),
                     )
-                },
+                }
         )
 
 
@@ -245,7 +254,8 @@ class TokoNowSearchViewModel @Inject constructor (
 
         return CategoryJumperDataView(
                 title = searchCategoryJumper?.getTitle() ?: "",
-                itemList = categoryJumperItemList
+                itemList = categoryJumperItemList,
+                serviceType = chooseAddressData?.service_type.orEmpty()
         )
     }
 
