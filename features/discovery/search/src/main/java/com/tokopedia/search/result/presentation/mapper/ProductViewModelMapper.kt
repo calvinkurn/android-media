@@ -41,7 +41,6 @@ import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
-import com.tokopedia.unifycomponents.UnifyButton
 
 class ProductViewModelMapper {
 
@@ -473,35 +472,15 @@ class ProductViewModelMapper {
     private fun convertToViolationView(violation: SearchProductModel.Violation?) : ViolationDataView? {
         return violation?.let {
             if(it.headerText.isNotEmpty() && it.descriptionText.isNotEmpty()) {
-                val (buttonType, buttonVariant) = convertViolationButtonTypeToUnifyButtonTypeVariant(it.buttonType)
-                ViolationDataView(
+                ViolationDataView.create(
                     it.headerText,
                     it.descriptionText,
                     it.imageUrl,
                     it.ctaUrl,
                     it.buttonText,
-                    buttonType,
-                    buttonVariant
+                    it.buttonType
                 )
             } else null
         }
-    }
-
-    private fun convertViolationButtonTypeToUnifyButtonTypeVariant(violationButtonType: String): Pair<Int, Int> {
-        var buttonType = UnifyButton.Type.MAIN
-        var buttonVariant = UnifyButton.Variant.GHOST
-        if(violationButtonType.isNotBlank()) {
-            when(violationButtonType.toLowerCase()) {
-                "ghostmain" -> {
-                    buttonType = UnifyButton.Type.MAIN
-                    buttonVariant = UnifyButton.Variant.GHOST
-                }
-                "filledmain" -> {
-                    buttonType = UnifyButton.Type.MAIN
-                    buttonVariant = UnifyButton.Variant.FILLED
-                }
-            }
-        }
-        return Pair(buttonType, buttonVariant)
     }
 }

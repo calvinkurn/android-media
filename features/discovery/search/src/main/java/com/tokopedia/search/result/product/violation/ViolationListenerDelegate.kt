@@ -3,16 +3,17 @@ package com.tokopedia.search.result.product.violation
 import android.content.Context
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
-import java.lang.ref.WeakReference
+import com.tokopedia.search.utils.contextprovider.ContextProvider
+import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 
 class ViolationListenerDelegate(
     context: Context?,
     applinkOpener: ApplinkOpener = ApplinkOpenerDelegate
 ) : ViolationListener,
-    ApplinkOpener by applinkOpener {
-    private val contextReference: WeakReference<Context> = WeakReference(context)
+    ApplinkOpener by applinkOpener,
+    ContextProvider by WeakReferenceContextProvider(context) {
 
     override fun onViolationButtonClick(applink: String) {
-        openApplink(contextReference.get(), applink)
+        openApplink(context, applink)
     }
 }

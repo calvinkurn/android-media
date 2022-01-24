@@ -27,14 +27,21 @@ class ViolationViewHolder(
         binding.searchResultViolationProductsEmptySearchTitle.text = element.headerText
         binding.searchResultViolationProductsEmptySearchMessage.text = element.descriptionText
         binding.searchResultViolationProductsEmptySearchImage.loadImage(element.imageUrl)
-        if(element.isButtonVisible) {
+        bindViolationButton(binding, element.violationButton)
+    }
+
+    private fun bindViolationButton(
+        binding: SearchResultViolationProductsEmptySearchLayoutBinding,
+        violationButton: ViolationButtonDataView
+    ) {
+        if(violationButton.isVisible) {
             binding.buttonSearchResultViolationProductsEmpty.apply{
-                text = element.buttonText
-                buttonType = element.buttonType
-                buttonVariant = element.buttonVariant
+                text = violationButton.text
+                buttonType = violationButton.type
+                buttonVariant = violationButton.variant
                 visible()
                 setOnClickListener {
-                    violationListener.onViolationButtonClick(element.ctaUrl)
+                    violationListener.onViolationButtonClick(violationButton.ctaUrl)
                 }
             }
         } else {
