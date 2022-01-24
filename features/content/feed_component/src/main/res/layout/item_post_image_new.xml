@@ -30,11 +30,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:paddingTop="@dimen/unify_space_2"
+        android:paddingTop="@dimen/unify_space_4"
         android:paddingStart="@dimen/feed_component_dp_6"
-        android:paddingBottom="@dimen/unify_space_2"
-        app:layout_constraintBottom_toBottomOf="@id/post_image"
-        app:layout_constraintStart_toStartOf="@id/post_image"
+        android:paddingBottom="@dimen/unify_space_4"
         android:id="@+id/tv_lihat_product"
         android:ellipsize="end"
         android:singleLine="true"
@@ -52,14 +50,16 @@
         android:minWidth="@dimen/dp_24"
         android:text="@string/feed_post_tag_text"
         android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="@id/post_image"
+        app:layout_constraintStart_toStartOf="@id/post_image"
         />
   
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_ads_detail_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/unify_space_12"
-        android:paddingBottom="@dimen/unify_space_12"
+        android:paddingTop="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_8"
         app:layout_constraintTop_toBottomOf="@id/post_image"
         android:visibility="gone"
         tools:visibility="visible"

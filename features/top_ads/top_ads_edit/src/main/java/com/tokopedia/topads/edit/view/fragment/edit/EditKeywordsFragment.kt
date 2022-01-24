@@ -261,12 +261,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun getLatestBid() {
-        val dummyId: MutableList<String> = mutableListOf()
-        productId.forEach {
-            dummyId.add(it)
-        }
         val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
-        suggestionsDefault.add(DataSuggestions(Constants.PRODUCT, dummyId))
+        suggestionsDefault.add(DataSuggestions("", listOf(groupId.toString())))
         viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
     }
 
@@ -434,6 +430,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun onSuccessRecommended(keywords: List<KeywordData>) {
         receivedRecom = true
+        recommendedKeywords?.clear()
         keywords.forEach {
             recommendedKeywords?.addAll(0, it.keywordData)
         }
@@ -458,6 +455,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 listItem.add(mapToModelManual(selected))
             }
         }
+        adapter.items.clear()
         listItem.forEach {
             adapter.items.add(EditKeywordItemViewModel(it))
         }

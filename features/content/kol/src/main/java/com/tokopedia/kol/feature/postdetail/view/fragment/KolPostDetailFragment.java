@@ -857,7 +857,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int activityId, String productId, @NotNull String redirectLink, @NotNull String type, boolean isFollowed, @NotNull String shopId, @NotNull FeedXProduct products) {
+    public void onGridItemClick(int positionInFeed, int activityId, @NonNull String productId, @NonNull String redirectLink, @NonNull String type, boolean isFollowed, @NonNull String shopId, @NonNull List<FeedXProduct> feedXProducts, int index) {
 
         onGoToLink(redirectLink);
     }
@@ -1072,7 +1072,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onClickSekSekarang(@NotNull String postId, @NotNull String shopId, @NotNull String type, boolean isFollowed, int positionInFeed) {
+    public void onClickSekSekarang(@NotNull String postId, @NotNull String shopId, @NotNull String type, boolean isFollowed, int positionInFeed, FeedXCard feedXCard) {
 
     }
 
@@ -1094,7 +1094,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void addVODView(@NotNull FeedXCard feedXCard,@NonNull String playChannelId, int rowNumber, long time, boolean hitTrackerApi) {
 
     }
-
 
 
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
+import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -26,7 +27,7 @@ data class OrderStatusUiModel(
                 val value: String
         )
 
-        override fun shouldShow(): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return orderStatus.isNotBlank()
         }
 
@@ -57,7 +58,7 @@ data class OrderStatusUiModel(
                 val value: String
         )
 
-        override fun shouldShow(): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return invoice.invoice.isNotBlank() || (deadline.label.isNotBlank() && deadline.value.isNotBlank()) || purchaseDate.isNotBlank()
         }
 

@@ -44,7 +44,7 @@ data class AffiliateUserPerformaListItemData(
                         @SerializedName("AffiliateID")
                         var affiliateID: String?,
                         @SerializedName("DayRange")
-                        var dayRange: String,
+                        var dayRange: String?,
                         @SerializedName("EndTime")
                         var endTime: String?,
                         @SerializedName("StartTime")

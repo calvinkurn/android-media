@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -38,6 +40,7 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.FragmentMenuSettingBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
+import com.tokopedia.sellerhome.settings.view.bottomsheet.SocialMediaLinksBottomSheet
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
 import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -173,6 +176,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     override fun onGiveFeedback() {
         openGlobalFeedback()
+    }
+
+    override fun onOpenSocialMediaLinks() {
+
+        openSocialMediaLinksBottomSheet()
     }
 
     override fun onNoAccess() {
@@ -335,6 +343,12 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         startActivityForResult(intent, REQ_CODE_GLOBAL_FEEDBACK)
     }
 
+    private fun openSocialMediaLinksBottomSheet() {
+        if (isActivityResumed()) {
+            SocialMediaLinksBottomSheet.createInstance().show(childFragmentManager)
+        }
+    }
+
     private fun showLogoutDialog() {
         var dialogBuilder: AlertDialog.Builder? = null
         context?.let { dialogBuilder = AlertDialog.Builder(it) }
@@ -384,6 +398,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         view?.let {
             Toaster.build(it, errorMessage, type = Toaster.TYPE_ERROR).show()
         }
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
     }
 
 }

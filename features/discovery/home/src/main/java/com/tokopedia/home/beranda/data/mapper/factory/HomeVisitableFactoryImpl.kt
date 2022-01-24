@@ -18,7 +18,10 @@ import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -94,7 +97,7 @@ class HomeVisitableFactoryImpl(
     override fun addHomeHeaderOvo(): HomeVisitableFactory {
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
 
-        val homeHeader = HomeHeaderOvoDataModel(needToShowUserWallet = needToShowUserWallet)
+        val homeHeader = HomeHeaderDataModel(needToShowUserWallet = needToShowUserWallet)
         val headerViewModel = HeaderDataModel()
         headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
         homeHeader.headerDataModel = headerViewModel
@@ -274,7 +277,22 @@ class HomeVisitableFactoryImpl(
                         }
 
                         TYPE_BANNER -> {
-
+                            data.atfStatusCondition (
+                                    onLoading = {
+                                        visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
+                                    },
+                                    onError = {
+                                        when(channelPosition) {
+                                            0 -> visitableList.add(ErrorStateChannelOneModel())
+                                            1 -> visitableList.add(ErrorStateChannelTwoModel())
+                                            2 -> visitableList.add(ErrorStateChannelThreeModel())
+                                        }
+                                    },
+                                    onSuccess = {
+                                        addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>())
+                                    }
+                            )
+                            channelPosition++
                         }
 
                         TYPE_TICKER -> {
@@ -327,6 +345,32 @@ class HomeVisitableFactoryImpl(
     override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeVisitableFactory {
         addDynamicChannelData(addLoadingMore = addLoadingMore, useDefaultWhenEmpty = useDefaultWhenEmpty, startPosition = homeData?.atfData?.dataList?.size ?: 0)
         return this
+    }
+
+    private fun addHomePageBannerData(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?) {
+        if (!isCache) {
+            bannerDataModel?.let {
+                val channelModel = ChannelModel(
+                        channelGrids = it.slides?.map {
+                            ChannelGrid(
+                                    applink = it.applink,
+                                    campaignCode = it.campaignCode,
+                                    id = it.id.toString(),
+                                    imageUrl = it.imageUrl,
+                                    name = it.title,
+                                    attribution = it.creativeName,
+                                    persona = it.persona,
+                                    categoryPersona = it.categoryPersona,
+                                    brandId = it.brandId,
+                                    categoryId = it.categoryId
+                            )
+                        }?: listOf(),
+                        groupId = "",
+                        id = ""
+                )
+                visitableList.add(BannerDataModel(channelModel = channelModel, isCache = isCache))
+            }
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList

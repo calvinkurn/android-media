@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
@@ -189,7 +190,7 @@ object FeedScrollListenerNew {
         return (list.size > position && list[position] is DynamicPostUiModel
                 && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
                 && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
-            it.type == TYPE_VIDEO
+            it.type == TYPE_VIDEO || it.type == TYPE_LONG_VIDEO
         } != null))
     }
     private fun isVODCard(list: List<Visitable<*>>, position: Int): Boolean {
@@ -209,7 +210,8 @@ object FeedScrollListenerNew {
 
 
     private fun isImageCard(list: List<Visitable<*>>, position: Int): Boolean {
-        return (list.size > position && list[position] is DynamicPostUiModel && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
+        return (list.size > position && list[position] is DynamicPostUiModel &&
+                ((list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST || (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT)
                 && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
             it.type == TYPE_IMAGE
         } != null))
@@ -217,7 +219,8 @@ object FeedScrollListenerNew {
 
     private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
-            return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
+            val feedXCard = (list[position] as DynamicPostUiModel).feedXCard
+            return feedXCard.media[feedXCard.lastCarouselIndex]
         } catch (e: Exception) {
             e.localizedMessage
         }
@@ -233,7 +236,8 @@ object FeedScrollListenerNew {
 
     private fun getTopadsCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
-            return (list[position] as TopadsHeadLineV2Model).feedXCard.media.firstOrNull()
+            val feedXCard = (list[position] as TopadsHeadLineV2Model).feedXCard
+            return feedXCard.media[feedXCard.lastCarouselIndex]
         } catch (e: Exception) {
             e.localizedMessage
         }
@@ -244,7 +248,7 @@ object FeedScrollListenerNew {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(recyclerView.context)
         return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI, false)
     }
-    fun isWifiEnabled(context: Context) : Boolean {
+    private fun isWifiEnabled(context: Context) : Boolean {
         val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         return wifiManager.isWifiEnabled
     }

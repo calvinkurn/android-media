@@ -133,4 +133,8 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun viewCalendarsList(componentsItems: ComponentsItem, userID: String) {}
     open fun trackEventClickCalendarWidget(componentsItems: ComponentsItem, userID: String) {}
     open fun trackEventClickCalendarCTA(componentsItems: ComponentsItem, userID: String) {}
+    open fun clickQuestLihatButton(source: Int) {}
+    open fun viewQuestWidget(source: Int, id: String) {}
+    open fun clickQuestCard(source: Int, id: String) {}
+    open fun slideQuestCard(source: Int, direction: String) {}
 }

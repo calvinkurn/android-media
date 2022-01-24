@@ -218,7 +218,10 @@ class FeedAnalyticTracker
         const val PRICE = "price"
         const val QTY = "quantity"
         const val SHOP_ID = "shop_id"
+        const val CATEGORY_ID = "category_id"
+        const val DIMENSION_40 = "dimension40"
         const val SHOP_NAME = "shop_name"
+        const val SHOP_TYPE = "shop_type"
         const val MEDIA_PREVIEW = "/feed media preview - {role} post"
         const val MEDIA_PREVIEW_TAG = "{role}"
         const val CURRENCY_CODE = "currencyCode"
@@ -310,7 +313,7 @@ class FeedAnalyticTracker
         activityId: String,
         type: String, isFollowed: Boolean, shopId: String, mediaType: String, isCaption: Boolean,
     ) {
-        val actionField = if (isCaption)
+        val actionField = if (isCaption && type != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT)
             "shop name below"
         else
             "shop"
@@ -613,7 +616,9 @@ class FeedAnalyticTracker
                                                             price.getDigits().toZeroIfNull(),
                                                             quantity,
                                                             shopId.toIntOrZero(),
-                                                            shopName
+                                                            shopName,
+                                                            type,
+                                                            isFollowed
                                                     )
                                             )
                                     )
@@ -1076,11 +1081,12 @@ class FeedAnalyticTracker
         shopId: String,
         type: String,
         isFollowed: Boolean,
+        isProductDetailPage: Boolean
         mediaType: String
     ) {
         trackEnhancedEcommerceEventNew(
             PRODUCT_VIEW,
-            CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            if (isProductDetailPage) CONTENT_FEED_TIMELINE else CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
             String.format(
                 FORMAT_THREE_PARAM,
                 "impression",
@@ -1088,9 +1094,11 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed, mediaType)
             ),
             String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                if (isProductDetailPage) products[products.size - 1].id else
+                    products[0].id
             ),
             DataLayer.mapOf(
                 Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
@@ -1293,7 +1301,7 @@ class FeedAnalyticTracker
             Product.VARIANT, "",
             Product.PRICE,
             if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString(),
-            "dimension39", "/feed - ${getPostType(type, isFollowed)} "
+            "dimension39", "/feed - ${getPostType(type, isFollowed)}"
         )
 
     fun eventCloseThreeDotBS(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
@@ -2825,13 +2833,21 @@ class FeedAnalyticTracker
         quantity: Int,
         shopId: Int,
         shopName: String,
+        type: String = "",
+        isFollowed: Boolean = false
     ): Map<String, Any> = DataLayer.mapOf(
-        Product.ID, id,
-        Product.NAME, name,
-        Product.PRICE, price,
-        Product.QTY, quantity,
-        Product.SHOP_ID, shopId,
-        Product.SHOP_NAME, shopName
+            Product.ID, id,
+            Product.CATEGORY_ID,id,
+            Product.NAME, name,
+            Product.PRICE, price,
+            Product.QTY, quantity,
+            Product.SHOP_ID, shopId,
+            Product.SHOP_NAME, shopName,
+            Product.SHOP_TYPE, "",
+            Product.VARIANT, "",
+            Product.BRAND, "",
+            Product.CATEGORY, "",
+            Product.DIMENSION_40, "/feed - ${getPostType(type, isFollowed)}"
     )
 
     fun getEcommerceView(listProduct: List<ProductItem>): Map<String, Any> {

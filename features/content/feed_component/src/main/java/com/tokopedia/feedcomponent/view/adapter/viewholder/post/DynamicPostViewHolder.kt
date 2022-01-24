@@ -765,7 +765,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String)
 
-        fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int)
+        fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int, feedXCard: FeedXCard)
 
     }
 }

@@ -19,4 +19,11 @@
     <string name="sse_log_channel_id_label">Channel ID</string>
     <string name="sse_log_page_source_label">Page Source</string>
     <string name="sse_log_gc_token_label">GC Token</string>
+
+    <string name="websocket_log_no_data">No Data</string>
+    <string name="websocket_log_channel_id_label">Channel ID</string>
+    <string name="websocket_log_gc_token_label">GC Token</string>
+
+    <string name="websocket_log_delete_all_message">Delete All Logs Success</string>
+    <string name="websocket_log_default_error_message">Something went wrong</string>
 </resources>

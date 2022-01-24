@@ -532,6 +532,10 @@ class ShopHomeAdapter(
         submitList(newList)
     }
 
+    fun isProductGridListPlaceholderExists(): Boolean {
+        return visitables.filterIsInstance<ProductGridListPlaceholderUiModel>().isNotEmpty()
+    }
+
     fun isLoadFirstWidgetContentData(): Boolean {
         return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().none {
             it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
