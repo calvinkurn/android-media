@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.common
 
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
@@ -12,6 +13,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.activateHighlight
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -98,23 +100,23 @@ abstract class AddEditProductFragment : BaseDaggerFragment() {
     }
 
     fun highlightNavigationButton(pageIndicator: PageIndicator) {
-        activateHighlight(btnIndicatorMain, false)
-        activateHighlight(btnIndicatorDetail, false)
-        activateHighlight(btnIndicatorDescription, false)
-        activateHighlight(btnIndicatorShipment, false)
+        btnIndicatorMain?.activateHighlight(false)
+        btnIndicatorDetail?.activateHighlight(false)
+        btnIndicatorDescription?.activateHighlight(false)
+        btnIndicatorShipment?.activateHighlight(false)
 
         when (pageIndicator) {
             PageIndicator.INDICATOR_MAIN_PAGE -> {
-                activateHighlight(btnIndicatorMain, true)
+                btnIndicatorMain?.activateHighlight(true)
             }
             PageIndicator.INDICATOR_DETAIL_PAGE -> {
-                activateHighlight(btnIndicatorDetail, true)
+                btnIndicatorDetail?.activateHighlight(true)
             }
             PageIndicator.INDICATOR_DESCRIPTION_PAGE -> {
-                activateHighlight(btnIndicatorDescription, true)
+                btnIndicatorDescription?.activateHighlight(true)
             }
             PageIndicator.INDICATOR_SHIPMENT_PAGE -> {
-                activateHighlight(btnIndicatorShipment, true)
+                btnIndicatorShipment?.activateHighlight(true)
             }
         }
     }
@@ -128,14 +130,5 @@ abstract class AddEditProductFragment : BaseDaggerFragment() {
         btnIndicatorDetail?.isEnabled = enabled
         btnIndicatorDescription?.isEnabled = enabled
         btnIndicatorShipment?.isEnabled = enabled
-    }
-
-    private fun activateHighlight(typography: Typography?, isActive: Boolean) {
-        val backgroundColor = if (isActive) {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
-        } else {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
-        }
-        typography?.setBackgroundColor(backgroundColor)
     }
 }

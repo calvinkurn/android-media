@@ -833,18 +833,9 @@ class AddEditProductDescriptionFragment:
         val btnIndicatorDescription: Typography? = activity?.findViewById(R.id.btn_indicator_description)
         val btnIndicatorShipment: Typography? = activity?.findViewById(R.id.btn_indicator_shipment)
 
-        activateHighlight(btnIndicatorMain, false)
-        activateHighlight(btnIndicatorDetail, false)
-        activateHighlight(btnIndicatorDescription, true)
-        activateHighlight(btnIndicatorShipment, false)
-    }
-
-    private fun activateHighlight(typography: Typography?, isActive: Boolean) {
-        val backgroundColor = if (isActive) {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
-        } else {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
-        }
-        typography?.setBackgroundColor(backgroundColor)
+        btnIndicatorMain?.activateHighlight(false)
+        btnIndicatorDetail?.activateHighlight(false)
+        btnIndicatorDescription?.activateHighlight(true)
+        btnIndicatorShipment?.activateHighlight(false)
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.common.util
 
+import android.R
+import android.content.res.ColorStateList
 import android.graphics.drawable.ScaleDrawable
 import android.text.*
 import android.text.style.AbsoluteSizeSpan
@@ -159,6 +161,29 @@ fun TextFieldUnify2?.updateText(text: String) {
             requestFocus()
         }
     }
+}
+
+fun Typography.activateHighlight(isActive: Boolean = true) {
+    val myColorStateList = ColorStateList(
+        arrayOf(
+            intArrayOf(R.attr.state_enabled),
+            intArrayOf(-R.attr.state_enabled)
+        ), intArrayOf(
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500),
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        )
+    )
+    val backgroundColor = if (isActive) {
+        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+    } else {
+        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+    }
+    if (isActive) {
+        setTextColor(myColorStateList)
+    } else {
+        setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+    }
+    setBackgroundColor(backgroundColor)
 }
 
 fun DialogUnify.setDefaultMaxWidth(adjustButtonOrientation: Boolean = true) {
