@@ -27,7 +27,6 @@ object Constants {
     const val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
     const val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
     const val STRATEGIES = "strategies"
-    const val BID_SETTINGS = "suggestionBidSettings"
     const val GROUP_NAME = "group_name"
     const val PRICE_BID = "price_bid"
     const val DAILY_BUDGET = "daily_budget"
