@@ -123,7 +123,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_terms_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface.handleBackButton()
+                affiliateNavigationInterface.handleBackButton(false)
             }
         }
 

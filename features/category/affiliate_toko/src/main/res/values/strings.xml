@@ -125,4 +125,10 @@
     <string name="affiliate_promote_product_cta">Promosikan Produk Affiliate</string>
     <string name="affiliate_please_fill_one_social_media">Silakan isi minimal 1 media sosial.</string>
     <string name="affiliate_retry_message">Silakan coba lagi nanti</string>
+    <string name="affiliate_coacher_title1">Bagi inspirasi, raih komisi 💰</string>
+    <string name="affiliate_coacher_title2">Temukan produk yang bisa dipromosikan</string>
+    <string name="affiliate_coacher_title3">Sudah punya link produknya? Tempel di sini</string>
+    <string name="affiliate_coacher_desc1">Promosikan link produk pilihanmu di sosmed. Jika ada yang beli, kamu bisa cek komisimu di sini!</string>
+    <string name="affiliate_coacher_desc2">Kamu bisa tempel link produk atau pilih rekomendasi dari kami, lalu salin link affiliate-nya.</string>
+    <string name="affiliate_coacher_desc3">Kamu bisa dapatkan link produk yang diinginkan dari aplikasi Tokopedia.</string>
 </resources>
