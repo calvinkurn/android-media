@@ -69,7 +69,7 @@ public interface ShipmentContract {
 
         void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment);
 
-        void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isEligibleForRevampAna);
 
         void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState);
 
