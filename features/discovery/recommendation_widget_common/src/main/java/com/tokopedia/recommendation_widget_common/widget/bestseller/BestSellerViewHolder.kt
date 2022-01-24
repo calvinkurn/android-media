@@ -2,12 +2,12 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.os.Bundle
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -53,6 +53,7 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     override fun bind(element: BestSellerDataModel) {
         if(element.recommendationItemList.isNotEmpty()) {
             bestSellerDataModel = element
+
             initHeader(element)
             initFilterChip(element)
             initRecommendation(element)
@@ -78,18 +79,7 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     }
 
     private fun initHeader(element: BestSellerDataModel){
-//        binding?.bestSellerTitle?.shouldShowWithAction(element.title.isNotBlank()){
-//            binding?.bestSellerTitle?.text = element.title
-//        }
-//        binding?.bestSellerSubtitle?.shouldShowWithAction(element.subtitle.isNotBlank()){
-//            binding?.bestSellerSubtitle?.text = element.subtitle
-//            anchorSeeMoreButtonTo(R.id.best_seller_subtitle)
-//        }
-//        binding?.bestSellerSeeMore?.shouldShowWithAction(element.seeMoreAppLink.isNotBlank()){
-//            binding?.bestSellerSeeMore?.setOnClickListener {
-//                listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
-//            }
-//        }
+        setHeaderComponent(element)
         binding?.containerBestSellerWidget?.show()
         itemView.show()
     }
@@ -132,14 +122,6 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
             binding?.bestSellerRecommendationRecyclerView?.layoutParams?.height = element.height
             binding?.bestSellerRecommendationRecyclerView?.layoutManager?.scrollToPosition(0)
         }
-    }
-
-    private fun anchorSeeMoreButtonTo(anchorRef: Int) {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(binding?.containerBestSellerWidget)
-//        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
-//        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
-        constraintSet.applyTo(binding?.containerBestSellerWidget)
     }
 
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
@@ -199,14 +181,15 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     }
 
     private fun setHeaderComponent(element: BestSellerDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-//                mixTopComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
-            }
+        element.channelModel?.let {
+            binding?.dynamicChannelHeader?.setChannel(it, object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    listener.onBestSellerSeeMoreTextClick(element, element.channelModel.channelHeader.applink, adapterPosition)
+                }
 
-            override fun onChannelExpired(channelModel: ChannelModel) {
-//                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
-            }
-        })
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                }
+            })
+        }
     }
 }

@@ -1,8 +1,8 @@
 package com.tokopedia.recommendation_widget_common.widget.bestseller.mapper
 
 import android.content.Context
-import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -18,23 +18,26 @@ import kotlinx.coroutines.Dispatchers
 class BestSellerMapper (
         private val context: Context
 ){
-    suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget, channel: DynamicHomeChannel.Channels ?= null, verticalPosition: Int): BestSellerDataModel{
+    suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget): BestSellerDataModel{
         val productList = mappingProductCards(recommendationWidget.recommendationItemList)
         return BestSellerDataModel(
-                title = recommendationWidget.title,
-                subtitle = recommendationWidget.subtitle,
-                height = getMaxHeightProductCards(productList),
-                pageName = recommendationWidget.pageName,
-                productCardModelList = productList,
-                recommendationItemList = recommendationWidget.recommendationItemList,
-                filterChip = recommendationWidget.recommendationFilterChips,
-                seeMoreAppLink = recommendationWidget.seeMoreAppLink,
-                channelModel = channel?.let {
-                    DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                        it,
-                        verticalPosition
-                    )
-                }
+            title = recommendationWidget.title,
+            subtitle = recommendationWidget.subtitle,
+            height = getMaxHeightProductCards(productList),
+            pageName = recommendationWidget.pageName,
+            productCardModelList = productList,
+            recommendationItemList = recommendationWidget.recommendationItemList,
+            filterChip = recommendationWidget.recommendationFilterChips,
+            seeMoreAppLink = recommendationWidget.seeMoreAppLink,
+            channelModel = ChannelModel(
+                id = "",
+                groupId = "",
+                channelHeader = ChannelHeader(
+                    name = recommendationWidget.title,
+                    subtitle = recommendationWidget.subtitle,
+                    url = recommendationWidget.seeMoreAppLink
+                )
+            )
         )
     }
 

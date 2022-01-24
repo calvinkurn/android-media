@@ -24,7 +24,7 @@ data class BestSellerDataModel(
         val height: Int = 0,
         var chipsPosition: Int = 1,
         var dividerType: Int = 0,
-        val channelModel: ChannelModel?
+        val channelModel: ChannelModel ?= ChannelModel(id = "", groupId = "")
 ) : RecommendationVisitable{
     override fun visitableId(): String? {
         return id

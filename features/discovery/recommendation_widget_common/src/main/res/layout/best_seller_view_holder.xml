@@ -23,77 +23,20 @@
         android:id="@+id/dynamic_channel_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/best_seller_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="14dp"
-        android:text="@string/best_seller_title_other_product"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/best_seller_subtitle"
-        app:layout_constraintEnd_toStartOf="@+id/best_seller_see_more"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dynamic_channel_header"
-        app:typographyType="heading_4" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/best_seller_subtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:text="@string/best_seller_title_other_product"
-        android:visibility="gone"
-        tools:visibility="visible"
-        tools:text="Okey"
-        app:layout_constraintTop_toBottomOf="@+id/best_seller_title"
-        app:layout_constraintEnd_toStartOf="@+id/best_seller_see_more"
-        app:layout_constraintBottom_toTopOf="@+id/best_seller_chip_filter_recyclerview"
-        app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_3" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/best_seller_see_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:focusable="true"
-        android:lineSpacingExtra="6sp"
-        android:text="@string/best_seller_see_more"
-        android:textColor="@color/Unify_G500"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintTop_toTopOf="@id/best_seller_title"
-        app:layout_constraintBottom_toBottomOf="@+id/best_seller_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="heading_6" />
+        app:layout_constraintTop_toBottomOf="@id/home_component_divider_header"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/best_seller_chip_filter_recyclerview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         android:visibility="gone"
         tools:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/best_seller_subtitle" />
+        app:layout_constraintTop_toBottomOf="@+id/dynamic_channel_header" />
 
     <FrameLayout
         android:layout_width="0dp"
