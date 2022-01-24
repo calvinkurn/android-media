@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants

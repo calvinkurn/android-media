@@ -206,17 +206,6 @@ class AddEditProductVariantFragment :
             addVariantValueAtLevel(VARIANT_VALUE_LEVEL_ONE_POSITION)
         }
 
-
-        // setup base cancellation dialog
-        context?.run {
-            cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            cancellationDialog?.setPrimaryCTAText(getString(com.tokopedia.product.addedit.R.string.action_cancel_cancellation))
-            cancellationDialog?.setSecondaryCTAText(getString(com.tokopedia.product.addedit.R.string.action_confirm_cancellation))
-            cancellationDialog?.setDefaultMaxWidth()
-            cancellationDialog?.setPrimaryCTAClickListener {
-                cancellationDialog?.dismiss()
-            }
-        }
         // button "tambah" variant values level 2 on click listener
         linkAddVariantValueLevel2.setOnClickListener {
             addVariantValueAtLevel(VARIANT_VALUE_LEVEL_TWO_POSITION)
@@ -668,6 +657,7 @@ class AddEditProductVariantFragment :
             cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             cancellationDialog?.setPrimaryCTAText(getString(R.string.action_cancel_cancellation))
             cancellationDialog?.setSecondaryCTAText(getString(R.string.action_confirm_cancellation))
+            cancellationDialog?.setDefaultMaxWidth()
             cancellationDialog?.setPrimaryCTAClickListener {
                 cancellationDialog?.dismiss()
             }
