@@ -8,53 +8,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_play_bottom_sheet"
-        android:paddingTop="@dimen/spacing_lvl4"
         android:clickable="true"
         android:focusable="true"
+        android:paddingTop="@dimen/spacing_lvl4"
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"
         app:layout_behavior="com.tokopedia.play_common.util.behavior.LockableBottomSheetBehavior"
-        tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout"
-        >
+        tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
 
-        <include layout="@layout/bottom_sheet_header"/>
+        <include layout="@layout/bottom_sheet_header" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_product_content"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_header"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"
-            >
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_header">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_voucher_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/play_voucher_sheet_title_margin"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+            <include layout="@layout/view_product_voucher_info" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_product_list"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl0"
-                android:layout_marginTop="@dimen/play_product_voucher_margin"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_voucher_list"
+                android:layout_marginEnd="@dimen/play_offset_14"
+                android:layout_marginStart="@dimen/play_offset_14"
                 app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_goneMarginTop="@dimen/spacing_lvl4"
+                app:layout_constraintTop_toBottomOf="@id/cl_product_voucher_info" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <include layout="@layout/bottom_sheet_bottom_overlay"/>
+        <include layout="@layout/bottom_sheet_bottom_overlay" />
 
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/global_error_product"
@@ -65,14 +55,13 @@
             android:focusable="true"
             android:gravity="center"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/ll_header"
+            app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay"
-            tools:visibility="visible"
-            />
+            app:layout_constraintTop_toBottomOf="@id/ll_header"
+            tools:visibility="visible" />
 
-        <include layout="@layout/bottom_sheet_product_empty"/>
+        <include layout="@layout/bottom_sheet_product_empty" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

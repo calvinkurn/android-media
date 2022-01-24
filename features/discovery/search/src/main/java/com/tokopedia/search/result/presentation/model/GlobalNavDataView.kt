@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
+@Suppress("LongParameterList")
 class GlobalNavDataView(
         val source: String = "",
         val title: String = "",
@@ -22,6 +23,7 @@ class GlobalNavDataView(
         return typeFactory?.type(this) ?: 0
     }
 
+    @Suppress("LongParameterList")
     class Item(
         val categoryName: String = "",
         val name: String = "",
@@ -49,7 +51,7 @@ class GlobalNavDataView(
             return 0
         }
 
-        override fun writeToParcel(dest: Parcel, flags: Int) {
+        override fun writeToParcel(dest: Parcel, ignored: Int) {
             dest.writeString(categoryName)
             dest.writeString(name)
             dest.writeString(info)
@@ -63,18 +65,18 @@ class GlobalNavDataView(
             dest.writeInt(position)
         }
 
-        constructor(`in`: Parcel): this (
-            categoryName = `in`.readString() ?: "",
-            name = `in`.readString() ?: "",
-            info = `in`.readString() ?: "",
-            imageUrl = `in`.readString() ?: "",
-            applink = `in`.readString() ?: "",
-            url = `in`.readString() ?: "",
-            subtitle = `in`.readString() ?: "",
-            strikethrough = `in`.readString() ?: "",
-            backgroundUrl = `in`.readString() ?: "",
-            logoUrl = `in`.readString() ?: "",
-            position = `in`.readInt(),
+        constructor(parcel: Parcel): this (
+            categoryName = parcel.readString() ?: "",
+            name = parcel.readString() ?: "",
+            info = parcel.readString() ?: "",
+            imageUrl = parcel.readString() ?: "",
+            applink = parcel.readString() ?: "",
+            url = parcel.readString() ?: "",
+            subtitle = parcel.readString() ?: "",
+            strikethrough = parcel.readString() ?: "",
+            backgroundUrl = parcel.readString() ?: "",
+            logoUrl = parcel.readString() ?: "",
+            position = parcel.readInt(),
         )
 
         companion object {

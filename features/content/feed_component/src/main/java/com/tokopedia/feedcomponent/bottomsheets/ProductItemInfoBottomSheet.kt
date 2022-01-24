@@ -57,16 +57,12 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         rvPosttag.isNestedScrollingEnabled = false
         rvPosttag.layoutManager = layoutManager
         rvPosttag.setPadding(0, 0, 0, 0)
-        rvPosttag.adapter = PostTagAdapter(
-            mapPostTag(listProducts),
-            PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext()))
-        )
-        listener.onPostTagItemBSImpression(
-            if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString(),
-            listProducts,
-            postType,
-            shopId,
-            isFollowed)
+        if (::listProducts.isInitialized) {
+            setAdapter()
+        } else {
+            dismiss()
+        }
+
         (rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
         setCloseClickListener {
             dismissedByClosing = true
@@ -78,6 +74,19 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 disMissed?.invoke()
             }
         }
+    }
+    private fun setAdapter() {
+        rvPosttag.adapter = PostTagAdapter(
+                mapPostTag(listProducts),
+                PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext()))
+        )
+        if (listProducts.isNotEmpty())
+        listener.onPostTagItemBSImpression(
+                if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString(),
+                listProducts,
+                postType,
+                shopId,
+                isFollowed)
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<BasePostTagViewModel> {

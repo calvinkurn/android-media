@@ -91,6 +91,17 @@
     <string name="tokopedianow_repurchase_category_filter_chip_format">%1$d Kategori</string>
     <string name="tokopedianow_repurchase_date_filter_chip_title">Semua Tanggal</string>
 
+    <string name="tokopedianow_quest_error_title">Gagal Memuat</string>
+    <string name="tokopedianow_quest_error_desc">Click iconnya untuk muat ulang</string>
+    <string name="tokopedianow_quest_title_widget_error_title">Gagal ditampilkan</string>
+    <string name="tokopedianow_quest_title_widget_error_desc">Klik ikon buat refresh</string>
+    <string name="tokopedianow_quest_shop_again_and_get_gift">Belanja lagi, dapatin hadiah!</string>
+    <string name="tokopedianow_quest_widget_all_claimed_title"><![CDATA[<b>Yay!</b> Kamu sudah dapat semua hadiah dari <b>Tokopedia NOW!</b>]]></string>
+    <string name="tokopedianow_quest_widget_all_claimed_desc">Cek Hadiah Saya</string>
+    <string name="tokopedianow_quest_widget_all_claimed_total_claimed">5/5</string>
+    <string name="tokopedianow_quest_sequence_widget_title">Penawaran spesial untukmu</string>
+    <string name="tokopedianow_quest_sequence_widget_see_all">Lihat Detail</string>
+
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>
     <string name="tokopedianow_sharing_education_background_content_description">sharing education background</string>

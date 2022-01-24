@@ -156,6 +156,6 @@ public interface LinkerConstants {
     String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
     String IOS_BUNDLE_ID="com.tokopedia.Tokopedia";
 
-    String DISCOVERY_PATH = "discovery/";
+    String DISCOVERY_PATH = "/discovery/";
 
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
 
 @Parcelize

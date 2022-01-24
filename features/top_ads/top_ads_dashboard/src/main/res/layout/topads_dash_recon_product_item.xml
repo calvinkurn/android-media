@@ -17,17 +17,17 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_folder"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toEndOf="@id/cb_product_recom"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productName"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="@id/img_folder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_folder"
@@ -37,8 +37,8 @@
 
     <ImageView
         android:id="@+id/search_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:contentDescription="@string/topads_dash_cd_search"
         app:layout_constraintBottom_toBottomOf="@id/totalSearch"
         app:layout_constraintStart_toStartOf="@id/img_folder"
@@ -49,8 +49,8 @@
         android:id="@+id/total_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:text="@string/topads_common_total_search"
         android:textColor="@color/topads_common_select_color_unchecked"
         app:layout_constraintStart_toEndOf="@id/search_icon"
@@ -72,24 +72,24 @@
         android:id="@+id/totalSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         app:layout_constraintStart_toEndOf="@id/up_icon"
         app:layout_constraintTop_toBottomOf="@id/total_search"
         tools:text="Rp10000" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
-        android:layout_width="2dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/unify_space_2"
+        android:layout_height="@dimen/layout_lvl3"
         app:layout_constraintEnd_toStartOf="@id/speaker_icon"
         app:layout_constraintStart_toEndOf="@id/total_search"
         app:layout_constraintTop_toTopOf="@id/speaker_icon" />
 
     <ImageView
         android:id="@+id/speaker_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:contentDescription="@string/topads_dash_cd_saldo"
         app:layout_constraintBottom_toBottomOf="@id/recommendedBid"
         app:layout_constraintEnd_toStartOf="@id/recommended_bid_text"
@@ -110,16 +110,16 @@
         android:id="@+id/recommendedBid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         app:layout_constraintStart_toStartOf="@id/recommended_bid_text"
         app:layout_constraintTop_toBottomOf="@id/recommended_bid_text"
         tools:text="Rp100000" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/editBudget"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/search_icon"
         app:layout_constraintTop_toBottomOf="@id/totalSearch"

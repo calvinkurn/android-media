@@ -214,7 +214,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tickerApplyPromo.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
             @Override
             public void onClickUsePromo() {
-                dealsAnalytics.sendPromoCodeClickEvent(dealDetails);
+                dealsAnalytics.sendPromoCodeClickEvent(dealDetails, "", promoApplied);
                 mPresenter.clickGoToPromo(getContext());
             }
 
@@ -331,7 +331,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             mPresenter.getPaymentLink();
             if (dealDetails.getBrand() != null) {
                 dealsAnalytics.sendEcommercePayment(dealDetails.getCategoryId(), dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
-                        dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
+                        dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied, "");
             }
         } else if (v.getId() == com.tokopedia.digital_deals.R.id.tv_no_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);

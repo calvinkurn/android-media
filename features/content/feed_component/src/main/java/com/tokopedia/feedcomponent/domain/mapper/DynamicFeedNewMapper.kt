@@ -14,7 +14,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 
 private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
 private const val TYPE_FEED_X_CARD_BANNERS: String = "FeedXCardBanners"
-private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
+const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 const val TYPE_FEED_X_CARD_POST: String = "FeedXCardPost"
 const val TYPE_FEED_X_CARD_PLAY: String = "FeedXCardPlay"
 private const val TYPE_TOPADS_HEADLINE = "topads_headline"

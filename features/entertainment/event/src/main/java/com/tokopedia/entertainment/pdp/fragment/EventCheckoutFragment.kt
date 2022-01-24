@@ -181,6 +181,10 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             }
         })
 
+        eventCheckoutViewModel.eventTNCPDP.observe(viewLifecycleOwner, Observer {
+            showTNC(it)
+        })
+
         eventCheckoutViewModel.isError.observe(viewLifecycleOwner, Observer {
             it?.let { error ->
                 if (it.error) {
@@ -339,15 +343,17 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
         tg_event_checkout_summary_price_price.text = if(metadata.totalPrice != ZERO_PRICE) getRupiahFormat(metadata.totalPrice) else getString(R.string.ent_free_price)
 
+        eventPDPTracking.onViewCheckoutPage(pdp, metadata.itemMap, userSessionInterface.userId)
+    }
+
+    private fun showTNC(tnc: String){
         context?.let {
             tg_event_checkout_tnc.makeLinks(
-                    Pair(getString(R.string.ent_event_checkout_summary_tnc_click), View.OnClickListener {
-                        showBottomSheetTnc(it.context, pdp.tnc)
-                    })
+                Pair(getString(R.string.ent_event_checkout_summary_tnc_click), View.OnClickListener {
+                    showBottomSheetTnc(it.context, tnc)
+                })
             )
         }
-
-        eventPDPTracking.onViewCheckoutPage(pdp, metadata.itemMap, userSessionInterface.userId)
     }
 
     private fun renderAdditionalItem(pdp: ProductDetailData) {

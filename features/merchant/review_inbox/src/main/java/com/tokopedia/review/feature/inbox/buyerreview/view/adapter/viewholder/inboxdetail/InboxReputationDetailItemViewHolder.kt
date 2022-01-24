@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -66,7 +67,7 @@ class InboxReputationDetailItemViewHolder(
     private val reviewerName: Typography? = itemView.findViewById(R.id.reviewer_name)
     private val reviewTime: Typography? = itemView.findViewById(R.id.review_time)
     private val reviewAttachment: RecyclerView? = itemView.findViewById(R.id.product_review_image)
-    private val reviewOverflow: ImageView? = itemView.findViewById(R.id.review_overflow)
+    private val reviewOverflow: IconUnify? = itemView.findViewById(R.id.review_overflow)
     private val review: Typography? = itemView.findViewById(R.id.review)
     private val reviewStar: RatingBar? = itemView.findViewById(R.id.product_rating)
     private val giveReview: View? = itemView.findViewById(R.id.add_review_layout)
@@ -79,7 +80,7 @@ class InboxReputationDetailItemViewHolder(
     private val sellerName: Typography? = itemView.findViewById(R.id.seller_reply_name)
     private val sellerReplyTime: Typography?
     private val sellerReply: Typography?
-    private val replyOverflow: ImageView?
+    private val replyOverflow: IconUnify?
     private val sellerAddReplyLayout: View?
     private val sellerAddReplyEditText: EditText?
     private val sendReplyButton: ImageView?
@@ -94,7 +95,7 @@ class InboxReputationDetailItemViewHolder(
         reviewAttachment?.adapter = adapter
         sellerReplyTime = itemView.findViewById<View>(R.id.seller_reply_time) as Typography
         sellerReply = itemView.findViewById<View>(R.id.seller_reply) as Typography
-        replyOverflow = itemView.findViewById<View>(R.id.reply_overflow) as ImageView
+        replyOverflow = itemView.findViewById<View>(R.id.reply_overflow) as? IconUnify
         sellerAddReplyLayout = itemView.findViewById(R.id.seller_add_reply_layout)
         sellerAddReplyEditText =
             itemView.findViewById<View>(R.id.seller_reply_edit_text) as EditText
@@ -200,6 +201,7 @@ class InboxReputationDetailItemViewHolder(
                 element,
                 sellerAddReplyEditText?.text.toString()
             )
+            KeyboardHandler.DropKeyboard(itemView.context, sellerAddReplyEditText)
         }
     }
 

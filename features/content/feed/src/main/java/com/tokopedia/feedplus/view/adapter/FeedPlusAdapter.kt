@@ -53,7 +53,12 @@ class FeedPlusAdapter(
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
         if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
-            (holder as DynamicPostNewViewHolder).onItemAttach(holder.itemView.context)
+            (holder as DynamicPostNewViewHolder).onItemAttach(holder.itemView.context, list[holder.adapterPosition])
+        }
+        else if (holder is TopAdsHeadlineV2ViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as TopAdsHeadlineV2ViewHolder).onItemAttach(
+                    holder.itemView.context, list[holder.adapterPosition]
+            )
         }
     }
 

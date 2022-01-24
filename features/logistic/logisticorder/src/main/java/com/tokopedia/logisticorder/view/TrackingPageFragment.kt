@@ -184,7 +184,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         setEmptyHistoryView(model)
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
-        mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking()
 
     }
 
@@ -441,7 +440,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun goToLiveTrackingPage(model: TrackOrderModel) {
-        mAnalytics.eventClickOrderTrackingClickButtonLiveTracking()
         var trackingUrl = mTrackingUrl
         if (trackingUrl.isNullOrEmpty()) {
             trackingUrl = model.detail.trackingUrl
@@ -486,7 +484,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.imgProof?.let { imgProof ->
                 Glide.with(it.context)
                     .load(newUrl)
-                    .centerCrop()
                     .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
                     .error(it.context.getDrawable(R.drawable.ic_image_error))
                     .dontAnimate()

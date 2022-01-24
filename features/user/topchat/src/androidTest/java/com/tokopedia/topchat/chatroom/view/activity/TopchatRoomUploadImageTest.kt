@@ -58,6 +58,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     @Test
     fun upload_image_and_leave_chatroom_then_comeback() {
         // Given
+        enableUploadImageByService()
         openChatRoom()
 
         // When
@@ -73,6 +74,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     fun should_have_1_failed_image_attachment_when_user_come_back_to_chatroom() {
         // Given
         uploadImageUseCase.isError = true
+        enableUploadImageByService()
         openChatRoom()
 
         // When
@@ -90,6 +92,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     fun should_have_1_failed_image_attachment_when_user_come_back_to_chatroom_after_retry_upload_image() {
         // Given
         uploadImageUseCase.isError = true
+        enableUploadImageByService()
         openChatRoom()
 
         // When

@@ -390,7 +390,11 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                 activity?.run {
                                     KeyboardHandler.hideSoftKeyboard(this)
                                 }
-                                onNextStep(voucherImageType, getRupiahValue(rupiahMinimumPurchaseTextFieldModel), getRupiahValue(rupiahVoucherQuotaTextFieldModel))
+
+                                val minPurchase = viewModel.getMinimumPurchase(PromotionType.Cashback.Rupiah.MinimumPurchase)
+                                val quota = viewModel.getVoucherQuota(PromotionType.Cashback.Rupiah.VoucherQuota)
+
+                                onNextStep(voucherImageType, minPurchase, quota)
                                 setRecommendationStatus(viewModel.voucherRecommendationStatus.value
                                         ?: VoucherRecommendationStatus.WITH_RECOMMENDATION)
                             } else {
@@ -451,7 +455,9 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                 activity?.run {
                                     KeyboardHandler.hideSoftKeyboard(this)
                                 }
-                                onNextStep(voucherImageType, getPercentageValue(percentageMinimumPurchaseTextFieldModel), getPercentageValue(percentageVoucherQuotaTextFieldModel))
+                                val minPurchase = viewModel.getMinimumPurchase(PromotionType.Cashback.Percentage.MinimumPurchase)
+                                val quota = viewModel.getVoucherQuota(PromotionType.Cashback.Percentage.VoucherQuota)
+                                onNextStep(voucherImageType, minPurchase, quota)
                                 setRecommendationStatus(viewModel.voucherRecommendationStatus.value
                                         ?: VoucherRecommendationStatus.WITH_RECOMMENDATION)
                             } else {

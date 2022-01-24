@@ -8,8 +8,4 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:typographyType="heading_4"
-    android:paddingTop="24dp"
-    android:paddingBottom="12dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"/>
+    app:typographyType="heading_4"/>

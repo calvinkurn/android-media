@@ -42,6 +42,12 @@ sealed class MoreMenuUiModel(
             override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
+    data class BroadCast(
+            override val title: String,
+            @DrawableRes
+            override val icon: Int
+    ) : MoreMenuUiModel(title, icon)
+
     data class DownloadVoucher(
             override val title: String,
             @DrawableRes
