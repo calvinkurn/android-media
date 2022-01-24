@@ -8,9 +8,6 @@ import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemAddTemplat
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
 import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 
-/**
- * Created by stevenfredian on 9/27/17.
- */
 class TemplateChatSettingTypeFactoryImpl(
     var viewListener: TemplateChatContract.View
 ) : BaseAdapterTypeFactory(), TemplateChatSettingTypeFactory {

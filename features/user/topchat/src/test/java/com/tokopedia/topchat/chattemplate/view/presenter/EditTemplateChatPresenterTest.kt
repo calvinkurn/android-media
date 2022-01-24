@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chattemplate.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK

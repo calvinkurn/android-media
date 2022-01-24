@@ -10,9 +10,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
 
-/**
- * Created by stevenfredian on 11/29/17.
- */
 class ItemAddTemplateChatViewHolder(
     var view: View, private var viewListener: TemplateChatContract.View
 ) : AbstractViewHolder<TemplateChatUiModel>(view) {

@@ -11,9 +11,6 @@ import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
 import com.tokopedia.topchat.common.util.ItemTouchHelperAdapter
 import java.util.*
 
-/**
- * Created by stevenfredian on 11/29/17.
- */
 class TemplateChatSettingAdapter(
     private val typeFactory: TemplateChatSettingTypeFactory,
     private val view: TemplateChatContract.View

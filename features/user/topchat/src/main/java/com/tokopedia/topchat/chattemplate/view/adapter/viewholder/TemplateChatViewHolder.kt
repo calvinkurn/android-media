@@ -8,9 +8,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import androidx.annotation.LayoutRes
 import com.tokopedia.topchat.R
 
-/**
- * Created by stevenfredian on 11/29/17.
- */
 class TemplateChatViewHolder(
     itemView: View, private var viewListener: ChatTemplateListener
 ) : AbstractViewHolder<TemplateChatUiModel>(itemView) {

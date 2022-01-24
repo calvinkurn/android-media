@@ -7,12 +7,14 @@ import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateResultModel
 import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 
 object TemplateChatMapper {
+    private const val TOPCHAT_TEMPLATE_IDENTIFIER = "_"
+
     fun TemplateData.mapToTemplateUiModel(): GetTemplateResultModel {
         val result =
             GetTemplateResultModel()
         val list: ArrayList<Visitable<*>> = arrayListOf()
         for (i in this.templates.indices) {
-            if (this.templates[i] != "_") {
+            if (this.templates[i] != TOPCHAT_TEMPLATE_IDENTIFIER) {
                 val templateChatModel = TemplateChatUiModel()
                 templateChatModel.message = this.templates[i]
                 list.add(templateChatModel)

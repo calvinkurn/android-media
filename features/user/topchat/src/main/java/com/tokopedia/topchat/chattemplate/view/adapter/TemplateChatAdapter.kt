@@ -8,9 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 import java.util.ArrayList
 
-/**
- * Created by stevenfredian on 11/29/17.
- */
 class TemplateChatAdapter(
     private val typeFactory: TemplateChatTypeFactory
 ) : RecyclerView.Adapter<AbstractViewHolder<*>>() {

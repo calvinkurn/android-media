@@ -7,9 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.TemplateChatViewHolder
 import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 
-/**
- * Created by stevenfredian on 9/27/17.
- */
 class TemplateChatTypeFactoryImpl(
     var viewListener: ChatTemplateListener
 ) : BaseAdapterTypeFactory(), TemplateChatTypeFactory {

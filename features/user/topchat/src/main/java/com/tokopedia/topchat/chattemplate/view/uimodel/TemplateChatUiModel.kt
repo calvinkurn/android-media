@@ -3,9 +3,6 @@ package com.tokopedia.topchat.chattemplate.view.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 
-/**
- * Created by stevenfredian on 11/29/17.
- */
 class TemplateChatUiModel : Visitable<TemplateChatTypeFactory> {
     var message: String? = null
     var isIcon = false

@@ -6,9 +6,6 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapte
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder
 import java.util.*
 
-/**
- * Created by stevenfredian on 12/11/17.
- */
 class TemplateChatContract {
     interface View : CustomerView {
         fun setTemplate(listTemplate: List<Visitable<*>>?)

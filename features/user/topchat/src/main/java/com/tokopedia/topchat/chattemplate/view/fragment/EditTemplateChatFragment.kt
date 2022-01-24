@@ -28,9 +28,6 @@ import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel
 import com.tokopedia.topchat.common.util.Events
 import rx.Observable
 
-/**
- * Created by stevenfredian on 12/22/17.
- */
 class EditTemplateChatFragment : BaseDaggerFragment() {
     private var counter: TextView? = null
     private var error: TextView? = null

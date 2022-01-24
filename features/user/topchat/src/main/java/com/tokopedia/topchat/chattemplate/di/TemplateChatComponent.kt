@@ -6,9 +6,6 @@ import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment
 import com.tokopedia.topchat.chattemplate.view.fragment.EditTemplateChatFragment
 import dagger.Component
 
-/**
- * Created by stevenfredian on 9/14/17.
- */
 @ActivityScope
 @Component(
     modules = [TemplateChatModule::class, ChatTemplateViewModelModule::class],

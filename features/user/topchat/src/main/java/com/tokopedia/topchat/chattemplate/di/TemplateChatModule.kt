@@ -35,9 +35,6 @@ import dagger.Module
 import dagger.Provides
 import java.util.concurrent.TimeUnit
 
-/**
- * Created by stevenfredian on 9/14/17.
- */
 @Module
 class TemplateChatModule {
 
