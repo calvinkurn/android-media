@@ -138,7 +138,7 @@ data class SearchProductModel(
 
             @SerializedName("violation")
             @Expose
-            val violation: Violation? = null,
+            val violation: Violation = Violation(),
     )
 
     data class Redirection(
@@ -890,24 +890,28 @@ data class SearchProductModel(
             val applink: String = ""
     )
 
-        data class Violation(
-                @SerializedName("headerText")
-                @Expose
-                val headerText: String = "",
-                @SerializedName("descriptionText")
-                @Expose
-                val descriptionText: String = "",
-                @SerializedName("imageURL")
-                @Expose
-                val imageUrl: String = "",
-                @SerializedName("ctaURL")
-                @Expose
-                val ctaUrl: String = "",
-                @SerializedName("buttonText")
-                @Expose
-                val buttonText: String = "",
-                @SerializedName("buttonType")
-                @Expose
-                val buttonType: String = "",
-        )
+    data class Violation(
+        @SerializedName("headerText")
+        @Expose
+        val headerText: String = "",
+        @SerializedName("descriptionText")
+        @Expose
+        val descriptionText: String = "",
+        @SerializedName("imageURL")
+        @Expose
+        val imageUrl: String = "",
+        @SerializedName("ctaURL")
+        @Expose
+        val ctaUrl: String = "",
+        @SerializedName("buttonText")
+        @Expose
+        val buttonText: String = "",
+        @SerializedName("buttonType")
+        @Expose
+        val buttonType: String = "",
+    ) {
+        fun isValid(): Boolean {
+            return headerText.isNotEmpty() && descriptionText.isNotEmpty()
+        }
+    }
 }

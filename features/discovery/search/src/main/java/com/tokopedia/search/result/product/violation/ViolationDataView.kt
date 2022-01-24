@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.violation
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
 data class ViolationDataView(
@@ -12,19 +13,16 @@ data class ViolationDataView(
 
     companion object {
         fun create(
-            headerText: String,
-            descriptionText: String,
-            imageUrl: String,
-            ctaUrl: String,
-            buttonText: String,
-            buttonTypeVariant: String
-        ) : ViolationDataView {
-            return ViolationDataView(
-                headerText,
-                descriptionText,
-                imageUrl,
-                ViolationButtonDataView.create(ctaUrl, buttonText, buttonTypeVariant)
-            )
+            violation: SearchProductModel.Violation,
+        ) : ViolationDataView? {
+            return if(violation.isValid()) {
+                ViolationDataView(
+                    violation.headerText,
+                    violation.descriptionText,
+                    violation.imageUrl,
+                    ViolationButtonDataView.create(violation)
+                )
+            } else null
         }
     }
 

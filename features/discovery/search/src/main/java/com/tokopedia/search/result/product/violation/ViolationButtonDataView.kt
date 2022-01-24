@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.product.violation
 
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 typealias ViolationButtonTypeVariant = Pair<Int, Int>
@@ -33,12 +34,10 @@ data class ViolationButtonDataView(
         }
 
         fun create(
-            ctaUrl: String,
-            buttonText: String,
-            buttonTypeVariant: String
+            violation: SearchProductModel.Violation
         ): ViolationButtonDataView {
-            val (buttonType, buttonVariant) = convertTypeVariantStringToViolationButtonTypeVariant(buttonTypeVariant)
-            return ViolationButtonDataView(ctaUrl, buttonText, buttonType, buttonVariant)
+            val (buttonType, buttonVariant) = convertTypeVariantStringToViolationButtonTypeVariant(violation.buttonType)
+            return ViolationButtonDataView(violation.ctaUrl, violation.buttonText, buttonType, buttonVariant)
         }
     }
 

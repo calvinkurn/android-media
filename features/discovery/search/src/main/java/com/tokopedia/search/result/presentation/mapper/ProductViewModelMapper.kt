@@ -469,18 +469,7 @@ class ProductViewModelMapper {
         )
     }
 
-    private fun convertToViolationView(violation: SearchProductModel.Violation?) : ViolationDataView? {
-        return violation?.let {
-            if(it.headerText.isNotEmpty() && it.descriptionText.isNotEmpty()) {
-                ViolationDataView.create(
-                    it.headerText,
-                    it.descriptionText,
-                    it.imageUrl,
-                    it.ctaUrl,
-                    it.buttonText,
-                    it.buttonType
-                )
-            } else null
-        }
+    private fun convertToViolationView(violation: SearchProductModel.Violation) : ViolationDataView? {
+        return ViolationDataView.create(violation)
     }
 }

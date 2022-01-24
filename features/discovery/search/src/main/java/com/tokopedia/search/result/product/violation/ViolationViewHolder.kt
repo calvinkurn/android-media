@@ -22,7 +22,7 @@ class ViolationViewHolder(
 
     override fun bind(element: ViolationDataView?) {
         val binding = binding?: return
-        if (element == null) return
+        element ?: return
 
         binding.searchResultViolationProductsEmptySearchTitle.text = element.headerText
         binding.searchResultViolationProductsEmptySearchMessage.text = element.descriptionText

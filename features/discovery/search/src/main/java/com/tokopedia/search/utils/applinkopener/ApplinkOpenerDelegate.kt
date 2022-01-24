@@ -5,8 +5,7 @@ import com.tokopedia.applink.RouteManager
 
 object ApplinkOpenerDelegate : ApplinkOpener {
     override fun openApplink(context: Context?, applink: String): Boolean {
-        return context?.let {
-            RouteManager.route(it, applink)
-        } ?: false
+        context ?: return false
+        return RouteManager.route(context, applink)
     }
 }
