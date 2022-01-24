@@ -736,6 +736,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         if (addressModel.addressId > 0) {
             activity?.let {
                 val localCache = ChooseAddressUtils.getLocalizingAddressData(it)
+                val newTokoNowData = addressModel.tokoNow
+                val shouldUpdateTokoNowData = newTokoNowData.isModified
                 if (addressModel.state == OrderProfileAddress.STATE_OCC_ADDRESS_ID_NOT_MATCH
                         || localCache.address_id.isEmpty() || localCache.address_id == "0") {
                     ChooseAddressUtils.updateLocalizingAddressDataFromOther(
@@ -747,11 +749,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             long = addressModel.longitude,
                             label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
                             postalCode = addressModel.postalCode,
-                            shopId = addressModel.tokoNowShopId,
-                            warehouseId = addressModel.tokoNowWarehouseId,
-                            // TODO: 21/12/21 UPDATE AFTER BE ADJUSTMENT
-                            warehouses = listOf(),
-                            serviceType = "")
+                            shopId = if (shouldUpdateTokoNowData) addressModel.tokoNow.shopId else localCache.shop_id,
+                            warehouseId = if (shouldUpdateTokoNowData) addressModel.tokoNow.warehouseId else localCache.warehouse_id,
+                            warehouses = if (shouldUpdateTokoNowData) TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses) else localCache.warehouses,
+                            serviceType = if (shouldUpdateTokoNowData) addressModel.tokoNow.serviceType else localCache.service_type)
+                } else if (shouldUpdateTokoNowData) {
+                    ChooseAddressUtils.updateTokoNowData(
+                        context = it,
+                        shopId = addressModel.tokoNow.shopId,
+                        warehouseId = addressModel.tokoNow.warehouseId,
+                        warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
+                        serviceType = addressModel.tokoNow.serviceType
+                    )
                 }
             }
         }

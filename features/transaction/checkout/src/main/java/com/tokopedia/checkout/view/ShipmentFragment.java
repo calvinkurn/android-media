@@ -64,6 +64,8 @@ import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow;
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
@@ -73,6 +75,8 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
+import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticCommon.util.LogisticCommonUtil;
@@ -170,7 +174,6 @@ import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.AR
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
-import static java.util.Collections.emptyList;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -2913,6 +2916,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Activity activity = getActivity();
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
         if (activity != null && isTradeInByDropOff() && recipientAddressModel != null) {
+            LocalCacheModel localizingAddressData = ChooseAddressUtils.INSTANCE.getLocalizingAddressData(activity.getApplicationContext());
             LocationDataModel locationDataModel = recipientAddressModel.getLocationDataModel();
             ChosenAddress chosenAddress;
             if (locationDataModel != null) {
@@ -2921,7 +2925,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         locationDataModel.getAddrId(),
                         locationDataModel.getDistrict(),
                         locationDataModel.getPostalCode(),
-                        (!TextUtils.isEmpty(locationDataModel.getLatitude()) && !TextUtils.isEmpty(locationDataModel.getLongitude())) ? locationDataModel.getLatitude() + "," + locationDataModel.getLongitude() : ""
+                        (!TextUtils.isEmpty(locationDataModel.getLatitude()) && !TextUtils.isEmpty(locationDataModel.getLongitude())) ? locationDataModel.getLatitude() + "," + locationDataModel.getLongitude() : "",
+                        new ChosenAddressTokonow(
+                                localizingAddressData.getShop_id(),
+                                localizingAddressData.getWarehouse_id(),
+                                localizingAddressData.getWarehouses(),
+                                localizingAddressData.getService_type()
+                        )
                 );
             } else {
                 chosenAddress = new ChosenAddress(
@@ -2929,7 +2939,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         recipientAddressModel.getId(),
                         recipientAddressModel.getDestinationDistrictId(),
                         recipientAddressModel.getPostalCode(),
-                        (!TextUtils.isEmpty(recipientAddressModel.getLatitude()) && !TextUtils.isEmpty(recipientAddressModel.getLongitude())) ? recipientAddressModel.getLatitude() + "," + recipientAddressModel.getLongitude() : ""
+                        (!TextUtils.isEmpty(recipientAddressModel.getLatitude()) && !TextUtils.isEmpty(recipientAddressModel.getLongitude())) ? recipientAddressModel.getLatitude() + "," + recipientAddressModel.getLongitude() : "",
+                        new ChosenAddressTokonow(
+                                localizingAddressData.getShop_id(),
+                                localizingAddressData.getWarehouse_id(),
+                                localizingAddressData.getWarehouses(),
+                                localizingAddressData.getService_type()
+                        )
                 );
             }
             intent.putExtra(ARGS_CHOSEN_ADDRESS, chosenAddress);
@@ -3210,8 +3226,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Activity activity = getActivity();
         if (activity != null) {
             LocalCacheModel localCache = ChooseAddressUtils.INSTANCE.getLocalizingAddressData(activity);
-            if (userAddress.getState() == UserAddress.STATE_ADDRESS_ID_NOT_MATCH
-                    || localCache == null || localCache.getAddress_id().isEmpty() || localCache.getAddress_id().equals("0")) {
+            UserAddressTokoNow newTokoNowData = userAddress.getTokoNow();
+            if (userAddress.getState() == UserAddress.STATE_ADDRESS_ID_NOT_MATCH || localCache.getAddress_id().isEmpty() || localCache.getAddress_id().equals("0")) {
                 ChooseAddressUtils.INSTANCE.updateLocalizingAddressDataFromOther(
                         activity,
                         userAddress.getAddressId(),
@@ -3221,11 +3237,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         userAddress.getLongitude(),
                         String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
                         userAddress.getPostalCode(),
-                        userAddress.getShopId(),
-                        userAddress.getWarehouseId(),
-                        //TODO: 21/12/21 UPDATE AFTER BE ADJUSTMENT
-                        emptyList(),
-                        ""
+                        newTokoNowData.isModified() ? newTokoNowData.getShopId() : localCache.getShop_id(),
+                        newTokoNowData.isModified() ? newTokoNowData.getWarehouseId() : localCache.getWarehouse_id(),
+                        newTokoNowData.isModified() ? TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()) : localCache.getWarehouses(),
+                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type()
+                );
+            } else if (newTokoNowData.isModified()) {
+                ChooseAddressUtils.INSTANCE.updateTokoNowData(
+                        activity,
+                        newTokoNowData.getShopId(),
+                        newTokoNowData.getWarehouseId(),
+                        TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()),
+                        newTokoNowData.getServiceType()
                 );
             }
         }
@@ -3245,9 +3268,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     saveAddressDataModel.getPostalCode(),
                     String.valueOf(saveAddressDataModel.getShopId()),
                     String.valueOf(saveAddressDataModel.getWarehouseId()),
-                    //TODO: 21/12/21 UPDATE AFTER BE ADJUSTMENT
-                    emptyList(),
-                    ""
+                    TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(saveAddressDataModel.getWarehouses()),
+                    saveAddressDataModel.getServiceType()
             );
         }
     }
