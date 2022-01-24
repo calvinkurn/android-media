@@ -10,7 +10,7 @@
     <string name="title_activity_developer_options">DeveloperOptions</string>
     <string name="title_flight_travel">Tiket Pesawat</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
-    <string name="flight_order_list">Daftar Transaksi</string>
+    <string name="flight_order_detail_title">Daftar Transaksi</string>
     <string name="activity_label_flight_cancellation">Isi Data Pembatalan</string>
     <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
     <string name="search_flight">Search Flight</string>
