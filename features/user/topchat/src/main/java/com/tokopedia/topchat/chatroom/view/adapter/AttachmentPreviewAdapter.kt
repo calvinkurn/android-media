@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
@@ -53,7 +54,10 @@ class AttachmentPreviewAdapter(
         return attachmentPreviewFactory.create(viewType, view, this) as AttachmentPreviewViewHolder<SendablePreview>
     }
 
-    override fun getItemCount(): Int = attachments.size
+    override fun getItemCount(): Int {
+        val sendable = attachments.firstOrNull() as? DeferredAttachment ?: return attachments.size
+        return if (sendable.isLoading || sendable.isError) 1 else attachments.size
+    }
 
     override fun onBindViewHolder(holder: AttachmentPreviewViewHolder<SendablePreview>, position: Int) {
         holder.bind(attachments[position])
@@ -87,11 +91,14 @@ class AttachmentPreviewAdapter(
 
     override fun closeItem(model: SendablePreview) {
         val modelPosition = attachments.indexOf(model)
-
         if (modelPosition == RecyclerView.NO_POSITION) return
-
-        attachments.removeAt(modelPosition)
-        notifyItemRemoved(modelPosition)
+        if (model is DeferredAttachment && (model.isLoading || model.isError)) {
+            attachments.clear()
+            notifyDataSetChanged()
+        } else {
+            attachments.removeAt(modelPosition)
+            notifyItemRemoved(modelPosition)
+        }
         if (noAttachmentPreview()) {
             attachmentPreviewListener.clearAttachmentPreview()
         }
