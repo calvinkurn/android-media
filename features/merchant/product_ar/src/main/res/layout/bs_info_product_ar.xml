@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/txt_bs_ar_info"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    app:typographyType="body_2"
-    android:textColor="@color/Unify_NN600"
-    tools:text="Makeup yang kamu coba akan membantumu sebagai referensi sebelum belanja. Warna barang bisa berbeda tergantung cahaya, warna kulit, jarak, atau resolusi kamera HP."
-    tools:ignore="MissingDefaultResource" />
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_bs_ar_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_2"
+        tools:ignore="MissingDefaultResource"
+        tools:text="Makeup yang kamu coba akan membantumu sebagai referensi sebelum belanja. Warna barang bisa berbeda tergantung cahaya, warna kulit, jarak, atau resolusi kamera HP." />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_bs_ar_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/oke_sip_label"
+        android:layout_marginTop="24dp"
+        app:unifyButtonSize="small" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
