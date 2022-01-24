@@ -18,6 +18,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
@@ -121,6 +122,8 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
+        fun initSizeOptionFilter(dataView: List<InspirationSizeDataView>)
+        fun setSelectedSizeOption(dataView: List<InspirationSizeDataView>)
     }
 
     interface Presenter : CustomerPresenter<View> {

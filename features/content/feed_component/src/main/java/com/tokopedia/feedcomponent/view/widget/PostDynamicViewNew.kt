@@ -856,6 +856,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             postImage.setImageUrl(feedMedia.mediaUrl)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                             val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
+                            layoutLihatProdukParent.showWithCondition(tagProducts.isNotEmpty())
 
                             like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(
@@ -1592,7 +1593,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun setNewASGCLayout(feedXCard: FeedXCard){
         val postId = feedXCard.id.toIntOrZero()
         val products = feedXCard.products
-        val totalProducts = feedXCard.totalProducts
+        val totalProducts = feedXCard.products.size
         gridList.gone()
         carouselView.visible()
         commentButton.gone()
@@ -1666,6 +1667,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         postImage.setImageUrl(feedXMedia.mediaUrl)
                         val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                         val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
+                        layoutLihatProdukParent.showWithCondition(tagProducts.isNotEmpty())
 
                         like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(

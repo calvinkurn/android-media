@@ -26,6 +26,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.CpmViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder
@@ -49,6 +50,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductCountViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationSizeViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannerViewHolder
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
@@ -64,6 +66,7 @@ import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewLis
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
+import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
@@ -88,6 +91,7 @@ class ProductListTypeFactoryImpl(
     private val bannerListener: BannerListener,
     private val lastFilterListener: LastFilterListener,
     private val topAdsConfig: Config,
+    private val inspirationSizeOptionListener: InspirationSizeOptionListener,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -194,6 +198,9 @@ class ProductListTypeFactoryImpl(
     override fun type(lastFilterDataView: LastFilterDataView): Int =
         LastFilterViewHolder.LAYOUT
 
+    override fun type(sizeDataView: InspirationSizeDataView): Int {
+        return InspirationSizeViewHolder.LAYOUT
+    }
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -239,6 +246,7 @@ class ProductListTypeFactoryImpl(
                 ChooseAddressViewHolder(view, chooseAddressListener, searchNavigationListener)
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
             LastFilterViewHolder.LAYOUT -> LastFilterViewHolder(view, lastFilterListener)
+            InspirationSizeViewHolder.LAYOUT -> InspirationSizeViewHolder(view, inspirationSizeOptionListener)
 
             else -> super.createViewHolder(view, type)
         }

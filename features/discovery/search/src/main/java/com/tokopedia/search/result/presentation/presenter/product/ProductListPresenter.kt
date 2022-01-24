@@ -83,6 +83,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -163,6 +164,7 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.InspirationCard.TYPE_GUIDED,
                 SearchConstant.InspirationCard.TYPE_CURATED,
                 SearchConstant.InspirationCard.TYPE_RELATED,
+                SearchConstant.InspirationCard.TYPE_SIZE_PERSO,
         )
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
@@ -202,6 +204,8 @@ class ProductListPresenter @Inject constructor(
     private var productList = mutableListOf<Visitable<*>>()
     private var inspirationCarouselDataView = mutableListOf<InspirationCarouselDataView>()
     private var inspirationCardDataView = mutableListOf<InspirationCardDataView>()
+    private var inspirationSizeDataView = mutableListOf<InspirationSizeDataView>()
+    private var processedInspirationSizeDataView = mutableListOf<InspirationSizeDataView>()
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
     private var suggestionDataView: SuggestionDataView? = null
     private var relatedDataView: RelatedDataView? = null
@@ -548,6 +552,7 @@ class ProductListPresenter @Inject constructor(
         processHeadlineAdsLoadMore(searchProductModel, list)
         processTopAdsImageViewModel(searchParameter, list)
         processInspirationCardPosition(searchParameter, list)
+        processInspirationSizePosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
@@ -791,6 +796,7 @@ class ProductListPresenter @Inject constructor(
             getViewToShowProductList(searchParameter, searchProductModel, productDataView)
             processDefaultQuickFilter(searchProductModel)
             processQuickFilter(searchProductModel.quickFilterModel)
+            processSizeFilter()
         }
 
         view.updateScrollListener()
@@ -1089,6 +1095,10 @@ class ProductListPresenter @Inject constructor(
         inspirationCardDataView = productDataView.inspirationCardDataView.toMutableList()
         processInspirationCardPosition(searchParameter, list)
 
+        inspirationSizeDataView = productDataView.inspirationSizeDataView.toMutableList()
+        processedInspirationSizeDataView = productDataView.inspirationSizeDataView.toMutableList()
+        processInspirationSizePosition(searchParameter, list)
+
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
         processBroadMatch(searchProduct, list)
@@ -1235,19 +1245,56 @@ class ProductListPresenter @Inject constructor(
         if (inspirationCardDataView.isEmpty()) return
 
         val inspirationCardViewModelIterator = inspirationCardDataView.iterator()
+
         while (inspirationCardViewModelIterator.hasNext()) {
             val data = inspirationCardViewModelIterator.next()
 
-            if (data.position <= 0) {
+            if (data.data.position <= 0) {
                 inspirationCardViewModelIterator.remove()
                 continue
             }
 
-            if (data.position <= productList.size && shouldShowInspirationCard(data.type)) {
+            if (data.data.position <= productList.size && shouldShowInspirationCard(data.data.type)) {
                 try {
-                    val product = productList[data.position - 1]
+                    val product = productList[data.data.position - 1]
                     list.add(list.indexOf(product) + 1, data)
                     inspirationCardViewModelIterator.remove()
+                } catch (exception: Throwable) {
+                    Timber.w(exception)
+                    view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
+                }
+            }
+        }
+    }
+
+    private fun processInspirationSizePosition(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
+        if (processedInspirationSizeDataView.isEmpty()) return
+
+        val inspirationSizeViewModelIterator = processedInspirationSizeDataView.iterator()
+
+        while(inspirationSizeViewModelIterator.hasNext()) {
+            val data = inspirationSizeViewModelIterator.next()
+
+            val dataViewPosition = data.data.position
+            if (dataViewPosition <= productList.size && shouldShowInspirationCard(data.data.type)) {
+                val inspirationSizeVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
+
+                inspirationSizeVisitableList.add(SeparatorDataView())
+                inspirationSizeVisitableList.add(data)
+                inspirationSizeVisitableList.add(SeparatorDataView())
+
+                if (dataViewPosition < 0)  {
+                    inspirationSizeViewModelIterator.remove()
+                    continue
+                }
+
+                try {
+                    val productListPosition = maxOf(dataViewPosition, 1)
+                    val product = productList[productListPosition - 1]
+                    val addIndex = minOf(dataViewPosition, 1)
+
+                    list.addAll(list.indexOf(product) + addIndex, inspirationSizeVisitableList)
+                    inspirationSizeViewModelIterator.remove()
                 } catch (exception: Throwable) {
                     Timber.w(exception)
                     view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
@@ -1557,6 +1604,11 @@ class ProductListPresenter @Inject constructor(
             view.hideQuickFilterShimmering()
             view.setQuickFilter(sortFilterItems)
         }
+    }
+
+    private fun processSizeFilter() {
+        view.initSizeOptionFilter(inspirationSizeDataView)
+        view.setSelectedSizeOption(inspirationSizeDataView)
     }
 
     private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =
