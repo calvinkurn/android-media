@@ -40,7 +40,7 @@ object CatalogDetailAnalytics {
             put(EventKeys.KEY_CATALOG_ID,catalogId)
             put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
             if(pageSource.isNotBlank()){
-                put(EventKeys.KEY_PAGE_SOURCE,EventKeys.CURRENT_SITE_VALUE)
+                put(EventKeys.KEY_PAGE_SOURCE,pageSource)
             }
             put(EventKeys.KEY_USER_ID,userId)
         }.also {
