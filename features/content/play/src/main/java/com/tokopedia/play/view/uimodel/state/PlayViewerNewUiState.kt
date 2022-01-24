@@ -26,6 +26,7 @@ data class PlayViewerNewUiState(
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
+    val kebabMenu: PlayKebabMenuUiState,
 )
 
 data class PlayInteractiveViewUiState(
@@ -86,6 +87,10 @@ data class PlayTotalViewUiState(
 
 data class PlayTitleUiState(
     val title: String
+)
+
+data class PlayKebabMenuUiState(
+    val shouldShow: Boolean
 )
 
 enum class ViewVisibility {

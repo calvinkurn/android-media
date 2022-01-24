@@ -159,7 +159,7 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
     )
 }
 
-fun WalletAppData.mapToHomeBalanceItemModel(state: Int, isGopayEligible: Boolean): BalanceDrawerItemModel? {
+fun WalletAppData.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel? {
     val selectedBalance = walletappGetBalance.balances.getOrNull(0)
     selectedBalance?.let { balances ->
         var balanceTitle = BalanceTextAttribute()
@@ -185,28 +185,15 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, isGopayEligible: Boolean
                 )
                 return null
             }
-            if (isGopayEligible) {
-                balanceTitle = BalanceTextAttribute(
+            balanceTitle = BalanceTextAttribute(
                     text = gopayBalance?.amountFmt?:"",
                     isBold = true,
                     colourRef = R.color.Unify_N700_96
-                )
-                balanceSubtitle = BalanceTextAttribute(
+            )
+            balanceSubtitle = BalanceTextAttribute(
                     text = gopayPointsBalance?.amountFmt?:"",
                     colourRef = R.color.Unify_N700_68
-                )
-            } else {
-                balanceTitle = BalanceTextAttribute(
-                    text = balances.walletName?:"",
-                    isBold = true,
-                    colourRef = R.color.Unify_N700_96
-                )
-                balanceSubtitle = BalanceTextAttribute(
-                    text = gopayBalance?.amountFmt?:"",
-                    isBold = false,
-                    colourRef = R.color.Unify_N700_96
-                )
-            }
+            )
         } else {
             balanceTitle = BalanceTextAttribute(
                 text = balances.walletName,

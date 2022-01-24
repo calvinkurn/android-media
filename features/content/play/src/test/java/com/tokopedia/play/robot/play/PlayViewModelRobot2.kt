@@ -8,6 +8,7 @@ import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayMapperBuilder
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
@@ -54,7 +55,8 @@ class PlayViewModelRobot2(
     repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
-    castPlayerHelper: CastPlayerHelper
+    castPlayerHelper: CastPlayerHelper,
+    playShareExperience: PlayShareExperience,
 ) : Closeable {
 
     val viewModel: PlayViewModel = PlayViewModel(
@@ -77,7 +79,8 @@ class PlayViewModelRobot2(
         repo,
         playAnalytic,
         timerFactory,
-        castPlayerHelper
+        castPlayerHelper,
+        playShareExperience
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -181,6 +184,7 @@ fun createPlayViewModelRobot(
     playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     timerFactory: TimerFactory = mockk(relaxed = true),
     castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
+    playShareExperience: PlayShareExperience = mockk(relaxed = true),
     fn: PlayViewModelRobot2.() -> Unit = {}
 ): PlayViewModelRobot2 {
     return PlayViewModelRobot2(
@@ -201,6 +205,7 @@ fun createPlayViewModelRobot(
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,
-        castPlayerHelper = castPlayerHelper
+        castPlayerHelper = castPlayerHelper,
+        playShareExperience = playShareExperience,
     ).apply(fn)
 }

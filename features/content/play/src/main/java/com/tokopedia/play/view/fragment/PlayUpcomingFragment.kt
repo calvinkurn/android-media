@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -23,6 +24,7 @@ import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingInfoUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingPartnerUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
+import com.tokopedia.play.view.viewcomponent.ShareExperienceViewComponent
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
@@ -34,6 +36,8 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -43,16 +47,18 @@ import javax.inject.Inject
  */
 class PlayUpcomingFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val analytic: PlayAnalytic
+    private val dispatchers: CoroutineDispatchers,
 ): TkpdBaseV4Fragment(),
     ToolbarViewComponent.Listener,
     UpcomingActionButtonViewComponent.Listener,
-    UpcomingTimerViewComponent.Listener
+    UpcomingTimerViewComponent.Listener,
+    ShareExperienceViewComponent.Listener
 {
 
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
+    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
 
     private lateinit var ivUpcomingCover: ImageUnify
     private lateinit var tvUpcomingTitle: Typography
@@ -113,6 +119,15 @@ class PlayUpcomingFragment @Inject constructor(
         catch (e: Exception) {}
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        shareExperienceView.handleRequestPermissionResult(requestCode, grantResults)
+    }
+
     private fun sendImpression() {
         playUpcomingViewModel.submitAction(ImpressUpcomingChannel)
     }
@@ -164,6 +179,21 @@ class PlayUpcomingFragment @Inject constructor(
                         ) { event.action() }
                     }
                     PlayUpcomingUiEvent.RefreshChannelEvent -> playParentViewModel.refreshChannel()
+                    is PlayUpcomingUiEvent.SaveTemporarySharingImage -> shareExperienceView.saveTemporaryImage(event.imageUrl)
+                    is PlayUpcomingUiEvent.OpenSharingOptionEvent -> {
+                        shareExperienceView.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
+                    }
+                    is PlayUpcomingUiEvent.OpenSelectedSharingOptionEvent -> {
+                        SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
+                    }
+                    PlayUpcomingUiEvent.CloseShareExperienceBottomSheet -> shareExperienceView.dismiss()
+                    PlayUpcomingUiEvent.ErrorGenerateShareLink -> {
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getString(R.string.play_sharing_error_generate_link),
+                            actionText = getString(R.string.play_sharing_refresh)
+                        )
+                    }
                 }
             }
         }
@@ -207,7 +237,7 @@ class PlayUpcomingFragment @Inject constructor(
         toolbarView.setFollowStatus(partnerState.followStatus)
         toolbarView.setPartnerName(partnerState.name)
 
-        toolbarView.setIsShareable(isShareable)
+        shareExperienceView.setIsShareable(isShareable)
     }
 
     private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, currState: PlayUpcomingInfoUiState) {
@@ -263,10 +293,32 @@ class PlayUpcomingFragment @Inject constructor(
         playUpcomingViewModel.submitAction(ClickPartnerNameUpcomingAction)
     }
 
-    override fun onCopyButtonClicked(view: ToolbarViewComponent) {
+    override fun onShareIconClick(view: ShareExperienceViewComponent) {
         playUpcomingViewModel.submitAction(ClickShareUpcomingAction)
+    }
 
-        analytic.clickCopyLink()
+    override fun onShareOpenBottomSheet(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(ShowShareExperienceUpcomingAction)
+    }
+
+    override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
+        playUpcomingViewModel.submitAction(ClickSharingOptionUpcomingAction(shareModel))
+    }
+
+    override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(CloseSharingOptionUpcomingAction)
+    }
+
+    override fun onScreenshotTaken(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(ScreenshotTakenUpcomingAction)
+    }
+
+    override fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String) {
+        playUpcomingViewModel.submitAction(SharePermissionUpcomingAction(label))
+    }
+
+    override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(CopyLinkUpcomingAction)
     }
 
     private fun copyToClipboard(content: String) {

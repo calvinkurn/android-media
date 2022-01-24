@@ -9,4 +9,5 @@ interface PlayViewerRepository : PlayViewerCartRepository,
         PlayViewerPartnerRepository,
         PlayViewerChannelRepository,
         PlayViewerTagItemRepository,
-        PlayViewerBroTrackerRepository
+        PlayViewerBroTrackerRepository,
+        PlayViewerUserReportRepository

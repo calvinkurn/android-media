@@ -740,6 +740,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 errorType
             ).orEmpty()
         )
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.OTHER_MENU,
+            throwable = throwable,
+            errorType = context?.getString(R.string.setting_header_error_message,
+                errorType
+            ).orEmpty(),
+            deviceId = userSession.deviceId.orEmpty()
+        )
     }
 
     private fun setTrackerPerformanceMenu(isNewSeller: Boolean) {

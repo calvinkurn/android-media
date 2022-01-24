@@ -7,7 +7,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.WishlistV2EmptyStateData
-import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2EmptyStateCarouselBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 
@@ -16,7 +15,6 @@ class WishlistV2EmptyStateCarouselViewHolder(private val binding: WishlistV2Empt
         add(WishlistV2EmptyStateData(R.string.empty_state_img_1, R.string.empty_state_desc_1))
         add(WishlistV2EmptyStateData(R.string.empty_state_img_2, R.string.empty_state_desc_2))
         add(WishlistV2EmptyStateData(R.string.empty_state_img_3, R.string.empty_state_desc_3))
-
     }
 
     private val itemParam = { view: View, data: Any ->
@@ -26,7 +24,7 @@ class WishlistV2EmptyStateCarouselViewHolder(private val binding: WishlistV2Empt
         text.text = view.context.getString(data.desc)
     }
 
-    fun bind(item: WishlistV2TypeLayoutData) {
+    fun bind() {
         binding.carouselEmptyState.apply {
             indicatorPosition = CarouselUnify.INDICATOR_BC
             freeMode = false
