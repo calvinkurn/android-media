@@ -116,7 +116,6 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
-import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
@@ -126,7 +125,6 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
-import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.Toaster
@@ -169,9 +167,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
     FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener {
-
-    @Inject
-    lateinit var presenter: TopChatRoomPresenter
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -267,7 +262,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter.attachView(this)
         initFireBase()
         registerUploadImageReceiver()
         initSmoothScroller()
@@ -460,7 +454,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupBackground()
-        setupPresenter(savedInstanceState)
+        setupViewState()
         setupArguments(savedInstanceState)
         setupAttachmentsPreview(savedInstanceState)
         hideLoading()
@@ -631,7 +625,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             id, product.shopId.toString()
         )
         intent.putExtra(EXTRA_SOURCE, EXTRA_SOURCE_STOCK)
-        presenter.addOngoingUpdateProductStock(id, product, adapterPosition, parentMetaData)
+        viewModel.addOngoingUpdateProductStock(id, product, adapterPosition, parentMetaData)
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
 
@@ -654,8 +648,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         TopChatAnalytics.FPM_DETAIL_CHAT
     }
 
-    private fun setupPresenter(savedInstanceState: Bundle?) {
-        presenter.attachView(this)
+    private fun setupViewState() {
         topchatViewState?.attachFragmentView(this)
     }
 
@@ -724,7 +717,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             chatRoom, onToolbarClicked(), this
         )
         topchatViewState?.onSetCustomMessage(customMessage)
-        presenter.getTemplate(chatRoom.isSeller())
+        viewModel.getTemplate(chatRoom.isSeller())
         viewModel.getStickerGroupList(chatRoom.isSeller())
         replyCompose?.setReplyListener(this)
         if (isSeller()) {
@@ -1087,10 +1080,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.scrollToBottom()
     }
 
-
     private fun isValidComposedMessage(): Boolean {
         val message = getComposedMessage()
-        return presenter.isValidReply(message)
+        return message.isNotBlank()
     }
 
     private fun onErrorResetChatToFirstPage(throwable: Throwable) {
@@ -1283,7 +1275,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 ProductManageCommonConstant.EXTRA_UPDATED_STATUS
             ) ?: return
             var productName = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
-            val updateProductResult = presenter.onGoingStockUpdate[productId] ?: return
+            val updateProductResult = viewModel.onGoingStockUpdate[productId] ?: return
             val variantResult = getVariantResultUpdateStock(
                 data, updateProductResult.product.productId
             )
@@ -1294,7 +1286,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             }
             showToasterMsgFromUpdateStock(updateProductResult, productName, status)
             adapter.updateProductStock(updateProductResult, stockCount, status)
-            presenter.onGoingStockUpdate.remove(productId)
+            viewModel.onGoingStockUpdate.remove(productId)
         } else {
             val errorMsg = data?.extras?.getString(EXTRA_UPDATE_MESSAGE) ?: return
             showToasterError(errorMsg)
@@ -1400,21 +1392,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             return
         }
         processImagePathToUpload(data)?.let { model ->
-            remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
-                if (it == null || it == false) {
-                    onSendAndReceiveMessage()
-                    viewModel.startUploadImages(model)
-                    topchatViewState?.scrollToBottom()
-                } else {
-                    viewModel.startCompressImages(model)
-                }
-                sellerReviewHelper.hasRepliedChat = true
-            }
+            onSendAndReceiveMessage()
+            viewModel.startUploadImages(model)
+            topchatViewState?.scrollToBottom()
+            sellerReviewHelper.hasRepliedChat = true
         }
     }
 
     private fun onReturnFromSettingTemplate() {
-        presenter.getTemplate(getUserSession().shopId == shopId.toString())
+        viewModel.getTemplate(getUserSession().shopId == shopId.toString())
     }
 
     private fun onReturnFromReportUser(data: Intent?, resultCode: Int) {
@@ -1713,7 +1699,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onBackPressed(): Boolean {
         if (super.onBackPressed()) return true
-        if (::presenter.isInitialized && viewModel.isUploading()) {
+        if (::viewModel.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
             finishActivity()
@@ -1749,7 +1735,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
         unregisterUploadImageReceiver()
     }
 
@@ -2653,12 +2638,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             showSnackbarError(error)
         })
 
-        viewModel.errorSnackbarStringRes.observe(viewLifecycleOwner, { stringRes ->
-            showSnackbarError(getStringResource(stringRes))
-        })
-
         viewModel.uploadImageService.observe(viewLifecycleOwner, { image ->
             uploadImage(image)
+        })
+
+        viewModel.templateChat.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> onSuccessGetTemplate(it.data)
+                is Fail -> onErrorGetTemplate()
+            }
         })
     }
 

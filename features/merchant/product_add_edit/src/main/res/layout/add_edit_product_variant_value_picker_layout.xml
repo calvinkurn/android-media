@@ -5,6 +5,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typographyEmptyVariantValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:text="@string/label_variant_value_empty"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:typographyType="body_2"/>
+
     <LinearLayout
         android:id="@+id/variantUnitLayout"
         android:layout_width="match_parent"

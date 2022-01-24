@@ -15,7 +15,7 @@ buildscript {
 project.ext {
     artifactId = 'network'
     groupId = 'com.tokopedia.network'
-    versionName = "1.1.28"
+    versionName = "1.1.29"
     artifactName = "network-debug"
 }
 

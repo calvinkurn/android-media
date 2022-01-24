@@ -116,6 +116,6 @@
     <string name="applink_report_title">Report</string>
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
     <string name="path_sellerapp_notification" translatable="false">sellerinfo</string>
-    <string name="path_sellerapp_search" translatable="false">seller-search</string>
+    <string name="path_sellerapp_search" translatable="false">/seller-search</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
 </resources>
