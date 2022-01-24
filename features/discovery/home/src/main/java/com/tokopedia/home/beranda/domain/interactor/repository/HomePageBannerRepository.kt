@@ -17,6 +17,10 @@ class HomePageBannerRepository @Inject constructor(
 ) : UseCase<HomeBannerData>(), HomeRepository<HomeBannerData> {
     private val params = RequestParams.create()
 
+    companion object {
+        const val BANNER_LOCATION_PARAM = "location"
+    }
+
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(HomeBannerData::class.java)
@@ -29,6 +33,9 @@ class HomePageBannerRepository @Inject constructor(
     }
 
     override suspend fun getRemoteData(bundle: Bundle): HomeBannerData {
+        bundle.getString(BANNER_LOCATION_PARAM, "")?.let {
+            params.putString(BANNER_LOCATION_PARAM, it)
+        }
         return executeOnBackground()
     }
 
