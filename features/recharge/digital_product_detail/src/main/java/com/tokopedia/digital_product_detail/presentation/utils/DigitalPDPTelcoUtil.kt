@@ -12,4 +12,7 @@ object DigitalPDPTelcoUtil {
             else -> TelcoComponentName.PRODUCT_PASCABAYAR
         }
     }
+
+    const val DEFAULT_MENU_ID_TELCO = "2"
+
 }

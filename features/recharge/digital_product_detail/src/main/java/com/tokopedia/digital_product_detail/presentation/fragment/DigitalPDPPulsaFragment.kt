@@ -26,6 +26,7 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
@@ -82,7 +83,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         RechargeCatalogPrefixSelect()
     )
     private var operatorId = ""
-    private val categoryId = TelcoCategoryType.CATEGORY_PULSA
+    private var clientNumber = ""
+    private var productId =  0
+    private var menuId = 0
+    private var categoryId = TelcoCategoryType.CATEGORY_PULSA
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
@@ -110,6 +114,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getDataFromBundle()
         initClientNumberWidget()
         initEmptyState()
         setAnimationAppBarLayout()
@@ -145,7 +150,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         onHideBuyWidget()
                     }
 
-                    // [Misael] add checkoutPassData and update checkoutPassData with new input number
+                    //TODO [Misael] add checkoutPassData and update checkoutPassData with new input number
                 } else {
                     showEmptyState()
                 }
@@ -232,15 +237,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
-        viewModel.getRechargeCatalogInput(MENU_ID, selectedOperatorKey)
+        viewModel.getRechargeCatalogInput(menuId, selectedOperatorKey)
     }
 
     private fun getCatalogMenuDetail() {
-        viewModel.getMenuDetail(MENU_ID)
+        viewModel.getMenuDetail(menuId)
     }
 
     private fun getPrefixOperatorData() {
-        viewModel.getPrefixOperator(MENU_ID)
+        viewModel.getPrefixOperator(menuId)
     }
 
     private fun getFavoriteNumber(
@@ -261,17 +266,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         shouldRefreshInputNumber: Boolean
     ) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
-            if (favoriteNumber.isNotEmpty()) {
-                if (shouldRefreshInputNumber) {
-                    setInputNumber(favoriteNumber[0].clientNumber)
-                    setContactName(favoriteNumber[0].clientName)
+                if (favoriteNumber.isNotEmpty()){
+                    if (shouldRefreshInputNumber && clientNumber.isEmpty()) {
+                        setInputNumber(favoriteNumber[0].clientNumber)
+                        setContactName(favoriteNumber[0].clientName)
+                   }
+                    setFilterChipShimmer(false, favoriteNumber.isEmpty())
+                    setFavoriteNumber(favoriteNumber)
+                    setAutoCompleteList(favoriteNumber)
+                    dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
                 }
-                setFilterChipShimmer(false, favoriteNumber.isEmpty())
-                setFavoriteNumber(favoriteNumber)
-                setAutoCompleteList(favoriteNumber)
-                dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
             }
-        }
     }
 
     private fun onSuccessGetPrefixOperator(operatorList: TelcoCatalogPrefixSelect) {
@@ -441,7 +446,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 RechargeRecommendationCardListener {
                     override fun onProductRecommendationCardClicked(applinkUrl: String) {
                         context?.let {
-                            //                        RouteManager.route(it, applinkUrl)
+                            RouteManager.route(it, applinkUrl)
                         }
                     }
                 },
@@ -544,9 +549,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         categoryId: String,
         inputNumberActionTypeIndex: Int
     ) {
-        // [Misael] handle InputNumberAction type for tracker
+        //TODO [Misael] handle InputNumberAction type for tracker
 
-        // [Firman] handle checkout pass data
+        //TODO [Firman] handle checkout pass data
 
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setContactName(clientName)
@@ -601,6 +606,27 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 viewModel.updateCategoryCheckoutPassData(categoryId)
                 intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, viewModel.digitalCheckoutPassData)
                 startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        }
+    }
+
+    private fun getDataFromBundle(){
+            arguments?.run {
+                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM)
+                    ?: TopupBillsExtraParam()
+                clientNumber = digitalTelcoExtraParam.clientNumber
+                productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
+                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                }
+                if (digitalTelcoExtraParam.menuId.isNotEmpty()){
+                    menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+                }
+            }
+
+        if (!clientNumber.isNullOrEmpty()) {
+            binding?.rechargePdpPulsaClientNumberWidget?.run {
+                setInputNumber(clientNumber)
+            }
         }
     }
 
@@ -691,9 +717,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     companion object {
-        fun newInstance() = DigitalPDPPulsaFragment()
 
-        const val MENU_ID = 148
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam)  = DigitalPDPPulsaFragment().also {
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
+            it.arguments = bundle
+        }
+
         const val MINIMUM_OPERATOR_PREFIX = 4
         const val MINIMUM_VALID_NUMBER_LENGTH = 10
         const val MAXIMUM_VALID_NUMBER_LENGTH = 14
@@ -702,6 +732,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         const val PREFERENCES_NAME = "pdp_pulsa_preferences"
         const val FAVNUM_PERMISSION_CHECKER_IS_DENIED = "favnum_permission_checker_is_denied"
+        private const val EXTRA_PARAM = "extra_param"
 
         const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
     }

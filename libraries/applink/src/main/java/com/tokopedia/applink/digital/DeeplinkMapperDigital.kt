@@ -12,8 +12,11 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUCHER
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PAKET_DATA_DIGITAL_PDP
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_POSTPAID_TELCO
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PULSA_DIGITAL_PDP
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ROAMING_DIGITAL_PDP
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TRAVEL_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder
@@ -115,6 +118,15 @@ object DeeplinkMapperDigital {
                 }
                 TEMPLATE_ID_ELECTRONIC_MONEY -> {
                     handleEmoneyPdpApplink(context, deeplink)
+                }
+                TEMPLATE_PULSA_DIGITAL_PDP -> {
+                    ApplinkConsInternalDigital.DIGITAL_PDP_PULSA
+                }
+                TEMPLATE_PAKET_DATA_DIGITAL_PDP -> {
+                    ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA
+                }
+                TEMPLATE_ROAMING_DIGITAL_PDP -> {
+                    ApplinkConsInternalDigital.DIGITAL_PDP_ROAMING
                 }
                 else -> deeplink
             }
