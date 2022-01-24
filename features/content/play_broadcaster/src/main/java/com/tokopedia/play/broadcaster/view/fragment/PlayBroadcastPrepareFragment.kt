@@ -71,7 +71,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     }
 
     private val isFirstStreaming: Boolean
-        get() = parentViewModel.isFirstStreaming
+        get() = true
 
     private val fragmentViewContainer = FragmentViewContainer()
 
@@ -123,7 +123,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        actionBarView.setTitle(getString(R.string.play_action_bar_prepare_title))
+//        actionBarView.setTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
             analytic.clickPrepareBroadcast()
             openBroadcastSetupPage()

@@ -891,6 +891,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     fun getShopIconUrl(): String = userSession.shopAvatar
 
+    fun getShopName(): String = userSession.shopName
+
     companion object {
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L

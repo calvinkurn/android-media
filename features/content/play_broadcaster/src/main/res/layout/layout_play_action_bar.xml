@@ -5,62 +5,45 @@
     android:id="@+id/cl_actionbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    tools:background="@color/black">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_switch"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_bro_preparation_close"
         android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:adjustViewBounds="true"
-        android:src="@drawable/ic_play_switch_camera_white"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CLOSE"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_bro_preparation_shop_icon"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="@id/ic_bro_preparation_close"
+        app:layout_constraintStart_toEndOf="@id/ic_bro_preparation_close"
+        app:layout_constraintTop_toTopOf="@id/ic_bro_preparation_close"
+        app:unify_image_placeholder="@color/background_apps"
+        app:unify_image_type="circle" />
+
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_title"
+        android:id="@+id/tv_bro_preparation_shop_name"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl8"
-        android:layout_marginRight="@dimen/spacing_lvl8"
-        android:gravity="center"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/ic_bro_preparation_close"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
+        app:layout_constraintStart_toEndOf="@id/iv_bro_preparation_shop_icon"
+        app:layout_constraintTop_toTopOf="@id/ic_bro_preparation_close"
+        app:typographyType="body_1"
         app:typographyWeight="bold"
-        tools:text="@string/play_action_bar_prepare_title"
-        />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_close"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:adjustViewBounds="true"
-        android:src="@drawable/iconunify_close"
-        app:layout_constraintBottom_toBottomOf="@id/iv_switch"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iv_switch"
-        tools:visibility="visible"
-        />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/iv_switch"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iv_switch"
-        app:unifyButtonInvers="true"
-        app:unifyButtonVariant="ghost"
-        app:unifyButtonSize="small"
-        tools:text="Akhiri"
-        tools:visibility="visible"
-        />
+        tools:text="@string/play_bro_mock_room_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

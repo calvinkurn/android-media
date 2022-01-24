@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.partial
 
 import android.view.ViewGroup
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -18,28 +19,21 @@ class ActionBarViewComponent(
         listener: Listener
 ) : ViewComponent(container, R.id.cl_actionbar){
 
-    private val ivClose = findViewById<ImageUnify>(R.id.iv_close)
-    private val tvTitle = findViewById<Typography>(R.id.tv_title)
-    private val btnClose = findViewById<UnifyButton>(R.id.btn_close)
+    private val ivClose = findViewById<IconUnify>(R.id.ic_bro_preparation_close)
+    private val tvTitle = findViewById<Typography>(R.id.tv_bro_preparation_shop_name)
+    private val ivShopIcon = findViewById<ImageUnify>(R.id.iv_bro_preparation_shop_icon)
 
     init {
-        findViewById<ImageUnify>(R.id.iv_switch).setOnClickListener { listener.onCameraIconClicked() }
-
         ivClose.setOnClickListener { listener.onCloseIconClicked() }
         ivClose.show()
-
-        btnClose.setOnClickListener { listener.onCloseIconClicked() }
-        btnClose.hide()
     }
 
     fun setTitle(label: String) {
         tvTitle.text = label
     }
 
-    fun setActionTitle(text: String) {
-        btnClose.text = text
-        btnClose.show()
-        ivClose.hide()
+    fun setShopIcon(iconUrl: String) {
+        ivShopIcon.setImageUrl(iconUrl)
     }
 
     interface Listener {
