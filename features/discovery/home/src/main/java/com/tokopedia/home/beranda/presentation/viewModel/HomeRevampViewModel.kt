@@ -262,6 +262,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun refreshHomeData() {
         if (getHomeDataJob?.isActive == true) return
         if (homeDataModel.flowCompleted == false) return
+        homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
         onRefreshState = true
         getBalanceWidgetLoadingState()
 
