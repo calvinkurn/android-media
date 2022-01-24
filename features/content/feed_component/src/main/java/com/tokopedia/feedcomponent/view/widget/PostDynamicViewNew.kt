@@ -38,6 +38,7 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
@@ -108,7 +109,6 @@ private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 private val handlerFeed = Handler(Looper.getMainLooper())
 private var secondCountDownTimer: CountDownTimer? = null
-private var addViewTimer: Timer? = null
 private var isPaused = false
 private const val FOLLOW_MARGIN = 6
 private const val MARGIN_ZERO = 0
@@ -167,6 +167,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var videoPlayer: FeedExoPlayer? = null
     private var handlerAnim: Handler? = null
     private var handlerHide: Handler? = null
+    private var feedAddViewJob: Job? = null
+
     private var isLihatProductVisible = false
 
     init {
@@ -263,8 +265,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
 
     fun bindLike(feedXCard: FeedXCard) {
+        val isLongVideo = feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO
 
-        if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
+        if (feedXCard.typename == TYPE_FEED_X_CARD_VOD || isLongVideo ) {
             bindViews(feedXCard)
         } else {
             bindLike(
@@ -1386,6 +1389,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         feedMedia.videoView = vodItem
 
         vodItem?.run {
+            var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
 
             val layoutVideo = findViewById<ConstraintLayout>(R.id.vod_layout_main)
             val videoPreviewImage = findViewById<ImageUnify>(R.id.vod_videoPreviewImage)
@@ -1407,7 +1411,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             vod_lihat_product?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
-                            feedXCard.playChannelID.toInt(),
+                            finalId,
                             products,
                             listener,
                             id,
@@ -1485,7 +1489,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val tags = feedMedia.tagging
         val postProductList = feedXCard.tags
         secondCountDownTimer = null
-        addViewTimer = Timer()
         val tagProducts = mutableListOf<FeedXProduct>()
         isVODViewFrozen = false
         var count1 = 0
@@ -1594,7 +1597,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         }
 
 
-                                launch {
+                        feedAddViewJob?.cancel()
+                        feedAddViewJob = scope.launch {
                                     delay(5000L)
                                     if (!isPaused) {
                                         val view = feedXCard.views
@@ -2153,9 +2157,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 secondCountDownTimer?.cancel()
                 secondCountDownTimer = null
             }
-            if (addViewTimer != null) {
-                addViewTimer?.cancel()
-                addViewTimer = null
+            if (feedAddViewJob != null) {
+                feedAddViewJob?.cancel()
+                feedAddViewJob = null
             }
             videoPlayer?.pause()
             videoPlayer?.setVideoStateListener(null)

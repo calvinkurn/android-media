@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.MediaController
 import android.widget.Toast
-import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -26,14 +25,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXComments
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXLike
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
-import com.tokopedia.kol.common.util.UrlUtil
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.getCallingIntent
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
@@ -59,6 +55,8 @@ const val PARAM_FEED = "feed"
 const val PARAM_VIDEO_AUTHOR_TYPE = "video_author_type"
 const val PARAM_POST_TYPE = "POST_TYPE"
 const val PARAM_IS_POST_FOLLOWED = "IS_FOLLOWED"
+const val PARAM_START_TIME = "START_TIME"
+
 const val PARAM_COMMENT_COUNT = "comment_count"
 const val PARAM_LIKE_COUNT = "like_count"
 
@@ -83,6 +81,7 @@ class VideoDetailFragment :
     private var id: String = ""
 
     private var index: Int = 0
+    private var videoSeekTime: Long = 0
 
     companion object {
         private const val INTENT_COMMENT = 1234
@@ -119,6 +118,7 @@ class VideoDetailFragment :
         super.onViewCreated(view, savedInstanceState)
         id = arguments?.getString(VideoDetailActivity.PARAM_ID, "") ?: ""
         index = arguments?.getInt(PARAM_VIDEO_INDEX, 0) ?: 0
+        videoSeekTime = arguments?.getLong(PARAM_START_TIME, 0) ?: 0
         presenter.attachView(this)
         initView()
         initViewListener()
@@ -137,6 +137,7 @@ class VideoDetailFragment :
                 videoView.setMediaController(mediaController)
                 mediaController.setAnchorView(videoView)
             }
+            player.seekTo((videoSeekTime.toString()).toIntOrZero())
             player.start()
         }
     }
@@ -442,6 +443,15 @@ class VideoDetailFragment :
                         ), feedXCard.author.name + " `post"
                     )
                 }
+            shareText.setOnClickListener {
+                doShare(
+                        String.format(
+                                "%s",
+                                desc?.replace("%s", feedXCard.author.name),
+                        ), feedXCard.author.name + " `post"
+                )
+            }
+
 
         }
 

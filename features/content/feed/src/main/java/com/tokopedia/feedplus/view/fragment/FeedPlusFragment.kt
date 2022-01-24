@@ -299,6 +299,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val PARAM_ACTIVITY_ID = "activity_id"
         const val PARAM_POST_TYPE = "POST_TYPE"
         const val PARAM_IS_POST_FOLLOWED = "IS_FOLLOWED"
+        const val PARAM_START_TIME = "START_TIME"
 
 
         //region Content Report Param
@@ -627,6 +628,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
             })
 
             viewTrackResponse.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        onSuccessAddViewVODPost(it.data.rowNumber)
+                    }
+                }
+            })
+            longVideoViewTrackResponse.observe(lifecycleOwner, Observer {
                 when (it) {
                     is Success -> {
                         onSuccessAddViewVODPost(it.data.rowNumber)
@@ -1878,7 +1886,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
 
         if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
-            onVideoPlayerClicked(positionInFeed,0,feedXCard.id,feedXCard.media[0].mediaUrl,feedXCard.author.id,"",feedXCard.followers.isFollowed)
+            onVideoPlayerClicked(positionInFeed,0,feedXCard.id,feedXCard.media[0].mediaUrl,feedXCard.author.id,"",feedXCard.followers.isFollowed, currentTime)
         else
             onGoToLink(finalApplink)
     }
@@ -1886,8 +1894,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun addVODView(feedXCard: FeedXCard, playChannelId: String, rowNumber: Int, time: Long, hitTrackerApi: Boolean) {
         if (!hitTrackerApi)
         feedAnalytics.eventAddView(playChannelId,feedXCard.typename,feedXCard.followers.isFollowed,feedXCard.author.id,time, feedXCard.media.firstOrNull()?.type?:"")
-        if (hitTrackerApi)
-        feedViewModel.trackVisitChannel(playChannelId, rowNumber)
+        if (hitTrackerApi) {
+            if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
+                feedViewModel.trackLongVideoView(feedXCard.id, rowNumber)
+            else
+                feedViewModel.trackVisitChannel(playChannelId, rowNumber)
+        }
     }
 
     override fun onPostTagBubbleClick(
@@ -2434,7 +2446,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         redirectUrl: String,
         authorId: String,
         authorType: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        startTime: Long
+
     ) {
         if (activity != null) {
             feedAnalytics.clickOnVideo(postId, authorId, isFollowed)
@@ -2446,6 +2460,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             videoDetailIntent.putExtra(PARAM_VIDEO_AUTHOR_TYPE, authorType)
             videoDetailIntent.putExtra(PARAM_POST_TYPE, "sgc")
             videoDetailIntent.putExtra(PARAM_IS_POST_FOLLOWED, isFollowed)
+            videoDetailIntent.putExtra(PARAM_START_TIME, startTime)
             startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL)
         }
     }
