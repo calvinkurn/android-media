@@ -27,4 +27,28 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_bro_start_livestream"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:src="@drawable/ic_start_livestream"
+        android:layout_marginBottom="@dimen/spacing_lvl8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_bro_preparation_switch_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CAMERA_SWITCH"
+        app:layout_constraintTop_toTopOf="@id/iv_bro_start_livestream"
+        app:layout_constraintBottom_toBottomOf="@id/iv_bro_start_livestream"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_bro_start_livestream"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

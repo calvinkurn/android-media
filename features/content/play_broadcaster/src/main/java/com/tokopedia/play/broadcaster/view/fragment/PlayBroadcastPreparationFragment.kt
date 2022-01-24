@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -37,6 +38,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** View Component */
     private val actionBarView by viewComponent { ActionBarViewComponent(it, this) }
     private val preparationListView by viewComponent{ PreparationListViewComponent(it, this) }
+    private lateinit var ivSwitchCamera: IconUnify
 
     private val fragmentViewContainer = FragmentViewContainer()
 
@@ -63,10 +65,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupInsets(view)
+        setupListener()
     }
 
     /** Setup */
     private fun setupView(view: View) {
+        ivSwitchCamera = view.findViewById(R.id.ic_bro_preparation_switch_camera)
+
         actionBarView.setTitle(parentViewModel.getShopName())
         actionBarView.setShopIcon(parentViewModel.getShopIconUrl())
     }
@@ -74,6 +79,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun setupInsets(view: View) {
         view.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
+        }
+    }
+
+    private fun setupListener() {
+        ivSwitchCamera.setOnClickListener {
+            parentViewModel.switchCamera()
+            analytic.clickSwitchCameraOnSetupPage()
         }
     }
 
