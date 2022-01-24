@@ -266,13 +266,25 @@ class CouponSettingViewModel @Inject constructor(
             else -> cashbackMinimumPurchase
         }
 
+        val cashbackMax = when (selectedDiscountType) {
+            DiscountType.NONE -> discountAmount
+            DiscountType.NOMINAL -> discountAmount
+            DiscountType.PERCENTAGE -> cashbackMaximumAmount
+        }
+
+        val adjustedCashbackPercentage = when(selectedCouponType) {
+            CouponType.NONE -> cashbackPercentage
+            CouponType.CASHBACK -> MAXIMUM_CASHBACK_PERCENTAGE
+            CouponType.FREE_SHIPPING -> cashbackPercentage
+        }
+
         _saveCoupon.value = CouponSettings(
             selectedCouponType,
             selectedDiscountType,
             selectedMinimumPurchaseType,
             discountAmount,
-            cashbackPercentage,
-            cashbackMaximumAmount,
+            adjustedCashbackPercentage,
+            cashbackMax,
             quota,
             minimumPurchase,
             estimatedMaxExpense

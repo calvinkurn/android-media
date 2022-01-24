@@ -8,21 +8,39 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.consts.UrlConstant
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
+import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCouponBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.CouponPreviewBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndConditionBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
+import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
+import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -32,20 +50,37 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val EMPTY_STRING = ""
         private const val SCREEN_NAME = "Product coupon preview page"
         private const val ZERO: Long = 0
-
+        private const val ROTATION_ANGLE_ZERO = 0f
+        private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
+        private const val ROTATION_ANIM_DURATION_IN_MILLIS : Long = 300
         fun newInstance(): ProductCouponPreviewFragment {
             return ProductCouponPreviewFragment()
         }
 
     }
 
-    private var binding by autoClearedNullable<FragmentProductCouponPreviewBinding>()
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession : UserSessionInterface
+
+    private var nullableBinding by autoClearedNullable<FragmentProductCouponPreviewBinding>()
+    private val binding: FragmentProductCouponPreviewBinding
+        get() = requireNotNull(nullableBinding)
+    
     private var onNavigateToCouponInformationPage: () -> Unit = {}
     private var onNavigateToCouponSettingsPage: () -> Unit = {}
     private var onNavigateToProductListPage: () -> Unit = {}
     private var couponSettings: CouponSettings? = null
     private var couponInformation: CouponInformation? = null
     private var couponProducts: List<CouponProduct> = emptyList()
+    private var isCardExpanded = true
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelProvider.get(ProductCouponPreviewViewModel::class.java) }
+    private val createCouponErrorNotice by lazy {
+        CreateProductCouponFailedDialog(requireActivity(), ::onTryAgain, ::onRequestHelp)
+    }
 
     private val CouponType.label: String
         get() {
@@ -75,15 +110,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             }
         }
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(ProductCouponPreviewViewModel::class.java) }
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
     override fun getScreenName() = SCREEN_NAME
     override fun initInjector() {
         DaggerVoucherCreationComponent.builder()
@@ -98,8 +124,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentProductCouponPreviewBinding.inflate(inflater, container, false)
-        return binding!!.root
+        nullableBinding = FragmentProductCouponPreviewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -107,38 +133,63 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         setupViews()
         observeValidCoupon()
         observeCreateCouponResult()
+        observeBroadcastCoupon()
     }
 
-
-
     private fun setupViews() {
-        binding?.tpgReadArticle?.setOnClickListener { onNavigateToCouponInformationPage() }
-        binding?.tpgCouponInformation?.setOnClickListener { onNavigateToCouponInformationPage() }
-        binding?.tpgCouponSetting?.setOnClickListener { onNavigateToCouponSettingsPage() }
-        binding?.tpgAddProduct?.setOnClickListener { onNavigateToProductListPage() }
-        binding?.btnCreateCoupon?.setOnClickListener {
-            viewModel.createCoupon(
-                couponInformation ?: return@setOnClickListener,
-                couponSettings ?: return@setOnClickListener,
-                couponProducts,
-                userSessionInterface.accessToken
-            )
+        binding.tpgReadArticle.setOnClickListener { redirectToSellerEduPage() }
+        binding.tpgCouponInformation.setOnClickListener { onNavigateToCouponInformationPage() }
+        binding.tpgCouponSetting.setOnClickListener { onNavigateToCouponSettingsPage() }
+        binding.tpgAddProduct.setOnClickListener { onNavigateToProductListPage() }
+        binding.btnCreateCoupon.setOnClickListener { createCoupon() }
+        binding.btnPreviewCouponImage.setOnClickListener { displayCouponPreviewBottomSheet() }
+        binding.imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
+
+        binding.tpgTermAndConditions.movementMethod = object : HyperlinkClickHandler() {
+            override fun onLinkClick(url: String?) {
+                displayTermAndConditionBottomSheet()
+            }
+
         }
+
+        binding.imgDropdown.setOnClickListener { handleCouponProductInformationVisibility() }
+        binding.imgCopyToClipboard.setOnClickListener {
+            val content = binding.tpgCouponCode.text.toString().trim()
+            copyToClipboard(content)
+        }
+
     }
 
     private fun observeValidCoupon() {
         viewModel.areInputValid.observe(viewLifecycleOwner, { areInputValid ->
-            binding?.btnCreateCoupon?.isEnabled = areInputValid
-            binding?.btnPreviewCouponImage?.isEnabled = areInputValid
+            binding.btnCreateCoupon.isEnabled = areInputValid
+            binding.btnPreviewCouponImage.isEnabled = areInputValid
         })
     }
+
 
     private fun observeCreateCouponResult() {
         viewModel.createCoupon.observe(viewLifecycleOwner, { result ->
             if (result is Success) {
-
+                viewModel.getBroadCastMetaData()
             } else {
+                createCouponErrorNotice.show()
+            }
+        })
+    }
 
+    private fun observeBroadcastCoupon() {
+        viewModel.broadCastMetadata.observe(viewLifecycleOwner, { broadCastMetaData ->
+            when(broadCastMetaData) {
+                is Success -> {
+                    //TODO implement this with real data
+                    val coupon = Coupon(0, "",couponInformation ?: return@observe, couponSettings?: return@observe, couponProducts)
+                    showBroadCastVoucherBottomSheet(coupon, broadCastMetaData.data.promo)
+                }
+                is Fail -> {
+                    val coupon = Coupon(0, "",couponInformation ?: return@observe, couponSettings?: return@observe, couponProducts)
+                    showBroadCastVoucherBottomSheet(coupon, Int.ZERO)
+                }
             }
         })
     }
@@ -167,6 +218,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         this.couponInformation =  couponInformation
     }
 
+
     override fun onResume() {
         super.onResume()
         couponInformation?.let { coupon ->  refreshCouponInformationSection(coupon) }
@@ -177,17 +229,18 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun refreshCouponInformationSection(coupon: CouponInformation) {
-        binding?.labelCouponInformationCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
-        binding?.labelCouponInformationCompleteStatus?.setLabel(getString(R.string.completed))
+        binding.imgCopyToClipboard.visible()
+        binding.labelCouponInformationCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+        binding.labelCouponInformationCompleteStatus.setLabel(getString(R.string.completed))
 
         val target = when (coupon.target) {
             CouponInformation.Target.PUBLIC -> getString(R.string.mvc_public)
             CouponInformation.Target.SPECIAL -> getString(R.string.mvc_special)
         }
 
-        binding?.tpgCouponTarget?.text = target
-        binding?.tpgCouponName?.text = coupon.name
-        binding?.tpgCouponCode?.text = coupon.code
+        binding.tpgCouponTarget.text = target
+        binding.tpgCouponName.text = coupon.name
+        binding.tpgCouponCode.text = coupon.code
 
         val startDate = coupon.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val startHour = coupon.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
@@ -195,92 +248,251 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         val endHour = coupon.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
 
         val period = String.format(getString(R.string.placeholder_coupon_period), startDate, startHour, endDate, endHour)
-        binding?.tpgCouponPeriod?.text = period
+        binding.tpgCouponPeriod.text = period
     }
 
     private fun refreshCouponSettingsSection(coupon: CouponSettings) {
-        binding?.labelCouponSettingCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
-        binding?.labelCouponSettingCompleteStatus?.setLabel(getString(R.string.completed))
+        binding.labelCouponSettingCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+        binding.labelCouponSettingCompleteStatus.setLabel(getString(R.string.completed))
 
-        binding?.tpgCouponType?.text = coupon.type.label
-        binding?.tpgDiscountType?.text = coupon.discountType.label
-        binding?.tpgMinimumPurchaseType?.text = coupon.minimumPurchaseType.label
-        binding?.tpgCouponQouta?.text = coupon.quota.splitByThousand()
+        binding.tpgCouponType.text = coupon.type.label
+        binding.tpgDiscountType.text = coupon.discountType.label
 
-        handleDiscountAmount(coupon.discountType, coupon.discountAmount, coupon.discountPercentage)
-        handleMaximumDiscount(coupon.discountType, coupon.maxDiscount)
-        handleMinimumPurchase(coupon.minimumPurchaseType, coupon.minimumPurchase)
+        binding.tpgCouponQouta.text = coupon.quota.splitByThousand()
+
+        handleDiscountType(coupon.type)
+        handleDiscountAmount(coupon.type, coupon.discountType, coupon.discountAmount, coupon.discountPercentage)
+        handleMaximumDiscount(coupon.type, coupon.discountType, coupon.maxDiscount)
+        handleMinimumPurchaseType(coupon.type, coupon.minimumPurchaseType)
+        handleMinimumPurchase(coupon.type, coupon.minimumPurchaseType, coupon.minimumPurchase)
         handleEstimatedMaxExpense(coupon.estimatedMaxExpense)
     }
 
-    private fun refreshProductsSection(products: List<CouponProduct>) {
-        binding?.tpgUpdateProduct?.isVisible = products.isNotEmpty()
-        if (products.isNotEmpty()) {
-            binding?.labelProductCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
-            binding?.labelProductCompleteStatus?.setLabel(getString(R.string.completed))
-
-            binding?.tpgProductCount?.text = String.format(getString(R.string.placeholder_registered_product), products.size)
+    private fun handleDiscountType(couponType: CouponType) {
+        if (couponType == CouponType.FREE_SHIPPING) {
+            binding.groupDiscountType.gone()
         } else {
-            binding?.labelProductCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
-            binding?.labelProductCompleteStatus?.setLabel(getString(R.string.incomplete))
-
-            binding?.tpgProductCount?.text = getString(R.string.no_products)
+            binding.groupDiscountType.visible()
         }
     }
 
-    private fun handleDiscountAmount(discountType: DiscountType, discountAmount: Int, discountPercentage: Int) {
-        if (discountType == DiscountType.PERCENTAGE) {
-            binding?.tpgDiscountAmount?.text = String.format(
-                getString(R.string.placeholder_percent),
-                discountPercentage.splitByThousand()
-            )
+    private fun refreshProductsSection(products: List<CouponProduct>) {
+        binding.tpgUpdateProduct.isVisible = products.isNotEmpty()
+        if (products.isNotEmpty()) {
+            binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+            binding.labelProductCompleteStatus.setLabel(getString(R.string.completed))
+
+            binding.tpgProductCount.text = String.format(getString(R.string.placeholder_registered_product), products.size)
         } else {
-            binding?.tpgDiscountAmount?.text = String.format(
+            binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
+            binding.labelProductCompleteStatus.setLabel(getString(R.string.incomplete))
+
+            binding.tpgProductCount.text = getString(R.string.no_products)
+        }
+    }
+
+    private fun handleDiscountAmount(
+        couponType: CouponType,
+        discountType: DiscountType,
+        discountAmount: Int,
+        discountPercentage: Int
+    ) {
+        if (discountAmount > ZERO) {
+            binding.groupDiscountAmount.visible()
+        } else {
+            binding.groupDiscountAmount.gone()
+        }
+
+        val formattedDiscountAmount = when {
+            couponType == CouponType.FREE_SHIPPING -> String.format(
                 getString(R.string.placeholder_rupiah),
                 discountAmount.splitByThousand()
             )
+            couponType == CouponType.CASHBACK && discountType == DiscountType.PERCENTAGE ->
+                String.format(
+                    getString(R.string.placeholder_percent),
+                    discountPercentage.splitByThousand()
+                )
+            else ->
+                String.format(
+                    getString(R.string.placeholder_rupiah),
+                    discountAmount.splitByThousand()
+                )
         }
+
+        val discountAmountLabel = when (couponType) {
+            CouponType.NONE -> EMPTY_STRING
+            CouponType.CASHBACK -> getString(R.string.discount_amount)
+            CouponType.FREE_SHIPPING -> getString(R.string.discount_amount_free_shipping)
+        }
+
+        binding.tpgDiscountAmountLabel.text = discountAmountLabel
+        binding.tpgDiscountAmount.text = formattedDiscountAmount
     }
 
-    private fun handleMaximumDiscount(discountType: DiscountType, maxDiscount: Int) {
-        if (discountType == DiscountType.PERCENTAGE) {
-            binding?.groupMaxDiscount?.visible()
-            binding?.tpgMaxDiscount?.text =
+    private fun handleMaximumDiscount(couponType : CouponType, discountType: DiscountType, maxDiscount: Int) {
+        if (couponType == CouponType.CASHBACK && discountType == DiscountType.PERCENTAGE) {
+            binding.groupMaxDiscount.visible()
+            binding.tpgMaxDiscount.text =
                 String.format(getString(R.string.placeholder_rupiah), maxDiscount.splitByThousand())
         } else {
-            binding?.groupMaxDiscount?.gone()
+            binding.groupMaxDiscount.gone()
         }
     }
 
     private fun handleEstimatedMaxExpense(estimatedMaxExpense: Long) {
         if (estimatedMaxExpense == ZERO) {
-            binding?.tpgExpenseAmount?.text = getString(R.string.hyphen)
+            binding.tpgExpenseAmount.text = getString(R.string.hyphen)
         } else {
-            binding?.tpgExpenseAmount?.text = String.format(
+            binding.tpgExpenseAmount.text = String.format(
                 getString(R.string.placeholder_rupiah),
                 estimatedMaxExpense.splitByThousand()
             )
         }
     }
 
-    private fun handleMinimumPurchase(
-        minimumPurchaseType: MinimumPurchaseType,
-        minimumPurchase: Int
+    private fun handleMinimumPurchaseType(
+        couponType: CouponType,
+        minimumPurchaseType: MinimumPurchaseType
     ) {
-        val text = when (minimumPurchaseType) {
-            MinimumPurchaseType.NONE -> EMPTY_STRING
-            MinimumPurchaseType.NOMINAL -> String.format(
-                getString(R.string.placeholder_rupiah),
-                minimumPurchase.splitByThousand()
-            )
-            MinimumPurchaseType.QUANTITY -> String.format(
-                getString(R.string.placeholder_quantity),
-                minimumPurchase.splitByThousand()
-            )
-            MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
+
+        if (couponType == CouponType.FREE_SHIPPING) {
+            binding.groupMinimumPurchaseType.gone()
+        } else {
+            binding.groupMinimumPurchaseType.visible()
+            binding.tpgMinimumPurchaseType.text = minimumPurchaseType.label
         }
 
-        binding?.tpgMinimumPurchase?.text = text
+    }
+
+
+    private fun handleMinimumPurchase(couponType: CouponType, minimumPurchaseType: MinimumPurchaseType, minimumPurchase: Int) {
+        if (minimumPurchase > ZERO) {
+            binding.groupMinimumPurchase.visible()
+            val text = when {
+                couponType == CouponType.FREE_SHIPPING -> String.format(
+                    getString(R.string.placeholder_rupiah),
+                    minimumPurchase.splitByThousand()
+                )
+                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NONE -> EMPTY_STRING
+                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOMINAL -> String.format(
+                    getString(R.string.placeholder_rupiah),
+                    minimumPurchase.splitByThousand()
+                )
+                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.QUANTITY -> String.format(
+                    getString(R.string.placeholder_quantity),
+                    minimumPurchase.splitByThousand()
+                )
+                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
+                else -> EMPTY_STRING
+            }
+
+            binding.tpgMinimumPurchase.text = text
+
+        } else {
+            binding.groupMinimumPurchase.gone()
+        }
+
+    }
+
+    private fun redirectToSellerEduPage() {
+        if (!isAdded) return
+        val url = UrlConstant.SELLER_HOSTNAME + UrlConstant.SELLER_EDU
+        val encodedUrl = URLEncoder.encode(url, "utf-8")
+        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(requireActivity(), route)
+    }
+
+    private fun displayExpenseEstimationDescription() {
+        if (!isAdded) return
+        val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun handleCouponProductInformationVisibility() {
+        if (isCardExpanded) {
+            binding.groupCouponProductInformation.gone()
+            binding.imgDropdown.animate().rotation(ROTATION_ANGLE_HALF_CIRCLE).setDuration(
+                ROTATION_ANIM_DURATION_IN_MILLIS
+            ).start()
+        } else {
+            binding.groupCouponProductInformation.visible()
+            binding.imgDropdown.animate().rotation(ROTATION_ANGLE_ZERO)
+                .setDuration(ROTATION_ANIM_DURATION_IN_MILLIS).start()
+        }
+
+        isCardExpanded = !isCardExpanded
+    }
+
+    private fun copyToClipboard(content: String) {
+        ClipboardHandler().copyToClipboard(requireActivity(), content)
+        Toaster.build(
+            binding.root ?: return,
+            getString(R.string.coupon_code_copied_to_clipboard)
+        ).show()
+    }
+
+    private fun createCoupon() {
+        viewModel.createCoupon(
+            ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
+            false,
+            couponInformation ?: return,
+            couponSettings ?: return,
+            couponProducts,
+        )
+    }
+
+    
+    private fun onTryAgain() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+            step = VoucherCreationStep.REVIEW,
+            action = VoucherCreationAnalyticConstant.EventAction.Click.FAILED_POP_UP_TRY_AGAIN,
+            userId = userSession.userId
+        )
+        createCouponErrorNotice.dismiss()
+        createCoupon()
+    }
+
+    private fun onRequestHelp() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+            step = VoucherCreationStep.REVIEW,
+            action = VoucherCreationAnalyticConstant.EventAction.Click.FAILED_POP_UP_HELP,
+            userId = userSession.userId
+        )
+        createCouponErrorNotice.dismiss()
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, VoucherUrl.HELP_URL)
+    }
+
+    private fun showBroadCastVoucherBottomSheet(coupon: Coupon, freeBroadcastQuota : Int) {
+        val bottomSheet = BroadcastCouponBottomSheet.newInstance(coupon, freeBroadcastQuota)
+        bottomSheet.setOnBroadCastClickListener {
+            VoucherCreationTracking.sendBroadCastChatClickTracking(
+                category = VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.PAGE,
+                shopId = userSession.shopId
+            )
+            SharingUtil.shareToBroadCastChat(requireContext(), coupon.id)
+        }
+        bottomSheet.setCloseClickListener {
+            VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                userId = userSession.userId
+            )
+            bottomSheet.dismiss()
+        }
+        bottomSheet.clearContentPadding = true
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun displayTermAndConditionBottomSheet() {
+        val bottomSheet = TermAndConditionBottomSheet.newInstance(requireActivity(), getString(R.string.coupon_tnc))
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun displayCouponPreviewBottomSheet() {
+        val coupon = Coupon(0, "",couponInformation ?: return, couponSettings?: return, couponProducts)
+        val bottomSheet = CouponPreviewBottomSheet.newInstance(coupon)
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
 }

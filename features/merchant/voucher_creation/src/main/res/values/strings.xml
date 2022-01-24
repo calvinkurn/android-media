@@ -93,7 +93,7 @@
 
     <!--Step 2-->
     <string name="mvc_create_tips_calculation">Cara perhitungan estimasi pengeluaran</string>
-    <string name="mvc_create_tips_estimation">Estimasi = Nominal Diskon x Kuota Voucher</string>
+    <string name="mvc_create_tips_estimation">Estimasi = Nominal Diskon x Kuota Kupon</string>
     <string name="mvc_create_voucher_name_alert_minimum">Min. 5 huruf</string>
     <string name="mvc_create_promo_type_free_deliv_tab">Gratis Ongkir</string>
     <string name="mvc_create_promo_type_free_deliv_ticker">Untuk <b>menjangkau pembeli dari berbagai kota,</b> terutama jika barangmu sulit ditemukan di kota-kota lain.</string>
@@ -354,7 +354,7 @@
     <string name="no_products">Belum ada produk</string>
     <string name="create_coupon">Buat Kupon</string>
     <string name="check_coupon_appearance">Cek Tampilan Kupon</string>
-    <string name="coupon_product_terms_and_condition">Dengan klik Buat Kupon, saya menyetujui <a href="https://learntodroid.com">syarat dan ketentuan</a> yang berlaku.</string>
+    <string name="coupon_product_terms_and_condition">Dengan klik Buat Kupon, saya menyetujui <a href="https://google.com">syarat dan ketentuan</a> yang berlaku.</string>
     <string name="quota">Kuota</string>
     <string name="product_list">Daftar Produk</string>
     <string name="listed_product">Produk terdaftar</string>
@@ -362,6 +362,7 @@
     <string name="minimum_purchase">Minimum pembelian</string>
     <string name="minimum_purchase_type">Tipe minimum pembelian</string>
     <string name="discount_amount">Nominal Diskon</string>
+    <string name="discount_amount_free_shipping">Nominal Gratis Ongkir</string>
     <string name="discount_type">Tipe Diskon</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="hyphen">-</string>
@@ -392,6 +393,7 @@
     <string name="placeholder_percent">%s\%%</string>
     <string name="placeholder_registered_product">(%s/100)</string>
     <string name="placeholder_coupon_period">%s, %s WIB - %s, %s WIB</string>
+    <string name="placeholder_scheduled_coupon_period">Kupon \"%s\" aktif pada %s, %s WIB - %s, %s WIB</string>
     <string name="cashback_percentage">Persentase cashback</string>
     <string name="error_message_discount_percentage_range">Diskon minimal 2%, maksimal 100%</string>
     <string name="error_message_discount_percentage_below_minimum">Min. 2%</string>
@@ -405,10 +407,23 @@
     <string name="percent">%</string>
     <string name="percentage">Persentase</string>
     <string name="manage_product">Atur Produk</string>
-
+    <string name="max_expense_estimation_1">Biaya promosi akan terhitung setelah pembeli menggunakan Kupon Produk dalam pembelian.</string>
+    <string name="max_expense_estimation_2">Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
+    <string name="max_expense_estimation_3">Tidak perlu bayar di muka.</string>
+    <string name="coupon_scheduled">Yay, Kupon dijadwalkan!</string>
+    <string name="share_to_buyer">Bagikan ke Calon Pembeli</string>
+    <string name="broadcast_suggestion">Potensi tingkatkan orderan toko 2x lipat.</string>
+    <string name="error_message_create_coupon_product">Yaah, gagal menambahkan Kupon Produk</string>
+    <string name="error_message_create_coupon_description">Kupon kamu gagal ditambahkan. Coba buat ulang atau hubungi Pusat Bantuan.</string>
+    <string name="coupon_tnc">Syarat dan Ketentuan Kupon Produk merupakan bagian dari Syarat dan Ketentuan Situs/Aplikasi Tokopedia. Penggunaan Kupon Produk  tunduk pada Syarat dan Ketentuan Situs/Aplikasi, Kebijakan Privasi, dan Syarat dan Ketentuan yang tertulis dibawah ini. Pengguna disarankan membaca dengan seksama karena dapat berdampak kepada hak dan kewajiban pengguna secara hukum.\n\nDengan mendaftar dan/atau menggunakan situs www.tokopedia.com, maka Pengguna dianggap telah membaca, mengerti, memahami dan menyetujui semua isi dalam Syarat dan Ketentuan. Syarat dan Ketentuan ini merupakan bentuk kesepakatan yang dituangkan dalam sebuah perjanjian yang sah antara Pengguna dengan PT Tokopedia. Jika pengguna tidak menyetujui salah satu, sebagian, atau seluruh isi Syarat dan Ketentuan, maka pengguna tidak diperkenankan menggunakan layanan di www.tokopedia.com.</string>
+    <string name="image_ratio_tall">3:1</string>
+    <string name="image_ratio_square">1:1</string>
+    <string name="image_ratio_wide">16:9</string>
+    <string name="coupon_preview">Tampilan Kupon</string>
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
     <string name="mvc_create_coupon_date_desc"><b>Maks. 10 Kupon</b> per bulan</string>
+    <string name="coupon_code_copied_to_clipboard">Kode kupon berhasil disalin</string>
 
 </resources>

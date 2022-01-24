@@ -301,6 +301,7 @@
                     app:typographyType="heading_6" />
 
                 <ImageView
+                    android:id="@+id/imgExpenseEstimationDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/unify_space_4"
