@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
-import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateUiModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateResultModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -15,9 +15,9 @@ import javax.inject.Inject
 open class GetTemplateChatRoomUseCase @Inject constructor(
         val api: ChatRoomApi,
         val mapper: GetTemplateChatRoomMapper
-) : UseCase<GetTemplateUiModel>() {
+) : UseCase<GetTemplateResultModel>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<GetTemplateUiModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<GetTemplateResultModel> {
         return api.getTemplate(requestParams.parameters).map(mapper)
     }
 

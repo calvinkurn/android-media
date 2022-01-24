@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapperKt.mapToTemplateUiModel
+import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper.mapToTemplateUiModel
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase.Companion.getAvailabilityJson
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase.Companion.toJsonArray
 import com.tokopedia.topchat.chattemplate.view.uimodel.ArrangeResultModel
-import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateUiModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateResultModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,12 +23,12 @@ class ChatTemplateViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private var _chatTemplate = MutableLiveData<Result<GetTemplateUiModel>>()
-    val chatTemplate: LiveData<Result<GetTemplateUiModel>>
+    private var _chatTemplate = MutableLiveData<Result<GetTemplateResultModel>>()
+    val chatTemplate: LiveData<Result<GetTemplateResultModel>>
         get() = _chatTemplate
 
-    private var _templateAvailability = MutableLiveData<Pair<Boolean, Result<GetTemplateUiModel>>>()
-    val templateAvailability: LiveData<Pair<Boolean, Result<GetTemplateUiModel>>>
+    private var _templateAvailability = MutableLiveData<Pair<Boolean, Result<GetTemplateResultModel>>>()
+    val templateAvailability: LiveData<Pair<Boolean, Result<GetTemplateResultModel>>>
         get() = _templateAvailability
 
     private var _arrangeTemplate = MutableLiveData<ArrangeResultModel>()

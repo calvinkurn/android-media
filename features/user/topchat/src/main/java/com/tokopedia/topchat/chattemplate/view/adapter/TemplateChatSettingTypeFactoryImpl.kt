@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemAddTemplateChatViewHolder
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
-import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -26,8 +26,8 @@ class TemplateChatSettingTypeFactoryImpl(
         return viewHolder
     }
 
-    override fun type(templateChatModel: TemplateChatModel): Int {
-        return if (templateChatModel.isIcon) {
+    override fun type(templateChatUiModel: TemplateChatUiModel): Int {
+        return if (templateChatUiModel.isIcon) {
             ItemAddTemplateChatViewHolder.LAYOUT
         } else ItemTemplateChatViewHolder.LAYOUT
     }

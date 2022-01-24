@@ -11,7 +11,7 @@ import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResu
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
-import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateUiModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateResultModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -40,12 +40,12 @@ open class TopChatRoomPresenter @Inject constructor(
     fun getTemplate(isSeller: Boolean) {
         getTemplateChatRoomUseCase.execute(
             GetTemplateChatRoomUseCase.generateParam(isSeller),
-            object : Subscriber<GetTemplateUiModel>() {
-                override fun onNext(templateUiModel: GetTemplateUiModel?) {
+            object : Subscriber<GetTemplateResultModel>() {
+                override fun onNext(templateResultModel: GetTemplateResultModel?) {
                     val templateList = arrayListOf<Visitable<*>>()
-                    if (templateUiModel != null) {
-                        if (templateUiModel.isEnabled) {
-                            templateList.addAll(templateUiModel.listTemplate)
+                    if (templateResultModel != null) {
+                        if (templateResultModel.isEnabled) {
+                            templateList.addAll(templateResultModel.listTemplate)
                         }
                     }
                     view?.onSuccessGetTemplate(templateList)

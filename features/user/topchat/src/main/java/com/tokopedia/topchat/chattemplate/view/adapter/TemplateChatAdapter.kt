@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 import java.util.ArrayList
 
 /**
@@ -44,9 +44,9 @@ class TemplateChatAdapter(
     fun update(strings: ArrayList<String?>) {
         list.clear()
         for (i in strings.indices) {
-            list.add(TemplateChatModel(strings[i]))
+            list.add(TemplateChatUiModel(strings[i]))
         }
-        list.add(TemplateChatModel(false))
+        list.add(TemplateChatUiModel(false))
         notifyDataSetChanged()
     }
 

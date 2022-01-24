@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chattemplate.view.viewmodel
 
-import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapperKt.mapToTemplateUiModel
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chattemplate.view.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -15,13 +15,13 @@ import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
  */
 class ItemAddTemplateChatViewHolder(
     var view: View, private var viewListener: TemplateChatContract.View
-) : AbstractViewHolder<TemplateChatModel>(view) {
+) : AbstractViewHolder<TemplateChatUiModel>(view) {
 
     var textView: TextView? = itemView.findViewById(R.id.caption)
     var imageView: ImageView? = itemView.findViewById(R.id.setting)
 
-    override fun bind(element: TemplateChatModel) {
-        if (element.size() >= 5) {
+    override fun bind(element: TemplateChatUiModel) {
+        if (element.size() >= TEMPLATE_COUNT_THRESHOLD) {
             imageView?.setImageDrawable(
                 MethodChecker.getDrawable(
                     view.context,
@@ -55,6 +55,7 @@ class ItemAddTemplateChatViewHolder(
         @JvmField
         @LayoutRes
         val LAYOUT = R.layout.item_add_template_chat_settings
+        private const val TEMPLATE_COUNT_THRESHOLD = 5
     }
 
 }

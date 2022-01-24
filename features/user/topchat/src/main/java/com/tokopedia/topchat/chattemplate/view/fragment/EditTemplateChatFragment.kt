@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chattemplate.view.fragment
 import android.app.Activity
 import android.app.AlertDialog
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract
 import android.widget.TextView
 import android.widget.EditText
 import javax.inject.Inject
@@ -14,8 +13,7 @@ import rx.functions.Action1
 import android.graphics.PorterDuff
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
-import com.tokopedia.topchat.chattemplate.di.TemplateChatModule
-import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateUiModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateResultModel
 import android.content.Intent
 import android.view.*
 import com.google.android.material.snackbar.Snackbar
@@ -33,7 +31,7 @@ import rx.Observable
 /**
  * Created by stevenfredian on 12/22/17.
  */
-class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.View {
+class EditTemplateChatFragment : BaseDaggerFragment() {
     private var counter: TextView? = null
     private var error: TextView? = null
     private var submit: TextView? = null
@@ -57,6 +55,7 @@ class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.
             if (it.getInt(InboxMessageConstant.PARAM_MODE) == TemplateChatFragment.CREATE) {
                 setHasOptionsMenu(false)
             }
+            isSeller = it.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)
         }
     }
 
@@ -158,7 +157,7 @@ class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.
             integer == 0 -> {
                 canProceed(false, proceed)
             }
-            integer in 1..4 -> {
+            integer < MIN_CHAR -> {
                 error?.text = getString(R.string.minimal_char_template)
                 error?.visibility = View.VISIBLE
                 canProceed(false, proceed)
@@ -215,18 +214,17 @@ class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.
                 .baseAppComponent
             val daggerTemplateChatComponent = DaggerTemplateChatComponent.builder()
                 .baseAppComponent(appComponent)
-                .templateChatModule(TemplateChatModule(requireContext()))
                 .build() as DaggerTemplateChatComponent
             daggerTemplateChatComponent.inject(this)
         }
     }
 
-    override fun onResult(editTemplateViewModel: EditTemplateUiModel, index: Int, s: String) {
+    private fun onResult(editTemplateViewModel: EditTemplateResultModel, index: Int, s: String) {
         analytics.eventClickTemplate()
         val intent = Intent()
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index)
         intent.putExtra(TemplateChatFragment.LIST_RESULT, s)
-        intent.putExtra("enabled", editTemplateViewModel.isEnabled)
+        intent.putExtra(ENABLED_KEY_RESULT, editTemplateViewModel.isEnabled)
         intent.putExtra(
             TemplateChatFragment.MODE_RESULT,
             arguments?.getInt(InboxMessageConstant.PARAM_MODE)
@@ -234,22 +232,22 @@ class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.
         activity?.setResult(Activity.RESULT_OK, intent)
     }
 
-    override fun onResult(editTemplateViewModel: EditTemplateUiModel, index: Int) {
+    private fun onResult(editTemplateViewModel: EditTemplateResultModel, index: Int) {
         val intent = Intent()
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index)
         intent.putExtra(TemplateChatFragment.MODE_RESULT, TemplateChatFragment.DELETE)
         activity?.setResult(Activity.RESULT_OK, intent)
     }
 
-    override fun finish() {
+    private fun finish() {
         activity?.finish()
     }
 
-    override fun dropKeyboard() {
+    private fun dropKeyboard() {
         KeyboardHandler.DropKeyboard(activity, view)
     }
 
-    override fun showError(error: Throwable) {
+    private fun showError(error: Throwable) {
         SnackbarManager.make(
             activity, ErrorHandler.getErrorMessage(
                 context, error
@@ -259,7 +257,7 @@ class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.
 
     private fun setupObservers() {
         viewModel.createEditTemplate.observe(viewLifecycleOwner, {
-            onResult(it.editTemplateUiModel, it.index, it.text)
+            onResult(it.editTemplateResultModel, it.index, it.text)
             finish()
         })
 
@@ -276,14 +274,16 @@ class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.
     }
 
     companion object {
+        private const val EMPTY_CHAR = 0
+        private const val MIN_CHAR = 5
         private const val MAX_CHAR = 200
         private const val DISABLE_DELETE = 130
         private const val ENABLE_DELETE = 255
+        private const val ENABLED_KEY_RESULT = "enabled"
         @JvmStatic
         fun createInstance(extras: Bundle?): EditTemplateChatFragment {
             val fragment = EditTemplateChatFragment()
             fragment.arguments = extras
-            fragment.isSeller = extras?.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)?: false
             return fragment
         }
     }

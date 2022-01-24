@@ -2,19 +2,18 @@ package com.tokopedia.topchat.chattemplate.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
-import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateUiModel
-import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateUiModel
-import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateResultModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateResultModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 
-object TemplateChatMapperKt {
-    fun TemplateData.mapToTemplateUiModel(): GetTemplateUiModel {
+object TemplateChatMapper {
+    fun TemplateData.mapToTemplateUiModel(): GetTemplateResultModel {
         val result =
-            GetTemplateUiModel()
+            GetTemplateResultModel()
         val list: ArrayList<Visitable<*>> = arrayListOf()
         for (i in this.templates.indices) {
             if (this.templates[i] != "_") {
-                val templateChatModel =
-                    TemplateChatModel()
+                val templateChatModel = TemplateChatUiModel()
                 templateChatModel.message = this.templates[i]
                 list.add(templateChatModel)
             }
@@ -25,9 +24,8 @@ object TemplateChatMapperKt {
         return result
     }
 
-    fun TemplateData.mapToEditTemplateUiModel(): EditTemplateUiModel {
-        val model =
-            EditTemplateUiModel()
+    fun TemplateData.mapToEditTemplateUiModel(): EditTemplateResultModel {
+        val model = EditTemplateResultModel()
         model.isSuccess = this.isSuccess
         model.isEnabled = this.isIsEnable
         return model

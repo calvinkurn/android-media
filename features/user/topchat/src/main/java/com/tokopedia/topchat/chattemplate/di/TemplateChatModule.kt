@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseC
 import retrofit2.converter.gson.GsonConverterFactory
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.converter.StringResponseConverter
@@ -38,34 +39,27 @@ import java.util.concurrent.TimeUnit
  * Created by stevenfredian on 9/14/17.
  */
 @Module
-class TemplateChatModule(private var mContext: Context) {
+class TemplateChatModule {
 
-    @Provides
-    @TemplateChatScope
-    @TopchatContext
-    fun provideContext(): Context {
-        return mContext
-    }
-
-    @TemplateChatScope
+    @ActivityScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
         return UserSession(context)
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @Provides
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
@@ -85,7 +79,7 @@ class TemplateChatModule(private var mContext: Context) {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @Provides
     fun provideOkHttpClient(
         @InboxQualifier retryPolicy: OkHttpRetryPolicy,
@@ -110,7 +104,7 @@ class TemplateChatModule(private var mContext: Context) {
         return builder.build()
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @InboxQualifier
     @Provides
     fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
@@ -122,7 +116,7 @@ class TemplateChatModule(private var mContext: Context) {
         )
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @InboxQualifier
     @Provides
     fun provideChatRetrofit(
@@ -138,25 +132,25 @@ class TemplateChatModule(private var mContext: Context) {
             .build()
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @Provides
     fun provideChatApi(@InboxQualifier retrofit: Retrofit): ChatApi {
         return retrofit.create(ChatApi::class.java)
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @Provides
     fun provideChatApiKt(@InboxQualifier retrofit: Retrofit): ChatApiKt {
         return retrofit.create(ChatApiKt::class.java)
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @Provides
     fun provideTemplateRepositoryKt(templateRepositoryImplKt: TemplateRepositoryImplKt): TemplateRepositoryKt {
         return templateRepositoryImplKt
     }
 
-    @TemplateChatScope
+    @ActivityScope
     @Provides
     fun provideEditTemplateRepositoryKt(editTemplateRepositoryImplKt: EditTemplateRepositoryImplKt): EditTemplateRepositoryKt {
         return editTemplateRepositoryImplKt

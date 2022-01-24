@@ -28,13 +28,13 @@ class SetAvailabilityTemplateUseCase @Inject constructor(
             isSeller: Boolean,
             isEnabled: Boolean
         ): JsonObject {
-            val jsonObject = JsonObject()
-            if (jsonArray != null) {
-                jsonObject.add(PARAM_POSITION, jsonArray)
+            return JsonObject().apply {
+                if (jsonArray != null) {
+                    add(PARAM_POSITION, jsonArray)
+                }
+                addProperty(PARAM_IS_SELLER, isSeller)
+                addProperty(PARAM_IS_ENABLE, isEnabled)
             }
-            jsonObject.addProperty(PARAM_IS_SELLER, isSeller)
-            jsonObject.addProperty(PARAM_IS_ENABLE, isEnabled)
-            return jsonObject
         }
 
         fun toJsonArray(list: List<Int>): JsonArray {

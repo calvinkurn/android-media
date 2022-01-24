@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
 import com.tokopedia.topchat.common.util.ItemTouchHelperAdapter
@@ -46,8 +46,8 @@ class TemplateChatSettingAdapter(
 
     fun getListString(): ArrayList<String> {
         listString.clear()
-        for (i in 0 until list.size - 1) {
-            val temp = (list[i] as TemplateChatModel).message ?: ""
+        list.forEach {
+            val temp = (it as TemplateChatUiModel).message ?: ""
             listString.add(temp)
         }
         return listString
@@ -70,7 +70,7 @@ class TemplateChatSettingAdapter(
 
     fun edit(index: Int, string: String?) {
         if (list.size > 0) {
-            (list[index] as TemplateChatModel?)!!.message = string
+            (list[index] as TemplateChatUiModel?)?.message = string
             notifyItemChanged(index)
         }
     }
@@ -81,7 +81,7 @@ class TemplateChatSettingAdapter(
             notifyItemRemoved(index)
             list.removeAt(list.size - 1)
             notifyItemRemoved(list.size - 1)
-            list.add(TemplateChatModel(false, list.size))
+            list.add(TemplateChatUiModel(false, list.size))
             notifyItemInserted(list.size)
         }
     }
@@ -90,15 +90,14 @@ class TemplateChatSettingAdapter(
         if (list.size > 0) {
             list.removeAt(list.size - 1)
             notifyItemRemoved(list.size - 1)
-            list.add(TemplateChatModel(string))
-            list.add(TemplateChatModel(false, list.size))
+            list.add(TemplateChatUiModel(string))
+            list.add(TemplateChatUiModel(false, list.size))
             notifyItemRangeInserted(list.size, 2)
         }
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        Collections.swap(list, fromPosition, toPosition)
-        notifyItemMoved(fromPosition, toPosition)
+        revertArrange(fromPosition, toPosition)
         return true
     }
 

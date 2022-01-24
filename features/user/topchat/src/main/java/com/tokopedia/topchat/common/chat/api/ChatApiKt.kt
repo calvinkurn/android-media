@@ -9,7 +9,9 @@ import retrofit2.http.*
 @JvmSuppressWildcards
 interface ChatApiKt {
     @GET(TkpdBaseURL.Chat.GET_TEMPLATE)
-    suspend fun getTemplateSuspend(@QueryMap parameters: Map<String, Boolean>): TemplateDataWrapper<TemplateData>
+    suspend fun getTemplateSuspend(
+        @QueryMap parameters: Map<String, Boolean>
+    ): TemplateDataWrapper<TemplateData>
 
     @Headers("Content-Type: application/json")
     @PUT(TkpdBaseURL.Chat.SET_TEMPLATE)
@@ -28,7 +30,9 @@ interface ChatApiKt {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Chat.CREATE_TEMPLATE)
-    suspend fun createTemplate(@FieldMap parameters: Map<String, Any>): TemplateDataWrapper<TemplateData>
+    suspend fun createTemplate(
+        @FieldMap parameters: Map<String, Any>
+    ): TemplateDataWrapper<TemplateData>
 
     @HTTP(
         method = "DELETE",

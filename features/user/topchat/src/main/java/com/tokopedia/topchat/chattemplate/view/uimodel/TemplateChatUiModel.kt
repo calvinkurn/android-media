@@ -6,7 +6,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 /**
  * Created by stevenfredian on 11/29/17.
  */
-class TemplateChatModel : Visitable<TemplateChatTypeFactory> {
+class TemplateChatUiModel : Visitable<TemplateChatTypeFactory> {
     var message: String? = null
     var isIcon = false
     var size = 0

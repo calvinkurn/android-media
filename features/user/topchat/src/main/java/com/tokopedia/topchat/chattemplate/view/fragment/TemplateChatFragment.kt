@@ -26,7 +26,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateCh
 import com.tokopedia.topchat.chattemplate.view.dialog.TemplateInfoBottomSheet
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
 import com.tokopedia.topchat.chattemplate.view.viewmodel.ChatTemplateViewModel
-import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.util.SimpleItemTouchHelperCallback
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -155,7 +155,6 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
                     .baseAppComponent
             val daggerTemplateChatComponent = DaggerTemplateChatComponent.builder()
                     .baseAppComponent(appComponent)
-                    .templateChatModule(TemplateChatModule(requireContext()))
                     .build() as DaggerTemplateChatComponent
             daggerTemplateChatComponent.inject(this)
         }
@@ -312,7 +311,7 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
                     val temp: ArrayList<Visitable<*>> = it.data.listTemplate
                     val size: Int = temp.size
                     temp.add(
-                        TemplateChatModel(
+                        TemplateChatUiModel(
                             false,
                             size
                         )

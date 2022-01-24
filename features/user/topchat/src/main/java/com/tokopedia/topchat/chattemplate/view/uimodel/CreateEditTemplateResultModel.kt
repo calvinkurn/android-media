@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chattemplate.view.uimodel
 
 data class CreateEditTemplateResultModel (
-    var editTemplateUiModel: EditTemplateUiModel,
+    var editTemplateResultModel: EditTemplateResultModel,
     var index: Int,
     var text: String
 )
