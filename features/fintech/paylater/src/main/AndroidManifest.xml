@@ -33,7 +33,6 @@
 
                 <data
                     android:host="@string/host_fintech"
-                    android:path="@string/path_gotofin_activation"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
