@@ -15,11 +15,12 @@
         tools:src="@drawable/ic_icon_alert"/>
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/unify_font_12"
         android:maxLines="2"
+        android:gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        app:typographyType="small"
+        app:typographyType="body_1"
         tools:text="40+ metode pembayaran"/>
 </LinearLayout>
