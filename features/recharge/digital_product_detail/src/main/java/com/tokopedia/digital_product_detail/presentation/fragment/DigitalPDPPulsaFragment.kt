@@ -14,9 +14,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
@@ -244,7 +244,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun getFavoriteNumber(
-        categoryId: String = this.categoryId.toString(),
+        categoryId: Int = this.categoryId,
         shouldRefreshInputNumber: Boolean = true
     ) {
         viewModel.getFavoriteNumber(listOf(categoryId), shouldRefreshInputNumber)
@@ -257,7 +257,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetFavoriteNumber(
-        favoriteNumber: List<TopupBillsSeamlessFavNumberItem>,
+        favoriteNumber: List<TopupBillsPersoFavNumberItem>,
         shouldRefreshInputNumber: Boolean
     ) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {

@@ -1,10 +1,8 @@
 package com.tokopedia.digital_product_detail.domain.usecase
 
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
+import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
-import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.digital_product_detail.data.model.param.FavoriteNumberParam
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -14,45 +12,39 @@ import javax.inject.Inject
 
 class GetRechargeFavoriteNumberUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository
-): GraphqlUseCase<TopupBillsSeamlessFavNumberData>(graphqlRepository) {
+): GraphqlUseCase<TopupBillsPersoFavNumberData>(graphqlRepository) {
     
     private var params: RequestParams = RequestParams.EMPTY
 
-    override suspend fun executeOnBackground(): TopupBillsSeamlessFavNumberData {
+    override suspend fun executeOnBackground(): TopupBillsPersoFavNumberData {
         val gqlRequest = GraphqlRequest(
-            CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
-            TopupBillsSeamlessFavNumberData::class.java,
+            CommonTopupBillsGqlQuery.rechargePersoFavoriteNumber,
+            TopupBillsPersoFavNumberData::class.java,
             params.parameters
         )
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
-        val error = gqlResponse.getError(TopupBillsSeamlessFavNumberData::class.java)
+        val error = gqlResponse.getError(TopupBillsPersoFavNumberData::class.java)
         if (error == null || error.isEmpty()) {
-            return gqlResponse.getData(TopupBillsSeamlessFavNumberData::class.java)
+            return gqlResponse.getData(TopupBillsPersoFavNumberData::class.java)
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.toString())
         }
     }
 
-    fun setRequestParams(categoryIds: List<String>){
-        var paramSource = if (categoryIds.contains(TopupBillsViewModel.CATEGORY_ID_PASCABAYAR.toString()))
-            TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
-
+    fun setRequestParams(categoryIds: List<Int>){
         params = RequestParams.create().apply {
-            putObject(FAVORITE_NUMBER_PARAM_FIELDS, FavoriteNumberParam(
-                source = paramSource,
-                categoryIds = categoryIds,
-                minLastTransaction = "",
-                minTotalTransaction = "",
-                servicePlanType = "",
-                subscription = false,
-                limit = FAVORITE_NUMBER_LIMIT
+            putObject(FAVORITE_NUMBER_PARAM_INPUT, FavoriteNumberParam(
+                channelName = CHANNEL_NAME,
+                clientNumbers = listOf(),
+                dgCategoryIDs = categoryIds,
+                pgCategoryIDs = listOf(),
             ))
         }
     }
 
     companion object {
-        const val FAVORITE_NUMBER_PARAM_FIELDS = "fields"
-        const val FAVORITE_NUMBER_LIMIT = 10
+        const val CHANNEL_NAME = "favorite_number_list"
+        const val FAVORITE_NUMBER_PARAM_INPUT = "input"
     }
 }

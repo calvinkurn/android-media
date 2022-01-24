@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
@@ -136,7 +136,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    private fun setSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
+    private fun setSortFilterChip(favnum: List<TopupBillsPersoFavNumberItem>) {
         val sortFilter = arrayListOf<SortFilterItem>()
 
         // create each chip
@@ -192,14 +192,14 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    fun setFavoriteNumber(favNumberItems: List<TopupBillsSeamlessFavNumberItem>) {
+    fun setFavoriteNumber(favNumberItems: List<TopupBillsPersoFavNumberItem>) {
         setSortFilterChip(favNumberItems)
     }
 
-    fun setAutoCompleteList(suggestions: List<TopupBillsSeamlessFavNumberItem>) {
+    fun setAutoCompleteList(suggestions: List<TopupBillsPersoFavNumberItem>) {
         autoCompleteAdapter?.updateItems(
             CommonTopupBillsDataMapper
-                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList())
+                .mapPersoFavNumberItemToContactDataView(suggestions).toMutableList())
     }
 
     fun setInputFieldType(type: InputFieldType) {

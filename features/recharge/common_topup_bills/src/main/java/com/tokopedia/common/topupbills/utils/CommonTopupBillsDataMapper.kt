@@ -2,6 +2,7 @@ package com.tokopedia.common.topupbills.utils
 
 import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.view.model.contact.TopupBillsContactDataView
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoComplete
@@ -29,6 +30,12 @@ object CommonTopupBillsDataMapper {
     }
 
     fun mapSeamlessFavNumberItemToContactDataView(clientNumbers: List<TopupBillsSeamlessFavNumberItem>): List<TopupBillsAutoComplete> {
+        return clientNumbers.map {
+            TopupBillsAutoCompleteContactDataView(it.clientName, it.clientNumber)
+        }
+    }
+
+    fun mapPersoFavNumberItemToContactDataView(clientNumbers: List<TopupBillsPersoFavNumberItem>): List<TopupBillsAutoComplete> {
         return clientNumbers.map {
             TopupBillsAutoCompleteContactDataView(it.clientName, it.clientNumber)
         }

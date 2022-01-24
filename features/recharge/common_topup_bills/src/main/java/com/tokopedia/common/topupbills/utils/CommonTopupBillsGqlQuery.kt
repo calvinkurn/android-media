@@ -261,6 +261,27 @@ object CommonTopupBillsGqlQuery {
         }
     """.trimIndent()
 
+    val rechargePersoFavoriteNumber = """
+        query digiPersoGetPersonalizedItems(${'$'}input: DigiPersoGetPersonalizedItemsRequest!) {
+          digiPersoGetPersonalizedItems(input:${'$'}input) {
+            trackingData {
+              userType
+            }
+            items {
+              id
+              title
+              subtitle
+              mediaURL
+              trackingData {
+                clientNumber
+                lastOrderDate
+                totalTransaction
+              }
+            }
+          }
+        }
+    """.trimIndent()
+
 
     val ADD_BILL_QUERY by lazy {
         """

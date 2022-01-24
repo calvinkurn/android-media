@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
@@ -40,8 +40,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<Pair<List<TopupBillsSeamlessFavNumberItem>, Boolean>>>()
-    val favoriteNumberData: LiveData<RechargeNetworkResult<Pair<List<TopupBillsSeamlessFavNumberItem>, Boolean>>>
+    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<Pair<List<TopupBillsPersoFavNumberItem>, Boolean>>>()
+    val favoriteNumberData: LiveData<RechargeNetworkResult<Pair<List<TopupBillsPersoFavNumberItem>, Boolean>>>
         get() = _favoriteNumberData
 
     private val _catalogProductInput = MutableLiveData<Result<List<DenomWidgetModel>>>()
@@ -85,12 +85,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun getFavoriteNumber(categoryIds: List<String>, shouldRefreshInputNumber: Boolean) {
+    fun getFavoriteNumber(categoryIds: List<Int>, shouldRefreshInputNumber: Boolean) {
         _favoriteNumberData.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
             _favoriteNumberData.postValue(RechargeNetworkResult.Success(
-                favoriteNumber.seamlessFavoriteNumber.favoriteNumbers to shouldRefreshInputNumber))
+                favoriteNumber.persoFavoriteNumber.items to shouldRefreshInputNumber))
         }) {
             _favoriteNumberData.postValue(RechargeNetworkResult.Fail(it))
         }
