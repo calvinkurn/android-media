@@ -157,6 +157,22 @@ class PlayViewModelRobot(
         viewModel.onShowProductSheet(bottomSheetHeight)
     }
 
+    fun showCouponBottomSheet(bottomSheetHeight: Int = 50){
+        viewModel.showCouponSheet(bottomSheetHeight)
+    }
+
+    fun showKebabBottomSheet(bottomSheetHeight: Int = 20){
+        viewModel.onShowKebabMenuSheet(bottomSheetHeight)
+    }
+
+    fun showUserReportBottomSheet(bottomSheetHeight: Int = 80){
+        viewModel.onShowUserReportSheet(bottomSheetHeight)
+    }
+
+    fun showUserReportSubmissionBottomSheet(bottomSheetHeight: Int = 80){
+        viewModel.onShowUserReportSubmissionSheet(bottomSheetHeight)
+    }
+
     fun hideProductBottomSheet() {
         viewModel.onHideProductSheet()
     }
@@ -175,6 +191,22 @@ class PlayViewModelRobot(
 
     fun hideLeaderboardBottomSheet() {
         viewModel.submitAction(ClickCloseLeaderboardSheetAction)
+    }
+
+    fun hideCouponBottomSheet(){
+        viewModel.hideCouponSheet()
+    }
+
+    fun hideKebabBottomSheet(){
+        viewModel.hideKebabMenuSheet()
+    }
+
+    fun hideUserReportBottomSheet(){
+        viewModel.hideUserReportSheet()
+    }
+
+    fun hideUserReportSubmissionBottomSheet(){
+        viewModel.hideUserReportSubmissionSheet()
     }
 
     fun goBack() = viewModel.goBack()
