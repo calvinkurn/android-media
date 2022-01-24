@@ -22,6 +22,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 }
 
 project.ext {

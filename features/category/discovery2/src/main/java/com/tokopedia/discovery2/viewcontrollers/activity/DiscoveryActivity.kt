@@ -81,7 +81,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), Fold
         initDaggerInject()
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        FoldableSupportManager(windowInfoRepository(), this).let {
+        FoldableSupportManager(windowInfoRepository(), this,this).let {
             this.lifecycle.addObserver(it)
         }
     }
