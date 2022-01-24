@@ -73,17 +73,12 @@ object PromoCreationStaticData {
         }
 
         val productCouponApplink =
-            if (isVoucherCashbackEligible) {
-                if (isProductCouponFirstTime) {
-                    Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER).buildUpon()
-                        .appendQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE, SellerHomeApplinkConst.TYPE_PRODUCT)
-                        .build().toString()
-                } else {
-                    // TODO: Add Create product coupon applink
-                    ""
-                }
+            if (isProductCouponFirstTime) {
+                Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER).buildUpon()
+                    .appendQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE, SellerHomeApplinkConst.TYPE_PRODUCT)
+                    .build().toString()
             } else {
-                ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
             }
         promoItems.add(
             PromoCreationUiModel(

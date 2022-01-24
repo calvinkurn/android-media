@@ -644,8 +644,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun goToCreateProductCoupon(product: ProductUiModel?) {
-        if (checkProductCouponFirstTime()) {
-            val firstTimeLink =
+        val firstTimeLink =
+            if (checkProductCouponFirstTime()) {
                 Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER)
                     .buildUpon()
                     .appendQueryParameter(
@@ -653,11 +653,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                         SellerHomeApplinkConst.TYPE_PRODUCT
                     )
                     .build().toString()
-            context?.let {
-                RouteManager.route(it, firstTimeLink)
+            } else {
+                ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
             }
-        } else {
-            // TODO: Go to product coupon applink
+        context?.let {
+            RouteManager.route(it, firstTimeLink)
         }
     }
 

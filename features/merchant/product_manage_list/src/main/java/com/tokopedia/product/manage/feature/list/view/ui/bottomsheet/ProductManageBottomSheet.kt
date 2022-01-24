@@ -144,7 +144,6 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         }
                     }
 
-                    // TODO: Check for RBAC
                     add(CreateProductCoupon(product))
 
                     if(broadcastChat) {

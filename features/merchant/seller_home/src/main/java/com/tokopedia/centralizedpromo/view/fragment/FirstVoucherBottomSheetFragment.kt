@@ -125,14 +125,13 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
         binding?.firstVoucherButton?.setOnClickListener {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(userSession.userId, false)
-            when (voucherType) {
-                SellerHomeApplinkConst.TYPE_PRODUCT -> {
-                    // TODO: go to create product coupon
+            val voucherApplink =
+                if (voucherType == SellerHomeApplinkConst.TYPE_PRODUCT) {
+                    ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
+                } else {
+                    ApplinkConstInternalSellerapp.CREATE_VOUCHER
                 }
-                else -> {
-                    RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
-                }
-            }
+            RouteManager.route(context, voucherApplink)
             this.dismiss()
         }
     }
