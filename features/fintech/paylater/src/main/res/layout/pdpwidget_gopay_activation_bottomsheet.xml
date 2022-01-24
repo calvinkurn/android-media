@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageDisplayer"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        app:layout_constraintLeft_toLeftOf="@id/tokoToGoPayHeader"
+        app:layout_constraintRight_toRightOf="@id/tokoToGoPayHeader"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokoToGoPayHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginTop="23dp"
+        android:layout_marginRight="@dimen/unify_space_16"
+        android:gravity="center"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageDisplayer"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="GoPayLater Cicil langsung bisa dipakai!" />
+
+
+    <include
+        android:id="@+id/link_benifit_1"
+        layout="@layout/pdpwidget_individual_activation_benifit"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/unify_space_16"
+        app:layout_constraintTop_toBottomOf="@+id/tokoToGoPayHeader" />
+
+    <include
+        android:id="@+id/link_benifit_2"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/unify_space_16"
+        layout="@layout/pdpwidget_individual_activation_benifit"
+        app:layout_constraintTop_toBottomOf="@id/link_benifit_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        />
+
+
+
+
+    <include
+        android:id="@+id/link_benifit_3"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        layout="@layout/pdpwidget_individual_activation_benifit"
+        app:layout_constraintTop_toBottomOf="@id/link_benifit_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginRight="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/link_benifit_3"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="filled"
+        android:text="Tanda Tangan untuk Aktifkan"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
