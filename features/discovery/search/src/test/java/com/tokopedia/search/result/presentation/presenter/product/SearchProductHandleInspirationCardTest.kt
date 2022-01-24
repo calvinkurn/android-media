@@ -123,14 +123,15 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
     }
 
     private fun InspirationCardDataView.assertInspirationCardViewModel(inspirationWidget: SearchProductModel.InspirationCardData) {
-        title shouldBe inspirationWidget.title
-        type shouldBe inspirationWidget.type
-        position shouldBe inspirationWidget.position
-        optionData.size shouldBe inspirationWidget.inspiratioWidgetOptions.size
+        data.title shouldBe inspirationWidget.title
+        data.type shouldBe inspirationWidget.type
+        data.position shouldBe inspirationWidget.position
+        data.optionCardData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
+        data.optionSizeData.size shouldBe 0
 
-        inspirationWidget.inspiratioWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
-            optionData[index].assertInspirationCardOptionViewModel(
-                    inspirationWidgetOption, type
+        inspirationWidget.inspirationWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
+            data.optionCardData[index].assertInspirationCardOptionViewModel(
+                    inspirationWidgetOption, data.type
             )
         }
     }
