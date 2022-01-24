@@ -18,6 +18,8 @@ class RechargeHomepageThreeIconsViewHolder(
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_three_icons
+
+        private const val SPAN_COUNT = 3
     }
 
     private val rvPool = RecyclerView.RecycledViewPool()
@@ -28,7 +30,7 @@ class RechargeHomepageThreeIconsViewHolder(
         with(bind.rvThreeIcons){
             setRecycledViewPool(rvPool)
             adapter = RechargeHomepageThreeIconsItemAdapter(itemThreeIcons, listener)
-            layoutManager = GridLayoutManager(context, 3)
+            layoutManager = GridLayoutManager(context, SPAN_COUNT)
         }
     }
 }
