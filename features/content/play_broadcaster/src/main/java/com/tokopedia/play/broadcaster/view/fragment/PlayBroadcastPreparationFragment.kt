@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.iconunify.IconUnify
@@ -38,6 +39,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** View Component */
     private val actionBarView by viewComponent { ActionBarViewComponent(it, this) }
     private val preparationListView by viewComponent{ PreparationListViewComponent(it, this) }
+    private lateinit var flStartLivestream: FrameLayout
     private lateinit var ivSwitchCamera: IconUnify
 
     private val fragmentViewContainer = FragmentViewContainer()
@@ -70,6 +72,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Setup */
     private fun setupView(view: View) {
+        flStartLivestream = view.findViewById(R.id.fl_bro_start_livestream)
         ivSwitchCamera = view.findViewById(R.id.ic_bro_preparation_switch_camera)
 
         actionBarView.setTitle(parentViewModel.getShopName())
@@ -83,13 +86,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupListener() {
+        flStartLivestream.setOnClickListener {
+            /** TODO: start countdown */
+        }
+
         ivSwitchCamera.setOnClickListener {
             parentViewModel.switchCamera()
             analytic.clickSwitchCameraOnSetupPage()
         }
     }
 
-    /** Listener */
+    /** Callback */
     override fun onCameraIconClicked() {
         parentViewModel.switchCamera()
         analytic.clickSwitchCameraOnSetupPage()
