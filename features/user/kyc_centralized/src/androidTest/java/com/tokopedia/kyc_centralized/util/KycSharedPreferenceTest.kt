@@ -35,7 +35,7 @@ class KycSharedPreferenceTest {
     fun whenRetrievingNullKey_ShouldReturnEmptyArray() {
         val actual = sut.getByteArrayCache("shouldNullKey")
 
-        assertEquals(actual.size, 0)
+        assertEquals(actual?.size, 0)
     }
 
     private fun generateIv(): ByteArray {
