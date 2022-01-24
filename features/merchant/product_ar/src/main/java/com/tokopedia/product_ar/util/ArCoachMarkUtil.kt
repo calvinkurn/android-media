@@ -21,7 +21,6 @@ object ArCoachMarkUtil {
                 coachmarkView.hideCoachMark()
                 showCoachMark(coachmarkView, dataAfterClick)
             } ?: coachmarkView.hideCoachMark()
-
         }
     }
 
