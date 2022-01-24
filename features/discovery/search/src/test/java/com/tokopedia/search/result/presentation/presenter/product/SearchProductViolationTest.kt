@@ -54,7 +54,7 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
 
         val violationProductsViewModel = violationProductsVisitableList[0] as ViolationDataView
 
-        val violation = searchProductModel.searchProduct.data.violation!!
+        val violation = searchProductModel.searchProduct.data.violation
 
         violationProductsViewModel.headerText shouldBe violation.headerText
         violationProductsViewModel.descriptionText shouldBe violation.descriptionText
@@ -83,11 +83,30 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
 
         val violationProductsViewModel =
             violationProductsVisitableList[1] as ViolationDataView
-        val violation = searchProductModel.searchProduct.data.violation!!
+        val violation = searchProductModel.searchProduct.data.violation
 
         violationProductsViewModel.headerText shouldBe violation.headerText
         violationProductsViewModel.descriptionText shouldBe violation.descriptionText
         violationProductsViewModel.violationButton.ctaUrl shouldBe violation.ctaUrl
         violationProductsViewModel.violationButton.text shouldBe violation.buttonText
+    }
+
+    @Test
+    fun `Show empty product search when violation header and description is empty`() {
+        val noViolationEmptyProductsJSON = "searchproduct/violation/no-violation.json"
+        val searchProductModel = noViolationEmptyProductsJSON.jsonToObject<SearchProductModel>()
+
+        `Given search product API will return empty search with error message`(searchProductModel)
+
+        `When load data`("asdgasdfasdf")
+
+        `Then verify view interaction for empty products search`()
+    }
+
+    private fun `Then verify view interaction for empty products search`() {
+        verify {
+            productListView.removeLoading()
+            productListView.setEmptyProduct(any(), any())
+        }
     }
 }
