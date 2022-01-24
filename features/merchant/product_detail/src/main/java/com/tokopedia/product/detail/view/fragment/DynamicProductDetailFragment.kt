@@ -44,8 +44,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
@@ -60,7 +58,6 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.iris.util.IrisSession
@@ -322,7 +319,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this, viewModel.userId, playWidgetCoordinator = PlayWidgetCoordinator().apply {
         setListener(this@DynamicProductDetailFragment)
     }) }
-    private val coachMarkBoePref by lazy { CoachMarkLocalCache(context) }
     private val adapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtilCallback())
                 .build()
@@ -1780,40 +1776,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             onSuccessGetDataP2(it, boeData, ratesData)
             (activity as? ProductDetailActivity)?.stopMonitoringP2Data()
             stickyLoginView?.loadContent()
-        }
-    }
-
-    override fun showCoachmark(view: Typography?, isBoeType: Boolean) {
-        context?.let {
-            if (view != null) {
-                val showLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it)
-                        ?: false
-                val showBoe = if (!isBoeType) false else coachMarkBoePref.shouldShowBoeCoachmark()
-
-                if (showLocalization || showBoe) {
-                    val coachMarkList = arrayListOf<CoachMark2Item>()
-                    if (showBoe) {
-                        coachMarkList.add(CoachMark2Item(view,
-                                it.getString(R.string.pdp_boe_coachmark_title),
-                                it.getString(R.string.pdp_boe_coachmark_desc)
-                        ).also {
-                            it.position = 1
-                        })
-                    }
-
-                    if (showLocalization) {
-                        coachMarkList.add(ChooseAddressUtils.coachMark2Item(it, view).also {
-                            it.position = 1
-                        })
-                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
-                    }
-
-                    if (coachMarkList.isNotEmpty()) {
-                        val coachmark = CoachMark2(it)
-                        coachmark.showCoachMark(coachMarkList, null, 0)
-                    }
-                }
-            }
         }
     }
 

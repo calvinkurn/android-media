@@ -30,6 +30,7 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -254,6 +255,13 @@ class PlayViewModel @Inject constructor(
         )
     }.flowOn(dispatchers.computation)
 
+    private val _kebabMenuUiState = _bottomInsets.map {
+        PlayKebabMenuUiState(
+            shouldShow = !isFreezeOrBanned && !it.isKeyboardShown
+        )
+    }.flowOn(dispatchers.computation)
+
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -271,7 +279,8 @@ class PlayViewModel @Inject constructor(
         _rtnUiState.distinctUntilChanged(),
         _titleUiState.distinctUntilChanged(),
         _viewAllProductUiState.distinctUntilChanged(),
-    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct ->
+        _kebabMenuUiState.distinctUntilChanged()
+    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct, kebabMenu ->
         PlayViewerNewUiState(
             interactiveView = interactive,
             partner = partner,
@@ -283,6 +292,7 @@ class PlayViewModel @Inject constructor(
             rtn = rtn,
             title = title,
             viewAllProduct = viewAllProduct,
+            kebabMenu = kebabMenu
         )
     }.flowOn(dispatchers.computation)
 

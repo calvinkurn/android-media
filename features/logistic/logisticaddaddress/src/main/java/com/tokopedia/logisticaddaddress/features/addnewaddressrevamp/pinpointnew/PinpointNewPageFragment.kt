@@ -462,6 +462,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
                 if (isPositiveFlow) {
                     isPositiveFlow = false
+                    viewModel.setAddress(SaveAddressDataModel())
                     goToAddressForm()
                 } else {
                     activity?.run {
@@ -760,16 +761,17 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToSearchPage() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
         if (!isPositiveFlow) {
-            intent.putExtra(EXTRA_IS_POLYGON, isPolygon)
-            intent.putExtra(EXTRA_FROM_PINPOINT, true)
-            intent.putExtra(EXTRA_DISTRICT_ID, districtId)
+            // back to addressform, reset ana state to search page
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_RESET_TO_SEARCH_PAGE, true)
+                })
+                finish()
+            }
+        } else {
+            activity?.finish()
         }
-        intent.putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-        intent.putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-        intent.putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
-        startActivityForResult(intent, REQUEST_SEARCH_PAGE)
     }
 
     private fun goToAddressForm() {
