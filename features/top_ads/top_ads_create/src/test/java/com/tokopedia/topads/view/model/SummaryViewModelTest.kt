@@ -41,7 +41,7 @@ class SummaryViewModelTest {
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
-        viewModel = spyk(SummaryViewModel(context, rule.dispatchers,validGroupUseCase, topAdsGetShopDepositUseCase, topAdsCreateUseCase, repository))
+        viewModel = spyk(SummaryViewModel(rule.dispatchers,validGroupUseCase, topAdsGetShopDepositUseCase, topAdsCreateUseCase))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
