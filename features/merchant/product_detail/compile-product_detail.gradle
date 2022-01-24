@@ -49,7 +49,7 @@ include "features:user:stickylogin"
 include "features:transaction:atc_common"
 include "libraries:videoplayer"
 include "features:discovery:carousel_productcard"
-include "features:user:chat_common"
+include "features:communication:chat_common"
 include "features:merchant:variant_common"
 include ':libraries:annotation_proc_central'
 include "libraries:image_picker"
