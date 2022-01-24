@@ -55,8 +55,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -316,7 +315,10 @@ abstract class BaseSearchCategoryViewModel(
     private fun createVisitableListWithOutOfCoverageView() {
         visitableList.clear()
         visitableList.add(chooseAddressDataView)
-        visitableList.add(TokoNowEmptyStateOocUiModel(hostSource = DEFAULT_VALUE_SOURCE_SEARCH))
+        visitableList.add(TokoNowEmptyStateOocUiModel(
+            hostSource = DEFAULT_VALUE_SOURCE_SEARCH,
+            serviceType = chooseAddressData?.service_type.orEmpty()
+        ))
         visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW))
     }
 
@@ -748,7 +750,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage()) {
             // show switcher only if service type is 15m
-            if (chooseAddressData?.service_type == NOW_15M) {
+            if (chooseAddressData?.service_type == ServiceType.NOW_15M) {
                 add(SwitcherWidgetDataView())
             }
             addAll(createFooterVisitableList())
@@ -1178,7 +1180,8 @@ abstract class BaseSearchCategoryViewModel(
         launchCatchError(
             block = {
                 chooseAddressData?.let {
-                    setUserPreferenceMutableLiveData.postValue(Success(setUserPreferenceUseCase.execute(it, serviceType)))
+                    val setUserPreference = setUserPreferenceUseCase.execute(it, serviceType)
+                    setUserPreferenceMutableLiveData.postValue(Success(setUserPreference))
                 }
             },
             onError = {
@@ -1188,11 +1191,17 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun switchService() {
-        val serviceType = if(chooseAddressData?.service_type == NOW_15M) {
-            NOW_2H
+        val currentServiceType = chooseAddressData?.service_type.orEmpty()
+
+        val serviceType = if (
+            currentServiceType == ServiceType.NOW_15M ||
+            currentServiceType == ServiceType.NOW_OOC
+        ) {
+            ServiceType.NOW_2H
         } else {
-            NOW_15M
+            ServiceType.NOW_15M
         }
+
         setUserPreference(serviceType)
     }
 

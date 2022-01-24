@@ -348,6 +348,10 @@ abstract class BaseSearchCategoryFragment:
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
 
             override fun onGetEventCategory(): String = eventCategory
+
+            override fun onSwitchService() {
+                getViewModel().switchService()
+            }
         }
     }
 

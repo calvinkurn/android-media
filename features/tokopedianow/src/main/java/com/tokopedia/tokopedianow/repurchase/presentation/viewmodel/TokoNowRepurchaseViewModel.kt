@@ -26,8 +26,11 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAddToCartTracker
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_FILTER
@@ -80,6 +83,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
+    private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.io) {
@@ -108,6 +112,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         get() = _repurchaseAddToCartTracker
     val openScreenTracker: LiveData<String>
         get() = _openScreenTracker
+    val setUserPreference: LiveData<Result<SetUserPreferenceData>>
+        get() = _setUserPreference
 
     private val _getLayout = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _loadMore = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
@@ -119,6 +125,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     private val _repurchaseAddToCartTracker = MutableLiveData<RepurchaseAddToCartTracker>()
     private val _openScreenTracker = MutableLiveData<String>()
+    private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
 
     private var localCacheModel: LocalCacheModel? = null
     private var productListMeta: RepurchaseProductListMeta? = null
@@ -307,6 +314,28 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             }) {
                 _atcQuantity.postValue(Fail(it))
             }
+        }
+    }
+
+    fun switchService() {
+        launchCatchError(block = {
+            localCacheModel?.let {
+                val currentServiceType = it.service_type
+
+                val serviceType = if (
+                    currentServiceType == ServiceType.NOW_15M ||
+                    currentServiceType == ServiceType.NOW_OOC
+                ) {
+                    ServiceType.NOW_2H
+                } else {
+                    ServiceType.NOW_15M
+                }
+
+                val setUserPreference = setUserPreferenceUseCase.execute(it, serviceType)
+                _setUserPreference.postValue(Success(setUserPreference))
+            }
+        }) {
+            _setUserPreference.postValue(Fail(it))
         }
     }
 
@@ -578,7 +607,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             EMPTY_STATE_OOC -> {
                 layoutList.clear()
                 layoutList.addChooseAddress()
-                layoutList.addEmptyStateOoc()
+                layoutList.addEmptyStateOoc(localCacheModel?.service_type.orEmpty())
                 layoutList.addRecomWidget(PAGE_NAME_RECOMMENDATION_OOC_PARAM)
             }
             ERROR_STATE_FAILED_TO_FETCH_DATA -> {

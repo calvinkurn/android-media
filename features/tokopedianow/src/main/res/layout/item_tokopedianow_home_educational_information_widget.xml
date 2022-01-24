@@ -7,6 +7,7 @@
     android:layout_marginTop="16dp"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
+    android:layout_marginBottom="16dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -41,7 +42,7 @@
             app:layout_constraintStart_toEndOf="@+id/iu_time"
             app:layout_constraintTop_toTopOf="@+id/iu_time"
             app:typographyType="heading_6"
-            tools:text="@string/tokopedianow_home_educational_information_two_hours" />
+            tools:text="@string/tokopedianow_home_educational_information_duration" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_stock_available"

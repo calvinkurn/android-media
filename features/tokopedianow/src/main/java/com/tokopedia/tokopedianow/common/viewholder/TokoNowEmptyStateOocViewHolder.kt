@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowEmptyStateOocBinding
@@ -27,18 +28,69 @@ class TokoNowEmptyStateOocViewHolder(
     private var hostSource = ""
 
     override fun bind(element: TokoNowEmptyStateOocUiModel) {
+        val eventCategory = listener?.onGetEventCategory().orEmpty()
+        val serviceType = element.serviceType
         hostSource = element.hostSource
-        showEmptyStateNoAddress(listener?.onGetEventCategory().orEmpty())
+
+        showEmptyStateTitle(serviceType)
+        showEmptyStateDescription(serviceType)
+        showPrimaryBtnText(serviceType)
+        showSecondaryBtnText(serviceType)
+        setActionListener(eventCategory, serviceType)
     }
 
-    private fun showEmptyStateNoAddress(eventCategory: String) {
+    private fun showEmptyStateTitle(serviceType: String) {
+        val resId = if(serviceType == ServiceType.NOW_2H) {
+            R.string.tokopedianow_common_empty_state_title
+        } else {
+            R.string.tokopedianow_15m_empty_state_title
+        }
+        binding?.emptyStateOcc?.setTitle(getString(resId))
+    }
+
+    private fun showEmptyStateDescription(serviceType: String) {
+        val resId = if(serviceType == ServiceType.NOW_2H) {
+            R.string.tokopedianow_common_empty_state_desc
+        } else {
+            R.string.tokopedianow_15m_empty_state_desc
+        }
+        binding?.emptyStateOcc?.setDescription(getString(resId))
+    }
+
+    private fun showPrimaryBtnText(serviceType: String) {
+        val resId = if(serviceType == ServiceType.NOW_2H) {
+            R.string.tokopedianow_common_empty_state_button_change_address
+        } else {
+            R.string.tokopedianow_15m_empty_state_primary_btn
+        }
+        binding?.emptyStateOcc?.setPrimaryBtnText(getString(resId))
+    }
+
+    private fun showSecondaryBtnText(serviceType: String) {
+        val resId = if(serviceType == ServiceType.NOW_2H) {
+            R.string.tokopedianow_common_empty_state_button_return
+        } else {
+            R.string.tokopedianow_common_empty_state_button_change_address
+        }
+        binding?.emptyStateOcc?.setSecondaryBtnText(getString(resId))
+    }
+
+    private fun setActionListener(eventCategory: String, serviceType: String) {
         binding?.emptyStateOcc?.actionListener = object : NoAddressEmptyStateView.ActionListener {
-            override fun onChangeAddressClicked() {
-                showBottomSheetChooseAddress()
+            override fun onPrimaryBtnClicked() {
+                if(serviceType == ServiceType.NOW_2H) {
+                    showBottomSheetChooseAddress()
+                } else {
+                    listener?.onSwitchService()
+                }
             }
 
-            override fun onReturnClick() {
-                (itemView.context as? Activity)?.finish()
+            override fun onSecondaryBtnClicked() {
+                if(serviceType == ServiceType.NOW_2H) {
+                    (itemView.context as? Activity)?.finish()
+                } else {
+                    showBottomSheetChooseAddress()
+                }
             }
 
             override fun onGetNoAddressEmptyStateEventCategoryTracker(): String {
@@ -71,5 +123,6 @@ class TokoNowEmptyStateOocViewHolder(
         fun onRefreshLayoutPage()
         fun onGetFragmentManager(): FragmentManager
         fun onGetEventCategory(): String
+        fun onSwitchService()
     }
 }

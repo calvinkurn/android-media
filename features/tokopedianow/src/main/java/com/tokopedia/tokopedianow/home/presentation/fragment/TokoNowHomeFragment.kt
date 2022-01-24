@@ -77,7 +77,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
-import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
 import com.tokopedia.tokopedianow.home.di.component.DaggerHomeComponent
 import com.tokopedia.tokopedianow.home.domain.model.Data
@@ -104,6 +104,7 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
@@ -547,18 +548,27 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun showEmptyState(id: String) {
-        if (id != EMPTY_STATE_NO_ADDRESS) {
-            rvLayoutManager?.setScrollEnabled(false)
-            viewModelTokoNow.getEmptyState(id)
-        } else {
-            viewModelTokoNow.getEmptyState(id)
-            viewModelTokoNow.getProductRecomOoc()
+    private fun showEmptyState(@HomeStaticLayoutId id: String) {
+        localCacheModel?.service_type?.let { serviceType ->
+            if (id != EMPTY_STATE_OUT_OF_COVERAGE) {
+                rvLayoutManager?.setScrollEnabled(false)
+                viewModelTokoNow.getEmptyState(id, serviceType)
+            } else {
+                viewModelTokoNow.getEmptyState(id, serviceType)
+                viewModelTokoNow.getProductRecomOoc()
+            }
+
+            miniCartWidget?.hide()
+            miniCartWidget?.hideCoachMark()
+            setToolbarTypeTitle()
+            setupPadding(false)
         }
-        miniCartWidget?.hide()
-        miniCartWidget?.hideCoachMark()
-        setupPadding(false)
-        navToolbar?.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
+    }
+
+    private fun setToolbarTypeTitle() {
+        navToolbar?.setToolbarContentType(
+            NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
+        )
     }
 
     private fun showFailedToFetchData() {
@@ -597,7 +607,7 @@ class TokoNowHomeFragment: Fragment(),
             showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
         } else {
             viewModelTokoNow.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
-            showEmptyState(EMPTY_STATE_NO_ADDRESS)
+            showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
         }
     }
 
@@ -909,8 +919,9 @@ class TokoNowHomeFragment: Fragment(),
         }
 
         observe(viewModelTokoNow.setUserPreference) {
-            if(it is Success) {
-                onSuccessSetUserPreference(it.data)
+            when(it) {
+                is Success -> onSuccessSetUserPreference(it.data)
+                is Fail -> showFailedToFetchData()
             }
         }
     }
@@ -1422,6 +1433,12 @@ class TokoNowHomeFragment: Fragment(),
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
 
             override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
+
+            override fun onSwitchService() {
+                localCacheModel?.let {
+                    viewModelTokoNow.switchService(it)
+                }
+            }
         }
     }
 

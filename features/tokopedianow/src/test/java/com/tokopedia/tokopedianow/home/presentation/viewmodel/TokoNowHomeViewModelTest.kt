@@ -29,7 +29,7 @@ import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
-import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
@@ -151,11 +151,12 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when getting emptyState should run and give the success result`() {
-        val idEmptyState = EMPTY_STATE_NO_ADDRESS
+        val serviceType = "2h"
+        val idEmptyState = EMPTY_STATE_OUT_OF_COVERAGE
 
-        viewModel.getEmptyState(idEmptyState)
+        viewModel.getEmptyState(idEmptyState, serviceType)
 
-        val expectedResponse = createEmptyState(idEmptyState)
+        val expectedResponse = createEmptyState(idEmptyState, serviceType)
 
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
     }
@@ -2707,7 +2708,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
-            hasSharingEducationBeenRemoved = false
+            removeAbleWidgets = emptyList()
         )
 
         val layoutList = listOf(
@@ -2756,7 +2757,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
-            hasSharingEducationBeenRemoved = false
+            removeAbleWidgets = emptyList()
         )
 
         val layoutList = listOf(
@@ -2804,7 +2805,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
-            hasSharingEducationBeenRemoved = false
+            removeAbleWidgets = emptyList()
         )
 
         val layoutList = listOf(
@@ -2853,7 +2854,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
-            hasSharingEducationBeenRemoved = false
+            removeAbleWidgets = emptyList()
         )
 
         val layoutList = listOf(
@@ -2898,7 +2899,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
-            hasSharingEducationBeenRemoved = false
+            removeAbleWidgets = emptyList()
         )
 
         val layoutList = listOf(
