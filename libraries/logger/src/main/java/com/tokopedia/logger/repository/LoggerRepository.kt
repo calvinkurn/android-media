@@ -28,7 +28,7 @@ class LoggerRepository(
     private val scalyrConfigs: List<ScalyrConfig>,
     private val newRelicConfig: NewRelicConfig,
     private val encrypt: ((String) -> (String))? = null,
-    private val decrypt: ((String) -> (String))? = null
+    val decrypt: ((String) -> (String))? = null
 ) : LoggerRepositoryContract, CoroutineScope {
 
     override suspend fun insert(logger: Logger) {
@@ -73,12 +73,19 @@ class LoggerRepository(
         )
     }
 
-    override suspend fun getLoggerList(): List<Logger> {
-        return logDao.getLoggerList()
+    override suspend fun getLoggerList(
+        serverChannel: String,
+        limit: Int,
+        offset: Int
+    ): List<Logger> {
+        return if (serverChannel.isNotBlank()) logDao.getLoggerList(
+            limit,
+            offset
+        ) else logDao.getLoggerListFilter(serverChannel, limit, offset)
     }
 
-    override suspend fun getLoggerFilterList(serverChannel: String): List<Logger> {
-        return logDao.getLoggerListFilter(serverChannel)
+    override suspend fun getPriorityList(): List<String> {
+        return logDao.getPriorityList()
     }
 
     private suspend fun sendLogToServer(priorityScalyr: Int, logs: List<Logger>) {
