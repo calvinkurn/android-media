@@ -168,7 +168,6 @@ class PlayYouTubeFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeBottomInsetsState()
-//        observeEventUserInfo()
         observePiPEvent()
 
         observeUiState()
