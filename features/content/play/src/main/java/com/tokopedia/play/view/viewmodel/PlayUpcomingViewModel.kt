@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.SocketCredential
@@ -18,6 +19,8 @@ import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.setValue
+import com.tokopedia.play.util.share.PlayShareExperience
+import com.tokopedia.play.util.share.PlayShareExperienceData
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
@@ -31,6 +34,7 @@ import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
 import com.tokopedia.play_common.sse.model.SSEAction
 import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -49,6 +53,7 @@ class PlayUpcomingViewModel @Inject constructor(
     private val playAnalytic: PlayNewAnalytic,
     private val playChannelSSE: PlayChannelSSE,
     private val repo: PlayViewerRepository,
+    private val playShareExperience: PlayShareExperience,
 ): ViewModel() {
 
     private var mChannelId: String = ""
@@ -60,6 +65,9 @@ class PlayUpcomingViewModel @Inject constructor(
 
     val isReminderSet: Boolean
         get() = _upcomingInfo.value.isReminderSet
+
+    val partnerId: Long?
+        get() = mChannelData?.partnerInfo?.id
 
     private val _uiEvent = MutableSharedFlow<PlayUpcomingUiEvent>(extraBufferCapacity = 50)
 
@@ -201,8 +209,14 @@ class PlayUpcomingViewModel @Inject constructor(
             UpcomingTimerFinish -> handleUpcomingTimerFinish()
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
             ClickPartnerNameUpcomingAction -> handleClickPartnerName()
-            ClickShareUpcomingAction -> handleClickShare()
             is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
+            CopyLinkUpcomingAction -> handleCopyLink()
+            ClickShareUpcomingAction -> handleClickShareIcon()
+            ShowShareExperienceUpcomingAction -> handleOpenSharingOption(false)
+            ScreenshotTakenUpcomingAction -> handleOpenSharingOption(true)
+            CloseSharingOptionUpcomingAction -> handleCloseSharingOption()
+            is ClickSharingOptionUpcomingAction -> handleSharingOption(action.shareModel)
+            is SharePermissionUpcomingAction -> handleSharePermission(action.label)
         }
     }
 
@@ -317,22 +331,6 @@ class PlayUpcomingViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickShare() {
-        val shareInfo = _channelDetail.value.shareInfo
-
-        viewModelScope.launch {
-            _uiEvent.emit(
-                PlayUpcomingUiEvent.CopyToClipboardEvent(shareInfo.content)
-            )
-
-            _uiEvent.emit(
-                PlayUpcomingUiEvent.ShowInfoEvent(
-                    UiString.Resource(R.string.play_link_copied)
-                )
-            )
-        }
-    }
-
     private fun doFollowUnfollow(shouldForceFollow: Boolean): PartnerFollowAction? {
         val channelData = mChannelData ?: return null
         val shopId = channelData.partnerInfo.id
@@ -351,6 +349,103 @@ class PlayUpcomingViewModel @Inject constructor(
         }) {}
 
         return followAction
+    }
+
+    private fun copyLink() {
+        val shareInfo = _channelDetail.value.shareInfo
+
+        viewModelScope.launch {
+            _uiEvent.emit(
+                PlayUpcomingUiEvent.CopyToClipboardEvent(shareInfo.content)
+            )
+
+            _uiEvent.emit(
+                PlayUpcomingUiEvent.ShowInfoEvent(
+                    UiString.Resource(R.string.play_link_copied)
+                )
+            )
+        }
+    }
+
+    private fun handleCopyLink() {
+        viewModelScope.launch { copyLink() }
+    }
+
+    private fun handleClickShareIcon() {
+        viewModelScope.launch {
+            playAnalytic.clickShareButton(mChannelId, partnerId, channelType.value)
+
+            _uiEvent.emit(
+                PlayUpcomingUiEvent.SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
+            )
+        }
+    }
+
+    private fun handleOpenSharingOption(isScreenshot: Boolean) {
+        viewModelScope.launch {
+            if(isScreenshot)
+                playAnalytic.takeScreenshotForSharing(mChannelId, partnerId, channelType.value)
+
+            if(playShareExperience.isCustomSharingAllow()) {
+                playAnalytic.impressShareBottomSheet(mChannelId, partnerId, channelType.value)
+
+                _uiEvent.emit(PlayUpcomingUiEvent.OpenSharingOptionEvent(
+                    title = _channelDetail.value.channelInfo.title,
+                    coverUrl = _channelDetail.value.channelInfo.coverUrl,
+                    userId = userSession.userId,
+                    channelId = mChannelId
+                ))
+            }
+            else if(!isScreenshot) {
+                copyLink()
+            }
+        }
+    }
+
+    private fun handleCloseSharingOption() {
+        playAnalytic.closeShareBottomSheet(mChannelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet())
+    }
+
+    private fun handleSharingOption(shareModel: ShareModel) {
+        viewModelScope.launch {
+            playAnalytic.clickSharingOption(mChannelId, partnerId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
+
+            val playShareExperienceData = getPlayShareExperienceData()
+
+            playShareExperience
+                .setShareModel(shareModel)
+                .setData(playShareExperienceData)
+                .createUrl(object: PlayShareExperience.Listener {
+                    override fun onUrlCreated(
+                        linkerShareData: LinkerShareResult?,
+                        shareModel: ShareModel,
+                        shareString: String
+                    ) {
+                        viewModelScope.launch {
+                            _uiEvent.emit(PlayUpcomingUiEvent.CloseShareExperienceBottomSheet)
+                            _uiEvent.emit(
+                                PlayUpcomingUiEvent.OpenSelectedSharingOptionEvent(
+                                    linkerShareData,
+                                    shareModel,
+                                    shareString
+                                )
+                            )
+                        }
+                    }
+
+                    override fun onError(e: Exception) {
+                        viewModelScope.launch {
+                            _uiEvent.emit(PlayUpcomingUiEvent.CloseShareExperienceBottomSheet)
+                            _uiEvent.emit(PlayUpcomingUiEvent.ErrorGenerateShareLink)
+                        }
+                    }
+                }
+            )
+        }
+    }
+
+    private fun handleSharePermission(label: String) {
+        playAnalytic.clickSharePermission(mChannelId, partnerId, channelType.value, label)
     }
 
     /**
@@ -441,6 +536,23 @@ class PlayUpcomingViewModel @Inject constructor(
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             else -> {}
         }
+    }
+
+    private fun getPlayShareExperienceData(): PlayShareExperienceData {
+        val (channelInfo, shareInfo) = _channelDetail.let {
+            return@let Pair(it.value.channelInfo, it.value.shareInfo)
+        }
+
+        return PlayShareExperienceData(
+            id = mChannelId,
+            title = channelInfo.title,
+            partnerName = _partnerInfo.value.name,
+            coverUrl = channelInfo.coverUrl,
+            redirectUrl = shareInfo.redirectUrl,
+            textDescription = shareInfo.textDescription,
+            metaTitle = shareInfo.metaTitle,
+            metaDescription = shareInfo.metaDescription,
+        )
     }
 
     companion object {
