@@ -8,6 +8,9 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -89,7 +92,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
         val layoutType = cpmModel?.data?.firstOrNull()?.cpm?.layout
-        if (layoutType == TOPADS_DEFAULT_VARIANT) {
+        if (!showFeedTopadsNewDesign()) {
             cpmModel?.let {
                 topadsHeadlineView.displayAds(it)
             }
@@ -122,5 +125,9 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         topadsHeadlineView.hide()
         this.itemView.hide()
         topAdsHeadlineListener?.hideTopadsView(adapterPosition)
+    }
+    private fun showFeedTopadsNewDesign(): Boolean {
+        val config: RemoteConfig = FirebaseRemoteConfigImpl(itemView.context)
+        return config.getBoolean(RemoteConfigKey.SHOW_SHOPADS_FEED_NEW_DESIGN, true)
     }
 }

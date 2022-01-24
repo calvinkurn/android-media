@@ -21,6 +21,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
@@ -128,7 +131,7 @@ open class TopAdsHeadlineV2ViewHolder(
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
         itemView.layoutParams = params
         val layoutType = cpmModel?.data?.firstOrNull()?.cpm?.layout
-        if (layoutType == TOPADS_VARIANT_EXPERIMENT_CLEAN || layoutType == TOPADS_VARIANT_EXPERIMENT_INFO) {
+        if (showFeedTopadsNewDesign()) {
             topadsContainer.displayedChild = VARIANT_EXPERIMENT
             cpmModel.let {
                 topadsPostDynamic.bindData(
@@ -179,5 +182,9 @@ open class TopAdsHeadlineV2ViewHolder(
             topadsPostDynamic.attach( visitable)
         } catch (e: Exception) {
         }
+    }
+    private fun showFeedTopadsNewDesign(): Boolean {
+        val config: RemoteConfig = FirebaseRemoteConfigImpl(itemView.context)
+        return config.getBoolean(RemoteConfigKey.SHOW_SHOPADS_FEED_NEW_DESIGN, true)
     }
 }
