@@ -205,6 +205,7 @@ class ProductListTypeFactoryImpl(
     override fun type(sizeDataView: InspirationSizeDataView): Int {
         return InspirationSizeViewHolder.LAYOUT
     }
+
     override fun type(violationView: ViolationDataView): Int =
         ViolationViewHolder.LAYOUT
 
