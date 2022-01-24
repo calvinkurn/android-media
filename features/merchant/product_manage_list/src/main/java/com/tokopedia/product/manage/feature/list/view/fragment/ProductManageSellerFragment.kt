@@ -1,14 +1,10 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity.RESULT_OK
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -20,7 +16,6 @@ import com.tokopedia.product.manage.common.feature.list.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
@@ -51,8 +46,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
         }
     }
 
-    private lateinit var draftBroadCastReceiver: BroadcastReceiver
-
     @Inject
     lateinit var productDraftListCountViewModel: ProductDraftListCountViewModel
 
@@ -82,28 +75,12 @@ class ProductManageSellerFragment : ProductManageFragment() {
                 .inject(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        productDraftListCountViewModel.detachView()
-    }
-
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
         if(!hidden) {
             sendNormalSendScreen()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        registerDraftReceiver()
-        productDraftListCountViewModel.getAllDraftCount()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        unregisterDraftReceiver()
     }
 
     override fun callInitialLoadAutomatically() = false

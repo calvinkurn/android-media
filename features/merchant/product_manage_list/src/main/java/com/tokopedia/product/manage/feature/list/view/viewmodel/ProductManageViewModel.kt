@@ -9,6 +9,9 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.feature.datasource.domain.ClearDataSourceUseCase
+import com.tokopedia.product.manage.common.feature.datasource.domain.GetDataSourceUseCase
+import com.tokopedia.product.manage.common.feature.datasource.model.UserPreferences
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
@@ -60,6 +63,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
@@ -79,6 +86,8 @@ class ProductManageViewModel @Inject constructor(
     private val editProductVariantUseCase: EditProductVariantUseCase,
     private val getProductVariantUseCase: GetProductVariantUseCase,
     private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
+    private val getDataSourceUseCase: GetDataSourceUseCase,
+    private val clearDataSourceUseCase: ClearDataSourceUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -139,6 +148,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _deleteProductDialog
     val topAdsInfo: LiveData<TopAdsInfo>
         get() = _topAdsInfo
+    val getDataSource: MutableLiveData<UserPreferences>
+        get() = _getDataSource
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _showTicker = MutableLiveData<Boolean>()
@@ -165,12 +176,33 @@ class ProductManageViewModel @Inject constructor(
     private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
+    private val _getDataSource = MutableLiveData<UserPreferences>()
 
     private var access: ProductManageAccess? = null
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
     private var warehouseId: String = ""
     private var totalProductCount = 0
+
+
+    init {
+        initGetDataSource()
+    }
+
+    private fun initGetDataSource() = launch {
+        getDataSourceUseCase.executeOnBackground()
+            .flowOn(dispatchers.io)
+            .catch { /* do nothing */ }
+            .collect {
+                _getDataSource.postValue(it)
+            }
+    }
+
+    fun clearDataSource() {
+        launchCatchError(block = {
+            clearDataSourceUseCase.executeOnBackground()
+        }) { }
+    }
 
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
 
@@ -486,8 +518,7 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val popupResult = withContext(dispatchers.io) {
-                    val shopId = productId.toLongOrZero()
-                    val isSuccess = getShopManagerPopupsUseCase.execute(shopId)
+                    val isSuccess = getShopManagerPopupsUseCase.execute(userSessionInterface.shopId.toLongOrZero())
                     GetPopUpResult(productId, isSuccess)
                 }
                 _getPopUpResult.value = Success(popupResult)},

@@ -2,6 +2,10 @@ package com.tokopedia.product.addedit.preview.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.product.manage.common.feature.datasource.LocalDataSource
+import com.tokopedia.product.manage.common.feature.datasource.LocalDataSourceImpl
+import com.tokopedia.product.manage.common.feature.datasource.repository.DataSourceRepository
+import com.tokopedia.product.manage.common.feature.datasource.repository.DataSourceRepositoryImpl
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
@@ -32,5 +36,21 @@ class AddEditProductPreviewModule {
             userSession: UserSessionInterface
     ): AddEditProductDraftRepository {
         return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
+    }
+
+    @AddEditProductPreviewScope
+    @Provides
+    fun provideDataStoreDataSourceStatusRepository(
+        @ApplicationContext context: Context
+    ): LocalDataSource {
+        return LocalDataSourceImpl(context)
+    }
+
+    @AddEditProductPreviewScope
+    @Provides
+    fun provideDataStoreStatusRepository(
+        dataSource: LocalDataSource
+    ): DataSourceRepository {
+        return DataSourceRepositoryImpl(dataSource)
     }
 }

@@ -13,6 +13,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -29,27 +33,28 @@ class ProductDraftListCountViewModel @Inject constructor(
 
     private val _getAllDraftCountResult = MutableLiveData<Result<Long>>()
 
-    fun getAllDraftCount() {
-        launchCatchError(block = {
-            var draftCount = 0L
+    init {
+        initGetAllDraftProductsCount()
+    }
 
-            withContext(dispatchers.io) {
-                val access = if (userSession.isShopOwner) {
-                    ProductManageAccessMapper.mapProductManageOwnerAccess()
-                } else {
-                    val shopId = userSession.shopId
-                    val response = getProductManageAccessUseCase.execute(shopId)
-                    ProductManageAccessMapper.mapToProductManageAccess(response)
+    private fun initGetAllDraftProductsCount() = launch {
+        val access = if (userSession.isShopOwner) {
+            ProductManageAccessMapper.mapProductManageOwnerAccess()
+        } else {
+            val shopId = userSession.shopId
+            val response = getProductManageAccessUseCase.execute(shopId)
+            ProductManageAccessMapper.mapToProductManageAccess(response)
+        }
+
+        if(access.addProduct) {
+            getAllDraftProductsCountUseCase.executeOnBackground()
+                .flowOn(dispatchers.io)
+                .catch {
+                    _getAllDraftCountResult.value = Fail(it)
                 }
-
-                if(access.addProduct) {
-                    draftCount = getAllDraftProductsCountUseCase.getData(RequestParams.EMPTY)
+                .collect {
+                    _getAllDraftCountResult.value = Success(it)
                 }
-            }
-
-            _getAllDraftCountResult.value = Success(draftCount)
-        }) {
-            _getAllDraftCountResult.value = Fail(it)
         }
     }
 
@@ -61,10 +66,5 @@ class ProductDraftListCountViewModel @Inject constructor(
         }) {
             // do nothing
         }
-    }
-
-    fun detachView() {
-        getAllDraftProductsCountUseCase.unsubscribe()
-        clearAllDraftProductsUseCase.unsubscribe()
     }
 }

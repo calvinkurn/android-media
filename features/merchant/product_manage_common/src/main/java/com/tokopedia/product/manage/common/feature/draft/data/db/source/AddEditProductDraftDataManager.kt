@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.common.feature.draft.data.db.source
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao
 import com.tokopedia.product.manage.common.feature.draft.data.db.entity.AddEditProductDraftEntity
-import rx.Observable
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AddEditProductDraftDataManager @Inject constructor(private val draftDao: AddEditProductDraftDao) {
@@ -25,8 +25,8 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return draftDao.getAllDrafts(shopId)
     }
 
-    fun getAllDraftsCount(shopId: String): Observable<Long> {
-        return Observable.fromCallable { draftDao.getAllDraftsCount(shopId) }
+    fun getAllDraftsCount(shopId: String): Flow<Long> {
+        return draftDao.getAllDraftsCount(shopId)
     }
 
     fun deleteAllDrafts(shopId: String): Boolean {

@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.common.feature.draft.data.db.repository
 
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
-import rx.Observable
+import kotlinx.coroutines.flow.Flow
 
 interface AddEditProductDraftRepository {
 
@@ -11,7 +11,7 @@ interface AddEditProductDraftRepository {
 
     fun getAllDrafts(): List<ProductDraft>
 
-    fun getAllDraftsCount(): Observable<Long>
+    fun getAllDraftsCount(): Flow<Long>
 
     fun deleteDraft(productId: Long): Boolean
 

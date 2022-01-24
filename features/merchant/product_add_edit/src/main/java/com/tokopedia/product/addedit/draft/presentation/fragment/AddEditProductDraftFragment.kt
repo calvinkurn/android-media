@@ -1,10 +1,7 @@
 package com.tokopedia.product.addedit.draft.presentation.fragment
 
 import android.app.Activity
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
@@ -15,7 +12,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -26,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftComponent
@@ -64,7 +59,6 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
     @Inject
     lateinit var viewModel: AddEditProductDraftViewModel
 
-    private var broadcastReceiver: BroadcastReceiver? = null
     private var tvEmptyTitle: TextView? = null
     private var tvEmptyContent: TextView? = null
     private var btnAddProduct: Button? = null
@@ -72,23 +66,12 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
     private var draftListAdapter: ProductDraftListAdapter? = null
     private var mMenu: Menu? = null
     private var deletePosition = -1
-    private var draftListChanged = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupToolbarActions()
         setHasOptionsMenu(true)
         userSession = UserSession(context)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        registerDraftReceiver()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        unregisterDraftReceiver()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -311,37 +294,5 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
                 mMenu?.findItem(R.id.item_delete_all_draft)?.isVisible = true
             }
         }
-    }
-
-    private fun registerDraftReceiver() {
-        broadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == BROADCAST_ADD_PRODUCT) {
-                    viewModel.getAllProductDraft()
-                    draftListChanged = true;
-                }
-            }
-        }
-
-        activity?.let {
-            val intentFilters = IntentFilter().apply {
-                addAction(BROADCAST_ADD_PRODUCT)
-            }
-            broadcastReceiver?.let { receiver ->
-                LocalBroadcastManager.getInstance(it).registerReceiver(receiver, intentFilters)
-            }
-        }
-    }
-
-    private fun unregisterDraftReceiver() {
-        activity?.let {
-            broadcastReceiver?.let { receiver ->
-                LocalBroadcastManager.getInstance(it).unregisterReceiver(receiver)
-            }
-        }
-    }
-
-    fun getDraftListChanged(): Boolean {
-        return draftListChanged
     }
 }

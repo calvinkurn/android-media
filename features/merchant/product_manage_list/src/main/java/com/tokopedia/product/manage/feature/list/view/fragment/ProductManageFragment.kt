@@ -6,10 +6,7 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -26,7 +23,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -41,7 +37,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -61,6 +56,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.datasource.constant.DataSourceConstant.STATUS_DONE
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
@@ -97,7 +93,6 @@ import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrappe
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_CHAT_CREATE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
@@ -366,6 +361,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         observeFilterTabs()
         observeMultiSelect()
         observeProductVariantBroadcast()
+        observeDataSource()
 
         observeEditPrice()
         observeEditStock()
@@ -609,6 +605,21 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     val message = resources.getString(R.string.broadcast_chat_error_state_message_empty_variant)
                     val action = resources.getString(R.string.broadcast_chat_error_state_action_retry)
                     errorStateBroadcastChat(message, action, isRetry = true)
+                }
+            }
+        }
+    }
+
+    private fun observeDataSource() {
+        observe(viewModel.getDataSource) {
+            if (it.status == STATUS_DONE) {
+                activity?.runOnUiThread {
+//                            val productId = intent.extras?.getString(TkpdState.ProductService.PRODUCT_ID)
+//                                ?: ""
+//                            viewModel.getPopupsInfo(productId)
+                    getFiltersTab(withDelay = true)
+                    getProductList(withDelay = true, isRefresh = true)
+                    viewModel.clearDataSource()
                 }
             }
         }
@@ -980,24 +991,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }, {
                 onClickFilterTab(it)
             })
-        }
-    }
-
-    private val addProductReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == BROADCAST_ADD_PRODUCT &&
-                    intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
-                    intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
-                activity?.run {
-                    runOnUiThread {
-                        val productId = intent.extras?.getString(TkpdState.ProductService.PRODUCT_ID)
-                                ?: ""
-                        viewModel.getPopupsInfo(productId)
-                        getFiltersTab(withDelay = true)
-                        getProductList(withDelay = true, isRefresh = true)
-                    }
-                }
-            }
         }
     }
 
@@ -1893,9 +1886,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     override fun onPause() {
         super.onPause()
-        context?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(addProductReceiver)
-        }
         if (productManageAddEditMenuBottomSheet.isVisible) {
             productManageAddEditMenuBottomSheet.dismiss()
         }
@@ -1907,21 +1897,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     override fun onResume() {
         super.onResume()
         hasTickerClosed = false
-        context?.let {
-            val intentFilter = IntentFilter()
-            intentFilter.addAction(BROADCAST_ADD_PRODUCT)
-            LocalBroadcastManager.getInstance(it).registerReceiver(addProductReceiver, intentFilter)
-        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.detachView()
-        context?.let {
-            if (addProductReceiver.isOrderedBroadcast) {
-                LocalBroadcastManager.getInstance(it).unregisterReceiver(addProductReceiver)
-            }
-        }
         removeObservers()
     }
 

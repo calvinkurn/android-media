@@ -1,12 +1,8 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
-import android.content.Intent
-import android.os.Bundle
 import androidx.core.app.JobIntentService
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -15,7 +11,6 @@ import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.*
@@ -31,6 +26,9 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.product.manage.common.feature.datasource.constant.DataSourceConstant.STATUS_DONE
+import com.tokopedia.product.manage.common.feature.datasource.constant.DataSourceConstant.STATUS_ERROR
+import com.tokopedia.product.manage.common.feature.datasource.domain.SetDataSourceUseCase
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.usecase.RequestParams
@@ -59,6 +57,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
+    @Inject
+    lateinit var setDataSourceUseCase: SetDataSourceUseCase
     @Inject
     lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
     @Inject
@@ -93,12 +93,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     fun setUploadProductDataSuccess() {
         notificationManager?.onSuccessUpload()
-        sendSuccessBroadcast()
+        setDataSource(STATUS_DONE)
     }
 
     fun setUploadProductDataError(errorMessage: String) {
         notificationManager?.onFailedUpload(errorMessage)
-        sendErrorBroadcast()
+        setDataSource(STATUS_ERROR)
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
@@ -250,19 +250,10 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 .replace("\\<.*?\\>".toRegex(), "")
     }
 
-    private fun sendSuccessBroadcast() {
-        val result = Intent(BROADCAST_ADD_PRODUCT)
-        val bundle = Bundle()
-        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
-        result.putExtras(bundle)
-        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(result)
-    }
-
-    private fun sendErrorBroadcast() {
-        val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
-        val bundle = Bundle()
-        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR)
-        result.putExtras(bundle)
-        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(result)
+    private fun setDataSource(status: Int) {
+        launchCatchError(block = {
+            setDataSourceUseCase.params = SetDataSourceUseCase.createRequestParams(status)
+            setDataSourceUseCase.executeOnBackground()
+        } , onError = {})
     }
 }
