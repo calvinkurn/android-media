@@ -335,4 +335,130 @@ class PlayBottomInsetsTest2 {
                 .isHidden.assertTrue()
         }
     }
+
+    @Test
+    fun `given keyboard is shown, when back button is pressed, then keyboard should be hidden and back will be consumed`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+            viewModel.onKeyboardShown(estimatedKeyboardHeight = 100)
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
+                .isShown.assertTrue()
+            val back = viewModel.goBack()
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
+                .isHidden.assertTrue()
+
+            back.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given coupon bottom sheet is shown, when back button is pressed, then coupon bottom sheet should be hidden and back will be consumed`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+            viewModel.showCouponSheet(estimatedHeight = 100)
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                .isShown.assertTrue()
+            val back = viewModel.goBack()
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                .isHidden.assertTrue()
+
+            back.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given variant bottom sheet is shown, when back button is pressed, then variant bottom sheet should be hidden and back will be consumed`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+            viewModel.onShowVariantSheet(
+                estimatedProductSheetHeight = 100,
+                action = ProductAction.Buy,
+                product = productTagBuilder.buildProductLine()
+            )
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
+                .isShown.assertTrue()
+            val back = viewModel.goBack()
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
+                .isHidden.assertTrue()
+
+            back.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given leaderboard bottom sheet is shown, when back button is pressed, then leaderboard bottom sheet should be hidden and back will be consumed`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+            viewModel.submitAction(InteractiveWinnerBadgeClickedAction(height = 100))
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
+                .isShown.assertTrue()
+            val back = viewModel.goBack()
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
+                .isHidden.assertTrue()
+
+            back.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user report bottom sheet is shown, when back button is pressed, then user report bottom sheet should be hidden and back will be consumed`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+            viewModel.onShowUserReportSheet(estimatedSheetHeight = 100)
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSheet]!!
+                .isShown.assertTrue()
+            val back = viewModel.goBack()
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSheet]!!
+                .isHidden.assertTrue()
+
+            back.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user report submission bottom sheet is shown, when back button is pressed, then user report submission bottom sheet should be hidden and back will be consumed`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+            viewModel.onShowUserReportSubmissionSheet(estimatedSheetHeight = 100)
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSubmissionSheet]!!
+                .isShown.assertTrue()
+            val back = viewModel.goBack()
+
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.UserReportSubmissionSheet]!!
+                .isHidden.assertTrue()
+
+            back.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given no bottom insets are shown, when back button is pressed, then back will not be consumed`() {
+        createPlayViewModelRobot {
+            val back = viewModel.goBack()
+            back.assertFalse()
+        }
+    }
 }
