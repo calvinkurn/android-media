@@ -96,4 +96,9 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
             followLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
         })
     }
+
+    override fun onCleared() {
+        membershipRegisterUseCase.cancelJobs()
+        super.onCleared()
+    }
 }
