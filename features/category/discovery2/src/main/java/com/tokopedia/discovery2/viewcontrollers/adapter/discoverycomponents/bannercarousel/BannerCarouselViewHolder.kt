@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -35,6 +36,7 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mBannerCarouselComponentViewModel = discoveryBaseViewModel as BannerCarouselViewModel
+        getSubComponent().inject(mBannerCarouselComponentViewModel)
         addDefaultItemDecorator()
         lihatSemuaTextView.setOnClickListener {
             RouteManager.route(fragment.activity, mBannerCarouselComponentViewModel.getLihatUrl())

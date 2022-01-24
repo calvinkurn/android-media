@@ -78,6 +78,18 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         multiBannerViewModel.isPageRefresh().observe(fragment.viewLifecycleOwner, Observer {
             if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConst.LOGIN), PAGE_REFRESH_LOGIN)
         })
+
+        multiBannerViewModel.syncData.observe(fragment.viewLifecycleOwner, Observer {
+            if(it) {
+                val item = multiBannerViewModel.components
+                if (!item.data.isNullOrEmpty()) {
+                    constraintLayout.removeAllViews()
+                    bannersItemList = ArrayList()
+                    bannerName = item.name ?: ""
+                    addBanners(item.data!!)
+                }
+            }
+        })
     }
 
     private fun updateImage(position: Int) {

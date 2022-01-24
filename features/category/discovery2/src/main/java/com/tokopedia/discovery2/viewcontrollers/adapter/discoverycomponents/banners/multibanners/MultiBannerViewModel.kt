@@ -9,9 +9,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
+import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -38,6 +40,9 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     @Inject
     lateinit var subScribeToUseCase: SubScribeToUseCase
 
+    @Inject
+    lateinit var bannerUseCase: BannerUseCase
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -57,6 +62,25 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun getBannerUrlWidth() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile, "width")
     fun checkApplink(): LiveData<String> = applinkCheck
     fun isPageRefresh(): LiveData<Boolean> = refreshPage
+
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        fetchBannerData()
+    }
+
+    fun fetchBannerData() {
+        if(components.properties?.dynamic == true) {
+            launchCatchError(block = {
+
+                if(bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)){
+                    this@MultiBannerViewModel.syncData.value = true
+                }
+            }, onError = {
+                components.verticalProductFailState = true
+                this@MultiBannerViewModel.syncData.value = true
+            })
+        }
+    }
 
     fun onBannerClicked(position: Int, context: Context) {
         bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
