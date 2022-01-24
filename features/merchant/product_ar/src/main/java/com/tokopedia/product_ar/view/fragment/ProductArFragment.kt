@@ -148,7 +148,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     private fun setupCoachMark() {
         val shouldShowCoachmark = coachMarkSharedPref?.getCoachMarkState() == false
 
-        if (shouldShowCoachmark) {
+//        if (shouldShowCoachmark) {
             val coachMarkList = arrayListOf<CoachMark2Item>()
             val coachMarkView = CoachMark2(requireContext())
             partialBottomArView?.rvVariant?.apply {
@@ -174,7 +174,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
             ArCoachMarkUtil.showCoachMark(coachMarkView, coachMarkList)
             coachMarkSharedPref?.setCoachMarkState(true)
-        }
+//        }
     }
 
 

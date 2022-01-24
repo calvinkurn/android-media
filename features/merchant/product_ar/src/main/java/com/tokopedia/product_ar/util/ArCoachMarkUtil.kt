@@ -2,26 +2,26 @@ package com.tokopedia.product_ar.util
 
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import java.util.Stack
+import java.util.LinkedList
 
 object ArCoachMarkUtil {
 
     fun showCoachMark(coachmarkView: CoachMark2,
                       coachMark2Item: ArrayList<CoachMark2Item>) {
-        val stack = Stack<CoachMark2Item>()
-        stack.addAll(coachMark2Item.reversed())
+        val coachMarkItemQueue = LinkedList(coachMark2Item)
 
-        val data = stack.pop()
-        showCoachMark(coachmarkView, data)
+        coachMarkItemQueue.poll()?.also {
+            showCoachMark(coachmarkView, it)
+        }
 
         coachmarkView.simpleCloseIcon?.setOnClickListener {
-            if (stack.size == 0) {
-                coachmarkView.hideCoachMark()
-            } else {
-                val dataAfterClick = stack.pop()
+            val dataAfterClick = coachMarkItemQueue.poll()
+
+            dataAfterClick?.let {
                 coachmarkView.hideCoachMark()
                 showCoachMark(coachmarkView, dataAfterClick)
-            }
+            } ?: coachmarkView.hideCoachMark()
+
         }
     }
 
