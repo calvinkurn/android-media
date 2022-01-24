@@ -138,7 +138,7 @@ data class SearchProductModel(
 
             @SerializedName("violation")
             @Expose
-            val violation: Violation? = null
+            val violation: Violation? = null,
     )
 
     data class Redirection(
