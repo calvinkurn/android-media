@@ -49,7 +49,7 @@ object CatalogDetailAnalytics {
         }
     }
 
-    fun trackEventImpressionProductCard(catalogId : String, catalogUrl : String, userId : String ,
+    fun trackEventImpressionProductCard(catalogName : String, catalogId : String, catalogUrl : String, userId : String ,
                                         item : CatalogProductItem, position : String,
                                         searchFilterMap : HashMap<String,String>?){
         val list = ArrayList<Map<String, Any>>()
@@ -72,7 +72,7 @@ object CatalogDetailAnalytics {
         map[EventKeys.KEY_EVENT] = EventKeys.EVENT_NAME_PRODUCT_VIEW
         map[EventKeys.KEY_EVENT_CATEGORY] = CategoryKeys.PAGE_EVENT_CATEGORY
         map[EventKeys.KEY_EVENT_ACTION] = ActionKeys.IMPRESSION_PRODUCT
-        map[EventKeys.KEY_EVENT_LABEL] = catalogId
+        map[EventKeys.KEY_EVENT_LABEL] = "$catalogName - $catalogId"
         map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         map[EventKeys.KEY_ECOMMERCE] = eCommerce
@@ -83,7 +83,7 @@ object CatalogDetailAnalytics {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    fun trackProductCardClick(catalogId : String,  catalogUrl : String, userId : String ,
+    fun trackProductCardClick(catalogName : String, catalogId : String,  catalogUrl : String, userId : String ,
                               item : CatalogProductItem, position : String ,
                               searchFilterMap : HashMap<String,String>?) {
         val list = ArrayList<Map<String, Any>>()
@@ -112,7 +112,7 @@ object CatalogDetailAnalytics {
         map[EventKeys.KEY_EVENT] = EventKeys.EVENT_NAME_PRODUCT_CLICK
         map[EventKeys.KEY_EVENT_CATEGORY] = CategoryKeys.PAGE_EVENT_CATEGORY
         map[EventKeys.KEY_EVENT_ACTION] = ActionKeys.CLICK_PRODUCT
-        map[EventKeys.KEY_EVENT_LABEL] = catalogId
+        map[EventKeys.KEY_EVENT_LABEL] = "$catalogName - $catalogId"
         map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         map[EventKeys.KEY_ECOMMERCE] = eCommerce

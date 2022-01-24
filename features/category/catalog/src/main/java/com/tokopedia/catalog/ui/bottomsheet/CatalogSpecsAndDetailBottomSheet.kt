@@ -28,6 +28,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     var list: ArrayList<Fragment> = ArrayList()
     private var openPage : String? = DESCRIPTION
     var catalogId : String = ""
+    var catalogName : String = ""
 
     private var tabLayout : TabLayout? = null
     private var viewPager : ViewPager2? = null
@@ -41,16 +42,18 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
+        const val ARG_CATALOG_NAME = "ARG_CATALOG_NAME"
         const val ARG_CATALOG_ID = "ARG_CATALOG_ID"
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
         const val OPEN_PAGE = "OPEN_PAGE"
         const val PAGE_DESCRIPTION = 0
         const val PAGE_SPECIFICATIONS = 1
-        fun newInstance(catalogId :String, description: String, specifications: ArrayList<FullSpecificationsComponentData>,
+        fun newInstance(catalogName : String, catalogId :String, description: String, specifications: ArrayList<FullSpecificationsComponentData>,
                         openPage : String): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putString(ARG_CATALOG_NAME, catalogName)
                     putString(ARG_CATALOG_ID, catalogId)
                     putString(DESCRIPTION, description)
                     putParcelableArrayList(SPECIFICATION, specifications)
@@ -89,6 +92,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
             openPage = arguments?.getString(OPEN_PAGE)
             catalogId = arguments?.getString(ARG_CATALOG_ID) ?: ""
+            catalogName = arguments?.getString(ARG_CATALOG_NAME) ?: ""
         }
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE, description, specifications))
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
@@ -123,7 +127,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                     CatalogDetailAnalytics.ActionKeys.CLICK_TAB_DESCRIPTION,
-                                    catalogId,session.userId,catalogId)
+                                    "$catalogName - $catalogId",session.userId,catalogId)
                             openPage = DESCRIPTION
                         } else if (position == PAGE_SPECIFICATIONS){
                             if(openPage != SPECIFICATION) {
@@ -131,7 +135,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                                         CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                                         CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                         CatalogDetailAnalytics.ActionKeys.CLICK_TAB_SPECIFICATIONS,
-                                        catalogId, session.userId,catalogId)
+                                        "$catalogName - $catalogId", session.userId,catalogId)
                             }
                         }
                     }

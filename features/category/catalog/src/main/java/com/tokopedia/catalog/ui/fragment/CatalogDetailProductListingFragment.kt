@@ -413,13 +413,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE)
-            CatalogDetailAnalytics.trackProductCardClick(catalogId,viewModel.catalogUrl,userSession.userId,
+            CatalogDetailAnalytics.trackProductCardClick(viewModel.catalogName,catalogId,viewModel.catalogUrl,userSession.userId,
                     item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
         }
     }
 
     override fun onProductImpressed(item: CatalogProductItem, adapterPosition: Int) {
-        CatalogDetailAnalytics.trackEventImpressionProductCard(catalogId,viewModel.catalogUrl,userSession.userId,
+        CatalogDetailAnalytics.trackEventImpressionProductCard(viewModel.catalogName,catalogId,viewModel.catalogUrl,userSession.userId,
                 item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
     }
 
@@ -459,7 +459,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
-                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId)
+                "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId,catalogId)
         removeWishlistActionUseCase.createObservable(productId,
                 userId, this)
     }
@@ -469,7 +469,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
-                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId,catalogId)
+                "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId,catalogId)
         addWishlistActionUseCase.createObservable(productId, userId,
                 this)
     }
@@ -586,7 +586,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
-                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
+                    "${viewModel.catalogName} - $catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
                     userSession.userId,catalogId)
         }
     }
@@ -719,7 +719,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_DYNAMIC_FILTER,
-                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
+                    "${viewModel.catalogName} - $catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
                     userSession.userId,catalogId)
             sortFilterBottomSheet?.show(
                     it,
