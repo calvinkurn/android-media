@@ -109,6 +109,25 @@ data class RatesParam(
             "bo_metadata" to bo_metadata
     )
 
+    fun toBoAffordabilityMap(appVersion: String): Map<String, Any?> = mapOf(
+            "origin" to origin,
+            "destination" to destination,
+            "source" to from,
+            "type" to type,
+            "device_version" to "$VALUE_ANDROID-$appVersion",
+            "weight" to weight,
+            "actual_weight" to actualWeight,
+            "order_value" to order_value,
+            "spids" to spids,
+            "shop_id" to shop_id,
+            "user_history" to user_history,
+            "is_fulfillment" to is_fulfillment,
+            "bo_metadata" to bo_metadata,
+            "products" to products,
+            "psl_code" to psl_code,
+            "unique_id" to unique_id,
+    )
+
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
 
         var spids: String = RatesParamHelper.generateSpIds(shopShipments)
