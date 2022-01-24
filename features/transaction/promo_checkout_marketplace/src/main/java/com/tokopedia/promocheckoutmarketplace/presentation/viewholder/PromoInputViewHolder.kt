@@ -142,7 +142,7 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
             textFieldInputPromo.isInputError = true
             if (element.uiData.exception != null) {
                 textFieldInputPromo.setMessage(element.uiData.exception?.message
-                        ?: "Terjadi kesalahan. Ulangi beberapa saat lagi")
+                        ?: itemView.context.getString(com.tokopedia.network.R.string.default_request_error_unknown))
             }
         }
     }
