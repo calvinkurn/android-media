@@ -58,8 +58,8 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
 
         violationProductsViewModel.headerText shouldBe violation.headerText
         violationProductsViewModel.descriptionText shouldBe violation.descriptionText
-        violationProductsViewModel.ctaUrl shouldBe violation.ctaUrl
-        violationProductsViewModel.buttonText shouldBe violation.buttonText
+        violationProductsViewModel.violationButton.ctaUrl shouldBe violation.ctaUrl
+        violationProductsViewModel.violationButton.text shouldBe violation.buttonText
     }
 
     @Test
@@ -87,7 +87,7 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
 
         violationProductsViewModel.headerText shouldBe violation.headerText
         violationProductsViewModel.descriptionText shouldBe violation.descriptionText
-        violationProductsViewModel.ctaUrl shouldBe violation.ctaUrl
-        violationProductsViewModel.buttonText shouldBe violation.buttonText
+        violationProductsViewModel.violationButton.ctaUrl shouldBe violation.ctaUrl
+        violationProductsViewModel.violationButton.text shouldBe violation.buttonText
     }
 }
