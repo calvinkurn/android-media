@@ -45,7 +45,7 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
     private fun `Then verify view interaction for violation products`() {
         verify {
             productListView.removeLoading()
-            productListView.setViolationProductsErrorMessage(capture(violationProductsVisitableListSlot))
+            productListView.addProductList(capture(violationProductsVisitableListSlot))
         }
     }
 

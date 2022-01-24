@@ -34,7 +34,6 @@ interface ProductListSectionContract {
         val queryKey: String
         fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
-        fun setViolationProductsErrorMessage(violationProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
         fun backToTop()
         fun addLoading()

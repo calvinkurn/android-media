@@ -142,7 +142,8 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import org.json.JSONArray
 import timber.log.Timber
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -619,10 +620,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>) {
         productListAdapter?.appendItems(bannedProductsErrorMessageAsList)
-    }
-
-    override fun setViolationProductsErrorMessage(violationProductsErrorMessageAsList: List<Visitable<*>>) {
-        productListAdapter?.appendItems(violationProductsErrorMessageAsList)
     }
 
     override fun addLoading() {
