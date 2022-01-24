@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
@@ -14,18 +15,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
-import com.tokopedia.affiliate.AFFILIATE_HELP_URL
-import com.tokopedia.affiliate.AffiliateAnalytics
-import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
-import com.tokopedia.affiliate.AFFILIATE_TRX_ENABLED
-import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
-import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
-import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
-import com.tokopedia.affiliate.ui.custom.IBottomClickListener
+import com.tokopedia.affiliate.ui.custom.*
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
@@ -37,6 +32,9 @@ import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -83,7 +81,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         super.onNewIntent(intent)
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             if (it.contains(PAGE_SEGMENT_HELP)) {
-                selectItem(HELP_MENU, R.id.menu_help_affiliate,true)
+                selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
             }
         }
     }
@@ -114,7 +112,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         initRollence()
         initBottomNavigationView()
         setObservers()
-        if(userSessionInterface.isLoggedIn)
+        if (userSessionInterface.isLoggedIn)
             affiliateVM.getAffiliateValidateUser()
         else
             showLoginPortal()
@@ -132,7 +130,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showLoginPortal() {
-        if(fragmentStack.isEmpty() || (fragmentStack.peek() != (AffiliateLoginFragment::class.java.canonicalName)))
+        if (fragmentStack.isEmpty() || (fragmentStack.peek() != (AffiliateLoginFragment::class.java.canonicalName)))
             openFragment(AffiliateLoginFragment.getFragmentInstance(this))
     }
 
@@ -142,6 +140,98 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
         pushOpenScreenEvent()
+    }
+
+    private val coachMarkItemList = ArrayList<CoachMark2Item>()
+    private var coachMark: CoachMark2? = null
+    private var currentCoachIndex: Int = 0
+    private var viewFound: Boolean = false
+    override fun showCoachMarker() {
+        disableTouch()
+        coachMark = CoachMark2(this)
+        getHomeFragmentView()?.let { firstView ->
+            coachMarkItemList.add(
+                CoachMark2Item(
+                    firstView,
+                    getString(R.string.affiliate_coacher_title1),
+                    getString(R.string.affiliate_coacher_desc1)
+                )
+            )
+        }
+        findViewById<LottieBottomNavbar>(R.id.bottom_navbar)?.getView(PROMO_MENU)
+            ?.let { secondView ->
+                coachMarkItemList.add(
+                    CoachMark2Item(
+                        secondView,
+                        getString(R.string.affiliate_coacher_title2),
+                        getString(R.string.affiliate_coacher_desc2)
+                    )
+                )
+                coachMarkItemList.add(
+                    CoachMark2Item(
+                        secondView,
+                        getString(R.string.affiliate_coacher_title3),
+                        getString(R.string.affiliate_coacher_desc3)
+                    )
+                )
+            }
+
+        coachMark?.showCoachMark(coachMarkItemList, null)
+        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                disableTouch()
+                when (currentIndex) {
+                    1 -> {
+                        if (currentCoachIndex == 2) handleBackButton(true)
+                    }
+                    2 -> {
+                        getPromoFragmentView()?.let {
+                            if (!viewFound) {
+                                coachMarkItemList[currentIndex].anchorView = it
+                                viewFound = true
+                            }
+                            setBottomState(AffiliatePromoFragment::class.java.name)
+                        }
+                    }
+                }
+                currentCoachIndex = currentIndex
+            }
+        })
+        coachMark?.setOnDismissListener{
+            CoachMarkPreference.setShown(this, COACHMARK_TAG,true)
+            enableTouch()
+        }
+
+    }
+
+    private fun disableTouch() {
+        window?.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+    private fun enableTouch(){
+        window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private fun getPromoFragmentView(): AffiliateLinkTextField? {
+        openFragment(AffiliatePromoFragment.getFragmentInstance())
+        val currentFragment =
+            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
+        currentFragment?.let { fragment ->
+            return (fragment as? AffiliatePromoFragment)?.view?.findViewById<AffiliateLinkTextField>(
+                R.id.product_link_et
+            )
+        }
+        return null
+    }
+
+    private fun getHomeFragmentView(): Typography? {
+        val currentFragment =
+            supportFragmentManager.findFragmentByTag(AffiliateHomeFragment::class.java.name)
+        currentFragment?.let { fragment ->
+            return (fragment as? AffiliateHomeFragment)?.view?.findViewById<Typography>(R.id.user_name)
+        }
+        return null
     }
 
     private fun pushOpenScreenEvent() {
@@ -176,7 +266,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     override fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean): Boolean {
         when (position) {
-            HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this))
+            HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this, this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
             INCOME_MENU -> openFragment(
                 AffiliateIncomeFragment.getFragmentInstance(
@@ -186,7 +276,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             )
             HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
         }
-        if(!isNotFromBottom) sendBottomNavClickEvent(position)
+        if (!isNotFromBottom) sendBottomNavClickEvent(position)
         return true
     }
 
@@ -246,7 +336,11 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showSplashScreen() {
-        findViewById<Typography>(R.id.splash_title).text = getString(R.string.affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate).replace("{name}",userSessionInterface.name)
+        findViewById<Typography>(R.id.splash_title).text =
+            getString(R.string.affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate).replace(
+                "{name}",
+                userSessionInterface.name
+            )
         findViewById<Group>(R.id.splash_group)?.show()
         Handler().postDelayed({
             findViewById<Group>(R.id.splash_group)?.hide()
@@ -277,7 +371,13 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             PROMO_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_NAV_BAR_CLICK
             HELP_MENU -> eventAction = AffiliateAnalytics.ActionKeys.BANUTAN_NAV_BAR_CLICK
         }
-        AffiliateAnalytics.sendEvent(AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,eventAction,AffiliateAnalytics.CategoryKeys.HOME_PORTAL,"",userSessionInterface.userId)
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+            eventAction,
+            AffiliateAnalytics.CategoryKeys.HOME_PORTAL,
+            "",
+            userSessionInterface.userId
+        )
 
     }
 
@@ -305,8 +405,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         var HELP_MENU = 3
     }
 
-    override fun selectItem(position: Int, id: Int, isNotFromBottom : Boolean) {
-        affiliateBottomNavigation?.setSelected(position,isNotFromBottom)
+    override fun selectItem(position: Int, id: Int, isNotFromBottom: Boolean) {
+        affiliateBottomNavigation?.setSelected(position, isNotFromBottom)
     }
 
     override fun onBackPressed() {
@@ -315,11 +415,15 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         if (currentFragment != null && currentFragment.isVisible) {
             (currentFragment as? AffiliatePromoFragment)?.handleBack()
         } else {
-            handleBackButton()
+            handleBackButton(false)
         }
     }
 
-    override fun handleBackButton() {
+    override fun handleBackButton(fromCoacher:Boolean) {
+        if (!fromCoacher) {
+            coachMark?.isDismissed = true
+            coachMark?.dismiss()
+        }
         if (!fragmentStack.empty()) {
             fragmentStack.pop()
             if (!fragmentStack.empty()) {
@@ -345,10 +449,18 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun setBottomState(peek: String?) {
         when (peek) {
-            AffiliateHomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(HOME_MENU)
-            AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(PROMO_MENU)
-            AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(INCOME_MENU)
-            BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(HELP_MENU)
+            AffiliateHomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                HOME_MENU
+            )
+            AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                PROMO_MENU
+            )
+            AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                INCOME_MENU
+            )
+            BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                HELP_MENU
+            )
         }
     }
 

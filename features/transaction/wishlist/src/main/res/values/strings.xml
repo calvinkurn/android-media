@@ -33,4 +33,5 @@
     <string name="wishlist_v2_delete_text_counter">Hapus (%d)</string>
     <string name="wishlist_v2_common_error_msg">Terjadi kesalahan, mohon dicoba kembali</string>
     <string name="wishlist_v2_share_text">Coba cek ini, deh: \"%1s\" %2s di toko %3s Tokopedia. Bisa bebas ongkir, lho.</string>
+    <string name="wishlist_v2_failed_to_get_information">Informasi gagal dimuat</string>
 </resources>

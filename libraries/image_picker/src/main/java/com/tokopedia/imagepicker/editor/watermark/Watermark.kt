@@ -230,7 +230,7 @@ data class Watermark(
 
         if (!backgroundImg!!.isDark()) {
             scaledWatermarkBitmap = scaledWatermarkBitmap!!
-                .changeColor(MethodChecker.getColor(context, R.color.green_neutral_30))
+                .changeColor(MethodChecker.getColor(context, R.color.dms_green_neutral_30))
         }
 
         // merge the main bitmap with scaled watermark bitmap

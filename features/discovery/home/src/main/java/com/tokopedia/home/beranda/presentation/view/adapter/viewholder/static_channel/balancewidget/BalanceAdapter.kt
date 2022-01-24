@@ -50,7 +50,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -262,17 +261,10 @@ class BalanceAdapter(
 
                             },
                             walletAppAction = {
-                                if (listener?.isEligibleForNewGopay() == true) {
-                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
                                         subtitle = element.balanceSubTitleTextAttribute?.text?:"",
                                         userId = listener?.userId?:""
-                                    )
-                                } else {
-                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                        isLinked = it,
-                                        userId = listener?.userId?:""
-                                    )
-                                }
+                                )
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
@@ -358,17 +350,10 @@ class BalanceAdapter(
                                 itemView.context.startActivity(intentBalanceWallet)
                             },
                             walletAppAction = {
-                                if (listener?.isEligibleForNewGopay() == true) {
-                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
                                         subtitle = element.balanceSubTitleTextAttribute?.text?:"",
                                         userId = listener?.userId?:""
-                                    )
-                                } else {
-                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                        isLinked = it,
-                                        userId = listener?.userId?:""
-                                    )
-                                }
+                                )
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
@@ -389,19 +374,19 @@ class BalanceAdapter(
                     renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
                     home_container_balance?.handleItemCLickType(
                             element = element,
-                            ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
-                            rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            bboAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            walletAppAction = { listener?.onRefreshTokoCashButtonClicked() }
+                            ovoWalletAction = {listener?.onRetryWalletApp()},
+                            rewardsAction = {listener?.onRetryMembership()},
+                            bboAction = {listener?.onRetryMembership()},
+                            tokopointsAction = {listener?.onRetryMembership()},
+                            walletAppAction = { listener?.onRetryWalletApp() }
                     )
                     home_tv_btn_action_balance?.handleItemCLickType(
                             element = element,
-                            ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
-                            rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            bboAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            walletAppAction = { listener?.onRefreshTokoCashButtonClicked() }
+                            ovoWalletAction = {listener?.onRetryWalletApp()},
+                            rewardsAction = {listener?.onRetryMembership()},
+                            bboAction = {listener?.onRetryMembership()},
+                            tokopointsAction = {listener?.onRetryMembership()},
+                            walletAppAction = { listener?.onRetryWalletApp() }
                     )
                 }
             }
