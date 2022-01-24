@@ -1,5 +1,0 @@
-package com.tokopedia.home.beranda.domain.interactor.usecase
-
-interface HomeTickerUseCase {
-    fun onCloseTicker()
-}

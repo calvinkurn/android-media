@@ -70,8 +70,9 @@ object RechargeHomepageSectionMapper {
         val sectionsList = mutableListOf<RechargeHomepageSections.Section>()
         for (section in sections){
             sectionsList.add(RechargeHomepageSections.Section(section.id, template = section.template))
-            if(section.template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER) ||
-                    section.template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER_EMPTY)){
+            if(section.template == RechargeHomepageViewModel.SECTION_TOP_BANNER ||
+                section.template == RechargeHomepageViewModel.SECTION_TOP_BANNER_EMPTY
+            ){
                 sectionsList.add(RechargeHomepageSections.Section(RechargeHomepageViewModel.ID_TICKER, template = RechargeHomepageViewModel.SECTION_TICKER))
             }
         }
@@ -136,6 +137,7 @@ object RechargeHomepageSectionMapper {
                         } else null
                     }
                     SECTION_SWIPE_BANNER -> RechargeHomepageSwipeBannerModel(it)
+                    SECTION_PRODUCT_CARD_DGU -> RechargeProductCardUnifyModel(it)
                     else -> null
                 }
             }

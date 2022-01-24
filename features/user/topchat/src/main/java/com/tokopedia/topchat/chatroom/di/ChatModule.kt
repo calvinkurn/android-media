@@ -38,6 +38,8 @@ import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
+import com.tokopedia.topchat.common.websocket.*
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.PAGE_CHATROOM
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -124,16 +126,6 @@ class ChatModule {
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
-    }
-
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtil(
-            tkpdAuthInterceptor: TkpdAuthInterceptor,
-            fingerprintInterceptor: FingerprintInterceptor
-    ): RxWebSocketUtil {
-        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
-        return RxWebSocketUtil.getInstance(interceptors)
     }
 
     @ChatScope
@@ -245,5 +237,45 @@ class ChatModule {
     @Provides
     fun provideAbTestPlatform() : AbTestPlatform {
         return RemoteConfigInstance.getInstance().abTestPlatform
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketStateHandler(): WebSocketStateHandler {
+        return DefaultWebSocketStateHandler()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTopChatWebSocket(
+        userSession: UserSessionInterface,
+        client: OkHttpClient
+    ): TopchatWebSocket {
+        val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN
+            .plus(ChatUrl.CONNECT_WEBSOCKET)
+            .plus("?os_type=1")
+            .plus("&device_id=%s")
+            .plus("&user_id=%s")
+            .format(
+                userSession.deviceId,
+                userSession.userId
+            )
+        return DefaultTopChatWebSocket(
+            client, webSocketUrl, userSession.accessToken, PAGE_CHATROOM
+        )
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebsocketPayloadGenerator(
+        userSession: UserSessionInterface
+    ): WebsocketPayloadGenerator {
+        return DefaultWebsocketPayloadGenerator(userSession)
     }
 }

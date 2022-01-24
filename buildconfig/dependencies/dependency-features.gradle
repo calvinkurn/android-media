@@ -63,7 +63,6 @@ ext {
 
             commonTravel                    : ":features:travel:common_travel",
             flight                          : ":features:travel:flight",
-            flightOrderList                 : ":features:travel:flight_orderlist",
             hotel                           : ":features:travel:hotel",
             travelHomepage                  : ":features:travel:travel_homepage",
             travelCountryCode               : ":features:travel:travel_country_code",
@@ -72,7 +71,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
 

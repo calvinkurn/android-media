@@ -123,7 +123,8 @@ class PlayUserInteractionFragment @Inject constructor(
         InteractiveWinnerBadgeViewComponent.Listener,
         RealTimeNotificationViewComponent.Listener,
         CastViewComponent.Listener,
-        ProductSeeMoreViewComponent.Listener
+        ProductSeeMoreViewComponent.Listener,
+        KebabMenuViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -151,6 +152,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
+    private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
 
     /**
      * Interactive
@@ -170,6 +172,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val bottomSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_BOTTOMSHEET_HEIGHT).toInt()
+
+    private val bottomSheetMenuMaxHeight: Int
+        get() = (requireView().height * PERCENT_MENU_BOTTOMSHEET_HEIGHT).toInt()
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
@@ -1408,11 +1413,15 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false) {
+                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.KebabMenuSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.UserReportSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.UserReportSubmissionSheet]?.isShown == false) {
             sendChatView?.show()
         } else sendChatView?.invisible()
 
-        sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
+        sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown
+                && bottomInsets[BottomInsetsType.UserReportSubmissionSheet] is BottomInsetsState.Hidden)
     }
 
     private fun quickReplyViewOnStateChanged(
@@ -1424,6 +1433,9 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.KebabMenuSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.UserReportSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.UserReportSubmissionSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
             quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()
@@ -1640,12 +1652,18 @@ class PlayUserInteractionFragment @Inject constructor(
         return existing ?: childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, InteractiveWinningDialogFragment::class.java.name) as InteractiveWinningDialogFragment
     }
 
+    override fun onKebabMenuClick(view: KebabMenuViewComponent) {
+        analytic.clickKebabMenu()
+        playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
+    }
+
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 
         private const val REQUEST_CODE_LOGIN = 192
 
         private const val PERCENT_BOTTOMSHEET_HEIGHT = 0.6
+        private const val PERCENT_MENU_BOTTOMSHEET_HEIGHT = 0.2
 
         private const val VISIBLE_ALPHA = 1f
 

@@ -492,10 +492,15 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 is Fail -> {
                     SellerHomeErrorHandler.logException(
                         it.throwable,
-                        SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO
                     )
 
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        it.throwable,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                    )
                     navigator?.run {
                         if (isHomePageSelected()) {
                             supportActionBar?.title = userSession.shopName

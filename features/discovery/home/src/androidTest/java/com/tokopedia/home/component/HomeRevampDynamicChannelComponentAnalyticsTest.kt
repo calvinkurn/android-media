@@ -36,6 +36,7 @@ import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -52,6 +53,7 @@ private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
 /**
  * Created by yfsx on 2/9/21.
  */
+@CassavaTest
 class HomeRevampDynamicChannelComponentAnalyticsTest {
     @get:Rule
     var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
@@ -345,18 +347,18 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
-//    @Test
-//    fun testBannerComponentWidget() {
-//        HomeDCCassavaTest {
-//            initTest()
-//            doActivityTestByModelClass(dataModelClass = BannerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-//                actionOnBannerCarouselWidget(viewHolder, i)
-//            }
-//        } validateAnalytics {
-//            addDebugEnd()
-//            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL)
-//        }
-//    }
+    @Test
+    fun testBannerComponentWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = BannerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBannerCarouselWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL)
+        }
+    }
 
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()

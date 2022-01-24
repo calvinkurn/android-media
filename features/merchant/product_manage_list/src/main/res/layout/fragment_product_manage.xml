@@ -141,7 +141,7 @@
             app:loader_type="circular" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <androidx.cardview.widget.CardView
         android:id="@+id/btnMultiEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -156,7 +156,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:card_type="clear"
         tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -164,7 +163,7 @@
             android:layout_height="wrap_content"
             android:text="@string/product_manage_button_multi_edit"
             app:unifyButtonSize="large" />
-    </com.tokopedia.unifycomponents.CardUnify>
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/errorPage"

@@ -1,6 +1,8 @@
 package com.tokopedia.youtube_common.domain.usecase
 
 import android.net.Uri
+import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.authentication.HEADER_USER_AGENT
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
@@ -29,9 +31,13 @@ class GetYoutubeVideoDetailUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
         val restRequest = RestRequest.Builder(ENDPOINT_URL, YoutubeVideoDetailModel::class.java)
-                .setQueryParams(queryParams = generateRequestParam())
-                .setRequestType(RequestType.GET)
-                .build()
+            .setQueryParams(queryParams = generateRequestParam())
+            .setRequestType(RequestType.GET)
+            .setHeaders(
+                mapOf(
+                    HEADER_USER_AGENT to AuthHelper.getUserAgent()
+                )
+            ).build()
         restRequestList.clear()
         restRequestList.add(restRequest)
         return repository.getResponses(restRequestList)

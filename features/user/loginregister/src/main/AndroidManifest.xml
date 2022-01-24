@@ -254,6 +254,7 @@
 
         <service
             android:name=".seamlesslogin.RemoteService"
+            android:permission="com.tokopedia.sellerapp.REMOTE_SERVICE_SEAMLESS"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.loginregister.seamlesslogin.RemoteService" />
