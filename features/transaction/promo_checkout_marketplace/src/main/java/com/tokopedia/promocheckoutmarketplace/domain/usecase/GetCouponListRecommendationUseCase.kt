@@ -1,15 +1,11 @@
 package com.tokopedia.promocheckoutmarketplace.domain.usecase
 
-import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -21,12 +17,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
 
     private var params: Map<String, Any?>? = null
 
-    // Todo : remove context
-    private var tmpContext: Context? = null
-
-    fun setParams(promoRequest: PromoRequest, chosenAddress: ChosenAddress?, context: Context? = null) {
-        tmpContext = context
-
+    fun setParams(promoRequest: PromoRequest, chosenAddress: ChosenAddress?) {
         params = mapOf(
                 KEY_PARAMS to CouponListRecommendationRequest(promoRequest = promoRequest),
                 // Add current selected address from local cache
@@ -42,10 +33,6 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
 
         val request = GraphqlRequest(QUERY, CouponListRecommendationResponse::class.java, params)
         return graphqlRepository.response(listOf(request)).getSuccessData()
-
-        // Todo : remove dummy
-//        val responseText = GraphqlHelper.loadRawString(tmpContext?.resources, R.raw.dummy_promo_list_response)
-//        return Gson().fromJson(responseText, CouponListRecommendationResponse::class.java)
     }
 
     companion object {

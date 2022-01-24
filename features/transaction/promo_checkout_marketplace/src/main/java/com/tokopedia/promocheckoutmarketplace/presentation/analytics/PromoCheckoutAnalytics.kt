@@ -443,27 +443,9 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
 
     // Promo BFI / Back Funnel Improvement (Revamp)
 
-    // 1 - Done
+    // 1. TrackerId 21403
+    // 2,3,4 - Canceled, merged to 1
     fun eventImpressionEligiblePromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
-        /*
-        {
-          "event": "view_item",
-          "eventAction": "impression- eligible promo section",
-          "eventCategory": "courier selection",
-          "eventLabel": "{{promo_id}} - {{index}} - {{promo_amount}} - {{promo_type}} - {{total_sisa_coupon}}",
-          "businessUnit": "promo",
-          "currentSite": "tokopediamarketplace",
-          "promotions": [
-            {
-              "creative_name": "{creative_name}",
-              "creative_slot": "{position_index}",
-              "item_id": "{promo_id}",
-              "item_name": "{promo_name}"
-            }
-          ],
-          "userId": "{user_id}"
-        }
-        * */
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
@@ -483,29 +465,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 2,3,4 - Canceled
-
-    // 5 - Done
+    // 5. TrackerId 25062
     fun eventImpressionLockToPaymentPromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
-        /*
-        {
-          "event": "view_item",
-          "eventAction": "impression - lock to payment promo section",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{promo_amount}} - {{payament option}}",
-          "businessUnit": "promo",
-          "currentSite": "tokopediamarketplace",
-          "promotions": [
-            {
-              "creative_name": "{creative_name}",
-              "creative_slot": "{position_index}",
-              "item_id": "{promo_id}",
-              "item_name": "{promo_name}"
-            }
-          ],
-          "userId": "{user_id}"
-        }
-        * */
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
@@ -524,27 +485,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 6 - Done
+    // 6. TrackerId 25063
     fun eventImpressionLockToShippingPromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
-        /*
-        {
-          "event": "view_item",
-          "eventAction": "impression - lock to shipping promo section",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{promo_amount}} - {{shipping option}}",
-          "businessUnit": "promo",
-          "currentSite": "tokopediamarketplace",
-          "promotions": [
-            {
-              "creative_name": "{creative_name}",
-              "creative_slot": "{position_index}",
-              "item_id": "{promo_id}",
-              "item_name": "{promo_name}"
-            }
-          ],
-          "userId": "{user_id}"
-        }
-        * */
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
@@ -563,27 +505,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 7
+    // 7. TrackerId 25064
     fun eventImpressionHighlightedPromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
-        /*
-        {
-          "event": "view_item",
-          "eventAction": "impression - highlighted promo section",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{promo_amount}}",
-          "businessUnit": "promo",
-          "currentSite": "tokopediamarketplace",
-          "promotions": [
-            {
-              "creative_name": "{creative_name}",
-              "creative_slot": "{position_index}",
-              "item_id": "{promo_id}",
-              "item_name": "{promo_name}"
-            }
-          ],
-          "userId": "{user_id}"
-        }
-        * */
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
@@ -602,27 +525,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 8 - Done
+    // 8. TrackerId 25065
     fun eventViewErrorAfterClickTerapkanPromo(page: Int, errorMessage: String, index: Int, promoCode: String) {
-        /*
-        {
-          "event": "view_item",
-          "eventAction": "view error after click terapkan promo",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{error message}}",
-          "businessUnit": "promo",
-          "currentSite": "tokopediamarketplace",
-          "promotions": [
-            {
-              "creative_name": "{creative_name}",
-              "creative_slot": "{position_index}",
-              "item_id": "{promo_id}",
-              "item_name": "{promo_name}"
-            }
-          ],
-          "userId": "{user_id}"
-        }
-        * */
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
@@ -641,18 +545,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 9 - Done
+    // 9. TrackerId 25075
     fun eventViewErrorAfterClickPakaiPromo(page: Int, promoCode: String, errorMessage: String) {
-        /*
-        {
-          "event": "viewATCIris",
-          "eventAction": "view error after click pakai promo",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{error message}}",
-          "businessUnit": "{businessUnit}",
-          "currentSite": "{currentSite}"
-        }
-        * */
         val additionalData = HashMap<String, Any>()
         additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -666,18 +560,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 10 - Done
+    // 10. TrackerId 25076
     fun eventClickTabPromoCategory(page: Int, promoCategoryName: String) {
-        /*
-        {
-          "event": "clickATC",
-          "eventAction": "click tab promo category",
-          "eventCategory": "cart",
-          "eventLabel": "{{category name}}",
-          "businessUnit": "{businessUnit}",
-          "currentSite": "{currentSite}"
-        }
-        * */
         val additionalData = HashMap<String, Any>()
         additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -691,18 +575,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 11 - Done
+    // 11. TrackerId 25077
     fun eventImpressionRecommendationPromoSection(page: Int, totalCouponCanApply: Int, totalPotentialBenefit: Int) {
-        /*
-        {
-          "event": "viewATCIris",
-          "eventAction": "impression - recommendation promo section",
-          "eventCategory": "cart",
-          "eventLabel": "{{total coupon can apply}} - {{all potential benefit}}",
-          "businessUnit": "{businessUnit}",
-          "currentSite": "{currentSite}"
-        }
-        * */
         val additionalData = HashMap<String, Any>()
         additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -716,18 +590,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 12 - Done
+    // 12. TrackerId 25078
     fun eventClickPilihOnRecommendation(page: Int, promoCode:  String, isCausingClash: Boolean) {
-        /*
-        {
-          "event": "clickATC",
-          "eventAction": "click pilih promo recommendation",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_code}} - {{status trigger clashing or not}}",
-          "businessUnit": "{businessUnit}",
-          "currentSite": "{currentSite}"
-        }
-        * */
         val additionalData = HashMap<String, Any>()
         additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -741,18 +605,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 13 - Done
+    // 13. TrackerId 25079
     fun eventClickLihatDetailOnIneligibleCoupon(page: Int, promoCode: String, ineligibleMessage: String) {
-        /*
-        {
-          "event": "clickATC",
-          "eventAction": "click lihat detail ineligible kupon",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{message of ineligible reason}}",
-          "businessUnit": "{businessUnit}",
-          "currentSite": "{currentSite}"
-        }
-        * */
         val additionalData = HashMap<String, Any>()
         additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -766,27 +620,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         )
     }
 
-    // 14 - Done
+    // 14. TrackerId 25080
     fun eventImpressionIneligiblePromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
-        /*
-        {
-          "event": "view_item",
-          "eventAction": "impression - ineligible promo section",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{message of ineligible reason}}",
-          "businessUnit": "promo",
-          "currentSite": "tokopediamarketplace",
-          "promotions": [
-            {
-              "creative_name": "{creative_name}",
-              "creative_slot": "{position_index}",
-              "item_id": "{promo_id}",
-              "item_name": "{promo_name}"
-            }
-          ],
-          "userId": "{user_id}"
-        }
-    * */
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),

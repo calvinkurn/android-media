@@ -866,12 +866,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun loadData(page: Int) {
-        activity?.let {
-            showLoading()
-            val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-            viewModel.getPromoList(promoRequest, "", chosenAddress, it)
-        }
+        showLoading()
+        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
+        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+        viewModel.getPromoList(promoRequest, "", chosenAddress)
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -1041,12 +1039,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String, isFromSuggestion: Boolean) {
-        activity?.let {
-            viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromSuggestion)
-            val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-            viewModel.getPromoList(promoRequest, promoCode, chosenAddress, it)
-        }
+        viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromSuggestion)
+        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
+        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+        viewModel.getPromoList(promoRequest, promoCode, chosenAddress)
     }
 
     override fun onCLickClearManualInputPromo() {

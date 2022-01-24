@@ -714,7 +714,6 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-//    @ExperimentalStdlibApi
     fun eventClickAccordionButtonOnUnavailableProduct(userId: String, buttonWording: String) {
         val gtmData = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,

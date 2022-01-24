@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -152,13 +151,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     /* Network Call Section : Get Promo List */
     //---------------------------------------//
 
-    fun getPromoList(promoRequest: PromoRequest, attemptedPromoCode: String, chosenAddress: ChosenAddress? = null, tmpContext: Context? = null) {
+    fun getPromoList(promoRequest: PromoRequest, attemptedPromoCode: String, chosenAddress: ChosenAddress? = null) {
         // Set request data
         prepareGetPromoRequestData(attemptedPromoCode, promoRequest, chosenAddress)
 
         // Get response data
         PromoCheckoutIdlingResource.increment()
-        getCouponListRecommendationUseCase.setParams(promoRequest, chosenAddress, tmpContext)
+        getCouponListRecommendationUseCase.setParams(promoRequest, chosenAddress)
         getCouponListRecommendationUseCase.execute(
                 onSuccess = {
                     PromoCheckoutIdlingResource.decrement()
