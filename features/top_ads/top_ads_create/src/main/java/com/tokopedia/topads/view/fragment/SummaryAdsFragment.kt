@@ -458,8 +458,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             strategies.clear()
             strategies.add(stepperModel?.autoBidState!!)
         } else {
-            bidTypeData?.add(TopAdsBidSettingsModel("product_search", stepperModel?.finalBidPerClick?.toFloat()))
-            bidTypeData?.add(TopAdsBidSettingsModel("product_browse", stepperModel?.finalBidPerClick?.toFloat()))
+            bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, stepperModel?.finalBidPerClick?.toFloat()))
+            bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, stepperModel?.finalBidPerClick?.toFloat()))
             dataMap[BID_TYPE] =  bidTypeData
         }
 
@@ -468,8 +468,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     }
 
-    private fun getKeywordData() : HashMap<String, Any?> {
-
+    private fun getKeywordData(): HashMap<String, Any?> {
         val dataKeyword = HashMap<String, Any?>()
         keywordsList.clear()
 
@@ -480,11 +479,13 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         dataKeyword[POSITIVE_CREATE] = keywordsList
         stepperModel?.suggestedBidPerClick?.toFloat()?.let {
-            val suggestionBidSettings = listOf(
-                GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH,it),
-                GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE,it)
-            )
-            dataKeyword[SUGGESTION_BID_SETTINGS] = suggestionBidSettings
+            if (it > 0.0f) {
+                val suggestionBidSettings = listOf(
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH, it),
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE, it)
+                )
+                dataKeyword[SUGGESTION_BID_SETTINGS] = suggestionBidSettings
+            }
         }
         return dataKeyword
     }
