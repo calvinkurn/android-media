@@ -750,9 +750,26 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
      */
     override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
                                     isShowBuyWidget: Boolean) {
-        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE){
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
             onClearSelectedDenomGrid()
+            digitalPDPTelcoAnalytics.clickMCCMProduct(
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                "//TODO LOYALTY",
+                userSession.userId,
+                denomGrid,
+                layoutType,
+                position
+            )
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+            digitalPDPTelcoAnalytics.clickProductCluster(
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                "//TODO LOYALTY",
+                userSession.userId,
+                denomGrid,
+                position
+            )
             onClearSelectedMCCM()
         }
 

@@ -3,6 +3,8 @@ package com.tokopedia.digital_product_detail.presentation.utils
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_CHEVRON
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_PRODUCT_CLUSTER
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_PROMO_CARD
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.IMPRESSION_PRODUCT_CLUSTER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.VIEW_PROMO_CARD
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.INDEX
@@ -195,6 +197,24 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
     }
 
+    //2
+    fun clickProductCluster(categoryName: String,
+                            operatorName: String,
+                            loyaltyStatus: String,
+                            userId: String,
+                            denomData: DenomData,
+                            position: Int
+    ){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, CLICK_PRODUCT_CLUSTER)
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
+            putParcelableArrayList(ITEMS, mapperDenomToItemList(denomData, position, ""))
+        }
+
+        eventDataLayer.clickGeneralItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+    }
+
     //15
     fun impressionProductMCCM(categoryName: String,
                               operatorName: String,
@@ -227,6 +247,25 @@ class DigitalPDPTelcoAnalytics {
         )
         data.clickDigitaltemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //20
+    fun clickMCCMProduct(categoryName: String,
+                         operatorName: String,
+                         loyaltyStatus: String,
+                         userId: String,
+                         denomData: DenomData,
+                         denomType: DenomWidgetEnum,
+                         position: Int){
+        val isMCCMorFlashSale = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) MCCM else FLASH_SALE
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, CLICK_PROMO_CARD)
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}")
+            putParcelableArrayList(ITEMS, mapperDenomToItemList(denomData, position, isMCCMorFlashSale))
+        }
+
+        eventDataLayer.clickGeneralItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
     /** Common Tracking Methods*/
