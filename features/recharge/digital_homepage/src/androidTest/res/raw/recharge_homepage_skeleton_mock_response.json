@@ -47,6 +47,10 @@
           {
             "id": 10,
             "template": "COUNTDOWN_PRODUCT_BANNER"
+          },
+          {
+            "id": 158,
+            "template": "3_ICONS"
           }
         ]
       }
