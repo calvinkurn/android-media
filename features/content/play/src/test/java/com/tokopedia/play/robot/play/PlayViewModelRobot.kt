@@ -11,6 +11,7 @@ import com.tokopedia.play.robot.Robot
 import com.tokopedia.play.robot.RobotWithValue
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
@@ -69,7 +70,8 @@ class PlayViewModelRobot(
         private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
         timerFactory: TimerFactory,
-        castPlayerHelper: CastPlayerHelper
+        castPlayerHelper: CastPlayerHelper,
+        playShareExperience: PlayShareExperience,
 ) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -96,7 +98,8 @@ class PlayViewModelRobot(
         repo,
         playAnalytic,
         timerFactory,
-        castPlayerHelper
+        castPlayerHelper,
+        playShareExperience
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -236,6 +239,7 @@ fun givenPlayViewModelRobot(
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
         timerFactory: TimerFactory = mockk(relaxed = true),
         castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
+        playShareExperience: PlayShareExperience = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -260,7 +264,8 @@ fun givenPlayViewModelRobot(
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,
-        castPlayerHelper = castPlayerHelper
+        castPlayerHelper = castPlayerHelper,
+        playShareExperience = playShareExperience,
     ).apply(fn)
 }
 
