@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderTipsTypeFactory
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.provider.WaitingPaymentOrderTipsDataProvider
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -47,6 +48,11 @@ class BottomSheetWaitingPaymentOrderTips : BottomSheetUnify() {
         setupHeader()
         setupRecyclerView()
         return views
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     private fun setChildLayout() {

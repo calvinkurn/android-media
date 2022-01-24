@@ -144,9 +144,9 @@ class RechargeBUWidgetProductCardViewHolder(
                                 com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card
                             )
                         else null,
-                        width = context.resources.getDimension(R.dimen.bu_widget_progress_fire_icon_width)
+                        width = context.resources.getDimension(R.dimen.digital_card_progress_fire_icon_width)
                             .toInt(),
-                        height = context.resources.getDimension(R.dimen.bu_widget_progress_fire_icon_height)
+                        height = context.resources.getDimension(R.dimen.digital_card_progress_fire_icon_height)
                             .toInt()
                     )
                     progressBarColorType = ProgressBarUnify.COLOR_RED

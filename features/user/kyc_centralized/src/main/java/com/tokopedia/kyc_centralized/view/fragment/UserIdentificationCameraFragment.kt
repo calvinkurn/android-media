@@ -14,10 +14,10 @@ import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
@@ -25,7 +25,7 @@ import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
+import com.tokopedia.utils.permission.request
 import java.io.File
 
 /**
@@ -49,7 +49,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private var imagePath: String = ""
     private var mCaptureNativeSize: Size? = null
     private var analytics: UserIdentificationCommonAnalytics? = null
-    private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private val permissionCheckerHelper = PermissionCheckerHelper()
     private var viewMode = 0
     private var cameraListener: CameraListener? = null
 
@@ -64,7 +64,6 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        permissionCheckerHelper = PermissionCheckerHelper()
         if (arguments != null) {
             viewMode = arguments?.getInt(ARG_VIEW_MODE, 1) ?: 1
         }
@@ -98,45 +97,32 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkPermission()
         populateView()
     }
 
     private fun populateView() {
         container?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-        shutterButton?.setOnClickListener { v: View? ->
+        shutterButton?.setOnClickListener {
             sendAnalyticClickShutter()
-            val fragment: Fragment = this@UserIdentificationCameraFragment
-            permissionCheckerHelper?.checkPermission(fragment,
-                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA, object : PermissionCheckListener {
-                override fun onPermissionDenied(permissionText: String) {}
-                override fun onNeverAskAgain(permissionText: String) {}
-                override fun onPermissionGranted() {
-                    hideCameraButtonAndShowLoading()
-                    cameraView?.takePicture()
-                }
-            }, "")
+            checkPermission {
+                hideCameraButtonAndShowLoading()
+                cameraView?.takePicture()
+            }
         }
-        switchCamera?.setOnClickListener { v: View? ->
+        switchCamera?.setOnClickListener {
             sendAnalyticClickFlipCamera()
             toggleCamera()
         }
-        reCaptureButton?.setOnClickListener { v: View? ->
+        reCaptureButton?.setOnClickListener {
             sendAnalyticClickRecapture()
             showCameraView()
         }
         cameraListener = object : CameraListener() {
-
             override fun onPictureTaken(result: PictureResult) {
-                val fragment: Fragment = this@UserIdentificationCameraFragment
-                permissionCheckerHelper?.checkPermission(fragment,
-                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                        object : PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {}
-                            override fun onNeverAskAgain(permissionText: String) {}
-                            override fun onPermissionGranted() {
-                                saveToFile(result.data)
-                            }
-                        }, "")
+                checkPermission {
+                    saveToFile(result)
+                }
             }
         }
         cameraListener?.let { cameraView?.addCameraListener(it) }
@@ -171,6 +157,17 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         populateViewByViewMode()
         showCameraView()
         sendAnalyticOpenCamera()
+    }
+
+    private fun checkPermission(isGranted: () -> Unit = {}) {
+        activity?.let {
+            permissionCheckerHelper.request(it, arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                PermissionCheckerHelper.Companion.PERMISSION_CAMERA
+            )) {
+                isGranted.invoke()
+            }
+        }
     }
 
     private fun sendAnalyticOpenCamera() {
@@ -278,26 +275,11 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         }
     }
 
-    fun saveToFile(imageByte: ByteArray) {
+    fun saveToFile(result: PictureResult) {
         mCaptureNativeSize = cameraView?.pictureSize
-        try {
-            //rotate the bitmap using the library
-            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize?.width
-                    ?: 0, mCaptureNativeSize?.height ?: 0) { bitmap: Bitmap? ->
-                if (bitmap != null) {
-                    val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(
-                        bitmap,
-                        Bitmap.CompressFormat.JPEG,
-                        FILE_NAME_KYC
-                    )
-                    if (cameraResultFile!= null) {
-                        onSuccessImageTakenFromCamera(cameraResultFile)
-                    }
-                }
-            }
-        } catch (error: Throwable) {
-            val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG)
-            if (cameraResultFile != null) {
+        val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(Bitmap.CompressFormat.JPEG, FILE_NAME_KYC)
+        result.toFile(cameraResultFile) {
+            if (it != null && it.exists()) {
                 onSuccessImageTakenFromCamera(cameraResultFile)
             }
         }
@@ -305,7 +287,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
 
     private fun onSuccessImageTakenFromCamera(cameraResultFile: File) {
         if (cameraResultFile.exists()) {
-            ImageHandler.loadImageFromFile(context, imagePreview, cameraResultFile)
+            imagePreview?.loadImage(cameraResultFile.absolutePath)
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
         } else {

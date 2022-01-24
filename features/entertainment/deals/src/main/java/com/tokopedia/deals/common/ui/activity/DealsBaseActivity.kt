@@ -203,7 +203,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     private fun setupOrderListMenu() {
         binding.contentBaseToolbar.imgDealsOrderListMenu.setOnClickListener {
             dealsAnalytics.clickOrderListDeals()
-            RouteManager.route(this, ApplinkConst.DEALS_ORDER)
+            RouteManager.route(this, ApplinkConst.TRAVEL_AND_ENTERTAINMENT_ORDER)
         }
     }
 

@@ -9,6 +9,16 @@ import com.tokopedia.sellerhome.common.exception.SellerHomeException
 
 object SellerHomeErrorHandler {
 
+    // Scalyr/New Relic Error Keys
+    private const val ERROR_TYPE_KEY = "error_type"
+    private const val DEVICE_ID_KEY = "device_id"
+    private const val MESSAGE_KEY = "message"
+    private const val STACKTRACE_KEY = "stacktrace"
+    private const val EXTRAS_KEY = "extras"
+
+    const val SELLER_HOME_TAG = "SELLER_HOME_ERROR"
+    const val OTHER_MENU = "OTHER_MENU_ERROR"
+
     internal const val WIDGET_TYPE_KEY = "widget_type"
     internal const val LAYOUT_ID_KEY = "layout_id"
     internal const val SHOP_SHARE_DATA = "seller home shop share data error"
@@ -17,42 +27,29 @@ object SellerHomeErrorHandler {
     internal const val SHOP_INFO = "seller home shop info error"
     internal const val UPDATE_WIDGET_ERROR = "seller home update widget error"
 
-    private const val ERROR_TAG = "SELLER_HOME_ERROR"
-
-    // Scalyr Error Keys
-    private const val ERROR_TYPE_KEY = "error_type"
-    private const val DEVICE_ID_KEY = "device_id"
-    private const val MESSAGE_KEY = "message"
-    private const val STACKTRACE_KEY = "stacktrace"
-    private const val EXTRAS_KEY = "extras"
-
-    internal object ErrorType {
+    object ErrorType {
         const val ERROR_LAYOUT = "error_layout"
         const val ERROR_WIDGET = "error_widget"
         const val ERROR_TICKER = "error_ticker"
     }
 
-    fun logException(throwable: Throwable,
-                     message: String,
-                     errorType: String = "",
-                     deviceId: String = "",
-                     extras: Map<String, Any> = mapOf()) {
-
+    fun logException(
+        throwable: Throwable,
+        message: String
+    ) {
         logExceptionToCrashlytics(throwable, message)
-
-        if (errorType.isNotBlank()) {
-            logExceptionToScalyr(throwable, errorType, deviceId, extras)
-        }
     }
 
     private fun logExceptionToCrashlytics(throwable: Throwable, message: String) {
         try {
             if (!BuildConfig.DEBUG) {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
-                FirebaseCrashlytics.getInstance().recordException(SellerHomeException(
+                FirebaseCrashlytics.getInstance().recordException(
+                    SellerHomeException(
                         message = exceptionMessage,
                         cause = throwable
-                ))
+                    )
+                )
             } else {
                 throwable.printStackTrace()
             }
@@ -61,25 +58,38 @@ object SellerHomeErrorHandler {
         }
     }
 
-    private fun logExceptionToScalyr(throwable: Throwable,
-                                     errorType: String,
-                                     deviceId: String,
-                                     extras: Map<String, Any>) {
-        ServerLogger.log(Priority.P2, ERROR_TAG, getSellerHomeErrorMessageMap(throwable, errorType, deviceId, extras))
+    fun logExceptionToServer(
+        errorTag: String,
+        throwable: Throwable,
+        errorType: String,
+        deviceId: String,
+        extras: Map<String, Any> = mapOf()
+    ) {
+        ServerLogger.log(
+            Priority.P2,
+            errorTag,
+            getSellerOutageErrorMessageMap(throwable, errorType, deviceId, extras)
+        )
     }
 
-    private fun getSellerHomeErrorMessageMap(throwable: Throwable,
-                                             errorType: String,
-                                             deviceId: String,
-                                             extras: Map<String, Any>): Map<String, String> {
+    private fun getSellerOutageErrorMessageMap(
+        throwable: Throwable,
+        errorType: String,
+        deviceId: String,
+        extras: Map<String, Any>
+    ): Map<String, String> {
         val stringExtras = Gson().toJson(extras)
-        return mutableMapOf(
-                ERROR_TYPE_KEY to errorType,
-                DEVICE_ID_KEY to deviceId,
-                MESSAGE_KEY to throwable.localizedMessage.orEmpty(),
-                EXTRAS_KEY to stringExtras,
-                STACKTRACE_KEY to throwable.stackTraceToString()
-        )
+        val mutableMap = mutableMapOf<String, String>()
+        with(mutableMap) {
+            put(ERROR_TYPE_KEY, errorType)
+            put(DEVICE_ID_KEY, deviceId)
+            put(MESSAGE_KEY, throwable.localizedMessage.orEmpty())
+            if (stringExtras.isNotBlank()) {
+                put(EXTRAS_KEY, stringExtras)
+            }
+            put(STACKTRACE_KEY, throwable.stackTraceToString())
+        }
+        return mutableMap
     }
 
 }

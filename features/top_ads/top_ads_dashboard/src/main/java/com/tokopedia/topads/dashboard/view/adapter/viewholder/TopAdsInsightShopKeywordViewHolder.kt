@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.view.adapter.viewholder
 
 import android.content.Context
-import android.os.Build
 import android.text.Html
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -85,10 +84,10 @@ class TopAdsInsightShopKeywordViewHolder(private val context: Context, private v
             view.resources.getString(R.string.biaya_optimal)
         } else if (inputBudget < item.minBid) {
             isError = true
-            String.format(view.resources.getString(R.string.min_bid_error_new), item.minBid.toInt())
+            String.format(view.resources.getString(R.string.min_bid_error_number), item.minBid.toInt())
         } else if (inputBudget > item.maxBid) {
             isError = true
-            String.format(view.resources.getString(R.string.max_bid_error_new), item.maxBid.toInt())
+            String.format(view.resources.getString(R.string.max_bid_error_number), item.maxBid.toInt())
         } else {
             ""
         }
