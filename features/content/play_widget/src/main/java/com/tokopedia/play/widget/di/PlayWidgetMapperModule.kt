@@ -1,8 +1,6 @@
 package com.tokopedia.play.widget.di
 
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMediumUiMapper
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetSmallUiMapper
+import com.tokopedia.play.widget.ui.mapper.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
 import dagger.Binds
 import dagger.Module
@@ -23,4 +21,14 @@ abstract class PlayWidgetMapperModule {
     @IntoMap
     @PlayWidgetSizeKey(PlayWidgetSize.Medium)
     abstract fun getPlayWidgetMediumMapper(mapper: PlayWidgetMediumUiMapper): PlayWidgetMapper
+
+    @Binds
+    @IntoMap
+    @PlayWidgetSizeKey(PlayWidgetSize.Large)
+    abstract fun getPlayWidgetLargeMapper(mapper: PlayWidgetLargeUiMapper): PlayWidgetMapper
+
+    @Binds
+    @IntoMap
+    @PlayWidgetSizeKey(PlayWidgetSize.Jumbo)
+    abstract fun getPlayWidgetJumboMapper(mapper: PlayWidgetJumboUiMapper): PlayWidgetMapper
 }

@@ -6,7 +6,6 @@ import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMediumUiMapper
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
@@ -61,9 +60,7 @@ class PlayWidgetTools @Inject constructor(
 
     suspend fun mapWidgetToggleReminder(response: PlayWidgetReminder, coroutineContext: CoroutineContext = Dispatchers.Default): Boolean {
         return withContext(coroutineContext) {
-            val mapper = mapperProviders[PlayWidgetSize.Medium]
-            if (mapper is PlayWidgetMediumUiMapper) mapper.mapWidgetToggleReminder(response)
-            else throw IllegalStateException("Mapper is not medium type")
+            response.playToggleChannelReminder.header.status == PlayWidgetReminderUseCase.RESPONSE_STATUS_SUCCESS
         }
     }
 
