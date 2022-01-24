@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
@@ -185,7 +186,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     override fun onNoAccess() {
         showToasterError(
-            context?.getString(R.string.seller_menu_admin_no_permission_oops).orEmpty()
+            context?.getString(com.tokopedia.seller.menu.common.R.string.seller_menu_admin_no_permission_oops)
+                .orEmpty()
         )
     }
 
@@ -197,6 +199,20 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         handleGlobalFeedbackResult(requestCode, resultCode, data)
+    }
+
+    var a: MenuSettingAdapter? = null
+
+    fun init() {
+        val bool = context?.let {
+            FirebaseRemoteConfigImpl(it).getBoolean(
+                RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER,
+                false
+            )
+        }
+        if (bool == true) {
+            a = MenuSettingAdapter(context, this, true, adapterTypeFactory)
+        }
     }
 
     private fun handleGlobalFeedbackResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -263,6 +279,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         setupLogoutView()
         setupExtraSettingView()
+        startShopActiveService()
     }
 
     private fun setupLogoutView() {
@@ -403,6 +420,12 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun isActivityResumed(): Boolean {
         val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
         return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
+    }
+
+    private fun startShopActiveService() {
+        context?.let {
+            UpdateShopActiveService.startService(it)
+        }
     }
 
 }
