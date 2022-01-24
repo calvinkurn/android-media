@@ -36,6 +36,8 @@ import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
@@ -82,8 +84,6 @@ import kotlin.math.abs
  * Created by Pika on 1/6/20.
  */
 
-private const val PRODUCT_SEARCH = "product_search"
-private const val PRODUCT_BROWSE = "product_browse"
 private const val CLICK_DATE_FILTER = "click - date filter"
 private const val GROUP_DETAIL_PAGE = "android.group_detail"
 private const val VIEW_GROUP_IKLAN = "view - detail group iklan"

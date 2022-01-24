@@ -7,6 +7,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_AUTO_BROWSE
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_AUTO_SEARCH
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -73,10 +77,6 @@ import javax.inject.Inject
  * Created by Pika on 12/4/20.
  */
 
-private const val PRODUCT_AUTO_SEARCH = "product_auto_search"
-private const val PRODUCT_SEARCH = "product_search"
-private const val PRODUCT_AUTO_BROWSE = "product_auto_browse"
-private const val PRODUCT_BROWSE = "product_browse"
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
 private const val CLICK_DAILY_BUDGET_BOX = "click - box biaya iklan pencarian"
 private const val CLICK_DAILY_BUDGET_REKOMENDASI_BOX = "click - box biaya iklan manual di rekomendasi"
