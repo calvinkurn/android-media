@@ -771,6 +771,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1,
                         viewModel.userId
                 )
+            ProductDetailConstant.SHOPADS_CAROUSEL ->
+                DynamicProductDetailTracking.Impression.eventTopAdsHeadlineViewComponent(
+                        trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1,
+                        componentTrackDataModel.componentName, getPurchaseProtectionUrl(),
+                        viewModel.userId
+                )
             else -> DynamicProductDetailTracking.Impression
                     .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
                             viewModel.getDynamicProductInfoP1, "", "", viewModel.userId)
