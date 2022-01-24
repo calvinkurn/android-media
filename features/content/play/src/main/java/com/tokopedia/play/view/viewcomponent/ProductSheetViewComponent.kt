@@ -150,7 +150,7 @@ class ProductSheetViewComponent(
             val vouchers = model.voucherList.filterIsInstance<MerchantVoucherUiModel>()
 
             clProductVoucher.setOnClickListener {
-                listener.onInfoVoucherClicked(this@ProductSheetViewComponent, vouchers)
+                listener.onInfoVoucherClicked(this@ProductSheetViewComponent)
             }
 
             vouchers.let {
@@ -270,6 +270,6 @@ class ProductSheetViewComponent(
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductCountChanged(view: ProductSheetViewComponent)
-        fun onInfoVoucherClicked(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>)
+        fun onInfoVoucherClicked(view: ProductSheetViewComponent)
     }
 }

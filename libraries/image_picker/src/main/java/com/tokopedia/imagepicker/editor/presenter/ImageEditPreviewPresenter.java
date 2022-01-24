@@ -328,22 +328,20 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
 
     public void setTokopediaWatermark(String userInfoName, Bitmap mainBitmap) {
         if (mainBitmap == null || mainBitmap.isRecycled()) return;
-        Bitmap watermarkLogo = BitmapFactory.decodeResource(
+        Subscription subscription = Observable.just(BitmapFactory.decodeResource(
                 getView().getContext().getResources(),
                 R.drawable.watermark_logo_tokopedia
-        );
-        Subscription subscription = Observable.just(watermarkLogo).flatMap((Func1<Bitmap, Observable<Bitmap[]>>) tokopediaLogoBitmap -> {
+        )).flatMap((Func1<Bitmap, Observable<Bitmap[]>>) tokopediaLogoBitmap -> {
             // create watermark with transparent container (empty) bitmap
             Bitmap[] watermark = WatermarkBuilder
                     .create(getView().getContext(), mainBitmap)
                     .loadOnlyWatermarkTextImage(userInfoName, tokopediaLogoBitmap)
                     .getOutputImages();
-
+            tokopediaLogoBitmap.recycle();
             return Observable.just(watermark);
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmaps -> {
-                    watermarkLogo.recycle();
                     getView().onSuccessGetWatermarkImage(bitmaps);
                 });
 
