@@ -996,6 +996,13 @@ class TopChatViewModel @Inject constructor(
         attachmentsPreview.add(sendablePreview)
     }
 
+    fun reloadCurrentAttachment() {
+        val productIds = attachmentsPreview.mapNotNull {
+            (it as? TopchatProductAttachmentPreviewUiModel)?.productId
+        }
+        loadProductPreview(productIds)
+    }
+
     fun loadProductPreview(productIds: List<String>) {
         if (productIds.isEmpty()) return
         if (productIds.isNotEmpty()) clearAttachmentPreview()

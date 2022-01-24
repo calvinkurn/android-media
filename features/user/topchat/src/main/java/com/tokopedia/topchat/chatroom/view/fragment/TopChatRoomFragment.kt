@@ -404,6 +404,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    override fun reloadCurrentAttachment() {
+        viewModel.reloadCurrentAttachment()
+    }
+
     override fun removeSrwBubble() {
         adapter.removeSrwBubble()
     }

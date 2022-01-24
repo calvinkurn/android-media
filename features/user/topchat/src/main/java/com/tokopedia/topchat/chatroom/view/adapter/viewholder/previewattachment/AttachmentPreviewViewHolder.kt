@@ -7,11 +7,12 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 abstract class AttachmentPreviewViewHolder<in T: SendablePreview>(
         itemView: View,
-        private val attachmentItemPreviewListener: AttachmentItemPreviewListener
+        protected val attachmentItemPreviewListener: AttachmentItemPreviewListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     interface AttachmentItemPreviewListener {
         fun closeItem(model: SendablePreview)
+        fun retryLoadCurrentAttachment()
     }
 
     private val closeButton: ImageView? = getButtonView(itemView)

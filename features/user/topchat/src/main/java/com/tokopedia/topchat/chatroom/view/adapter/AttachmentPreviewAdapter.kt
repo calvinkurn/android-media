@@ -24,6 +24,7 @@ class AttachmentPreviewAdapter(
         fun clearAttachmentPreview()
         fun hideProductPreviewLayout()
         fun notifyPreviewRemoved(model: SendablePreview)
+        fun reloadCurrentAttachment()
     }
 
     private var attachments = arrayListOf<SendablePreview>()
@@ -103,6 +104,10 @@ class AttachmentPreviewAdapter(
             attachmentPreviewListener.clearAttachmentPreview()
         }
         attachmentPreviewListener.notifyPreviewRemoved(model)
+    }
+
+    override fun retryLoadCurrentAttachment() {
+        attachmentPreviewListener.reloadCurrentAttachment()
     }
 
     private fun noAttachmentPreview(): Boolean = attachments.isEmpty()

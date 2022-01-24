@@ -96,7 +96,7 @@ class ProductPreviewViewHolder(
         showError(true)
         hideProductComponents()
         retry?.setOnClickListener {
-            // TODO: implement retry click
+            attachmentItemPreviewListener.retryLoadCurrentAttachment()
         }
     }
 

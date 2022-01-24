@@ -259,6 +259,10 @@ open class TopChatViewStateImpl constructor(
         fragmentView?.notifyPreviewRemoved(model)
     }
 
+    override fun reloadCurrentAttachment() {
+        fragmentView?.reloadCurrentAttachment()
+    }
+
     override fun onSetCustomMessage(customMessage: String) {
         if (customMessage.isNotEmpty()) {
             replyEditText.setText(customMessage)
