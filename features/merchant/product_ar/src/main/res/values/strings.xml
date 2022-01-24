@@ -13,7 +13,7 @@
 
     <string name="txt_btn_save_photo">Simpan Foto ke Galeri</string>
     <string name="message_success_save_photo_to_gallery">Foto berhasil disimpan di galeri HP-mu.</string>
-    <string name="message_face_not_detected">Oops, wajahmu nggak terdeteksi. Coba\n lagi pastikan wajahmu terlihat jelas, ya.</string>
+    <string name="message_face_not_detected">Oops, wajahmu nggak terdeteksi. Coba\n lagi &amp; pastikan wajahmu terlihat jelas, ya.</string>
     <string name="product_ar_oke_label">Oke</string>
     <string name="product_ar_see">Lihat</string>
     <string name="product_ar_permission_rejected_message">Untuk dapat mengakses halaman ini, permissions harus diaktifkan di bagian pengaturan aplikasi</string>
