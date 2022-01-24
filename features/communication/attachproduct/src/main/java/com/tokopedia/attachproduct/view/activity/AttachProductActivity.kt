@@ -9,7 +9,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment.Companion.newInstance
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
