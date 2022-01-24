@@ -41,26 +41,26 @@ class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val
 
     companion object {
         const val QUERY = """
-            query ongkirGetFreeShipping (input: OngkirGetFreeShippingInput) {
-                ongkirGetFreeShipping {
-                    freeShipping {
-                        IsPromo
-                        PromoCode
-                        ShipperProductID
-                        ImageURL
-                        DiscountedRate
-                        ShippingRate
-                        BenefitAmount
-                        MinTransaction
-                        BOType
-                        BenefitClass
-                        BOWeight {
-                            IsBOWeight
-                            ShippingSubsidy
+            query ongkirGetFreeShipping(${'$'}input: OngkirGetFreeShippingInput!) {
+                ongkirGetFreeShipping(input: ${'$'}input) {
+                    freeshipping {
+                        is_promo
+                        promo_code
+                        shipper_product_id
+                        image_url
+                        discounted_rate
+                        shipping_rate
+                        benefit_amount
+                        min_transaction
+                        bo_type
+                        benefit_class
+                        bo_weight {
+                            is_bo_weight
+                            shipping_subsidy
                         }
-                        Texts {
-                            TickerCart
-                            TickerProgressive
+                        texts {
+                            ticker_cart
+                            ticker_progressive
                         }
                     }
                 }

@@ -1607,7 +1607,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     products = shopProductList.map { Product(it.productId.toLong(), it.isFreeShipping, it.isFreeShippingExtra) }
                 }
                 val ratesParam = RatesParam.Builder(shopShipments, shipping).build()
-                Log.i("qwertyuiop", ratesParam.toMap().toString())
+                Log.i("qwertyuiop", ratesParam.toBoAffordabilityMap("asdf").toString())
 
                 val response = boAffordabilityUseCase.setParam(ratesParam).executeOnBackground()
                 cartShopHolderData.boAffordability.tickerText = response.texts.tickerCart

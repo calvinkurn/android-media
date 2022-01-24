@@ -2,7 +2,6 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.logisticcart.shipping.model.ShipProd
 
 data class ShopShipment(
     @SuppressLint("Invalid Data Type")
