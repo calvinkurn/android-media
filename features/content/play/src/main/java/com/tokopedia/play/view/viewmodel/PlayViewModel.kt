@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -11,6 +12,13 @@ import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
@@ -22,6 +30,7 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -29,6 +38,8 @@ import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.setValue
+import com.tokopedia.play.util.share.PlayShareExperience
+import com.tokopedia.play.util.share.PlayShareExperienceData
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.*
@@ -61,6 +72,7 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -95,7 +107,8 @@ class PlayViewModel @Inject constructor(
         private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
         private val timerFactory: TimerFactory,
-        private val castPlayerHelper: CastPlayerHelper
+        private val castPlayerHelper: CastPlayerHelper,
+        private val playShareExperience: PlayShareExperience,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -242,6 +255,13 @@ class PlayViewModel @Inject constructor(
         )
     }.flowOn(dispatchers.computation)
 
+    private val _kebabMenuUiState = _bottomInsets.map {
+        PlayKebabMenuUiState(
+            shouldShow = !isFreezeOrBanned && !it.isKeyboardShown
+        )
+    }.flowOn(dispatchers.computation)
+
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -258,8 +278,9 @@ class PlayViewModel @Inject constructor(
         _shareUiState.distinctUntilChanged(),
         _rtnUiState.distinctUntilChanged(),
         _titleUiState.distinctUntilChanged(),
-        _viewAllProductUiState.distinctUntilChanged()
-    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct ->
+        _viewAllProductUiState.distinctUntilChanged(),
+        _kebabMenuUiState.distinctUntilChanged()
+    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct, kebabMenu ->
         PlayViewerNewUiState(
             interactiveView = interactive,
             partner = partner,
@@ -271,6 +292,7 @@ class PlayViewModel @Inject constructor(
             rtn = rtn,
             title = title,
             viewAllProduct = viewAllProduct,
+            kebabMenu = kebabMenu
         )
     }.flowOn(dispatchers.computation)
 
@@ -814,8 +836,14 @@ class PlayViewModel @Inject constructor(
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
-            ClickShareAction -> handleClickShare()
             RefreshLeaderboard -> handleRefreshLeaderboard()
+            CopyLinkAction -> handleCopyLink()
+            ClickShareAction -> handleClickShareIcon()
+            ShowShareExperienceAction -> handleOpenSharingOption(false)
+            ScreenshotTakenAction -> handleOpenSharingOption(true)
+            CloseSharingOptionAction -> handleCloseSharingOption()
+            is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
+            is SharePermissionAction -> handleSharePermission(action.label)
         }
     }
 
@@ -1894,20 +1922,18 @@ class PlayViewModel @Inject constructor(
         else handleClickLikeNonLive(isFromLogin, newStatusHandler)
     }
 
-    private fun handleClickShare() {
+    private suspend fun copyLink() {
         val shareInfo = _channelDetail.value.shareInfo
 
-        viewModelScope.launch {
-            _uiEvent.emit(
-                CopyToClipboardEvent(shareInfo.content)
-            )
+        _uiEvent.emit(
+            CopyToClipboardEvent(shareInfo.content)
+        )
 
-            _uiEvent.emit(
-                ShowInfoEvent(
-                    UiString.Resource(R.string.play_link_copied)
-                )
+        _uiEvent.emit(
+            ShowInfoEvent(
+                UiString.Resource(R.string.play_link_copied)
             )
-        }
+        )
     }
 
     private fun handleRefreshLeaderboard() {
@@ -1917,6 +1943,87 @@ class PlayViewModel @Inject constructor(
         }
 
         checkLeaderboard(channelId)
+    }
+
+    private fun handleCopyLink() {
+        viewModelScope.launch { copyLink() }
+    }
+
+    private fun handleClickShareIcon() {
+        viewModelScope.launch {
+            playAnalytic.clickShareButton(channelId, partnerId, channelType.value)
+
+            _uiEvent.emit(
+                SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
+            )
+        }
+    }
+
+    private fun handleOpenSharingOption(isScreenshot: Boolean) {
+        viewModelScope.launch {
+            if(isScreenshot)
+                playAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType.value)
+
+            if(playShareExperience.isCustomSharingAllow()) {
+                playAnalytic.impressShareBottomSheet(channelId, partnerId, channelType.value)
+
+                _uiEvent.emit(OpenSharingOptionEvent(
+                    title = _channelDetail.value.channelInfo.title,
+                    coverUrl = _channelDetail.value.channelInfo.coverUrl,
+                    userId = userId,
+                    channelId = channelId
+                ))
+            }
+            else if(!isScreenshot) {
+                copyLink()
+            }
+        }
+    }
+
+    private fun handleCloseSharingOption() {
+        playAnalytic.closeShareBottomSheet(channelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet())
+    }
+
+    private fun handleSharingOption(shareModel: ShareModel) {
+        viewModelScope.launch {
+            playAnalytic.clickSharingOption(channelId, partnerId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
+
+            val playShareExperienceData = getPlayShareExperienceData()
+
+            playShareExperience
+                .setShareModel(shareModel)
+                .setData(playShareExperienceData)
+                .createUrl(object: PlayShareExperience.Listener {
+                    override fun onUrlCreated(
+                        linkerShareData: LinkerShareResult?,
+                        shareModel: ShareModel,
+                        shareString: String
+                    ) {
+                        viewModelScope.launch {
+                            _uiEvent.emit(CloseShareExperienceBottomSheet)
+                            _uiEvent.emit(
+                                OpenSelectedSharingOptionEvent(
+                                    linkerShareData,
+                                    shareModel,
+                                    shareString
+                                )
+                            )
+                        }
+                    }
+
+                    override fun onError(e: Exception) {
+                        viewModelScope.launch {
+                            _uiEvent.emit(CloseShareExperienceBottomSheet)
+                            _uiEvent.emit(ErrorGenerateShareLink)
+                        }
+                    }
+                }
+            )
+        }
+    }
+
+    private fun handleSharePermission(label: String) {
+        playAnalytic.clickSharePermission(channelId, partnerId, channelType.value, label)
     }
 
     /**
@@ -1958,6 +2065,23 @@ class PlayViewModel @Inject constructor(
             model.currentState = castState
         }
         _observableCastState.value = model
+    }
+
+    private fun getPlayShareExperienceData(): PlayShareExperienceData {
+        val (channelInfo, shareInfo) = _channelDetail.let {
+            return@let Pair(it.value.channelInfo, it.value.shareInfo)
+        }
+
+        return PlayShareExperienceData(
+            id = channelId,
+            title = channelInfo.title,
+            partnerName = _partnerInfo.value.name,
+            coverUrl = channelInfo.coverUrl,
+            redirectUrl = shareInfo.redirectUrl,
+            textDescription = shareInfo.textDescription,
+            metaTitle = shareInfo.metaTitle,
+            metaDescription = shareInfo.metaDescription,
+        )
     }
 
     companion object {

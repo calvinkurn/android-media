@@ -108,6 +108,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller app onboarding appLink then should return tokopedia internal onboarding in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/welcome"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_ONBOARDING, expectedDeepLink)
+    }
+
+    @Test
     fun `check seller app home appLink then should return tokopedia internal home in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_APP_HOME, expectedDeepLink)
@@ -162,8 +168,9 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check seller search appLink then should return empty in sellerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SEARCH, "")
+    fun `check seller search appLink then should return tokopedia internal seller search in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SEARCH, expectedDeepLink)
     }
 
     @Test

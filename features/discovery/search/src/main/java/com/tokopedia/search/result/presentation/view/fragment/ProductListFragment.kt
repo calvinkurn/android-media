@@ -95,6 +95,8 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter.OnItemChangeView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
@@ -110,14 +112,15 @@ import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
-import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.applyQuickFilterElevation
@@ -141,8 +144,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import org.json.JSONArray
 import timber.log.Timber
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -160,12 +162,12 @@ class ProductListFragment: BaseDaggerFragment(),
         InspirationCardListener,
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
-        SearchInTokopediaListener,
         SearchNavigationClickListener,
         TopAdsImageViewListener,
         ChooseAddressListener,
         BannerListener,
-        LastFilterListener {
+        LastFilterListener,
+        InspirationSizeOptionListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -386,23 +388,24 @@ class ProductListFragment: BaseDaggerFragment(),
         val topAdsConfig = topAdsConfig ?: return
 
         val productListTypeFactory = ProductListTypeFactoryImpl(
-                productListener = this,
-                tickerListener = this,
-                suggestionListener = this,
-                globalNavListener = this,
-                bannerAdsListener = this,
-                emptyStateListener = this,
-                recommendationListener = this,
-                inspirationCarouselListener = this,
-                broadMatchListener = this,
-                inspirationCardListener = this,
-                searchInTokopediaListener = this,
-                searchNavigationListener = this,
-                topAdsImageViewListener = this,
-                chooseAddressListener = this,
-                bannerListener = this,
-                lastFilterListener = this,
-                topAdsConfig = topAdsConfig,
+            productListener = this,
+            tickerListener = this,
+            suggestionListener = this,
+            globalNavListener = this,
+            bannerAdsListener = this,
+            emptyStateListener = this,
+            recommendationListener = this,
+            inspirationCarouselListener = this,
+            broadMatchListener = this,
+            inspirationCardListener = this,
+            searchInTokopediaListener = SearchInTokopediaListenerDelegate(activity),
+            searchNavigationListener = this,
+            topAdsImageViewListener = this,
+            chooseAddressListener = this,
+            bannerListener = this,
+            lastFilterListener = this,
+            topAdsConfig = topAdsConfig,
+            inspirationSizeOptionListener = this,
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
@@ -1936,6 +1939,55 @@ class ProductListFragment: BaseDaggerFragment(),
         redirectionStartActivity(optionData.applink, optionData.url)
     }
 
+    override fun onInspirationSizeOptionClicked(sizeOptionDataView: InspirationSizeOptionDataView, option: Option) {
+        val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
+        filterController.setFilter(option, isQuickFilterSelectedReversed)
+
+        refreshSearchParameter(filterController.getParameter())
+
+        reloadData()
+
+        if (isQuickFilterSelectedReversed) {
+            sizeOptionDataView.click(TrackApp.getInstance().gtm)
+        }
+    }
+
+    override fun initSizeOptionFilter(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
+        if (inspirationSizeDataViewList.isEmpty()) return
+
+        val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
+
+        filterController.appendFilterList(
+            searchParameterMap,
+            inspirationSizeDataViewList.map { dataView ->
+                Filter(
+                    options = dataView.data.optionSizeData.map { optionSize ->
+                        Option(
+                            key = optionSize.filters.key,
+                            value = optionSize.filters.value,
+                            name = optionSize.filters.name
+                        )
+                    }
+                )
+            }
+        )
+    }
+
+    override fun setSelectedSizeOption(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
+        inspirationSizeDataViewList.forEach { element ->
+            element.data.optionSizeData.forEach {
+                val option = Option(
+                    key = it.filters.key,
+                    value = it.filters.value,
+                    name = it.filters.name,
+                    inputState = true.toString(),
+                )
+
+                it.isSelected = isQuickFilterSelected(option)
+            }
+        }
+    }
+
     private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {
         val label = option.inspirationCardType + " - " + queryKey + " - " + option.text
         SearchTracking.trackEventClickInspirationCardOption(label)
@@ -2101,12 +2153,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
                 productCountText
         ))
-    }
-    //endregion
-
-    //region Search in Tokopedia Widget
-    override fun onSearchInTokopediaClick(applink: String) {
-        RouteManager.route(activity, applink)
     }
     //endregion
 
