@@ -229,5 +229,6 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_MINI_CAROUSELL = "MINI_CAROUSELL"
         const val SECTION_TICKER = "TICKER"
         const val SECTION_SWIPE_BANNER = "SWIPE_BANNER"
+        const val SECTION_3_ICONS = "3_ICONS"
     }
 }

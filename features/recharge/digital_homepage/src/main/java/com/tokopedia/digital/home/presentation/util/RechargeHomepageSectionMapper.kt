@@ -136,6 +136,7 @@ object RechargeHomepageSectionMapper {
                         } else null
                     }
                     SECTION_SWIPE_BANNER -> RechargeHomepageSwipeBannerModel(it)
+                    SECTION_3_ICONS -> RechargeHomepageThreeIconsModel(it)
                     else -> null
                 }
             }

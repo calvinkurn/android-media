@@ -345,3 +345,20 @@ data class RechargeHomepageSwipeBannerModel(val section: RechargeHomepageSection
     }
 
 }
+
+data class RechargeHomepageThreeIconsModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel{
+    override fun visitableId(): String {
+        return section.id
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageThreeIconsModel){
+            section == b.section
+        }else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}

@@ -78,6 +78,10 @@ class RechargeHomepageAdapterTypeFactory(
         return RechargeHomepageSwipeBannerViewHolder.LAYOUT
     }
 
+    fun type(threeIconsModel: RechargeHomepageThreeIconsModel): Int{
+        return RechargeHomepageThreeIconsViewHolder.LAYOUT
+    }
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
