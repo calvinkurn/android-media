@@ -40,4 +40,7 @@
 
     <!--Summary-->
     <color name="play_dms_broadcast_summary_info_bg">#40454C</color>
+
+    <!-- Preparation -->
+    <color name="play_dms_broadcast_start_livestream">#E02954</color>
 </resources>
