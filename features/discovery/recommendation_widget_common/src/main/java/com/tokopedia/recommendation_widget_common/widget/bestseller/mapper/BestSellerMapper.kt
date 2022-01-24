@@ -35,7 +35,7 @@ class BestSellerMapper (
                 channelHeader = ChannelHeader(
                     name = recommendationWidget.title,
                     subtitle = recommendationWidget.subtitle,
-                    url = recommendationWidget.seeMoreAppLink
+                    applink = recommendationWidget.seeMoreAppLink
                 )
             )
         )
