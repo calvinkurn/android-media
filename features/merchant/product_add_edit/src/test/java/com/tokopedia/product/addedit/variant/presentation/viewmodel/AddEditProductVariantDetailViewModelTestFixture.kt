@@ -38,7 +38,6 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
                         productName="lemari arsip besi",
                         categoryName="Dapur - Peralatan-Makan-Minum - Sumpit",
                         categoryId="969",
-                        catalogId="0",
                         price=9999.toBigInteger(),
                         stock=1, minOrder=1,
                         condition="NEW", sku="", status=1),

@@ -471,6 +471,7 @@ public interface ApplinkConst {
     }
 
     interface SellerApp {
+        String SELLER_ONBOARDING = "sellerapp://welcome";
         String PRODUCT_ADD = "sellerapp://product/add";
         String SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE = "sellerapp://shop/showcase-create";
         String TOPADS_CREDIT = "sellerapp://topads/buy";

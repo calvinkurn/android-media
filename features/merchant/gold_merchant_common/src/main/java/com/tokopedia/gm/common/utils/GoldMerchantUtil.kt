@@ -69,8 +69,8 @@ object GoldMerchantUtil {
         }
     }
 
-    fun isTenureNewSeller(dateString: String): Boolean {
-        return (totalDays(dateString) in START_TENURE_EIGHTY_THREE until NEW_SELLER_DAYS)
+    fun isTenureNewSeller(shopAge: Long): Boolean {
+        return shopAge in START_TENURE_EIGHTY_THREE until NEW_SELLER_DAYS
     }
 
     fun format(timeMillis: Long, pattern: String, locale: Locale = DateFormatUtils.DEFAULT_LOCALE): String {

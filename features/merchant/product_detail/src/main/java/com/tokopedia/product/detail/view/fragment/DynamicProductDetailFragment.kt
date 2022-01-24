@@ -60,7 +60,6 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.iris.util.IrisSession
@@ -291,7 +290,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private var isArCoachMarkShowing = false
     private var coachMarkArView: CoachMark2? = null
 
     //Data
@@ -337,7 +335,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             setListener(this@DynamicProductDetailFragment)
         })
     }
-    private val coachMarkBoePref by lazy { CoachMarkLocalCache(context) }
     private val adapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtilCallback())
                 .build()
@@ -1831,7 +1828,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         it.getString(R.string.pdp_ar_coachmark_title),
                         it.getString(R.string.pdp_ar_coachmark_desc), CoachMark2.POSITION_TOP))
                 coachMarkArView?.showCoachMark(coachMarkList, null, 0)
-                isArCoachMarkShowing = true
                 coachMarkArPref?.setCoachMarkState(true)
             }
         }
@@ -1841,40 +1837,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         context?.let {
             if (coachMarkArView != null && coachMarkArView?.isShowing == true) {
                 coachMarkArView?.hideCoachMark()
-            }
-        }
-    }
-
-    override fun showCoachmark(view: Typography?, isBoeType: Boolean) {
-        context?.let {
-            if (view != null && !isArCoachMarkShowing) {
-                val showLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it)
-                        ?: false
-                val showBoe = if (!isBoeType) false else coachMarkBoePref.shouldShowBoeCoachmark()
-
-                if (showLocalization || showBoe) {
-                    val coachMarkList = arrayListOf<CoachMark2Item>()
-                    if (showBoe) {
-                        coachMarkList.add(CoachMark2Item(view,
-                                it.getString(R.string.pdp_boe_coachmark_title),
-                                it.getString(R.string.pdp_boe_coachmark_desc)
-                        ).also {
-                            it.position = 1
-                        })
-                    }
-
-                    if (showLocalization) {
-                        coachMarkList.add(ChooseAddressUtils.coachMark2Item(it, view).also {
-                            it.position = 1
-                        })
-                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
-                    }
-
-                    if (coachMarkList.isNotEmpty()) {
-                        val coachmark = CoachMark2(it)
-                        coachmark.showCoachMark(coachMarkList, null, 0)
-                    }
-                }
             }
         }
     }
