@@ -547,12 +547,13 @@ class ProductManageViewModel @Inject constructor(
     fun setSelectedFilter(selectedFilter: List<FilterOption>) {
         val selectedFilterAndSort = _selectedFilterAndSort.value
 
+        var selectedFilterCount = countSelectedFilter(selectedFilter)
+
         _selectedFilterAndSort.value = if (selectedFilterAndSort != null) {
             val list = arrayListOf<Boolean>()
             list.addAll(selectedFilterAndSort.filterShownState)
             list[list.size - 1] = true
 
-            var selectedFilterCount = countSelectedFilter(selectedFilter)
             selectedFilterAndSort.sortOption?.let { selectedFilterCount++ }
 
             selectedFilterAndSort.copy(
@@ -561,7 +562,11 @@ class ProductManageViewModel @Inject constructor(
                     selectedFilterCount = selectedFilterCount
             )
         } else {
-            FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false))
+            FilterOptionWrapper(
+                sortOption = null,
+                filterOptions = selectedFilter,
+                filterShownState = listOf(true, true, false, false),
+                selectedFilterCount = selectedFilterCount)
         }
     }
 

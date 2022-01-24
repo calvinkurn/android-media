@@ -1,259 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_NN0">
+    android:background="@color/Unify_Background">
 
-    <com.tokopedia.searchbar.navigation_component.NavToolbar
-        android:id="@+id/withdrawal_navToolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?actionBarSize"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:toolbarAlwaysShowShadow="false"
-        app:toolbarBackButton="back"
-        android:elevation="@dimen/dp_1"
-        app:toolbarContentType="typeCustom"
-        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
-        app:toolbarInitialFillColor="@color/Unify_N0"
-        app:toolbarInitialTheme="light" />
+        android:layout_height="match_parent"
+        android:background="@color/Unify_NN0">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/withdrawal_navToolbar">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/withdrawal_navToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
-            android:minHeight="?attr/actionBarSize"
-            app:elevation="@dimen/layout_lvl0">
+            android:elevation="@dimen/dp_1"
+            android:minHeight="?actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbarAlwaysShowShadow="false"
+            app:toolbarBackButton="back"
+            app:toolbarContentType="typeCustom"
+            app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
+            app:toolbarInitialFillColor="@color/Unify_N0"
+            app:toolbarInitialTheme="light" />
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            app:layout_constraintTop_toBottomOf="@id/withdrawal_navToolbar">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                android:layout_height="wrap_content"
+                android:background="@color/Unify_N0"
+                android:minHeight="?attr/actionBarSize"
+                app:elevation="@dimen/layout_lvl0">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:id="@+id/collapsing_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layout_collapseMode="pin">
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                    <com.tokopedia.unifycomponents.CardUnify
-                        android:id="@+id/withdrawal_home_widget"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing_lvl4"
-                        android:layout_marginRight="@dimen/spacing_lvl4"
-                        app:card_type="shadow"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:layout_height="match_parent"
+                        app:layout_collapseMode="pin">
 
-                        <com.tokopedia.unifycomponents.ImageUnify
-                            android:id="@+id/affiliate_background_image"
+                        <com.tokopedia.unifycomponents.CardUnify
+                            android:id="@+id/withdrawal_home_widget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/affiliate_background" />
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="@dimen/spacing_lvl4">
+                            android:layout_marginLeft="@dimen/spacing_lvl4"
+                            android:layout_marginRight="@dimen/spacing_lvl4"
+                            app:card_type="shadow"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.tokopedia.unifycomponents.ImageUnify
-                                android:id="@+id/withdrawal_user_image"
-                                android:layout_width="@dimen/unify_space_48"
-                                android:layout_height="@dimen/unify_space_48"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/withdrawal_user_name"
-                                android:layout_width="0dp"
+                                android:id="@+id/affiliate_background_image"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_marginStart="@dimen/spacing_lvl4"
-                                android:layout_marginEnd="@dimen/spacing_lvl4"
-                                android:textColor="@color/Unify_NN950"
-                                app:layout_constraintBottom_toBottomOf="@id/withdrawal_user_image"
-                                app:layout_constraintLeft_toRightOf="@id/withdrawal_user_image"
-                                app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/withdrawal_user_image"
-                                app:typographyType="heading_3"
-                                app:typographyWeight="bold"
-                                tools:text="Ana Putri" />
+                                app:srcCompat="@drawable/affiliate_background" />
 
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/saldo_affiliate"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_lvl6"
-                                android:text="@string/affiliate_saldo"
-                                android:textColor="@color/Unify_NN600"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/withdrawal_user_image"
-                                app:typographyType="body_3"
-                                app:typographyWeight="reguler" />
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="@dimen/spacing_lvl4">
 
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/saldo_amount_affiliate"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/affiliate_zero_amount"
-                                android:textColor="@color/Unify_NN950"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                android:visibility="gone"
-                                app:layout_constraintTop_toBottomOf="@id/saldo_affiliate"
-                                app:typographyType="heading_2"
-                                app:typographyWeight="bold" />
+                                <com.tokopedia.unifycomponents.ImageUnify
+                                    android:id="@+id/withdrawal_user_image"
+                                    android:layout_width="@dimen/unify_space_48"
+                                    android:layout_height="@dimen/unify_space_48"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                            <com.tokopedia.unifycomponents.LoaderUnify
-                                android:id="@+id/affiliate_saldo_progress_bar"
-                                android:layout_width="@dimen/spacing_lvl5"
-                                android:layout_height="@dimen/spacing_lvl5"
-                                android:visibility="visible"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/saldo_affiliate"
-                                app:loader_type="circular" />
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/withdrawal_user_name"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginStart="@dimen/spacing_lvl4"
+                                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                                    android:textColor="@color/Unify_NN950"
+                                    app:layout_constraintBottom_toBottomOf="@id/withdrawal_user_image"
+                                    app:layout_constraintLeft_toRightOf="@id/withdrawal_user_image"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="@id/withdrawal_user_image"
+                                    app:typographyType="heading_3"
+                                    app:typographyWeight="bold"
+                                    tools:text="Ana Putri" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/saldo_affiliate"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/spacing_lvl6"
+                                    android:text="@string/affiliate_saldo"
+                                    android:textColor="@color/Unify_NN600"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/withdrawal_user_image"
+                                    app:typographyType="body_3"
+                                    app:typographyWeight="reguler" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/saldo_amount_affiliate"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/affiliate_zero_amount"
+                                    android:textColor="@color/Unify_NN950"
+                                    android:visibility="gone"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/saldo_affiliate"
+                                    app:typographyType="heading_2"
+                                    app:typographyWeight="bold" />
+
+                                <com.tokopedia.unifycomponents.LoaderUnify
+                                    android:id="@+id/affiliate_saldo_progress_bar"
+                                    android:layout_width="@dimen/spacing_lvl5"
+                                    android:layout_height="@dimen/spacing_lvl5"
+                                    android:visibility="visible"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/saldo_affiliate"
+                                    app:loader_type="circular" />
 
 
-                            <com.tokopedia.unifycomponents.UnifyButton
-                                android:id="@+id/saldo_button_affiliate"
-                                android:layout_width="@dimen/dp_130"
-                                android:layout_height="wrap_content"
-                                android:text="@string/affiliate_tarik_saldo"
-                                app:layout_constraintBottom_toBottomOf="@id/saldo_amount_affiliate"
-                                app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/saldo_affiliate"
-                                app:unifyButtonSize="small"
-                                android:visibility="gone"
-                                app:unifyButtonType="main"
-                                app:unifyButtonVariant="ghost" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </com.tokopedia.unifycomponents.CardUnify>
+                                <com.tokopedia.unifycomponents.UnifyButton
+                                    android:id="@+id/saldo_button_affiliate"
+                                    android:layout_width="@dimen/dp_130"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/affiliate_tarik_saldo"
+                                    app:layout_constraintBottom_toBottomOf="@id/saldo_amount_affiliate"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="@id/saldo_affiliate"
+                                    app:unifyButtonSize="small"
+                                    app:unifyButtonType="main"
+                                    app:unifyButtonVariant="ghost" />
+                                <com.tokopedia.unifycomponents.LoaderUnify
+                                    android:visibility="gone"
+                                    app:layout_constraintLeft_toLeftOf="@+id/saldo_button_affiliate"
+                                    app:layout_constraintBottom_toBottomOf="@+id/saldo_button_affiliate"
+                                    app:layout_constraintRight_toRightOf="@+id/saldo_button_affiliate"
+                                    app:layout_constraintTop_toTopOf="@+id/saldo_button_affiliate"
+                                    android:id="@+id/tarik_saldo_loader"
+                                    android:layout_width="@dimen/dp_30"
+                                    android:layout_height="@dimen/dp_30"/>
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </com.tokopedia.unifycomponents.CardUnify>
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/transaction_history_affiliate"
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/transaction_history_affiliate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/spacing_lvl4"
+                            android:text="@string/affiliate_transaction_history"
+                            android:textColor="@color/Unify_NN950"
+                            app:layout_constraintTop_toBottomOf="@id/withdrawal_home_widget"
+                            app:typographyType="heading_3"
+                            app:typographyWeight="bold" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+                <com.tokopedia.unifycomponents.CardUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/unify_space_12"
+                    app:card_type="border"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/transaction_history_affiliate">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/date_range"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/spacing_lvl4"
-                        android:text="@string/affiliate_transaction_history"
-                        android:textColor="@color/Unify_NN950"
-                        app:layout_constraintTop_toBottomOf="@id/withdrawal_home_widget"
-                        app:typographyType="heading_3"
-                        app:typographyWeight="bold" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-            <com.tokopedia.unifycomponents.CardUnify
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/unify_space_12"
-                app:card_type="border"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/transaction_history_affiliate">
+                        android:layout_height="wrap_content">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/date_range"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/date_range_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_12"
+                            android:ellipsize="end"
+                            android:maxLength="20"
+                            android:maxLines="1"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:typographyType="body_2"
+                            tools:text="7 Hari Terakhir" />
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/date_range_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_12"
-                        android:maxLength="20"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:typographyType="body_2"
-                        tools:text="7 Hari Terakhir"/>
+                        <com.tokopedia.iconunify.IconUnify
+                            android:id="@+id/date_range_chevron"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:icon_name="CHEVRON_DOWN"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/date_range_text"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.tokopedia.unifycomponents.CardUnify>
+            </com.google.android.material.appbar.AppBarLayout>
 
-                    <com.tokopedia.iconunify.IconUnify
-                        android:id="@+id/date_range_chevron"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:icon_name="CHEVRON_DOWN"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/date_range_text"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.tokopedia.unifycomponents.CardUnify>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <RelativeLayout
-            android:layout_below="@id/appbar"
-            android:layout_width="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/unify_space_48"
-            android:layout_marginBottom="@dimen/unify_space_48">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/withdrawal_transactions_rv"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:itemCount="4"
-                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/affiliate_transaction_history_item_layout"
-                tools:orientation="vertical" />
-            <com.tkpd.remoteresourcerequest.view.DeferredImageView
-                android:id="@+id/affiliate_no__default_transaction_iv"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_220"
-                android:background="@color/Unify_N0"
-                android:gravity="center"
-                android:paddingTop="@dimen/dp_40"
-                android:visibility="gone"
-                app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_transaction.png"
-                app:imageDpiSupportType="singleDpi"
-                tools:visibility="gone" />
-            <com.tkpd.remoteresourcerequest.view.DeferredImageView
-                android:layout_below="@+id/affiliate_no__default_transaction_iv"
-                android:id="@+id/affiliate_no_transaction_iv"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_220"
-                android:background="@color/Unify_N0"
-                android:gravity="center"
-                android:paddingTop="@dimen/dp_40"
-                android:visibility="gone"
-                app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_transaction_for_filter.png"
-                app:imageDpiSupportType="singleDpi"
-                tools:visibility="gone" />
-            <com.tokopedia.globalerror.GlobalError
-                android:layout_below="@+id/affiliate_no_transaction_iv"
-                android:id="@+id/withdrawal_global_error"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                android:background="@color/Unify_N0"
-                android:gravity="center"
-                android:visibility="gone"
-                app:globalerrors_type="SERVER_ERROR"
-                tools:visibility="gone" />
-        </RelativeLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                android:layout_below="@id/appbar"
+                android:layout_marginBottom="@dimen/unify_space_48"
+                android:paddingBottom="@dimen/unify_space_48"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/affiliate_progress_bar"
-        android:layout_width="@dimen/unify_space_40"
-        android:layout_height="@dimen/unify_space_40"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="circular" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/withdrawal_transactions_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:itemCount="4"
+                    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/affiliate_transaction_history_item_layout"
+                    tools:orientation="vertical" />
+
+                <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                    android:id="@+id/affiliate_no__default_transaction_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_220"
+                    android:background="@color/Unify_N0"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/dp_40"
+                    android:visibility="gone"
+                    app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_transaction.png"
+                    app:imageDpiSupportType="singleDpi"
+                    tools:visibility="gone" />
+
+                <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                    android:id="@+id/affiliate_no_transaction_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_220"
+                    android:layout_below="@+id/affiliate_no__default_transaction_iv"
+                    android:background="@color/Unify_N0"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/dp_40"
+                    android:visibility="gone"
+                    app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_transaction_for_filter.png"
+                    app:imageDpiSupportType="singleDpi"
+                    tools:visibility="gone" />
+
+                <com.tokopedia.globalerror.GlobalError
+                    android:id="@+id/withdrawal_global_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/affiliate_no_transaction_iv"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@color/Unify_N0"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    app:globalerrors_type="SERVER_ERROR"
+                    tools:visibility="gone" />
+            </RelativeLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/affiliate_progress_bar"
+            android:layout_width="@dimen/unify_space_40"
+            android:layout_height="@dimen/unify_space_40"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="circular" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

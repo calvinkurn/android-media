@@ -8,12 +8,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
-import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
-import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.fragment.RevampCheckoutDealsFragment;
 import com.tokopedia.digital_deals.view.model.Outlet;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
@@ -24,6 +23,10 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
     private final String LOCATION_FRAGMENT = "LOCATION_FRAGMENT";
     private final String HOME_FRAGMENT = "HOME_FRAGMENT";
     private Drawable drawable;
+
+    public static String EXTRA_DEALDETAIL = "EXTRA_DEALDETAIL";
+    public static String EXTRA_CART = "EXTRA_CART";
+    public static String EXTRA_VERIFY = "EXTRA_VERIFY";
 
 
     @Override
@@ -47,7 +50,7 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
         updateTitle(getResources().getString(com.tokopedia.digital_deals.R.string.activity_checkout_title));
 
         getSupportFragmentManager().addOnBackStackChangedListener(getListener());
-        return CheckoutHomeFragment.createInstance(getIntent().getExtras());
+        return RevampCheckoutDealsFragment.Companion.createInstance(getIntent().getExtras());
     }
 
     @Override

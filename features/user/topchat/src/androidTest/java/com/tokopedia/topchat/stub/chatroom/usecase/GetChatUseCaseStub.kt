@@ -3,6 +3,7 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chat_common.data.BaseChatUiModel.Companion.STATUS_DELETED
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.AndroidFileUtil
@@ -37,6 +38,10 @@ class GetChatUseCaseStub @Inject constructor(
         "seller/chat_replies_shipping_location.json"
     private val upcomingCampaignPath =
         "buyer/chat_replies_upcoming_campaign.json"
+    private val deleteImageResponsePath =
+        "buyer/chat_replies_delete_image.json"
+    private val blockedChatAsBuyer =
+        "success_get_blocked_chat_replies.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -67,15 +72,43 @@ class GetChatUseCaseStub @Inject constructor(
             alterDateToToday(response)
         }
 
+    val blockedChatResponse: GetExistingChatPojo
+        get() = alterResponseOf(blockedChatAsBuyer) { response ->
+            alterDateToToday(response)
+        }
+
     /**
-     * <!--- Start Start OOS label --->
+     * <!--- Start OOS label --->
      */
 
     val upComingCampaignProduct: GetExistingChatPojo
         get() = alterResponseOf(upcomingCampaignPath) { response -> }
 
     /**
-     * <!--- End Start OOS label --->
+     * <!--- End OOS label --->
+     */
+
+    /**
+     * <!--- Start Delete Image --->
+     */
+
+    val deleteImageResponse: GetExistingChatPojo
+        get() = alterResponseOf(deleteImageResponsePath) { }
+
+    val deleteImageResponseWithStatus5: GetExistingChatPojo
+        get() = alterResponseOf(deleteImageResponsePath) { response ->
+            alterRepliesAttribute(
+                listPosition = 0,
+                chatsPosition = 0,
+                responseObj = response,
+                altercation = { replies ->
+                    replies[1].asJsonObject.addProperty(status, STATUS_DELETED)
+                }
+            )
+        }
+
+    /**
+     * <!--- End Delete Image --->
      */
 
     /**

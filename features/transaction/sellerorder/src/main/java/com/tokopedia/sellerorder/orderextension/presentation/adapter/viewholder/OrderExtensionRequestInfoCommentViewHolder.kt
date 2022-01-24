@@ -41,7 +41,7 @@ class OrderExtensionRequestInfoCommentViewHolder(
         super.bind(element)
         binding?.root?.run {
             element?.let {
-                setupMessage(it.showedMessage, it.error)
+                setupMessage(it.showedMessage.compose(context), it.error)
                 setupComment()
                 onFocusChange(it.hasFocus)
                 scheduleRequestFocus()
@@ -59,7 +59,7 @@ class OrderExtensionRequestInfoCommentViewHolder(
                 val (oldItem, newItem) = it
                 if (oldItem is OrderExtensionRequestInfoUiModel.CommentUiModel && newItem is OrderExtensionRequestInfoUiModel.CommentUiModel) {
                     if (oldItem.showedMessage != newItem.showedMessage || oldItem.error != newItem.error) {
-                        binding?.root?.setupMessage(newItem.showedMessage, newItem.error)
+                        binding?.root?.setupMessage(newItem.showedMessage.compose(binding?.root?.context), newItem.error)
                     }
                     if (oldItem.optionCode != newItem.optionCode) {
                         binding?.root?.setupComment()
@@ -137,7 +137,7 @@ class OrderExtensionRequestInfoCommentViewHolder(
         editText.setText(element?.value.orEmpty())
     }
 
-    private fun TextAreaUnify2.setupMessage(showedMessage: String, error: Boolean) {
+    private fun TextAreaUnify2.setupMessage(showedMessage: CharSequence, error: Boolean) {
         setMessage(showedMessage)
         isInputError = error
     }

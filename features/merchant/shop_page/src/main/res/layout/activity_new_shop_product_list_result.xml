@@ -62,6 +62,7 @@
                     android:id="@+id/editTextSearchProduct"
                     style="@style/EditText"
                     android:layout_width="match_parent"
+                    android:textColorHint="@color/Unify_N700_32"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@null"

@@ -68,5 +68,11 @@
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity android:name=".websocket.ui.activity.WebSocketLoggingActivity"
+            android:label="Web Socket Logging"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 </manifest>

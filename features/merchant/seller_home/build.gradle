@@ -59,6 +59,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
 
     //internal arr libs
     implementation rootProject.ext.unifyDependencies.coach_mark
@@ -114,6 +115,8 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -126,7 +129,7 @@ dependencies {
         transitive = true
     }
 
-    androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {
