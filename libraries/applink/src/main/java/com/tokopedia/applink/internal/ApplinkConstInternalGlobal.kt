@@ -140,8 +140,9 @@ object ApplinkConstInternalGlobal {
     // UserIdentificationInfoSimpleActivity
     // tokopedia-android-internal://global/user-identification-only
     @JvmField
-    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&layout={layout}"
-    const val PARAM_LAYOUT = "layout"
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}"
+    const val PARAM_SHOW_INTRO = "showIntro"
+    const val PARAM_REDIRECT_URL = "redirectUrl"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
@@ -358,14 +359,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/ovoqrthanks/{transfer_id}
     const val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
 
-    // InstantDebitBcaActivity
-    // tokopedia-android-internal://global/instantdebitbca?callbackUrl={callbackUrl}
-    const val INSTANT_DEBIT_BCA_ENTRY_PATTERN = "$INTERNAL_GLOBAL/instantdebitbca"
-
-    // BcaEditLimitActivity
-    // tokopedia-android-internal://global/editbcaoneklik?callbackUrl={callbackUrl}&xcoid={xcoid}
-    const val EDIT_BCA_ONE_KLICK_ENTRY_PATTERN = "$INTERNAL_GLOBAL/editbcaoneklik"
-
     const val DISCOVERY = "$INTERNAL_GLOBAL/discovery"
 
 
@@ -509,6 +502,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/global-sharing
     const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
 
+    // LinkAccountReminderActivity
+    // tokopedia-android-internal://global/link-acc-reminder
+    const val LINK_ACC_REMINDER = "$INTERNAL_GLOBAL/link-acc-reminder"
 
     // LinkAccountWebViewActivity
     // tokopedia-android-internal://global/link-account-webview

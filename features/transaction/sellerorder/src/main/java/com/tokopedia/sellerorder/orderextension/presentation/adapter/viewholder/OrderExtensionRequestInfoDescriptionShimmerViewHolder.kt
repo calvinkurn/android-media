@@ -20,7 +20,7 @@ class OrderExtensionRequestInfoDescriptionShimmerViewHolder(
     override fun bind(element: OrderExtensionRequestInfoUiModel.DescriptionShimmerUiModel?) {
         binding?.root?.run {
             val layoutParamsCopy = layoutParams
-            layoutParamsCopy.width = element?.width ?: layoutParamsCopy.width
+            layoutParamsCopy.width = element?.width?.getDimen(context)?.toInt() ?: layoutParamsCopy.width
             layoutParams = layoutParamsCopy
         }
     }

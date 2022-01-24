@@ -4,32 +4,32 @@ package com.tokopedia.affiliate.model.response
 import com.google.gson.annotations.SerializedName
 
 data class AffiliateOnBoardingData(
-        @SerializedName("onBoardAffiliate")
+        @SerializedName("onboardAffiliate")
         var onBoardAffiliate: OnBoardAffiliate?
 ) {
     data class OnBoardAffiliate(
-            @SerializedName("Data")
+            @SerializedName("data")
             var `data`: Data?
     ) {
         data class Data(
-                @SerializedName("Error")
+                @SerializedName("error")
                 var error: Error?,
-                @SerializedName("Status")
+                @SerializedName("status")
                 var status: Int?
         ) {
             class Error(
-                    @SerializedName("ErrorType")
+                    @SerializedName("errorType")
                     var errorType: Int?,
-                    @SerializedName("Message")
+                    @SerializedName("message")
                     var message: String?,
-                    @SerializedName("CtaText")
+                    @SerializedName("ctaText")
                     var ctaText: String?,
-                    @SerializedName("CtaLink")
+                    @SerializedName("ctaLink")
                     var ctaLink : CtaLink
             ) {
 
                 class CtaLink(
-                        @SerializedName("AndroidURL") val androidUrl : String?,
+                        @SerializedName("desktopURL") val desktopUrl : String?,
                 )
             }
         }

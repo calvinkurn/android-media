@@ -16,6 +16,7 @@
 
     <color name="play_dms_product_sheet_divider">#E0E0E0</color>
     <color name="play_dms_variant_sheet_divider">#F3F4F5</color>
+    <color name="play_dms_user_report_sheet_divider">#E5E7E9</color>
 
     <color name="play_dms_atc_image_disabled">#DBDEE2</color>
 
