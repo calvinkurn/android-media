@@ -19,6 +19,12 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/dynamic_channel_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/best_seller_title"
         android:layout_width="0dp"
@@ -34,7 +40,7 @@
         app:layout_constraintBottom_toTopOf="@+id/best_seller_subtitle"
         app:layout_constraintEnd_toStartOf="@+id/best_seller_see_more"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_component_divider_header"
+        app:layout_constraintTop_toBottomOf="@+id/dynamic_channel_header"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -89,23 +95,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/best_seller_subtitle" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/best_seller_recommendation_recycler_view"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        android:scrollbars="none"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp"
         android:paddingBottom="12dp"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/best_seller_chip_filter_recyclerview"
-        tools:listitem="@layout/recommendation_carousel_item_view_holder"
-        tools:visibility="visible" />
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/best_seller_recommendation_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            android:scrollbars="none"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/recommendation_carousel_item_view_holder"
+            tools:visibility="visible" />
+
+    </FrameLayout>
 
     <include
         android:id="@+id/best_seller_loading_recommendation"

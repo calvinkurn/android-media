@@ -43,7 +43,8 @@ object ChannelWidgetUtil {
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
-        when(dividerType) {
+//        when(dividerType) {
+        when(1) {
             DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
                 dividerBottom?.gone()
