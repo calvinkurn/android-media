@@ -37,6 +37,7 @@ import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMa
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.BlockActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
@@ -1016,13 +1017,16 @@ class TopChatViewModel @Inject constructor(
             }
             _chatAttachments.value = attachments
         }, onError = {
-            // TODO: handle error
+            val errorMapAttachment = productIds.associateWith { ErrorAttachment() }
+            attachments.putAll(errorMapAttachment)
+            _chatAttachments.value = attachments
         })
     }
 
     private fun alreadyHasAttachmentData(productIds: List<String>): Boolean {
         for (productId in productIds) {
-            if (!attachments.contains(productId)) return false
+            if (!attachments.contains(productId)
+                    || attachments[productId] is ErrorAttachment) return false
         }
         return true
     }

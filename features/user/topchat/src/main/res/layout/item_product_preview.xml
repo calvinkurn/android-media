@@ -142,4 +142,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/topchat_ic_close" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iu_retry_product_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon_name="RELOAD"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

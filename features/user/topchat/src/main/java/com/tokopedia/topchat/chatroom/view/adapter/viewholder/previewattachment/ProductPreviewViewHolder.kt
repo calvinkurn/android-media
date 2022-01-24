@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,6 +37,7 @@ class ProductPreviewViewHolder(
     private val productSizeVariant = itemView.findViewById<LinearLayout>(R.id.ll_variant_size)
     private val productSizeVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_size)
     private val loader = itemView.findViewById<LoaderUnify>(R.id.lu_product_preview)
+    private val retry = itemView.findViewById<IconUnify>(R.id.iu_retry_product_preview)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             view = container,
@@ -74,6 +76,7 @@ class ProductPreviewViewHolder(
 
     private fun bindSuccessState(model: TopchatProductAttachmentPreviewUiModel) {
         showLoading(false)
+        showError(false)
         bindImageThumbnail(model)
         bindProductName(model)
         bindProductPrice(model)
@@ -83,23 +86,42 @@ class ProductPreviewViewHolder(
     private fun bindLoadingState(model: TopchatProductAttachmentPreviewUiModel) {
         // TODO: implement based on design
         showLoading(true)
+        showError(false)
+        hideProductComponents()
     }
 
     private fun bindErrorState(model: TopchatProductAttachmentPreviewUiModel) {
         // TODO: implement based on design
         showLoading(false)
+        showError(true)
+        hideProductComponents()
+        retry?.setOnClickListener {
+            // TODO: implement retry click
+        }
+    }
 
+    private fun hideProductComponents() {
+        productName?.hide()
+        productPrice?.hide()
+        productVariantContainer?.hide()
+        productImage?.hide()
     }
 
     private fun showLoading(isLoading: Boolean) {
         loader?.showWithCondition(isLoading)
     }
 
+    private fun showError(isError: Boolean) {
+        retry?.showWithCondition(isError)
+    }
+
     private fun bindProductName(model: TopchatProductAttachmentPreviewUiModel) {
+        productName?.show()
         productName?.text = model.productName
     }
 
     private fun bindProductPrice(model: TopchatProductAttachmentPreviewUiModel) {
+        productPrice?.show()
         productPrice?.text = model.productPrice
     }
 
@@ -121,6 +143,7 @@ class ProductPreviewViewHolder(
     }
 
     private fun bindImageThumbnail(model: TopchatProductAttachmentPreviewUiModel) {
+        productImage?.show()
         productImage?.loadImageRounded(model.productImage, 6.toPx().toFloat())
     }
 

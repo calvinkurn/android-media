@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.AttachmentPreviewViewHolder
@@ -31,7 +32,11 @@ class AttachmentPreviewAdapter(
             if (attachment is TopchatProductAttachmentPreviewUiModel) {
                 val actualProduct = mapProducts[attachment.productId] ?: continue
                 attachment.updateData(actualProduct.parsedAttributes)
-                attachment.finishLoading()
+                if (actualProduct is ErrorAttachment) {
+                    attachment.syncError()
+                } else {
+                    attachment.finishLoading()
+                }
                 notifyItemChanged(index, Payload.REBIND)
             }
         }
