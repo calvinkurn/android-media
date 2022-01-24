@@ -813,7 +813,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
-                shareLinkView?.setIsShareable(false)
+                shareLinkView?.hide()
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
@@ -872,6 +872,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
                 renderViewAllProductView(state.viewAllProduct)
+                renderKebabMenuView(state.kebabMenu)
             }
         }
     }
@@ -1539,7 +1540,9 @@ class PlayUserInteractionFragment @Inject constructor(
         share: PlayShareUiState
     ) {
         toolbarView.setTitle(title.title)
-        shareLinkView?.setIsShareable(share.shouldShow)
+
+        if(share.shouldShow) shareLinkView?.show()
+        else shareLinkView?.hide()
     }
 
     private fun renderPartnerInfoView(prevState: PlayPartnerUiState?, state: PlayPartnerUiState) {
@@ -1587,6 +1590,11 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderViewAllProductView(viewAllProduct: PlayViewAllProductUiState) {
         if(viewAllProduct.shouldShow) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
+    }
+
+    private fun renderKebabMenuView(kebabMenuUiState: PlayKebabMenuUiState) {
+        if(kebabMenuUiState.shouldShow) kebabMenuView?.show()
+        else kebabMenuView?.hide()
     }
 
     private fun castViewOnStateChanged(

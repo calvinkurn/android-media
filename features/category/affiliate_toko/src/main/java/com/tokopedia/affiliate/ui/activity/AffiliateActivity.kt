@@ -323,8 +323,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.name)
         if (currentFragment == null) {
             showLoginPortal()
-            currentFragment =
-                supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.name)
+            currentFragment = supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.name)
         }
         currentFragment?.let { fragment ->
             (fragment as? AffiliateLoginFragment)?.showFraudTicker()
