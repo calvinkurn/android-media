@@ -1952,8 +1952,8 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun initSizeOptionFilter(inspirationSizeDataViewList: MutableList<InspirationSizeDataView>) {
-        if (inspirationSizeDataViewList.size <= 0) return
+    override fun initSizeOptionFilter(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
+        if (inspirationSizeDataViewList.isEmpty()) return
 
         val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
 
@@ -1973,8 +1973,8 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
-    override fun setSelectedSizeOption(dataView: MutableList<InspirationSizeDataView>) {
-        dataView.forEach { element ->
+    override fun setSelectedSizeOption(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
+        inspirationSizeDataViewList.forEach { element ->
             element.data.optionSizeData.forEach {
                 val option = Option(
                     key = it.filters.key,

@@ -27,6 +27,7 @@ internal class SearchProductHandleInspirationSizeTest: ProductListPresenterTestF
         `When Load Data`()
 
         `Then verify view set product list`()
+        `Then init inspiration size filter`()
         `Then verify visitable list has correct inspiration size and product sequence on first page`(searchProductModel)
 
         `When Load More`()
@@ -64,16 +65,19 @@ internal class SearchProductHandleInspirationSizeTest: ProductListPresenterTestF
         }
 
         productListPresenter.loadData(searchParameter)
-
-        val visitableList = visitableListSlot.captured
-
-        `Then init size option filter and set default selected`(visitableList.filterIsInstance<InspirationSizeDataView>())
     }
 
     private fun `Then verify view set product list`() {
         verifyOrder {
             productListView.setProductList(capture(visitableListSlot))
         }
+    }
+
+    private fun `Then init inspiration size filter`() {
+        val inspirationSizeList = visitableListSlot.captured.filterIsInstance<InspirationSizeDataView>()
+
+        productListView.initSizeOptionFilter(inspirationSizeList)
+        productListView.setSelectedSizeOption(inspirationSizeList)
     }
 
     private fun `Then verify visitable list has correct inspiration size and product sequence on first page`(searchProductModel: SearchProductModel) {
@@ -222,9 +226,7 @@ internal class SearchProductHandleInspirationSizeTest: ProductListPresenterTestF
     }
 
     private fun `Then init size option filter and set default selected`(dataView: List<InspirationSizeDataView>) {
-        verify {
-            productListView.initSizeOptionFilter(dataView.toMutableList())
-            productListView.setSelectedSizeOption(dataView.toMutableList())
-        }
+        productListView.initSizeOptionFilter(dataView.toMutableList())
+        productListView.setSelectedSizeOption(dataView.toMutableList())
     }
 }
