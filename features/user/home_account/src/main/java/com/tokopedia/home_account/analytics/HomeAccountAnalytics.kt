@@ -1,6 +1,5 @@
 package com.tokopedia.home_account.analytics
 
-import android.content.Context
 import android.os.Build
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_account.AccountConstants
@@ -113,6 +112,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.VALUE_BEBAS_ONGKIR
 import com.tokopedia.home_account.AccountConstants.Analytics.VALUE_PRODUCT_RECOMMENDATION_LIST
 import com.tokopedia.home_account.AccountConstants.Analytics.VALUE_PRODUCT_TOPADS
 import com.tokopedia.home_account.AccountConstants.Analytics.VALUE_WISHLIST_PRODUCT
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -917,4 +917,25 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
         map[EVENT_USER_ID] = userSession.userId
         analytics.sendGeneralEvent(map)
     }
+
+    fun trackOnShowBiometricOffering() {
+        track(
+            TrackAppUtils.gtmData(
+                BiometricTracker.EVENT_CLICK_BIOMETRIC,
+                BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
+                BiometricTracker.ACTION_CLICK_BIOMETRIC_ACTIVATION,
+                "${BiometricTracker.EVENT_LABEL_SUCCESS} - biometrics offering")
+        )
+    }
+
+    fun trackOnShowLogoutDialog() {
+        track(
+            TrackAppUtils.gtmData(
+                BiometricTracker.EVENT_CLICK_BIOMETRIC,
+                BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
+                BiometricTracker.ACTION_CLICK_BIOMETRIC_ACTIVATION,
+                "${BiometricTracker.EVENT_LABEL_SUCCESS} - logout prompt")
+        )
+    }
+
 }

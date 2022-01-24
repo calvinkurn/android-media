@@ -43,18 +43,20 @@ object FingerprintDialogHelper {
         }
     }
 
-    fun createBiometricOfferingDialog(activity: FragmentActivity, onPrimaryBtnClicked: () -> Unit?, onSecondaryBtnClicked: () -> Unit?) {
-        BottomSheetUnify().apply {
+    fun createBiometricOfferingDialog(activity: FragmentActivity, onPrimaryBtnClicked: () -> Unit?, onSecondaryBtnClicked: () -> Unit?, onCloseBtnClicked: () -> Unit?): BottomSheetUnify {
+        return BottomSheetUnify().apply {
             val view = View.inflate(activity, R.layout.bottom_sheet_register_fingerprint_layout, null)
             val primaryBtn = view?.findViewById<UnifyButton>(R.id.bottom_sheet_reg_biom_primary_btn)
             val secondaryBtn = view?.findViewById<UnifyButton>(R.id.bottom_sheet_reg_biom_secondary_btn)
             primaryBtn?.setOnClickListener {
                 onPrimaryBtnClicked()
-                dismiss()
             }
             secondaryBtn?.setOnClickListener {
                 onSecondaryBtnClicked()
-                dismiss()
+            }
+
+            setCloseClickListener {
+                onCloseBtnClicked()
             }
             setChild(view)
             activity.supportFragmentManager.run {

@@ -45,7 +45,7 @@ class RegisterFingerprintActivity: BaseActivity() {
         if(BiometricPromptHelper.isBiometricAvailable(this)) {
             showBiometricPrompt()
         } else {
-            finishWithCanceled()
+            finish()
         }
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }

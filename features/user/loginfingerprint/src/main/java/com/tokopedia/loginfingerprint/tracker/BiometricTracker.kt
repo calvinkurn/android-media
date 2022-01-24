@@ -166,6 +166,36 @@ class BiometricTracker {
         )
     }
 
+    fun trackClickOnAktivasi() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_BIOMETRIC,
+                CATEGORY_LOGOUT_PAGE,
+                ACTION_CLICK_BIOMETRIC_ACTIVATION,
+                EVENT_LABEL_CLICK)
+        )
+    }
+
+    fun trackClickOnTetapKeluar() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_BIOMETRIC,
+                CATEGORY_LOGOUT_PAGE,
+                ACTION_CLICK_BIOMETRIC_STAY_LOGOUT,
+                EVENT_LABEL_CLICK)
+        )
+    }
+
+    fun trackClickOnCloseBtnOffering() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_BIOMETRIC,
+                CATEGORY_LOGOUT_PAGE,
+                ACTION_CLICK_BIOMETRIC_CLOSE_BTN,
+                "")
+        )
+    }
+
     private fun track(map: MutableMap<String, Any>) {
         map[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
         map[KEY_CURRENT_SITE] = CURRENT_SITE
@@ -181,10 +211,16 @@ class BiometricTracker {
         const val ACTION_CLICK_MENU_BIOMETRIC = "click on button biometric"
         const val ACTION_CLICK_BTN_BACK = "click on button back biometric"
         const val ACTION_CLICK_BIOMETRIC_LOGIN = "click on metode biometric"
+        const val ACTION_CLICK_BIOMETRIC_ACTIVATION = "biometrics - click on aktivasi sekarang"
+        const val ACTION_CLICK_BIOMETRIC_STAY_LOGOUT = "biometrics - click on tetap keluar"
+        const val ACTION_CLICK_BIOMETRIC_CLOSE_BTN = "biometrics - click on close button"
 
         const val CATEGORY_LOGIN_PAGE = "login page"
+        const val CATEGORY_LOGOUT_PAGE = "logout page"
         const val CATEGORY_ACCOUNT_SETTING_PAGE = "account page"
         const val CATEGORY_INPUT_BIOMETRIC_PAGE = "input biometric page"
+
+        const val CATEGORY_ACCOUNT_PAGE_BUYER = "akun saya pembeli"
 
         const val EVENT_LABEL_SUCCESS = "success"
 
