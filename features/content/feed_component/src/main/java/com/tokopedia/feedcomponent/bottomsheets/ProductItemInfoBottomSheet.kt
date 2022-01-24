@@ -87,7 +87,9 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 listProducts,
                 postType,
                 shopId,
-                isFollowed)
+                isFollowed,
+                mediaType
+               )
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<BasePostTagViewModel> {
