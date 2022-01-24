@@ -18,7 +18,6 @@ import org.junit.Test
  */
 class FlightCancellationChooseReasonViewModelTest {
 
-
     @get:Rule
     val rule = InstantTaskExecutorRule()
     private val testDispatcherProvider = CoroutineTestDispatchersProvider

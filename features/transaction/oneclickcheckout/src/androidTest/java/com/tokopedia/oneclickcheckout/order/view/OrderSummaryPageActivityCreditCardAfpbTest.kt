@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDI
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
 import org.junit.Before
@@ -21,6 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
+@UiTest
 class OrderSummaryPageActivityCreditCardAfpbTest {
 
     @get:Rule

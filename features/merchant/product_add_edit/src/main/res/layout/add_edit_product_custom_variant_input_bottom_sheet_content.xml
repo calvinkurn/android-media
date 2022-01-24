@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutParent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textFieldVariantTypeInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:unify_text_field_clearable="true"
+        app:unify_text_field_counter="@integer/max_custom_variant_type_name_length"
+        app:unify_text_field_label="@string/label_variant_type_name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typographyRecommendationTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:text="@string/label_variant_name_recommendation"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:typographyType="heading_6" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewVariantSuggestion"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:verticalScrollbarPosition="right"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewVariantMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/layout_lvl1">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            android:text="@string/action_variant_save" />
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
