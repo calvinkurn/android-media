@@ -292,6 +292,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private var isArCoachMarkShowing = false
+    private var coachMarkArView: CoachMark2? = null
 
     //Data
     private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
@@ -1825,13 +1826,21 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val shouldShowCoachMark = coachMarkArPref?.getCoachMarkState() == false
             if (view != null && shouldShowCoachMark) {
                 val coachMarkList = arrayListOf<CoachMark2Item>()
+                coachMarkArView = CoachMark2(it)
                 coachMarkList.add(CoachMark2Item(view,
                         it.getString(R.string.pdp_ar_coachmark_title),
                         it.getString(R.string.pdp_ar_coachmark_desc), CoachMark2.POSITION_TOP))
-                val coachmark = CoachMark2(it)
-                coachmark.showCoachMark(coachMarkList, null, 0)
+                coachMarkArView?.showCoachMark(coachMarkList, null, 0)
                 isArCoachMarkShowing = true
                 coachMarkArPref?.setCoachMarkState(true)
+            }
+        }
+    }
+
+    override fun hideArCoachMark() {
+        context?.let {
+            if (coachMarkArView != null && coachMarkArView?.isShowing == true) {
+                coachMarkArView?.hideCoachMark()
             }
         }
     }

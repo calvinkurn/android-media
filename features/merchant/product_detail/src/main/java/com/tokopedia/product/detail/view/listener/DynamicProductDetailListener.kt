@@ -187,6 +187,7 @@ interface DynamicProductDetailListener {
      * ProductArViewHolder
      */
     fun showArCoachMark(view:ConstraintLayout?)
+    fun hideArCoachMark()
     fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
 
     /**

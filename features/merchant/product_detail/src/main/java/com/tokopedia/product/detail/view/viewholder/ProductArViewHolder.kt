@@ -34,8 +34,6 @@ class ProductArViewHolder(
         imgCustom?.loadImage(element.imageUrl)
         txtMessage?.text = element.message
         itemView.setOnClickListener {
-            //todo change
-//            listener.goToApplink(element.applink)
             listener.goToArPage(getComponentTrackData(element))
         }
 
@@ -48,6 +46,7 @@ class ProductArViewHolder(
 
     private fun showOrHideElement(message: String) {
         if (message.isEmpty()) {
+            listener.hideArCoachMark()
             itemView.layoutParams.height = 0
         } else {
             itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
