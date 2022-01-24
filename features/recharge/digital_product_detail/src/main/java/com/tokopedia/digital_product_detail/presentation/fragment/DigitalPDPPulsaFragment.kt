@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,6 +20,7 @@ import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
@@ -26,12 +28,14 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -53,6 +57,9 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -75,16 +82,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
+
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
     private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
     private var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect()
     )
-    private var operatorId = ""
+    private var operator = TelcoOperator()
     private val categoryId = TelcoCategoryType.CATEGORY_PULSA
+    private var inputNumberActionType = InputNumberActionType.MANUAL
 
     private lateinit var localCacheHandler: LocalCacheHandler
+    private var actionTypeTrackingJob: Job? = null
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -131,11 +143,18 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             rechargePdpPulsaClientNumberWidget.getInputNumber().startsWith(it.value)
                         }
 
-                    // [Misael] operatorId state & checker
-                    if (operatorId != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
+                    // [Misael] Check ini isErrorMessageShown kepanggil duluan atau belakangan
+                    if (rechargePdpPulsaClientNumberWidget.isErrorMessageShown()) {
+                        hitTrackingForInputNumber(
+                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                            selectedOperator.operator.attributes.name
+                        )
+                    }
+
+                    if (operator.id != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
                             .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
                     ) {
-                        operatorId = selectedOperator.operator.id
+                        operator = selectedOperator.operator
                         rechargePdpPulsaClientNumberWidget.run {
                             showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                         }
@@ -150,7 +169,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     showEmptyState()
                 }
             } catch (exception: NoSuchElementException) {
-                operatorId = ""
+                // [Misael] mahal atau ngga ya setiap kali kosongin bikin TelcoOperator baru
+                operator = TelcoOperator()
                 rechargePdpPulsaClientNumberWidget.setErrorInputField(
                     getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
                 )
@@ -317,24 +337,86 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     }
 
                     override fun onClearInput() {
-                        operatorId = ""
+                        operator = TelcoOperator()
                         showEmptyState()
+                        digitalPDPTelcoAnalytics.eventClearInputNumber(
+                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                            userSession.userId
+                        )
+                    }
+
+                    override fun onClickContact() {
+                        binding?.run {
+                            val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
+                            val dgCategoryIds = arrayListOf(categoryId.toString())
+                            navigateToContact(
+                                clientNumber, dgCategoryIds,
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                false
+                            )
+                            digitalPDPTelcoAnalytics.clickOnContactIcon(
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                userSession.userId
+                            )
+                        }
                     }
                 },
                 autoCompleteListener = object :
                     RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
                     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
-                        // do nothing
+                        inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
+                        if (isFavoriteContact) {
+                            digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                operator.attributes.name,
+                                "[Misael] loyaltyStatus",
+                                userSession.userId
+                            )
+                        } else {
+                            digitalPDPTelcoAnalytics.clickFavoriteNumberAutoComplete(
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                operator.attributes.name,
+                                "[Misael] loyaltyStatus",
+                                userSession.userId
+                            )
+                        }
                     }
                 },
                 filterChipListener = object :
                     RechargeClientNumberWidget.ClientNumberFilterChipListener {
                     override fun onShowFilterChip(isLabeled: Boolean) {
-                        // do nothing
+                        if (isLabeled) {
+                            digitalPDPTelcoAnalytics.impressionFavoriteContactChips(
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                "[Misael] loyaltyStatus",
+                                userSession.userId
+                            )
+                        } else {
+                            digitalPDPTelcoAnalytics.impressionFavoriteNumberChips(
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                "[Misael] loyaltyStatus",
+                                userSession.userId
+                            )
+                        }
                     }
 
                     override fun onClickFilterChip(isLabeled: Boolean) {
-                        // do nothing
+                        inputNumberActionType = InputNumberActionType.CHIP
+                        if (isLabeled) {
+                            digitalPDPTelcoAnalytics.clickFavoriteContactChips(
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                operator.attributes.name,
+                                "[Misael] loyaltyStatus",
+                                userSession.userId,
+                            )
+                        } else {
+                            digitalPDPTelcoAnalytics.clickFavoriteNumberChips(
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                operator.attributes.name,
+                                "[Misael] loyaltyStatus",
+                                userSession.userId
+                            )
+                        }
                     }
 
                     override fun onClickIcon(isSwitchChecked: Boolean) {
@@ -537,6 +619,37 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun hitTrackingForInputNumber(categoryName: String, operatorName: String) {
+        actionTypeTrackingJob?.cancel()
+        actionTypeTrackingJob = lifecycleScope.launch {
+            delay(INPUT_ACTION_TRACKING_DELAY)
+            when (inputNumberActionType) {
+                InputNumberActionType.MANUAL -> {
+                    digitalPDPTelcoAnalytics.eventInputNumberManual(
+                        categoryName,
+                        operatorName,
+                        userSession.userId
+                    )
+                }
+                InputNumberActionType.CONTACT -> {
+                    digitalPDPTelcoAnalytics.eventInputNumberContact(
+                        categoryName,
+                        operatorName,
+                        userSession.userId
+                    )
+                }
+                InputNumberActionType.FAVORITE -> {
+                    digitalPDPTelcoAnalytics.eventInputNumberFavorite(
+                        categoryName,
+                        operatorName,
+                        userSession.userId
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
     private fun handleCallbackSavedNumber(
         clientName: String,
         clientNumber: String,
@@ -632,7 +745,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
             binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?:"",
-            operatorId
+            operator.id
         )
 
         viewModel.addToCart(
@@ -690,8 +803,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    enum class InputNumberActionType {
+        MANUAL, CONTACT, FAVORITE, CHIP, AUTOCOMPLETE
+    }
+
     companion object {
         fun newInstance() = DigitalPDPPulsaFragment()
+
+        const val INPUT_ACTION_TRACKING_DELAY = 1000L
 
         const val MENU_ID = 148
         const val MINIMUM_OPERATOR_PREFIX = 4

@@ -211,7 +211,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 }
                 icon2.run {
                     setImageDrawable(getIconUnifyDrawable(context, type.iconUnifyId))
-                    setOnClickListener { mFilterChipListener?.onClickIcon(false) }
+                    setOnClickListener { mInputFieldListener?.onClickContact() }
                     show()
                 }
             }
@@ -381,6 +381,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     interface ClientNumberInputFieldListener {
         fun onRenderOperator(isDelayed: Boolean)
         fun onClearInput()
+        fun onClickContact()
     }
 
     interface ClientNumberAutoCompleteListener {
