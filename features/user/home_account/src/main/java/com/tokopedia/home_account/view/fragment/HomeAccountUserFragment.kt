@@ -87,6 +87,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker.Companion.EVENT_LABEL_FAILED
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker.Companion.EVENT_LABEL_SUCCESS
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.network.utils.ErrorHandler
@@ -487,10 +489,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
             REQUEST_CODE_REGISTER_BIOMETRIC -> {
                 if(resultCode == Activity.RESULT_OK) {
+                    biometricTracker.trackOnAktivasiResult(EVENT_LABEL_SUCCESS)
                     FingerprintDialogHelper.createBiometricOfferingSuccessDialog(requireActivity(), onPrimaryBtnClicked = {
                         doLogout()
                     })
                 } else {
+                    biometricTracker.trackOnAktivasiResult(EVENT_LABEL_FAILED)
                     view?.run {
                         Toaster.build(this, getString(R.string.label_failed_register_biometric_offering), Toaster.LENGTH_LONG).show()
                     }
@@ -657,6 +661,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     fun onFailedGetFingerprintStatus(throwable: Throwable) {
+        homeAccountAnalytic.trackOnShowBiometricOfferingFailed(throwable.message ?: "")
         showDialogLogout()
     }
 
@@ -1128,6 +1133,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
+                homeAccountAnalytic.trackOnClickLogoutDialog()
                 viewModel.getFingerprintStatus()
             }
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {

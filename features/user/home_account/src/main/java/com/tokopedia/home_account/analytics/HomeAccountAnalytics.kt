@@ -918,6 +918,16 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
         analytics.sendGeneralEvent(map)
     }
 
+    fun trackOnClickLogoutDialog() {
+        track(
+            TrackAppUtils.gtmData(
+                BiometricTracker.EVENT_CLICK_BIOMETRIC,
+                BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
+                BiometricTracker.ACTION_CLICK_BIOMETRIC_ACTIVATION,
+                LABEL_CLICK)
+        )
+    }
+
     fun trackOnShowBiometricOffering() {
         track(
             TrackAppUtils.gtmData(
@@ -925,6 +935,16 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
                 BiometricTracker.ACTION_CLICK_BIOMETRIC_ACTIVATION,
                 "${BiometricTracker.EVENT_LABEL_SUCCESS} - biometrics offering")
+        )
+    }
+
+    fun trackOnShowBiometricOfferingFailed(reason: String) {
+        track(
+            TrackAppUtils.gtmData(
+                BiometricTracker.EVENT_CLICK_BIOMETRIC,
+                BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
+                BiometricTracker.ACTION_CLICK_BIOMETRIC_ACTIVATION,
+                "${BiometricTracker.EVENT_LABEL_FAILED} - $reason")
         )
     }
 

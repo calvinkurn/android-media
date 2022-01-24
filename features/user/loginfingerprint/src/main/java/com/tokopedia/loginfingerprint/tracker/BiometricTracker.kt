@@ -196,6 +196,16 @@ class BiometricTracker {
         )
     }
 
+    fun trackOnAktivasiResult(label: String) {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_BIOMETRIC,
+                CATEGORY_LOGOUT_PAGE,
+                ACTION_CLICK_BIOMETRIC_ACTIVATION,
+                label)
+        )
+    }
+
     private fun track(map: MutableMap<String, Any>) {
         map[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
         map[KEY_CURRENT_SITE] = CURRENT_SITE
