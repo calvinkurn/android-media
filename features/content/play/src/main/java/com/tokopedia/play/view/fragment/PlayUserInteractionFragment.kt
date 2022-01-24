@@ -144,7 +144,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
     private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
-    private val pinnedVoucherView by viewComponentOrNull { PinnedVoucherViewComponent(it, R.id.view_pinned_voucher, this) }
     private val productFeaturedView by viewComponentOrNull { ProductFeaturedViewComponent(it, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
@@ -819,7 +818,6 @@ class PlayUserInteractionFragment @Inject constructor(
             castViewOnStateChanged(bottomInsets = map)
         })
     }
-
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
@@ -837,7 +835,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderRealTimeNotificationView(state.rtn)
                 renderViewAllProductView(state.tagItems, state.bottomInsets)
                 renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
-                renderPinnedVoucherView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
 
@@ -1184,7 +1181,7 @@ class PlayUserInteractionFragment @Inject constructor(
         val hasQuickReply = playViewModel.quickReply.quickReplyList.isNotEmpty()
 
         val hasProductFeatured = productFeaturedView?.isShown() == true
-        val hasPinnedVoucher = pinnedVoucherView?.isShown() == true
+        val hasPinnedVoucher = false
 
         if (bottomInsets.isKeyboardShown) getChatListHeightManager().invalidateHeightChatMode(videoOrientation, videoPlayer, maxTopPosition, hasQuickReply)
         else getChatListHeightManager().invalidateHeightNonChatMode(videoOrientation, videoPlayer, shouldForceInvalidate, hasProductFeatured, hasPinnedVoucher)
@@ -1567,28 +1564,6 @@ class PlayUserInteractionFragment @Inject constructor(
             status.channelStatus.statusType.isActive
         ) productFeaturedView?.showIfNotEmpty()
         else productFeaturedView?.hide()
-    }
-
-    private fun renderPinnedVoucherView(
-        prevTagItem: TagItemUiModel?,
-        tagItem: TagItemUiModel,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
-        status: PlayStatusUiModel,
-    ) {
-        if (tagItem.resultState.isLoading && tagItem.voucher.voucherList.isEmpty()) {
-            pinnedVoucherView?.setPlaceholder()
-        } else if (prevTagItem?.voucher != tagItem.voucher) {
-            pinnedVoucherView?.setVoucher(tagItem.voucher.voucherList)
-        }
-
-        if (!tagItem.resultState.isLoading && tagItem.voucher.voucherList.isEmpty()) {
-            pinnedVoucherView?.hide()
-        } else if (tagItem.product.canShow &&
-            !bottomInsets.isAnyShown &&
-            !tagItem.resultState.isFail &&
-            status.channelStatus.statusType.isActive
-        ) pinnedVoucherView?.showIfNotEmpty()
-        else pinnedVoucherView?.hide()
     }
 
     private fun renderQuickReplyView(

@@ -127,6 +127,7 @@
     <include
         android:id="@+id/view_pinned_voucher"
         layout="@layout/view_pinned_voucher"
+        android:visibility="gone"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl3"
