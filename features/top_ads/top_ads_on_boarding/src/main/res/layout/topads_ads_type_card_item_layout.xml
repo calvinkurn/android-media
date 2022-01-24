@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:padding="@dimen/unify_space_16"
+    android:layout_marginStart="@dimen/unify_space_16"
+    android:background="@drawable/topads_onboarding_rounded_corners"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/adsTypeTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/iconAutomaticAds"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Iklan Otomatis" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/adsTypeSubtitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/adsTypeTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adsTypeTitle"
+        app:typographyType="body_3"
+        tools:text="Cukup atur anggaran iklan aja" />
+
+    <ImageView
+        android:id="@+id/iconAutomaticAds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon_aotomatic_ads" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/adsTypeImage"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintDimensionRatio="H,16:9"
+        android:contentDescription="@null"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adsTypeSubtitle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/adsTypeDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="@+id/adsTypeImage"
+        app:layout_constraintStart_toStartOf="@+id/adsTypeImage"
+        app:layout_constraintTop_toBottomOf="@+id/adsTypeImage"
+        app:typographyType="body_2"
+        tools:text="Hanya dengan 1x klik, iklanmu bisa langsung aktif. Pasang iklan jadi cepat tanpa ribet." />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/adsTypePositiveButton"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="@+id/adsTypeDescription"
+        app:layout_constraintTop_toBottomOf="@+id/adsTypeDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        tools:text="Buat Iklan Otomatis" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/adsTypeNegativeButton"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adsTypePositiveButton"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="text"
+        tools:text="Lihat Cara Pakainya" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

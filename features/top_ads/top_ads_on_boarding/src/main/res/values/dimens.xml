@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="topads_dimen_66dp">66dp</dimen>
+    <dimen name="topads_dimen_1dp">1dp</dimen>
+    <dimen name="topads_dimen_60dp">60dp</dimen>
+</resources>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/topAdsOnboardLottie"
+        android:background="@color/Unify_GN50"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        app:lottie_url="https://assets4.lottiefiles.com/packages/lf20_njmJ7C.json"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_loop="true"
+        app:lottie_speed="1"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintHeight_percent=".60"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/welcomeTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        android:gravity="center"
+        android:text="@string/topads_ads_start_page_title"
+        android:layout_marginTop="@dimen/unify_space_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topAdsOnboardLottie" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/startPageDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:gravity="center"
+        android:text="Bersama TopAds, kamu bisa tingkatkan kunjungan pembeli dan daya saing tokomu. Yuk, coba beriklan pakai TopAds."
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcomeTitle" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/firstAdsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/topads_ads_start_page_positive_button"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        app:layout_constraintBottom_toTopOf="@id/LearnTopAdsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/LearnTopAdsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyButtonVariant="ghost"
+        android:gravity="center"
+        android:text="@string/topads_ads_start_page_button_button"
+        android:layout_marginBottom="@dimen/unify_space_24"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
