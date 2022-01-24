@@ -70,7 +70,7 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
                 addressId = addressId,
                 districtId = districtId,
                 postalCode = it.postal_code,
-                geolocation = if (it.lat.isNotBlank() && it.long.isNotBlank()) it.lat + "," + it.long else "",
+                geolocation = it.latLong,
                 tokonow = ChosenAddressTokonow(
                     shopId = it.shop_id,
                     warehouseId = it.warehouse_id,

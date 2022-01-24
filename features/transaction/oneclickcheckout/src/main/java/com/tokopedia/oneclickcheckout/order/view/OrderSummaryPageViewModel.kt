@@ -476,7 +476,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 addressId = newChosenAddress.addressId.toString(),
                 districtId = newChosenAddress.districtId.toString(),
                 postalCode = newChosenAddress.postalCode,
-                geolocation = if (newChosenAddress.latitude.isNotBlank() && newChosenAddress.longitude.isNotBlank()) addressModel.latitude + "," + addressModel.longitude else "",
+                geolocation = if (newChosenAddress.latitude.isNotBlank() && newChosenAddress.longitude.isNotBlank()) newChosenAddress.latitude + "," + newChosenAddress.longitude else "",
                 mode = ChosenAddress.MODE_ADDRESS,
                 tokonow = ChosenAddressTokonow(
                     shopId = newChosenAddress.tokonowModel.shopId.toString(),
