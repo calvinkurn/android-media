@@ -59,7 +59,7 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
                 } else if (oldItem is ProductCountDataView && newItem is ProductCountDataView) {
                     oldItem.totalDataText == newItem.totalDataText
                 } else if (oldItem is TitleDataView && newItem is TitleDataView) {
-                    oldItem.serviceType == newItem.serviceType
+                    oldItem.serviceType == newItem.serviceType && oldItem.is15mAvailable == newItem.is15mAvailable
                 } else {
                     true
                 }

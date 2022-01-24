@@ -31,9 +31,10 @@
     <string name="tokopedianow_search_title">Hasil pencarian di Tokopedia NOW!</string>
     <string name="tokopedianow_all_category">Semua Kategori</string>
     <string name="tokopedianow_search_category_product_count_template">%s Produk</string>
-    <string name="tokopedianow_category_aisle_header">Lihat kategori lainnya</string>
+    <string name="tokopedianow_2h_category_aisle_header">Lihat kategori lainnya di 2 jam tiba</string>
+    <string name="tokopedianow_15m_category_aisle_header">Kategori 15 menit tiba lainnya</string>
     <string name="tokopedianow_content_desc_image_empty_product">Image Empty Product</string>
-    <string name="tokopedianow_find_item_in_tokopedia_now">Cari Barang di Tokopedia NOW!</string>
+    <string name="tokopedianow_find_item_in_tokopedia_now">Jelajahi NOW! 2 Jam Tiba</string>
 
     <string name="tokopedianow_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
     <string name="tokopedianow_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
