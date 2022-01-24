@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.activity
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
@@ -21,6 +22,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import java.lang.ref.WeakReference
 
 /**
  * @author by firmanda on 04/01/21
@@ -60,7 +62,8 @@ class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComp
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.run {
-            setupOrderListIcon(this@DigitalPDPPulsaActivity)
+            val mActivity = WeakReference<Activity>(this@DigitalPDPPulsaActivity)
+            setupOrderListIcon(mActivity)
             return true
         }
         return false
