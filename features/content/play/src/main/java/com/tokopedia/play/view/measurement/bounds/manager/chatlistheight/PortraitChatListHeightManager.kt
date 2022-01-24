@@ -23,7 +23,6 @@ class PortraitChatListHeightManager(
 ) : ChatListHeightManager {
 
     private val pinnedMessageView: View = container.findViewById(R.id.view_pinned)
-    private val pinnedVoucherView: View = container.findViewById(R.id.view_pinned_voucher)
     private val productFeaturedView: View = container.findViewById(R.id.view_product_featured)
     private val rvChatList: MaximumHeightRecyclerView = container.findViewById(R.id.rv_chat_list)
     private val sendChatView: View = container.findViewById(R.id.view_send_chat)
@@ -108,11 +107,8 @@ class PortraitChatListHeightManager(
         val productFeaturedViewLayout = asyncCatchError(block = {
             if (productFeaturedView.visibility == View.VISIBLE) measureWithTimeout { productFeaturedView.awaitMeasured() }
         }) {}
-        val pinnedVoucherViewLayout = asyncCatchError(block = {
-            if (pinnedVoucherView.visibility == View.VISIBLE) measureWithTimeout { pinnedVoucherView.awaitMeasured() }
-        }) {}
 
-        awaitAll(immersiveBoxLayout, pinnedViewLayout, sendChatViewLayout, productFeaturedViewLayout, pinnedVoucherViewLayout)
+        awaitAll(immersiveBoxLayout, pinnedViewLayout, sendChatViewLayout, productFeaturedViewLayout)
 
         val suggestedBottomBounds = sendChatView.globalVisibleRect.top
         val suggestedTopBounds = immersiveBoxView.globalVisibleRect.bottom
@@ -126,8 +122,8 @@ class PortraitChatListHeightManager(
             suggestedBottomBounds to suggestedTopBounds
         }
 
-        val nonOffsetOccupiedHeight = productFeaturedView.visibleHeight + pinnedVoucherView.visibleHeight + pinnedMessageView.visibleHeight
-        val offsetOccupiedHeight = productFeaturedView.marginLp.bottomMargin + pinnedVoucherView.marginLp.bottomMargin + pinnedMessageView.marginLp.bottomMargin
+        val nonOffsetOccupiedHeight = productFeaturedView.visibleHeight + pinnedMessageView.visibleHeight
+        val offsetOccupiedHeight = productFeaturedView.marginLp.bottomMargin + pinnedMessageView.marginLp.bottomMargin
 
         val maxHeight = (bottomBounds - topBounds) - nonOffsetOccupiedHeight - offsetOccupiedHeight - videoChatMargin - chatPinnedMargin - reservedMargin
 
