@@ -652,9 +652,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                         SellerHomeApplinkConst.VOUCHER_TYPE,
                         SellerHomeApplinkConst.TYPE_PRODUCT
                     )
+                    .appendQueryParameter(
+                        SellerHomeApplinkConst.PRODUCT_ID,
+                        product?.id.orEmpty()
+                    )
                     .build().toString()
             } else {
-                ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
+                "${ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT}/${product?.id.orEmpty()}"
             }
         context?.let {
             RouteManager.route(it, firstTimeLink)

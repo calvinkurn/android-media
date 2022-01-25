@@ -13,9 +13,13 @@ class FirstVoucherActivity: BaseSimpleActivity() {
     private val voucherType by lazy {
         intent.data?.getQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE).orEmpty()
     }
+
+    private val productId by lazy {
+        intent.data?.getQueryParameter(SellerHomeApplinkConst.PRODUCT_ID)
+    }
     
     private val bottomSheet by lazy {
-        FirstVoucherBottomSheetFragment.createInstance(voucherType).apply {
+        FirstVoucherBottomSheetFragment.createInstance(voucherType, productId).apply {
             setCloseClickListener {
                 this.dismiss()
             }

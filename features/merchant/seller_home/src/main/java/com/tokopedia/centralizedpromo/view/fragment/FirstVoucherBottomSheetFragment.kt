@@ -28,9 +28,13 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance(voucherType: String) = FirstVoucherBottomSheetFragment().apply {
+        fun createInstance(voucherType: String,
+                           productId: String?) = FirstVoucherBottomSheetFragment().apply {
             val bundle = Bundle().apply {
                 putString(SellerHomeApplinkConst.VOUCHER_TYPE, voucherType)
+                if (productId != null) {
+                    putString(SellerHomeApplinkConst.PRODUCT_ID, productId)
+                }
             }
             arguments = bundle
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
@@ -44,6 +48,10 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     private val voucherType by lazy {
         arguments?.getString(SellerHomeApplinkConst.VOUCHER_TYPE).orEmpty()
+    }
+
+    private val productId by lazy {
+        arguments?.getString(SellerHomeApplinkConst.PRODUCT_ID)
     }
 
     @Inject
@@ -92,11 +100,20 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     }
 
     private fun initView() {
+        setupCloseClickListener()
+        setupBottomSheetText()
+        setupRecyclerView()
+        setupButtonClick()
+    }
+
+    private fun setupCloseClickListener() {
         setCloseClickListener {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(userSession.userId, true)
             dismiss()
         }
+    }
 
+    private fun setupBottomSheetText() {
         when (voucherType) {
             SellerHomeApplinkConst.TYPE_PRODUCT -> {
                 binding?.firstVoucherBottomSheetTitle?.text =
@@ -111,7 +128,9 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
                     context?.getString(R.string.centralized_promo_bottomsheet_next)
             }
         }
+    }
 
+    private fun setupRecyclerView() {
         binding?.firstVoucherRecyclerView?.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -122,12 +141,18 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
                 }
             adapter = FirstVoucherAdapter(itemList)
         }
+    }
 
+    private fun setupButtonClick() {
         binding?.firstVoucherButton?.setOnClickListener {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(userSession.userId, false)
             val voucherApplink =
                 if (voucherType == SellerHomeApplinkConst.TYPE_PRODUCT) {
-                    ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
+                    if (productId == null) {
+                        ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
+                    } else {
+                        "${ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT}/$productId"
+                    }
                 } else {
                     ApplinkConstInternalSellerapp.CREATE_VOUCHER
                 }
@@ -135,4 +160,5 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
             this.dismiss()
         }
     }
+
 }
