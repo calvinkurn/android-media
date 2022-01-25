@@ -84,6 +84,10 @@ class RechargeHomepageAdapterTypeFactory(
     fun type(productCardUnifyModel: RechargeProductCardUnifyModel): Int =
         RechargeHomepageProductCardUnifyViewHolder.LAYOUT
 
+    fun type(threeIconsModel: RechargeHomepageThreeIconsModel): Int{
+        return RechargeHomepageThreeIconsViewHolder.LAYOUT
+    }
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
@@ -173,6 +177,7 @@ class RechargeHomepageAdapterTypeFactory(
                 )
                 RechargeHomepageProductCardUnifyViewHolder(binding, listener)
             }
+            RechargeHomepageThreeIconsViewHolder.LAYOUT -> RechargeHomepageThreeIconsViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

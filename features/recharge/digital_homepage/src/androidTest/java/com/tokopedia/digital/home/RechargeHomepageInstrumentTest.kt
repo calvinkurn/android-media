@@ -76,6 +76,7 @@ class RechargeHomepageInstrumentTest {
         check_single_banner_section()
         check_product_banner_section()
         check_reminder_section()
+        check_3_icons_section()
 
         assertThat(
                 getAnalyticsWithQuery(gtmLogDBSource, context, SUBHOME_ANALYTIC_VALIDATOR_QUERY),
@@ -220,6 +221,14 @@ class RechargeHomepageInstrumentTest {
         onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
         onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
             .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
+    }
+
+    private fun check_3_icons_section(){
+        Thread.sleep(1000)
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions.scrollToPosition<RechargeHomepageThreeIconsViewHolder>(13)
+        )
+        onView(withId(R.id.rv_three_icons)).check(matches(isDisplayed()))
     }
 
     companion object {
