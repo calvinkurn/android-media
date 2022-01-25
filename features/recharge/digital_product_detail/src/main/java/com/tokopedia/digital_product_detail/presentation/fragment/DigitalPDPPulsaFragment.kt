@@ -328,7 +328,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.setFilterChipShimmer(false, true)
-            showErrorToaster(throwable)
         }
     }
 
