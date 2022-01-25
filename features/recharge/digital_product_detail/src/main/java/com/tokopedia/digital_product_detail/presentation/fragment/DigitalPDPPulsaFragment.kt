@@ -348,6 +348,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetPrefixOperator(throwable: Throwable) {
+        showEmptyState()
         showErrorToaster(throwable)
     }
 
