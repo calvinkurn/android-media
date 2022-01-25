@@ -88,7 +88,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     private fun showHeadlineView(cpmModel: CpmModel?) {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
-        if (!TopadsRollenceUtil.shouldShowFeedNewDesign(itemView.context)) {
+        if (!TopadsRollenceUtil.shouldShowFeedNewDesignValue(itemView.context)) {
             cpmModel?.let {
                 topadsHeadlineView.displayAds(it)
             }

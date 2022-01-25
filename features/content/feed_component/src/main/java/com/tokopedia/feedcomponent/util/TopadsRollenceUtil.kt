@@ -7,9 +7,15 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object TopadsRollenceUtil {
 
+    var isShowTopAdsNewDesign: Boolean? = null
 
-    fun shouldShowFeedNewDesign(context: Context): Boolean {
+    fun shouldShowFeedNewDesignValue(context: Context) :Boolean {
+        return isShowTopAdsNewDesign?: getShouldShowFeedNewDesignValue(context)
+    }
+
+    private fun getShouldShowFeedNewDesignValue(context: Context): Boolean {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
-        return config.getBoolean(RemoteConfigKey.SHOW_SHOPADS_FEED_NEW_DESIGN, true)
+        isShowTopAdsNewDesign = config.getBoolean(RemoteConfigKey.SHOW_SHOPADS_FEED_NEW_DESIGN, true)
+        return isShowTopAdsNewDesign ?: true
     }
 }

@@ -127,7 +127,7 @@ open class TopAdsHeadlineV2ViewHolder(
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
         itemView.layoutParams = params
-        if (TopadsRollenceUtil.shouldShowFeedNewDesign(itemView.context)) {
+        if (TopadsRollenceUtil.shouldShowFeedNewDesignValue(itemView.context)) {
             topadsContainer.displayedChild = VARIANT_EXPERIMENT
             cpmModel.let {
                 topadsPostDynamic.bindData(
