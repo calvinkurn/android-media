@@ -329,6 +329,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             ) {
                 getCatalogMenuDetail()
             }
+            rechargePdpPulsaRecommendationWidget.renderFailRecommendation()
         }
     }
 
