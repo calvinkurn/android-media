@@ -51,7 +51,7 @@
         app:layout_constraintVertical_bias="1"
         app:layout_constraintWidth_percent="0.8"
         app:unify_text_field_clearable="true"
-        app:unify_text_field_counter="24"
+        app:unify_text_field_counter="30"
         app:unify_text_field_input_type="text"
         app:unify_text_field_label_static="true"
         app:unify_text_field_message="@string/play_bro_title_form_instruction"

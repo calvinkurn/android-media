@@ -5,20 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormState
+import com.tokopedia.play.broadcaster.ui.state.PlayTitleFormUiState
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -35,6 +41,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** ViewModel */
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
+    private lateinit var titleSetupViewModel: PlayTitleAndTagsSetupViewModel
 
     /** View */
     private var _binding: FragmentPlayBroadcastPreparationBinding? = null
@@ -51,6 +58,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+//        titleSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayTitleAndTagsSetupViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -128,6 +136,21 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         parentViewModel.observableTitle.observe(viewLifecycleOwner) {
             binding.viewPreparationMenu.isSetTitleChecked(true)
         }
+
+//        titleSetupViewModel.observableUploadEvent.observe(viewLifecycleOwner) {
+//            when (val content = it.peekContent()) {
+////                is NetworkResult.Fail -> onUploadFailed(content.error)
+////                is NetworkResult.Success -> {
+////                    if (!it.hasBeenHandled) onUploadSuccess()
+////                }
+//            }
+//        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            parentViewModel.preparationUiState.collectLatest {
+//                renderTitleFormView(it.titleForm)
+            }
+        }
     }
 
     /** Form */
@@ -172,7 +195,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onTitleSaved(view: TitleFormView, title: String) {
-        TODO("Not yet implemented")
+        binding.formTitle.setLoading(true)
+//        titleSetupViewModel.finishSetup(title)
     }
 
     /** Helper */

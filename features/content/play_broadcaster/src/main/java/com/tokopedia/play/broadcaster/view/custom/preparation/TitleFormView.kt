@@ -2,6 +2,9 @@ package com.tokopedia.play.broadcaster.view.custom.preparation
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
 import android.view.KeyEvent
@@ -56,6 +59,7 @@ class TitleFormView : ConstraintLayout {
                 context, R.color.play_bro_dms_title_form_border
             )
             textFieldTitle.textInputLayout.boxStrokeColor = secondaryColor
+            textFieldTitle.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
             textFieldTitle.editText.setTextColor(whiteColor)
             textFieldTitle.editText.setHintTextColor(secondaryColor)
             textFieldTitle.counterView?.setTextColor(whiteColor)
@@ -74,11 +78,13 @@ class TitleFormView : ConstraintLayout {
 
             textFieldTitle.editText.setOnKeyListener { _, keyCode, event ->
                 if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    mListener?.onTitleSaved(
-                        view = this@TitleFormView,
-                        title = textFieldTitle.editText.text.toString()
-                    )
-                    return@setOnKeyListener true
+                    if(textFieldTitle.editText.text.isNotEmpty()) {
+                        mListener?.onTitleSaved(
+                            view = this@TitleFormView,
+                            title = textFieldTitle.editText.text.toString()
+                        )
+                        return@setOnKeyListener true
+                    }
                 }
                 return@setOnKeyListener false
             }
