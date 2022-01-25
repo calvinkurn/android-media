@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.iconunify.IconUnify
@@ -68,6 +69,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupView(view)
         setupInsets(view)
         setupListener()
+        setupObserver()
+
+        if(parentViewModel.channelTitle.isEmpty()) {
+            /** TODO: show input title form */
+            Toast.makeText(requireContext(), "Input title", Toast.LENGTH_SHORT).show()
+        }
     }
 
     /** Setup */
@@ -93,6 +100,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         ivSwitchCamera.setOnClickListener {
             parentViewModel.switchCamera()
             analytic.clickSwitchCameraOnSetupPage()
+        }
+    }
+
+    private fun setupObserver() {
+        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
+            preparationListView.isSetTitleChecked(true)
         }
     }
 

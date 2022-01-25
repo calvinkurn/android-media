@@ -307,7 +307,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
             _configInfo.value = configUiModel
 
             // create channel when there are no channel exist
-            if (configUiModel.channelType == ChannelType.Unknown) createChannel()
+            /** TODO: move this createChannel() when user input title */
+//            if (configUiModel.channelType == ChannelType.Unknown) createChannel()
 
             // get channel when channel status is paused
             if (configUiModel.channelType == ChannelType.Pause
@@ -318,6 +319,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
                     throw err
                 }
             }
+
+            setChannelTitle("Ini title loh")
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 

@@ -103,4 +103,5 @@
 
     <!-- Preparation -->
     <dimen name="play_bro_livestream_button_border_width">2dp</dimen>
+    <dimen name="play_bro_title_form_loading_size">52dp</dimen>
 </resources>

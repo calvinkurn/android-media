@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N700_68"
+    >
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_close_title_form"
+        android:layout_width="@dimen/play_dp_18"
+        android:layout_height="@dimen/play_dp_18"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CLOSE"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/play_dp_22"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_title_form_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/play_dp_12"
+        android:text="@string/play_bro_title_label"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/ic_close_title_form"
+        app:layout_constraintStart_toEndOf="@id/ic_close_title_form"
+        app:layout_constraintTop_toTopOf="@id/ic_close_title_form"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/text_field_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/gl_title_form_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ic_close_title_form"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintWidth_percent="0.8"
+        app:unify_text_field_clearable="true"
+        app:unify_text_field_counter="60"
+        app:unify_text_field_input_type="text"
+        app:unify_text_field_label_static="true"
+        app:unify_text_field_message="@string/play_bro_pinned_msg_form_instruction"
+        app:unify_text_field_placeholder="@string/play_bro_pinned_msg_form_placeholder"
+        />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_loading_title_form"
+        android:layout_width="@dimen/play_bro_title_form_loading_size"
+        android:layout_height="@dimen/play_bro_title_form_loading_size"
+        app:layout_constraintBottom_toBottomOf="@id/gl_title_form_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ic_close_title_form"
+        app:layout_constraintVertical_bias="1"
+        app:loader_type="circular_white"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
