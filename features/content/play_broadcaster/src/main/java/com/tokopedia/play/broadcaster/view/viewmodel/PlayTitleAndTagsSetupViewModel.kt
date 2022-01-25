@@ -15,6 +15,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.event.Event
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.filterIsInstance
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -92,6 +93,22 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     fun saveTitleAndTags(title: String) {
         setupDataStore.setTitle(title)
         setupDataStore.setTags(addedTags)
+    }
+
+    fun uploadTitle(title: String) {
+        viewModelScope.launchCatchError(dispatcher.main, block = {
+            withContext(dispatcher.io) {
+                delay(2000L)
+            }
+
+            setupDataStore.setTitle(title)
+            /** TODO: uncomment this later */
+//            uploadTitle()
+
+            _observableUploadEvent.value = Event(NetworkResult.Success(Unit))
+        }) {
+            _observableUploadEvent.value = Event(NetworkResult.Fail(it))
+        }
     }
 
     fun finishSetup(title: String) {

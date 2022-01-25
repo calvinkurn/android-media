@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormState
 import com.tokopedia.play.broadcaster.ui.state.PlayTitleFormUiState
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
@@ -24,6 +25,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -47,6 +49,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private var _binding: FragmentPlayBroadcastPreparationBinding? = null
     private val binding get() = _binding!!
 
+    /** Others */
     private val fragmentViewContainer = FragmentViewContainer()
 
     override fun getScreenName(): String = "Play Prepare Page"
@@ -58,7 +61,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-//        titleSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayTitleAndTagsSetupViewModel::class.java)
+        titleSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayTitleAndTagsSetupViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -137,18 +140,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             binding.viewPreparationMenu.isSetTitleChecked(true)
         }
 
-//        titleSetupViewModel.observableUploadEvent.observe(viewLifecycleOwner) {
-//            when (val content = it.peekContent()) {
-////                is NetworkResult.Fail -> onUploadFailed(content.error)
-////                is NetworkResult.Success -> {
-////                    if (!it.hasBeenHandled) onUploadSuccess()
-////                }
-//            }
-//        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            parentViewModel.preparationUiState.collectLatest {
-//                renderTitleFormView(it.titleForm)
+        titleSetupViewModel.observableUploadEvent.observe(viewLifecycleOwner) {
+            when (val content = it.peekContent()) {
+                is NetworkResult.Fail -> {
+                    binding.formTitle.setLoading(false)
+                    showErrorToaster(content.error)
+                }
+                is NetworkResult.Success -> {
+                    if (!it.hasBeenHandled) {
+                        binding.formTitle.setLoading(false)
+                        showTitleForm(false)
+                    }
+                }
             }
         }
     }
@@ -195,12 +198,28 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onTitleSaved(view: TitleFormView, title: String) {
+        hideKeyboard()
         binding.formTitle.setLoading(true)
-//        titleSetupViewModel.finishSetup(title)
+        titleSetupViewModel.uploadTitle(title)
     }
 
     /** Helper */
     private fun showMainComponent(isShow: Boolean) {
         binding.groupPreparationMain.visibility = if(isShow) View.VISIBLE else View.GONE
+    }
+
+    private fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String? = null,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionLabel: String = "",
+    ) {
+        view?.showErrorToaster(
+            err = err,
+            customErrMessage = customErrMessage,
+            className = this::class.java.simpleName,
+            duration = duration,
+            actionLabel = actionLabel,
+        )
     }
 }
