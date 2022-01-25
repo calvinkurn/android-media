@@ -17,6 +17,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.presentation.model.InspirationData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 object MockSearchProductModel {
@@ -57,13 +58,15 @@ object MockSearchProductModel {
 
     fun getInspirationCardViewModel(): InspirationCardDataView {
         return InspirationCardDataView(
+            InspirationData(
                 title = "Coba produk dengan kategori ini :",
                 type = "category",
                 position = 8,
-                optionData = listOf(
-                        getInspirationCardOptionViewModel(1), getInspirationCardOptionViewModel(2),
-                        getInspirationCardOptionViewModel(3), getInspirationCardOptionViewModel(4)
-                )
+                optionCardData = listOf(
+                    getInspirationCardOptionViewModel(1), getInspirationCardOptionViewModel(2),
+                    getInspirationCardOptionViewModel(3), getInspirationCardOptionViewModel(4)
+                ),
+            )
         )
     }
 
