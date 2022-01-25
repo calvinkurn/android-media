@@ -8,9 +8,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
-import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
+import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponImagePreviewUseCase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -24,11 +24,24 @@ class CouponPreviewViewModel @Inject constructor(
     val couponImage: LiveData<Result<Int>>
         get() = _couponImage
 
-    fun previewImage(imageRatio: ImageRatio, coupon: Coupon) {
+    fun previewImage(
+        couponInformation: CouponInformation,
+        couponSettings: CouponSettings,
+        productCount: Int,
+        productImageUrl: String,
+        imageRatio: ImageRatio
+    ) {
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    getCouponImagePreviewUseCase.execute(this, imageRatio, coupon)
+                    getCouponImagePreviewUseCase.execute(
+                        this,
+                        couponInformation,
+                        couponSettings,
+                        productCount,
+                        productImageUrl,
+                        imageRatio
+                    )
                 }
                 _couponImage.value = Success(result)
             },

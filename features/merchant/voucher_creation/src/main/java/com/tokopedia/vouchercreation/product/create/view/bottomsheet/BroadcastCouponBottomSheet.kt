@@ -18,7 +18,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 
 class BroadcastCouponBottomSheet : BottomSheetUnify() {
@@ -30,7 +29,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
             "https://images.tokopedia.net/img/android/campaign/mvc/mvc_voucher.png"
         private const val ZERO: Long = 0
 
-        fun newInstance(coupon: Coupon, freeBroadcastQuota: Int): BroadcastCouponBottomSheet {
+        fun newInstance(coupon: CouponInformation, freeBroadcastQuota: Int): BroadcastCouponBottomSheet {
             val args = Bundle()
             args.putInt(BUNDLE_KEY_FREE_BROADCAST_QUOTA, freeBroadcastQuota)
             args.putSerializable(BUNDLE_KEY_COUPON, coupon)
@@ -43,8 +42,8 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var onBroadCastClickAction: (Coupon) -> Unit = {}
-    private var onShareToSocialMediaAction: (Coupon) -> Unit = {}
+    private var onBroadCastClickAction: (CouponInformation) -> Unit = {}
+    private var onShareToSocialMediaAction: (CouponInformation) -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,7 +66,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView(view: View) {
-        val coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as Coupon
+        val coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as CouponInformation
 
         val imgVoucher = view.findViewById<ImageView>(R.id.imgVoucher)
         imgVoucher?.loadImage(TPD_VOUCHER_IMAGE_URL)
@@ -80,12 +79,12 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         displayCouponPeriod(view, coupon)
     }
 
-    private fun handleShareToSocialVisibility(view: View, coupon: Coupon) {
+    private fun handleShareToSocialVisibility(view: View, coupon: CouponInformation) {
         val layoutShareToSocialMedia: ConstraintLayout =
             view.findViewById(R.id.layoutShareToSocialMedia)
         layoutShareToSocialMedia.setOnClickListener { onShareToSocialMediaAction(coupon) }
 
-        if (coupon.information.target == CouponInformation.Target.SPECIAL) {
+        if (coupon.target == CouponInformation.Target.SPECIAL) {
             layoutShareToSocialMedia.visible()
         } else {
             layoutShareToSocialMedia.gone()
@@ -103,17 +102,17 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun displayCouponPeriod(view: View, coupon: Coupon) {
+    private fun displayCouponPeriod(view: View, coupon: CouponInformation) {
         val voucherPeriodInfoView: Typography = view.findViewById(R.id.tgp_voucher_period_info)
 
-        val startDate = coupon.information.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
-        val startHour = coupon.information.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
-        val endDate = coupon.information.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
-        val endHour = coupon.information.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+        val startDate = coupon.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
+        val startHour = coupon.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+        val endDate = coupon.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
+        val endHour = coupon.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
 
         val period = String.format(
             getString(R.string.placeholder_scheduled_coupon_period),
-            coupon.information.name,
+            coupon.name,
             startDate,
             startHour,
             endDate,
@@ -127,11 +126,11 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         showNow(fm, this::class.java.simpleName)
     }
 
-    fun setOnBroadCastClickListener(action: (Coupon) -> Unit) {
+    fun setOnBroadCastClickListener(action: (CouponInformation) -> Unit) {
         onBroadCastClickAction = action
     }
 
-    fun setOnShareToSocialMediaClickListener(action: (Coupon) -> Unit) {
+    fun setOnShareToSocialMediaClickListener(action: (CouponInformation) -> Unit) {
         onShareToSocialMediaAction = action
     }
 }

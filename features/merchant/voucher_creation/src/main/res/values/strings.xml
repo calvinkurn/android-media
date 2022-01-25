@@ -414,7 +414,9 @@
     <string name="share_to_buyer">Bagikan ke Calon Pembeli</string>
     <string name="broadcast_suggestion">Potensi tingkatkan orderan toko 2x lipat.</string>
     <string name="error_message_create_coupon_product">Yaah, gagal menambahkan Kupon Produk</string>
+    <string name="error_message_update_coupon_product">Yaah, gagal memperbaharui Kupon Produk</string>
     <string name="error_message_create_coupon_description">Kupon kamu gagal ditambahkan. Coba buat ulang atau hubungi Pusat Bantuan.</string>
+    <string name="error_message_update_coupon_description">Kupon kamu gagal diperbaharui. Coba buat ulang atau hubungi Pusat Bantuan.</string>
     <string name="coupon_tnc">Syarat dan Ketentuan Kupon Produk merupakan bagian dari Syarat dan Ketentuan Situs/Aplikasi Tokopedia. Penggunaan Kupon Produk  tunduk pada Syarat dan Ketentuan Situs/Aplikasi, Kebijakan Privasi, dan Syarat dan Ketentuan yang tertulis dibawah ini. Pengguna disarankan membaca dengan seksama karena dapat berdampak kepada hak dan kewajiban pengguna secara hukum.\n\nDengan mendaftar dan/atau menggunakan situs www.tokopedia.com, maka Pengguna dianggap telah membaca, mengerti, memahami dan menyetujui semua isi dalam Syarat dan Ketentuan. Syarat dan Ketentuan ini merupakan bentuk kesepakatan yang dituangkan dalam sebuah perjanjian yang sah antara Pengguna dengan PT Tokopedia. Jika pengguna tidak menyetujui salah satu, sebagian, atau seluruh isi Syarat dan Ketentuan, maka pengguna tidak diperkenankan menggunakan layanan di www.tokopedia.com.</string>
     <string name="image_ratio_tall">3:1</string>
     <string name="image_ratio_square">1:1</string>
@@ -422,6 +424,8 @@
     <string name="coupon_preview">Tampilan Kupon</string>
     <string name="update_coupon_product">Ubah Kupon Produk</string>
     <string name="save_changes">Simpan Perubahan</string>
+    <string name="coupon_updated">Kupon sudah diperbarui.</string>
+    <string name="placeholder_share_coupon_product_wording">Tersedia kupon untuk produk tertentu dari toko %s hanya di \@Tokopedia. Mulai %s sampai %s! %s</string>
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
