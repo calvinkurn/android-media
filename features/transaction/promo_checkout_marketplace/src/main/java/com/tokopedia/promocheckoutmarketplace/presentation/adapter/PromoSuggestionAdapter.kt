@@ -8,11 +8,11 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoSuggestionViewHolder
 
-class PromoSuggestionAdapter(val actionListener: PromoCheckoutSuggestionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PromoSuggestionAdapter(private val actionListener: PromoCheckoutSuggestionListener) : RecyclerView.Adapter<PromoSuggestionViewHolder>() {
 
     var data = ArrayList<PromoSuggestionItemUiModel>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromoSuggestionViewHolder {
         val viewBinding = PromoCheckoutMarketplaceModuleItemPromoSuggestionBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
         return PromoSuggestionViewHolder(viewBinding, actionListener)
     }
@@ -21,8 +21,8 @@ class PromoSuggestionAdapter(val actionListener: PromoCheckoutSuggestionListener
         return data.size
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as PromoSuggestionViewHolder).bindData(data[position])
+    override fun onBindViewHolder(holder: PromoSuggestionViewHolder, position: Int) {
+        holder.bindData(data[position])
     }
 
 }
