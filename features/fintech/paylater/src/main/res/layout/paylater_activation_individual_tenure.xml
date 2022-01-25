@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/unify_space_16"
-    android:layout_marginRight="@dimen/unify_space_16">
+   >
 
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -28,7 +27,7 @@
                 android:text="Cicil 2x Rp6.480.000"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_2" />
+                app:typographyType="heading_4" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/paymentDetailSubHeader"
@@ -37,10 +36,11 @@
                 android:layout_marginLeft="@dimen/unify_space_16"
                 android:layout_marginBottom="@dimen/unify_space_16"
                 android:text="Biaya cicilan 0%"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/paymentDetailHeader"
-                app:typographyType="body_1" />
+                app:typographyType="body_2" />
 
 
             <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
