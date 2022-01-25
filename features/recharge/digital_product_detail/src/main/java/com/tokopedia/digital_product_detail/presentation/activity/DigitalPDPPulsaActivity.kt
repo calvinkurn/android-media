@@ -81,13 +81,7 @@ class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComp
         (toolbar as HeaderUnify).transparentMode = true
     }
 
-    private fun navigateToOrderList() {
-        RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
-    }
-
     companion object {
-        private const val TOOLBAR_ICON_SIZE = 64
-
         const val PARAM_MENU_ID = "menu_id"
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_CLIENT_NUMBER = "client_number"

@@ -28,8 +28,8 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
