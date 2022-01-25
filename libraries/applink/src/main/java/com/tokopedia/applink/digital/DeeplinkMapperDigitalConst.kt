@@ -9,6 +9,16 @@ object DeeplinkMapperDigitalConst {
     const val TEMPLATE_POSTPAID_TELCO = "telcopost"
     const val TEMPLATE_ID_ELECTRONIC_MONEY = "electronicmoney"
 
+    /**
+     * Template Digital PDP Revamp 2022
+     */
+    const val TEMPLATE_PULSA_DIGITAL_PDP = "pulsav2"
+    const val TEMPLATE_PAKET_DATA_DIGITAL_PDP = "paketdatav2"
+    const val TEMPLATE_ROAMING_DIGITAL_PDP = "roamingv2"
+    /**
+     * End Template
+     */
+
     const val MENU_ID_TELCO_PREPAID = 2
     const val MENU_ID_TELCO_POSTPAID = 3
     const val MENU_ID_ELECTRONIC_MONEY = "267"

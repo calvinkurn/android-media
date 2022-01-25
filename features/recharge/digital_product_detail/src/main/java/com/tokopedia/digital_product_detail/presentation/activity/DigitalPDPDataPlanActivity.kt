@@ -10,8 +10,8 @@ import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPData
 
 /**
  * @author by firmanda on 04/01/21
- *
- * access internal applink tokopedia-android-internal://recharge/pdp_paket_data
+ * access applink
+ * access internal applink tokopedia-android-internal://digital/pdp_paket_data
  */
 
 class DigitalPDPDataPlanActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {

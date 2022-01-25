@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_recharge"
+                    android:host="@string/host_digital"
                     android:pathPattern="@string/path_digital_pdp_data_plan"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -36,7 +36,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_recharge"
+                    android:host="@string/host_digital"
                     android:pathPattern="@string/path_digital_pdp_pulsa"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
