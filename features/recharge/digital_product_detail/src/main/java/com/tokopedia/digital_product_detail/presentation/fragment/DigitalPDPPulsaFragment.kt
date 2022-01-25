@@ -216,29 +216,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         })
 
 
-        viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
+        viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
-                    onSuccessDenomGrid(denomData.data)
+                    onSuccessDenomGrid(denomData.data.denomWidgetModel)
+                    onSuccessMCCM(denomData.data.mccmFlashSaleModel)
                 }
 
                 is RechargeNetworkResult.Fail -> {
-                    view?.let {
-                        onFailedDenomGrid()
-                        //TODO add fail
-                    }
+                    onFailedDenomGrid()
+                    onLoadingAndFailMCCM()
                 }
 
                 is RechargeNetworkResult.Loading -> {
                     onShimmeringDenomGrid()
-                }
-            }
-        })
-
-        viewModel.observableMCCMData.observe(viewLifecycleOwner, { mccmData ->
-            when (mccmData) {
-                is RechargeNetworkResult.Success -> {
-                    onSuccessMCCM(mccmData.data)
+                    onLoadingAndFailMCCM()
                 }
             }
         })
@@ -580,6 +572,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.let {
             it.rechargePdpPulsaPromoWidget.show()
             it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
+    }
+
+    private fun onLoadingAndFailMCCM(){
+        binding?.let {
+            it.rechargePdpPulsaPromoWidget.renderFailMCCMGrid()
         }
     }
 

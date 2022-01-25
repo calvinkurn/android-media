@@ -16,6 +16,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -58,13 +59,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val catalogPrefixSelect: LiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>
         get() = _catalogPrefixSelect
 
-    private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
-    val observableDenomData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
-        get() = _observableDenomData
-
-    private val _observableMCCMData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
-    val observableMCCMData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
-        get() = _observableMCCMData
+    private val _observableDenomMCCMData = MutableLiveData<RechargeNetworkResult<DenomMCCMModel>>()
+    val observableDenomMCCMData: LiveData<RechargeNetworkResult<DenomMCCMModel>>
+        get() = _observableDenomMCCMData
 
     private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
     val addToCartResult: LiveData<RechargeNetworkResult<String>>
@@ -85,13 +82,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun getRechargeCatalogInput(menuId: Int, operator: String){
-        _observableDenomData.postValue(RechargeNetworkResult.Loading)
+        _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
         launchCatchError(block = {
             val denomGrid = repo.getDenomGridList(menuId, operator)
-            _observableDenomData.postValue(RechargeNetworkResult.Success(denomGrid.denomWidgetModel))
-            _observableMCCMData.postValue(RechargeNetworkResult.Success(denomGrid.mccmFlashSaleModel))
+            _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomGrid))
         }){
-            _observableDenomData.postValue(RechargeNetworkResult.Fail(it))
+            _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
         }
     }
 
@@ -111,7 +107,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             operatorData = repo.getOperatorList(menuId)
             delay(DELAY_TIME)
-            _catalogPrefixSelect.postValue(RechargeNetworkResult.Success())
+            _catalogPrefixSelect.postValue(RechargeNetworkResult.Success(operatorData))
         }) {
             _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
         }

@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.model.ChannelConfig
-import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.ServerTimeOffsetUtil
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -20,8 +18,6 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.DenomGridAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                        defStyleAttr: Int = 0)
@@ -74,6 +70,10 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
                 renderAdapter(denomGridListener, denomData.listDenomData)
             }
         }
+    }
+
+    fun renderFailMCCMGrid(){
+        widgetRechargeMCCMFlashSaleGridWidget.root.hide()
     }
 
     fun clearSelectedProduct(){
