@@ -43,9 +43,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        app:layout_constraintTop_toTopOf="@id/tvShcRecommendationTitle"
         app:layout_constraintBottom_toBottomOf="@id/tvShcRecommendationTitle"
-        app:layout_constraintStart_toEndOf="@id/tvShcRecommendationTitle"/>
+        app:layout_constraintStart_toEndOf="@id/tvShcRecommendationTitle"
+        app:layout_constraintTop_toTopOf="@id/tvShcRecommendationTitle" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/tickerShcRecommendation"
@@ -131,11 +131,42 @@
         tools:itemCount="3"
         tools:listitem="@layout/shc_item_recommendation" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icShcRefreshRecommendation"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/bg_shc_shadow_circle"
+        android:padding="6dp"
+        app:icon_name="RELOAD"
+        app:layout_constraintBottom_toBottomOf="@+id/tvShcRecommendationLastUpdated"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toTopOf="@+id/tvShcRecommendationLastUpdated" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcRecommendationLastUpdated"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvShcRecommendationCta"
+        app:layout_constraintStart_toEndOf="@+id/icShcRefreshRecommendation"
+        app:layout_constraintTop_toBottomOf="@+id/rvShcRecommendationList"
+        app:layout_constraintVertical_bias="0"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Update terakhir hari ini, 15:00 WIB"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcRecommendationCta"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="12dp"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:background="@android:color/transparent"
         android:ellipsize="end"
@@ -146,8 +177,9 @@
         android:textColor="@color/Unify_G500"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvShcRecommendationLastUpdated"
         app:layout_constraintTop_toBottomOf="@+id/rvShcRecommendationList"
         app:layout_constraintVertical_bias="1.0"
         app:typographyType="body_2"

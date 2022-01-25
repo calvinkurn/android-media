@@ -684,6 +684,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getLineGraphData(listOf(element))
     }
 
+    override fun reloadRecommendationWidget(element: RecommendationWidgetUiModel) {
+        getRecommendationData(listOf(element))
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view

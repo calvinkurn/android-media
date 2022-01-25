@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetRecommendationDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.RecommendationModel
 import com.tokopedia.sellerhomecommon.domain.model.RecommendationProgressModel
@@ -18,7 +19,9 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 06/04/21
  */
 
-class RecommendationMapper @Inject constructor() :
+class RecommendationMapper @Inject constructor(
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
+) : BaseWidgetMapper(lastUpdatedSharedPref),
     BaseResponseMapper<GetRecommendationDataResponse, List<RecommendationDataUiModel>> {
 
     companion object {
@@ -43,7 +46,8 @@ class RecommendationMapper @Inject constructor() :
                 ticker = getTicker(it.data?.ticker),
                 progressLevel = getRecommendationProgress(it.data?.progressLevel),
                 progressBar = getRecommendationProgress(it.data?.progressBar),
-                recommendation = getRecommendation(it.data?.recommendation)
+                recommendation = getRecommendation(it.data?.recommendation),
+                lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache)
             )
         }
     }

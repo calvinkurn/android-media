@@ -1,14 +1,13 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
-import android.view.ViewStub
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.*
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
@@ -16,6 +15,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.RecommendationTickerUiM
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.WidgetRecommendationItemAdapter
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
+import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -67,10 +67,7 @@ class RecommendationViewHolder(
         containerShcRecommendationError.visible()
 
         tvShcRecommendationErrorStateTitle.text = element.title
-        ImageHandler.loadImageWithId(
-            commonErrorStateBinding.imgWidgetOnError,
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        )
+        commonErrorStateBinding.imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
 
         setupTooltip(tvShcRecommendationErrorStateTitle, element)
     }
@@ -113,11 +110,26 @@ class RecommendationViewHolder(
             setupCta(element)
             setTagNotification(element.tag)
             setupTooltip(tvShcRecommendationTitle, element)
+            setupLastUpdatedInfo(element)
 
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendRecommendationImpressionEvent(element)
             }
             listener.showRecommendationWidgetCoachMark(binding.containerShcRecommendation)
+        }
+    }
+
+    private fun setupLastUpdatedInfo(element: RecommendationWidgetUiModel) {
+        with(successStateBinding) {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                tvShcRecommendationLastUpdated.isVisible = true
+                tvShcRecommendationLastUpdated.text = Utils.LastUpdated
+                    .getCopy(root.context, lastUpdated)
+            }
+            icShcRefreshRecommendation.isVisible = element.isFromCache
+            icShcRefreshRecommendation.setOnClickListener {
+                listener.reloadRecommendationWidget(element)
+            }
         }
     }
 
@@ -320,13 +332,6 @@ class RecommendationViewHolder(
         setProgressColor(state)
     }
 
-    private fun View.viewStubInflater(viewStubId: Int): Lazy<View> {
-        return lazy {
-            val viewStub: ViewStub = findViewById(viewStubId)
-            viewStub.inflate()
-        }
-    }
-
     interface Listener : BaseViewHolderListener {
         fun showRecommendationWidgetCoachMark(view: View) {}
 
@@ -339,5 +344,7 @@ class RecommendationViewHolder(
             item: RecommendationItemUiModel
         ) {
         }
+
+        fun reloadRecommendationWidget(element: RecommendationWidgetUiModel) {}
     }
 }
