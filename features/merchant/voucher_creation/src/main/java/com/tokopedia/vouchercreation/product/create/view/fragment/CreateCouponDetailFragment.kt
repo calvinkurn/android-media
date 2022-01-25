@@ -92,7 +92,8 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
 
     private fun observeCouponTargetList() {
         viewModel.couponTargetList.observe(viewLifecycleOwner) {
-            rvTarget?.adapter = CreateCouponTargetAdapter(::onCouponTargetChanged).apply { setData(it) }
+            targetAdapter.setData(it)
+            rvTarget?.requestLayout()
         }
     }
 
@@ -190,6 +191,7 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
 
     private fun setupRecyclerViewTarget() {
         rvTarget?.setRecyclerViewToVertical()
+        rvTarget?.adapter = targetAdapter
     }
 
     private fun setupDateInput() {
