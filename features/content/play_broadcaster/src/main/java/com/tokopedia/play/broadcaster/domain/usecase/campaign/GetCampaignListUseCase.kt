@@ -2,13 +2,10 @@ package com.tokopedia.play.broadcaster.domain.usecase.campaign
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
-import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.AddPinnedMessageResponse
-import com.tokopedia.play.broadcaster.domain.usecase.pinnedmessage.AddPinnedMessageUseCaseQuery
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
