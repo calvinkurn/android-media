@@ -953,7 +953,7 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
             TrackAppUtils.gtmData(
                 BiometricTracker.EVENT_CLICK_BIOMETRIC,
                 BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
-                BiometricTracker.ACTION_CLICK_BIOMETRIC_ACTIVATION,
+                BiometricTracker.ACTION_CLICK_ON_LOGOUT_BIOMETRIC,
                 "${BiometricTracker.EVENT_LABEL_SUCCESS} - logout prompt")
         )
     }
