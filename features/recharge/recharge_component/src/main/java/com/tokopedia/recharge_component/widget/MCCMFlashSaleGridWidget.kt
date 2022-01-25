@@ -48,7 +48,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
                         }
                     })
-                renderAdapter(denomGridListener, denomData.listDenomData, DenomWidgetEnum.MCCM_GRID_TYPE)
+                renderAdapter(denomGridListener, denomData.mainTitle, denomData.listDenomData, DenomWidgetEnum.MCCM_GRID_TYPE)
             }
         }
     }
@@ -71,7 +71,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
                         }
                     })
-                renderAdapter(denomGridListener, denomData.listDenomData, DenomWidgetEnum.FLASH_GRID_TYPE)
+                renderAdapter(denomGridListener, denomData.mainTitle, denomData.listDenomData, DenomWidgetEnum.FLASH_GRID_TYPE)
             }
         }
     }
@@ -83,7 +83,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
-    private fun renderAdapter(denomGridListener: RechargeDenomGridListener, listDenomGrid: List<DenomData>, denomType: DenomWidgetEnum){
+    private fun renderAdapter(denomGridListener: RechargeDenomGridListener, denomListTitle: String, listDenomGrid: List<DenomData>, denomType: DenomWidgetEnum){
         with(widgetRechargeMCCMFlashSaleGridWidget){
             rvMccmGrid.apply {
                 show()
@@ -92,6 +92,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
                 adapterDenomGrid.listener = denomGridListener
                 adapterDenomGrid.selectedProductIndex = null
                 adapterDenomGrid.denomWidgetType = denomType
+                adapterDenomGrid.productTitleList = denomListTitle
                 adapter = adapterDenomGrid
                 layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             }

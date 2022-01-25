@@ -17,6 +17,8 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
 
     var denomWidgetType: DenomWidgetEnum = DenomWidgetEnum.GRID_TYPE
 
+    var productTitleList: String = ""
+
     var listener: RechargeDenomGridListener? = null
 
     override fun getItemCount(): Int = listDenom.size
@@ -35,7 +37,8 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
         return DenomGridViewHolder(this, binding)
     }
 
-    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int, isShowBuyWidget: Boolean) {
+    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+                                    productTitle: String, isShowBuyWidget: Boolean) {
         var isNeedtoShowBuyWidget = isShowBuyWidget
 
         if (selectedProductIndex == null){
@@ -52,7 +55,7 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
             selectedProductIndex = position
             notifyItemChanged(position)
         }
-        listener?.onDenomGridClicked(denomGrid, denomWidgetType, position, isNeedtoShowBuyWidget)
+        listener?.onDenomGridClicked(denomGrid, denomWidgetType, position, productTitleList, isNeedtoShowBuyWidget)
     }
 
     override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {

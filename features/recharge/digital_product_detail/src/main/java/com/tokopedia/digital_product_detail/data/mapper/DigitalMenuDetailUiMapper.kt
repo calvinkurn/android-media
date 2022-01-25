@@ -20,7 +20,9 @@ class DigitalMenuDetailUiMapper @Inject constructor() {
                     imageUrl = it.iconUrl,
                     title = if (it.description.isEmpty()) it.clientNumber else it.description,
                     price = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.productPrice, false),
-                    appUrl = it.applink
+                    appUrl = it.applink,
+                    id = it.productId.toString(),
+                    categoryId = it.categoryId.toString()
                 )
             },
             tickers = data.tickers,

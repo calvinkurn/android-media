@@ -129,7 +129,7 @@ class DenomGridViewHolder (
             }
 
             root.setOnClickListener {
-                denomGridListener.onDenomGridClicked(denomGrid, denomType, position, true)
+                denomGridListener.onDenomGridClicked(denomGrid, denomType, position, "",true)
             }
 
             root.addOnImpressionListener(denomGrid, {

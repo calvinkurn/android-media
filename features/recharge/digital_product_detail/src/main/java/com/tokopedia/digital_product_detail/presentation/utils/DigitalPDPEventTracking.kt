@@ -10,6 +10,7 @@ interface DigitalPDPEventTracking {
             const val BUSINESS_UNIT = "businessUnit"
             const val BUSINESS_UNIT_RECHARGE = "recharge"
             const val ITEMS = "items"
+            const val ITEM_LIST = "item_list"
 
             const val INDEX = "index"
             const val ITEM_BRAND = "item_brand"
