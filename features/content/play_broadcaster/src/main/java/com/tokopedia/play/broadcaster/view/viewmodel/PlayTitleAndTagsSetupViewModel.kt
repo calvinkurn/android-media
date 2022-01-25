@@ -97,13 +97,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     fun uploadTitle(title: String) {
         viewModelScope.launchCatchError(dispatcher.main, block = {
-            withContext(dispatcher.io) {
-                delay(2000L)
-            }
-
             setupDataStore.setTitle(title)
-            /** TODO: uncomment this later */
-//            uploadTitle()
+            uploadTitle()
 
             _observableUploadEvent.value = Event(NetworkResult.Success(Unit))
         }) {

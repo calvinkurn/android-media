@@ -334,7 +334,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
             // get channel when channel status is paused
             if (configUiModel.channelType == ChannelType.Pause
                     // also when complete draft is true
-                    || configUiModel.channelType == ChannelType.CompleteDraft) {
+                    || configUiModel.channelType == ChannelType.CompleteDraft
+                    || configUiModel.channelType == ChannelType.Draft) {
                 val err = getChannelById(configUiModel.channelId)
                 if (err != null) {
                     throw err
