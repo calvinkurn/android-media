@@ -12,17 +12,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -75,7 +74,7 @@ class TopAdsImageView : AppCompatImageView {
     fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "", productID: String = "", page:String = "") {
         initViewModel()
         val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
-        topAdsImageViewViewModel.getImageData(queryParams)
+        topAdsImageViewViewModel.getImageData(queryParams, getIrisSessionId())
         topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -89,6 +88,10 @@ class TopAdsImageView : AppCompatImageView {
             }
 
         })
+    }
+
+    private fun getIrisSessionId(): String {
+        return IrisSession(context).getSessionId()
     }
 
 

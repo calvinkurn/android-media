@@ -19,8 +19,8 @@ private const val PAGE = "page"
 class TopAdsImageViewUseCase constructor(private val userId: String,
                                          private val repository: TopAdsRepository) {
 
-    suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
-        return repository.getImageData(queryParams)
+    suspend fun getImageData(queryParams: MutableMap<String, Any>, sessionId: String = ""): ArrayList<TopAdsImageViewModel> {
+        return repository.getImageData(queryParams, sessionId)
     }
 
     fun getQueryMap(query: String, source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String, productID: String = "", page: String = ""): MutableMap<String, Any> {

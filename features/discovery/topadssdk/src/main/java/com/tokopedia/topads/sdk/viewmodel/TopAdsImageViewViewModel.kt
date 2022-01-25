@@ -26,10 +26,10 @@ class TopAdsImageViewViewModel constructor(application: Application) :AndroidVie
     private var useCase: TopAdsImageViewUseCase =
             TopAdsImageViewUseCase(UserSession(application.applicationContext).userId, TopAdsRepository())
 
-    fun getImageData(queryParams: MutableMap<String, Any>) {
+    fun getImageData(queryParams: MutableMap<String, Any>, sessionId: String) {
         launchCatchError(
                 block = {
-                    response.postValue(Success(useCase.getImageData(queryParams)))
+                    response.postValue(Success(useCase.getImageData(queryParams, sessionId)))
                 },
                 onError = {
                     response.postValue(Fail(it))
