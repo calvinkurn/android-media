@@ -675,7 +675,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         spannableString.setSpan(
                             cs,
                             0,
-                            caption.author.name.length - 1,
+                            MethodChecker.fromHtml(caption.author.name).length - 1,
                             Spannable.SPAN_INCLUSIVE_INCLUSIVE
                         )
                         captionText.text = spannableString
@@ -705,7 +705,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             spannableString.setSpan(
                 cs,
                 0,
-                caption.author.name.length - 1,
+                MethodChecker.fromHtml(caption.author.name).length - 1,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
             )
             captionText.text = spannableString
@@ -886,7 +886,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     RouteManager.route(context,feedMedia.appLink)
                                     listener?.onClickSekSekarang(feedXCard.id,feedXCard.shopId, TYPE_TOPADS_HEADLINE_NEW,feedXCard.followers.isFollowed, positionInFeed, feedXCard)
                                 }
-                                if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_CLEAN) {
                                     textViewPrice.hide()
                                     textViewSlashedPrice.hide()
                                     labelDiscount.hide()
@@ -916,37 +915,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             ConstraintSet.BOTTOM
                                     )
                                     constraintSet.applyTo(topAdsCard)
-                                } else if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_INFO) {
-                                    val prioOne = feedMedia.slashedPrice.isNotEmpty()
-                                    val prioTwo = feedMedia.cashBackFmt.isNotEmpty()
 
-                                    topAdsProductName.weightType = Typography.REGULAR
-                                    topAdsProductName.displayTextOrHide(feedMedia.productName)
-                                    textViewPrice.displayTextOrHide(feedMedia.price)
-                                    if ((prioOne && prioTwo) || prioOne) {
-                                        textViewSlashedPrice.show()
-                                        textViewSlashedPrice.text = feedMedia.slashedPrice
-                                        textViewSlashedPrice.paintFlags = textViewSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-
-                                        if (feedMedia.discountPercentage.isNotEmpty()) {
-                                            labelDiscount.show()
-                                            labelDiscount.text = feedMedia.discountPercentage
-                                        } else {
-                                            labelDiscount.hide()
-                                        }
-                                        labelCashback.hide()
-                                    }
-                                    else {
-                                        if (prioTwo) {
-                                            labelCashback.show()
-                                            labelCashback.text = feedMedia.cashBackFmt
-                                        } else {
-                                            textViewSlashedPrice.hide()
-                                            labelDiscount.hide()
-                                            labelCashback.hide()
-                                        }
-                                    }
-                                }
                             }
 
                             doOnLayout {

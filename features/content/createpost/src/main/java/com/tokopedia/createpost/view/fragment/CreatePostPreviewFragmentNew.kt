@@ -16,18 +16,18 @@ import androidx.fragment.app.Fragment
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
-import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
-import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
+import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.posttag.TagViewProvider
-import com.tokopedia.createpost.view.viewmodel.*
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
@@ -668,13 +668,15 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val tagsAlreadyAdded = createPostModel.completeImageList[currentImagePos].tags
         val productsAdded = createPostModel.completeImageList[currentImagePos].products
         var isAdded = false
-        val tagToBeAdded = tagsAlreadyAdded[tagsAlreadyAdded.size-1]
-        if (productsAdded.size > 0){
-            productsAdded.forEachIndexed { index, relatedProductItem ->
-                if (relatedProductItem.id == product.id) {
-                    isAdded = true
-                    tagsAlreadyAdded[index] = tagToBeAdded
-                    tagsAlreadyAdded[index].tagIndex = index
+        val tagToBeAdded = tagsAlreadyAdded.lastOrNull()
+        tagToBeAdded?.let {
+            if (productsAdded.size > 0) {
+                productsAdded.forEachIndexed { index, relatedProductItem ->
+                    if (relatedProductItem.id == product.id) {
+                        isAdded = true
+                        tagsAlreadyAdded[index] = tagToBeAdded
+                        tagsAlreadyAdded[index].tagIndex = index
+                    }
                 }
             }
         }
