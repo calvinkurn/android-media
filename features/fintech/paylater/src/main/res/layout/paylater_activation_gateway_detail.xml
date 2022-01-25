@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/gatewayImg"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/subheaderGatewayDetail"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/getwayBrandName" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/getwayBrandName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:text="GopayLater Cicil"
+        app:layout_constraintLeft_toRightOf="@id/gatewayImg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/subheaderGateway"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Limit tersedia Rp15.000.000"
+        app:layout_constraintLeft_toLeftOf="@id/getwayBrandName"
+        app:layout_constraintTop_toBottomOf="@id/getwayBrandName"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/subheaderGatewayDetail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Jatuh tempo pertama 35 hari lagi (1 Feb 2021)"
+        app:layout_constraintLeft_toLeftOf="@id/getwayBrandName"
+        app:layout_constraintRight_toLeftOf="@id/changePayLaterPartner"
+        app:layout_constraintTop_toBottomOf="@id/subheaderGateway"
+        app:typographyType="small"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/changePayLaterPartner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ganti"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/subheaderGateway"
+        app:typographyWeight="reguler"
+
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerTenureDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintTop_toBottomOf="@id/subheaderGatewayDetail" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/additionalDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:text="Ongkir dan asuransi akan dihitung saat Pembayaran."
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recyclerTenureDetail"
+        app:typographyType="body_2" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

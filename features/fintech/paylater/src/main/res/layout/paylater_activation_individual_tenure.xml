@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/unify_space_16"
+    android:layout_marginRight="@dimen/unify_space_16">
+
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:card_type="border"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/paymentDetailHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="Cicil 2x Rp6.480.000"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/paymentDetailSubHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                android:text="Biaya cicilan 0%"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/paymentDetailHeader"
+                app:typographyType="body_1" />
+
+
+            <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/unify_space_16"
+                app:bold="true"
+                app:layout_constraintBottom_toBottomOf="@id/paymentDetailSubHeader"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/paymentDetailHeader" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</LinearLayout>
