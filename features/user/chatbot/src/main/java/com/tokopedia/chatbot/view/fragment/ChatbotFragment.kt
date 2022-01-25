@@ -176,6 +176,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private lateinit var sendButton : ImageView
     private var isSendButtonActivated : Boolean = true
     private var isFloatingSendButton: Boolean = false
+    private var isFloatingInvoiceCancelled : Boolean = false
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -305,6 +306,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         invoiceCancel = view.findViewById(R.id.iv_cross)
         sendButton = view.findViewById(R.id.send_but)
 
+        isFloatingInvoiceCancelled = false
         setChatBackground()
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
         return view
@@ -363,6 +365,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 invoiceCancel.setOnClickListener {
                     float_chat_item.visibility = View.GONE
                     isAttached = false
+                    isFloatingInvoiceCancelled = true
                 }
                 if (isFloatingSendButton) {
 
@@ -413,17 +416,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         sendButton.setImageResource(R.drawable.ic_chatbot_send)
         replyEditText.removeTextChangedListener(textWatcher)
 
-        val attachInvoiceSingleViewModel = createAttachInvoiceSingleViewModel()
-        var invoice: InvoiceLinkPojo =
-            AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
-                attachInvoiceSingleViewModel
+        if(!isFloatingInvoiceCancelled) {
+
+            val attachInvoiceSingleViewModel = createAttachInvoiceSingleViewModel()
+            var invoice: InvoiceLinkPojo =
+                AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
+                    attachInvoiceSingleViewModel
+                )
+            val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
+            getViewState()?.onShowInvoiceToChat(generatedInvoice)
+            presenter.sendInvoiceAttachment(
+                messageId, invoice, generatedInvoice.startTime,
+                opponentId, isArticleEntry, hashMap.get("used_by").toBlankOrString()
             )
-        val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
-        getViewState()?.onShowInvoiceToChat(generatedInvoice)
-        presenter.sendInvoiceAttachment(
-            messageId, invoice, generatedInvoice.startTime,
-            opponentId, isArticleEntry, hashMap.get("used_by").toBlankOrString()
-        )
+        }
 
         val startTime = SendableUiModel.generateStartTime()
         val msg = replyEditText.text.toString()
