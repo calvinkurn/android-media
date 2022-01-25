@@ -79,6 +79,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvPostList" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierShcPostList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="pageControlShcPostPager, btnShcPostEmpty" />
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icShcRefreshPost"
         android:layout_width="26dp"
@@ -96,7 +103,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:textColor="@color/Unify_N700_68"
         android:textStyle="italic"
@@ -105,10 +112,11 @@
         app:layout_constraintEnd_toStartOf="@+id/tvPostListSeeDetails"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/icShcRefreshPost"
-        app:layout_constraintTop_toBottomOf="@+id/pageControlShcPostPager"
+        app:layout_constraintTop_toBottomOf="@+id/barrierShcPostList"
         app:layout_constraintVertical_bias="0"
         app:typographyType="small"
         app:typographyWeight="reguler"
+        tools:layout_constraintTop_toBottomOf="@+id/pageControlShcPostPager"
         tools:text="Update terakhir hari ini, 15:00 WIB"
         tools:visibility="visible" />
 
