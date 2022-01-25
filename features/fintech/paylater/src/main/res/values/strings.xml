@@ -74,5 +74,8 @@
     <string name="pay_later_connect_gopay">Sambungin Gojek dulu, ya</string>
     <string name="paylater_to_use_gopay">Buat pakai GoPayLater Cicil, kamu perlu sambungin akun Gojek ke Tokopedia dulu. Cuma sebentar, kok!</string>
     <string name="paylater_gopay_connect_account">Sambungin Akun</string>
+    <string name="activation_onclick_checkout">Bela Langsung</string>
+    <string name="activation_paylater_breakdown">Lihat Rincian</string>
+    <string name="paylater_activation_change_variant">Ganti Varian</string>
 
 </resources>
