@@ -21,6 +21,7 @@ object DateTimeUtils {
 
     const val DASH_DATE_FORMAT = "yyyy-MM-dd"
     const val DATE_FORMAT = "dd MMM yyyy"
+    const val DATE_FORMAT_DAY_MONTH = "dd MMM"
     const val HOUR_FORMAT = "HH:mm"
 
     const val EXTRA_HOUR = 3
