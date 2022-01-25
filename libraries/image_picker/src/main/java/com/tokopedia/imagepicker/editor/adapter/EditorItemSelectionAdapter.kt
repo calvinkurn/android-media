@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker.editor.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +10,14 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker.R
-import com.tokopedia.imagepicker.editor.data.ItemSelection
-import com.tokopedia.imagepicker.videorecorder.utils.clear
+import com.tokopedia.imagepicker.editor.data.entity.ItemSelection
 import com.tokopedia.imagepicker.videorecorder.utils.hide
 import com.tokopedia.imagepicker.videorecorder.utils.show
 import com.tokopedia.imagepicker.videorecorder.utils.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 
+@SuppressLint("NotifyDataSetChanged")
 class EditorItemSelectionAdapter constructor(
     val items: MutableList<ItemSelection> = mutableListOf(),
     private var listener: EditorItemSelectionListener? = null
@@ -36,7 +37,8 @@ class EditorItemSelectionAdapter constructor(
         holder.bind(item)
 
         holder.itemView.setOnClickListener {
-            onItemSelected(item, position)
+            listener?.onItemSelected(position, item.placeholderBitmap, item.itemType)
+            onItemSelected(position)
         }
     }
 
@@ -61,14 +63,13 @@ class EditorItemSelectionAdapter constructor(
         notifyDataSetChanged()
     }
 
-    private fun onItemSelected(item: ItemSelection, position: Int) {
+    fun onItemSelected(position: Int) {
         if (position < 0) return
 
         items[selectedPosition].isSelected = false
         items[position].isSelected = true
         selectedPosition = position
 
-        item.placeholderBitmap?.let { bitmap -> listener?.onItemSelected(bitmap, item.itemType) }
         notifyDataSetChanged()
     }
 
@@ -93,13 +94,23 @@ class EditorItemSelectionAdapter constructor(
             if (item.isSelected) viewSelection.show() else viewSelection.hide()
 
             txtItem.text = item.name
-            txtItem.visibility = View.GONE
 
-            imgItemSelection.loadImageRounded(
-                item.preview,
-                radius.toFloat()
-            ) {
-                centerCrop()
+            if (item.name.isNotEmpty() && !item.isSingleLabel) {
+                txtItem.visibility = View.VISIBLE
+            } else {
+                txtItem.visibility = View.GONE
+            }
+
+            if (item.preview.isNotEmpty()) {
+                imgItemSelection.loadImage(item.preview) {
+                    setRoundedRadius(radius.toFloat())
+                    centerCrop()
+                }
+            } else {
+                imgItemSelection.loadImage(item.previewWithResId) {
+                    setRoundedRadius(radius.toFloat())
+                    centerCrop()
+                }
             }
 
             // visible the placeholder bitmap by bitmap or resourceId
@@ -141,7 +152,7 @@ class EditorItemSelectionAdapter constructor(
     }
 
     interface EditorItemSelectionListener {
-        fun onItemSelected(bitmap: Bitmap, type: Int)
+        fun onItemSelected(position: Int, bitmap: Bitmap?, type: Int)
     }
 
 }

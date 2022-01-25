@@ -55,6 +55,9 @@ class SuggestionFragment :
     var suggestionTracking: SuggestionTracking? = null
         @Inject set
 
+    override val className: String
+        get() = activity?.javaClass?.name ?: ""
+
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val suggestionTypeFactory = SuggestionAdapterTypeFactory(
         suggestionListener = this,

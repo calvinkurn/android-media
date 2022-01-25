@@ -24,6 +24,7 @@
     <string name="action_add">Tambah</string>
     <string name="action_done">Selesai</string>
     <string name="action_save">Simpan</string>
+    <string name="action_oke">Oke</string>
 
     <!-- add edit product photo -->
     <string name="add_product_photo_header">Foto Produk</string>
@@ -291,25 +292,32 @@
     <string name="action_variant_save">Simpan</string>
     <string name="action_variant_add">Tambah</string>
     <string name="action_variant_add_button">Tambah %1$s Lain</string>
+    <string name="action_variant_add_button_nodata">Tambah %1$s</string>
     <string name="action_variant_delete">Hapus</string>
     <string name="action_clear_sizechart">Hapus</string>
     <string name="action_replace_sizechart">Ubah Foto</string>
     <string name="action_edit_sizechart">Edit Foto</string>
     <string name="action_pick_main_variant">Pilih Varian Utama</string>
-    <string name="action_confirm_cancellation">Ya, batalkan</string>
-    <string name="action_cancel_cancellation">Oh, jangan</string>
+    <string name="action_confirm_cancellation">Ya, Batal</string>
+    <string name="action_cancel_cancellation">Tetap Gunakan</string>
     <string name="action_variant_delete_all_negative">Batal</string>
     <string name="action_variant_delete_all_positive">Ya, Hapus</string>
     <string name="action_confirm_replacement">Ya, Ganti</string>
     <string name="action_cancel_replacement">Oh, Jangan</string>
+    <string name="action_confirm_replace_variant_type">Ya, Ubah</string>
     <string name="action_confirm_exit">Ya</string>
     <string name="action_cancel_exit">Batal</string>
+    <string name="action_variant_custom_add">Buat Tipe Varian</string>
+    <string name="action_variant_custom_edit">Atur Varian</string>
+    <string name="action_variant_custom_type_add">Tambah Varian</string>
+    <string name="action_variant_custom_type_edit">Simpan Varian</string>
     <string name="label_variant_type">Tipe Varian</string>
-    <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian.</string>
+    <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian produk.</string>
     <string name="label_variant_photo">Foto Varian</string>
     <string name="label_variant_sizechart">Panduan Ukuran</string>
     <string name="label_variant_sizechart_description">Tambah panduan ukuran produk dalam format JPG atau PNG.</string>
     <string name="label_variant_choose">Pilih</string>
+    <string name="label_variant_custom_input_title">Nama %s</string>
     <string name="label_variant_custom_input_message">Tulis nama varian yang kamu inginkan.</string>
     <string name="label_variant_sizechart_edit_description">Klik gambar jika ingin ubah panduan.</string>
     <string name="label_manage_at_once">Atur Sekaligus</string>
@@ -331,10 +339,10 @@
     <string name="label_variant_main_select_bottom_sheet_title">Pilih satu varian utama</string>
     <string name="label_question_mark">\?</string>
     <string name="label_cancel">Batalkan</string>
-    <string name="label_data">Data</string>
-    <string name="label_variant_cancellation_message">akan hilang jika kamu tidak jadi pilih.</string>
+    <string name="label_cancel_use">Batal gunakan</string>
+    <string name="label_variant_cancellation_message">Tipe varian %1s dan semua pilihannya akan hilang.</string>
     <string name="label_variant_delete_all_title">Hapus semua varian?</string>
-    <string name="label_variant_delete_all_description">Dengan hapus semua varian, data yang kamu sudah isi akan hilang.</string>
+    <string name="label_variant_delete_all_description">Semua varian yang kamu masukkan akan hilang.</string>
     <string name="label_variant_wholesale_warning">Harga varian tidak bisa kamu ubah karena harga grosir sedang aktif.</string>
     <string name="label_variant_max">Max</string>
     <string name="label_variant_exit_dialog_title">Yakin ingin keluar?</string>
@@ -343,9 +351,31 @@
     <string name="label_variant_to">ke</string>
     <string name="label_variant_data">Data</string>
     <string name="label_variant_replacement_notice">akan hilang jika kamu ganti ke</string>
+    <string name="label_variant_type_name">Nama tipe varian</string>
+    <string name="label_variant_name_recommendation">Rekomendasi Tokopedia</string>
+    <string name="label_variant_custom_manage">Hapus atau ubah nama tipe varian yang pernah kamu buat.</string>
+    <string name="label_variant_custom_input_bottom_sheet_title_add">Buat tipe varian</string>
+    <string name="label_variant_custom_input_bottom_sheet_title_edit">Ubah tipe varian</string>
+    <string name="label_variant_custom_manage_bottom_sheet_title">Atur varian</string>
+    <string name="label_variant_value_empty">Belum ada %1s yang bisa dipilih. Tambah pilihan %2s dulu, ya.</string>
+    <string name="label_cvt_tips">Beri nama varian atau pakai varian dari kategori lain. Kamu bisa buat maksimum 2 varian, ya.</string>
+    <string name="label_cvt_tips_title">Sekarang kamu bisa buat varian sendiri</string>
+    <string name="label_cvt_edit_conf_title">Ubah nama tipe varian?</string>
+    <string name="label_cvt_delete_conf_title">Hapus tipe varian %1s?</string>
+    <string name="label_cvt_edit_conf_desc">Nama tipe varian akan berubah dari %1s menjadi %2s dan semua pilihan dari varian %3s akan hilang.</string>
+    <string name="label_cvt_delete_conf_desc">Tipe varian ini dan semua pilihannya akan hilang.</string>
+    <string name="label_cvt_message_variant_added">Tipe varian berhasil dibuat.</string>
+    <string name="label_cvt_message_variant_deleted">Tipe varian berhasil dihapus.</string>
+    <string name="label_cvt_message_variant_edited">Nama tipe varian berhasil diubah.</string>
+    <string name="label_cvt_message_variant_cannot_add">Kamu sudah buat 2 tipe varian tambahan, nih.</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
-    
+    <string name="error_illegal_variant_name">Nama berisi kata terlarang. Coba nama lain, ya.</string>
+    <string name="error_symbol_variant_name"><![CDATA[Hanya bisa diisi dengan huruf a-z, angka 0-9, dan simbol / - % _ * ! # $ & @ ( )]]></string>
+    <string name="error_used_variant_name">Nama sudah digunakan. Coba nama lain, ya.</string>
+    <string name="error_min_char_variant_name">Minimum 3 karakter, ya.</string>
+    <string name="error_cannot_change_variant_recommendation">Nama varian dari rekomendasi Tokopedia tidak bisa diubah, ya.</string>
+
     <!-- Admin Revamp -->
     <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
     <string name="ticker_add_product_main_location_desc">Produk akan ditambahkan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>

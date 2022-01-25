@@ -1,7 +1,8 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -19,12 +20,18 @@ class WishlistV2RecommendationCarouselViewHolder(private val binding: WishlistV2
         fun bind(element: WishlistV2TypeLayoutData, adapterPosition: Int, isShowCheckbox: Boolean) {
             if (isShowCheckbox) {
                 binding.root.gone()
-                val params = LinearLayout.LayoutParams(0, 0)
+                val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                    height = 0
+                    width = 0
+                }
                 binding.root.layoutParams = params
             } else {
                 binding.root.visible()
-                val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT)
+                val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    isFullSpan = true
+                }
                 binding.root.layoutParams = params
                 if (element.dataObject is WishlistV2RecommendationDataModel) {
                     val data = element.dataObject.recommendationProductCardModelData

@@ -207,8 +207,8 @@ object AccountConstants {
         const val SETTING_ABOUT_TOKOPEDIA = 47
         const val SETTING_QUALITY_SETTING = 49
         const val SETTING_DARK_MODE = 50
-        const val SETTING_VIEW_ALL_BALANCE = 51
         const val SETTING_LINK_ACCOUNT = 51
+        const val SETTING_VIEW_ALL_BALANCE = 52
     }
 
     object KEY {

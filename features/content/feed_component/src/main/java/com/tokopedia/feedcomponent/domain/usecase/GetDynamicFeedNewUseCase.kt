@@ -371,6 +371,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           mods
         }
         publishedAt
+        deletable
         mods
       }
       ... on FeedXCardPlaceholder {

@@ -36,7 +36,7 @@
             app:layout_constraintDimensionRatio="1:1"
             android:background="@drawable/setting_image_circular"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="@dimen/setting_shop_badge_border_os_margin"
@@ -44,6 +44,7 @@
             app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
             app:layout_constraintStart_toStartOf="@id/badgeBorder"
             app:layout_constraintEnd_toEndOf="@id/badgeBorder"
+            app:unify_image_corner_radius="0"
             app:srcCompat="@drawable/ic_official_store"/>
 
         <androidx.constraintlayout.widget.Guideline
