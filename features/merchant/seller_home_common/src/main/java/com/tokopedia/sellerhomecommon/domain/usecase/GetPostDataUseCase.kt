@@ -69,7 +69,8 @@ class GetPostDataUseCase(
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetPostDataResponse>()
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
-            return postMapper.mapRemoteDataToUiData(data, isFromCache, dataKeys)
+            postMapper.setDataKeys(dataKeys)
+            return postMapper.mapRemoteDataToUiData(data, isFromCache)
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }

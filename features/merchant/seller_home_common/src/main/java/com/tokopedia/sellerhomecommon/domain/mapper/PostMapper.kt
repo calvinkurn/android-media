@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.PostItemDataModel
@@ -14,37 +15,20 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 21/05/20
  */
 
-class PostMapper @Inject constructor() :
+class PostMapper @Inject constructor(
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
+) : BaseWidgetMapper(lastUpdatedSharedPref),
     BaseResponseMapper<GetPostDataResponse, List<PostListDataUiModel>> {
 
     companion object {
         private const val MAX_ITEM_PER_PAGE = 3
     }
 
+    private var dataKeys: List<DataKeyModel> = emptyList()
+
     override fun mapRemoteDataToUiData(
         response: GetPostDataResponse,
         isFromCache: Boolean
-    ): List<PostListDataUiModel> {
-        return response.getPostWidgetData?.data.orEmpty().map {
-            PostListDataUiModel(
-                dataKey = it.dataKey.orEmpty(),
-                postPagers = getPostPagers(it.list.orEmpty(), it.emphasizeType, MAX_ITEM_PER_PAGE),
-                cta = PostCtaDataUiModel(
-                    text = it.cta?.text.orEmpty(),
-                    appLink = it.cta?.appLink.orEmpty()
-                ),
-                error = it.error.orEmpty(),
-                isFromCache = isFromCache,
-                showWidget = it.showWidget.orFalse(),
-                emphasizeType = it.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED
-            )
-        }
-    }
-
-    fun mapRemoteDataToUiData(
-        response: GetPostDataResponse,
-        isFromCache: Boolean,
-        dataKeys: List<DataKeyModel>
     ): List<PostListDataUiModel> {
         return response.getPostWidgetData?.data.orEmpty().mapIndexed { i, post ->
             val maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ITEM_PER_PAGE
@@ -58,9 +42,14 @@ class PostMapper @Inject constructor() :
                 error = post.error.orEmpty(),
                 isFromCache = isFromCache,
                 showWidget = post.showWidget.orFalse(),
-                emphasizeType = post.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED
+                emphasizeType = post.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED,
+                lastUpdated = getLastUpdatedMillis(post.dataKey.orEmpty(), isFromCache)
             )
         }
+    }
+
+    fun setDataKeys(dataKeys: List<DataKeyModel>) {
+        this.dataKeys = dataKeys
     }
 
     private fun getPostPagers(
