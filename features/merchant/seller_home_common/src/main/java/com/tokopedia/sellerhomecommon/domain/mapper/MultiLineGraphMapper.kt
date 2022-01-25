@@ -12,7 +12,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiMod
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.XYAxisUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.YAxisUiModel
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -20,8 +19,9 @@ import javax.inject.Inject
  */
 
 class MultiLineGraphMapper @Inject constructor(
-    private val lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
-) : BaseResponseMapper<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>> {
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
+) : BaseWidgetMapper(lastUpdatedSharedPref),
+    BaseResponseMapper<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>> {
 
     override fun mapRemoteDataToUiData(
         response: GetMultiLineGraphResponse,
@@ -116,19 +116,5 @@ class MultiLineGraphMapper @Inject constructor(
         } catch (e: IllegalArgumentException) {
             this?.toList().orEmpty()
         }
-    }
-
-    private fun getLastUpdatedMillis(dataKey: String, isFromCache: Boolean): Long {
-        val nowMillis = Date().time
-        return if (isFromCache) {
-            lastUpdatedSharedPref.getLastUpdateInfoInMillis(dataKey, nowMillis)
-        } else {
-            saveLastUpdated(dataKey, nowMillis)
-            nowMillis
-        }
-    }
-
-    private fun saveLastUpdated(dataKey: String, timeInMillis: Long) {
-        lastUpdatedSharedPref.saveLastUpdateInfo(dataKey, timeInMillis)
     }
 }

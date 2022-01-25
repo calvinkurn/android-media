@@ -18,6 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/shc_large_widget_height">
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineShcLineGraphStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="12dp" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvLineGraphTitle"
                 android:layout_width="wrap_content"
@@ -88,37 +95,61 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvLineGraphSubValue"
                 app:layout_constraintVertical_bias="0.0" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierShcMultiLineGraph"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="top"
+                app:constraint_referenced_ids="tvShcLineLastUpdated,btnLineGraphMore" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icShcRefreshLineGraph"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:background="@drawable/bg_shc_shadow_circle"
+                android:padding="6dp"
+                app:icon_name="RELOAD"
+                app:layout_constraintBottom_toBottomOf="@+id/tvShcLineLastUpdated"
+                app:layout_constraintStart_toStartOf="@+id/guidelineShcLineGraphStart"
+                app:layout_constraintTop_toTopOf="@+id/tvShcLineLastUpdated" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvShcLineLastUpdated"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="@color/Unify_N700_68"
+                android:textStyle="italic"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnLineGraphMore"
+                app:layout_constraintStart_toEndOf="@+id/icShcRefreshLineGraph"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="Update terakhir hari ini, 15:00 WIB"
+                tools:visibility="visible" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btnLineGraphMore"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="@dimen/layout_lvl2"
                 android:gravity="end"
                 android:paddingStart="@dimen/layout_lvl0"
                 android:paddingEnd="@dimen/spacing_lvl2"
                 android:textColor="@color/Unify_G500"
-                android:textSize="@dimen/fontSize_lvl3"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnLineGraphNext"
-                app:layout_constraintStart_toStartOf="parent"
-                app:typographyType="body_2"
-                app:typographyWeight="reguler" />
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/btnLineGraphNext"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@id/btnLineGraphMore"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/btnLineGraphMore"
-                app:srcCompat="@drawable/ic_arrow_right_default" />
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                tools:text="Selengkapnya"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/shcLineGraphErrorState"
