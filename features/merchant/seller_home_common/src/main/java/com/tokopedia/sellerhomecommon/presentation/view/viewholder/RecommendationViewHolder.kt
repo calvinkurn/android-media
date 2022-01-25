@@ -33,6 +33,10 @@ class RecommendationViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_recommendation_widget
+        private const val DIMEN_8_DP = 8
+        private const val DIMEN_12_DP = 12
+        private const val DIMEN_16_DP = 16
+        private const val DIMEN_20_DP = 20
     }
 
     private val binding by lazy { ShcRecommendationWidgetBinding.bind(itemView) }
@@ -257,6 +261,7 @@ class RecommendationViewHolder(
                 )
                 tvShcRecommendationHeaderItem.text = data.title
 
+                val margin8dp = root.context.dpToPx(DIMEN_8_DP).toInt()
                 tvShcRecommendationHeaderItem.setOnClickListener {
                     if (rvShcRecommendationList.isVisible) {
                         rvShcRecommendationList.gone()
@@ -272,10 +277,10 @@ class RecommendationViewHolder(
                             horLineShcShopScore2.visible()
                         }
 
-                        val margin = root.context.resources.getDimensionPixelSize(
-                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl2
-                        )
-                        tvShcRecommendationCta.setMargin(0, margin, 0, margin)
+                        val margin = root.context.dpToPx(DIMEN_16_DP).toInt()
+                        val marginTopLastUpdated = root.context.dpToPx(DIMEN_20_DP).toInt()
+                        tvShcRecommendationCta.setMargin(0, margin, margin8dp, margin)
+                        tvShcRecommendationLastUpdated.setMargin(0, marginTopLastUpdated, 0, margin)
                     } else {
                         rvShcRecommendationList.visible()
                         tvShcRecommendationHeaderItem.setUnifyDrawableEnd(
@@ -285,13 +290,15 @@ class RecommendationViewHolder(
                         )
                         horLineShcShopScore2.visible()
 
-                        val marginTop = root.context.resources.getDimensionPixelSize(
-                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
+                        val marginTopLastUpdated = root.context.dpToPx(DIMEN_12_DP).toInt()
+                        val marginBottom = root.context.dpToPx(DIMEN_16_DP).toInt()
+                        tvShcRecommendationCta.setMargin(0, margin8dp, margin8dp, marginBottom)
+                        tvShcRecommendationLastUpdated.setMargin(
+                            0,
+                            marginTopLastUpdated,
+                            0,
+                            marginBottom
                         )
-                        val marginBottom = root.context.resources.getDimensionPixelSize(
-                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl2
-                        )
-                        tvShcRecommendationCta.setMargin(0, marginTop, 0, marginBottom)
                     }
                 }
 
