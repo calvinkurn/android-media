@@ -13,4 +13,5 @@ interface LoggerRepositoryContract {
 
     suspend fun getLoggerList(serverChannel: String, limit: Int, offset: Int): List<Logger>
     suspend fun getPriorityList(): List<String>
+    suspend fun deleteAll()
 }

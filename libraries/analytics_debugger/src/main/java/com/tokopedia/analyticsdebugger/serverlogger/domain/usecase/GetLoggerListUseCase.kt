@@ -1,7 +1,7 @@
 package com.tokopedia.analyticsdebugger.serverlogger.domain.usecase
 
 import com.tokopedia.analyticsdebugger.serverlogger.domain.mapper.ServerLoggerMapper
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.LoggerUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 import com.tokopedia.logger.repository.LoggerRepository
 import javax.inject.Inject
 
@@ -15,7 +15,7 @@ class GetLoggerListUseCase @Inject constructor(
         serverChannel: String,
         limit: Int,
         offSet: Int
-    ): List<LoggerUiModel> {
+    ): List<ServerLoggerUiModel> {
         return serverLoggerMapper.mapToLoggerListUiModel(
             loggerRepository?.getLoggerList(serverChannel, limit, offSet) ?: emptyList(),
             keyword

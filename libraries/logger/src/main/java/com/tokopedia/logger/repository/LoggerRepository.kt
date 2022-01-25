@@ -19,6 +19,7 @@ import com.tokopedia.logger.utils.LoggerReporting
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.log
 
 class LoggerRepository(
     private val logDao: LoggerDao,
@@ -73,6 +74,7 @@ class LoggerRepository(
         )
     }
 
+    //start region for view server logger in developer options
     override suspend fun getLoggerList(
         serverChannel: String,
         limit: Int,
@@ -87,6 +89,11 @@ class LoggerRepository(
     override suspend fun getPriorityList(): List<String> {
         return logDao.getPriorityList()
     }
+
+    override suspend fun deleteAll() {
+        logDao.deleteAll()
+    }
+    //end region for view server logger in developer options
 
     private suspend fun sendLogToServer(priorityScalyr: Int, logs: List<Logger>) {
         val priorityScalyrIndex = priorityScalyr - 1

@@ -2,8 +2,8 @@ package com.tokopedia.analyticsdebugger.serverlogger.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.analyticsdebugger.debugger.helper.formatDataExcerpt
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.LoggerPriorityUiModel
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.LoggerUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerConstants
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.repository.LoggerRepository
@@ -18,9 +18,9 @@ class ServerLoggerMapper @Inject constructor(
     private val loggerRepository: LoggerRepository?
 ) {
 
-    fun mapToLoggerListUiModel(loggerLocal: List<Logger>, keyword: String): List<LoggerUiModel> {
+    fun mapToLoggerListUiModel(loggerLocal: List<Logger>, keyword: String): List<ServerLoggerUiModel> {
         val decrypt = loggerRepository?.decrypt
-        val loggerUiModelList = mutableListOf<LoggerUiModel>()
+        val loggerUiModelList = mutableListOf<ServerLoggerUiModel>()
         loggerLocal.forEach {
             val message = decrypt?.invoke(it.message).orEmpty()
             val obj = JSONObject(message)
@@ -42,7 +42,7 @@ class ServerLoggerMapper @Inject constructor(
                 serverChannelList.add(ServerLoggerConstants.EMBRACE)
             }
 
-            val loggerUiModel = LoggerUiModel(
+            val loggerUiModel = ServerLoggerUiModel(
                 serverChannel = serverChannelList,
                 tag = tag,
                 previewMessage = formatDataExcerpt(it.message),
@@ -62,8 +62,8 @@ class ServerLoggerMapper @Inject constructor(
         return loggerUiModelList
     }
 
-    fun mapToPriorityList(priorityList: List<String>): LoggerPriorityUiModel {
-        return LoggerPriorityUiModel(priorityList)
+    fun mapToPriorityList(priorityList: List<String>): ServerLoggerPriorityUiModel {
+        return ServerLoggerPriorityUiModel(priorityList)
     }
 
     private fun getDateFormat(timeStamp: Long): String {

@@ -1,9 +1,9 @@
 package com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter
 
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.LoggerPriorityUiModel
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.LoggerUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 
 interface ServerLoggerTypeFactory {
-    fun type(loggerUiModel: List<LoggerUiModel>): Int
-    fun type(loggerPriorityUiModel: LoggerPriorityUiModel): Int
+    fun type(loggerPriorityUiModel: ServerLoggerPriorityUiModel): Int
+    fun type(loggerUiModel: ServerLoggerUiModel): Int
 }

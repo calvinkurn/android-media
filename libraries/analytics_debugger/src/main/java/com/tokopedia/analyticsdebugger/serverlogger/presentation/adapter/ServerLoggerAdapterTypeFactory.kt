@@ -1,17 +1,34 @@
 package com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter
 
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.LoggerPriorityUiModel
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.LoggerUiModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.viewholder.ItemServerLoggerListViewHolder
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.viewholder.ItemServerLoggerPriorityViewHolder
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 
-class ServerLoggerAdapterTypeFactory: BaseAdapterTypeFactory(), ServerLoggerTypeFactory {
+class ServerLoggerAdapterTypeFactory(
+    private val serverLoggerListener: ServerLoggerListener
+) : BaseAdapterTypeFactory(), ServerLoggerTypeFactory {
 
-    override fun type(loggerUiModel: List<LoggerUiModel>): Int {
-        TODO("Not yet implemented")
+    override fun type(loggerPriorityUiModel: ServerLoggerPriorityUiModel): Int {
+        return ItemServerLoggerPriorityViewHolder.LAYOUT
     }
 
-    override fun type(loggerPriorityUiModel: LoggerPriorityUiModel): Int {
-        TODO("Not yet implemented")
+    override fun type(loggerUiModel: ServerLoggerUiModel): Int {
+        return ItemServerLoggerListViewHolder.LAYOUT
     }
 
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        return when (type) {
+            ItemServerLoggerListViewHolder.LAYOUT -> ItemServerLoggerListViewHolder(parent)
+            ItemServerLoggerPriorityViewHolder.LAYOUT -> ItemServerLoggerPriorityViewHolder(
+                parent,
+                serverLoggerListener
+            )
+            else -> super.createViewHolder(parent, type)
+        }
+    }
 }

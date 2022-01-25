@@ -35,6 +35,9 @@ interface LoggerDao {
     @Delete
     suspend fun deleteEntries(logger: List<Logger>)
 
+    @Query("DELETE FROM LOG_TABLE")
+    suspend fun deleteAll()
+
     @Query("DELETE FROM LOG_TABLE WHERE timestamp <= :ts and post_priority == 1")
     suspend fun deleteExpiredHighPrio(ts: Long)
 
