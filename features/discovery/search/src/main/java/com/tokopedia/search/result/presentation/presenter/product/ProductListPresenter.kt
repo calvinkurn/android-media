@@ -157,14 +157,6 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
         )
-        private val showInspirationCardType = listOf(
-                SearchConstant.InspirationCard.TYPE_ANNOTATION,
-                SearchConstant.InspirationCard.TYPE_CATEGORY,
-                SearchConstant.InspirationCard.TYPE_GUIDED,
-                SearchConstant.InspirationCard.TYPE_CURATED,
-                SearchConstant.InspirationCard.TYPE_RELATED,
-                SearchConstant.InspirationCard.TYPE_SIZE_PERSO,
-        )
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
         private const val DEFAULT_USER_ID = "0"
@@ -1252,7 +1244,7 @@ class ProductListPresenter @Inject constructor(
             }
 
             val widgetPosition = data.data.position
-            if (widgetPosition <= productList.size && shouldShowInspirationWidget(data.data.type)) {
+            if (widgetPosition <= productList.size) {
                 try {
                     val productListPosition = maxOf(widgetPosition, 1)
                     val product = productList[productListPosition - 1]
@@ -1287,8 +1279,6 @@ class ProductListPresenter @Inject constructor(
 
         return inspirationSizeVisitableList
     }
-
-    private fun shouldShowInspirationWidget(type: String) = showInspirationCardType.contains(type)
 
     private fun processInspirationCarouselPosition(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
         if (inspirationCarouselDataView.isEmpty()) return
