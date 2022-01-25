@@ -2,18 +2,38 @@ package com.tokopedia.play.broadcaster.domain.usecase.campaign
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
+import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.AddPinnedMessageResponse
+import com.tokopedia.play.broadcaster.domain.usecase.pinnedmessage.AddPinnedMessageUseCaseQuery
+import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created by meyta.taliti on 25/01/22.
  */
-
 @GqlQuery(GetCampaignListUseCase.QUERY_NAME, GetCampaignListUseCase.QUERY)
 class GetCampaignListUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
     private val dispatchers: CoroutineDispatchers,
-) {
+) : RetryableGraphqlUseCase<GetCampaignListResponse>(gqlRepository) {
+
+    init {
+        setGraphqlQuery(GetCampaignListUseCaseQuery())
+        setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(GetCampaignListResponse::class.java)
+    }
+
+    override suspend fun executeOnBackground() = withContext(dispatchers.io) {
+        super.executeOnBackground()
+    }
+
 
  companion object {
 

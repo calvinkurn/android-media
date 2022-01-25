@@ -3,7 +3,12 @@ package com.tokopedia.play.broadcaster.domain.usecase.campaign
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
+import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -13,7 +18,19 @@ import javax.inject.Inject
 class GetProductsInCampaignUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
     private val dispatchers: CoroutineDispatchers,
-) {
+) : RetryableGraphqlUseCase<GetCampaignProductResponse>(gqlRepository) {
+
+    init {
+        setGraphqlQuery(GetCampaignProductUseCaseQuery())
+        setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(GetCampaignProductResponse::class.java)
+    }
+
+    override suspend fun executeOnBackground() = withContext(dispatchers.io) {
+        super.executeOnBackground()
+    }
 
     companion object {
 
