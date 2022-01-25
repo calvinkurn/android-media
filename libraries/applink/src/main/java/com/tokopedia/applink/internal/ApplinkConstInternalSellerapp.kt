@@ -56,7 +56,7 @@ object ApplinkConstInternalSellerapp {
 
     //CreateMerchantVoucherStepsActivity
     const val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
-    const val CREATE_VOUCHER_PRODUCT = "$INTERNAL_SELLERAPP/create-voucher-product"
+    const val CREATE_VOUCHER_PRODUCT = "$INTERNAL_SELLERAPP/create-voucher-product/{product_id}/"
 
     //VoucherListActivity
     const val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
