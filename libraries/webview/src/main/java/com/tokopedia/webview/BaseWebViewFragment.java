@@ -207,6 +207,18 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
+    private void redirectToWebViewPlaystore(){
+        //fix crash Failed to load WebView provider: No WebView installed
+        Intent webViewPlaystoreIntent = new Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.webview")
+        );
+        Toast.makeText(getContext(), getString(com.tokopedia.webview.R.string.webview_need_install),
+                Toast.LENGTH_LONG).show();
+        startActivity(webViewPlaystoreIntent);
+        getActivity().finish();
+    }
+
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
         View view = inflater.inflate(getLayout(), container, false);
