@@ -34,7 +34,7 @@ private const val inspirationCardResponseWithoutTopAds = "searchproduct/inspirat
 private const val inspirationCardResponseSamePosition = "searchproduct/inspirationcard/same-position.json"
 private const val inspirationSizeResponseFirstPage = "searchproduct/inspirationsize/in-first-page.json"
 
-internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestFixtures() {
+internal class SearchProductInspirationCardTest: ProductListPresenterTestFixtures() {
     private val visitableListSlot = slot<List<Visitable<*>>>()
 
     @Test
