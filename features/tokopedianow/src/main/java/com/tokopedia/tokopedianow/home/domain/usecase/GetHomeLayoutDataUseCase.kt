@@ -63,13 +63,16 @@ class GetHomeLayoutDataUseCase @Inject constructor(
         val stringBuilder = StringBuilder()
         localCacheModel?.run {
             val locationParamsMap = mutableMapOf<String, String>()
-            val serviceType15m = localCacheModel.warehouses.find {
-                it.service_type == ServiceType.NOW_15M
-            }?.service_type.orEmpty()
 
-            val serviceType2h = localCacheModel.warehouses.find {
+            val warehouse15m = localCacheModel.warehouses.find {
+                it.service_type == ServiceType.NOW_15M
+            }
+            val warehouse2h = localCacheModel.warehouses.find {
                 it.service_type == ServiceType.NOW_2H
-            }?.service_type.orEmpty()
+            }
+
+            val warehouseId15m = warehouse15m?.warehouse_id.toString()
+            val warehouseId2h = warehouse2h?.warehouse_id.toString()
 
             locationParamsMap[PARAM_USER_LAT] = lat
             locationParamsMap[PARAM_USER_LONG] = long
@@ -79,8 +82,8 @@ class GetHomeLayoutDataUseCase @Inject constructor(
             locationParamsMap[PARAM_USER_ADDRESS_ID] = address_id
             locationParamsMap[PARAM_WAREHOUSE_IDS] = warehouse_id
             locationParamsMap[PARAM_SERVICE_TYPE] = service_type
-            locationParamsMap[PARAM_SERVICE_TYPE_15M] = serviceType15m
-            locationParamsMap[PARAM_SERVICE_TYPE_2H] = serviceType2h
+            locationParamsMap[PARAM_SERVICE_TYPE_15M] = warehouseId15m
+            locationParamsMap[PARAM_SERVICE_TYPE_2H] = warehouseId2h
 
             for((key, value) in locationParamsMap) {
                 if(stringBuilder.isNotBlank()) {
