@@ -97,6 +97,10 @@ class TitleFormView : ConstraintLayout {
         }
     }
 
+    fun setMaxCharacter(max: Int) {
+        binding.textFieldTitle.setCounter(max)
+    }
+
     fun setTitle(title: String) {
         binding.textFieldTitle.editText.setText(title)
     }

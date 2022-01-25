@@ -32,6 +32,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         get() = _observableAddedTags.value.orEmpty()
     val channelId: String
         get() = hydraConfigStore.getChannelId()
+    val maxTitleChars: Int
+        get() = hydraConfigStore.getMaxTitleChars()
 
     val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
         get() = _observableRecommendedTagsModel

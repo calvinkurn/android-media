@@ -112,6 +112,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun setupView() {
         binding.viewActionBar.setShopName(parentViewModel.getShopName())
         binding.viewActionBar.setShopIcon(parentViewModel.getShopIconUrl())
+        binding.formTitle.setMaxCharacter(titleSetupViewModel.maxTitleChars)
     }
 
     private fun setupInsets(view: View) {
