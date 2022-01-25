@@ -365,7 +365,6 @@ class PostListViewHolder(
 
         if (pagers != pagerAdapter?.pagers) {
             pagerAdapter?.pagers = pagers
-            pagerAdapter?.notifyDataSetChanged()
         }
     }
 
