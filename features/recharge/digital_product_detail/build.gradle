@@ -76,6 +76,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     testImplementation rootProject.ext.testDependencies.mockk
