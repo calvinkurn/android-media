@@ -418,7 +418,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun shouldShowSrw(): Boolean {
         return !isSeller() && hasProductPreviewShown() &&
-                rvSrw?.isAllowToShow() == true ||
+                rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
                 (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
     }
 
@@ -746,6 +746,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun reloadSrw() {
         if (!isSeller() && messageId.isNotBlank() &&
             topchatViewState?.hasProductPreviewShown() == true
+                && viewModel.isAttachmentPreviewReady()
         ) {
             val productIdCommaSeparated2 = viewModel.getProductIdPreview()
                 .joinToString(separator = ",")
@@ -1114,7 +1115,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendAttachmentPreviews(message: String? = null) {
-        if (viewModel.attachmentPreviewIsReady()) {
+        if (viewModel.isAttachmentPreviewReady()) {
             val composedMsg = getComposedMessage(message)
             viewModel.sendAttachments(composedMsg)
         }
@@ -1461,10 +1462,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
         )
         resultProducts?.let { products ->
+            removeSrwBubble()
+            removeSrwPreview()
             val productIds = products.map { it.productId }
             viewModel.loadProductPreview(productIds)
-            removeSrwBubble()
         }
+    }
+
+    private fun removeSrwPreview() {
+        rvSrw?.hideSrw()
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
@@ -1802,7 +1808,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun clearAttachmentPreviews() {
-        if (viewModel.attachmentPreviewIsReady()) {
+        if (viewModel.isAttachmentPreviewReady()) {
             topchatViewState?.clearAttachmentPreview()
             viewModel.clearAttachmentPreview()
         }
@@ -2672,7 +2678,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun updateAttachmentsPreview(products: ArrayMap<String, Attachment>) {
+        val previousReadyState = viewModel.isAttachmentPreviewReady()
         topchatViewState?.updateProductPreviews(products)
+        val afterReadyState = viewModel.isAttachmentPreviewReady()
+        if (!previousReadyState && afterReadyState) {
+            reloadSrw()
+        }
     }
 
     override fun onDestroyView() {
