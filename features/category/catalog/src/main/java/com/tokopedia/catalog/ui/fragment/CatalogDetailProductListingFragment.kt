@@ -496,7 +496,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onSuccessAddWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
+        productNavListAdapter?.updateWishlistStatus(productId, true)
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
     }
@@ -507,7 +507,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onSuccessRemoveWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
+        productNavListAdapter?.updateWishlistStatus(productId, false)
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
     }

@@ -110,7 +110,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         notifyItemRangeRemoved(0, itemSizeBeforeCleared)
     }
 
-    fun updateWishlistStatus(productId: Int?, isWishlisted: Boolean) {
+    fun updateWishlistStatus(productId: String?, isWishlisted: Boolean) {
         for (i in visitables.indices) {
             if (visitables[i] is CatalogProductItem) {
                 val model = visitables[i] as CatalogProductItem
