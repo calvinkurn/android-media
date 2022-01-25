@@ -82,6 +82,21 @@ open class SendableUiModel constructor(
             }
         }
 
+        fun withSafelySendableUiModel(msg: BaseChatUiModel): B {
+            if (msg is SendableUiModel) {
+                withSendableUiModel(msg)
+            }
+            return self()
+        }
+
+        fun withSendableUiModel(msg: SendableUiModel): B {
+            withStartTime(msg.startTime)
+            withIsRead(msg.isRead)
+            withIsDummy(msg.isDummy)
+            withIsSender(msg.isSender)
+            return self()
+        }
+
         fun withStartTime(startTime: String): B {
             this.startTime = startTime
             return self()

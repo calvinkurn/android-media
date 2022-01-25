@@ -8,7 +8,9 @@ import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV2UseCase
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
+import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
+import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,46 +19,34 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class PayLaterViewModel @Inject constructor(
-    private val paylaterGetSimulationV2usecase: PayLaterSimulationV2UseCase,
+    private val paylaterGetSimulationV3UseCase: PayLaterSimulationV3UseCase,
     private val productDetailUseCase: ProductDetailUseCase,
-
+    private val mapperUseCase: PayLaterUiMapperUseCase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-
-    private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<PayLaterGetSimulation>>()
-    val payLaterOptionsDetailLiveData: LiveData<Result<PayLaterGetSimulation>> =
+    private val _payLaterOptionsDetailLiveData =
+        MutableLiveData<Result<ArrayList<SimulationUiModel>>>()
+    val payLaterOptionsDetailLiveData: LiveData<Result<ArrayList<SimulationUiModel>>> =
         _payLaterOptionsDetailLiveData
-
-    /**
-     * @param refreshData -> This parameter is to check when to refresh data in on resume
-     * @param sortPosition -> Give the old filter position when so after refresh can go to previous state
-     * @param partnerDisplayPosition -> Give the old viewpager position so after refresh can go to previous state
-     */
-    var refreshData = false
-    var sortPosition = 0
-    var partnerDisplayPosition = 0
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
-
+    var defaultTenure = 0
 
     private var idlingResourceProvider =
         TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
 
 
-    fun getPayLaterAvailableDetail(price: Long) {
+    fun getPayLaterAvailableDetail(price: Double, productId: String) {
         idlingResourceProvider?.increment()
-        paylaterGetSimulationV2usecase.cancelJobs()
-        paylaterGetSimulationV2usecase.getPayLaterProductDetails(
+        paylaterGetSimulationV3UseCase.cancelJobs()
+        paylaterGetSimulationV3UseCase.getPayLaterSimulationDetails(
             ::onAvailableDetailSuccess,
             ::onAvailableDetailFail,
-            price
+            price, productId
         )
-
-
     }
-
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
@@ -78,7 +68,6 @@ class PayLaterViewModel @Inject constructor(
         _productDetailLiveData.value = Fail(throwable)
     }
 
-
     private fun onAvailableDetailFail(throwable: Throwable) {
         idlingResourceProvider?.decrement()
         _payLaterOptionsDetailLiveData.value = Fail(throwable)
@@ -86,14 +75,18 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
         idlingResourceProvider?.decrement()
-        paylaterGetSimulation?.let {
-            _payLaterOptionsDetailLiveData.value = Success(it)
-        }
+        mapperUseCase.mapResponseToUi({
+            if (it.isNotEmpty())
+                _payLaterOptionsDetailLiveData.value = Success(it)
+
+        }, {
+            _payLaterOptionsDetailLiveData.value = Fail(it)
+
+        }, paylaterGetSimulation, defaultTenure)
     }
 
-
     override fun onCleared() {
-        paylaterGetSimulationV2usecase.cancelJobs()
+        paylaterGetSimulationV3UseCase.cancelJobs()
         productDetailUseCase.cancelJobs()
         super.onCleared()
     }

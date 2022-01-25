@@ -83,10 +83,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return orderCart.shop.shopId.toString()
     }
 
-    fun getPaymentProfile(): String {
-        return orderCart.paymentProfile
-    }
-
     fun getActivationData(): OrderPaymentWalletActionData {
         return orderPayment.value.walletData.activation
     }

@@ -996,6 +996,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         result.throwable, SellerHomeErrorHandler.SHOP_LOCATION
                     )
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        result.throwable,
+                        SellerHomeErrorHandler.SHOP_LOCATION,
+                        userSession.deviceId.orEmpty()
+                    )
                 }
             }
             setProgressBarVisibility(false)
@@ -1216,7 +1222,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         SellerHomeErrorHandler.logException(
             throwable = throwable,
-            message = ERROR_LAYOUT,
+            message = ERROR_LAYOUT
+        )
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
+            throwable = throwable,
             errorType = SellerHomeErrorHandler.ErrorType.ERROR_LAYOUT,
             deviceId = userSession.deviceId.orEmpty()
         )
@@ -1334,6 +1344,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         throwable = it.throwable,
                         message = ERROR_TICKER,
+                    )
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        throwable = it.throwable,
                         errorType = SellerHomeErrorHandler.ErrorType.ERROR_TICKER,
                         deviceId = userSession.deviceId.orEmpty()
                     )
@@ -1364,6 +1378,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         it.throwable, SellerHomeErrorHandler.SHOP_SHARE_DATA
                     )
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        throwable = it.throwable,
+                        errorType = SellerHomeErrorHandler.SHOP_SHARE_DATA,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -1374,6 +1394,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (it is Fail) {
                 SellerHomeErrorHandler.logException(
                     it.throwable, SellerHomeErrorHandler.SHOP_SHARE_TRACKING
+                )
+                SellerHomeErrorHandler.logExceptionToServer(
+                    SellerHomeErrorHandler.SELLER_HOME_TAG,
+                    it.throwable,
+                    SellerHomeErrorHandler.SHOP_SHARE_TRACKING,
+                    userSession.deviceId.orEmpty()
                 )
             }
         }
@@ -1559,7 +1585,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
         SellerHomeErrorHandler.logException(
             throwable = this,
-            message = "$ERROR_WIDGET $widgetType",
+            message = "$ERROR_WIDGET $widgetType"
+        )
+
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
+            throwable = this,
             errorType = SellerHomeErrorHandler.ErrorType.ERROR_WIDGET,
             deviceId = userSession.deviceId.orEmpty(),
             extras = widgetErrorExtraMap
@@ -1691,28 +1722,28 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
-        val diffUtilCallback = SellerHomeDiffUtilCallback(
-            adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-            newWidgets
-        )
-        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-        adapter.data.clear()
-        adapter.data.addAll(newWidgets)
-        diffUtilResult.dispatchUpdatesTo(adapter)
+        try {
+            val diffUtilCallback = SellerHomeDiffUtilCallback(
+                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
+                newWidgets
+            )
+            val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+            adapter.data.clear()
+            adapter.data.addAll(newWidgets)
+            diffUtilResult.dispatchUpdatesTo(adapter)
+        } catch (e: Exception) {
+            SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+        }
     }
 
     @SuppressLint("AnnotateVersionCheck")
     private fun notifyWidgetWithSdkChecking(callback: () -> Unit) {
-        try {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            callback()
+        } else {
+            recyclerView?.post {
                 callback()
-            } else {
-                Handler(Looper.getMainLooper()).post {
-                    callback()
-                }
             }
-        } catch (e: Exception) {
-            SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
         }
     }
 

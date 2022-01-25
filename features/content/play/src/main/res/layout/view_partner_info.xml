@@ -12,8 +12,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_icon"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +42,7 @@
         app:layout_constraintStart_toEndOf="@id/iv_badge"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginStart="@dimen/spacing_lvl3"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Rockbros Indonesia"
         />

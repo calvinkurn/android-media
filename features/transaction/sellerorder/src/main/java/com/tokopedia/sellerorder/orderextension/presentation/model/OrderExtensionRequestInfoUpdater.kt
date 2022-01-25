@@ -7,7 +7,12 @@ interface OrderExtensionRequestInfoUpdater {
         private val changedComment: OrderExtensionRequestInfoUiModel.CommentUiModel
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false, message = "", success = true).apply { updateItems(this) }
+            return oldData.copy(
+                processing = false,
+                message = "",
+                success = true,
+                throwable = null
+            ).apply { updateItems(this) }
         }
 
         private fun updateItems(newData: OrderExtensionRequestInfoUiModel) {
@@ -33,7 +38,8 @@ interface OrderExtensionRequestInfoUpdater {
             return if (selectedOption.selected) oldData else oldData.copy(
                 processing = false,
                 message = "",
-                success = true
+                success = true,
+                throwable = null
             ).apply { updateItems(this) }
         }
 
@@ -78,10 +84,17 @@ interface OrderExtensionRequestInfoUpdater {
     }
 
     class OnFailedGetOrderExtensionRequest(
-        private val errorMessage: String
+        private val throwable: Throwable? = null
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false, message = errorMessage, success = false, completed = true, refreshOnDismiss = false)
+            return oldData.copy(
+                processing = false,
+                message = "",
+                success = false,
+                completed = true,
+                refreshOnDismiss = false,
+                throwable = throwable
+            )
         }
     }
 
@@ -92,7 +105,12 @@ interface OrderExtensionRequestInfoUpdater {
             return if (oldData.processing || oldData.completed) {
                 oldData
             } else {
-                oldData.copy(processing = true, message = "", success = true).also {
+                oldData.copy(
+                    processing = true,
+                    message = "",
+                    success = true,
+                    throwable = null
+                ).also {
                     action(it)
                 }
             }
@@ -100,22 +118,42 @@ interface OrderExtensionRequestInfoUpdater {
     }
 
     class OnFailedSendingOrderExtensionRequest(
-        private val errorMessage: String
+        private val errorMessage: String,
+        private val throwable: Throwable?
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false, message = errorMessage, success = false)
+            return oldData.copy(
+                processing = false,
+                message = errorMessage,
+                success = false,
+                throwable = throwable
+            )
         }
     }
 
     class OnSuccessSendingOrderExtensionRequest(private val message: String) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false, message = message, success = true, completed = true, refreshOnDismiss = true)
+            return oldData.copy(
+                processing = false,
+                message = message,
+                success = true,
+                completed = true,
+                refreshOnDismiss = true,
+                throwable = null
+            )
         }
     }
 
     class OnRequestDismissBottomSheet: OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false, message = "", success = true, completed = true, refreshOnDismiss = false)
+            return oldData.copy(
+                processing = false,
+                message = "",
+                success = true,
+                completed = true,
+                refreshOnDismiss = false,
+                throwable = null
+            )
         }
     }
 }

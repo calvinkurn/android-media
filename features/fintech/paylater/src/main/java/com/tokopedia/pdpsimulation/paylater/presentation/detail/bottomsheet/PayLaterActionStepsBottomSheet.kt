@@ -43,8 +43,8 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun getArgumentData() {
         arguments?.let {
-            val payLaterItemProductData: Detail? = it.getParcelable(STEPS_DATA)
-            setDataFromArguments(payLaterItemProductData)
+            //val payLaterItemProductData: Detail? = it.getParcelable(STEPS_DATA)
+            //setDataFromArguments(payLaterItemProductData)
         } ?: dismiss()
     }
 
@@ -53,7 +53,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
      * @param payLaterItemProductData this is all the product detail of the selected partner
      */
 
-    private fun setDataFromArguments(payLaterItemProductData: Detail?) {
+    /*private fun setDataFromArguments(payLaterItemProductData: Detail?) {
         payLaterItemProductData?.let {
             partnerName = it.gateway_detail?.name ?: ""
             actionUrl = it.cta?.android_url ?: ""
@@ -82,7 +82,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
 
         }
-    }
+    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (!noteData.isNullOrEmpty())

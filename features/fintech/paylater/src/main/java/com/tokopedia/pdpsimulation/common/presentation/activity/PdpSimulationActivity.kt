@@ -10,8 +10,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
-import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
@@ -55,7 +55,7 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
         } else {
             val bundle = Bundle()
             intent.extras?.let {
-                bundle.putString(PRODUCT_PRICE, it.getString(PRODUCT_PRICE))
+                bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
                 bundle.putString(PARAM_PRODUCT_URL, it.getString(PARAM_PRODUCT_URL))
                 bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
             }

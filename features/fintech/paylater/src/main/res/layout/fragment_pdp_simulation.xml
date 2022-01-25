@@ -1,92 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/parent_scroll_view"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/sp_app_bar_layout"
+    <include
+        android:id="@+id/productDetail"
+        layout="@layout/product_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
-        app:elevation="@dimen/unify_space_0">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_scrollFlags="scroll">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <include
-                    android:id="@+id/productDetail"
-                    layout="@layout/product_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-                <com.tokopedia.unifycomponents.LoaderUnify
-                    android:id="@+id/productInfoShimmer"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/unify_space_16"
-                    android:layout_marginBottom="@dimen/pay_later_margin_dp_10"
-                    app:layout_constraintBottom_toBottomOf="@id/productDetail"
-                    app:layout_constraintLeft_toLeftOf="@id/productDetail"
-                    app:layout_constraintRight_toRightOf="@id/productDetail"
-                    app:layout_constraintTop_toTopOf="@id/productDetail"
-                    app:loader_type="rect"
-                    tools:visibility="gone" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <com.tokopedia.unifycomponents.DividerUnify
-                android:id="@+id/payLaterBorder"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/unify_space_8" />
-
-            <com.tokopedia.unifycomponents.ContentSwitcherUnify
-                android:id="@+id/modeSwitcher"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/unify_space_32"
-                android:layout_marginTop="@dimen/unify_space_16"
-                android:textOff="@string/pay_later_content_switcher_heading"
-                android:textOn="@string/pay_later_credit_content_switcher_heading" />
-
-
-            <com.tokopedia.unifycomponents.TabsUnify
-                android:id="@+id/paylaterTabLayout"
-                style="?tabTheme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_goneMarginTop="@dimen/unify_space_16"
-                app:tabIndicatorColor="@color/Unify_G500"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/Unify_G500"
-                app:tabTextColor="@color/Unify_N700_68" />
-
-        </LinearLayout>
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/payLaterViewPager"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/productInfoShimmer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/pay_later_margin_dp_10"
+        app:layout_constraintBottom_toBottomOf="@id/productDetail"
+        app:layout_constraintLeft_toLeftOf="@id/productDetail"
+        app:layout_constraintRight_toRightOf="@id/productDetail"
+        app:layout_constraintTop_toTopOf="@id/productDetail"
+        app:loader_type="rect"
+        tools:visibility="gone" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/payLaterBorder"
+        android:layout_width="match_parent"
+        android:background="@color/Unify_NN200"
+        android:layout_height="@dimen/pay_later_divider_height_dp_1"
+        app:layout_constraintTop_toBottomOf="@id/productDetail" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPayLaterSimulation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/pay_later_margin_dp_10"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/payLaterBorder"
+        tools:itemCount="4"
+        tools:listitem="@layout/paylater_simulation_tenure_item" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPayLaterOption"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:itemCount="6"
+        tools:listitem="@layout/paylater_partner_card_item" />
+
+ </androidx.constraintlayout.widget.ConstraintLayout>
 
 

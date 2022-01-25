@@ -51,7 +51,7 @@ import javax.inject.Inject
 /**
  * @author by nisie on 8/10/17.
  */
-class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComponent?>,
+open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComponent?>,
     InboxReputationListener, ReviewSellerPerformanceMonitoringListener {
 
     companion object {
@@ -71,7 +71,7 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
         }
     }
 
-    private var reviewSellerFragment: Fragment? = null
+    protected var reviewSellerFragment: Fragment? = null
     private var inboxReviewFragment: Fragment? = null
     private var sellerReputationPenaltyFragment: Fragment? = null
     private var viewPager: ViewPager? = null
@@ -211,7 +211,7 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
             )
         )
         setupToolbar()
-        reviewSellerFragment = RatingProductFragment.createInstance()
+        createRatingProductFragment()
         val reviewSellerBundle = Bundle()
         if (isExistParamTab(tab)) {
             reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, goToReputationHistory)
@@ -389,5 +389,9 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
                 LocalCacheHandler.clearCache(this, ReviewInboxConstants.GCM_NOTIFICATION)
             }
         }
+    }
+
+    protected open fun createRatingProductFragment() {
+        reviewSellerFragment = RatingProductFragment.createInstance()
     }
 }

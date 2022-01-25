@@ -434,6 +434,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun onSuccessRecommended(keywords: List<KeywordData>) {
         receivedRecom = true
+        recommendedKeywords?.clear()
         keywords.forEach {
             recommendedKeywords?.addAll(0, it.keywordData)
         }
@@ -458,6 +459,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 listItem.add(mapToModelManual(selected))
             }
         }
+        adapter.items.clear()
         listItem.forEach {
             adapter.items.add(EditKeywordItemViewModel(it))
         }

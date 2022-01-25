@@ -58,7 +58,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
         }
     }
 
-    private fun bindClickListener(element: ImageUploadUiModel) {
+    protected open fun bindClickListener(element: ImageUploadUiModel) {
         view.setOnClickListener { view ->
             if (element.imageUrl != null && element.replyTime != null) {
                 listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)

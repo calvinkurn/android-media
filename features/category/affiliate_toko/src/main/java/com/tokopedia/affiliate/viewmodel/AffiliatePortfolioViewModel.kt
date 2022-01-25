@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.viewmodel
 
-import android.webkit.URLUtil.isValidUrl
+import android.util.Patterns
+import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -14,7 +15,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlMode
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class AffiliatePortfolioViewModel@Inject constructor(
@@ -26,29 +27,38 @@ class AffiliatePortfolioViewModel@Inject constructor(
     fun createDefaultListForSm() {
         val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         itemList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(3,"Link Instagram","","Contoh: instagram.com/tokopedia","Link tidak valid.",false)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(9,"Link Tiktok","","Contoh: tiktok.com/tokopedia","Link tidak valid.",false)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"Link Youtube","","Contoh: youtube.com/tokopedia","Link tidak valid.",false)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram","","Contoh: instagram.com/tokopedia","Link tidak valid.",false)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(9,"tiktok","Link Tiktok","","Contoh: tiktok.com/tokopedia","Link tidak valid.",false)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"youtube","Link Youtube","","Contoh: youtube.com/tokopedia","Link tidak valid.",false)))
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media", UnifyButton.Type.ALTERNATE,UnifyButton.Variant.GHOST)))
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Selanjutnya", UnifyButton.Type.MAIN,UnifyButton.Variant.FILLED,true)))
         affiliatePortfolioData.value = itemList
     }
     fun updateList(position: Int, text: String) {
         (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.text = text
+        if(text.isNotEmpty()){
+            (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = !Patterns.WEB_URL.matcher(text).matches()
+        }else {
+            (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = false
+        }
     }
-    fun checkData()  : Boolean{
+
+    fun checkDataForAtLeastOne()  : Boolean{
+        var firstFound = false
         affiliatePortfolioData.value?.forEachIndexed {i,item->
             if(item is AffiliatePortfolioUrlModel)
             {
-                if(item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text)){
+                if(!item.portfolioItm.text.isNullOrEmpty() && !Patterns.WEB_URL.matcher(item.portfolioItm.text).matches()){
                     item.portfolioItm.isError = true
                     updateListItem.value = i
                     return false
+                }else if(!item.portfolioItm.text.isNullOrEmpty() && Patterns.WEB_URL.matcher(item.portfolioItm.text).matches()){
+                    firstFound = true
                 }
 
             }
         }
-        return true
+        return firstFound
     }
 
     fun updateFocus(position: Int,focus : Boolean){
@@ -68,4 +78,25 @@ class AffiliatePortfolioViewModel@Inject constructor(
 
     fun getPortfolioUrlList() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliatePortfolioData
     fun getUpdateItemIndex() : LiveData<Int> = updateListItem
+
+    fun finEditTextModelWithId(id : Int?) : AffiliatePortfolioUrlInputData?{
+        affiliatePortfolioData.value?.forEach {
+            if(it is AffiliatePortfolioUrlModel && it.portfolioItm.id == id){
+                return it.portfolioItm
+            }
+        }
+        return null
+    }
+
+    fun getCurrentSocialIds () : ArrayList<Int> {
+        val ids = arrayListOf<Int>()
+        affiliatePortfolioData.value?.forEach {
+            if(it is AffiliatePortfolioUrlModel){
+                it.portfolioItm.id?.let { id ->
+                    ids.add(id)
+                }
+            }
+        }
+        return ids
+    }
 }

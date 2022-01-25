@@ -72,7 +72,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
 
@@ -176,6 +175,7 @@ ext {
             officialStore                  : ":features:merchant:official_store",
             voucherCreation                 : ":features:merchant:voucher_creation",
             brandlist                       : ":features:merchant:brandlist",
+            campaignList                    : ":features:merchant:campaign_list",
             favorite                        : ":features:merchant:favorite",
             youtubeCommon                   : ":features:merchant:youtube_common",
             onboarding                      : ":features:user:onboarding",
@@ -215,6 +215,7 @@ ext {
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             topAdsHeadline                  : ":features:top_ads:top_ads_headline",
+            topAdsHeadlineUseCase           : ":features:top_ads:top_ads_headline_usecase",
 
             atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
@@ -235,6 +236,7 @@ ext {
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
+            buyercancellationorder          : ":features:ordermanagement:buyercancellationorder",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 

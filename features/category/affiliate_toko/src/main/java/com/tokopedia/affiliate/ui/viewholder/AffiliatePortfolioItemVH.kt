@@ -2,9 +2,10 @@ package com.tokopedia.affiliate.ui.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View
-import android.webkit.URLUtil.isValidUrl
+import android.webkit.URLUtil
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
@@ -32,6 +33,12 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
                     s.toString())
+                if(s.toString().isNotEmpty()){
+                    element?.portfolioItm?.isError = !Patterns.WEB_URL.matcher(s.toString()).matches()
+                }else {
+                    element?.portfolioItm?.isError = false
+                }
+                setState(element)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -48,12 +55,6 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
                 if ((event?.action == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER))
                 {
-                    if(isValidUrl(urlEtView.getEditableValue().toString())) {
-                        portfolioUrlTextUpdateInterface?.onUrlSuccess(adapterPosition)
-                    }
-                    else if (urlEtView.getEditableValue().toString().isNotEmpty()){
-                        portfolioUrlTextUpdateInterface?.onError(adapterPosition)
-                    }
                     portfolioUrlTextUpdateInterface?.onNextKeyPressed(adapterPosition,true)
                     return true
                 }
@@ -63,8 +64,8 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
     }
 
     private fun setState(element: AffiliatePortfolioUrlModel?) {
-        urlEtView.isInputError = element?.portfolioItm?.isError==true
-        if(element?.portfolioItm?.isError==true) {
+        urlEtView.isInputError = element?.portfolioItm?.isError == true
+        if(element?.portfolioItm?.isError == true) {
             element.portfolioItm.errorContent?.let { message ->
                 urlEtView.setMessage(message)
             }

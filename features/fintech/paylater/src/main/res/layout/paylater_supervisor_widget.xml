@@ -4,12 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/superVisorSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_8"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPartnerRegistration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:paddingTop="@dimen/unify_space_4"
+        android:textColor="@color/Unify_NN600"
         android:text="@string/pay_later_simulation_supervised_text"
         app:layout_constraintBottom_toBottomOf="@+id/ivSupervisor"
         app:layout_constraintEnd_toStartOf="@+id/ivSupervisor"
@@ -23,12 +30,14 @@
         android:layout_width="@dimen/unify_space_64"
         android:layout_height="@dimen/unify_space_24"
         android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/unify_space_24"
         android:scaleType="centerInside"
         android:src="@drawable/ic_paylater_financial_authority"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvPartnerRegistration"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/superVisorSeparator"
         app:unify_image_corner_radius="0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

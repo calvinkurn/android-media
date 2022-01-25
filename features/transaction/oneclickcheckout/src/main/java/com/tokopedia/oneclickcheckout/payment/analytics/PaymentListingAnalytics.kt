@@ -4,8 +4,9 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
+import javax.inject.Inject
 
-class PaymentListingAnalytics : TransactionAnalytics() {
+class PaymentListingAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickBackArrowInPilihPembayaran() {
         sendGeneralEvent(

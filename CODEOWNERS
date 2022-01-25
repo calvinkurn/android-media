@@ -64,6 +64,7 @@
 /features/merchant/seller_action/                       @tokopedia/android-minionstuart-dev
 /features/ordermanagement/buyer_order_detail            @tokopedia/android-minionstuart-dev
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionstuart-dev
+/features/ordermanagement/buyercancellationorder/       @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
 /features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
 
@@ -80,6 +81,7 @@
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
 /features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
+/features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionsolo-dev
@@ -241,6 +243,7 @@
 /features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
 /features/promo/promo_ui_common					        @tokopedia/android-minionsolo-dev
 /features/promo/mvc_widget  					        @tokopedia/android-minionsolo-dev
+/features/promo/quest_widget  					        @tokopedia/android-minionsolo-dev
 /features/fintech/merchant_lending_widget               @tokopedia/android-minionyoda-dev
 
 
@@ -249,7 +252,6 @@
 /features/im/referral                   				@tokopedia/android-minionyoda-dev
 /features/ovop2p                                        @tokopedia/android-minionyoda-dev
 /features/payment/common_payment                        @tokopedia/android-minionyoda-dev
-/features/digital/instant_debit_bca                     @tokopedia/android-minionyoda-dev
 /features/fintech/wallet                				@tokopedia/android-minionyoda-dev
 /features/payment/thankyou_native                		@tokopedia/android-minionyoda-dev
 /features/payment/withdraw/             				@tokopedia/android-minionyoda-dev
@@ -359,7 +361,7 @@
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
 /testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev @tokopedia/android-minionyoda-dev
 
-/features/transaction/buyerorder/                      @tokopedia/android-minionstuart-dev @tokopedia/android-minionmark-dev
+/features/transaction/buyerorder/                       @tokopedia/android-minionmark-dev
 
 
 /customerapp/src/main/java/com/tokopedia/tkpd/ConsumerMainApplication.java                      @tokopedia/android-gatekeeperloadtime-dev

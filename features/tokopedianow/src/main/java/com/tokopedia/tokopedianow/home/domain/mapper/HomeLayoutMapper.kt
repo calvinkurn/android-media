@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CA
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.EDUCATIONAL_INFORMATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
@@ -40,10 +41,11 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
+import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -61,7 +63,8 @@ object HomeLayoutMapper {
         PRODUCT_RECOM,
         REPURCHASE_PRODUCT,
         EDUCATIONAL_INFORMATION,
-        SHARING_EDUCATION
+        SHARING_EDUCATION,
+        MAIN_QUEST
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -87,7 +90,7 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(
         response: List<HomeLayoutResponse>,
         hasTickerBeenRemoved: Boolean,
-        hasSharingEducationBeenRemoved: Boolean,
+        removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
@@ -98,9 +101,9 @@ object HomeLayoutMapper {
             add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.NOT_LOADED))
         }
 
-        response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
-            if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
-                mapToHomeUiModel(it, miniCartData = miniCartData)?.let { item ->
+        response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
+            if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
+                mapToHomeUiModel(layoutResponse, miniCartData = miniCartData)?.let { item ->
                     add(item)
                 }
             }
@@ -109,12 +112,12 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.addMoreHomeLayout(
         response: List<HomeLayoutResponse>,
-        hasSharingEducationBeenRemoved: Boolean,
+        removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?
     ) {
-        response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
-            if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
-                mapToHomeUiModel(it, HomeLayoutItemState.LOADED, miniCartData)?.let { item ->
+        response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
+            if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
+                mapToHomeUiModel(layoutResponse, HomeLayoutItemState.LOADED, miniCartData)?.let { item ->
                     add(item)
                 }
             }
@@ -139,11 +142,12 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeCategoryGridData(
         item: TokoNowCategoryGridUiModel,
-        response: List<CategoryResponse>?
+        response: List<CategoryResponse>?,
+        warehouseId: String = ""
     ) {
         updateItemById(item.id) {
             if (!response.isNullOrEmpty()) {
-                val categoryList = mapToCategoryList(response)
+                val categoryList = mapToCategoryList(response, warehouseId)
                 val layout = item.copy(categoryList = categoryList, state = TokoNowLayoutState.SHOW)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {
@@ -168,6 +172,21 @@ object HomeLayoutMapper {
         updateItemById(item.visitableId) {
             val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerData)
             HomeLayoutItemUiModel(ticker, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapQuestData(
+        item: HomeQuestSequenceWidgetUiModel,
+        questList: List<HomeQuestWidgetUiModel>,
+        state: HomeLayoutItemState
+    ) {
+        updateItemById(item.visitableId) {
+            val quest = HomeQuestSequenceWidgetUiModel(
+                id = MAIN_QUEST,
+                state = state,
+                questList = questList
+            )
+            HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }
     }
 
@@ -398,6 +417,7 @@ object HomeLayoutMapper {
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, state)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, HomeLayoutItemState.LOADED)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, state)
+            MAIN_QUEST -> mapQuestUiModel(response, state)
             else -> null
         }
     }

@@ -44,7 +44,7 @@ class GeneratedHost(
         dest.writeStringList(messageError)
     }
 
-    protected constructor(parcel: Parcel) : this(
+    constructor(parcel: Parcel) : this(
             serverId = parcel.readString(),
             uploadHost = parcel.readString(),
             userId = parcel.readString(),

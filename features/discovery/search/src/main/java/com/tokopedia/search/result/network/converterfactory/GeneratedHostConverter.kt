@@ -44,7 +44,6 @@ class GeneratedHostConverter : Converter.Factory() {
     }
 
     companion object {
-        private val TAG = GeneratedHostConverter::class.java.simpleName
         private val MEDIA_TYPE = "text/plain".toMediaTypeOrNull()
     }
 }

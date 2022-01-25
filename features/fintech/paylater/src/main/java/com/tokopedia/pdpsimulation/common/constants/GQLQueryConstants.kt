@@ -63,84 +63,72 @@ const val GQL_CREDIT_CARD_BANK_LIST = """query {
   }
 }"""
 
-
-const val GQL_PAYLATER_SIMULATION_V2 = """query paylater_getSimulationV2(${'$'}request: PaylaterGetSimulationV2Request!) {
-  paylater_getSimulationV2(request: ${'$'}request) { 
-    data {
-      tenure
-      text
-      detail {
-        gateway_id
-        installment_per_month
-        installment_per_month_ceil
-        total_fee
-        total_fee_ceil
-        total_interest
-        total_interest_ceil
-        interest_pct
-        service_fee_info
-        total_with_provision
-        total_with_provision_ceil
-        is_recommended
-        is_recommended_string
-        installment_description
+const val GQL_PAYLATER_SIMULATION_V3 = """
+    query PaylaterGetSimulationV3(${'$'}request: PaylaterGetSimulationV3Request!) {
+    paylater_getSimulationV3(request: ${'$'}request) {
+      data {
         tenure
-        activation_status
-        disable {
-          status
-          header
-          description
-        } 
-        cta {
-          name
-          web_url
-          android_url
-          cta_type
-          is_redirect_url
-          button_color
-           bottom_sheet {
-            show
-            image
-            title
-            description
-            button_text
-          }
-        }
-        gateway_detail {
-          gateway_id
-          name
-          is_active
-          small_subheader
-          subheader
-          img_light_url
-          img_dark_url
-          faq_url
-          benefit {
-            content
-            is_highlight
-          }
+        text
+        small_text
+        sections {
+          title
+          is_collapsible
           detail {
-            title
-            content
+            gateway_detail {
+              id
+              name
+              img_light_url
+              img_dark_url
+              how_to_use {
+                notes
+                steps
+              }
+            }
+            installment_per_month
+            installment_per_month_ceil
+            tenure
+            subheader
+            recommended {
+              flag
+              text
+              color
+            }
+            benefits
+            disable {
+              status
+              header
+              description
+            }
+            cta {
+              name
+              android_url
+              web_url
+              cta_type
+              is_redirect_url
+              button_color
+              bottom_sheet {
+                show
+                image
+                title
+                description
+                button_text
+              }
+              icon_url
+            }
+            installment_details {
+              header
+              content {
+                title
+                value
+                type
+              }
+            }
           }
-          faq {
-            question
-            answer
-          }
-          how_to_use {
-            notes
-            steps
-          }
-          how_to_apply {
-            notes
-            steps
-          }
-          
         }
-      }
-    } 
-	}
-}"""
+      } 
+    }
+}
+"""
 
 
 const val GQL_GET_PRODUCT_DETAIL =

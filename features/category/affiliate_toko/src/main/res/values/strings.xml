@@ -82,7 +82,7 @@
     <string name="affiliate_black_list_description"><![CDATA[Untuk melanjutkan aktivitas di Tokopedia Affiliate, segera Perbaiki Akunmu]]></string>
     <string name="affiliate_login_ticker_text"><![CDATA[Akunmu sedang bermasalah. <a href="">Selengkapnya</a>]]></string>
     <string name="affiliate_simpan">Simpan</string>
-    <string name="affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate">Hai Ana, selamat bergabung di Tokopedia Affiliate!</string>
+    <string name="affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate">Hai {name}, selamat bergabung di Tokopedia Affiliate!</string>
     <string name="affiliate_ayo_bagi_inspirasi_raih_komisi"><![CDATA[Ayo bagi inspirasi & raih komisi!]]></string>
     <string name="affiliate_onboarding_terms_1">Akun Affiliate-mu harus terverifikasi untuk bisa tarik penghasilan</string>
     <string name="affiliate_onboarding_terms_2"><![CDATA[Tidak boleh mempromosikan produk terlarang yang tertera di S&K]]></string>
@@ -122,4 +122,6 @@
     <string name="affiliate_default_no_transaction">Kamu belum punya transaksi</string>
     <string name="affiliate_default_no_transaction_description">Yuk, promosikan produk affiliate di sosial media supaya kamu bisa mulai bertransaksi.</string>
     <string name="affiliate_promote_product_cta">Promosikan Produk Affiliate</string>
+    <string name="affiliate_please_fill_one_social_media">Silakan isi minimal 1 media sosial.</string>
+    <string name="affiliate_retry_message">Silakan coba lagi nanti</string>
 </resources>

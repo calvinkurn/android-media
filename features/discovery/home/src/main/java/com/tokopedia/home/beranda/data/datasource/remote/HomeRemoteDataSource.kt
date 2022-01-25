@@ -52,4 +52,7 @@ class HomeRemoteDataSource(
                     doQueryHash = doQueryHash
             )
     )
+    suspend fun getHomePageBannerData(): HomeBannerData? = withContext(dispatchers.io) {
+        getHomePageBannerUseCase.executeOnBackground()
+    }
 }

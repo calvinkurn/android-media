@@ -20,13 +20,13 @@ import com.tokopedia.top_ads_headline.Constants.POSITIVE_PHRASE
 import com.tokopedia.top_ads_headline.Constants.TYPE_HEADLINE_KEYWORD
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.EditTopAdsHeadlineKeywordActivity
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeySelectedAdapter
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsHeadlineKeyViewModel
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
@@ -113,7 +113,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     private fun getKeyWordOperations(): MutableList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> {
         return ArrayList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation>().apply {
             stepperModel?.selectedKeywords?.forEach {
-                add(TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
+                add(
+                    TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
                         action = ACTION_CREATE,
                         keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword(
                                 type = POSITIVE_PHRASE,

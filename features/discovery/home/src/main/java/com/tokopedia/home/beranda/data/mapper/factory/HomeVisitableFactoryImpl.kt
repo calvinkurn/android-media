@@ -18,7 +18,10 @@ import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -274,7 +277,19 @@ class HomeVisitableFactoryImpl(
                         }
 
                         TYPE_BANNER -> {
-
+                            data.atfStatusCondition (
+                                    onSuccess = {
+                                        addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>())
+                                    },
+                                    onError = {
+                                        when(channelPosition) {
+                                            0 -> visitableList.add(ErrorStateChannelOneModel())
+                                            1 -> visitableList.add(ErrorStateChannelTwoModel())
+                                            2 -> visitableList.add(ErrorStateChannelThreeModel())
+                                        }
+                                    }
+                            )
+                            channelPosition++
                         }
 
                         TYPE_TICKER -> {
@@ -327,6 +342,32 @@ class HomeVisitableFactoryImpl(
     override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeVisitableFactory {
         addDynamicChannelData(addLoadingMore = addLoadingMore, useDefaultWhenEmpty = useDefaultWhenEmpty, startPosition = homeData?.atfData?.dataList?.size ?: 0)
         return this
+    }
+
+    private fun addHomePageBannerData(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?) {
+        if (!isCache) {
+            bannerDataModel?.let {
+                val channelModel = ChannelModel(
+                        channelGrids = it.slides?.map {
+                            ChannelGrid(
+                                    applink = it.applink,
+                                    campaignCode = it.campaignCode,
+                                    id = it.id.toString(),
+                                    imageUrl = it.imageUrl,
+                                    name = it.title,
+                                    attribution = it.creativeName,
+                                    persona = it.persona,
+                                    categoryPersona = it.categoryPersona,
+                                    brandId = it.brandId,
+                                    categoryId = it.categoryId
+                            )
+                        }?: listOf(),
+                        groupId = "",
+                        id = ""
+                )
+                visitableList.add(BannerDataModel(channelModel = channelModel, isCache = isCache))
+            }
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList

@@ -1,0 +1,16 @@
+{
+  "readme": "Review Reply - click kirim button to reply review",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "review reply page",
+      "productId": "\\d+",
+      "shopId": "\\d+",
+      "screenName": "review reply page",
+      "event": "clickReview",
+      "eventAction": "click - kirim button to reply review",
+      "sessionIris": ".+",
+      "eventLabel": "message:.+;feedbackId:\\d+;is_edit:(true|false)"
+    }
+  ]
+}

@@ -156,6 +156,7 @@ internal class SearchProductBannerTest: ProductListPresenterTestFixtures() {
         val dummyTDN = TopAdsImageViewModel(position = 1, bannerName = "Position 1")
         searchProductModel.setTopAdsImageViewModelList(listOf(dummyTDN))
 
+        `Given top ads headline helper will process headline ads`(searchProductModel)
         `Given search product API will success`(searchProductModel)
         `Given view will set and add product list`()
 
@@ -203,6 +204,7 @@ internal class SearchProductBannerTest: ProductListPresenterTestFixtures() {
         val dummyTDN = TopAdsImageViewModel(position = 1, bannerName = "Position 1")
         searchProductModel.setTopAdsImageViewModelList(listOf(dummyTDN))
 
+        `Given top ads headline helper will process headline ads`(searchProductModel)
         `Given search product API will success`(searchProductModel)
         `Given view will set and add product list`()
 
