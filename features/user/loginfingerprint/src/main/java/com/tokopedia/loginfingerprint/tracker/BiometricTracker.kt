@@ -224,6 +224,7 @@ class BiometricTracker {
         const val ACTION_CLICK_BIOMETRIC_ACTIVATION = "biometrics - click on aktivasi sekarang"
         const val ACTION_CLICK_BIOMETRIC_STAY_LOGOUT = "biometrics - click on tetap keluar"
         const val ACTION_CLICK_BIOMETRIC_CLOSE_BTN = "biometrics - click on close button"
+        const val ACTION_CLICK_ON_LOGOUT_BIOMETRIC = "click on logout"
 
         const val CATEGORY_LOGIN_PAGE = "login page"
         const val CATEGORY_LOGOUT_PAGE = "logout page"

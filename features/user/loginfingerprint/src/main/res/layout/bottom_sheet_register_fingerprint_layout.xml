@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:padding="@dimen/unify_space_8"
+    android:padding="@dimen/unify_space_12"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
@@ -44,11 +44,12 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/bottom_sheet_reg_biom_secondary_btn"
-        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_secondary_biometric_offering_dialog"
         app:unifyButtonVariant="ghost"
+        android:layout_marginBottom="@dimen/unify_space_12"
         />
 
 </LinearLayout>

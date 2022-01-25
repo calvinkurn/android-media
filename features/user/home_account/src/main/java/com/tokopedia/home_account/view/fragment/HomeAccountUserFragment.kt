@@ -489,11 +489,15 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
             REQUEST_CODE_REGISTER_BIOMETRIC -> {
                 if(resultCode == Activity.RESULT_OK) {
+                    biometricOfferingDialog?.dismiss()
                     biometricTracker.trackOnAktivasiResult(EVENT_LABEL_SUCCESS)
                     FingerprintDialogHelper.createBiometricOfferingSuccessDialog(requireActivity(), onPrimaryBtnClicked = {
                         doLogout()
                     })
                 } else {
+                    activity?.supportFragmentManager?.run {
+                        biometricOfferingDialog?.show(this, "")
+                    }
                     biometricTracker.trackOnAktivasiResult(EVENT_LABEL_FAILED)
                     view?.run {
                         Toaster.build(this, getString(R.string.label_failed_register_biometric_offering), Toaster.LENGTH_LONG).show()
@@ -645,12 +649,14 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                                 ApplinkConstInternalGlobal.REGISTER_BIOMETRIC
                             )
                             startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
+                            biometricOfferingDialog?.dismiss()
                         },
                         onSecondaryBtnClicked = {
                             biometricTracker.trackClickOnTetapKeluar()
                             showDialogLogout()
                             biometricOfferingDialog?.dismiss()
                         }, onCloseBtnClicked = {
+                            biometricOfferingDialog?.dismiss()
                             biometricTracker.trackClickOnCloseBtnOffering()
                         })
                 } else {
