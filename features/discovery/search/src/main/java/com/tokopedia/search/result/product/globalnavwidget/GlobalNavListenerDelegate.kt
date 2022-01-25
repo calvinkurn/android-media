@@ -1,18 +1,23 @@
 package com.tokopedia.search.result.product.globalnavwidget
 
 import android.content.Context
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.search.utils.applinkopener.ApplinkOpener
+import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
+import com.tokopedia.search.utils.contextprovider.ContextProvider
+import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.search.utils.decodeQueryParameter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
 class GlobalNavListenerDelegate(
     private val trackingQueue: TrackingQueue?,
-    private val context: Context?,
-): GlobalNavListener {
+    context: Context?,
+): GlobalNavListener,
+    ApplinkOpener by ApplinkOpenerDelegate,
+    ContextProvider by WeakReferenceContextProvider(context) {
 
     override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item, keyword: String) {
-        RouteManager.route(context, item.applink.decodeQueryParameter())
+        openApplink(context, item.applink.decodeQueryParameter())
 
         GlobalNavWidgetTracking.trackEventClickGlobalNavWidgetItem(
             item.getGlobalNavItemAsObjectDataLayer(item.name),
@@ -23,7 +28,7 @@ class GlobalNavListenerDelegate(
     }
 
     override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView) {
-        RouteManager.route(context, globalNavDataView.seeAllApplink.decodeQueryParameter())
+        openApplink(context, globalNavDataView.seeAllApplink.decodeQueryParameter())
 
         GlobalNavWidgetTracking.eventUserClickSeeAllGlobalNavWidget(
             globalNavDataView.keyword,
