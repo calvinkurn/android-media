@@ -14,6 +14,11 @@ sealed class ProductMenuUiModel(
     open val product: ProductUiModel
 ): Visitable<ProductMenuAdapterFactory> {
 
+    companion object {
+        // Wed Mar 30 2022 00:00:00
+        private const val PRODUCT_COUPON_END_DATE = 1648573200000
+    }
+
     data class Preview(override val product: ProductUiModel): ProductMenuUiModel(
         R.string.product_manage_preview_menu,
         IconUnify.VISIBILITY,
@@ -87,7 +92,7 @@ sealed class ProductMenuUiModel(
     data class CreateProductCoupon(override val product: ProductUiModel): ProductMenuUiModel(
         R.string.product_manage_create_product_coupon,
         IconUnify.DISCOUNT,
-        1648573200000,
+        PRODUCT_COUPON_END_DATE,
         product
     )
 
