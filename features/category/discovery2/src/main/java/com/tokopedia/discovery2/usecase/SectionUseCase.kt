@@ -14,19 +14,21 @@ import javax.inject.Inject
 
 class SectionUseCase @Inject constructor(private val sectionRepository: SectionRepository) {
 
-    suspend fun getChildComponents(componentId: String, pageEndPoint: String):Boolean{
+    suspend fun getChildComponents(componentId: String, pageEndPoint: String): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
-            val components = sectionRepository.getComponents(pageEndPoint,it.sectionId,getQueryFilterString(
-                it.userAddressData
-            ))
-            withContext(Dispatchers.IO){
+            val components = sectionRepository.getComponents(
+                pageEndPoint, it.sectionId, getQueryFilterString(
+                    it.userAddressData
+                )
+            )
+            withContext(Dispatchers.IO) {
                 components.forEach { comp ->
                     comp.parentSectionId = it.sectionId
                     val creativeName = comp.creativeName ?: ""
                     var isProductComponent = true
-                    val productListData = when(comp.name) {
+                    val productListData = when (comp.name) {
                         ComponentNames.ProductCardRevamp.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
                                 DiscoveryDataMapper().mapListToComponentList(
@@ -68,22 +70,25 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                                 creativeName
                             )
                         }
-                        else ->{
+                        else -> {
                             isProductComponent = false
                             null
                         }
                     }
-                    if(isProductComponent){
+                    if (isProductComponent) {
                         comp.nextPageKey = comp.compAdditionalInfo?.nextPage
                         comp.setComponentsItem(productListData, component.tabName)
                         comp.noOfPagesLoaded = 1
                         if (productListData?.isNotEmpty() == true) {
                             if (comp.properties?.tokonowATCActive == true)
-                                Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
+                                Utils.updateProductAddedInCart(
+                                    productListData,
+                                    getCartData(pageEndPoint)
+                                )
                             comp.pageLoadedCounter = 2
                             comp.verticalProductFailState = false
                             comp.showVerticalLoader = true
-                        }else{
+                        } else {
                             comp.showVerticalLoader = false
                         }
                     }
@@ -92,12 +97,13 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
             }
             it.setComponentsItem(components)
             it.noOfPagesLoaded = 1
+            it.verticalProductFailState = false
             return true
         }
         return false
     }
 
-    private fun getQueryFilterString(userAddressData:LocalCacheModel?):String {
+    private fun getQueryFilterString(userAddressData: LocalCacheModel?): String {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(userAddressData))
         return Utils.getQueryString(queryParameterMap)
