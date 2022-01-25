@@ -91,10 +91,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                         hideClearIcon()
-                        setLoading(true)
-                        if (s?.toString()?.isEmpty() == true) {
-                            clearErrorState()
-                        }
+                        clearErrorState()
+                        setLoading(s?.toString()?.isNotEmpty() == true)
                         mInputFieldListener?.onRenderOperator(true)
                     }
                 })

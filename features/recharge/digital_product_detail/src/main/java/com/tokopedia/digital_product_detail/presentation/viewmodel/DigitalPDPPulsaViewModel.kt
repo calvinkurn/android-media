@@ -30,9 +30,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
+    private var loadingJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect()
     )
+
+    var isEligibleToBuy = false
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -145,18 +148,24 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun validateClientNumber(clientNumber: String) {
-        var errorMessage = ""
-        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
-            val phoneIsValid = Pattern.compile(validation.rule)
-                .matcher(clientNumber).matches()
-            if (!phoneIsValid) {
-                errorMessage = validation.message
+        loadingJob?.cancel()
+        loadingJob = viewModelScope.launch {
+            var errorMessage = ""
+            for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
+                val phoneIsValid = Pattern.compile(validation.rule)
+                    .matcher(clientNumber).matches()
+                if (!phoneIsValid) {
+                    errorMessage = validation.message
+                }
             }
+            isEligibleToBuy = errorMessage.isEmpty()
+            delay(VALIDATOR_DELAY_TIME)
+            _clientNumberValidatorMsg.postValue(errorMessage)
         }
-        _clientNumberValidatorMsg.postValue(errorMessage)
     }
 
     companion object {
         const val DELAY_TIME = 200L
+        const val VALIDATOR_DELAY_TIME = 3000L
     }
 }
