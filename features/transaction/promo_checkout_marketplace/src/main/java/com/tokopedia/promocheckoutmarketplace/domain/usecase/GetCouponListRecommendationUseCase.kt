@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -12,6 +13,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
+@GqlQuery(GetCouponListRecommendationUseCase.QUERY_NAME, GetCouponListRecommendationUseCase.QUERY)
 class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                                              private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<CouponListRecommendationResponse>() {
 
@@ -31,14 +33,15 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
             throw RuntimeException("Parameter is null!")
         }
 
-        val request = GraphqlRequest(QUERY, CouponListRecommendationResponse::class.java, params)
+        val request = GraphqlRequest(CouponListRecommendationQuery.GQL_QUERY, CouponListRecommendationResponse::class.java, params)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 
     companion object {
         private const val KEY_PARAMS = "params"
 
-        val QUERY = """
+        const val QUERY_NAME = "CouponListRecommendationQuery"
+        const val QUERY = """
             mutation coupon_list_recommendation(${'$'}params: PromoStackRequest, ${'$'}chosen_address: ChosenAddressParam) {
                 coupon_list_recommendation(params: ${'$'}params, chosen_address: ${'$'}chosen_address) {
                     message
@@ -138,7 +141,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                     }
                 }
             }
-        """.trimIndent()
+        """
     }
 
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -8,15 +9,17 @@ import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionRe
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
+@GqlQuery(GetPromoSuggestionUseCase.QUERY_NAME, GetPromoSuggestionUseCase.QUERY)
 class GetPromoSuggestionUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) : UseCase<GetPromoSuggestionResponse>() {
 
     override suspend fun executeOnBackground(): GetPromoSuggestionResponse {
-        val request = GraphqlRequest(QUERY, GetPromoSuggestionResponse::class.java)
+        val request = GraphqlRequest(GetPromoSuggestionQuery().getQuery(), GetPromoSuggestionResponse::class.java)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 
     companion object {
-        val QUERY = """
+        const val QUERY_NAME = "GetPromoSuggestionQuery"
+        const val QUERY = """
             {
               GetPromoSuggestion(serviceID: "marketplace") {
                 PromoHistory {
@@ -35,6 +38,6 @@ class GetPromoSuggestionUseCase @Inject constructor(@ApplicationContext private 
                 }
               }
             }
-        """.trimIndent()
+        """
     }
 }
