@@ -177,6 +177,9 @@ abstract class TopchatRoomTest {
     protected lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseStub
 
     @Inject
+    protected lateinit var getChatPreAttachPayloadUseCase: GetChatPreAttachPayloadUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     @Inject

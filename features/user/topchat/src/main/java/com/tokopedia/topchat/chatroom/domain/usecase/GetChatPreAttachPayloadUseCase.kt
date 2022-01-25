@@ -16,7 +16,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseC
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase.Param.Companion.TYPE
 import javax.inject.Inject
 
-class GetChatPreAttachPayloadUseCase @Inject constructor(
+open class GetChatPreAttachPayloadUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<GetChatPreAttachPayloadUseCase.Param, PreAttachPayloadResponse>(dispatchers.io) {
