@@ -126,7 +126,7 @@ object DeeplinkMapperDigital {
                     ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA
                 }
                 TEMPLATE_ROAMING_DIGITAL_PDP -> {
-                    ApplinkConsInternalDigital.DIGITAL_PDP_ROAMING
+                    ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA
                 }
                 else -> deeplink
             }
