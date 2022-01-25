@@ -4,23 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
+import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
+import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
+import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
-import com.tokopedia.play.broadcaster.view.partial.PreparationListViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
-import com.tokopedia.play_common.viewcomponent.viewComponent
 import javax.inject.Inject
 
 /**
@@ -30,18 +27,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
-    PreparationListViewComponent.Listener,
-    ActionBarViewComponent.Listener {
+    ActionBarView.Listener,
+    PreparationMenuView.Listener,
+    TitleFormView.Listener {
 
     /** ViewModel */
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    /** View Component */
-    private val actionBarView by viewComponent { ActionBarViewComponent(it, this) }
-    private val preparationListView by viewComponent{ PreparationListViewComponent(it, this) }
-    private lateinit var flStartLivestream: FrameLayout
-    private lateinit var ivSwitchCamera: IconUnify
+    /** View */
+    private var _binding: FragmentPlayBroadcastPreparationBinding? = null
+    private val binding get() = _binding!!
 
     private val fragmentViewContainer = FragmentViewContainer()
 
@@ -61,7 +57,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_play_broadcast_preparation, container, false)
+        _binding = FragmentPlayBroadcastPreparationBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            container,
+            false
+        )
+        return _binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,19 +72,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupListener()
         setupObserver()
 
-        if(parentViewModel.channelTitle.isEmpty()) {
-            /** TODO: show input title form */
-            Toast.makeText(requireContext(), "Input title", Toast.LENGTH_SHORT).show()
-        }
+        if(parentViewModel.channelTitle.isEmpty()) showTitleForm(true)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     /** Setup */
     private fun setupView(view: View) {
-        flStartLivestream = view.findViewById(R.id.fl_bro_start_livestream)
-        ivSwitchCamera = view.findViewById(R.id.ic_bro_preparation_switch_camera)
-
-        actionBarView.setTitle(parentViewModel.getShopName())
-        actionBarView.setShopIcon(parentViewModel.getShopIconUrl())
+        binding.viewActionBar.setShopName(parentViewModel.getShopName())
+        binding.viewActionBar.setShopIcon(parentViewModel.getShopIconUrl())
     }
 
     private fun setupInsets(view: View) {
@@ -93,11 +93,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupListener() {
-        flStartLivestream.setOnClickListener {
+        binding.viewActionBar.setListener(this)
+        binding.formTitle.setListener(this)
+
+        binding.flBroStartLivestream.setOnClickListener {
             /** TODO: start countdown */
         }
 
-        ivSwitchCamera.setOnClickListener {
+        binding.icBroPreparationSwitchCamera.setOnClickListener {
             parentViewModel.switchCamera()
             analytic.clickSwitchCameraOnSetupPage()
         }
@@ -105,23 +108,32 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun setupObserver() {
         parentViewModel.observableTitle.observe(viewLifecycleOwner) {
-            preparationListView.isSetTitleChecked(true)
+            binding.viewPreparationMenu.isSetTitleChecked(true)
         }
     }
 
-    /** Callback */
-    override fun onCameraIconClicked() {
-        parentViewModel.switchCamera()
-        analytic.clickSwitchCameraOnSetupPage()
+    /** Form */
+    private fun showTitleForm(isShow: Boolean) {
+        if(isShow) {
+            hideMainComponent()
+
+            binding.formTitle.setTitle(parentViewModel.channelTitle)
+            binding.formTitle.setLoading(false)
+            binding.formTitle.visibility = View.VISIBLE
+        }
+        else {
+            binding.formTitle.visibility = View.GONE
+        }
     }
 
-    override fun onCloseIconClicked() {
-        analytic.clickCloseOnSetupPage()
-        activity?.onBackPressed()
+    /** Callback Action Bar */
+    override fun onClickClosePreparation() {
+        closePage()
     }
 
+    /** Callback Preparation Menu */
     override fun onClickSetTitle() {
-        TODO("Not yet implemented")
+        showTitleForm(true)
     }
 
     override fun onClickSetCover() {
@@ -130,5 +142,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onClickSetProduct() {
         TODO("Not yet implemented")
+    }
+
+    /** Callback Title Form */
+    override fun onCloseTitleForm(view: TitleFormView) {
+        if(parentViewModel.channelTitle.isEmpty()) closePage()
+        else showTitleForm(false)
+    }
+
+    override fun onTitleSaved(view: TitleFormView, title: String) {
+        TODO("Not yet implemented")
+    }
+
+    /** Helper */
+    private fun closePage() {
+        analytic.clickCloseOnSetupPage()
+        activity?.onBackPressed()
+    }
+
+    private fun hideMainComponent() {
+        binding.groupPreparationMain.visibility = View.INVISIBLE
     }
 }

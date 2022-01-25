@@ -1,8 +1,9 @@
-package com.tokopedia.play.broadcaster.view.custom.title
+package com.tokopedia.play.broadcaster.view.custom.preparation
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -44,7 +45,6 @@ class TitleFormView : ConstraintLayout {
 
     init {
         setupView()
-        setupInsets()
     }
 
     private fun setupView() {
@@ -54,7 +54,7 @@ class TitleFormView : ConstraintLayout {
                 context, R.color.Unify_Static_White
             )
             val secondaryColor = MethodChecker.getColor(
-                context, com.tokopedia.play.broadcaster.R.color.play_bro_dms_pinned_msg_form_border
+                context, com.tokopedia.play.broadcaster.R.color.play_bro_dms_title_form_border
             )
             textFieldTitle.textInputLayout.boxStrokeColor = secondaryColor
             textFieldTitle.editText.setTextColor(whiteColor)
@@ -84,20 +84,9 @@ class TitleFormView : ConstraintLayout {
                 return@setOnKeyListener false
             }
 
-            showInputMethod()
-
             icCloseTitleForm.setOnClickListener {
                 mListener?.onCloseTitleForm(this@TitleFormView)
             }
-        }
-    }
-
-    private fun setupInsets() {
-        binding.root.doOnApplyWindowInsets { view, insets, padding, _ ->
-            view.updatePadding(
-                top = insets.systemWindowInsetTop + padding.top,
-                bottom = insets.systemWindowInsetBottom + padding.bottom
-            )
         }
     }
 
@@ -135,9 +124,10 @@ class TitleFormView : ConstraintLayout {
     }
 
     private fun showInputMethod() {
+        Log.d("<LOG>", "showInputMethod")
         binding.textFieldTitle.editText.doOnLayout {
-            binding.textFieldTitle.editText.requestFocus()
-            binding.textFieldTitle.editText.showKeyboard()
+            requestLayout()
+            showKeyboard()
         }
     }
 

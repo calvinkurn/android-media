@@ -43,4 +43,5 @@
 
     <!-- Preparation -->
     <color name="play_dms_broadcast_start_livestream">#E02954</color>
+    <color name="play_bro_dms_title_form_border">#BFC9D9</color>
 </resources>

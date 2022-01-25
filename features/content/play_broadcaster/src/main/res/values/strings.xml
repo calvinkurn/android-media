@@ -223,4 +223,7 @@
     <string name="play_bro_title_label">Judul</string>
     <string name="play_bro_cover_label">Cover</string>
     <string name="play_bro_product_label">Produk</string>
+
+    <string name="play_bro_title_form_hint">Tulis Judul Live</string>
+    <string name="play_bro_title_form_instruction">Buat judul yang kreatif dan bisa bikin calon penonton penasaran!</string>
 </resources>

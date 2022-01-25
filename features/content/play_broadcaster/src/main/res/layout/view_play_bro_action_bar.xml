@@ -8,7 +8,7 @@
     tools:background="@color/black">
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_bro_close"
+        android:id="@+id/ic_bro_preparation_close"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         app:icon_color_light_enable="@color/Unify_Static_White"
@@ -23,9 +23,9 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="@id/ic_bro_close"
-        app:layout_constraintStart_toEndOf="@id/ic_bro_close"
-        app:layout_constraintTop_toTopOf="@id/ic_bro_close"
+        app:layout_constraintBottom_toBottomOf="@id/ic_bro_preparation_close"
+        app:layout_constraintStart_toEndOf="@id/ic_bro_preparation_close"
+        app:layout_constraintTop_toTopOf="@id/ic_bro_preparation_close"
         app:unify_image_placeholder="@color/background_apps"
         app:unify_image_type="circle" />
 
@@ -38,10 +38,10 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="@id/ic_bro_close"
+        app:layout_constraintBottom_toBottomOf="@id/ic_bro_preparation_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_bro_preparation_shop_icon"
-        app:layout_constraintTop_toTopOf="@id/ic_bro_close"
+        app:layout_constraintTop_toTopOf="@id/ic_bro_preparation_close"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         tools:text="@string/play_bro_mock_room_title" />
