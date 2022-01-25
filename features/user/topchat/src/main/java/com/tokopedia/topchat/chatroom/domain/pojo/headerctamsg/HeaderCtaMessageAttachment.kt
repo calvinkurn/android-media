@@ -2,9 +2,7 @@ package com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg
 
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatProductAttachmentPreviewUiModel
 
 data class HeaderCtaMessageAttachment(

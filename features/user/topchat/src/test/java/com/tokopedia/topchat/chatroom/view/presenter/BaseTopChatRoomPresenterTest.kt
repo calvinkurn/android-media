@@ -8,7 +8,6 @@ import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.SendableUiModel
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -22,7 +21,7 @@ import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
@@ -150,13 +149,12 @@ abstract class BaseTopChatRoomPresenterTest {
         )
 
         fun generateSendAbleProductPreview(): SendablePreview {
-            val productPreview = ProductPreview(
-                name = "hello product",
-                imageUrl = exImageUrl,
-                price = "Rp120.000",
-                id = "12398764"
-            )
-            return SendableProductPreview(productPreview)
+            return TopchatProductAttachmentPreviewUiModel.Builder().apply {
+                withProductName("hello product")
+                withImages(listOf(exImageUrl))
+                withProductPrice("Rp120.000")
+                withProductId("12398764")
+            }.build()
         }
 
         fun generateSendAbleInvoicePreview(): SendablePreview {
