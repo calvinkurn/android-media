@@ -9,6 +9,11 @@ import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBotto
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.OUT_OF_COVERAGE_DESCRIPTION_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.OUT_OF_COVERAGE_PRIMARY_BUTTON_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.OUT_OF_COVERAGE_SECONDARY_BUTTON_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.OUT_OF_COVERAGE_TITLE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowEmptyStateOocBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -40,39 +45,27 @@ class TokoNowEmptyStateOocViewHolder(
     }
 
     private fun showEmptyStateTitle(serviceType: String) {
-        val resId = if(serviceType == ServiceType.NOW_2H) {
-            R.string.tokopedianow_common_empty_state_title
-        } else {
-            R.string.tokopedianow_15m_empty_state_title
+        getServiceTypeRes(OUT_OF_COVERAGE_TITLE_ID, serviceType)?.let {
+            binding?.emptyStateOcc?.setTitle(getString(it))
         }
-        binding?.emptyStateOcc?.setTitle(getString(resId))
     }
 
     private fun showEmptyStateDescription(serviceType: String) {
-        val resId = if(serviceType == ServiceType.NOW_2H) {
-            R.string.tokopedianow_common_empty_state_desc
-        } else {
-            R.string.tokopedianow_15m_empty_state_desc
+        getServiceTypeRes(OUT_OF_COVERAGE_DESCRIPTION_ID, serviceType)?.let {
+            binding?.emptyStateOcc?.setDescription(getString(it))
         }
-        binding?.emptyStateOcc?.setDescription(getString(resId))
     }
 
     private fun showPrimaryBtnText(serviceType: String) {
-        val resId = if(serviceType == ServiceType.NOW_2H) {
-            R.string.tokopedianow_common_empty_state_button_change_address
-        } else {
-            R.string.tokopedianow_15m_empty_state_primary_btn
+        getServiceTypeRes(OUT_OF_COVERAGE_PRIMARY_BUTTON_ID, serviceType)?.let {
+            binding?.emptyStateOcc?.setPrimaryBtnText(getString(it))
         }
-        binding?.emptyStateOcc?.setPrimaryBtnText(getString(resId))
     }
 
     private fun showSecondaryBtnText(serviceType: String) {
-        val resId = if(serviceType == ServiceType.NOW_2H) {
-            R.string.tokopedianow_common_empty_state_button_return
-        } else {
-            R.string.tokopedianow_common_empty_state_button_change_address
+        getServiceTypeRes(OUT_OF_COVERAGE_SECONDARY_BUTTON_ID, serviceType)?.let {
+            binding?.emptyStateOcc?.setSecondaryBtnText(getString(it))
         }
-        binding?.emptyStateOcc?.setSecondaryBtnText(getString(resId))
     }
 
     private fun setActionListener(eventCategory: String, serviceType: String) {
