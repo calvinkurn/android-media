@@ -247,10 +247,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
             }
         })
-        sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
-            groupId = it
-            viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
-        })
     }
 
     private fun getBidForKeywords() {
@@ -639,6 +635,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        registerObservers()
         userID = UserSession(view.context).userId
 
         info1.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
@@ -711,6 +709,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 sharedViewModel.setRekomendedBudget(result)
                 checkForRekommendedBid(result)
             }
+        })
+    }
+
+    private fun registerObservers() {
+        sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
+            groupId = it
+            viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
         })
     }
 
