@@ -9,7 +9,7 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 object GqlGetMilestoneData : GqlQueryInterface {
 
     private const val OPERATION_NAME = "fetchMilestoneWidgetData"
-    private val GQL_QUERY = """
+    val QUERY = """
             query $OPERATION_NAME(${'$'}dataKeys: [dataKey!]!) {
               $OPERATION_NAME(dataKeys: ${'$'}dataKeys) {
                 data {
@@ -74,7 +74,7 @@ object GqlGetMilestoneData : GqlQueryInterface {
         return listOf(OPERATION_NAME)
     }
 
-    override fun getQuery(): String = GQL_QUERY
+    override fun getQuery(): String = QUERY
 
     override fun getTopOperationName(): String = OPERATION_NAME
 }
