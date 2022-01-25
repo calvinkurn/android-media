@@ -399,7 +399,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun notifyPreviewRemoved(model: SendablePreview) {
-        if (model is SendableProductPreview && hasProductPreviewShown()) {
+        if (model is TopchatProductAttachmentPreviewUiModel && hasProductPreviewShown()) {
             reloadSrw()
         }
     }
@@ -1811,7 +1811,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
         if (attachment is InvoicePreviewUiModel) {
             analytics.invoiceAttachmentSent(attachment)
-        } else if (attachment is SendableProductPreview) {
+        } else if (attachment is TopchatProductAttachmentPreviewUiModel) {
             analytics.trackSendProductAttachment()
         }
     }
@@ -2271,7 +2271,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun trackClickSrwBubbleQuestion(
         products: List<SendablePreview>, question: QuestionUiModel
     ) {
-        val productIds = products.filterIsInstance<SendableProductPreview>()
+        val productIds = products.filterIsInstance<TopchatProductAttachmentPreviewUiModel>()
             .map { it.productId }
         val trackProductIds = productIds.joinToString(separator = ", ")
         analytics.eventClickSrw(shopId, session.userId, trackProductIds, question)

@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatProductAttachmentPreviewUiModel
 
 data class HeaderCtaMessageAttachment(
     @SerializedName("body")
@@ -28,11 +29,10 @@ data class HeaderCtaMessageAttachment(
 
     fun generateSendableProductPreview(): List<SendablePreview> {
         return extras.extrasProduct.map { extraProduct ->
-            val productPreview = ProductPreview(
-                url = extraProduct.url,
-                id = extraProduct.productId
-            )
-            SendableProductPreview(productPreview)
+            TopchatProductAttachmentPreviewUiModel.Builder().apply {
+                withProductUrl(extraProduct.url)
+                withProductId(extraProduct.productId)
+            }.build()
         }
     }
 

@@ -87,7 +87,7 @@ class AttachmentPreviewAdapter(
     }
 
     fun isShowingProduct(): Boolean {
-        return attachments.getOrNull(0) is SendableProductPreview
+        return attachments.getOrNull(0) is TopchatProductAttachmentPreviewUiModel
     }
 
     override fun closeItem(model: SendablePreview) {

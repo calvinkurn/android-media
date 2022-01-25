@@ -1064,7 +1064,7 @@ class TopChatViewModel @Inject constructor(
     }
 
     fun getProductIdPreview(): List<String> {
-        return attachmentsPreview.filterIsInstance<SendableProductPreview>()
+        return attachmentsPreview.filterIsInstance<TopchatProductAttachmentPreviewUiModel>()
             .map { it.productId }
     }
 
