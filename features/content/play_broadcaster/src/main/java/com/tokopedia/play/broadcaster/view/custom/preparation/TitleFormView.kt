@@ -2,15 +2,13 @@ package com.tokopedia.play.broadcaster.view.custom.preparation
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.text.Editable
 import android.text.InputType
-import android.text.TextWatcher
 import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationTitleFormBinding
 import com.tokopedia.play_common.util.extension.doOnLayout
@@ -18,6 +16,7 @@ import com.tokopedia.play_common.util.extension.showKeyboard
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.broadcaster.R
+import kotlinx.coroutines.*
 
 /**
  * Created By : Jonathan Darwin on January 25, 2022
@@ -44,6 +43,9 @@ class TitleFormView : ConstraintLayout {
     )
 
     private var mListener: Listener? = null
+
+    private val dispatchers = CoroutineDispatchersProvider
+    private val scope = CoroutineScope(dispatchers.io)
 
     init {
         setupView()
@@ -121,6 +123,7 @@ class TitleFormView : ConstraintLayout {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         mListener = null
+        scope.cancel()
     }
 
     override fun setVisibility(visibility: Int) {
@@ -130,13 +133,23 @@ class TitleFormView : ConstraintLayout {
 
     private fun showInputMethod() {
         binding.textFieldTitle.editText.doOnLayout {
-            binding.textFieldTitle.editText.requestFocus()
-            binding.textFieldTitle.editText.showKeyboard()
+            scope.launch {
+                delay(DELAY_SHOW_KEYBOARD)
+
+                withContext(dispatchers.main) {
+                    binding.textFieldTitle.editText.requestFocus()
+                    binding.textFieldTitle.editText.showKeyboard()
+                }
+            }
         }
     }
 
     interface Listener {
         fun onCloseTitleForm(view: TitleFormView)
         fun onTitleSaved(view: TitleFormView, title: String)
+    }
+
+    companion object {
+        private const val DELAY_SHOW_KEYBOARD = 1000L
     }
 }
