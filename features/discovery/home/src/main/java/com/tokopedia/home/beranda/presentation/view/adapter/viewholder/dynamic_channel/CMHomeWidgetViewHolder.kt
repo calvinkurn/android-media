@@ -19,9 +19,15 @@ class CMHomeWidgetViewHolder(
 
     override fun bind(dataModel: CMHomeWidgetDataModel) {
         dataModel.cmHomeWidgetData?.let { cmHomeWidgetData ->
-            itemView.cm_home_widget.visibility = View.VISIBLE
-            itemView.cm_home_widget.setOnCMHomeWidgetCloseClickListener(this)
-            itemView.cm_home_widget.loadCMHomeWidgetData(cmHomeWidgetData)
+            if(cmHomeWidgetData.cmHomeWidgetProductCardData.isNullOrEmpty()){
+                itemView.cm_home_widget.visibility = View.GONE
+            }else {
+                itemView.cm_home_widget.visibility = View.VISIBLE
+                itemView.cm_home_widget.setOnCMHomeWidgetCloseClickListener(this)
+                itemView.cm_home_widget.loadCMHomeWidgetData(cmHomeWidgetData)
+            }
+        } ?: run {
+            callback.getCMHomeWidget()
         }
         setChannelDivider(dataModel.channel)
     }
@@ -43,7 +49,7 @@ class CMHomeWidgetViewHolder(
         val LAYOUT = R.layout.home_dc_cm_home_widget_item
     }
 
-    override fun onCMHomeWidgetDismissClick(parentId: Long, campaignId: Long) {
+    override fun onCMHomeWidgetDismissClick(parentId: String, campaignId: String) {
         itemView.cm_home_widget.visibility = View.GONE
         callback.onCMHomeWidgetDismissClick()
     }

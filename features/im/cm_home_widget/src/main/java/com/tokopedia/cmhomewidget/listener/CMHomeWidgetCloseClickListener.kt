@@ -1,5 +1,5 @@
 package com.tokopedia.cmhomewidget.listener
 
 interface CMHomeWidgetCloseClickListener {
-    fun onCMHomeWidgetDismissClick(parentId: Long, campaignId: Long)
+    fun onCMHomeWidgetDismissClick(parentId: String, campaignId: String)
 }

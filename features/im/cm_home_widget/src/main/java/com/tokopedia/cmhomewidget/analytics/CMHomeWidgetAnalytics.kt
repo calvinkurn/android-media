@@ -17,26 +17,28 @@ class CMHomeWidgetAnalytics @Inject constructor(
         get() = TrackApp.getInstance().gtm
 
     fun sendCMHomeWidgetReceivedEvent(
-        parentId: Long,
-        campaignId: Long,
-        notificationId: Long,
+        parentId: String,
+        campaignId: String,
+        notificationId: String,
         messageId: String
     ) {
-        val map = TrackAppUtils.gtmData(
-            CMHomeWidgetAnalyticsConstants.Event.WIDGET_RECEIVED,
-            CMHomeWidgetAnalyticsConstants.Category.HOME_TO_DO_WIDGET,
-            CMHomeWidgetAnalyticsConstants.Action.RECEIVED,
-            getLabel(parentId, campaignId)
-        )
-        addStaticCommonData(map)
-        addDynamicCommonData(map, parentId, campaignId, notificationId, messageId)
-        sendGeneralEvent(map)
+        kotlin.runCatching {
+            val map = TrackAppUtils.gtmData(
+                CMHomeWidgetAnalyticsConstants.Event.WIDGET_RECEIVED,
+                CMHomeWidgetAnalyticsConstants.Category.HOME_TO_DO_WIDGET,
+                CMHomeWidgetAnalyticsConstants.Action.RECEIVED,
+                getLabel(parentId, campaignId)
+            )
+            addStaticCommonData(map)
+            addDynamicCommonData(map, parentId, campaignId, notificationId, messageId)
+            sendGeneralEvent(map)
+        }
     }
 
     fun sendCMHomeWidgetClickEvent(
-        parentId: Long,
-        campaignId: Long,
-        notificationId: Long,
+        parentId: String,
+        campaignId: String,
+        notificationId: String,
         messageId: String
     ) {
         val map = TrackAppUtils.gtmData(
@@ -51,8 +53,8 @@ class CMHomeWidgetAnalytics @Inject constructor(
     }
 
     private fun getLabel(
-        parentID: Long,
-        campaignID: Long
+        parentID: String,
+        campaignID: String
     ): String {
         return "$parentID - $campaignID"
     }
@@ -69,9 +71,9 @@ class CMHomeWidgetAnalytics @Inject constructor(
     }
 
     private fun addDynamicCommonData(
-        map: MutableMap<String, Any>, parentId: Long,
-        campaignId: Long,
-        notificationId: Long,
+        map: MutableMap<String, Any>, parentId: String,
+        campaignId: String,
+        notificationId: String,
         messageId: String
     ) {
         map[CMHomeWidgetAnalyticsConstants.Key.PARENT_ID] = parentId

@@ -26,7 +26,7 @@ data class CMHomeWidgetDataResponse(
 data class CMHomeWidgetData(
     @SerializedName("notification_id")
     @Expose
-    val notificationId: Long,
+    val notificationId: String,
     @SerializedName("message_id")
     @Expose
     val messageId: String,
@@ -35,10 +35,10 @@ data class CMHomeWidgetData(
     val isTest: Boolean,
     @SerializedName("parent_id")
     @Expose
-    val parentId: Long,
+    val parentId: String,
     @SerializedName("campaign_id")
     @Expose
-    val campaignId: Long,
+    val campaignId: String,
     @SerializedName("widget_title")
     @Expose
     val widgetTitle: String?,
@@ -54,7 +54,7 @@ data class CMHomeWidgetData(
 data class CMHomeWidgetProductCardData(
     @SerializedName("id")
     @Expose
-    val id: Long,
+    val id: String,
     @SerializedName("name")
     @Expose
     val productName: String?,
@@ -92,7 +92,7 @@ data class CMHomeWidgetProductCardData(
 data class CMHomeWidgetShop(
     @SerializedName("id")
     @Expose
-    val id: Long,
+    val id: String,
     @SerializedName("name")
     @Expose
     val shopName: String?,
@@ -105,7 +105,7 @@ data class CMHomeWidgetShop(
 data class CMHomeWidgetActionButton(
     @SerializedName("id")
     @Expose
-    val id: Long,
+    val id: String,
     @SerializedName("text")
     @Expose
     val actionButtonText: String?,
