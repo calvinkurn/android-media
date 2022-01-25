@@ -1049,9 +1049,16 @@ class TopChatViewModel @Inject constructor(
         _showableAttachmentPreviews.value = ArrayList(sendablePreviews)
     }
 
+    fun attachmentPreviewIsReady(): Boolean {
+        val sendable = attachmentsPreview.firstOrNull() as? DeferredAttachment
+                ?: return attachmentsPreview.isNotEmpty()
+        return !sendable.isLoading && !sendable.isError
+    }
+
     fun clearAttachmentPreview() {
         attachmentsPreview.clear()
     }
+
     fun initAttachmentPreview() {
         _showableAttachmentPreviews.value = attachmentsPreview
     }

@@ -1114,8 +1114,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendAttachmentPreviews(message: String? = null) {
-        val composedMsg = getComposedMessage(message)
-        viewModel.sendAttachments(composedMsg)
+        if (viewModel.attachmentPreviewIsReady()) {
+            val composedMsg = getComposedMessage(message)
+            viewModel.sendAttachments(composedMsg)
+        }
     }
 
     private fun sendComposedMsg() {
@@ -1800,8 +1802,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun clearAttachmentPreviews() {
-        topchatViewState?.clearAttachmentPreview()
-        viewModel.clearAttachmentPreview()
+        if (viewModel.attachmentPreviewIsReady()) {
+            topchatViewState?.clearAttachmentPreview()
+            viewModel.clearAttachmentPreview()
+        }
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
