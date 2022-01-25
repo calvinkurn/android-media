@@ -21,8 +21,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/sellerapp_scheme"
-                    android:host="@string/path_sellerapp_search" />
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_sellerapp_search" />
             </intent-filter>
         </activity>
     </application>

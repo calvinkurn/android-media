@@ -861,7 +861,11 @@ data class SearchProductModel(
 
             @SerializedName("options")
             @Expose
-            val inspiratioWidgetOptions: List<InspirationCardOption> = listOf()
+            val inspirationWidgetOptions: List<InspirationCardOption> = listOf(),
+
+            @SerializedName("tracking_option")
+            @Expose
+            val trackingOption: Int = 0,
     )
 
     data class InspirationCardOption (
@@ -883,6 +887,28 @@ data class SearchProductModel(
 
             @SerializedName("applink")
             @Expose
-            val applink: String = ""
+            val applink: String = "",
+
+            @SerializedName("filters")
+            @Expose
+            val filters: InspirationCardOptionFilter,
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String,
+    )
+
+    data class InspirationCardOptionFilter (
+            @SerializedName("key")
+            @Expose
+            val key: String = "",
+
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+
+            @SerializedName("value")
+            @Expose
+            val value: String = "",
     )
 }

@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.MediaController
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
@@ -30,6 +31,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
+import com.tokopedia.kol.common.util.UrlUtil
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.getCallingIntent
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
@@ -242,6 +244,7 @@ class VideoDetailFragment :
     }
 
     private fun initPlayer(url: String) {
+        if (URLUtil.isValidUrl(url))
         videoView.setVideoURI(Uri.parse(url))
         videoView.setOnErrorListener { _, p1, p2 ->
             try {

@@ -1,7 +1,10 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
 import com.tokopedia.attachcommon.data.ResultProduct
+import com.tokopedia.attachcommon.preview.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -52,5 +55,21 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(productIds[0], resultProduct[0].productId)
+    }
+
+    @Test
+    fun should_get_attachment_preview_when_init() {
+        //Given
+        val sendablePreview = SendableProductPreview(ProductPreview())
+
+        //When
+        viewModel.addAttachmentPreview(sendablePreview)
+        viewModel.initAttachmentPreview()
+
+        //Then
+        assertEquals(
+            sendablePreview,
+            viewModel.showableAttachmentPreviews.value?.firstOrNull()
+        )
     }
 }
