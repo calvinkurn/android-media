@@ -67,7 +67,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView(view)
+        setupView()
         setupInsets(view)
         setupListener()
         setupObserver()
@@ -80,8 +80,24 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         _binding = null
     }
 
+    override fun onBackPressed(): Boolean {
+        return when {
+            binding.formTitle.visibility == View.VISIBLE -> {
+                return if(parentViewModel.channelTitle.isEmpty()) {
+                    analytic.clickCloseOnSetupPage()
+                    false
+                }
+                else {
+                    showTitleForm(false)
+                    true
+                }
+            }
+            else -> super.onBackPressed()
+        }
+    }
+
     /** Setup */
-    private fun setupView(view: View) {
+    private fun setupView() {
         binding.viewActionBar.setShopName(parentViewModel.getShopName())
         binding.viewActionBar.setShopIcon(parentViewModel.getShopIconUrl())
     }
@@ -94,6 +110,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun setupListener() {
         binding.viewActionBar.setListener(this)
+        binding.viewPreparationMenu.setListener(this)
         binding.formTitle.setListener(this)
 
         binding.flBroStartLivestream.setOnClickListener {
@@ -115,20 +132,23 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** Form */
     private fun showTitleForm(isShow: Boolean) {
         if(isShow) {
-            hideMainComponent()
+            showMainComponent(false)
 
             binding.formTitle.setTitle(parentViewModel.channelTitle)
             binding.formTitle.setLoading(false)
             binding.formTitle.visibility = View.VISIBLE
         }
         else {
+            showMainComponent(true)
+
             binding.formTitle.visibility = View.GONE
         }
     }
 
     /** Callback Action Bar */
     override fun onClickClosePreparation() {
-        closePage()
+        analytic.clickCloseOnSetupPage()
+        activity?.onBackPressed()
     }
 
     /** Callback Preparation Menu */
@@ -146,8 +166,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Callback Title Form */
     override fun onCloseTitleForm(view: TitleFormView) {
-        if(parentViewModel.channelTitle.isEmpty()) closePage()
-        else showTitleForm(false)
+        activity?.onBackPressed()
     }
 
     override fun onTitleSaved(view: TitleFormView, title: String) {
@@ -155,12 +174,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     /** Helper */
-    private fun closePage() {
-        analytic.clickCloseOnSetupPage()
-        activity?.onBackPressed()
-    }
-
-    private fun hideMainComponent() {
-        binding.groupPreparationMain.visibility = View.INVISIBLE
+    private fun showMainComponent(isShow: Boolean) {
+        binding.groupPreparationMain.visibility = if(isShow) View.VISIBLE else View.GONE
     }
 }

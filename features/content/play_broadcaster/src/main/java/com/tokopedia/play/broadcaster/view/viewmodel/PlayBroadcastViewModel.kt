@@ -320,6 +320,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 }
             }
 
+            setChannelTitle("Testing")
+
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
             setProductConfig(configUiModel.productTagConfig)

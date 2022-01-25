@@ -8,15 +8,15 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_close_title_form"
-        android:layout_width="@dimen/play_dp_18"
-        android:layout_height="@dimen/play_dp_18"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/play_dp_22"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         />
 
     <androidx.constraintlayout.widget.Guideline
