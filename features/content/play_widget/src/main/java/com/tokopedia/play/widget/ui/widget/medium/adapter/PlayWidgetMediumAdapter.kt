@@ -10,21 +10,23 @@ import com.tokopedia.play_common.util.blur.ImageBlurUtil
  */
 internal class PlayWidgetMediumAdapter(
     imageBlurUtil: ImageBlurUtil,
+    cardOverlayListener: PlayWidgetMediumViewHolder.Overlay.Listener,
     cardChannelListener: PlayWidgetMediumViewHolder.Channel.Listener,
     cardBannerListener: PlayWidgetMediumViewHolder.Banner.Listener,
     cardTranscodeListener: PlayWidgetMediumViewHolder.Transcode.Listener,
-) : BaseDiffUtilAdapter<PlayWidgetItemUiModel>() {
+) : BaseDiffUtilAdapter<Any>() {
 
     init {
         delegatesManager
+            .addDelegate(PlayWidgetMediumAdapterDelegate.Overlay(cardOverlayListener))
             .addDelegate(PlayWidgetMediumAdapterDelegate.Banner(cardBannerListener))
             .addDelegate(PlayWidgetMediumAdapterDelegate.Channel(cardChannelListener))
             .addDelegate(PlayWidgetMediumAdapterDelegate.Transcode(cardTranscodeListener))
     }
 
     override fun areItemsTheSame(
-        oldItem: PlayWidgetItemUiModel,
-        newItem: PlayWidgetItemUiModel
+        oldItem: Any,
+        newItem: Any
     ): Boolean {
         return if (oldItem is PlayWidgetChannelUiModel && newItem is PlayWidgetChannelUiModel) {
             oldItem.channelId == newItem.channelId
@@ -32,8 +34,8 @@ internal class PlayWidgetMediumAdapter(
     }
 
     override fun areContentsTheSame(
-        oldItem: PlayWidgetItemUiModel,
-        newItem: PlayWidgetItemUiModel
+        oldItem: Any,
+        newItem: Any
     ): Boolean {
         return oldItem == newItem
     }

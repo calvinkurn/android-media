@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -34,6 +35,7 @@ import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumAdapter
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
+import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.setGradientBackground
@@ -66,9 +68,31 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private var mWidgetInternalListener: PlayWidgetInternalListener? = null
     private var mAnalyticListener: PlayWidgetMediumAnalyticListener? = null
 
+    private var overlayImpressHolder = ImpressHolder()
+
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
-    private var overlayImpressHolder = ImpressHolder()
+    private val cardOverlayListener = object : PlayWidgetMediumViewHolder.Overlay.Listener {
+        override fun onOverlayImpressed(view: View, position: Int) {
+            mAnalyticListener?.onImpressOverlayCard(
+                view = this@PlayWidgetMediumView,
+                channelPositionInList = position,
+                item = mModel.background,
+            )
+        }
+
+        override fun onOverlayClicked(view: View, position: Int) {
+            mAnalyticListener?.onClickOverlayCard(
+                view = this@PlayWidgetMediumView,
+                channelPositionInList = position,
+                item = mModel.background,
+            )
+
+            if (mModel.background.overlayImageAppLink.isNotBlank()) {
+                RouteManager.route(context, mModel.background.overlayImageAppLink)
+            }
+        }
+    }
 
     private val cardChannelListener = object : PlayWidgetMediumViewHolder.Channel.Listener {
 
@@ -128,6 +152,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     private val adapter = PlayWidgetMediumAdapter(
         imageBlurUtil = ImageBlurUtil(context),
+        cardOverlayListener = cardOverlayListener,
         cardChannelListener = cardChannelListener,
         cardBannerListener = cardBannerListener,
         cardTranscodeListener = cardTranscodeListener,
@@ -171,9 +196,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
      * Setup view
      */
     private fun setupView(view: View) {
-        recyclerViewItem.addItemDecoration(
-            PlayWidgetCardMediumItemDecoration(context) { mModel.background.overlayImageUrl.isNotBlank() }
-        )
+        recyclerViewItem.addItemDecoration(PlayWidgetCardMediumItemDecoration(context))
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
 
@@ -207,25 +230,15 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 }
             }
         })
+    }
 
-        overlayImage.setOnClickListener {
-            mAnalyticListener?.onClickOverlayCard(this, mModel.background, 0)
-            if (mModel.background.overlayImageAppLink.isNotBlank()) {
-                RouteManager.route(context, mModel.background.overlayImageAppLink)
-            }
-        }
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return super.onInterceptTouchEvent(ev)
     }
 
     fun setData(data: PlayWidgetUiModel) {
+        val prevModel = mModel
         mModel = data
-
-        addOnImpressionListener(overlayImpressHolder) {
-            mAnalyticListener?.onImpressOverlayCard(
-                this@PlayWidgetMediumView,
-                mModel.background,
-                0,
-            )
-        }
 
         title.text = data.title
         actionTitle.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
@@ -241,7 +254,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
         }
 
-        adapter.setItemsAndAnimateChanges(data.items)
+        val modifiedItems = getModifiedItems(prevModel, data)
+        adapter.setItemsAndAnimateChanges(modifiedItems)
 
         mIsAutoPlay = data.config.autoPlay
     }
@@ -296,6 +310,15 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             overlayBackground.setImageDrawable(null)
             overlayBackground.background = null
         }
+    }
+
+    private fun getModifiedItems(prevModel: PlayWidgetUiModel, model: PlayWidgetUiModel): List<Any> {
+        return if (model.background.overlayImageUrl.isNotBlank()) {
+            if (prevModel.background != model.background) {
+                overlayImpressHolder = ImpressHolder()
+            }
+            listOf(PlayWidgetOverlayUiModel(overlayImpressHolder)) + model.items
+        } else model.items
     }
 
     companion object {

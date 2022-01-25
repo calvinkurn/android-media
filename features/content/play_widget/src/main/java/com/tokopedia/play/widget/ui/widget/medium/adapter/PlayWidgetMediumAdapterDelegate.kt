@@ -9,16 +9,36 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
 
 /**
  * Created by kenny.hadisaputra on 24/01/22
  */
-internal class PlayWidgetMediumAdapterDelegate {
+internal class PlayWidgetMediumAdapterDelegate private constructor() {
+
+    internal class Overlay(
+        private val cardOverlayListener: PlayWidgetMediumViewHolder.Overlay.Listener
+    ) : TypedAdapterDelegate<PlayWidgetOverlayUiModel, Any, PlayWidgetMediumViewHolder.Overlay>(R.layout.view_empty) {
+
+        override fun onBindViewHolder(
+            item: PlayWidgetOverlayUiModel,
+            holder: PlayWidgetMediumViewHolder.Overlay
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): PlayWidgetMediumViewHolder.Overlay {
+            return PlayWidgetMediumViewHolder.Overlay.create(parent, cardOverlayListener)
+        }
+    }
 
     internal class Banner(
         private val cardBannerListener: PlayWidgetMediumViewHolder.Banner.Listener,
     ) : TypedAdapterDelegate<
-            PlayWidgetBannerUiModel, PlayWidgetItemUiModel, PlayWidgetMediumViewHolder.Banner>(R.layout.view_empty) {
+            PlayWidgetBannerUiModel, Any, PlayWidgetMediumViewHolder.Banner>(R.layout.view_empty) {
 
         override fun onBindViewHolder(
             item: PlayWidgetBannerUiModel,
@@ -37,7 +57,7 @@ internal class PlayWidgetMediumAdapterDelegate {
 
     internal class Channel(
         private val cardChannelListener: PlayWidgetMediumViewHolder.Channel.Listener,
-    ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetMediumViewHolder.Channel>(R.layout.view_empty) {
+    ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, Any, PlayWidgetMediumViewHolder.Channel>(R.layout.view_empty) {
 
         private val allowedTypes = listOf(
             PlayWidgetChannelType.Live,
@@ -62,7 +82,7 @@ internal class PlayWidgetMediumAdapterDelegate {
         }
 
         override fun isForViewType(
-            itemList: List<PlayWidgetItemUiModel>,
+            itemList: List<Any>,
             position: Int,
             isFlexibleType: Boolean
         ): Boolean {
@@ -74,12 +94,12 @@ internal class PlayWidgetMediumAdapterDelegate {
 
     internal class Transcode(
         private val cardTranscodeListener: PlayWidgetMediumViewHolder.Transcode.Listener,
-    ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetMediumViewHolder.Transcode>(R.layout.view_empty) {
+    ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, Any, PlayWidgetMediumViewHolder.Transcode>(R.layout.view_empty) {
 
         private val allowedTypes = listOf(PlayWidgetChannelType.Transcoding, PlayWidgetChannelType.FailedTranscoding)
 
         override fun isForViewType(
-            itemList: List<PlayWidgetItemUiModel>,
+            itemList: List<Any>,
             position: Int,
             isFlexibleType: Boolean
         ): Boolean {
