@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -21,14 +22,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.Exception
 
 const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 2
 const val TOPADS_VARIANT_EXPERIMENT_INFO = 3
@@ -130,8 +127,7 @@ open class TopAdsHeadlineV2ViewHolder(
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
         itemView.layoutParams = params
-        val layoutType = cpmModel?.data?.firstOrNull()?.cpm?.layout
-        if (showFeedTopadsNewDesign()) {
+        if (TopadsRollenceUtil.shouldShowFeedNewDesign(itemView.context)) {
             topadsContainer.displayedChild = VARIANT_EXPERIMENT
             cpmModel.let {
                 topadsPostDynamic.bindData(
@@ -183,8 +179,5 @@ open class TopAdsHeadlineV2ViewHolder(
         } catch (e: Exception) {
         }
     }
-    private fun showFeedTopadsNewDesign(): Boolean {
-        val config: RemoteConfig = FirebaseRemoteConfigImpl(itemView.context)
-        return config.getBoolean(RemoteConfigKey.SHOW_SHOPADS_FEED_NEW_DESIGN, true)
-    }
+
 }
