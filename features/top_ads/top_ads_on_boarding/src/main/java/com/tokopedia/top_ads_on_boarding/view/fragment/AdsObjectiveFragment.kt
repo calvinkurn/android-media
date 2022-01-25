@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.top_ads_on_boarding.R
+import com.tokopedia.top_ads_on_boarding.TopAdsOnBoardingUtil.getSpannedText
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.ADS_TYPE_KEY
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.ADS_TYPE_PRODUCT
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.ADS_TYPE_SHOP
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.EMPTY_TEXT
+import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.STEPPER_THREE
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.TAG_BOTTOM_SHEET_FRAGMENT
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.TAG_STEPPER_FRAGMENT
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.TopAdsOnBoardingLink.LEARN_TOKOPEDIA_URL
@@ -55,16 +56,19 @@ class AdsObjectiveFragment : TkpdBaseV4Fragment(), View.OnClickListener {
     }
 
     private fun setShopAdsText() {
-//        shopAdsText?.text = MethodChecker.fromHtml(context?.getString(R.string.topads_ads_objective_shop_card_text))
-
+        shopAdsText?.text =
+            getSpannedText(context?.getString(R.string.topads_ads_objective_shop_card_text) ?: "")
     }
 
     private fun setProductAdsText() {
-        productAdsText?.text = MethodChecker.fromHtml(context?.getString(R.string.topads_ads_objective_product_card_text))
+        productAdsText?.text = getSpannedText(
+            context?.getString(R.string.topads_ads_objective_product_card_text) ?: ""
+        )
     }
 
     private fun setSubTitleText() {
-        adsObjSubTitle?.text = MethodChecker.fromHtml(context?.getString(R.string.topads_ads_objective_subtitle))
+        adsObjSubTitle?.text =
+            getSpannedText(context?.getString(R.string.topads_ads_objective_subtitle) ?: "")
     }
 
     private fun setClickListener() {
@@ -99,7 +103,7 @@ class AdsObjectiveFragment : TkpdBaseV4Fragment(), View.OnClickListener {
                     R.id.onBoardingFragmentContainer,
                     fragment,
                     TAG_STEPPER_FRAGMENT
-                )?.addToBackStack("3")?.commit()
+                )?.addToBackStack(STEPPER_THREE)?.commit()
 
             }
             R.id.shopAds -> {
@@ -110,7 +114,7 @@ class AdsObjectiveFragment : TkpdBaseV4Fragment(), View.OnClickListener {
                     R.id.onBoardingFragmentContainer,
                     fragment,
                     TAG_STEPPER_FRAGMENT
-                )?.addToBackStack("3")?.commit()
+                )?.addToBackStack(STEPPER_THREE)?.commit()
             }
 
             R.id.iButtonProductAds -> {

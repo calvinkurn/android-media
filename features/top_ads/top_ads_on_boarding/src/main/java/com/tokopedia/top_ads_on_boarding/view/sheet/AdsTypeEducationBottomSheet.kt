@@ -10,6 +10,7 @@ import com.tokopedia.top_ads_on_boarding.R
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.ADS_TYPE_KEY
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.ADS_TYPE_PRODUCT
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.ADS_TYPE_SHOP
+import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.STEPPER_THREE
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.TAG_STEPPER_FRAGMENT
 import com.tokopedia.top_ads_on_boarding.data.AdsTypeEducationData
 import com.tokopedia.top_ads_on_boarding.view.adapter.AdsTypeEducationAdapter
@@ -66,7 +67,7 @@ class AdsTypeEducationBottomSheet : BottomSheetUnify() {
                     R.id.onBoardingFragmentContainer,
                     fragment,
                     TAG_STEPPER_FRAGMENT
-                )?.addToBackStack("3")?.commit()
+                )?.addToBackStack(STEPPER_THREE)?.commit()
             } else if (adsType == ADS_TYPE_SHOP) {
                 val bundle = Bundle()
                 bundle.putString(ADS_TYPE_KEY, ADS_TYPE_SHOP)
@@ -75,7 +76,7 @@ class AdsTypeEducationBottomSheet : BottomSheetUnify() {
                     R.id.onBoardingFragmentContainer,
                     fragment,
                     TAG_STEPPER_FRAGMENT
-                )?.addToBackStack("3")?.commit()
+                )?.addToBackStack(STEPPER_THREE)?.commit()
             }
         }
     }

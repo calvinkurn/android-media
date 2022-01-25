@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.top_ads_on_boarding.R
+import com.tokopedia.top_ads_on_boarding.TopAdsOnBoardingUtil
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.EMPTY_TEXT
+import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.STEPPER_TWO
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.TAG_STEPPER_FRAGMENT
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.TopAdsOnBoardingLink.LEARN_TOKOPEDIA_URL
 import com.tokopedia.top_ads_on_boarding.view.activity.TopAdsOnBoardingActivity
@@ -45,7 +46,7 @@ class StartPageFragment : TkpdBaseV4Fragment() {
                 R.id.onBoardingFragmentContainer,
                 AdsObjectiveFragment.newInstance(),
                 TAG_STEPPER_FRAGMENT
-            )?.addToBackStack("2")?.commit()
+            )?.addToBackStack(STEPPER_TWO)?.commit()
         }
         learnTopsAdsButton?.setOnClickListener {
             (activity as? TopAdsOnBoardingActivity)?.goToWebView(LEARN_TOKOPEDIA_URL)
@@ -54,8 +55,9 @@ class StartPageFragment : TkpdBaseV4Fragment() {
     }
 
     private fun setDescriptionText() {
-        startPageDescription?.text =
-            MethodChecker.fromHtml(context?.getString(R.string.topads_start_page_description))
+        startPageDescription?.text = TopAdsOnBoardingUtil.getSpannedText(
+            context?.getString(R.string.topads_start_page_description) ?: ""
+        )
     }
 
     private fun initViews(view: View) {

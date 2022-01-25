@@ -1,12 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="topads_onbaording_url_format">%s?url=%s</string>
     <string name="topads_product_ads_edu_button_text">Pilih Iklan Produk</string>
     <string name="topads_shop_ads_edu_button_text">Pilih Iklan Toko &amp; TDN</string>
     <string name="topads_ads_objective_title">Buat iklan pertamamu!</string>
     <string name="topads_ads_objective_subtitle"><![CDATA[<p>Ayo pilih dulu tujuan beriklanmu. <b>Saya ingin:</b></p>]]></string>
-    <string name="topads_ads_objective_product_card_text"><![CDATA[<p>Memaksimalkan penjualan produk<br><b>produk</b></p>]]></string>
+    <string name="topads_ads_objective_product_card_text"><![CDATA[<p>Memaksimalkan penjualan <br> <b>produk</b></p>]]></string>
     <string name="topads_ads_objective_shop_card_text"><![CDATA[<p><b>Toko &amp; brand</b> saya lebih dikenali pembeli</p>]]></string>
-    <string name="topads_start_page_description"><![CDATA[<p><b>Bersama TopAds, kamu bisa <b>tingkatkan kunjungan pembeli</b> dan <b>daya saing tokomu</b>. Yuk, coba beriklan pakai TopAds.</p>]]></string>
+    <string name="topads_start_page_description"><![CDATA[<p>Bersama TopAds, kamu bisa <b>tingkatkan kunjungan pembeli</b> dan <b>daya saing tokomu</b>. Yuk, coba beriklan pakai TopAds.</p>]]></string>
     <string name="topads_ads_education_center_card_text">Pusat Edukasi Top Ads</string>
     <string name="topads_ads_education_center_card_title_text">Yuk, pelajari TopAds dan fitur-fiturnya!</string>
     <string name="topads_ads_type_screen_subtitle">Nah, supaya produkmu bisa dilihat banyak pembeli, kamu bisa pakai:</string>

@@ -7,6 +7,9 @@ object TopAdsOnBoardingConstant {
     const val ADS_TYPE_KEY = "adsType"
     const val ADS_TYPE_PRODUCT = "productAds"
     const val ADS_TYPE_SHOP = "shopAds"
+    const val STEPPER_ONE = "stepperOne"
+    const val STEPPER_TWO = "stepperTwo"
+    const val STEPPER_THREE = "stepperThree"
 
     object TopAdsOnBoardingLink{
         const val LEARN_TOKOPEDIA_URL = "https://seller.tokopedia.com/edu/topic/fitur-kembangkan-toko-promosi/topads"

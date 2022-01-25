@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.top_ads_on_boarding.R
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.EMPTY_TEXT
+import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.STEPPER_ONE
 import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.TAG_STEPPER_FRAGMENT
 import com.tokopedia.top_ads_on_boarding.di.DaggerTopAdsOnBoardingComponent
 import com.tokopedia.top_ads_on_boarding.di.TopAdsOnBoardingComponent
@@ -37,8 +38,8 @@ class TopAdsOnBoardingActivity : BaseSimpleActivity(),
         initViews()
 
         supportFragmentManager.beginTransaction()
-            .add(R.id.onBoardingFragmentContainer, StartPageFragment.newInstance(), tagFragment)
-            .addToBackStack(TAG_STEPPER_FRAGMENT)
+            .add(R.id.onBoardingFragmentContainer, StartPageFragment.newInstance(), TAG_STEPPER_FRAGMENT)
+            .addToBackStack(STEPPER_ONE)
             .commit()
         supportFragmentManager.addOnBackStackChangedListener(this)
     }
