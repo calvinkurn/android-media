@@ -32,7 +32,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class DiscomBottomSheetRevamp: BottomSheetUnify(),
+class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false): BottomSheetUnify(),
     ZipCodeChipsAdapter.ActionListener,
     PopularCityAdapter.ActionListener, DiscomContract.View, DiscomAdapterRevamp.ActionListener{
 
@@ -51,7 +51,6 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     private lateinit var chipsLayoutManagerZipCode: ChipsLayoutManager
     private var input: String = ""
     private var mIsInitialLoading: Boolean = false
-    private var isPinpoint: Boolean = false
     private var isKodePosShown: Boolean = false
     private var postalCode: String = ""
     private var districtAddressData: Address? = null
