@@ -9,6 +9,7 @@ import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvid
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
+import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
@@ -35,9 +36,6 @@ class CentralizedPromoViewModel @Inject constructor(
     companion object {
         private const val UNAVAILABLE_PROMO_TYPE = 0
         private const val BROADCAST_CHAT_PROMO_TYPE = 2
-
-        private const val IS_MVC_FIRST_TIME = "is_mvc_first_time"
-        private const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
     }
 
     val getLayoutResultLiveData: MutableLiveData<MutableMap<LayoutType, Result<BaseUiModel>>> =
@@ -90,10 +88,13 @@ class CentralizedPromoViewModel @Inject constructor(
                 voucherCashbackEligibleUseCase.execute(userSession.shopId)
             }
             val isVoucherCashbackFirstTimeDeferred = async {
-                sharedPreferences.getBoolean(IS_MVC_FIRST_TIME, true)
+                sharedPreferences.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
             }
             val isProductCouponFirstTimeDeferred = async {
-                sharedPreferences.getBoolean(IS_PRODUCT_COUPON_FIRST_TIME, true)
+                sharedPreferences.getBoolean(
+                    FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME,
+                    true
+                )
             }
 
             val (broadcastChatExtra, chatBlastSellerUrl) = broadcastChatPairDeferred.await()

@@ -1,5 +1,6 @@
 package com.tokopedia.centralizedpromo.view.fragment
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -57,6 +58,9 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var sharedPref: SharedPreferences
 
     override fun onResume() {
         super.onResume()
@@ -152,6 +156,7 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(userSession.userId, false)
             val voucherApplink =
                 if (voucherType == SellerHomeApplinkConst.TYPE_PRODUCT) {
+                    setVoucherProductSharedPrefValue()
                     if (productId == null) {
                         ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
                     } else {
@@ -162,6 +167,16 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
                 }
             RouteManager.route(context, voucherApplink)
             this.dismiss()
+        }
+    }
+
+    private fun setVoucherProductSharedPrefValue() {
+        sharedPref.run {
+            val isFirstTime = getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+            if (isFirstTime) {
+                edit().putBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, false)
+                    .apply()
+            }
         }
     }
 

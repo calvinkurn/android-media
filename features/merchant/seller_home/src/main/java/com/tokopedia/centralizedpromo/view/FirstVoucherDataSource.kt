@@ -18,6 +18,9 @@ object FirstVoucherDataSource {
     private val QUICK_SOLD_OUT_TITLE = R.string.centralized_promo_bottomsheet_quick_sold_out
     private val QUICK_SOLD_OUT_DESCRIPTION = R.string.centralized_promo_bottomsheet_quick_sold_out_desc
 
+    const val IS_MVC_FIRST_TIME = "is_mvc_first_time"
+    const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
+
     fun getFirstVoucherCashbackInfoItems() = listOf(
             FirstVoucherUiModel(
                     iconDrawableRes = R.drawable.ic_voucher_increase_sells,
