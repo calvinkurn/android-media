@@ -34,7 +34,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRes
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickATCButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickWishlistButtonAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.hasVariantLebelPreview
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.verifyVariantLabel
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
@@ -45,12 +45,13 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     lateinit var productPreview: ProductPreview
     private val testVariantSize = "S"
     private val testVariantColor = "Putih"
+    private val exProductId = "1111"
 
     @Before
     override fun before() {
         super.before()
         productPreview = ProductPreview(
-            "1111",
+            exProductId,
             ProductPreviewAttribute.productThumbnail,
             ProductPreviewAttribute.productName,
             "Rp 23.000.000",
@@ -238,6 +239,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+                generatePreAttachPayload(exProductId)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -246,8 +249,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         doScrollChatToPosition(0)
 
         // Then
-        hasVariantLebelPreview(R.id.tv_variant_color, testVariantColor, 0)
-        hasVariantLebelPreview(R.id.tv_variant_size, testVariantSize, 0)
+        verifyVariantLabel(R.id.tv_variant_color, isDisplayed(), 0)
+        verifyVariantLabel(R.id.tv_variant_size, isDisplayed(), 0)
     }
 
     @Test
