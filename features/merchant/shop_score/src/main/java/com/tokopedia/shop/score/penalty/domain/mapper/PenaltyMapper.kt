@@ -28,7 +28,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.*
 import javax.inject.Inject
 import kotlin.math.abs
 
-class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
+open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
 
     fun mapToPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel): ShopPenaltyDetailUiModel {
         return ShopPenaltyDetailUiModel(

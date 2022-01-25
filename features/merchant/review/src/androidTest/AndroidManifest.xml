@@ -44,5 +44,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".stub.reviewreply.view.activity.SellerReviewReplyActivityStub"
+            android:label="@string/title_review_reply"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>

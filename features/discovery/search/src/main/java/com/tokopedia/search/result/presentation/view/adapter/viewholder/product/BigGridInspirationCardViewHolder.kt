@@ -13,8 +13,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.search.R
-import com.tokopedia.search.databinding.SearchResultProductBigGridCuratedInspirationCardLayoutBinding
-import com.tokopedia.search.databinding.SearchResultProductInspirationCardLayoutBinding
+import com.tokopedia.search.databinding.SearchResultProductBigGridInspirationCardLayoutBinding
 import com.tokopedia.search.result.presentation.model.InspirationCardDataView
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.InspirationCardOptionAdapter
@@ -23,6 +22,7 @@ import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlin.LazyThreadSafetyMode.NONE
 
 class BigGridInspirationCardViewHolder(
         itemView: View,
@@ -36,11 +36,19 @@ class BigGridInspirationCardViewHolder(
         private const val SPAN_COUNT = 2
     }
 
-    private var inspirationCardBinding: SearchResultProductInspirationCardLayoutBinding? by viewBinding()
-    private var inspirationCardCuratedBinding: SearchResultProductBigGridCuratedInspirationCardLayoutBinding? by viewBinding()
+    private var bigGridInspirationCardBinding:
+        SearchResultProductBigGridInspirationCardLayoutBinding? by viewBinding()
+
+    private val inspirationCardBinding by lazy(NONE) {
+        bigGridInspirationCardBinding?.bigGridInspirationCardLayout
+    }
+
+    private val inspirationCardCuratedBinding by lazy(NONE) {
+        bigGridInspirationCardBinding?.bigGridCuratedInspirationCardLayout
+    }
 
     override fun bind(element: InspirationCardDataView) {
-        val isCurated = element.type == SearchConstant.InspirationCard.TYPE_CURATED
+        val isCurated = element.data.type == SearchConstant.InspirationCard.TYPE_CURATED
         setBaseLayout(isCurated)
         if (isCurated) {
             setCuratedLayout(element)
@@ -64,7 +72,7 @@ class BigGridInspirationCardViewHolder(
     }
 
     private fun setCuratedLayout(element: InspirationCardDataView) {
-        val option = element.optionData.firstOrNull() ?: return
+        val option = element.data.optionCardData.firstOrNull() ?: return
 
         bindCuratedBackground()
         bindCuratedIcon(option)
@@ -110,8 +118,8 @@ class BigGridInspirationCardViewHolder(
 
     private fun bindTitle(element: InspirationCardDataView) {
         inspirationCardBinding?.inspirationCardTitle?.let {
-            it.shouldShowWithAction(element.title.isNotEmpty()) {
-                it.text = element.title
+            it.shouldShowWithAction(element.data.title.isNotEmpty()) {
+                it.text = element.data.title
             }
         }
     }
@@ -119,7 +127,7 @@ class BigGridInspirationCardViewHolder(
     private fun bindContent(element: InspirationCardDataView) {
         inspirationCardBinding?.recyclerViewInspirationCardOptionList?.let {
             it.layoutManager = createLayoutManager(element)
-            it.adapter = createAdapter(element.optionData)
+            it.adapter = createAdapter(element.data.optionCardData)
             it.addItemDecorationIfNotExists(createItemDecoration(element))
         }
     }
