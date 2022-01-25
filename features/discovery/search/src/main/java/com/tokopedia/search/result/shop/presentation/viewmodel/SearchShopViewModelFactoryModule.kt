@@ -28,6 +28,7 @@ internal class SearchShopViewModelFactoryModule(
         private val searchParameter: Map<String, Any> = mapOf()
 ) {
 
+    @Suppress("LongParameterList")
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)

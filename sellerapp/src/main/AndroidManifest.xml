@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.sellerapp">
 
+    <permission android:name="com.tokopedia.sellerapp.REMOTE_SERVICE_SEAMLESS" android:protectionLevel="signature"/>
+    <uses-permission android:name="com.tokopedia.sellerapp.REMOTE_SERVICE_SEAMLESS"/>
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="remove"
@@ -820,6 +823,19 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
         <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
             android:screenOrientation="portrait">

@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetPassengerUseCase
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,32 +22,36 @@ import javax.inject.Inject
  * @author by furqan on 15/07/2020
  */
 class FlightCancellationPassengerViewModel @Inject constructor(
-        private val getCancellablePassengerUseCase: FlightCancellationGetPassengerUseCase,
-        private val flightAnalytics: FlightAnalytics,
-        private val userSession: UserSessionInterface,
-        private val dispatcherProvider: CoroutineDispatchers)
-    : BaseViewModel(dispatcherProvider.io) {
+    private val getCancellablePassengerUseCase: FlightCancellationGetPassengerUseCase,
+    private val flightAnalytics: FlightAnalytics,
+    private val userSession: UserSessionInterface,
+    private val dispatcherProvider: CoroutineDispatchers
+) : BaseViewModel(dispatcherProvider.io) {
 
     var invoiceId: String = ""
 
-    private val passengerRelationsMap: HashMap<String, FlightCancellationPassengerModel> = hashMapOf()
+    private val passengerRelationsMap: HashMap<String, FlightCancellationPassengerModel> =
+        hashMapOf()
     val selectedCancellationPassengerList: MutableList<FlightCancellationModel> = arrayListOf()
 
-    private val mutableCancellationPassengerList = MutableLiveData<Result<List<FlightCancellationModel>>>()
+    private val mutableCancellationPassengerList =
+        MutableLiveData<Result<List<FlightCancellationModel>>>()
     val cancellationPassengerList: LiveData<Result<List<FlightCancellationModel>>>
         get() = mutableCancellationPassengerList
 
     fun trackOnNext() {
         for (item in selectedCancellationPassengerList) {
-            val route = "${item.flightCancellationJourney.departureAirportId}${item.flightCancellationJourney.arrivalAirportId}"
+            val route =
+                "${item.flightCancellationJourney.departureAirportId}${item.flightCancellationJourney.arrivalAirportId}"
             val departureDate = DateUtil.formatDate(
-                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                    DateUtil.YYYYMMDD,
-                    item.flightCancellationJourney.departureTime)
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.YYYYMMDD,
+                item.flightCancellationJourney.departureTime
+            )
 
             flightAnalytics.eventClickNextOnCancellationPassenger(
-                    "$route - ${item.flightCancellationJourney.airlineName} - $departureDate - $invoiceId",
-                    userSession.userId
+                "$route - ${item.flightCancellationJourney.airlineName} - $departureDate - $invoiceId",
+                userSession.userId
             )
         }
     }
@@ -64,10 +68,14 @@ class FlightCancellationPassengerViewModel @Inject constructor(
         return canGoNext
     }
 
-    fun getCancellablePassenger(invoiceId: String, flightCancellationJourneyList: List<FlightCancellationJourney>) {
+    fun getCancellablePassenger(
+        invoiceId: String,
+        flightCancellationJourneyList: List<FlightCancellationResponseEntity>
+    ) {
         this.invoiceId = invoiceId
         launchCatchError(dispatcherProvider.main, block = {
-            val cancellationPassengers = getCancellablePassengerUseCase.fetchCancellablePassenger(invoiceId)
+            val cancellationPassengers =
+                getCancellablePassengerUseCase.fetchCancellablePassenger(invoiceId)
 
             val selectedList = arrayListOf<FlightCancellationModel>()
             val cancellationList = arrayListOf<FlightCancellationModel>()
@@ -76,7 +84,11 @@ class FlightCancellationPassengerViewModel @Inject constructor(
             for (cancellation in cancellationPassengers) {
                 for (journey in flightCancellationJourneyList) {
                     if (cancellation.flightCancellationJourney.journeyId == journey.journeyId) {
-                        val cancellationModel = FlightCancellationModel(invoiceId, journey, cancellation.passengerModelList)
+                        val cancellationModel = FlightCancellationModel(
+                            invoiceId,
+                            journey,
+                            cancellation.passengerModelList
+                        )
                         cancellationList.add(cancellationModel)
                         selectedList.add(FlightCancellationModel(invoiceId, journey, arrayListOf()))
 
@@ -87,8 +99,10 @@ class FlightCancellationPassengerViewModel @Inject constructor(
 
             // sort journey by departure date
             if (cancellationList.size > 1) {
-                val firstJourney = cancellationList[0].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
-                val secondJourney = cancellationList[1].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                val firstJourney =
+                    cancellationList[0].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                val secondJourney =
+                    cancellationList[1].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
 
                 if (firstJourney.after(secondJourney)) {
                     val temp: FlightCancellationModel = cancellationList[0]
@@ -97,8 +111,10 @@ class FlightCancellationPassengerViewModel @Inject constructor(
                 }
             }
             if (selectedList.size > 1) {
-                val firstJourney = selectedList[0].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
-                val secondJourney = selectedList[1].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                val firstJourney =
+                    selectedList[0].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                val secondJourney =
+                    selectedList[1].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
 
                 if (firstJourney.after(secondJourney)) {
                     val temp: FlightCancellationModel = selectedList[0]
@@ -121,7 +137,8 @@ class FlightCancellationPassengerViewModel @Inject constructor(
     fun checkPassenger(passengerModel: FlightCancellationPassengerModel, position: Int): Boolean {
         var shouldNotifyRelationChecked = false
         if (position >= 0 && selectedCancellationPassengerList.size > position &&
-                !selectedCancellationPassengerList[position].passengerModelList.contains(passengerModel)) {
+            !selectedCancellationPassengerList[position].passengerModelList.contains(passengerModel)
+        ) {
             selectedCancellationPassengerList[position].passengerModelList.add(passengerModel)
             if (passengerModel.relations.isNotEmpty()) {
                 checkAllRelations(passengerModel)
@@ -157,7 +174,8 @@ class FlightCancellationPassengerViewModel @Inject constructor(
             passengerRelationsMap[relationId]?.let {
                 for (cancellation in selectedCancellationPassengerList) {
                     if (relationId.contains(cancellation.flightCancellationJourney.journeyId) &&
-                            !cancellation.passengerModelList.contains(it)) {
+                        !cancellation.passengerModelList.contains(it)
+                    ) {
                         cancellation.passengerModelList.add(it)
                     }
                 }

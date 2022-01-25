@@ -150,6 +150,7 @@ class OfficialStoreAnalyticsTest {
                 onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view)))
                         .perform(ViewActions.swipeUp())
             }
+            Thread.sleep(2500)
             scrollRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
         }

@@ -13,7 +13,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import java.io.IOException
 import javax.inject.Inject
 
-class GetShopPenaltyDetailMergeUseCase @Inject constructor(
+open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val penaltyMapper: PenaltyMapper
 ) : UseCase<PenaltyDataWrapper>() {
@@ -52,7 +52,7 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
             throw IOException(e.message)
         } catch (e: Exception) {
             val error = gqlResponse.getError(ShopScorePenaltyDetailResponse::class.java)
-            throw MessageErrorException(error.joinToString(", ") { it.message })
+            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(", "))
         }
     }
 

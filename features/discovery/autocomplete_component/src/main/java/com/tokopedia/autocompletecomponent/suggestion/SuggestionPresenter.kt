@@ -8,6 +8,7 @@ import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionIte
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionTopShop
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker.SuggestionTrackerUseCase
+import com.tokopedia.autocompletecomponent.suggestion.doubleline.convertToDoubleLineShopAds
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.convertToDoubleLineVisitableList
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.convertToDoubleLineWithoutImageVisitableList
 import com.tokopedia.autocompletecomponent.suggestion.productline.convertToSuggestionProductLineDataView
@@ -21,8 +22,14 @@ import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
-import com.tokopedia.usecase.UseCase
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.usecase.UseCase as RxUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
@@ -31,7 +38,8 @@ class SuggestionPresenter @Inject constructor(
     @Named(GET_SUGGESTION_USE_CASE)
     private val getSuggestionUseCase: UseCase<SuggestionUniverse>,
     @Named(SUGGESTION_TRACKER_USE_CASE)
-    private val suggestionTrackerUseCase: UseCase<Void?>,
+    private val suggestionTrackerUseCase: RxUseCase<Void?>,
+    private val topAdsUrlHitter: Lazy<TopAdsUrlHitter>,
     private val userSession: UserSessionInterface,
 ) : BaseDaggerPresenter<SuggestionContract.View>(), SuggestionContract.Presenter {
 
@@ -68,35 +76,23 @@ class SuggestionPresenter @Inject constructor(
     override fun getSuggestion(searchParameter: Map<String, String>) {
         this.searchParameter = searchParameter.toMutableMap()
 
-        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
         getSuggestionUseCase.execute(
-                createGetSuggestionParams(isTyping, warehouseId),
-                createGetSuggestionSubscriber()
+            ::onSuccessReceivedSuggestion,
+            Throwable::printStackTrace,
+            createGetSuggestionParams()
         )
     }
 
-    private fun createGetSuggestionParams(
-        isTyping: Boolean,
-        warehouseId: String,
-    ) = SuggestionRequestUtils.getParams(
-        searchParameter,
-        userSession,
-        isTyping,
-        warehouseId,
-    )
+    private fun createGetSuggestionParams(): RequestParams {
+        val chooseAddressData = view?.chooseAddressData ?: LocalCacheModel()
 
-    private fun createGetSuggestionSubscriber(): Subscriber<SuggestionUniverse> =
-        object : Subscriber<SuggestionUniverse>() {
-            override fun onNext(suggestionUniverse: SuggestionUniverse) {
-                onSuccessReceivedSuggestion(suggestionUniverse)
-            }
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable) {
-                e.printStackTrace()
-            }
-        }
+        return SuggestionRequestUtils.getParams(
+            searchParameter,
+            userSession,
+            isTyping,
+            chooseAddressData,
+        )
+    }
 
     private fun onSuccessReceivedSuggestion(suggestionUniverse: SuggestionUniverse) {
         clearListVisitable()
@@ -109,7 +105,7 @@ class SuggestionPresenter @Inject constructor(
     }
 
     private fun updateListVisitable(suggestionUniverse: SuggestionUniverse) {
-        val typePosition = HashMap<String, Int?>()
+        val typePosition = hashMapOf<String, Int?>()
         shouldAddSeparator = true
         for (item in suggestionUniverse.data.items) {
             if (suggestionUniverse.data.items.isEmpty()) continue
@@ -117,7 +113,10 @@ class SuggestionPresenter @Inject constructor(
             when (item.template) {
                 SUGGESTION_HEADER -> addTitleToVisitable(item)
                 SUGGESTION_SINGLE_LINE -> addSingleLineToVisitable(typePosition, item)
-                SUGGESTION_DOUBLE_LINE -> addDoubleLineToVisitable(typePosition, item)
+                SUGGESTION_DOUBLE_LINE ->
+                    addDoubleLineToVisitable(typePosition, item)
+                SUGGESTION_DOUBLE_LINE_SHOP_ADS ->
+                    addDoubleLineShopAdsToVisitable(typePosition, item, suggestionUniverse.cpmModel)
                 SUGGESTION_TOP_SHOP_WIDGET ->
                     addTopShopWidgetToVisitable(typePosition, item, suggestionUniverse.topShop)
                 SUGGESTION_DOUBLE_LINE_WITHOUT_IMAGE ->
@@ -134,28 +133,48 @@ class SuggestionPresenter @Inject constructor(
 
     private fun addSingleLineToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
         typePosition.incrementPosition(item.type)
-        typePosition[item.type]?.let {
-            item.convertToSingleLineVisitableList(
-                getQueryKey(),
-                position = it,
-                dimension90 = getDimension90()
-            )
-        }?.let {
-            listVisitable.add(it)
-        }
+
+        val singleLineDataView = item.convertToSingleLineVisitableList(
+            getQueryKey(),
+            position = typePosition[item.type] ?: 0,
+            dimension90 = getDimension90()
+        )
+
+        listVisitable.add(singleLineDataView)
     }
 
-    private fun addDoubleLineToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
+    private fun addDoubleLineToVisitable(
+        typePosition: HashMap<String, Int?>,
+        item: SuggestionItem,
+    ) {
         typePosition.incrementPosition(item.type)
-        typePosition[item.type]?.let {
-            item.convertToDoubleLineVisitableList(
-                getQueryKey(),
-                position = it,
-                dimension90 = getDimension90()
-            )
-        }?.let {
-            listVisitable.add(it)
-        }
+
+        val doubleLineDataView = item.convertToDoubleLineVisitableList(
+            getQueryKey(),
+            position = typePosition[item.type] ?: 0,
+            dimension90 = getDimension90()
+        )
+
+        listVisitable.add(doubleLineDataView)
+    }
+
+    private fun addDoubleLineShopAdsToVisitable(
+        typePosition: HashMap<String, Int?>,
+        item: SuggestionItem,
+        cpmModel: CpmModel,
+    ) {
+        val cpmData = cpmModel.data.firstOrNull() ?: return
+
+        typePosition.incrementPosition(TYPE_SHOP)
+
+        val doubleLineDataView = item.convertToDoubleLineShopAds(
+            getQueryKey(),
+            position = typePosition[TYPE_SHOP] ?: 0,
+            dimension90 = getDimension90(),
+            cpmData,
+        )
+
+        listVisitable.add(doubleLineDataView)
     }
 
     private fun addTopShopWidgetToVisitable(
@@ -163,14 +182,16 @@ class SuggestionPresenter @Inject constructor(
         item: SuggestionItem,
         listTopShop: List<SuggestionTopShop>,
     ) {
-        if (listTopShop.size > 1) {
-            typePosition.incrementPosition(item.type)
-            typePosition[item.type]?.let {
-                item.convertToTopShopWidgetVisitableList(position = it, listTopShop = listTopShop)
-            }?.let {
-                listVisitable.add(it)
-            }
-        }
+        if (listTopShop.size <= 1) return
+
+        typePosition.incrementPosition(item.type)
+
+        val topShopWidgetDataView = item.convertToTopShopWidgetVisitableList(
+            position = typePosition[item.type] ?: 0,
+            listTopShop = listTopShop,
+        )
+
+        listVisitable.add(topShopWidgetDataView)
     }
 
     private fun addDoubleLineWithoutImageToVisitable(
@@ -200,9 +221,9 @@ class SuggestionPresenter @Inject constructor(
     }
 
     private fun addSuggestionSeparator() {
-        if (shouldAddSeparator) {
-            listVisitable.add(SuggestionSeparatorDataView())
-        }
+        if (!shouldAddSeparator) return
+
+        listVisitable.add(SuggestionSeparatorDataView())
     }
 
     private fun processDoubleLineWithoutImageToVisitable(
@@ -210,42 +231,41 @@ class SuggestionPresenter @Inject constructor(
         item: SuggestionItem,
     ) {
         typePosition.incrementPosition(item.type)
-        typePosition[item.type]?.let {
-            item.convertToDoubleLineWithoutImageVisitableList(
-                getQueryKey(),
-                position = it,
-                dimension90 = getDimension90()
-            )
-        }?.let {
-            listVisitable.add(it)
-        }
+
+        val doubleLineWithoutImageDataView = item.convertToDoubleLineWithoutImageVisitableList(
+            getQueryKey(),
+            position = typePosition[item.type] ?: 0,
+            dimension90 = getDimension90()
+        )
+
+        listVisitable.add(doubleLineWithoutImageDataView)
+
         shouldAddSeparator = false
     }
 
     private fun addProductLineToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
         typePosition.incrementPosition(item.type)
-        typePosition[item.type]?.let {
+
+        val productLineDataView =
             item.convertToSuggestionProductLineDataView(
                 getQueryKey(),
-                position = it,
+                position = typePosition[item.type] ?: 0,
                 dimension90 = getDimension90()
             )
-        }?.let {
-            listVisitable.add(it)
-        }
+
+        listVisitable.add(productLineDataView)
     }
 
     private fun addChipWidgetToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
         typePosition.incrementPosition(item.type)
-        typePosition[item.type]?.let {
-            item.convertToSuggestionChipWidgetDataView(
-                getQueryKey(),
-                position = it,
-                dimension90 = getDimension90()
-            )
-        }?.let {
-            listVisitable.add(it)
-        }
+
+        val chipWidgetDataView = item.convertToSuggestionChipWidgetDataView(
+            getQueryKey(),
+            position = typePosition[item.type] ?: 0,
+            dimension90 = getDimension90()
+        )
+
+        listVisitable.add(chipWidgetDataView)
     }
 
     private fun notifyView() {
@@ -263,6 +283,7 @@ class SuggestionPresenter @Inject constructor(
     override fun onSuggestionItemClicked(item: BaseSuggestionDataView) {
         trackSuggestionItemWithUrl(item.urlTracker)
         trackSuggestionItemClick(item)
+        trackSuggestionShopAds(item)
 
         view?.dropKeyBoard()
         view?.route(item.applink, searchParameter)
@@ -468,12 +489,27 @@ class SuggestionPresenter @Inject constructor(
         )
     }
 
+    private fun trackSuggestionShopAds(item: BaseSuggestionDataView) {
+        val shopAdsDataView = item.shopAdsDataView ?: return
+        val className = view?.className ?: ""
+
+        topAdsUrlHitter.get().hitClickUrl(
+            className,
+            shopAdsDataView.clickUrl,
+            "",
+            "",
+            shopAdsDataView.imageUrl,
+        )
+    }
+
     override fun onSuggestionItemImpressed(item: BaseSuggestionDataView) {
         when (item.type) {
             TYPE_LIGHT -> impressCurated(item, getCuratedLightEventLabelForTracking(item))
             TYPE_CURATED -> impressCurated(item, getCuratedEventLabelForTracking(item))
             else -> impressSuggestion(item)
         }
+
+        impressTopAds(item)
     }
 
     private fun impressCurated(item: BaseSuggestionDataView, label: String) {
@@ -482,6 +518,19 @@ class SuggestionPresenter @Inject constructor(
 
     private fun impressSuggestion(item: BaseSuggestionDataView) {
         view?.trackEventImpression(item)
+    }
+
+    private fun impressTopAds(item: BaseSuggestionDataView) {
+        val shopAdsDataView = item.shopAdsDataView ?: return
+        val className = view?.className ?: ""
+
+        topAdsUrlHitter.get().hitImpressionUrl(
+            className,
+            shopAdsDataView.impressionUrl,
+            "",
+            "",
+            shopAdsDataView.imageUrl,
+        )
     }
 
     override fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView) {
@@ -530,7 +579,7 @@ class SuggestionPresenter @Inject constructor(
 
     override fun detachView() {
         super.detachView()
-        getSuggestionUseCase.unsubscribe()
+        getSuggestionUseCase.cancelJobs()
         suggestionTrackerUseCase.unsubscribe()
     }
 }

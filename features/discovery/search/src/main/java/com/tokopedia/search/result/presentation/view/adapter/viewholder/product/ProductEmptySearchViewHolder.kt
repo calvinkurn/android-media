@@ -165,24 +165,18 @@ class ProductEmptySearchViewHolder(
         productSelectedFilterAdapter?.setOptionList(selectedFilterOptionList)
     }
 
-    private fun bindBannerAds() {
-        topAdsParams?.let {
-            loadBannerAds(it)
-        }
-    }
-
     private fun loadBannerAds(topAdsParams: TopAdsParams) {
         val binding = binding ?: return
         val emptySearchModel = boundedEmptySearchModel ?: return
         if (!emptySearchModel.isBannerAdsAllowed) return
 
         val bannerAdsConfig = Config.Builder()
-                .setSessionId(emptyStateListener.getRegistrationId())
-                .setUserId(emptyStateListener.getUserId())
-                .withMerlinCategory()
-                .topAdsParams(topAdsParams)
-                .setEndpoint(Endpoint.CPM)
-                .build()
+            .setSessionId(emptyStateListener.getRegistrationId())
+            .setUserId(emptyStateListener.getUserId())
+            .withMerlinCategory()
+            .topAdsParams(topAdsParams)
+            .setEndpoint(Endpoint.CPM)
+            .build()
 
         binding.bannerAds.setConfig(bannerAdsConfig)
         binding.bannerAds.setTopAdsBannerClickListener { position, appLink: String?, data: CpmData? ->

@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.product.create.view.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
@@ -16,12 +17,14 @@ class CreateCouponProductActivity : AppCompatActivity() {
     private val couponPreviewFragment = ProductCouponPreviewFragment()
     private val couponSettingFragment = CouponSettingFragment()
     private var couponSettings : CouponSettings? = null
+    private val productId: String? by lazy { getProductIdDataFromApplink() }
 
     companion object {
         private const val TAG_FRAGMENT_COUPON_INFORMATION = "coupon_information"
         private const val TAG_FRAGMENT_COUPON_SETTINGS = "coupon_settings"
         private const val TAG_FRAGMENT_COUPON_PREVIEW = "coupon_preview"
         private const val TAG_FRAGMENT_PRODUCT_LIST = "product_list"
+        private const val PRODUCT_ID_SEGMENT_INDEX = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +32,13 @@ class CreateCouponProductActivity : AppCompatActivity() {
         setContentView(R.layout.activity_mvc_create_coupon)
         displayCouponPreviewFragment()
         setupViews()
+        println(productId)
+    }
 
+    private fun getProductIdDataFromApplink(): String? {
+        val applinkData = RouteManager.getIntent(this, intent.data.toString()).data
+        val pathSegments = applinkData?.pathSegments.orEmpty()
+        return pathSegments.getOrNull(PRODUCT_ID_SEGMENT_INDEX)
     }
 
     private fun setupViews() {

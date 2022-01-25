@@ -47,9 +47,13 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -98,7 +102,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupToolbar()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
             ref = it.getString(SAVED_REF) ?: ""
@@ -115,6 +118,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let { trackingQueue = TrackingQueue(it) }
+        setupToolbar()
         sortFilterView = view.findViewById(R.id.filter_sort_recommendation)
         setupRecyclerView(view)
         setupBackToTop(view)
@@ -200,8 +204,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             activity?.let { actv ->
                 it.setupToolbarWithStatusBar(
                     activity = actv,
-                    applyPadding = false,
-                    applyPaddingNegative = true
+                    statusBarTheme = if (requireContext().isDarkMode()) TOOLBAR_LIGHT_TYPE else TOOLBAR_DARK_TYPE
                 )
             }
             it.setOnBackButtonClickListener { (activity as HomeRecommendationActivity).onBackPressed() }
