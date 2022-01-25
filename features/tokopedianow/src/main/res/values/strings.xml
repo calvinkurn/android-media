@@ -130,4 +130,8 @@
     <string name="tokopedianow_search_category_description_two_hours"><![CDATA[Atau cek Tokopedia NOW! <b>2 jam tiba</b>, pilihan lebih lengkap!]]></string>
     <string name="tokopedianow_search_category_title_two_hours">Belanja 2 Jam Tiba</string>
     <string name="tokopedianow_search_category_subtitle">Tiba dalam %1$s</string>
+
+    <string name="tokopedianow_15m_empty_state_title">Tunggu Tokopedia NOW! 15 menit tiba tersedia di lokasimu</string>
+    <string name="tokopedianow_15m_empty_state_desc">Nantikan kabar dari kami, ya. Saat ini, kamu bisa nikmati layanan 2 jam tiba dulu.</string>
+    <string name="tokopedianow_15m_empty_state_primary_btn">Belanja 2 Jam Tiba</string>
 </resources>

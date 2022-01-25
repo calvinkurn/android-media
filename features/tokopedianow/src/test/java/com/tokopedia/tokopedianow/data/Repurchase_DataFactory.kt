@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
-import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
@@ -97,13 +96,13 @@ fun createEmptyStateLayout(id: String): List<Visitable<*>> {
             layoutList.addEmptyStateNoHistory(title, description)
         }
         RepurchaseStaticLayoutId.EMPTY_STATE_OOC -> {
-            layoutList.addEmptyStateOoc()
+            layoutList.addEmptyStateOoc("2h")
         }
         RepurchaseStaticLayoutId.ERROR_STATE_FAILED_TO_FETCH_DATA -> {
             layoutList.addServerErrorState()
         }
         else -> {
-            layoutList.addEmptyStateNoResult(ServiceType.NOW_2H)
+            layoutList.addEmptyStateNoResult("2h")
         }
     }
     return layoutList

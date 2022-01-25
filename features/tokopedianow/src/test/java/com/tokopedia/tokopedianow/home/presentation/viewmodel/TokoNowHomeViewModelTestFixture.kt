@@ -89,7 +89,6 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase
     @RelaxedMockK
     lateinit var getQuestWidgetListUseCase: GetQuestWidgetListUseCase
-
     @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
     @RelaxedMockK

@@ -99,8 +99,8 @@ object RepurchaseLayoutMapper {
         add(TokoNowChooseAddressWidgetUiModel())
     }
 
-    fun MutableList<Visitable<*>>.addEmptyStateOoc() {
-        add(TokoNowEmptyStateOocUiModel(hostSource = SOURCE))
+    fun MutableList<Visitable<*>>.addEmptyStateOoc(serviceType: String) {
+        add(TokoNowEmptyStateOocUiModel(hostSource = SOURCE, serviceType = serviceType))
     }
 
     fun MutableList<Visitable<*>>.addRecomWidget(pageName: String) {

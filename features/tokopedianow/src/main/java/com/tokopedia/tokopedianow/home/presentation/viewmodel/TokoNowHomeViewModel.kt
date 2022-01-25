@@ -40,6 +40,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PR
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
@@ -164,9 +165,9 @@ class TokoNowHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    fun getEmptyState(id: String) {
+    fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
         homeLayoutItemList.clear()
-        homeLayoutItemList.addEmptyStateIntoList(id)
+        homeLayoutItemList.addEmptyStateIntoList(id, serviceType)
         val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoNowLayoutState.HIDE
@@ -433,7 +434,10 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val currentServiceType = localCacheModel.service_type
 
-            val serviceType = if(currentServiceType == ServiceType.NOW_15M) {
+            val serviceType = if (
+                currentServiceType == ServiceType.NOW_15M ||
+                currentServiceType == ServiceType.NOW_OOC
+            ) {
                 ServiceType.NOW_2H
             } else {
                 ServiceType.NOW_15M

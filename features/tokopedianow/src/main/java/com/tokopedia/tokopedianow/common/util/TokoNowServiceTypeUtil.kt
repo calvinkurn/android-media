@@ -15,6 +15,10 @@ object TokoNowServiceTypeUtil {
     const val REPURCHASE_EMPTY_RESOURCE_ID = "repurchase_empty_resource_id"
     const val SEARCH_CATEGORY_SUBTITLE_RESOURCE_ID = "search_category_subtitle_resource_id"
     const val CATEGORY_AISLE_HEADER_ID = "category_aisle_header"
+    const val OUT_OF_COVERAGE_TITLE_ID = "out_of_coverage_title"
+    const val OUT_OF_COVERAGE_DESCRIPTION_ID = "out_of_coverage_description"
+    const val OUT_OF_COVERAGE_PRIMARY_BUTTON_ID = "out_of_coverage_primary_button"
+    const val OUT_OF_COVERAGE_SECONDARY_BUTTON_ID = "out_of_coverage_secondary_button"
 
     /*
     * Create the key to access and wrap resourceId into TokoNowStringResource data class
@@ -42,6 +46,22 @@ object TokoNowServiceTypeUtil {
         CATEGORY_AISLE_HEADER_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_2h_category_aisle_header,
             resourceId15m = R.string.tokopedianow_15m_category_aisle_header
+        ),
+        OUT_OF_COVERAGE_TITLE_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_common_empty_state_title,
+            resourceId15m = R.string.tokopedianow_15m_empty_state_title
+        ),
+        OUT_OF_COVERAGE_DESCRIPTION_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_common_empty_state_desc,
+            resourceId15m = R.string.tokopedianow_15m_empty_state_desc
+        ),
+        OUT_OF_COVERAGE_PRIMARY_BUTTON_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_common_empty_state_button_change_address,
+            resourceId15m = R.string.tokopedianow_15m_empty_state_primary_btn
+        ),
+        OUT_OF_COVERAGE_SECONDARY_BUTTON_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_common_empty_state_button_return,
+            resourceId15m = R.string.tokopedianow_common_empty_state_button_change_address
         )
     )
 
