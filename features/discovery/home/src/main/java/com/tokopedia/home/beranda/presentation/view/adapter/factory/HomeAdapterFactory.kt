@@ -229,7 +229,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return EmptyBannerViewHolder.LAYOUT
     }
 
-    override fun type(homeHeaderOvoDataModel: HomeHeaderOvoDataModel): Int {
+    override fun type(homeHeaderOvoDataModel: HomeHeaderDataModel): Int {
         return HomeHeaderOvoViewHolder.LAYOUT
     }
 

@@ -2,7 +2,28 @@ package com.tokopedia.search.result.presentation.view.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
+import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
+import com.tokopedia.search.result.presentation.model.BannerDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.model.CpmDataView
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardDataView
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.LastFilterDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
+import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
+import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
+import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
+import com.tokopedia.search.result.presentation.model.SeparatorDataView
+import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
 
 interface ProductListTypeFactory {
     fun type(productItem: ProductItemDataView): Int
@@ -26,6 +47,7 @@ interface ProductListTypeFactory {
     fun type(chooseAddressDataView: ChooseAddressDataView): Int
     fun type(bannerDataView: BannerDataView): Int
     fun type(lastFilterDataView: LastFilterDataView): Int
+    fun type(sizeDataView: InspirationSizeDataView): Int
     var recyclerViewItem: Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

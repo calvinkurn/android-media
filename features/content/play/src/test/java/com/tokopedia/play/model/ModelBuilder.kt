@@ -1,17 +1,12 @@
 package com.tokopedia.play.model
 
 import com.google.gson.Gson
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.VariantSheetUiModel
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -991,7 +986,6 @@ class ModelBuilder {
         errorMessage = IllegalStateException("error message "),
         cartId = ""
     )
-
     fun buildCartUiModel(
             product: PlayProductUiModel.Product,
             action: ProductAction,
@@ -1170,5 +1164,23 @@ class ModelBuilder {
                         && channel.configuration.active
                         && !channel.configuration.freezed
         )
+    }
+
+    fun buildUserReportList(
+        reasoningId: Int = 1,
+        title: String = "Harga Detail",
+        detail: String = "Harga Tidak Wajar",
+        submissionData: UserReportOptions.OptionAdditionalField = UserReportOptions.OptionAdditionalField(
+            key = "report_reason",
+            label = "Detail Laporan",
+            max = 255,
+            min = 10,
+            type = "textarea"
+        )
+    ) : PlayUserReportUiModel.Loaded{
+        val userReportOpt = PlayUserReportReasoningUiModel.Reasoning(
+            title = title, reasoningId = reasoningId, detail = detail, submissionData = submissionData
+        )
+        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt))
     }
 }

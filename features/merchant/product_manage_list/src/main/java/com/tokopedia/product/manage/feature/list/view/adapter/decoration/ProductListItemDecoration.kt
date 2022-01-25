@@ -12,13 +12,13 @@ class ProductListItemDecoration: RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
-        val lastPosition = parent.adapter?.itemCount.orZero()
+        val itemCount = parent.adapter?.itemCount.orZero()
         val position = parent.getChildAdapterPosition(view)
         val viewHolder = parent.getChildViewHolder(view)
 
         if(viewHolder is ProductViewHolder) {
             val binding = ItemManageProductListBinding.bind(viewHolder.itemView)
-            binding.divider.showWithCondition(position != lastPosition - 1)
+            binding.divider.showWithCondition(position != itemCount)
         }
     }
 

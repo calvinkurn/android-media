@@ -3,10 +3,10 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetBusinessUnitDataUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetBusinessWidgetTab
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -14,14 +14,7 @@ import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
-import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -34,133 +27,17 @@ class HomeViewModelBusinessUnitTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
-    private val getBusinessWidgetTab = mockk<GetBusinessWidgetTab>(relaxed = true)
-    private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
+    private val homeBusinessUnitUseCase = mockk<HomeBusinessUnitUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
+
     @Test
-    fun `Get Tab Data success && bu data success`(){
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
-            channelModel = ChannelModel(
-                id = "2222",
-                groupId = "",
-                style = ChannelStyle.ChannelHome,
-                channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
-                channelConfig = ChannelConfig(layout = "bu_widget"),
-                layout = "bu_widget"
-            )
-        )
-
-        // dynamic banner
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(businessUnitDataModel)
-                )
-        )
-
-        homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-                getBusinessWidgetTab = getBusinessWidgetTab
-        )
-        homeViewModel.homeLiveData.observeForever(observerHome)
+    fun `Get Tab Data success && bu data success with success data`(){
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
+        val position = 0
 
         // load tab data return success
         val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
-        getBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
-
-        // load data bu return success
-        getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
-                BusinessUnitItemDataModel(
-                        content = HomeWidget.ContentItemTab(),
-                        itemPosition = 0,
-                        tabPosition = 0,
-                        tabName = "Keuangan"
-                )
-        ))
-
-        // viewModel load business tab
-        homeViewModel.getBusinessUnitTabData(0)
-
-        // viewModel load business data
-        homeViewModel.getBusinessUnitData(1, 0, "Keuangan")
-
-        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel> { widget, index ->
-            Assert.assertNotNull(widget.tabList)
-            Assert.assertNotNull(widget.contentsList)
-            Assert.assertNotNull(widget.contentsList?.first()?.list)
-        }
-    }
-
-    @Test
-    fun `Update BU Data success`(){
-        runBlocking {
-            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-            val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
-                channelModel = ChannelModel(
-                    id = "2222",
-                    groupId = "",
-                    style = ChannelStyle.ChannelHome,
-                    channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
-                    channelConfig = ChannelConfig(layout = "bu_widget"),
-                    layout = "bu_widget"
-                )
-            )
-
-            val homeDataModel = HomeDataModel(
-                    list = listOf(businessUnitDataModel)
-            )
-
-            val channel = Channel<HomeDataModel>()
-            // dynamic banner
-            coEvery { getHomeUseCase.getHomeData() } returns flow{
-                channel.consumeAsFlow().collect{
-                    emit(it)
-                }
-            }
-            launch{
-                channel.send(homeDataModel.copy())
-            }
-            homeViewModel = createHomeViewModel(
-                    getHomeUseCase = getHomeUseCase,
-                    getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-                    getBusinessWidgetTab = getBusinessWidgetTab
-            )
-            homeViewModel.homeLiveData.observeForever(observerHome)
-
-            // load tab data return success
-            val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
-            getBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
-
-            // load data bu return success
-            getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
-                    BusinessUnitItemDataModel(
-                            content = HomeWidget.ContentItemTab(),
-                            itemPosition = 0,
-                            tabPosition = 0,
-                            tabName = "Keuangan"
-                    )
-            ))
-
-            // viewModel load business tab
-            homeViewModel.getBusinessUnitTabData(0)
-
-            // viewModel load business data
-            homeViewModel.getBusinessUnitData(1, 0, "Keuangan")
-
-            // Expect tabs data on live data available
-            homeViewModel.homeLiveData.value?.let{
-                assert(it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList?.first()?.list != null)
-            }
-        }
-    }
-
-    @Test
-    fun `Get bu tab success && bu data first error`(){
         val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
             channelModel = ChannelModel(
                 id = "2222",
@@ -169,38 +46,128 @@ class HomeViewModelBusinessUnitTest{
                 channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
                 channelConfig = ChannelConfig(layout = "bu_widget"),
                 layout = "bu_widget"
-            )
+            ),
+            tabList = homeWidget.tabBusinessList
         )
 
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
         // dynamic banner
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(businessUnitDataModel)
                 )
         )
+
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-                getBusinessWidgetTab = getBusinessWidgetTab
+            getHomeUseCase = getHomeUseCase,
+            homeBusinessUnitUseCase = homeBusinessUnitUseCase
         )
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
+        homeViewModel.homeDataModel.addWidgetModel(businessUnitDataModel)
 
-        // load tab data returns success
-        val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
-        getBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
+        homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(businessUnitDataModel)
 
-        // load data bu return error
-        getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseThrowReturn()
+        // load data bu return success
+        val listBusinessUnitItem = listOf(
+            BusinessUnitItemDataModel(
+                content = HomeWidget.ContentItemTab(),
+                itemPosition = position,
+                tabPosition = position,
+                tabName = "Keuangan"
+            )
+        )
+        val listBusinessUnit = listOf(BusinessUnitDataModel(
+            tabName = "Keuangan",
+            tabPosition = position,
+            list = listBusinessUnitItem
+        ))
+        val resultBuModel = businessUnitDataModel.copy(
+            contentsList = listBusinessUnit
+        )
+        homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
+            position,
+            resultBuModel,
+            position,
+            homeViewModel.homeDataModel,
+            businessUnitDataModel,
+            position,
+            listBusinessUnit[0].tabName
+        )
 
         // viewModel load business tab
-        homeViewModel.getBusinessUnitTabData(0)
+        homeViewModel.getBusinessUnitTabData(position)
 
         // viewModel load business data
-        homeViewModel.getBusinessUnitData(1, 0, "Keuangan")
+        homeViewModel.getBusinessUnitData(position, position, listBusinessUnit[0].tabName)
 
-        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel> { widget, index ->
-            Assert.assertEquals(1, 1)
-        }
+        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel>(
+                actionOnFound = { widget, index ->
+                    Assert.assertNotNull(widget.tabList)
+                    Assert.assertNotNull(widget.contentsList)
+                    Assert.assertNotNull(widget.contentsList?.first()?.list)
+                },
+                actionOnNotFound = {}
+        )
+    }
+
+    @Test
+    fun `Get Tab Data success && bu data success with default data`(){
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
+        val tabName = ""
+        val position = 0
+
+        // load tab data return success
+        val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
+        val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
+            channelModel = ChannelModel(
+                id = "2222",
+                groupId = "",
+                style = ChannelStyle.ChannelHome,
+                channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
+                channelConfig = ChannelConfig(layout = "bu_widget"),
+                layout = "bu_widget"
+            ),
+            tabList = homeWidget.tabBusinessList
+        )
+
+        // dynamic banner
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(businessUnitDataModel)
+            )
+        )
+
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            homeBusinessUnitUseCase = homeBusinessUnitUseCase
+        )
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
+        homeViewModel.homeDataModel.addWidgetModel(businessUnitDataModel)
+
+        homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(businessUnitDataModel)
+
+        homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
+            position,
+            businessUnitDataModel,
+            position,
+            homeViewModel.homeDataModel,
+            businessUnitDataModel,
+            position,
+            tabName
+        )
+
+        // viewModel load business tab
+        homeViewModel.getBusinessUnitTabData(position)
+
+        // viewModel load business data
+        homeViewModel.getBusinessUnitData(position, position, tabName)
+
+        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel>(
+                actionOnFound = { widget, index ->
+                    Assert.assertEquals(widget, businessUnitDataModel)
+                },
+                actionOnNotFound = {
+
+                }
+        )
     }
 }
