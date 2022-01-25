@@ -28,6 +28,7 @@ class AdsObjectiveFragment : TkpdBaseV4Fragment(), View.OnClickListener {
     private var iButtonProductAds: View? = null
     private var iButtonShopAds: View? = null
     private var adsObjSubTitle: Typography? = null
+
     override fun getScreenName(): String {
         return EMPTY_TEXT
     }
