@@ -19,6 +19,7 @@ import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTemplatesUseCase
@@ -109,6 +110,19 @@ class CreateReviewViewModel @Inject constructor(
         get() = _postSubmitUiState
 
     private val selectedBadRatingCategories = mutableSetOf<String>()
+
+    private fun mergeImagePickerResultWithOriginalImages(
+        imagePickerResult: MutableList<String>,
+        imagesFedIntoPicker: MutableList<String>
+    ): List<String> {
+        return imagePickerResult.mapIndexed { index, result ->
+            if (result.endsWith(ReviewConstants.TEMP_IMAGE_EXTENSION)) {
+                imagesFedIntoPicker[index]
+            } else {
+                result
+            }
+        }
+    }
 
     fun submitReview(
         rating: Int,
@@ -205,15 +219,15 @@ class CreateReviewViewModel @Inject constructor(
     ): MutableList<BaseImageReviewUiModel> {
         // Remove old image
         originalImages = imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
-
-        when (imagePickerResult.size) {
+        val mergedImagePaths = mergeImagePickerResultWithOriginalImages(imagePickerResult, imagesFedIntoPicker)
+        when (mergedImagePaths.size) {
             MAX_IMAGE_COUNT -> {
-                imageData = (imagePickerResult.map {
+                imageData = (mergedImagePaths.map {
                     ImageReviewUiModel(it)
                 }).toMutableList()
             }
             else -> {
-                imageData.addAll(imagePickerResult.map {
+                imageData.addAll(mergedImagePaths.map {
                     ImageReviewUiModel(it)
                 })
                 imageData.add(DefaultImageReviewUiModel())
