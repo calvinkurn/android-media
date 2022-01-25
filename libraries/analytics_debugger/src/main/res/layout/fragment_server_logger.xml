@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchbar_sl"
@@ -30,6 +31,17 @@
             android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sl_not_found"

@@ -2,6 +2,7 @@ package com.tokopedia.analyticsdebugger.serverlogger.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.analyticsdebugger.debugger.helper.formatDataExcerpt
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemPriorityUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerConstants
@@ -18,7 +19,10 @@ class ServerLoggerMapper @Inject constructor(
     private val loggerRepository: LoggerRepository?
 ) {
 
-    fun mapToLoggerListUiModel(loggerLocal: List<Logger>, keyword: String): List<ServerLoggerUiModel> {
+    fun mapToLoggerListUiModel(
+        loggerLocal: List<Logger>,
+        keyword: String
+    ): List<ServerLoggerUiModel> {
         val decrypt = loggerRepository?.decrypt
         val loggerUiModelList = mutableListOf<ServerLoggerUiModel>()
         loggerLocal.forEach {
@@ -62,8 +66,15 @@ class ServerLoggerMapper @Inject constructor(
         return loggerUiModelList
     }
 
-    fun mapToPriorityList(priorityList: List<String>): ServerLoggerPriorityUiModel {
-        return ServerLoggerPriorityUiModel(priorityList)
+    fun mapToPriorityList(priorityList: List<String>, chipsSelected: String): ServerLoggerPriorityUiModel {
+        return ServerLoggerPriorityUiModel(
+            priorityList.map {
+                ItemPriorityUiModel(
+                    priorityName = it,
+                    isSelected = it == chipsSelected
+                )
+            }
+        )
     }
 
     private fun getDateFormat(timeStamp: Long): String {

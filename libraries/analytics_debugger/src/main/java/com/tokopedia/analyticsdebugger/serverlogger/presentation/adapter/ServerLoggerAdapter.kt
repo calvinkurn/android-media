@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.diffutil.ServerLoggerDiffUtilCallback
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.BaseServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 
 class ServerLoggerAdapter(serverLoggerAdapterTypeFactory: ServerLoggerAdapterTypeFactory) :
     BaseListAdapter<Visitable<*>, ServerLoggerAdapterTypeFactory>(serverLoggerAdapterTypeFactory) {
@@ -22,6 +23,12 @@ class ServerLoggerAdapter(serverLoggerAdapterTypeFactory: ServerLoggerAdapterTyp
     fun addServerLoggerListData(serverLoggerList: List<BaseServerLoggerUiModel>) {
         visitables.addAll(serverLoggerList)
         notifyItemRangeInserted(visitables.size, serverLoggerList.size)
+    }
+
+    fun removeServerLoggerList() {
+        val serverLoggerListCount = visitables.count { it is ServerLoggerUiModel }
+        visitables.removeAll { it is ServerLoggerUiModel }
+        notifyItemRangeRemoved(visitables.size, serverLoggerListCount)
     }
 
     fun updateChipsSelected(position: Int) {

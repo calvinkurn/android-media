@@ -8,9 +8,6 @@
 
     <application>
         <activity
-            android:name=".serverlogger.presentation.activity.ServerLoggerActivity"
-            android:exported="false" />
-        <activity
             android:name=".debugger.ui.activity.ApplinkDebuggerActivity"
             android:label="Applink Debugger"
             android:launchMode="singleTask"
@@ -73,6 +70,13 @@
         <activity
             android:name=".websocket.ui.activity.WebSocketLoggingActivity"
             android:label="Web Socket Logging"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".serverlogger.presentation.activity.ServerLoggerActivity"
+            android:exported="false"
+            android:label="Server Logger"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

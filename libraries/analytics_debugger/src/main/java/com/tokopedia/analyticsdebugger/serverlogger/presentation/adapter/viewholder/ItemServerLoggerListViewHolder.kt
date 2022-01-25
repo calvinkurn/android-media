@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.databinding.ItemServerLoggerListBinding
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerChannelAdapter
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerLoggerAdapter
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerItemDecoration
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -31,15 +32,21 @@ class ItemServerLoggerListViewHolder(view: View) : AbstractViewHolder<ServerLogg
             tvMessageSL.text = element.previewMessage
             tvDateTimeSL.text = element.dateTime
 
-            setServerChanelList(element.serverChannel)
+            setRecyclerView(element.serverChannel)
         }
     }
 
     override fun bind(element: ServerLoggerUiModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
+        if (element == null || payloads.isNullOrEmpty()) return
+
+        when (payloads.getOrNull(0) as? Int) {
+            ServerLoggerAdapter.PAYLOAD_SELECTED_CHIPS -> {
+                setServerChannelList(element.serverChannel)
+            }
+        }
     }
 
-    private fun ItemServerLoggerListBinding.setServerChanelList(data: List<String>) {
+    private fun ItemServerLoggerListBinding.setRecyclerView(data: List<String>) {
         serverChannelAdapter = ServerChannelAdapter()
         rvSLChannel.run {
             if (itemDecorationCount.isZero()) {
@@ -48,7 +55,11 @@ class ItemServerLoggerListViewHolder(view: View) : AbstractViewHolder<ServerLogg
             layoutManager =
                 LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = serverChannelAdapter
-            serverChannelAdapter?.setServerChannelList(data)
+            setServerChannelList(data)
         }
+    }
+
+    private fun setServerChannelList(data: List<String>) {
+        serverChannelAdapter?.setServerChannelList(data)
     }
 }

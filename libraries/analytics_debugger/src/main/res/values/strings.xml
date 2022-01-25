@@ -26,4 +26,8 @@
 
     <string name="websocket_log_delete_all_message">Delete All Logs Success</string>
     <string name="websocket_log_default_error_message">Something went wrong</string>
+
+    <string name="serverlogger_delete_all_message">Delete All Server logger Success</string>
+    <string name="delete_all">Delete All</string>
+
 </resources>

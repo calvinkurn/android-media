@@ -5,7 +5,10 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat.startActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.activity.ServerLoggerActivity
+import com.tokopedia.analyticsdebugger.websocket.ui.activity.WebSocketLoggingActivity
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.LoggingToServerUiModel
 import com.tokopedia.logger.ServerLogger.log
@@ -15,8 +18,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 
 class LoggingToServerViewHolder(
     itemView: View
-): AbstractViewHolder<LoggingToServerUiModel>(itemView)
-{
+) : AbstractViewHolder<LoggingToServerUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_logging_to_server
@@ -25,14 +27,21 @@ class LoggingToServerViewHolder(
     override fun bind(element: LoggingToServerUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.logging_to_server_btn)
         val tf = itemView.findViewById<TextFieldUnify>(R.id.logging_to_server_tf)
+        val viewServerLoggerBtn = itemView.findViewById<UnifyButton>(R.id.view_server_logger_btn)
         btn.setOnClickListener {
             val timberMessage: String = tf.textFieldInput.text.toString()
             itemView.context.apply {
                 if (timberMessage.isBlank()) {
-                    Toast.makeText(this, "Timber message should not empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Timber message should not empty", Toast.LENGTH_SHORT)
+                        .show()
                 } else {
                     manageTimberMessage(this, timberMessage)
                 }
+            }
+        }
+        viewServerLoggerBtn.setOnClickListener {
+            itemView.context.run {
+                startActivity(ServerLoggerActivity.newInstance(this))
             }
         }
     }
@@ -59,7 +68,8 @@ class LoggingToServerViewHolder(
                     if (getOrNull(keyValue, 0) != null && getOrNull(keyValue, 1) != null) {
                         messageMap[keyValue[0]] = keyValue[1]
                     } else {
-                        Toast.makeText(context, "Invalid timber message format", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Invalid timber message format", Toast.LENGTH_LONG)
+                            .show()
                         return
                     }
                 }

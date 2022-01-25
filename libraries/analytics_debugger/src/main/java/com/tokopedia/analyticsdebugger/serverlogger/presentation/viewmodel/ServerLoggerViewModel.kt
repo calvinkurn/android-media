@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
@@ -28,17 +29,22 @@ class ServerLoggerViewModel @Inject constructor(
 ) : BaseViewModel(coroutineDispatchers.main) {
 
     private val _serverLoggerPagination = MutableStateFlow(listOf<ServerLoggerUiModel>())
-    private val _chips = MutableStateFlow(ServerLoggerPriorityUiModel())
+    private val _priorityChips = MutableStateFlow(ServerLoggerPriorityUiModel())
 
-    val uiState: Flow<List<BaseServerLoggerUiModel>> = combine(
+    val dataState: Flow<List<BaseServerLoggerUiModel>> = combine(
         _serverLoggerPagination,
-        _chips
-    ) { serverLoggerPagination, chips ->
+        _priorityChips
+    ) { serverLoggerPagination, priorityChips ->
         mutableListOf<BaseServerLoggerUiModel>().apply {
-            add(chips)
+            add(priorityChips)
             addAll(serverLoggerPagination)
         }
     }.flowOn(coroutineDispatchers.computation)
+
+    private val _messageEvent = MutableSharedFlow<String>()
+
+    val messageEvent: Flow<String>
+        get() = _messageEvent
 
     private val _deleteServerLogger = MutableLiveData<Result<Boolean>>()
     val deleteServerLogger: LiveData<Result<Boolean>>
@@ -48,9 +54,9 @@ class ServerLoggerViewModel @Inject constructor(
     fun loadInitialData(
         query: String,
         priority: String,
-        page: Int = ServerLoggerConstants.FIRST_PAGE
+        page: Int = ServerLoggerConstants.FIRST_PAGE,
     ) {
-        loadPriority()
+        loadPriority(priority)
         loadServerLogger(query, priority, page)
     }
 
@@ -61,25 +67,25 @@ class ServerLoggerViewModel @Inject constructor(
                 getLoggerListUseCase.execute(query, priority, ServerLoggerConstants.LIMIT, offset)
             _serverLoggerPagination.value = serverLoggerResult
         }) {
-
+            _messageEvent.emit(it.localizedMessage.orEmpty())
         }
     }
 
-    private fun loadPriority() {
+    private fun loadPriority(chipsSelected: String) {
         launchCatchError(block = {
-            val priorityResult = getLoggerPriorityListUseCase.execute()
-            _chips.value = priorityResult
+            val priorityResult = getLoggerPriorityListUseCase.execute(chipsSelected)
+            _priorityChips.value = priorityResult
         }) {
-
+            _messageEvent.emit(it.localizedMessage.orEmpty())
         }
     }
 
     fun deleteAllServerLogger() {
         launchCatchError(block = {
-            val deleteResult = deleteLoggerListUseCase.execute()
+            deleteLoggerListUseCase.execute()
             _deleteServerLogger.value = Success(true)
         }) {
-
+            _messageEvent.emit(it.localizedMessage.orEmpty())
         }
     }
 }

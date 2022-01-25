@@ -10,9 +10,9 @@ class GetPriorityListUseCase @Inject constructor(
     private val serverLoggerMapper: ServerLoggerMapper
 ) {
 
-    suspend fun execute(): ServerLoggerPriorityUiModel {
+    suspend fun execute(chipsSelected: String): ServerLoggerPriorityUiModel {
         return serverLoggerMapper.mapToPriorityList(
-            loggerRepository?.getPriorityList() ?: emptyList()
+            loggerRepository?.getPriorityList() ?: emptyList(), chipsSelected
         )
     }
 }
