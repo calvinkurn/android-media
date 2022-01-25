@@ -71,7 +71,9 @@ class TokoNowEmptyStateOocViewHolder(
     private fun setActionListener(eventCategory: String, serviceType: String) {
         binding?.emptyStateOcc?.actionListener = object : NoAddressEmptyStateView.ActionListener {
             override fun onPrimaryBtnClicked() {
-                if(serviceType == ServiceType.NOW_2H) {
+                if (serviceType == ServiceType.NOW_2H ||
+                    serviceType == ServiceType.NOW_OOC
+                ) {
                     showBottomSheetChooseAddress()
                 } else {
                     listener?.onSwitchService()
@@ -79,7 +81,9 @@ class TokoNowEmptyStateOocViewHolder(
             }
 
             override fun onSecondaryBtnClicked() {
-                if(serviceType == ServiceType.NOW_2H) {
+                if (serviceType == ServiceType.NOW_2H ||
+                    serviceType == ServiceType.NOW_OOC
+                ) {
                     (itemView.context as? Activity)?.finish()
                 } else {
                     showBottomSheetChooseAddress()
