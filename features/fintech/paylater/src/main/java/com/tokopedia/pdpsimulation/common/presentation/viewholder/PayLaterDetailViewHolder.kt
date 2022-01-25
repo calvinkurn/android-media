@@ -102,7 +102,12 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             tvTitlePaymentPartner.text = element.gatewayDetail?.name
             tvInstallmentAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.installment_per_month?: 0.0, false)
             tvTenureMultiplier.text = "x${element.tenure}"
-            tvInstallmentDescription.text = element.subheader?.parseAsHtml()
+            if (element.subheader.isNullOrEmpty())
+                tvInstallmentDescription.gone()
+            else {
+                tvInstallmentDescription.visible()
+                tvInstallmentDescription.text = element.subheader?.parseAsHtml()
+            }
             partnerTenureInfo.setOnClickListener {
                 if (element.installementDetails != null)
                 interaction.installementDetails(element.installementDetails)

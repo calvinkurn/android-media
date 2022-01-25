@@ -39,13 +39,14 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivPaylaterPartner"
-                android:layout_width="@dimen/unify_space_48"
-                android:layout_height="@dimen/unify_space_48"
-                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="@dimen/unify_space_12"
+                app:layout_constraintDimensionRatio="H,1:1"
                 android:scaleType="centerInside"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
+                app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentAmount"
                 tools:src="@tools:sample/avatars" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -54,8 +55,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintBottom_toTopOf="@+id/tvInstallmentAmount"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/ivPaylaterPartner"
                 app:typographyType="heading_6"
                 tools:text="@string/kredivo" />
@@ -66,8 +68,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
-                app:layout_constraintTop_toTopOf="@+id/partnerCardDummyView"
-                app:layout_constraintBottom_toBottomOf="@+id/partnerCardDummyView"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
                 app:typographyType="body_1"
                 app:typographyWeight="bold"
                 tools:text="Rp1.250.000" />
@@ -115,15 +116,6 @@
                 android:layout_height="@dimen/pay_later_divider_height_dp_1"
                 app:layout_constraintTop_toBottomOf="@+id/tvInstallmentDescription"/>
 
-            <View
-                android:id="@+id/partnerCardDummyView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintStart_toStartOf="@id/ivPaylaterPartner"
-                app:layout_constraintEnd_toEndOf="@id/ivPaylaterPartner"
-                app:layout_constraintBottom_toBottomOf="@id/ivPaylaterPartner"
-                app:layout_constraintTop_toTopOf="@id/ivPaylaterPartner" />
-
             <LinearLayout
                 android:id="@+id/llBenefits"
                 android:layout_width="0dp"
@@ -144,7 +136,8 @@
                 app:layout_constraintStart_toStartOf="@id/dividerBenefit"
                 app:layout_constraintEnd_toEndOf="@+id/dividerBenefit"
                 app:tickerType="information"
-                app:tickerShapeType="full"
+                app:tickerShapeType="loose"
+                app:closeButtonVisibility="gone"
                 android:visibility="gone"
                 android:layout_marginTop="@dimen/unify_space_8"
                 app:layout_constraintTop_toBottomOf="@+id/dividerBenefit"
