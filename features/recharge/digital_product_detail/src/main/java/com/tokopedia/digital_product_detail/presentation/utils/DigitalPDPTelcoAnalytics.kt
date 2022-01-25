@@ -4,11 +4,17 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_CHEVRON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_LAST_TRANSACTION_ICON
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_LOGIN_WIDGET
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_PRODUCT_CLUSTER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.CLICK_PROMO_CARD
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.IMPRESSION_LAST_TRANSACTION_ICON
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.IMPRESSION_PDP_BANNER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.IMPRESSION_PRODUCT_CLUSTER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.Companion.VIEW_PROMO_CARD
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.CREATIVE_NAME
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.CREATIVE_SLOT
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.EMPTY_DISCOUNT_PRICE
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.FLASH_SALE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.INDEX
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEMS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEM_BRAND
@@ -17,10 +23,13 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEM_LIST
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEM_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.ITEM_VARIANT
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.MCCM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.PRICE
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.Companion.PROMOTIONS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.CLICK_DIGITAL
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.SELECT_CONTENT
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.VIEW_DIGITAL_IRIS
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.VIEW_ITEM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.Companion.VIEW_ITEM_LIST
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
@@ -33,13 +42,20 @@ class DigitalPDPTelcoAnalytics {
     fun eventInputNumberManual(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.CLICK_DIGITAL,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.INPUT_MANUAL_NUMBER,
-                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}",
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.INPUT_MANUAL_NUMBER,
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}",
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
@@ -47,13 +63,20 @@ class DigitalPDPTelcoAnalytics {
     fun eventInputNumberContact(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.CLICK_DIGITAL,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.INPUT_FROM_CONTACT,
-                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}",
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.INPUT_FROM_CONTACT,
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}",
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
@@ -61,13 +84,20 @@ class DigitalPDPTelcoAnalytics {
     fun eventInputNumberFavorite(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.CLICK_DIGITAL,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.INPUT_FROM_FAVORITE_NUMBER,
-                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}",
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.INPUT_FROM_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}",
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
@@ -75,83 +105,149 @@ class DigitalPDPTelcoAnalytics {
     fun impressionFavoriteNumberChips(categoryName: String, loyaltyStatus: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.VIEW_DIGITAL_IRIS,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.VIEW_FAVORITE_NUMBER_CHIP,
-                TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}",
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.VIEW_DIGITAL_IRIS,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.VIEW_FAVORITE_NUMBER_CHIP,
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${loyaltyStatus}",
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
 
-    fun clickFavoriteNumberChips(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+    fun clickFavoriteNumberChips(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.CLICK_DIGITAL,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_FAVORITE_NUMBER_CHIP,
-                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.CLICK_FAVORITE_NUMBER_CHIP,
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}_${loyaltyStatus}",
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
 
-    fun impressionFavoriteContactChips(categoryName: String, loyaltyStatus: String, userId: String) {
+    fun impressionFavoriteContactChips(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.VIEW_DIGITAL_IRIS,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.VIEW_FAVORITE_CONTACT_CHIP,
-                TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}",
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.VIEW_DIGITAL_IRIS,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.VIEW_FAVORITE_CONTACT_CHIP,
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${loyaltyStatus}",
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
 
-    fun clickFavoriteContactChips(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+    fun clickFavoriteContactChips(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.CLICK_DIGITAL,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_FAVORITE_CONTACT_CHIP,
-                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.CLICK_FAVORITE_CONTACT_CHIP,
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}_${loyaltyStatus}",
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
 
-    fun clickFavoriteNumberAutoComplete(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+    fun clickFavoriteNumberAutoComplete(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.CLICK_DIGITAL,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_NUMBER,
-                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}_${loyaltyStatus}",
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
 
-    fun clickFavoriteContactAutoComplete(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+    fun clickFavoriteContactAutoComplete(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.CLICK_DIGITAL,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_CONTACT,
-                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_CONTACT,
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}_${loyaltyStatus}",
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
@@ -159,13 +255,20 @@ class DigitalPDPTelcoAnalytics {
     fun eventClearInputNumber(categoryName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.CLICK_DIGITAL,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLEAR_INPUT_NUMBER,
-                TrackAppUtils.EVENT_LABEL, categoryName,
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.CLEAR_INPUT_NUMBER,
+                TrackAppUtils.EVENT_LABEL,
+                categoryName,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
@@ -173,28 +276,40 @@ class DigitalPDPTelcoAnalytics {
     fun clickOnContactIcon(categoryName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalPDPEventTracking.Event.CLICK_DIGITAL,
-                TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_ON_CONTACT_ICON,
-                TrackAppUtils.EVENT_LABEL, categoryName,
-                DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
-                DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
-                DigitalPDPEventTracking.Additional.USER_ID, userId,
+                TrackAppUtils.EVENT,
+                DigitalPDPEventTracking.Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY,
+                DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION,
+                DigitalPDPEventTracking.Action.CLICK_ON_CONTACT_ICON,
+                TrackAppUtils.EVENT_LABEL,
+                categoryName,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+                DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE,
+                DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalPDPEventTracking.Additional.USER_ID,
+                userId,
             )
         )
     }
+
     //1
-    fun impressionProductCluster(categoryName: String,
-                                 operatorName: String,
-                                 loyaltyStatus: String,
-                                 userId: String,
-                                 denomData: DenomData,
-                                 position: Int
-    ){
+    fun impressionProductCluster(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        denomData: DenomData,
+        position: Int
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_PRODUCT_CLUSTER)
             putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
-            putParcelableArrayList(ITEMS, mapperDenomToItemList(denomData, operatorName, position, ""))
+            putParcelableArrayList(
+                ITEMS,
+                mapperDenomToItemList(denomData, operatorName, position, "")
+            )
         }
 
         eventDataLayer.viewItemList(userId)
@@ -202,19 +317,23 @@ class DigitalPDPTelcoAnalytics {
     }
 
     //2
-    fun clickProductCluster(productListName: String,
-                            categoryName: String,
-                            operatorName: String,
-                            loyaltyStatus: String,
-                            userId: String,
-                            denomData: DenomData,
-                            position: Int
-    ){
+    fun clickProductCluster(
+        productListName: String,
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        denomData: DenomData,
+        position: Int
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_PRODUCT_CLUSTER)
             putString(ITEM_LIST, productListName)
             putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
-            putParcelableArrayList(ITEMS, mapperDenomToItemList(denomData, operatorName, position, ""))
+            putParcelableArrayList(
+                ITEMS,
+                mapperDenomToItemList(denomData, operatorName, position, "")
+            )
         }
 
         eventDataLayer.clickGeneralItemList(userId)
@@ -222,16 +341,21 @@ class DigitalPDPTelcoAnalytics {
     }
 
     //9
-    fun impressionLastTransactionIcon(categoryName: String,
-                                      operatorName: String,
-                                      loyaltyStatus: String,
-                                      userId: String,
-                                      recomData: RecommendationCardWidgetModel,
-                                      position: Int){
+    fun impressionLastTransactionIcon(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        recomData: RecommendationCardWidgetModel,
+        position: Int
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_LAST_TRANSACTION_ICON)
             putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}")
-            putParcelableArrayList(ITEMS, mapperRecommendationToItemList(recomData, operatorName, position))
+            putParcelableArrayList(
+                ITEMS,
+                mapperRecommendationToItemList(recomData, operatorName, position)
+            )
         }
 
         eventDataLayer.viewItemList(userId)
@@ -239,39 +363,78 @@ class DigitalPDPTelcoAnalytics {
     }
 
     //10
-    fun clickLastTransactionIcon(productListName: String,
-                                 categoryName: String,
-                                 operatorName: String,
-                                 loyaltyStatus: String,
-                                 userId: String,
-                                 recomData: RecommendationCardWidgetModel,
-                                 position: Int){
+    fun clickLastTransactionIcon(
+        productListName: String,
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        recomData: RecommendationCardWidgetModel,
+        position: Int
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_LAST_TRANSACTION_ICON)
             putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}_${position}")
             putString(ITEM_LIST, productListName)
-            putParcelableArrayList(ITEMS, mapperRecommendationToItemList(recomData, operatorName, position))
+            putParcelableArrayList(
+                ITEMS,
+                mapperRecommendationToItemList(recomData, operatorName, position)
+            )
         }
 
         eventDataLayer.clickGeneralItemList(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    //15
-    fun impressionProductMCCM(categoryName: String,
-                              operatorName: String,
-                              loyaltyStatus: String,
-                              userId: String,
-                              denomData: DenomData,
-                              denomType: DenomWidgetEnum,
-                              position: Int
+    //13
+    fun impressionBannerEmptyState(
+        creativeUrl: String, categoryId: String, categoryName: String,
+        loyaltyStatus: String, userId: String
+    ) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_PDP_BANNER)
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}")
+            putParcelableArrayList(PROMOTIONS, mapperBannerToItemList(creativeUrl, categoryId, categoryName))
+        }
 
-    ){
-        val isMCCMorFlashSale = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) MCCM else FLASH_SALE
+        eventDataLayer.viewItem(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
+
+    }
+
+    //14
+    fun clickLoginWidget(categoryName: String, userId: String) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, CLICK_LOGIN_WIDGET,
+            TrackAppUtils.EVENT_LABEL, "${categoryName}"
+        )
+        data.clickDigitaltemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //15
+    fun impressionProductMCCM(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        denomData: DenomData,
+        denomType: DenomWidgetEnum,
+        position: Int
+
+    ) {
+        val isMCCMorFlashSale =
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) MCCM else FLASH_SALE
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, VIEW_PROMO_CARD)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}")
-            putParcelableArrayList(ITEMS, mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale))
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}"
+            )
+            putParcelableArrayList(
+                ITEMS,
+                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale)
+            )
         }
 
         eventDataLayer.viewItemList(userId)
@@ -279,33 +442,47 @@ class DigitalPDPTelcoAnalytics {
     }
 
     //18
-    fun clickChevronBuyWidget(categoryName: String, operatorName: String, discountPrice: String,
-                              normalPrice:String, userId: String){
+    fun clickChevronBuyWidget(
+        categoryName: String, operatorName: String, discountPrice: String,
+        normalPrice: String, userId: String
+    ) {
         val finalNormalPrice = if (normalPrice.isNullOrEmpty()) discountPrice else normalPrice
-        val finalDiscountPrice = if (normalPrice.isNullOrEmpty()) EMPTY_DISCOUNT_PRICE else discountPrice
+        val finalDiscountPrice =
+            if (normalPrice.isNullOrEmpty()) EMPTY_DISCOUNT_PRICE else discountPrice
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, CLICK_CHEVRON,
-            TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${finalNormalPrice}_${finalDiscountPrice}"
+            TrackAppUtils.EVENT_ACTION,
+            CLICK_CHEVRON,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_${finalNormalPrice}_${finalDiscountPrice}"
         )
         data.clickDigitaltemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     //20
-    fun clickMCCMProduct(productListName: String,
-                         categoryName: String,
-                         operatorName: String,
-                         loyaltyStatus: String,
-                         userId: String,
-                         denomData: DenomData,
-                         denomType: DenomWidgetEnum,
-                         position: Int){
-        val isMCCMorFlashSale = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) MCCM else FLASH_SALE
+    fun clickMCCMProduct(
+        productListName: String,
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        denomData: DenomData,
+        denomType: DenomWidgetEnum,
+        position: Int
+    ) {
+        val isMCCMorFlashSale =
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE) MCCM else FLASH_SALE
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_PROMO_CARD)
             putString(ITEM_LIST, productListName)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}")
-            putParcelableArrayList(ITEMS, mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale))
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}"
+            )
+            putParcelableArrayList(
+                ITEMS,
+                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale)
+            )
         }
 
         eventDataLayer.clickGeneralItemList(userId)
@@ -320,7 +497,13 @@ class DigitalPDPTelcoAnalytics {
         return this
     }
 
-    fun MutableMap<String, Any>.viewDigitalIris(userId: String):  MutableMap<String, Any> {
+    fun Bundle.viewItem(userId: String): Bundle {
+        addGeneralTracker(userId)
+        this.putString(TrackAppUtils.EVENT, VIEW_ITEM)
+        return this
+    }
+
+    fun MutableMap<String, Any>.viewDigitalIris(userId: String): MutableMap<String, Any> {
         addGeneralTracker(userId)
         this[TrackAppUtils.EVENT] = VIEW_DIGITAL_IRIS
         return this
@@ -332,39 +515,58 @@ class DigitalPDPTelcoAnalytics {
         return this
     }
 
-    fun  MutableMap<String, Any>.clickDigitaltemList(userId: String): MutableMap<String, Any> {
+    fun MutableMap<String, Any>.clickDigitaltemList(userId: String): MutableMap<String, Any> {
         addGeneralTracker(userId)
         this[TrackAppUtils.EVENT] = CLICK_DIGITAL
         return this
     }
 
 
-    fun Bundle.addGeneralTracker(userId: String): Bundle{
-        this.putString(TrackAppUtils.EVENT_CATEGORY, DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE)
-        this.putString(DigitalPDPEventTracking.Additional.BUSINESS_UNIT, DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
-        this.putString(DigitalPDPEventTracking.Additional.CURRENT_SITE, DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE)
+    fun Bundle.addGeneralTracker(userId: String): Bundle {
+        this.putString(
+            TrackAppUtils.EVENT_CATEGORY,
+            DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE
+        )
+        this.putString(
+            DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
+            DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE
+        )
+        this.putString(
+            DigitalPDPEventTracking.Additional.CURRENT_SITE,
+            DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE
+        )
         this.putString(DigitalPDPEventTracking.Additional.USER_ID, userId)
         return this
     }
 
-    fun MutableMap<String, Any>.addGeneralTracker(userId: String):  MutableMap<String, Any>{
+    fun MutableMap<String, Any>.addGeneralTracker(userId: String): MutableMap<String, Any> {
         this[TrackAppUtils.EVENT_CATEGORY] = DigitalPDPEventTracking.Category.DIGITAL_HOMEPAGE
-        this[DigitalPDPEventTracking.Additional.BUSINESS_UNIT] = DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE
-        this[DigitalPDPEventTracking.Additional.CURRENT_SITE] = DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE
+        this[DigitalPDPEventTracking.Additional.BUSINESS_UNIT] =
+            DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE
+        this[DigitalPDPEventTracking.Additional.CURRENT_SITE] =
+            DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE
         this[DigitalPDPEventTracking.Additional.USER_ID] = userId
         return this
     }
 
     /** Tracking mapper*/
 
-    fun mapperDenomToItemList(denomData: DenomData, operatorName: String, position: Int, isMCCMorFlashSale: String): ArrayList<Bundle> {
+    fun mapperDenomToItemList(
+        denomData: DenomData,
+        operatorName: String,
+        position: Int,
+        isMCCMorFlashSale: String
+    ): ArrayList<Bundle> {
         val listItems = ArrayList<Bundle>()
-        denomData.run{
+        denomData.run {
             listItems.add(
                 Bundle().apply {
                     putString(INDEX, (position + 1).toString())
                     putString(ITEM_BRAND, operatorName)
-                    putString(ITEM_CATEGORY, DigitalPDPTelcoUtil.getCategoryName(denomData.categoryId.toInt()))
+                    putString(
+                        ITEM_CATEGORY,
+                        DigitalPDPTelcoUtil.getCategoryName(denomData.categoryId.toInt())
+                    )
                     putString(ITEM_ID, denomData.id)
                     putString(ITEM_NAME, denomData.title)
                     putString(ITEM_VARIANT, isMCCMorFlashSale)
@@ -375,14 +577,21 @@ class DigitalPDPTelcoAnalytics {
         return listItems
     }
 
-    fun mapperRecommendationToItemList(recomData: RecommendationCardWidgetModel, operatorName: String, position: Int): ArrayList<Bundle> {
+    fun mapperRecommendationToItemList(
+        recomData: RecommendationCardWidgetModel,
+        operatorName: String,
+        position: Int
+    ): ArrayList<Bundle> {
         val listItems = ArrayList<Bundle>()
-        recomData.run{
+        recomData.run {
             listItems.add(
                 Bundle().apply {
                     putString(INDEX, (position + 1).toString())
                     putString(ITEM_BRAND, operatorName)
-                    putString(ITEM_CATEGORY, DigitalPDPTelcoUtil.getCategoryName(recomData.categoryId.toInt()))
+                    putString(
+                        ITEM_CATEGORY,
+                        DigitalPDPTelcoUtil.getCategoryName(recomData.categoryId.toInt())
+                    )
                     putString(ITEM_ID, recomData.id)
                     putString(ITEM_NAME, recomData.title)
                     putString(ITEM_VARIANT, "-")
@@ -393,10 +602,20 @@ class DigitalPDPTelcoAnalytics {
         return listItems
     }
 
-
-    companion object {
-        const val EMPTY_DISCOUNT_PRICE = "Rp0"
-        const val MCCM = "mccm"
-        const val FLASH_SALE = "flash sale"
+    fun mapperBannerToItemList(
+        creativeUrl: String,
+        categoryId: String,
+        categoryName: String
+    ): ArrayList<Bundle> {
+        val listItems = ArrayList<Bundle>()
+        listItems.add(
+                Bundle().apply {
+                    putString(CREATIVE_NAME, creativeUrl)
+                    putString(CREATIVE_SLOT, "-")
+                    putString(ITEM_ID, categoryId)
+                    putString(ITEM_NAME, categoryName)
+                }
+            )
+        return listItems
     }
 }

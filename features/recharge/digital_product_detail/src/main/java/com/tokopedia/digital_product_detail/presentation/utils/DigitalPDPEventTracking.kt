@@ -11,6 +11,7 @@ interface DigitalPDPEventTracking {
             const val BUSINESS_UNIT_RECHARGE = "recharge"
             const val ITEMS = "items"
             const val ITEM_LIST = "item_list"
+            const val PROMOTIONS = "promotions"
 
             const val INDEX = "index"
             const val ITEM_BRAND = "item_brand"
@@ -19,6 +20,12 @@ interface DigitalPDPEventTracking {
             const val ITEM_NAME = "item_name"
             const val ITEM_VARIANT = "item_variant"
             const val PRICE = "price"
+            const val CREATIVE_NAME = "creative_name"
+            const val CREATIVE_SLOT = "creative_slot"
+
+            const val EMPTY_DISCOUNT_PRICE = "Rp0"
+            const val MCCM = "mccm"
+            const val FLASH_SALE = "flash sale"
         }
     }
 
@@ -26,6 +33,7 @@ interface DigitalPDPEventTracking {
         companion object {
             const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
             const val VIEW_ITEM_LIST = "view_item_list"
+            const val VIEW_ITEM = "view_item"
             const val CLICK_DIGITAL = "clickDigital"
             const val SELECT_CONTENT = "select_content"
         }

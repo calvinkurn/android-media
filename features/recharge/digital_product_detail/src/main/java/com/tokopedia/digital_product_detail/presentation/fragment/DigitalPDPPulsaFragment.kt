@@ -601,6 +601,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
+                digitalPDPTelcoAnalytics.impressionBannerEmptyState(
+                    "TODO Creative Link",
+                    categoryId.toString(),
+                    DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                    "Loyalty",
+                    userSession.userId
+                )
                 rechargePdpPulsaEmptyStateWidget.show()
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
