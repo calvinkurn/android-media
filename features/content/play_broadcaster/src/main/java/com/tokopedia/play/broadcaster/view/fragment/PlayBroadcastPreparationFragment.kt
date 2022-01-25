@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
 import javax.inject.Inject
@@ -166,6 +167,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Callback Title Form */
     override fun onCloseTitleForm(view: TitleFormView) {
+        hideKeyboard()
         activity?.onBackPressed()
     }
 

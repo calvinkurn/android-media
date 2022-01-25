@@ -12,10 +12,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationTitleFormBinding
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.util.extension.showKeyboard
-import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
-import com.tokopedia.play_common.view.updatePadding
-import com.tokopedia.unifyprinciples.R
+import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play.broadcaster.R
 
 /**
  * Created By : Jonathan Darwin on January 25, 2022
@@ -51,10 +50,10 @@ class TitleFormView : ConstraintLayout {
         with(binding) {
             textFieldTitle.labelText.visibility = View.GONE
             val whiteColor = MethodChecker.getColor(
-                context, R.color.Unify_Static_White
+                context, unifyR.color.Unify_Static_White
             )
             val secondaryColor = MethodChecker.getColor(
-                context, com.tokopedia.play.broadcaster.R.color.play_bro_dms_title_form_border
+                context, R.color.play_bro_dms_title_form_border
             )
             textFieldTitle.textInputLayout.boxStrokeColor = secondaryColor
             textFieldTitle.editText.setTextColor(whiteColor)
@@ -124,10 +123,9 @@ class TitleFormView : ConstraintLayout {
     }
 
     private fun showInputMethod() {
-        Log.d("<LOG>", "showInputMethod")
         binding.textFieldTitle.editText.doOnLayout {
-            requestLayout()
-            showKeyboard()
+            binding.textFieldTitle.editText.requestFocus()
+            binding.textFieldTitle.editText.showKeyboard()
         }
     }
 
