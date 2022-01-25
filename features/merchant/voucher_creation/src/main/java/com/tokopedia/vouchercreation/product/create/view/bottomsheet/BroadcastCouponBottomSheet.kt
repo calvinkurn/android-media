@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -11,12 +14,12 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 
 class BroadcastCouponBottomSheet : BottomSheetUnify() {
 
@@ -25,6 +28,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_FREE_BROADCAST_QUOTA = "remaining-free-broadcast"
         private const val TPD_VOUCHER_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/mvc/mvc_voucher.png"
+        private const val ZERO: Long = 0
 
         fun newInstance(coupon: Coupon, freeBroadcastQuota: Int): BroadcastCouponBottomSheet {
             val args = Bundle()
@@ -39,11 +43,8 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var tkpdVoucherView: ImageUnify? = null
-    private var broadCastButton: View? = null
-    private var freeTextView: Typography? = null
-
     private var onBroadCastClickAction: (Coupon) -> Unit = {}
+    private var onShareToSocialMediaAction: (Coupon) -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,26 +68,39 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
 
     private fun setupView(view: View) {
         val coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as Coupon
-        val freeBroadcastQuota = arguments?.getInt(BUNDLE_KEY_FREE_BROADCAST_QUOTA).orZero()
 
+        val imgVoucher = view.findViewById<ImageView>(R.id.imgVoucher)
+        imgVoucher?.loadImage(TPD_VOUCHER_IMAGE_URL)
 
-        tkpdVoucherView = view.findViewById(R.id.iu_tkpd_voucher)
-        freeTextView = view.findViewById(R.id.tgp_free)
-        broadCastButton = view.findViewById(R.id.broadcast_button)
+        val layoutBroadcastCoupon: ConstraintLayout = view.findViewById(R.id.layoutBroadcastCoupon)
+        layoutBroadcastCoupon.setOnClickListener { onBroadCastClickAction(coupon) }
 
-        tkpdVoucherView?.loadImage(TPD_VOUCHER_IMAGE_URL)
-
+        handleShareToSocialVisibility(view, coupon)
+        handleFreeBroadcastLabelVisibility(view)
         displayCouponPeriod(view, coupon)
+    }
 
+    private fun handleShareToSocialVisibility(view: View, coupon: Coupon) {
+        val layoutShareToSocialMedia: ConstraintLayout =
+            view.findViewById(R.id.layoutShareToSocialMedia)
+        layoutShareToSocialMedia.setOnClickListener { onShareToSocialMediaAction(coupon) }
 
-        broadCastButton?.setOnClickListener { onBroadCastClickAction(coupon) }
-
-        if (freeBroadcastQuota > 0) {
-            freeTextView?.visible()
+        if (coupon.information.target == CouponInformation.Target.SPECIAL) {
+            layoutShareToSocialMedia.visible()
         } else {
-            freeTextView?.gone()
+            layoutShareToSocialMedia.gone()
         }
 
+    }
+
+    private fun handleFreeBroadcastLabelVisibility(view: View) {
+        val freeBroadcastQuota = arguments?.getInt(BUNDLE_KEY_FREE_BROADCAST_QUOTA).orZero()
+        val freeTextView: TextView = view.findViewById(R.id.tgp_free)
+        if (freeBroadcastQuota > ZERO) {
+            freeTextView.visible()
+        } else {
+            freeTextView.gone()
+        }
     }
 
     private fun displayCouponPeriod(view: View, coupon: Coupon) {
@@ -115,5 +129,9 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
 
     fun setOnBroadCastClickListener(action: (Coupon) -> Unit) {
         onBroadCastClickAction = action
+    }
+
+    fun setOnShareToSocialMediaClickListener(action: (Coupon) -> Unit) {
+        onShareToSocialMediaAction = action
     }
 }

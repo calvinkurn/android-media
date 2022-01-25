@@ -482,6 +482,9 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             )
             SharingUtil.shareToBroadCastChat(requireContext(), coupon.id)
         }
+        bottomSheet.setOnShareToSocialMediaClickListener {
+            //TODO Fajar Display sharing bottomsheet
+        }
         bottomSheet.setCloseClickListener {
             VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.REVIEW,
