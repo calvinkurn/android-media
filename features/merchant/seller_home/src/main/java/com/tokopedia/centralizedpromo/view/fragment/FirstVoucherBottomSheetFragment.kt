@@ -89,6 +89,9 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
+        if (fragmentManager.isStateSaved || isAdded) {
+            return
+        }
         show(fragmentManager, TAG)
     }
 

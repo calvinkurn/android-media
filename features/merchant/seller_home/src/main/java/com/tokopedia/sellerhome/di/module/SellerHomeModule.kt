@@ -24,7 +24,9 @@ import dagger.Provides
 @Module
 class SellerHomeModule {
 
-    private val prefName = "voucher_creation"
+    companion object {
+        private const val VOUCHER_CREATION_PREF_NAME = "voucher_creation"
+    }
 
     @SellerHomeScope
     @Provides
@@ -69,7 +71,7 @@ class SellerHomeModule {
     @SellerHomeScope
     @Provides
     fun provideVoucherCreationSharedPref(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+        return context.getSharedPreferences(VOUCHER_CREATION_PREF_NAME, Context.MODE_PRIVATE)
     }
 
 }
