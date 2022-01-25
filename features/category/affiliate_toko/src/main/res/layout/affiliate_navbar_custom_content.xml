@@ -25,6 +25,7 @@
             />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:visibility="gone"
             android:id="@+id/product_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -26,8 +26,6 @@ ext {
             exploreCategory                 : ":features:category:explore_category",
             categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
-//            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
-
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
@@ -63,7 +61,6 @@ ext {
 
             commonTravel                    : ":features:travel:common_travel",
             flight                          : ":features:travel:flight",
-            flightOrderList                 : ":features:travel:flight_orderlist",
             hotel                           : ":features:travel:hotel",
             travelHomepage                  : ":features:travel:travel_homepage",
             travelCountryCode               : ":features:travel:travel_country_code",
@@ -72,7 +69,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
 
@@ -215,6 +211,7 @@ ext {
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             topAdsHeadline                  : ":features:top_ads:top_ads_headline",
+            topAdsHeadlineUseCase           : ":features:top_ads:top_ads_headline_usecase",
 
             atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
@@ -235,21 +232,24 @@ ext {
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
+            buyercancellationorder          : ":features:ordermanagement:buyercancellationorder",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
+            attachproduct                   : ":features:communication:attachproduct",
+            attachinvoice                   : ":features:communication:attachinvoice",
+            attachcommon                    : ":features:communication:attachcommon",
+            chatcommon                      : ":features:communication:chat_common",
+            inbox                           : ":features:communication:inbox",
+            inboxCommon                     : ":features:communication:inbox_common",
+            notifCenter                     : ":features:communication:notifcenter",
+            orderhistory                    : ":features:communication:orderhistory",
 
-            attachproduct                   : ":features:user:attachproduct",
-            attachinvoice                   : ":features:user:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",
-            attachcommon                    : ":features:user:attachcommon",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
-            chatcommon                      : ":features:user:chat_common",
             fcm_common                      : ":features:user:fcm_common",
             groupchat                       : ":features:user:groupchat",
             homeAccountUser                 : ":features:user:home_account",
-            inbox                           : ":features:user:inbox",
-            inboxCommon                     : ":features:user:inbox_common",
             kyccentralized                  : ":features:user:kyc_centralized",
             liveness                        : ":features:user:liveness",
             logout                          : ":features:user:logout",
@@ -259,8 +259,6 @@ ext {
             managename                      : ":features:user:managename",
             managepassword                  : ":features:user:managepassword",
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
-            notifCenter                     : ":features:user:notifcenter",
-            orderhistory                    : ":features:user:orderhistory",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",

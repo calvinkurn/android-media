@@ -123,14 +123,15 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
     }
 
     private fun InspirationCardDataView.assertInspirationCardViewModel(inspirationWidget: SearchProductModel.InspirationCardData) {
-        title shouldBe inspirationWidget.title
-        type shouldBe inspirationWidget.type
-        position shouldBe inspirationWidget.position
-        optionData.size shouldBe inspirationWidget.inspiratioWidgetOptions.size
+        data.title shouldBe inspirationWidget.title
+        data.type shouldBe inspirationWidget.type
+        data.position shouldBe inspirationWidget.position
+        data.optionCardData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
+        data.optionSizeData.size shouldBe 0
 
-        inspirationWidget.inspiratioWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
-            optionData[index].assertInspirationCardOptionViewModel(
-                    inspirationWidgetOption, type
+        inspirationWidget.inspirationWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
+            data.optionCardData[index].assertInspirationCardOptionViewModel(
+                    inspirationWidgetOption, data.type
             )
         }
     }
@@ -387,13 +388,14 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         visitableList.size shouldBe 19
         var i = 0
 
+        val inspirationCardViewModelIndex = arrayOf(5, 6, 11, 14)
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0) {
                 visitable.shouldBeInstanceOf<SearchProductCountDataView>(
                         "visitable list at index $index should be SearchProductCountViewModel"
                 )
             }
-            else if (index == 5 || index == 6 || index == 11 || index == 14) {
+            else if (inspirationCardViewModelIndex.contains(index)) {
                 visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )

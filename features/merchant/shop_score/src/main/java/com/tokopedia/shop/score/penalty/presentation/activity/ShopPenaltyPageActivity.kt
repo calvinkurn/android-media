@@ -19,7 +19,7 @@ import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageFragment
 import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 
-class ShopPenaltyPageActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent>,
+open class ShopPenaltyPageActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent>,
     ShopPenaltyPerformanceMonitoringListener {
 
     private var pageLoadTimePerformance: PageLoadTimePerformanceInterface? = null

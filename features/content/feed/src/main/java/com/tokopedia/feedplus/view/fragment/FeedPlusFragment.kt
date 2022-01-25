@@ -1924,6 +1924,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         isFollowed: Boolean
     ) {
+        if (products.isNotEmpty())
         feedAnalytics.eventImpressionProductBottomSheet(
                 activityId,
                 products,
@@ -2176,26 +2177,28 @@ class FeedPlusFragment : BaseDaggerFragment(),
             playChannelId: String,
             shopName: String
     ) {
-        val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString()
-        productTagBS = ProductItemInfoBottomSheet()
-        feedAnalytics.eventTagClicked(finalId, type, isFollowed, id, isVideo)
-        productTagBS.show(
-            childFragmentManager,
-            products,
-            listener,
-            postId,
-            id,
-            type,
-            isFollowed,
-            positionInFeed,
-            playChannelId,
-            shopName = shopName
-        )
-        productTagBS.closeClicked = {
-            feedAnalytics.eventClickCloseProductInfoSheet(finalId, type, isFollowed, id)
-        }
-        productTagBS.disMissed = {
-            feedAnalytics.eventClickGreyArea(finalId, type, isFollowed, id)
+        if (products.isNotEmpty()) {
+            val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString()
+            productTagBS = ProductItemInfoBottomSheet()
+            feedAnalytics.eventTagClicked(finalId, type, isFollowed, id, isVideo)
+            productTagBS.show(
+                    childFragmentManager,
+                    products,
+                    listener,
+                    postId,
+                    id,
+                    type,
+                    isFollowed,
+                    positionInFeed,
+                    playChannelId,
+                    shopName = shopName
+            )
+            productTagBS.closeClicked = {
+                feedAnalytics.eventClickCloseProductInfoSheet(finalId, type, isFollowed, id)
+            }
+            productTagBS.disMissed = {
+                feedAnalytics.eventClickGreyArea(finalId, type, isFollowed, id)
+            }
         }
     }
 
@@ -3329,22 +3332,26 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun hideTopadsView(position: Int) {
-        if (recyclerView.isComputingLayout ) {
-
-            if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadLineV2Model) {
-                adapter.getlist().removeAt(position)
-                recyclerView.post {
-                    adapter.notifyItemRemoved(position)
+        recyclerView.isComputingLayout.let {
+            if (isAllowedNotify(it, position)) {
+                if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadLineV2Model) {
+                    adapter.getlist().removeAt(position)
+                    recyclerView.post {
+                        adapter.notifyItemRemoved(position)
+                    }
                 }
-            }
 
-            if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadlineUiModel) {
-                adapter.getlist().removeAt(position)
-                recyclerView.post {
-                    adapter.notifyItemRemoved(position)
+                if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadlineUiModel) {
+                    adapter.getlist().removeAt(position)
+                    recyclerView.post {
+                        adapter.notifyItemRemoved(position)
+                    }
                 }
             }
         }
+    }
+    private fun isAllowedNotify(isComputingLayout: Boolean, position: Int): Boolean {
+        return !isComputingLayout && position >= 0
     }
 
     private fun sendTopadsUrlClick(adClickUrl: String,id:String="",uri: String="",fullEcs: String?="") {
