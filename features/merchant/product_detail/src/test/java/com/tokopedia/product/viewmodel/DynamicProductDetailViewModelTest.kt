@@ -16,6 +16,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -1626,22 +1627,25 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
 
         val expectedResponse = PlayWidget()
-        val expectedUiModel = PlayWidgetUiModel.Medium(
-            "title",
-            "action title",
-            "applink",
-            true,
-            PlayWidgetConfigUiModel(
+        val expectedState = PlayWidgetState(
+            model = PlayWidgetUiModel(
+                "title",
+                "action title",
+                "applink",
                 true,
-                1000,
-                true,
-                1,
-                1,
-                2,
-                1
+                PlayWidgetConfigUiModel(
+                    true,
+                    1000,
+                    true,
+                    1,
+                    1,
+                    2,
+                    1
+                ),
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                listOf()
             ),
-            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-            listOf()
+            isLoading = false,
         )
 
 
@@ -1655,11 +1659,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             playWidgetTools.mapWidgetToModel(
                 expectedResponse
             )
-        } returns expectedUiModel
+        } returns expectedState
 
         viewModel.getPlayWidgetData()
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(expectedUiModel))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(expectedState))
     }
 
     @Test
@@ -1704,22 +1708,25 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `play widget toggle reminder success`() {
 
-        val fakeUiModel = PlayWidgetUiModel.Medium(
-            "title",
-            "action title",
-            "applink",
-            true,
-            PlayWidgetConfigUiModel(
+        val fakeState = PlayWidgetState(
+            model = PlayWidgetUiModel(
+                "title",
+                "action title",
+                "applink",
                 true,
-                1000,
-                true,
-                1,
-                1,
-                2,
-                1
+                PlayWidgetConfigUiModel(
+                    true,
+                    1000,
+                    true,
+                    1,
+                    1,
+                    2,
+                    1
+                ),
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                listOf()
             ),
-            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-            listOf()
+            isLoading = false,
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1729,9 +1736,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType
+                fakeState, fakeChannelId, fakeReminderType
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         coEvery {
             playWidgetTools.updateToggleReminder(fakeChannelId, fakeReminderType)
@@ -1742,34 +1749,37 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns expectedMapReminder
 
         viewModel.updatePlayWidgetToggleReminder(
-            fakeUiModel,
+            fakeState,
             fakeChannelId,
             fakeReminderType
         )
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))
         viewModel.playWidgetReminderSwitch.verifySuccessEquals(Success(fakeReminderType))
     }
 
     @Test
     fun `play widget toggle reminder fail cause by map reminder return false`() {
 
-        val fakeUiModel = PlayWidgetUiModel.Medium(
-            "title",
-            "action title",
-            "applink",
-            true,
-            PlayWidgetConfigUiModel(
+        val fakeState = PlayWidgetState(
+            model = PlayWidgetUiModel(
+                "title",
+                "action title",
+                "applink",
                 true,
-                1000,
-                true,
-                1,
-                1,
-                2,
-                1
+                PlayWidgetConfigUiModel(
+                    true,
+                    1000,
+                    true,
+                    1,
+                    1,
+                    2,
+                    1
+                ),
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                listOf()
             ),
-            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-            listOf()
+            isLoading = false,
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1779,9 +1789,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType
+                fakeState, fakeChannelId, fakeReminderType
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         coEvery {
             playWidgetTools.updateToggleReminder(fakeChannelId, fakeReminderType)
@@ -1793,39 +1803,42 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType.switch()
+                fakeState, fakeChannelId, fakeReminderType.switch()
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         viewModel.updatePlayWidgetToggleReminder(
-            fakeUiModel,
+            fakeState,
             fakeChannelId,
             fakeReminderType
         )
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))
         viewModel.playWidgetReminderSwitch.verifyErrorEquals(Fail(Throwable()))
     }
 
     @Test
     fun `play widget toggle reminder fail cause by exception`() {
 
-        val fakeUiModel = PlayWidgetUiModel.Medium(
-            "title",
-            "action title",
-            "applink",
-            true,
-            PlayWidgetConfigUiModel(
+        val fakeState = PlayWidgetState(
+            model = PlayWidgetUiModel(
+                "title",
+                "action title",
+                "applink",
                 true,
-                1000,
-                true,
-                1,
-                1,
-                2,
-                1
+                PlayWidgetConfigUiModel(
+                    true,
+                    1000,
+                    true,
+                    1,
+                    1,
+                    2,
+                    1
+                ),
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                listOf()
             ),
-            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-            listOf()
+            isLoading = false,
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1834,9 +1847,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType
+                fakeState, fakeChannelId, fakeReminderType
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         coEvery {
             playWidgetTools.updateToggleReminder(fakeChannelId, fakeReminderType)
@@ -1844,17 +1857,17 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                fakeUiModel, fakeChannelId, fakeReminderType.switch()
+                fakeState, fakeChannelId, fakeReminderType.switch()
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         viewModel.updatePlayWidgetToggleReminder(
-            fakeUiModel,
+            fakeState,
             fakeChannelId,
             fakeReminderType
         )
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))
         viewModel.playWidgetReminderSwitch.verifyErrorEquals(Fail(expectedThrowable))
     }
 

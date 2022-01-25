@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynami
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -35,65 +36,71 @@ class HomeViewModelPlayCarouselTest {
     private val getPlayUseCase = mockk<HomePlayUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
     private val mockUseCaseReturnTitle = "UseCaseReturnTitle"
-    private val mockPlayWidgetUiModel = PlayWidgetUiModel.Medium(
+    private val mockPlayWidgetState = PlayWidgetState(
+        model = PlayWidgetUiModel(
             title = "Title",
             actionAppLink = "ActionApplink",
             actionTitle = "",
             isActionVisible = true,
             config = PlayWidgetConfigUiModel(
-                    autoRefresh = true,
-                    autoPlay = true,
-                    autoPlayAmount = 0,
-                    autoRefreshTimer = 0L,
-                    maxAutoPlayCellularDuration = 0,
-                    maxAutoPlayWifiDuration = 0,
-                    businessWidgetPosition = 0
+                autoRefresh = true,
+                autoPlay = true,
+                autoPlayAmount = 0,
+                autoRefreshTimer = 0L,
+                maxAutoPlayCellularDuration = 0,
+                maxAutoPlayWifiDuration = 0,
+                businessWidgetPosition = 0
             ),
             background = PlayWidgetBackgroundUiModel(
-                    backgroundUrl = "",
-                    gradientColors = listOf(),
-                    overlayImageAppLink = "",
-                    overlayImageUrl = "",
-                    overlayImageWebLink = ""
+                backgroundUrl = "",
+                gradientColors = listOf(),
+                overlayImageAppLink = "",
+                overlayImageUrl = "",
+                overlayImageWebLink = ""
             ),
             items = listOf()
+        ),
+        isLoading = false
     )
 
-    private val mockPlayWidgetUiModelUseCaseReturn = PlayWidgetUiModel.Medium(
+    private val mockPlayWidgetStateUseCaseReturn = PlayWidgetState(
+        model = PlayWidgetUiModel(
             title = mockUseCaseReturnTitle,
             actionAppLink = "ActionApplink",
             actionTitle = "",
             isActionVisible = true,
             config = PlayWidgetConfigUiModel(
-                    autoRefresh = true,
-                    autoPlay = true,
-                    autoPlayAmount = 0,
-                    autoRefreshTimer = 0L,
-                    maxAutoPlayCellularDuration = 0,
-                    maxAutoPlayWifiDuration = 0,
-                    businessWidgetPosition = 0
+                autoRefresh = true,
+                autoPlay = true,
+                autoPlayAmount = 0,
+                autoRefreshTimer = 0L,
+                maxAutoPlayCellularDuration = 0,
+                maxAutoPlayWifiDuration = 0,
+                businessWidgetPosition = 0
             ),
             background = PlayWidgetBackgroundUiModel(
-                    backgroundUrl = "",
-                    gradientColors = listOf(),
-                    overlayImageAppLink = "",
-                    overlayImageUrl = "",
-                    overlayImageWebLink = ""
+                backgroundUrl = "",
+                gradientColors = listOf(),
+                overlayImageAppLink = "",
+                overlayImageUrl = "",
+                overlayImageWebLink = ""
             ),
             items = listOf()
+        ),
+        isLoading = false
     )
 
     @ExperimentalCoroutinesApi
     @Test
     fun `given user not logged in when shouldUpdatePlayWidgetToggleReminder then trigger livedata with given paramater`(){
         val mockChannel = DynamicHomeChannel.Channels()
-        val mockPlayWidgetUiModel = PlayWidgetUiModel.Placeholder
+        val mockPlayWidgetState = PlayWidgetState(isLoading = true)
 
         val mockChannelId = "1"
         val mockReminderType = PlayWidgetReminderType.NotReminded
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
                 list = listOf(
-                        CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModel)
+                        CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
                 )
         ))
         coEvery { getUserSession.isLoggedIn } returns false
@@ -109,17 +116,17 @@ class HomeViewModelPlayCarouselTest {
     @Test
     fun `given homePlayUseCase success when shouldUpdatePlayWidgetToggleReminder then trigger livedata with Result success reminderType`(){
         val mockChannel = DynamicHomeChannel.Channels()
-        val mockPlayWidgetUiModel = PlayWidgetUiModel.Placeholder
+        val mockPlayWidgetState = PlayWidgetState(isLoading = true)
 
         val mockChannelId = "1"
         val mockReminderType = PlayWidgetReminderType.NotReminded
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
                 list = listOf(
-                        CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModel)
+                        CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
                 )
         ))
         getPlayUseCase.givenOnUpdatePlayToggleReminderReturn(true)
-        getPlayUseCase.givenOnGetPlayWidgetUiModelReturn(mockPlayWidgetUiModel)
+        getPlayUseCase.givenOnGetPlayWidgetUiModelReturn(mockPlayWidgetState)
 
         coEvery { getUserSession.isLoggedIn } returns true
         homeViewModel = createHomeViewModel(
@@ -134,7 +141,7 @@ class HomeViewModelPlayCarouselTest {
         }
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
                 actionOnFound = { model, index ->
-                    Assert.assertTrue(model.widgetState == mockPlayWidgetUiModel)
+                    Assert.assertTrue(model.widgetState == mockPlayWidgetState)
                 },
                 actionOnNotFound = {
                     Assert.assertTrue(false)
@@ -146,17 +153,17 @@ class HomeViewModelPlayCarouselTest {
     @Test
     fun `given homePlayUseCase failed when shouldUpdatePlayWidgetToggleReminder then trigger livedata with Result error reminderType and homeDataModel updated`(){
         val mockChannel = DynamicHomeChannel.Channels()
-        val mockPlayWidgetUiModel = PlayWidgetUiModel.Placeholder
+        val mockPlayWidgetState = PlayWidgetState(isLoading = true)
 
         val mockChannelId = "1"
         val mockReminderType = PlayWidgetReminderType.NotReminded
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
                 list = listOf(
-                        CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModel)
+                        CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
                 )
         ))
         getPlayUseCase.givenOnUpdatePlayToggleReminderReturn(false)
-        getPlayUseCase.givenOnGetPlayWidgetUiModelReturn(mockPlayWidgetUiModel)
+        getPlayUseCase.givenOnGetPlayWidgetUiModelReturn(mockPlayWidgetState)
         coEvery { getUserSession.isLoggedIn } returns true
         homeViewModel = createHomeViewModel(
                 getHomeUseCase = getHomeUseCase,
@@ -170,7 +177,7 @@ class HomeViewModelPlayCarouselTest {
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
                 actionOnFound = { model, index ->
-                    Assert.assertTrue(model.widgetState == mockPlayWidgetUiModel)
+                    Assert.assertTrue(model.widgetState == mockPlayWidgetState)
                 },
                 actionOnNotFound = {
                     Assert.assertTrue(false)
@@ -185,8 +192,8 @@ class HomeViewModelPlayCarouselTest {
         val mockChannelId = "1"
         val mockTotalView = "99"
 
-        val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModel)
-        val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModelUseCaseReturn)
+        val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
+        val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetStateUseCaseReturn)
 
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
                 list = listOf(mockInitialCarouselModel)
@@ -216,8 +223,8 @@ class HomeViewModelPlayCarouselTest {
         val mockChannel = DynamicHomeChannel.Channels()
         val mockChannelId = "1"
 
-        val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModel)
-        val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModelUseCaseReturn)
+        val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
+        val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetStateUseCaseReturn)
 
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
                 list = listOf(mockInitialCarouselModel)
@@ -246,13 +253,13 @@ class HomeViewModelPlayCarouselTest {
     fun `given getPlayWidget usecase success when getPlayWidgetWhenShouldRefresh then homeDataModel need to update carousel model with value from usecase`(){
         val mockChannel = DynamicHomeChannel.Channels()
 
-        val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModel)
-        val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModelUseCaseReturn)
+        val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
+        val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetStateUseCaseReturn)
 
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
                 list = listOf(mockInitialCarouselModel)
         ))
-        getPlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshReturn(mockPlayWidgetUiModelUseCaseReturn)
+        getPlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshReturn(mockPlayWidgetStateUseCaseReturn)
         coEvery { getUserSession.isLoggedIn } returns true
         homeViewModel = createHomeViewModel(
                 getHomeUseCase = getHomeUseCase,
@@ -276,7 +283,7 @@ class HomeViewModelPlayCarouselTest {
     fun `given getPlayWidget usecase failed when getPlayWidgetWhenShouldRefresh then homeDataModel need to remove carousel model`(){
         val mockChannel = DynamicHomeChannel.Channels()
 
-        val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetUiModel)
+        val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
 
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
                 list = listOf(mockInitialCarouselModel)
