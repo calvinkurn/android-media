@@ -93,9 +93,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
     private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
-    private var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
-        RechargeCatalogPrefixSelect()
-    )
     private var operator = TelcoOperator()
     private val categoryId = TelcoCategoryType.CATEGORY_PULSA
     private var inputNumberActionType = InputNumberActionType.MANUAL
@@ -144,12 +141,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
                     /* operator check */
                     val selectedOperator =
-                        operatorData.rechargeCatalogPrefixSelect.prefixes.single {
+                        viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                             rechargePdpPulsaClientNumberWidget.getInputNumber().startsWith(it.value)
                         }
 
-                    // [Misael] Check ini isErrorMessageShown kepanggil duluan atau belakangan
-                    if (rechargePdpPulsaClientNumberWidget.isErrorMessageShown()) {
+                    /* validate client number */
+                    viewModel.validateClientNumber(rechargePdpPulsaClientNumberWidget.getInputNumber())
+                    // TODO: [Misael] benerin condition ini
+                    if (true) {
                         hitTrackingForInputNumber(
                             DigitalPDPTelcoUtil.getCategoryName(categoryId),
                             selectedOperator.operator.attributes.name
@@ -205,7 +204,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         viewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
             when (it) {
-                is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator(it.data)
+                is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
                 is RechargeNetworkResult.Loading -> {}
             }
@@ -256,6 +255,18 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 }
             }
         })
+
+        viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
+            binding?.rechargePdpPulsaClientNumberWidget?.run {
+                setLoading(false)
+                if (msg.isEmpty()) {
+                    showCheckIcon()
+                    clearErrorState()
+                } else {
+                    setErrorInputField(msg)
+                }
+            }
+        })
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
@@ -301,10 +312,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessGetPrefixOperator(operatorList: TelcoCatalogPrefixSelect) {
-        this.operatorData = operatorList
+    private fun onSuccessGetPrefixOperator() {
         renderProduct()
-        initClientNumberValidator()
     }
 
     private fun onFailedGetMenuDetail(throwable: Throwable) {
@@ -348,7 +357,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 inputFieldListener = object :
                     RechargeClientNumberWidget.ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
-                        operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
+                        viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
                             if (it) {
                                 getPrefixOperatorData()
                             } else {
@@ -453,20 +462,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     }
                 }
             )
-        }
-    }
-
-    private fun initClientNumberValidator() {
-        binding?.rechargePdpPulsaClientNumberWidget?.setInputNumberValidator {
-            var errorMessage = ""
-            for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
-                val phoneIsValid = Pattern.compile(validation.rule)
-                    .matcher(it).matches()
-                if (!phoneIsValid) {
-                    errorMessage = validation.message
-                }
-            }
-            errorMessage
         }
     }
 

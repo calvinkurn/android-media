@@ -40,7 +40,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
     private var mFilterChipListener: ClientNumberFilterChipListener? = null
 
-    private var inputNumberValidator: ((String) -> String)? = null
+//    private var inputNumberValidator: ((String) -> String)? = null
 
     private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
 
@@ -91,10 +91,9 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                         hideClearIcon()
+                        setLoading(true)
                         if (s?.toString()?.isEmpty() == true) {
                             clearErrorState()
-                        } else {
-                            executeValidator(s.toString())
                         }
                         mInputFieldListener?.onRenderOperator(true)
                     }
@@ -242,11 +241,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         binding.clientNumberWidgetInputField.isLoading = isLoading
     }
 
-    private fun showCheckIcon() {
+    fun showCheckIcon() {
         binding.clientNumberWidgetInputField.icon1.show()
     }
 
-    private fun hideCheckIcon() {
+    fun hideCheckIcon() {
         binding.clientNumberWidgetInputField.icon1.hide()
     }
 
@@ -343,24 +342,24 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    private fun executeValidator(s: String) {
-        setLoading(true)
-        if (s.isNumeric()) {
-            val errorMessage = inputNumberValidator?.invoke(
-                CommonTopupBillsUtil.formatPrefixClientNumber(s))
-
-            errorMessage?.run {
-                if (isEmpty()) {
-                    setLoading(false)
-                    showCheckIcon()
-                    clearErrorState()
-                } else {
-                    setLoading(false)
-                    setErrorInputField(this)
-                }
-            }
-        }
-    }
+//    private fun executeValidator(s: String) {
+//        setLoading(true)
+//        if (s.isNumeric()) {
+//            val errorMessage = inputNumberValidator?.invoke(
+//                CommonTopupBillsUtil.formatPrefixClientNumber(s))
+//
+//            errorMessage?.run {
+//                if (isEmpty()) {
+//                    setLoading(false)
+//                    showCheckIcon()
+//                    clearErrorState()
+//                } else {
+//                    setLoading(false)
+//                    setErrorInputField(this)
+//                }
+//            }
+//        }
+//    }
 
     fun hideSoftKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -377,9 +376,9 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         mFilterChipListener = filterChipListener
     }
 
-    fun setInputNumberValidator(func: (inputNumber: String) -> String) {
-        inputNumberValidator = func
-    }
+//    fun setInputNumberValidator(func: (inputNumber: String) -> String) {
+//        inputNumberValidator = func
+//    }
 
     interface ClientNumberInputFieldListener {
         fun onRenderOperator(isDelayed: Boolean)

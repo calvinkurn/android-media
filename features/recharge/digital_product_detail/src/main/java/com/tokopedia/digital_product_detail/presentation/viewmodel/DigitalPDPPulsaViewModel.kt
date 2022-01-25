@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
@@ -20,12 +21,17 @@ import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.*
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 class DigitalPDPPulsaViewModel @Inject constructor(
     val repo: DigitalPDPRepository,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
+
+    var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
+        RechargeCatalogPrefixSelect()
+    )
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -64,6 +70,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<String>>
         get() = _addToCartResult
 
+    private val _clientNumberValidatorMsg = MutableLiveData<String>()
+    val clientNumberValidatorMsg: LiveData<String>
+        get() = _clientNumberValidatorMsg
+
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         _menuDetailData.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.io, block = {
@@ -99,9 +109,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     fun getPrefixOperator(menuId: Int) {
         _catalogPrefixSelect.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val operatorList = repo.getOperatorList(menuId)
+            operatorData = repo.getOperatorList(menuId)
             delay(DELAY_TIME)
-            _catalogPrefixSelect.postValue(RechargeNetworkResult.Success(operatorList))
+            _catalogPrefixSelect.postValue(RechargeNetworkResult.Success())
         }) {
             _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
         }
@@ -136,6 +146,18 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun updateCategoryCheckoutPassData(categoryId: String){
         digitalCheckoutPassData.categoryId = categoryId
+    }
+
+    fun validateClientNumber(clientNumber: String) {
+        var errorMessage = ""
+        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
+            val phoneIsValid = Pattern.compile(validation.rule)
+                .matcher(clientNumber).matches()
+            if (!phoneIsValid) {
+                errorMessage = validation.message
+            }
+        }
+        _clientNumberValidatorMsg.postValue(errorMessage)
     }
 
     companion object {
