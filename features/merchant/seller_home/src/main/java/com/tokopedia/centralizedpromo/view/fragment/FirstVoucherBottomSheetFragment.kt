@@ -8,6 +8,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
@@ -152,9 +153,9 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
             val voucherApplink =
                 if (voucherType == SellerHomeApplinkConst.TYPE_PRODUCT) {
                     if (productId == null) {
-                        ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
+                        ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
                     } else {
-                        "${ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT}/$productId"
+                        "${ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT}/$productId"
                     }
                 } else {
                     ApplinkConstInternalSellerapp.CREATE_VOUCHER

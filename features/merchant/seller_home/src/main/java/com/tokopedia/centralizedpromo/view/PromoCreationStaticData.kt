@@ -78,7 +78,7 @@ object PromoCreationStaticData {
                     .appendQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE, SellerHomeApplinkConst.TYPE_PRODUCT)
                     .build().toString()
             } else {
-                ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
+                ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
             }
         promoItems.add(
             PromoCreationUiModel(

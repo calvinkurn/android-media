@@ -658,7 +658,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     )
                     .build().toString()
             } else {
-                "${ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT}/${product?.id.orEmpty()}"
+                "${ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT}/${product?.id.orEmpty()}"
             }
         context?.let {
             RouteManager.route(it, firstTimeLink)
