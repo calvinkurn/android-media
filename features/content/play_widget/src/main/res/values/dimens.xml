@@ -19,6 +19,7 @@
 
     <dimen name="play_widget_card_medium_width">136dp</dimen>
     <dimen name="play_widget_card_medium_height">242dp</dimen>
+    <dimen name="play_widget_card_medium_left_overlay_space">140dp</dimen>
 
     <dimen name="play_widget_badge_height">20dp</dimen>
     <dimen name="play_widget_more_action_size">@dimen/play_widget_badge_height</dimen>

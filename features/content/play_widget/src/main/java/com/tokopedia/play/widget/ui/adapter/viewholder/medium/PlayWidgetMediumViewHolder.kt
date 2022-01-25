@@ -13,7 +13,7 @@ class PlayWidgetMediumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     private val widgetMediumView = itemView as PlayWidgetMediumView
 
-    fun bind(item: PlayWidgetUiModel.Medium) {
+    fun bind(item: PlayWidgetUiModel) {
         widgetMediumView.setData(item)
     }
 

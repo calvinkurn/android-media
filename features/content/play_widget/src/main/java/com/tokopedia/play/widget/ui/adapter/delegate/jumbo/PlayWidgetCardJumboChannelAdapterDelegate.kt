@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboChannelViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
@@ -13,7 +13,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
  */
 class PlayWidgetCardJumboChannelAdapterDelegate(
     private val jumboCardChannelListener: PlayWidgetCardJumboChannelViewHolder.Listener
-) : BaseAdapterDelegate<PlayWidgetJumboChannelUiModel, PlayWidgetJumboItemUiModel, PlayWidgetCardJumboChannelViewHolder>(
+) : BaseAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetCardJumboChannelViewHolder>(
     PlayWidgetCardJumboChannelViewHolder.layoutRes
 ) {
     private val allowedTypes = listOf(
@@ -25,7 +25,7 @@ class PlayWidgetCardJumboChannelAdapterDelegate(
     )
 
     override fun onBindViewHolder(
-        item: PlayWidgetJumboChannelUiModel,
+        item: PlayWidgetChannelUiModel,
         holder: PlayWidgetCardJumboChannelViewHolder
     ) {
         holder.bind(item)
@@ -39,12 +39,12 @@ class PlayWidgetCardJumboChannelAdapterDelegate(
     }
 
     override fun isForViewType(
-        itemList: List<PlayWidgetJumboItemUiModel>,
+        itemList: List<PlayWidgetItemUiModel>,
         position: Int,
         isFlexibleType: Boolean
     ): Boolean {
         val item = itemList[position]
-        return if (item is PlayWidgetJumboChannelUiModel) item.channelType in allowedTypes
+        return if (item is PlayWidgetChannelUiModel) item.widgetType in allowedTypes
         else false
     }
 }

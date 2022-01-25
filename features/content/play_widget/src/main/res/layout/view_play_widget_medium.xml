@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent">
+    app:layout_constraintStart_toStartOf="parent"
+    >
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/play_widget_medium_title"
@@ -50,28 +52,18 @@
         app:layout_constraintTop_toBottomOf="@+id/play_widget_medium_title"
         tools:background="@color/play_widget_dms_light_gray">
 
-        <FrameLayout
-            android:id="@+id/play_widget_overlay"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/play_widget_overlay_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/play_widget_medium_overlay_negative"
-            android:layout_marginRight="@dimen/play_widget_medium_overlay_negative"
-            android:orientation="horizontal">
+            android:scaleType="fitXY" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/play_widget_overlay_bg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/play_widget_overlay_image"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/play_widget_medium_overlay"
-                android:scaleType="fitStart" />
-
-        </FrameLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/play_widget_overlay_image"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:scaleType="fitStart" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/play_widget_recycler_view"

@@ -13,7 +13,7 @@ class PlayWidgetSmallViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
 
     private val widgetSmallView = itemView as PlayWidgetSmallView
 
-    fun bind(item: PlayWidgetUiModel.Small) {
+    fun bind(item: PlayWidgetUiModel) {
         widgetSmallView.setData(item)
     }
 

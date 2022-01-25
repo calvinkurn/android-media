@@ -15,7 +15,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -44,7 +45,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     private var mListener: Listener? = null
 
     private var mPlayer: PlayVideoPlayer? = null
-    private lateinit var mModel: PlayWidgetSmallChannelUiModel
+    private lateinit var mModel: PlayWidgetChannelUiModel
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_channel_small, this)
@@ -88,8 +89,8 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     }
 
     override fun isPlayable(): Boolean {
-        return mModel.channelType == PlayWidgetChannelType.Live ||
-                mModel.channelType == PlayWidgetChannelType.Vod
+        return mModel.widgetType == PlayWidgetChannelType.Live ||
+                mModel.widgetType == PlayWidgetChannelType.Vod
     }
 
     override fun onDetachedFromWindow() {
@@ -97,13 +98,13 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         setPlayer(null)
     }
 
-    fun setModel(model: PlayWidgetSmallChannelUiModel) {
+    fun setModel(model: PlayWidgetChannelUiModel) {
         mModel = model
 
         ivCover.setImageUrl(model.video.coverUrl)
 
-        handleType(model.channelType)
-        handleTotalView(model.channelType, model.totalViewVisible, model.totalView)
+        handleType(model.widgetType)
+        handleTotalView(model.widgetType, model.totalView)
         handleGiveaway(model.hasGiveaway)
 
         tvTitle.text = model.title
@@ -160,11 +161,11 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         }
     }
 
-    private fun handleTotalView(type: PlayWidgetChannelType, isVisible: Boolean, totalViewString: String) {
+    private fun handleTotalView(type: PlayWidgetChannelType, totalView: PlayWidgetTotalView) {
         if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) llTotalView.gone()
-        else if (isVisible) {
+        else if (totalView.isVisible) {
             llTotalView.visible()
-            tvTotalView.text = totalViewString
+            tvTotalView.text = totalView.totalViewFmt
         }
         else llTotalView.gone()
     }
@@ -176,6 +177,6 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
 
     interface Listener {
 
-        fun onChannelClicked(view: PlayWidgetCardChannelSmallView, model: PlayWidgetSmallChannelUiModel)
+        fun onChannelClicked(view: PlayWidgetCardChannelSmallView, model: PlayWidgetChannelUiModel)
     }
 }

@@ -54,20 +54,20 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
     private val channelCardListener = object : PlayWidgetCardLargeChannelViewHolder.Listener {
         override fun onChannelImpressed(
             view: View,
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
         }
 
         override fun onChannelClicked(
             view: View,
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
             if (mWidgetListener != null
-                && (item.channelType == PlayWidgetChannelType.Live
-                        || item.channelType == PlayWidgetChannelType.Vod
-                        || item.channelType == PlayWidgetChannelType.Upcoming
+                && (item.widgetType == PlayWidgetChannelType.Live
+                        || item.widgetType == PlayWidgetChannelType.Vod
+                        || item.widgetType == PlayWidgetChannelType.Upcoming
                         || GlobalConfig.isSellerApp())
             ) {
                 mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
@@ -77,7 +77,7 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
         }
 
         override fun onToggleReminderChannelClicked(
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
             position: Int
         ) {
@@ -94,14 +94,14 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
     private val bannerCardListener = object : PlayWidgetCardLargeBannerViewHolder.Listener {
         override fun onBannerClicked(
             view: View,
-            item: PlayWidgetLargeBannerUiModel,
+            item: PlayWidgetBannerUiModel,
             position: Int
         ) {
         }
     }
 
     private val transcodeCardListener = object : PlayWidgetCardLargeTranscodeViewHolder.Listener {
-        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetLargeChannelUiModel, position: Int) {
+        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetLargeView, item.channelId)
         }
     }
@@ -150,7 +150,7 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
         })
     }
 
-    fun setData(data: PlayWidgetUiModel.Large) {
+    fun setData(data: PlayWidgetUiModel) {
         recyclerViewItem.addOneTimeGlobalLayoutListener {
             mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
         }

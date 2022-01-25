@@ -30,6 +30,8 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumAdapter
+import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.setGradientBackground
@@ -51,7 +53,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private val actionTitle: TextView
 
     private val itemContainer: FrameLayout
-    private val overlay: FrameLayout
+//    private val overlay: FrameLayout
     private val overlayBackground: AppCompatImageView
     private val overlayImage: AppCompatImageView
 
@@ -65,28 +67,28 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
-    private val overlayCardListener = object : PlayWidgetCardMediumOverlayViewHolder.Listener {
+//    private val overlayCardListener = object : PlayWidgetCardMediumOverlayViewHolder.Listener {
 
-        override fun onOverlayImpressed(view: View, item: PlayWidgetMediumOverlayUiModel, position: Int) {
-            mAnalyticListener?.onImpressOverlayCard(
-                    view = this@PlayWidgetMediumView,
-                    item = item,
-                    channelPositionInList = position
-            )
-        }
+//        override fun onOverlayImpressed(view: View, item: PlayWidgetBackgroundUiModel, position: Int) {
+//            mAnalyticListener?.onImpressOverlayCard(
+//                    view = this@PlayWidgetMediumView,
+//                    item = item,
+//                    channelPositionInList = position
+//            )
+//        }
+//
+//        override fun onOverlayClicked(view: View, item: PlayWidgetBackgroundUiModel, position: Int) {
+//            mAnalyticListener?.onClickOverlayCard(
+//                    view = this@PlayWidgetMediumView,
+//                    item = item,
+//                    channelPositionInList = position
+//            )
+//        }
+//    }
 
-        override fun onOverlayClicked(view: View, item: PlayWidgetMediumOverlayUiModel, position: Int) {
-            mAnalyticListener?.onClickOverlayCard(
-                    view = this@PlayWidgetMediumView,
-                    item = item,
-                    channelPositionInList = position
-            )
-        }
-    }
+    private val cardChannelListener = object : PlayWidgetMediumViewHolder.Channel.Listener {
 
-    private val channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener {
-
-        override fun onChannelImpressed(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+        override fun onChannelImpressed(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mAnalyticListener?.onImpressChannelCard(
                 view = this@PlayWidgetMediumView,
                 item = item,
@@ -95,7 +97,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             )
         }
 
-        override fun onChannelClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+        override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mAnalyticListener?.onClickChannelCard(
                 view = this@PlayWidgetMediumView,
                 item = item,
@@ -104,9 +106,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             )
 
             if (mWidgetListener != null
-                    && (item.channelType == PlayWidgetChannelType.Live
-                            || item.channelType == PlayWidgetChannelType.Vod
-                            || item.channelType == PlayWidgetChannelType.Upcoming
+                    && (item.widgetType == PlayWidgetChannelType.Live
+                            || item.widgetType == PlayWidgetChannelType.Vod
+                            || item.widgetType == PlayWidgetChannelType.Upcoming
                             || GlobalConfig.isSellerApp())) {
                 mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
             } else {
@@ -114,44 +116,52 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             }
         }
 
-        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, reminderType: PlayWidgetReminderType, position: Int) {
+        override fun onToggleReminderChannelClicked(item: PlayWidgetChannelUiModel, reminderType: PlayWidgetReminderType, position: Int) {
             mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, reminderType.reminded)
             mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, reminderType, position)
         }
 
-        override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+        override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mAnalyticListener?.onClickMenuActionChannel(this@PlayWidgetMediumView, item, position)
             mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
         }
     }
 
-    private val bannerCardListener = object : PlayWidgetCardMediumBannerViewHolder.Listener {
+    private val cardBannerListener = object : PlayWidgetMediumViewHolder.Banner.Listener {
 
-        override fun onBannerClicked(view: View, item: PlayWidgetMediumBannerUiModel, position: Int) {
+        override fun onBannerClicked(view: View, item: PlayWidgetBannerUiModel, position: Int) {
             mAnalyticListener?.onClickBannerCard(this@PlayWidgetMediumView, item, position)
         }
     }
 
     private val transcodeCardListener = object : PlayWidgetCardMediumTranscodeViewHolder.Listener {
 
-        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mAnalyticListener?.onClickDeleteChannel(this@PlayWidgetMediumView, item, position)
             mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetMediumView, item.channelId)
         }
     }
 
-    private val adapter = PlayWidgetCardMediumAdapter(
-            imageBlurUtil = ImageBlurUtil(context),
-            overlayCardListener = overlayCardListener,
-            channelCardListener = channelCardListener,
-            bannerCardListener = bannerCardListener,
-            transcodeCardListener = transcodeCardListener
+//    private val adapter = PlayWidgetCardMediumAdapter(
+//            imageBlurUtil = ImageBlurUtil(context),
+//            overlayCardListener = overlayCardListener,
+//            channelCardListener = channelCardListener,
+//            bannerCardListener = bannerCardListener,
+//            transcodeCardListener = transcodeCardListener
+//    )
+
+    private val adapter = PlayWidgetMediumAdapter(
+        imageBlurUtil = ImageBlurUtil(context),
+        cardChannelListener = cardChannelListener,
+        cardBannerListener = cardBannerListener,
     )
 
     private var mIsAutoPlay: Boolean = false
     private var mLastOverlayImageUrl: String? = null
 
     private val spacing16 by lazy { resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt() }
+
+    private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
@@ -160,7 +170,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         actionTitle = view.findViewById(R.id.play_widget_medium_action)
 
         itemContainer = view.findViewById(R.id.play_widget_container)
-        overlay = view.findViewById(R.id.play_widget_overlay)
+//        overlay = view.findViewById(R.id.play_widget_overlay)
         overlayBackground = view.findViewById(R.id.play_widget_overlay_bg)
         overlayImage = view.findViewById(R.id.play_widget_overlay_image)
 
@@ -185,7 +195,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
      * Setup view
      */
     private fun setupView(view: View) {
-        recyclerViewItem.addItemDecoration(PlayWidgetCardMediumItemDecoration(context))
+        recyclerViewItem.addItemDecoration(
+            PlayWidgetCardMediumItemDecoration(context) { mModel.background.overlayImageUrl.isNotBlank() }
+        )
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
 
@@ -200,8 +212,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                 firstView?.let {
                     val distanceFromLeft = it.left
-                    val translateX = distanceFromLeft * 0.2f
-                    overlay.translationX = translateX
+                    val translateX = distanceFromLeft * 0.03f
+                    overlayImage.translationX = translateX
 
                     if (distanceFromLeft <= 0) {
                         val itemSize = it.width.toFloat()
@@ -221,7 +233,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         })
     }
 
-    fun setData(data: PlayWidgetUiModel.Medium) {
+    fun setData(data: PlayWidgetUiModel) {
+        mModel = data
+
         title.text = data.title
         actionTitle.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
         actionTitle.text = data.actionTitle

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.iconunify.IconUnify
@@ -19,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -28,7 +27,6 @@ import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-
 
 /**
  * Created by mzennis on 26/10/20.
@@ -63,7 +61,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
-    private lateinit var mModel: PlayWidgetMediumChannelUiModel
+    private lateinit var mModel: PlayWidgetChannelUiModel
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_channel_medium, this)
@@ -101,12 +99,12 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         mListener = listener
     }
 
-    fun setModel(model: PlayWidgetMediumChannelUiModel) {
+    fun setModel(model: PlayWidgetChannelUiModel) {
         this.mModel = model
 
         thumbnail.setImageUrl(model.video.coverUrl)
 
-        when (model.channelType) {
+        when (model.widgetType) {
             PlayWidgetChannelType.Deleting -> setDeletingModel(model)
             PlayWidgetChannelType.Upcoming -> setUpcomingModel(model)
             else -> setActiveModel(model)
@@ -116,12 +114,12 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
         tvAuthor.visibility = if (model.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
-        tvStartTime.visibility = if (model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
+        tvStartTime.visibility = if (model.startTime.isNotEmpty() && model.widgetType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
         tvStartTime.text = model.startTime
-        tvTotalView.text = model.totalView
+        tvTotalView.text = model.totalView.totalViewFmt
         ivGiveaway.visibility = if(model.hasGiveaway) View.VISIBLE else View.GONE
 
         setIconToggleReminder(model.reminderType)
@@ -138,15 +136,15 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         }
     }
 
-    private fun setActiveModel(model: PlayWidgetMediumChannelUiModel) {
+    private fun setActiveModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = if (model.hasAction) View.VISIBLE else View.GONE
-        liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
+        liveBadge.visibility = if (model.video.isLive && model.widgetType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.GONE
     }
 
-    private fun setUpcomingModel(model: PlayWidgetMediumChannelUiModel) {
+    private fun setUpcomingModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = View.GONE
         liveBadge.visibility = View.GONE
         reminderBadge.visibility = View.VISIBLE
@@ -154,11 +152,11 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         llLoadingContainer.visibility = View.GONE
     }
 
-    private fun setDeletingModel(model: PlayWidgetMediumChannelUiModel) {
+    private fun setDeletingModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = View.GONE
-        liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
+        liveBadge.visibility = if (model.video.isLive && model.widgetType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.VISIBLE
     }
 
@@ -212,8 +210,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     }
 
     override fun isPlayable(): Boolean {
-        return mModel.channelType == PlayWidgetChannelType.Live ||
-                mModel.channelType == PlayWidgetChannelType.Vod
+        return mModel.widgetType == PlayWidgetChannelType.Live ||
+                mModel.widgetType == PlayWidgetChannelType.Vod
     }
 
     override fun onAttachedToWindow() {
@@ -240,17 +238,17 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         fun onChannelClicked(
                 view: View,
-                item: PlayWidgetMediumChannelUiModel
+                item: PlayWidgetChannelUiModel
         )
 
         fun onToggleReminderChannelClicked(
-                item: PlayWidgetMediumChannelUiModel,
+                item: PlayWidgetChannelUiModel,
                 reminderType: PlayWidgetReminderType
         )
 
         fun onMenuActionButtonClicked(
                 view: View,
-                item: PlayWidgetMediumChannelUiModel
+                item: PlayWidgetChannelUiModel
         )
     }
 }

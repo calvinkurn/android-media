@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
@@ -34,7 +34,7 @@ class PlayWidgetCardSmallBannerViewHolder(
         }
     }
 
-    fun bind(item: PlayWidgetSmallBannerUiModel) {
+    fun bind(item: PlayWidgetBannerUiModel) {
         ivBanner.loadImage(item.imageUrl, bannerlistener)
         itemView.setOnClickListener {
             listener.onBannerClicked(itemView)

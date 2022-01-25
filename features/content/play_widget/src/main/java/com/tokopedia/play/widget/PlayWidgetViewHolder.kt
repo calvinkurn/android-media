@@ -6,6 +6,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.analytic.ImpressionableModel
+import com.tokopedia.play.widget.ui.PlayWidgetState
 
 /**
  * Created by mzennis on 05/10/20.
@@ -23,22 +24,25 @@ class PlayWidgetViewHolder(
         coordinator.controlWidget(this)
     }
 
-    fun bind(item: PlayWidgetUiModel) {
+    fun bind(item: PlayWidgetState) {
         bind(item, this)
     }
 
-    fun bind(item: PlayWidgetUiModel, holderWrapper: RecyclerView.ViewHolder) {
-        if (item is ImpressionableModel) {
-            coordinator.getImpressionHelper().impress(itemView, item) {
-                mListener?.onWidgetImpressed(playWidgetView, item, holderWrapper.adapterPosition)
-            }
+    fun bind(item: PlayWidgetState, holderWrapper: RecyclerView.ViewHolder) {
+//        if (item is ImpressionableModel) {
+//            coordinator.getImpressionHelper().impress(itemView, item) {
+//                mListener?.onWidgetImpressed(playWidgetView, item, holderWrapper.adapterPosition)
+//            }
+//        }
+        coordinator.getImpressionHelper().impress(itemView, item.impressHolder) {
+            mListener?.onWidgetImpressed(playWidgetView, item.model, holderWrapper.adapterPosition)
         }
 
         coordinator.connect(playWidgetView, item)
     }
 
-    fun bind(item: PlayWidgetUiModel, payloads: MutableList<Any>) {
-        playWidgetView.setModel(item)
+    fun bind(item: PlayWidgetState, payloads: MutableList<Any>) {
+        playWidgetView.setState(item)
     }
 
     fun setListener(listener: Listener) {

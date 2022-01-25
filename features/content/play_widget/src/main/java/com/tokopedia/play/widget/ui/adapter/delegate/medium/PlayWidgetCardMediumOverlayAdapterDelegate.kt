@@ -4,9 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallBannerViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 
 
 /**
@@ -14,11 +12,11 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
  */
 class PlayWidgetCardMediumOverlayAdapterDelegate(
         private val mediumCardOverlayListener: PlayWidgetCardMediumOverlayViewHolder.Listener
-) : TypedAdapterDelegate<PlayWidgetMediumOverlayUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumOverlayViewHolder>(
+) : TypedAdapterDelegate<PlayWidgetBackgroundUiModel, PlayWidgetBackgroundUiModel, PlayWidgetCardMediumOverlayViewHolder>(
         PlayWidgetCardMediumOverlayViewHolder.layoutRes
 ) {
 
-    override fun onBindViewHolder(item: PlayWidgetMediumOverlayUiModel, holder: PlayWidgetCardMediumOverlayViewHolder) {
+    override fun onBindViewHolder(item: PlayWidgetBackgroundUiModel, holder: PlayWidgetCardMediumOverlayViewHolder) {
         holder.bind(item)
     }
 

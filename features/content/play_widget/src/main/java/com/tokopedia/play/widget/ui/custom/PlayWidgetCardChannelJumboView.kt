@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -62,7 +62,7 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
 
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
-    private lateinit var mModel: PlayWidgetJumboChannelUiModel
+    private lateinit var mModel: PlayWidgetChannelUiModel
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_channel_jumbo, this)
@@ -97,12 +97,12 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
         mListener = listener
     }
 
-    fun setModel(model: PlayWidgetJumboChannelUiModel) {
+    fun setModel(model: PlayWidgetChannelUiModel) {
         this.mModel = model
 
         thumbnail.setImageUrl(model.video.coverUrl)
 
-        when (model.channelType) {
+        when (model.widgetType) {
             PlayWidgetChannelType.Deleting -> setDeletingModel(model)
             PlayWidgetChannelType.Upcoming -> setUpcomingModel()
             else -> setActiveModel(model)
@@ -113,7 +113,7 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
         tvTitle.showWithCondition(model.title.isNotEmpty())
         tvAuthor.showWithCondition(model.partner.name.isNotEmpty())
 
-        val startTimeIsShown = model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming
+        val startTimeIsShown = model.startTime.isNotEmpty() && model.widgetType == PlayWidgetChannelType.Upcoming
 
         tvStartTime.shouldShowWithAction(startTimeIsShown){
             tvStartTime.text = model.startTime
@@ -121,7 +121,7 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
 
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
-        tvTotalView.text = model.totalView
+        tvTotalView.text = model.totalView.totalViewFmt
         ivGiveaway.showWithCondition(model.hasGiveaway)
 
         setIconToggleReminder(model.reminderType)
@@ -134,11 +134,11 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
         }
     }
 
-    private fun setActiveModel(model: PlayWidgetJumboChannelUiModel) {
-        val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
+    private fun setActiveModel(model: PlayWidgetChannelUiModel) {
+        val isLiveBadgeShown = model.video.isLive && model.widgetType == PlayWidgetChannelType.Live
         liveBadge.showWithCondition(isLiveBadgeShown)
         reminderBadge.gone()
-        totalViewBadge.showWithCondition(model.totalViewVisible)
+        totalViewBadge.showWithCondition(model.totalView.isVisible)
         llLoadingContainer.gone()
     }
 
@@ -149,11 +149,11 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
         llLoadingContainer.gone()
     }
 
-    private fun setDeletingModel(model: PlayWidgetJumboChannelUiModel) {
-        val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
+    private fun setDeletingModel(model: PlayWidgetChannelUiModel) {
+        val isLiveBadgeShown = model.video.isLive && model.widgetType == PlayWidgetChannelType.Live
         liveBadge.showWithCondition(isLiveBadgeShown)
         reminderBadge.gone()
-        totalViewBadge.showWithCondition(model.totalViewVisible)
+        totalViewBadge.showWithCondition(model.totalView.isVisible)
         llLoadingContainer.visible()
     }
 
@@ -207,8 +207,8 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
     }
 
     override fun isPlayable(): Boolean {
-        return mModel.channelType == PlayWidgetChannelType.Live ||
-                mModel.channelType == PlayWidgetChannelType.Vod
+        return mModel.widgetType == PlayWidgetChannelType.Live ||
+                mModel.widgetType == PlayWidgetChannelType.Vod
     }
 
     override fun onAttachedToWindow() {
@@ -224,12 +224,12 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
     interface Listener {
         fun onChannelClicked(
             view: View,
-            item: PlayWidgetJumboChannelUiModel
+            item: PlayWidgetChannelUiModel,
         )
 
         fun onToggleReminderChannelClicked(
-            item: PlayWidgetJumboChannelUiModel,
-            reminderType: PlayWidgetReminderType
+            item: PlayWidgetChannelUiModel,
+            reminderType: PlayWidgetReminderType,
         )
     }
 }

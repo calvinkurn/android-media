@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 
 
 /**
@@ -17,13 +17,13 @@ class PlayWidgetCardMediumOverlayViewHolder(
         val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(item: PlayWidgetMediumOverlayUiModel) {
-        itemView.addOnImpressionListener(item.impressHolder) {
-            listener.onOverlayImpressed(itemView, item, adapterPosition)
-        }
+    fun bind(item: PlayWidgetBackgroundUiModel) {
+//        itemView.addOnImpressionListener(item.impressHolder) {
+//            listener.onOverlayImpressed(itemView, item, adapterPosition)
+//        }
         itemView.setOnClickListener {
             listener.onOverlayClicked(it, item, adapterPosition)
-            RouteManager.route(it.context, item.appLink)
+            RouteManager.route(it.context, item.overlayImageAppLink)
         }
     }
 
@@ -35,13 +35,13 @@ class PlayWidgetCardMediumOverlayViewHolder(
 
         fun onOverlayImpressed(
                 view: View,
-                item: PlayWidgetMediumOverlayUiModel,
+                item: PlayWidgetBackgroundUiModel,
                 position: Int
         )
 
         fun onOverlayClicked(
                 view: View,
-                item: PlayWidgetMediumOverlayUiModel,
+                item: PlayWidgetBackgroundUiModel,
                 position: Int
         )
     }

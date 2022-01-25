@@ -4,19 +4,19 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallBannerViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallBannerUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 
 /**
  * Created by jegul on 07/10/20
  */
 class PlayWidgetCardSmallBannerAdapterDelegate(
         private val smallCardBannerListener: PlayWidgetCardSmallBannerViewHolder.Listener
-) : TypedAdapterDelegate<PlayWidgetSmallBannerUiModel, PlayWidgetSmallItemUiModel, PlayWidgetCardSmallBannerViewHolder>(
+) : TypedAdapterDelegate<PlayWidgetBannerUiModel, PlayWidgetItemUiModel, PlayWidgetCardSmallBannerViewHolder>(
         PlayWidgetCardSmallBannerViewHolder.layout
 ) {
 
-    override fun onBindViewHolder(item: PlayWidgetSmallBannerUiModel, holder: PlayWidgetCardSmallBannerViewHolder) {
+    override fun onBindViewHolder(item: PlayWidgetBannerUiModel, holder: PlayWidgetCardSmallBannerViewHolder) {
         holder.bind(item)
     }
 

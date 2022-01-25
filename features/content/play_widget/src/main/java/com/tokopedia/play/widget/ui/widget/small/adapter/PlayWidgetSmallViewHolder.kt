@@ -1,0 +1,78 @@
+package com.tokopedia.play.widget.ui.widget.small.adapter
+
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.widget.small.PlayWidgetCardSmallBannerView
+import com.tokopedia.play.widget.ui.widget.small.PlayWidgetCardSmallChannelView
+
+/**
+ * Created by kenny.hadisaputra on 24/01/22
+ */
+class PlayWidgetSmallViewHolder {
+
+    class Banner private constructor(
+        itemView: View,
+        listener: Listener,
+    ) : RecyclerView.ViewHolder(itemView) {
+
+        private val bannerView = itemView as PlayWidgetCardSmallBannerView
+
+        fun bind(data: PlayWidgetBannerUiModel) {
+            bannerView.setData(data)
+        }
+
+        companion object {
+            fun create(
+                parent: ViewGroup,
+                listener: Listener,
+            ) = Banner(
+                itemView = PlayWidgetCardSmallBannerView(parent.context),
+                listener = listener,
+            )
+        }
+
+        interface Listener {
+            fun onBannerClicked(view: View)
+        }
+    }
+
+    class Channel private constructor(
+        itemView: View,
+        listener: Listener,
+    ) : RecyclerView.ViewHolder(itemView) {
+
+        private val channelView = itemView as PlayWidgetCardSmallChannelView
+
+        fun bind(data: PlayWidgetChannelUiModel) {
+            channelView.setData(data)
+        }
+
+        companion object {
+            fun create(
+                parent: ViewGroup,
+                listener: Listener,
+            ) = Channel(
+                itemView = PlayWidgetCardSmallChannelView(parent.context),
+                listener = listener,
+            )
+        }
+
+        interface Listener {
+
+            fun onChannelImpressed(
+                view: View,
+                item: PlayWidgetChannelUiModel,
+                position: Int,
+            )
+
+            fun onChannelClicked(
+                view: View,
+                item: PlayWidgetChannelUiModel,
+                position: Int,
+            )
+        }
+    }
+}

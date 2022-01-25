@@ -6,7 +6,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.model.PlayWidgetLargeBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play_common.view.loadImage
 
 /**
@@ -23,7 +23,7 @@ class PlayWidgetCardLargeBannerViewHolder(
         //if re-use from medium, need to change layout params here
     }
 
-    fun bind(item: PlayWidgetLargeBannerUiModel) {
+    fun bind(item: PlayWidgetBannerUiModel) {
         background.loadImage(item.imageUrl)
         itemView.setOnClickListener {
             listener.onBannerClicked(it, item, adapterPosition)
@@ -40,7 +40,7 @@ class PlayWidgetCardLargeBannerViewHolder(
 
         fun onBannerClicked(
             view: View,
-            item: PlayWidgetLargeBannerUiModel,
+            item: PlayWidgetBannerUiModel,
             position: Int
         )
     }

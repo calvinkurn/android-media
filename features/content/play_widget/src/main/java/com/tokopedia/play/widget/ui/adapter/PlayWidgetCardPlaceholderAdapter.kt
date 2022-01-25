@@ -7,17 +7,17 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 /**
  * Created by jegul on 12/10/20
  */
-class PlayWidgetCardPlaceholderAdapter : BaseDiffUtilAdapter<PlayWidgetUiModel.Placeholder>() {
+class PlayWidgetCardPlaceholderAdapter : BaseDiffUtilAdapter<PlayWidgetUiModel>() {
 
     init {
         delegatesManager.addDelegate(PlayWidgetCardPlaceholderAdapterDelegate())
     }
 
-    override fun areItemsTheSame(oldItem: PlayWidgetUiModel.Placeholder, newItem: PlayWidgetUiModel.Placeholder): Boolean {
+    override fun areItemsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: PlayWidgetUiModel.Placeholder, newItem: PlayWidgetUiModel.Placeholder): Boolean {
+    override fun areContentsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {
         return oldItem == newItem
     }
 }
