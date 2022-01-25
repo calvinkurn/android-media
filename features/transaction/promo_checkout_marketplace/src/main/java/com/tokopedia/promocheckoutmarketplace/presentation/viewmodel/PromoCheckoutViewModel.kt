@@ -146,6 +146,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         _promoInputUiModel.value = value
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        getCouponListRecommendationUseCase.cancelJobs()
+        validateUseUseCase.cancelJobs()
+        clearCacheAutoApplyStackUseCase.cancelJobs()
+        getPromoSuggestionUseCase.cancelJobs()
+    }
 
     //---------------------------------------//
     /* Network Call Section : Get Promo List */
