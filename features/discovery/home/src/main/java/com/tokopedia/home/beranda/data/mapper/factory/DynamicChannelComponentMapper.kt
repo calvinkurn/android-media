@@ -159,8 +159,8 @@ object DynamicChannelComponentMapper {
                                 channel.header.subtitle.ifBlank { channel.banner.description },
                                 channel.header.expiredTime,
                                 channel.header.serverTimeUnix,
-                                channel.header.applink.ifBlank { channel.banner.url },
-                                channel.header.url,
+                                channel.header.applink.ifBlank { channel.banner.applink },
+                                channel.header.url.ifBlank { channel.banner.url },
                                 channel.header.backColor,
                                 channel.header.backImage,
                                 channel.header.textColor

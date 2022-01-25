@@ -19,12 +19,13 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSe
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -116,7 +117,11 @@ class FeaturedShopViewHolder(
             } catch (e: IllegalArgumentException) {
             }
         }
-        binding?.featuredShopBackground?.setGradientBackground(element.channelModel.channelBanner.gradientColor)
+        if(getGradientBackgroundViewAllWhite(element.channelModel.channelBanner.gradientColor, itemView.context)) {
+            binding?.featuredShopBackground?.invisible()
+        } else {
+            binding?.featuredShopBackground?.setGradientBackground(element.channelModel.channelBanner.gradientColor)
+        }
         binding?.featuredShopBackground?.setOnClickListener {
             listener.onFeaturedShopBannerBackgroundClicked(element.channelModel)
         }
