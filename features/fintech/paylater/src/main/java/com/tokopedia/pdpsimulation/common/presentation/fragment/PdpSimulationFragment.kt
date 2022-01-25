@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFactoryImpl
@@ -53,6 +54,10 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         arguments?.getString(PARAM_PRODUCT_ID) ?: ""
     }
 
+    private val defaultTenure: Int by lazy {
+        (arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0").toInt()
+    }
+
     private val simulationAdapter: PayLaterSimulationAdapter by lazy {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
     }
@@ -73,7 +78,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             },
             seeMoreOptions = { adapterPosition ->
                 if (adapterPosition != RecyclerView.NO_POSITION)
-                simulationAdapter.updateOptionList(adapterPosition)
+                    simulationAdapter.updateOptionList(adapterPosition)
             }
         )
     )
@@ -92,7 +97,12 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        payLaterViewModel.defaultTenure = defaultTenure
+        tenureAdapter.lastSelectedPosition = defaultTenure
+
         payLaterViewModel.getProductDetail(productId)
+
         rvPayLaterSimulation.adapter = tenureAdapter
         rvPayLaterSimulation.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -121,9 +131,10 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
         // hide loading
         tenureAdapter.setData(data)
-        data[0].isSelected = true
-        simulationAdapter.addAllElements(data[0].simulationList?: arrayListOf())
-
+        rvPayLaterSimulation.scrollToPosition(defaultTenure)
+        simulationAdapter.addAllElements(
+            data[defaultTenure].simulationList ?: arrayListOf()
+        )
     }
 
     private fun productDetailFail() {

@@ -9,13 +9,16 @@ import javax.inject.Inject
 class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<SimulationUiModel>>() {
 
     private var payLaterGetSimulation: PayLaterGetSimulation? = null
+    private var defaultTenure: Int = 0
 
     fun mapResponseToUi(
         onSuccess: (ArrayList<SimulationUiModel>) -> Unit,
         onError: (Throwable) -> Unit,
         payLaterGetSimulation: PayLaterGetSimulation?,
+        defaultTenure: Int,
     ) {
         this.payLaterGetSimulation = payLaterGetSimulation
+        this.defaultTenure = defaultTenure
         this.execute({
             onSuccess(it)
         }, {
@@ -63,7 +66,8 @@ class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<Simulatio
                     tenure = data.tenure,
                     text = data.text,
                     smallText = data.smallText,
-                    simulationList = getPayLaterList
+                    simulationList = getPayLaterList,
+                    isSelected = defaultTenure == data.tenure
                 )
                 uiList.add(simulationUiModel)
             }

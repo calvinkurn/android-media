@@ -1,7 +1,9 @@
 package com.tokopedia.pdpsimulation.paylater.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFactory
+import kotlinx.android.parcel.Parcelize
 
 
 data class PayLaterSimulationData(
@@ -27,14 +29,6 @@ data class GatewaySection(
     @SerializedName("is_collapsible") val isCollapsible: Boolean?,
     @SerializedName("detail") val detail: List<Detail>
 )
-
-
-data class Benefit(
-
-    @SerializedName("content") val content: String?,
-    @SerializedName("is_highlight") val is_highlight: Boolean?
-)
-
 
 data class Cta(
 
@@ -98,7 +92,9 @@ data class GatewayModel(
     @SerializedName("id") val gateway_id: String?,
     @SerializedName("name") val name: String?,
     @SerializedName("img_light_url") val img_light_url: String?,
-    @SerializedName("img_dark_url") val img_dark_url: String?
+    @SerializedName("img_dark_url") val img_dark_url: String?,
+    @SerializedName("how_to_use") val how_toUse: HowToUse?
+
 )
 
 
@@ -114,4 +110,10 @@ data class Content(
     @SerializedName("title") val title: String?,
     @SerializedName("value") val value: String?,
     @SerializedName("type") val type: Int?,
+)
+
+data class HowToUse(
+
+    @SerializedName("notes") val notes: List<String>?,
+    @SerializedName("steps") val steps: List<String?>?
 )

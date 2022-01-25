@@ -3,19 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/unify_space_12">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/productImage"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        android:layout_marginLeft="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintBottom_toBottomOf="@+id/productPrice"
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/ivProductCard"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_64"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:card_type="border">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/productImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            tools:src="@tools:sample/avatars" />
+
+    </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productName"
@@ -24,26 +33,26 @@
         android:layout_marginLeft="@dimen/unify_space_8"
         android:ellipsize="end"
         android:maxLines="2"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@+id/productVariant"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toRightOf="@+id/productImage"
+        app:layout_constraintLeft_toRightOf="@+id/ivProductCard"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/productImage"
+        app:layout_constraintTop_toTopOf="@+id/ivProductCard"
+        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        android:textColor="@color/Unify_NN950"
-        tools:text="Product name"/>
+        tools:text="Product name" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_8"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toTopOf="@+id/productPrice"
-        app:layout_constraintLeft_toRightOf="@+id/productImage"
+        app:layout_constraintLeft_toRightOf="@+id/ivProductCard"
         app:layout_constraintTop_toBottomOf="@+id/productName"
         app:typographyType="small"
-        android:textColor="@color/Unify_NN600"
         tools:text="0.5m" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -51,13 +60,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_8"
-        android:layout_marginBottom="@dimen/unify_space_12"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/productImage"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@+id/ivProductCard"
+        app:layout_constraintLeft_toRightOf="@+id/ivProductCard"
         app:layout_constraintTop_toBottomOf="@+id/productVariant"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_NN950"
         tools:text="Rp12.000.000" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

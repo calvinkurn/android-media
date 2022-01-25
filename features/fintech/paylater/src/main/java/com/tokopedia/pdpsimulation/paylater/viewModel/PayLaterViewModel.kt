@@ -25,13 +25,14 @@ class PayLaterViewModel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-    private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<ArrayList<SimulationUiModel>>>()
+    private val _payLaterOptionsDetailLiveData =
+        MutableLiveData<Result<ArrayList<SimulationUiModel>>>()
     val payLaterOptionsDetailLiveData: LiveData<Result<ArrayList<SimulationUiModel>>> =
         _payLaterOptionsDetailLiveData
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
-
+    var defaultTenure = 0
 
     private var idlingResourceProvider =
         TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
@@ -75,11 +76,13 @@ class PayLaterViewModel @Inject constructor(
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
         idlingResourceProvider?.decrement()
         mapperUseCase.mapResponseToUi({
-            _payLaterOptionsDetailLiveData.value = Success(it)
+            if (it.isNotEmpty())
+                _payLaterOptionsDetailLiveData.value = Success(it)
+
         }, {
             _payLaterOptionsDetailLiveData.value = Fail(it)
 
-        }, paylaterGetSimulation)
+        }, paylaterGetSimulation, defaultTenure)
     }
 
     override fun onCleared() {

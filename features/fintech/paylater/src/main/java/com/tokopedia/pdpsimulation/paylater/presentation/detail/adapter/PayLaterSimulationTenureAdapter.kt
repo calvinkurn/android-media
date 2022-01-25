@@ -12,7 +12,7 @@ class PayLaterSimulationTenureAdapter(
     RecyclerView.Adapter<PayLaterSimulationTenureViewHolder>() {
 
     private val tenureItemList = arrayListOf<SimulationUiModel>()
-    private var lastSelectedPosition = 0
+    var lastSelectedPosition = 0
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -20,15 +20,21 @@ class PayLaterSimulationTenureAdapter(
     ): PayLaterSimulationTenureViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return PayLaterSimulationTenureViewHolder.getViewHolder(inflater, parent) { pos ->
-            if (pos != RecyclerView.NO_POSITION && pos != lastSelectedPosition &&
-                !tenureItemList[pos].simulationList.isNullOrEmpty()) {
+            if (isTenureSelectionChanged(pos)) {
                 showPayLaterOption(tenureItemList[pos].simulationList!!)
-                tenureItemList[lastSelectedPosition].isSelected = !tenureItemList[lastSelectedPosition].isSelected
-                notifyItemChanged(lastSelectedPosition)
-                lastSelectedPosition = pos
-                notifyItemChanged(pos)
+                changeAndUpdateSelection(pos)
             }
         }
+    }
+
+    private fun isTenureSelectionChanged(pos: Int) = pos != RecyclerView.NO_POSITION && pos != lastSelectedPosition &&
+            !tenureItemList[pos].simulationList.isNullOrEmpty()
+
+    private fun changeAndUpdateSelection(pos: Int) {
+        tenureItemList[lastSelectedPosition].isSelected = !tenureItemList[lastSelectedPosition].isSelected
+        notifyItemChanged(lastSelectedPosition)
+        lastSelectedPosition = pos
+        notifyItemChanged(pos)
     }
 
     override fun onBindViewHolder(holder: PayLaterSimulationTenureViewHolder, position: Int) {

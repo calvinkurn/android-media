@@ -79,6 +79,10 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
               name
               img_light_url
               img_dark_url
+              how_to_use {
+                notes
+                steps
+              }
             }
             installment_per_month
             installment_per_month_ceil
@@ -98,6 +102,7 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
             cta {
               name
               android_url
+              web_url
               cta_type
               is_redirect_url
               button_color
