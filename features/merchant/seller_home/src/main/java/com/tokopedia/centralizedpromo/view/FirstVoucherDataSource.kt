@@ -41,17 +41,17 @@ object FirstVoucherDataSource {
 
     fun getFirstProductCouponInfoItems() = listOf(
         FirstVoucherUiModel(
-            iconDrawableRes = R.drawable.ic_voucher_increase_sells,
+            iconDrawableRes = R.drawable.ic_sah_hand_picked,
             titleRes = SELECTED_PRODUCT_TITLE,
             descriptionRes = SELECTED_PRODUCT_DESCRIPTION
         ),
         FirstVoucherUiModel(
-            iconDrawableRes = R.drawable.ic_voucher_waktu,
+            iconDrawableRes = R.drawable.ic_sah_manual_flexible,
             titleRes = FLEXIBLE_DISCOUNT_TITLE,
             descriptionRes = FLEXIBLE_DISCOUNT_DESCRIPTION
         ),
         FirstVoucherUiModel(
-            iconDrawableRes = R.drawable.ic_voucher_promosi_fleksibel,
+            iconDrawableRes = R.drawable.ic_sah_insight,
             titleRes = QUICK_SOLD_OUT_TITLE,
             descriptionRes = QUICK_SOLD_OUT_DESCRIPTION
         )

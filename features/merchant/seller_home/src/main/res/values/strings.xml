@@ -99,8 +99,8 @@
     <string name="centralized_promo_bottomsheet_free_delivery_info">Untuk Voucher Gratis Ongkir saat ini hanya tersedia di desktop</string>
     <string name="centralized_promo_bottomsheet_selected_product">Pasang khusus di produk pilihan</string>
     <string name="centralized_promo_bottomsheet_selected_product_desc">Atur detail voucher ke produk tertentu sesuai kebutuhan penjualan.</string>
-    <string name="centralized_promo_bottomsheet_flexible_discount">Lebih fleksibel kelola diskon</string>
-    <string name="centralized_promo_bottomsheet_flexible_discount_desc">Pilih voucher yang cocok dengan tipe target calon pembeli.</string>
+    <string name="centralized_promo_bottomsheet_flexible_discount">Lebih fleksibel kelola promosi</string>
+    <string name="centralized_promo_bottomsheet_flexible_discount_desc">Pilih manfaat promosi yang cocok dengan produk-produk pilihanmu.</string>
     <string name="centralized_promo_bottomsheet_quick_sold_out">Stok produkmu cepat laris</string>
     <string name="centralized_promo_bottomsheet_quick_sold_out_desc">Pasang minimum pembelian ke produk pilihan yang banyak dicari.</string>
     
