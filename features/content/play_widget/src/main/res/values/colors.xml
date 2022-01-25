@@ -21,6 +21,7 @@
     <color name="play_widget_dms_large_overlay_gradient_bottom">#00212121</color>
     <color name="play_widget_dms_large_overlay_gradient_light">#CC212121</color>
     <color name="play_widget_dms_large_overlay_gradient_dark">#7A212121</color>
+    <color name="play_widget_dms_large_overlay_gradient_bottom_dark">#D9000000</color>
 
     <color name="play_widget_dms_jumbo_overlay_gradient_white">#00000000</color>
     <color name="play_widget_dms_jumbo_overlay_gradient_darker">#00000000</color>
