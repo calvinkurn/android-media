@@ -130,7 +130,7 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun getBidInfo(suggestions: List<DataSuggestions>, sourceValue: String, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
-        bidInfoUseCase.setParams(suggestions, ParamObject.PRODUCT, sourceValue)
+        bidInfoUseCase.setParams(suggestions, ParamObject.GROUP, sourceValue)
         bidInfoUseCase.executeQuerySafeMode(
             {
                 onSuccess(it.topadsBidInfo.data)

@@ -423,7 +423,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     fun getBidForKeywords(list: MutableList<String>) {
         val suggestions = java.util.ArrayList<DataSuggestions>()
-        suggestions.add(DataSuggestions("product", list))
+        suggestions.add(DataSuggestions("", listOf(groupId.toString())))
         viewModel.getBidInfo(suggestions, GROUP_DETAIL_PAGE, this::onSuccessSuggestion)
     }
 
