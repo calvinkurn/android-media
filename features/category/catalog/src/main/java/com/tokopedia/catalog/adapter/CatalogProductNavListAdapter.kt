@@ -122,7 +122,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         }
     }
 
-    fun setWishlistButtonEnabled(productId: Int?, isEnabled: Boolean) {
+    fun setWishlistButtonEnabled(productId: String?, isEnabled: Boolean) {
         for (i in visitables.indices) {
             if (visitables[i] is CatalogProductItem) {
                 val model = visitables[i] as CatalogProductItem

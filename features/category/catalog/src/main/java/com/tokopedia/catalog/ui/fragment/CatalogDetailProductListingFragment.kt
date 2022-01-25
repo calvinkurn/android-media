@@ -447,11 +447,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun enableWishListButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), true)
+        productNavListAdapter?.setWishlistButtonEnabled(productId, true)
     }
 
     private fun disableWishListButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), false)
+        productNavListAdapter?.setWishlistButtonEnabled(productId, false)
     }
 
     private fun removeWishList(productId: String, userId: String, adapterPosition: Int) {
