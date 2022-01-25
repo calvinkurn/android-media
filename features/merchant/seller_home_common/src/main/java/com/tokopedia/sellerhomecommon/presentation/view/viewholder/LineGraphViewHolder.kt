@@ -183,7 +183,7 @@ class LineGraphViewHolder(
                     .getCopy(root.context, lastUpdated)
             }
             icShcRefreshLineGraph.isVisible = element.isFromCache
-            tvShcLineLastUpdated.setOnClickListener {
+            icShcRefreshLineGraph.setOnClickListener {
                 listener.reloadLineGraphWidget(element)
             }
         }

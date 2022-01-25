@@ -3,16 +3,17 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetMilestoneDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.MilestoneData
 import com.tokopedia.sellerhomecommon.domain.model.MissionProgressBar
 import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.utils.SellerHomeCommonPreferenceManager
 import javax.inject.Inject
 
 class MilestoneMapper @Inject constructor(
-    private val sellerHomeCommonPreferenceManager: SellerHomeCommonPreferenceManager
-) : BaseResponseMapper<GetMilestoneDataResponse, List<MilestoneDataUiModel>> {
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
+) : BaseWidgetMapper(lastUpdatedSharedPref),
+    BaseResponseMapper<GetMilestoneDataResponse, List<MilestoneDataUiModel>> {
 
     companion object {
         private const val HIDDEN_BUTTON_STATUS = 0
@@ -40,12 +41,12 @@ class MilestoneMapper @Inject constructor(
                 backgroundColor = it.backgroundColor.orEmpty(),
                 backgroundImageUrl = it.backgroundImageUrl.orEmpty(),
                 showNumber = it.showNumber.orFalse(),
-                isShowMission = sellerHomeCommonPreferenceManager.getIsShowMilestoneWidget(),
                 isError = it.error.orFalse(),
                 milestoneProgress = mapGetMilestoneProgressbar(it.progressBar),
                 milestoneMissions = missionMilestone,
                 milestoneCta = mapGetMilestoneCta(it.cta),
-                deadlineMillis = convertSecondToMillisecond(it.deadlineMillis.orZero())
+                deadlineMillis = convertSecondToMillisecond(it.deadlineMillis.orZero()),
+                lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache)
             )
         }
     }

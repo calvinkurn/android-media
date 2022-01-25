@@ -16,7 +16,6 @@ data class MilestoneDataUiModel(
     val backgroundImageUrl: String = "",
     val showNumber: Boolean = false,
     val isError: Boolean = false,
-    val isShowMission: Boolean = true,
     val milestoneProgress: MilestoneProgressbarUiModel = MilestoneProgressbarUiModel(),
     val milestoneMissions: List<BaseMilestoneMissionUiModel> = emptyList(),
     val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel(),

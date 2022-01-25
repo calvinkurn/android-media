@@ -680,6 +680,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getMilestoneData(listOf(model))
     }
 
+    override fun reloadLineGraphWidget(element: LineGraphWidgetUiModel) {
+        getLineGraphData(listOf(element))
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view

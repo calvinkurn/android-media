@@ -156,9 +156,37 @@
         app:unifyButtonVariant="ghost"
         tools:visibility="visible" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icShcRefreshMilestone"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/bg_shc_shadow_circle"
+        android:padding="6dp"
+        app:icon_name="RELOAD"
+        app:layout_constraintBottom_toBottomOf="@+id/tvShcMilestoneLastUpdated"
+        app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneStart"
+        app:layout_constraintTop_toTopOf="@+id/tvShcMilestoneLastUpdated" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcMilestoneLastUpdated"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/tvShcMilestoneCta"
+        app:layout_constraintStart_toEndOf="@+id/icShcRefreshMilestone"
+        app:layout_constraintTop_toBottomOf="@+id/btnShcCloseMission"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Update terakhir hari ini, 15:00 WIB"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcMilestoneCta"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
@@ -170,7 +198,8 @@
         android:textSize="@dimen/fontSize_lvl3"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneStart"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvShcMilestoneLastUpdated"
         app:layout_constraintTop_toBottomOf="@+id/btnShcCloseMission"
         app:typographyType="body_2"
         app:typographyWeight="reguler"

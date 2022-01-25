@@ -89,14 +89,15 @@
                 android:layout_marginEnd="@dimen/shc_dimen_12dp"
                 android:layout_marginRight="@dimen/shc_dimen_12dp"
                 android:layout_marginBottom="@dimen/layout_lvl2"
-                app:layout_constraintBottom_toTopOf="@+id/btnLineGraphMore"
+                app:layout_constraintBottom_toTopOf="@+id/barrierShcLineGraph"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLineGraphSubValue"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                tools:layout_constraintBottom_toTopOf="@+id/btnLineGraphMore" />
 
             <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrierShcMultiLineGraph"
+                android:id="@+id/barrierShcLineGraph"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="top"
