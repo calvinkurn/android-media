@@ -333,7 +333,7 @@ object DeeplinkMapperMerchant {
     }
 
     fun isCreateVoucherProductApplink(deeplink: String): Boolean {
-        return deeplink.startsWithPattern(ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT)
+        return deeplink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT)
     }
 
     fun getRegisteredNavigationForCreateShowcase(deeplink: String): String {
