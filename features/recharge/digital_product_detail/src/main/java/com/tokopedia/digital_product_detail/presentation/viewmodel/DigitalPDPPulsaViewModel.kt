@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
-import com.tokopedia.recharge_component.result.RechargeLoadingResult
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.*
@@ -34,8 +33,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect()
     )
-    
-    var isBuyWidgetShown = false
+
+    var isEligibleToBuy = false
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -74,8 +73,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<String>>
         get() = _addToCartResult
 
-    private val _clientNumberValidatorMsg = MutableLiveData<RechargeLoadingResult<String>>()
-    val clientNumberValidatorMsg: LiveData<RechargeLoadingResult<String>>
+    private val _clientNumberValidatorMsg = MutableLiveData<String>()
+    val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
 
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
@@ -163,8 +162,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
                     errorMessage = validation.message
                 }
             }
-            _clientNumberValidatorMsg.postValue(RechargeLoadingResult.Success(errorMessage))
+            isEligibleToBuy = errorMessage.isEmpty()
             delay(VALIDATOR_DELAY_TIME)
+            _clientNumberValidatorMsg.postValue(errorMessage)
         }
     }
 

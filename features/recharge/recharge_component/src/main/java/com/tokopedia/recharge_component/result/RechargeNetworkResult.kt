@@ -5,10 +5,3 @@ sealed class RechargeNetworkResult<out T> {
     object Loading : RechargeNetworkResult<Nothing>()
     data class Fail(val error: Throwable, val onRetry: () -> Unit = {}) : RechargeNetworkResult<Nothing>()
 }
-
-sealed class RechargeLoadingResult<out T> {
-    data class Success<T>(val data: T) : RechargeLoadingResult<T>()
-    object LoadingStart : RechargeLoadingResult<Nothing>()
-    object LoadingEnd : RechargeLoadingResult<Nothing>()
-    data class Fail(val error: Throwable, val onRetry: () -> Unit = {}) : RechargeLoadingResult<Nothing>()
-}

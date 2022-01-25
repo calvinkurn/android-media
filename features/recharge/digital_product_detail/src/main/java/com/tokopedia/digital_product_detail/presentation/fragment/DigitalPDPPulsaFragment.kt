@@ -711,7 +711,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun setAnimationAppBarLayout() {
         binding?.run {
             rechargePdpPulsaAppbar.setupDynamicAppBar(
-                { rechargePdpPulsaClientNumberWidget.isErrorMessageShown() },
+                { !viewModel.isEligibleToBuy },
                 { rechargePdpPulsaClientNumberWidget.getInputNumber().isEmpty() },
                 { onCollapseAppBar() },
                 { onExpandAppBar() }
@@ -805,7 +805,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             onClearSelectedMCCM()
         }
 
-        if (isShowBuyWidget) {
+        if (isShowBuyWidget && viewModel.isEligibleToBuy) {
             onShowBuyWidget(denomGrid)
         } else {
             onHideBuyWidget()
