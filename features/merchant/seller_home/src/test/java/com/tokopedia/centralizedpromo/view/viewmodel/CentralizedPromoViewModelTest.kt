@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
-import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
-import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
-import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.*
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
@@ -49,6 +47,12 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase
+
+    @RelaxedMockK
+    lateinit var checkNonTopAdsUserUseCase: CheckNonTopAdsUserUseCase
+
+    @RelaxedMockK
+    lateinit var sellerHomeGetWhiteListedUserUseCase: SellerHomeGetWhiteListedUserUseCase
 
     @RelaxedMockK
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
@@ -100,6 +104,8 @@ class CentralizedPromoViewModelTest {
             getOnGoingPromotionUseCase,
             getChatBlastSellerMetadataUseCase,
             voucherCashbackEligibleUseCase,
+            checkNonTopAdsUserUseCase,
+            sellerHomeGetWhiteListedUserUseCase,
             remoteConfig,
             coroutineTestRule.dispatchers
         )
