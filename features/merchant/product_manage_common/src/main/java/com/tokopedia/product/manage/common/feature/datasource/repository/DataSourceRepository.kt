@@ -4,9 +4,9 @@ import com.tokopedia.product.manage.common.feature.datasource.model.UserPreferen
 import kotlinx.coroutines.flow.Flow
 
 interface DataSourceRepository {
-    fun observeStatus(): Flow<UserPreferences>
+    fun getDataSourceFlow(): Flow<UserPreferences>
 
-    suspend fun updateDataSource(status: Int)
+    suspend fun updateDataSource(status: Int, productId: String)
 
     suspend fun clearDataSource()
 }

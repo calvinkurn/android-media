@@ -11,6 +11,7 @@ data class ProductAddEditV3Data(
         @SerializedName("isSuccess")
         @Expose
         val isSuccess: Boolean = false,
-
+        @SerializedName("productID")
+        @Expose
         var productId: String = ""
 )

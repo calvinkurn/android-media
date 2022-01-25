@@ -127,11 +127,12 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
-                productAddUseCase.executeOnBackground()
+                val result = productAddUseCase.executeOnBackground()
+                // need productId to decide whether need to show up dialog or not
+                setUploadProductDataSuccess(result.productAddEditV3Data.productId)
             }
             // (4)
             clearProductDraft()
-            setUploadProductDataSuccess()
             addFlagOnUploadProductSuccess()
             ProductAddUploadTracking.uploadProductFinish(shopId, true)
         }, onError = { throwable ->

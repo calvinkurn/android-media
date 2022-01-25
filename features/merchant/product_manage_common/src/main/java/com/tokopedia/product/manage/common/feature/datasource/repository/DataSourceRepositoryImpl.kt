@@ -8,12 +8,12 @@ import javax.inject.Inject
 class DataSourceRepositoryImpl @Inject constructor(
     private val dataSource: LocalDataSource
 ) : DataSourceRepository {
-    override fun observeStatus(): Flow<UserPreferences> {
-        return dataSource.userPreferencesFlow()
+    override fun getDataSourceFlow(): Flow<UserPreferences> {
+        return dataSource.getDataSourceFlow()
     }
 
-    override suspend fun updateDataSource(status: Int) {
-        dataSource.updateStatus(status)
+    override suspend fun updateDataSource(status: Int, productId: String) {
+        dataSource.updateDataSource(status, productId)
     }
 
     override suspend fun clearDataSource() {

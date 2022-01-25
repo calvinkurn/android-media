@@ -91,9 +91,9 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         Dispatchers.IO
     }
 
-    fun setUploadProductDataSuccess() {
+    fun setUploadProductDataSuccess(productId: String = "") {
         notificationManager?.onSuccessUpload()
-        setDataSource(STATUS_DONE)
+        setDataSource(STATUS_DONE, productId)
     }
 
     fun setUploadProductDataError(errorMessage: String) {
@@ -250,9 +250,9 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 .replace("\\<.*?\\>".toRegex(), "")
     }
 
-    private fun setDataSource(status: Int) {
+    private fun setDataSource(status: Int, productId: String = "") {
         launchCatchError(block = {
-            setDataSourceUseCase.params = SetDataSourceUseCase.createRequestParams(status)
+            setDataSourceUseCase.params = SetDataSourceUseCase.createRequestParams(status, productId)
             setDataSourceUseCase.executeOnBackground()
         } , onError = {})
     }

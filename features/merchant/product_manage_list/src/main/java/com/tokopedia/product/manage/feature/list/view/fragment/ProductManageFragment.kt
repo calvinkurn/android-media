@@ -614,9 +614,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         observe(viewModel.getDataSource) {
             if (it.status == STATUS_DONE) {
                 activity?.runOnUiThread {
-//                            val productId = intent.extras?.getString(TkpdState.ProductService.PRODUCT_ID)
-//                                ?: ""
-//                            viewModel.getPopupsInfo(productId)
+                    viewModel.getPopupsInfo(it.productId)
                     getFiltersTab(withDelay = true)
                     getProductList(withDelay = true, isRefresh = true)
                     viewModel.clearDataSource()
@@ -1306,7 +1304,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
     }
 
-    private fun initPopUpDialog(productId: String): Dialog {
+    private fun initPopUpDialog(productId: String): DialogUnify {
         context?.let { context ->
             activity?.let { activity ->
                 val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)

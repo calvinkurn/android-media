@@ -11,6 +11,6 @@ class GetDataSourceUseCase @Inject constructor(
 ): UseCase<Flow<UserPreferences>>() {
 
     override suspend fun executeOnBackground(): Flow<UserPreferences> {
-        return repository.observeStatus()
+        return repository.getDataSourceFlow()
     }
 }

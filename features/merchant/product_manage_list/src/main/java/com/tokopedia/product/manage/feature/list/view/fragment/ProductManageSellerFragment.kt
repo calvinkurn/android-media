@@ -143,29 +143,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
         super.setDefaultFilterOptions(filterOptions)
     }
 
-    private fun registerDraftReceiver() {
-        draftBroadCastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == BROADCAST_ADD_PRODUCT) {
-                    productDraftListCountViewModel.getAllDraftCount()
-                }
-            }
-        }
-
-        activity?.let {
-            val intentFilters = IntentFilter().apply {
-                addAction(BROADCAST_ADD_PRODUCT)
-            }
-            LocalBroadcastManager.getInstance(it).registerReceiver(draftBroadCastReceiver, intentFilters)
-        }
-    }
-
-    private fun unregisterDraftReceiver() {
-        activity?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(draftBroadCastReceiver)
-        }
-    }
-
     private fun observeGetAllDraftCount() {
         observe(productDraftListCountViewModel.getAllDraftCountResult) {
             when (it) {

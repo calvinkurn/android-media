@@ -57,6 +57,7 @@ class ProductAddUseCase @Inject constructor(private val graphqlRepository: Graph
                           errorCode
                         }
                         isSuccess
+                        productID
                       }
                     }
                     """.trimIndent()
