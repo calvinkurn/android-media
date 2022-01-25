@@ -87,8 +87,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
-import com.tokopedia.loginfingerprint.tracker.BiometricTracker.Companion.EVENT_LABEL_FAILED
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker.Companion.EVENT_LABEL_SUCCESS
+import com.tokopedia.loginfingerprint.view.activity.RegisterFingerprintActivity
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.network.utils.ErrorHandler
@@ -498,7 +498,14 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                     activity?.supportFragmentManager?.run {
                         biometricOfferingDialog?.show(this, "")
                     }
-                    biometricTracker.trackOnAktivasiResult(EVENT_LABEL_FAILED)
+
+                    val reason = if(data?.hasExtra(RegisterFingerprintActivity.RESULT_INTENT_REGISTER_BIOM) == true) {
+                        data.getStringExtra(RegisterFingerprintActivity.RESULT_INTENT_REGISTER_BIOM)
+                    } else {
+                        "otp failed"
+                    }
+
+                    biometricTracker.trackOnBiometricResultFail(reason ?: "")
                     view?.run {
                         Toaster.build(this, getString(R.string.label_failed_register_biometric_offering), Toaster.LENGTH_LONG).show()
                     }

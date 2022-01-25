@@ -196,6 +196,16 @@ class BiometricTracker {
         )
     }
 
+    fun trackOnBiometricResultFail(reason: String) {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_BIOMETRIC,
+                CATEGORY_LOGOUT_PAGE,
+                ACTION_CLICK_BIOMETRIC_ACTIVATION,
+                "$EVENT_LABEL_FAILED - reason")
+        )
+    }
+
     fun trackOnAktivasiResult(label: String) {
         track(
             TrackAppUtils.gtmData(

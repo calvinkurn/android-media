@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -16,7 +15,6 @@ import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.di.DaggerLoginFingerprintComponent
 import com.tokopedia.loginfingerprint.di.LoginFingerprintSettingModule
-import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.fragment.SettingFingerprintFragment
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.SettingFingerprintViewModel
@@ -45,7 +43,7 @@ class RegisterFingerprintActivity: BaseActivity() {
         if(BiometricPromptHelper.isBiometricAvailable(this)) {
             showBiometricPrompt()
         } else {
-            finish()
+            finishWithCanceled()
         }
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
@@ -71,7 +69,11 @@ class RegisterFingerprintActivity: BaseActivity() {
     }
 
     fun onErrorRegisterFingerprint(throwable: Throwable) {
-        finishWithCanceled()
+        val data = Intent().apply {
+            putExtra(RESULT_INTENT_REGISTER_BIOM, "error register fingerprint")
+        }
+        setResult(Activity.RESULT_CANCELED, data)
+        finish()
     }
 
     fun finishWithCanceled() {
@@ -100,9 +102,11 @@ class RegisterFingerprintActivity: BaseActivity() {
     }
 
     private fun onErrorAuthentication(errCode: Int, errString: String) {
-        if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
-            FingerprintDialogHelper.showFingerprintLockoutDialog(this)
+        val data = Intent().apply {
+            putExtra(RESULT_INTENT_REGISTER_BIOM, errString)
         }
+        setResult(Activity.RESULT_CANCELED, data)
+        finish()
     }
 
     private fun onSuccessAuthentication() {
@@ -140,6 +144,7 @@ class RegisterFingerprintActivity: BaseActivity() {
 
 
     companion object {
+        const val RESULT_INTENT_REGISTER_BIOM = "resultBiometricRegister"
         const val REQUEST_SECURITY_QUESTION = 104
     }
 }
