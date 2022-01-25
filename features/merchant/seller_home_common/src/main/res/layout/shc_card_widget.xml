@@ -45,13 +45,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:visibility="gone"
-            tools:visibility="visible"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_18dp"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/glShcCardEnd"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -60,7 +59,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Pesanan" />
+            tools:text="Pesanan"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.NotificationUnify
             android:id="@+id/notifTagCard"
@@ -73,6 +73,20 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/tvCardTitle"
             app:layout_constraintTop_toTopOf="@+id/tvCardTitle"
+            tools:visibility="visible" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icShcRefreshCard"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_shc_shadow_circle"
+            android:padding="6dp"
+            android:visibility="gone"
+            app:icon_name="RELOAD"
+            app:layout_constraintBottom_toBottomOf="@+id/tvCardValue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvCardValue"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography

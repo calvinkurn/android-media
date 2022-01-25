@@ -688,6 +688,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getRecommendationData(listOf(element))
     }
 
+    override fun reloadPostListWidget(element: PostListWidgetUiModel) {
+        getPostData(listOf(element))
+    }
+
+    override fun reloadCardWidget(element: CardWidgetUiModel) {
+        getCardData(listOf(element))
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view

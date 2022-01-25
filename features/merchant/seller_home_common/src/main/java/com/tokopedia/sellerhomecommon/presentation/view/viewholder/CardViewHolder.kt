@@ -102,6 +102,7 @@ class CardViewHolder(
                     shcCardValueCountdownView.invisible()
                     tvCardValue.text = shownValue.parseAsHtml()
                 }
+                setupRefreshButton(element)
             }
         }
 
@@ -142,6 +143,15 @@ class CardViewHolder(
         }
     }
 
+    private fun setupRefreshButton(element: CardWidgetUiModel) {
+        with(binding) {
+            icShcRefreshCard.isVisible = element.isFromCache
+            icShcRefreshCard.setOnClickListener {
+                listener.reloadCardWidget(element)
+            }
+        }
+    }
+
     private fun showCardState(data: CardDataUiModel?) {
         with(binding.imgShcCardState) {
             when (data?.state) {
@@ -177,5 +187,7 @@ class CardViewHolder(
         fun sendCardImpressionEvent(model: CardWidgetUiModel) {}
 
         fun sendCardClickTracking(model: CardWidgetUiModel) {}
+
+        fun reloadCardWidget(element: CardWidgetUiModel) {}
     }
 }
