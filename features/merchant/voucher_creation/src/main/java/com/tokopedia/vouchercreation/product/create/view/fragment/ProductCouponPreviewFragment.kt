@@ -53,6 +53,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val ROTATION_ANGLE_ZERO = 0f
         private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
         private const val ROTATION_ANIM_DURATION_IN_MILLIS : Long = 300
+
         fun newInstance(): ProductCouponPreviewFragment {
             return ProductCouponPreviewFragment()
         }
@@ -237,10 +238,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             CouponInformation.Target.PUBLIC -> getString(R.string.mvc_public)
             CouponInformation.Target.SPECIAL -> getString(R.string.mvc_special)
         }
-
         binding.tpgCouponTarget.text = target
+
         binding.tpgCouponName.text = coupon.name
-        binding.tpgCouponCode.text = coupon.code
+        handleCouponCodeVisibility(coupon.code, coupon.target)
 
         val startDate = coupon.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val startHour = coupon.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
@@ -249,6 +250,15 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
         val period = String.format(getString(R.string.placeholder_coupon_period), startDate, startHour, endDate, endHour)
         binding.tpgCouponPeriod.text = period
+    }
+
+    private fun handleCouponCodeVisibility(couponCode : String, target: CouponInformation.Target) {
+        when (target) {
+            CouponInformation.Target.PUBLIC -> binding.groupCouponCode.gone()
+            CouponInformation.Target.SPECIAL -> binding.groupCouponCode.visible()
+        }
+
+        binding.tpgCouponCode.text = couponCode
     }
 
     private fun refreshCouponSettingsSection(coupon: CouponSettings) {

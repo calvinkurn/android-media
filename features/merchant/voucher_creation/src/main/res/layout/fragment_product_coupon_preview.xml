@@ -810,16 +810,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                tools:visibility="visible"
-                app:constraint_referenced_ids="tpgDiscountAmount,tpgDiscountAmountLabel" />
+                app:constraint_referenced_ids="tpgDiscountAmount,tpgDiscountAmountLabel"
+                tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupMinimumPurchase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                app:constraint_referenced_ids="typography15,tpgMinimumPurchase"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupCouponCode"
+                android:layout_width="wrap_content"
                 tools:visibility="visible"
-                app:constraint_referenced_ids="typography15,tpgMinimumPurchase" />
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="imgCopyToClipboard,tpgCouponCode,typography" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
