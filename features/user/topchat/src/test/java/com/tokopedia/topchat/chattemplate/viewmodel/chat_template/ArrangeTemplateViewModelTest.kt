@@ -1,13 +1,15 @@
-package com.tokopedia.topchat.chattemplate.view.viewmodel
+package com.tokopedia.topchat.chattemplate.viewmodel.chat_template
 
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
+import com.tokopedia.topchat.chattemplate.viewmodel.chat_template.base.BaseChatTemplateViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import org.junit.Assert
 import org.junit.Test
 
-class ArrangeTemplateViewModelTest : BaseChatTemplateViewModel()  {
+class ArrangeTemplateViewModelTest : BaseChatTemplateViewModelTest()  {
 
     private var arrangedList = listOf(1, 2, 3, 4, 5)
 
@@ -16,20 +18,22 @@ class ArrangeTemplateViewModelTest : BaseChatTemplateViewModel()  {
         //Given
         val isSeller = false
         val isEnable = true
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isSuccess = true
-            it.templateData.isIsEnable = isEnable
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData(
+                isSuccess = true,
+                isIsEnable = isEnable
+            )
+        )
         coEvery {
             setAvailabilityTemplateUseCase.setAvailability(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         viewModel.setArrange(isSeller, isEnable, arrangedList, 0, 1)
 
         //Then
         Assert.assertEquals(
-            expectedResponse.templateData.isSuccess,
+            expectedResponse.data.isSuccess,
             (viewModel.arrangeTemplate.value?.templateResult as Success).data.isSuccess
         )
     }
@@ -39,20 +43,22 @@ class ArrangeTemplateViewModelTest : BaseChatTemplateViewModel()  {
         //Given
         val isSeller = true
         val isEnable = true
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isSuccess = true
-            it.templateData.isIsEnable = isEnable
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData(
+                isSuccess = true,
+                isIsEnable = isEnable
+            )
+        )
         coEvery {
             setAvailabilityTemplateUseCase.setAvailability(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         viewModel.setArrange(isSeller, isEnable, arrangedList, 0, 1)
 
         //Then
         Assert.assertEquals(
-            expectedResponse.templateData.isSuccess,
+            expectedResponse.data.isSuccess,
             (viewModel.arrangeTemplate.value?.templateResult as Success).data.isSuccess
         )
     }

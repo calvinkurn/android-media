@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -34,39 +35,44 @@ class GetTemplateUseCaseTest {
     }
 
     @Test
-    fun `get template buyer data`() {
+    fun should_get_template_data_when_success_get_template_buyer() {
         //Given
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isIsEnable = true
-            it.templateData.isSuccess = true
-            it.templateData.templates = testTemplate
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData().also {
+                it.isIsEnable = true
+                it.isSuccess = true
+                it.templates = testTemplate
+            }
+        )
         coEvery {
             templateRepository.getTemplateSuspend(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
-        //When
-        val result = runBlocking {
-            getTemplateUseCase.getTemplate(false)
+        runBlocking {
+            //When
+            val result = getTemplateUseCase.getTemplate(false)
+
+            //Then
+            Assert.assertEquals(
+                expectedResponse.data,
+                result
+            )
         }
-
-        Assert.assertEquals(
-            expectedResponse.templateData,
-            result
-        )
     }
 
     @Test
-    fun `get template seller data`() {
+    fun should_get_template_data_when_success_get_template_seller() {
         //Given
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isIsEnable = true
-            it.templateData.isSuccess = true
-            it.templateData.templates = testTemplate
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData().also {
+                it.isIsEnable = true
+                it.isSuccess = true
+                it.templates = testTemplate
+            }
+        )
         coEvery {
             templateRepository.getTemplateSuspend(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         runBlocking {
             //When
@@ -74,14 +80,14 @@ class GetTemplateUseCaseTest {
 
             //Then
             Assert.assertEquals(
-                expectedResponse.templateData,
+                expectedResponse.data,
                 result
             )
         }
     }
 
     @Test
-    fun `get error template buyer data`() {
+    fun should_get_error_when_fail_to_get_template_buyer() {
         //Given
         coEvery {
             templateRepository.getTemplateSuspend(any())
@@ -96,7 +102,7 @@ class GetTemplateUseCaseTest {
     }
 
     @Test
-    fun `get error template seller data`() {
+    fun should_get_error_when_fail_to_get_template_seller() {
         //Given
         coEvery {
             templateRepository.getTemplateSuspend(any())

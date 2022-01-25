@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -33,17 +34,19 @@ class SetAvailabilityTemplateUseCaseTest {
     }
 
     @Test
-    fun `set availability true template buyer` () {
+    fun should_get_template_data_when_success_set_availability_true_buyer() {
         //Given
         val isEnabled = true
         val isSeller = false
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isIsEnable = isEnabled
-            it.templateData.isSuccess = isSeller
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData().also {
+                it.isIsEnable = isEnabled
+                it.isSuccess = true
+            }
+        )
         coEvery {
             templateRepository.setAvailabilityTemplate(any(), any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         val result = runBlocking {
@@ -52,24 +55,27 @@ class SetAvailabilityTemplateUseCaseTest {
             templateUseCase.setAvailability(params)
         }
 
+        //Then
         Assert.assertEquals(
-            expectedResponse.templateData,
+            expectedResponse.data,
             result
         )
     }
 
     @Test
-    fun `set availability false template buyer` () {
+    fun should_get_template_data_when_success_set_availability_false_buyer() {
         //Given
         val isEnabled = false
         val isSeller = false
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isIsEnable = isEnabled
-            it.templateData.isSuccess = isSeller
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData().also {
+                it.isIsEnable = isEnabled
+                it.isSuccess = true
+            }
+        )
         coEvery {
             templateRepository.setAvailabilityTemplate(any(), any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         val result = runBlocking {
@@ -78,24 +84,27 @@ class SetAvailabilityTemplateUseCaseTest {
             templateUseCase.setAvailability(params)
         }
 
+        //Then
         Assert.assertEquals(
-            expectedResponse.templateData,
+            expectedResponse.data,
             result
         )
     }
 
     @Test
-    fun `set availability true template seller` () {
+    fun should_get_template_data_when_success_set_availability_true_seller() {
         //Given
         val isEnabled = true
         val isSeller = true
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isIsEnable = isEnabled
-            it.templateData.isSuccess = isSeller
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData().also {
+                it.isIsEnable = isEnabled
+                it.isSuccess = true
+            }
+        )
         coEvery {
             templateRepository.setAvailabilityTemplate(any(), any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         val result = runBlocking {
@@ -104,24 +113,27 @@ class SetAvailabilityTemplateUseCaseTest {
             templateUseCase.setAvailability(params)
         }
 
+        //Then
         Assert.assertEquals(
-            expectedResponse.templateData,
+            expectedResponse.data,
             result
         )
     }
 
     @Test
-    fun `set availability false template seller` () {
+    fun should_get_template_data_when_success_set_availability_false_seller() {
         //Given
         val isEnabled = false
         val isSeller = true
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isIsEnable = isEnabled
-            it.templateData.isSuccess = isSeller
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData().also {
+                it.isIsEnable = isEnabled
+                it.isSuccess = true
+            }
+        )
         coEvery {
             templateRepository.setAvailabilityTemplate(any(), any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         val result = runBlocking {
@@ -130,14 +142,15 @@ class SetAvailabilityTemplateUseCaseTest {
             templateUseCase.setAvailability(params)
         }
 
+        //Then
         Assert.assertEquals(
-            expectedResponse.templateData,
+            expectedResponse.data,
             result
         )
     }
 
     @Test
-    fun `error when set availability template buyer` () {
+    fun should_get_error_when_set_availability_template_buyer() {
         //Given
         val isEnabled = true
         val isSeller = false
@@ -156,7 +169,7 @@ class SetAvailabilityTemplateUseCaseTest {
     }
 
     @Test
-    fun `error when set availability template seller` () {
+    fun should_get_error_when_set_availability_template_seller() {
         //Given
         val isEnabled = true
         val isSeller = true

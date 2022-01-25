@@ -2,13 +2,13 @@ package com.tokopedia.topchat.chattemplate.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 
-class TemplateData {
+data class TemplateData (
     @SerializedName("is_enable")
-    var isIsEnable = false
+    var isIsEnable: Boolean = false,
 
     @SerializedName("templates")
-    var templates: List<String> = listOf()
+    var templates: List<String> = listOf(),
 
     @SerializedName("is_success")
-    var isSuccess = false
-}
+    var isSuccess: Boolean = false
+)

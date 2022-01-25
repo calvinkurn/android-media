@@ -16,7 +16,8 @@ class CreateTemplateUseCase @Inject constructor(
             editTemplateRepository.createTemplate(params)
         }
     }
-    fun generateParam(value: String, isSeller: Boolean): Map<String, Any> {
+
+    private fun generateParam(value: String, isSeller: Boolean): Map<String, Any> {
         return mapOf(
             PARAM_IS_SELLER to isSeller,
             PARAM_VALUE to value

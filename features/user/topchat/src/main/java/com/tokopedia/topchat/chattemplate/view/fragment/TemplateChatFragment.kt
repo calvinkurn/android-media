@@ -17,7 +17,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
-import com.tokopedia.topchat.chattemplate.di.TemplateChatModule
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter

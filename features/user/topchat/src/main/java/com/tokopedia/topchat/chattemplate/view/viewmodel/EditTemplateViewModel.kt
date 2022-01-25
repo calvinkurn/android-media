@@ -13,9 +13,9 @@ import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateResultModel
 import javax.inject.Inject
 
 class EditTemplateViewModel @Inject constructor(
-    private val editTemplateUseCase: EditTemplateUseCaseNew,
+    private val editTemplateUseCase: EditTemplateUseCase,
     private val createTemplateUseCase: CreateTemplateUseCase,
-    private val deleteTemplateUseCase: DeleteTemplateUseCaseNew,
+    private val deleteTemplateUseCase: DeleteTemplateUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -86,8 +86,8 @@ class EditTemplateViewModel @Inject constructor(
     }
 
     companion object {
-        private const val ERROR_DELETE_TEMPLATE = "Gagal menghapus template"
-        private const val ERROR_CREATE_TEMPLATE = "Gagal membuat template"
-        private const val ERROR_EDIT_TEMPLATE = "Gagal mengubah template"
+        const val ERROR_DELETE_TEMPLATE = "Gagal menghapus template"
+        const val ERROR_CREATE_TEMPLATE = "Gagal membuat template"
+        const val ERROR_EDIT_TEMPLATE = "Gagal mengubah template"
     }
 }

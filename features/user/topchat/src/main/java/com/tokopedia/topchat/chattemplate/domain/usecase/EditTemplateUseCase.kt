@@ -6,7 +6,7 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class EditTemplateUseCaseNew @Inject constructor(
+class EditTemplateUseCase @Inject constructor(
     private val editTemplateRepository: EditTemplateRepository,
     private val dispatcher: CoroutineDispatchers
 ) {
@@ -18,7 +18,7 @@ class EditTemplateUseCaseNew @Inject constructor(
         }
     }
 
-    fun generateParam(index: Int, value: String, isSeller: Boolean): Map<String, Any> {
+    private fun generateParam(index: Int, value: String, isSeller: Boolean): Map<String, Any> {
         return mapOf(
             PARAM_VALUE to value,
             PARAM_INDEX to index,

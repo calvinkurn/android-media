@@ -1,16 +1,17 @@
-package com.tokopedia.topchat.chattemplate.view.viewmodel
+package com.tokopedia.topchat.chattemplate.viewmodel.chat_template.base
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase
+import com.tokopedia.topchat.chattemplate.view.viewmodel.ChatTemplateViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 
-abstract class BaseChatTemplateViewModel {
+abstract class BaseChatTemplateViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 

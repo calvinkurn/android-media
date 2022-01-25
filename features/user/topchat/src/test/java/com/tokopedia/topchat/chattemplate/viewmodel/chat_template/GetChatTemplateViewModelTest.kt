@@ -1,34 +1,38 @@
-package com.tokopedia.topchat.chattemplate.view.viewmodel
+package com.tokopedia.topchat.chattemplate.viewmodel.chat_template
 
+import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper.mapToTemplateUiModel
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
+import com.tokopedia.topchat.chattemplate.viewmodel.chat_template.base.BaseChatTemplateViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import org.junit.Assert
 import org.junit.Test
 
-class GetChatTemplateViewModelTest: BaseChatTemplateViewModel() {
+class GetChatTemplateViewModelTest: BaseChatTemplateViewModelTest() {
 
     private val testTemplates = arrayListOf("template1", "template2")
 
     @Test
     fun should_give_chat_template_response_when_get_template_buyer() {
         //Given
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isSuccess = true
-            it.templateData.isIsEnable = true
-            it.templateData.templates = testTemplates
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData(
+                isSuccess = true,
+                isIsEnable = true,
+                templates = testTemplates)
+        )
         coEvery {
             getTemplateUseCase.getTemplate(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         viewModel.getTemplate(false)
 
         //Then
         Assert.assertEquals(
-            expectedResponse.templateData.mapToTemplateUiModel().isSuccess,
+            expectedResponse.data.mapToTemplateUiModel().isSuccess,
             (viewModel.chatTemplate.value as Success).data.isSuccess
         )
     }
@@ -53,21 +57,23 @@ class GetChatTemplateViewModelTest: BaseChatTemplateViewModel() {
     @Test
     fun should_give_chat_template_response_when_get_template_seller() {
         //Given
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isSuccess = true
-            it.templateData.isIsEnable = true
-            it.templateData.templates = testTemplates
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData(
+                isSuccess = true,
+                isIsEnable = true,
+                templates = testTemplates
+            )
+        )
         coEvery {
             getTemplateUseCase.getTemplate(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         viewModel.getTemplate(true)
 
         //Then
         Assert.assertEquals(
-            expectedResponse.templateData.mapToTemplateUiModel().isSuccess,
+            expectedResponse.data.mapToTemplateUiModel().isSuccess,
             (viewModel.chatTemplate.value as Success).data.isSuccess
         )
     }

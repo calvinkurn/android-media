@@ -1,33 +1,38 @@
-package com.tokopedia.topchat.chattemplate.view.viewmodel
+package com.tokopedia.topchat.chattemplate.viewmodel.chat_template
 
+import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper.mapToTemplateUiModel
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
+import com.tokopedia.topchat.chattemplate.viewmodel.chat_template.base.BaseChatTemplateViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import org.junit.Assert
 import org.junit.Test
 
-class SetAvailabilityTemplateViewModelTest: BaseChatTemplateViewModel()  {
+class SetAvailabilityTemplateViewModelTest: BaseChatTemplateViewModelTest()  {
 
     @Test
     fun should_give_chat_template_response_when_success_switch_template_true_buyer() {
         //Given
         val isEnable = true
         val isSeller = false
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isSuccess = true
-            it.templateData.isIsEnable = isEnable
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData(
+                isSuccess = true,
+                isIsEnable = isEnable
+            )
+        )
         coEvery {
             setAvailabilityTemplateUseCase.setAvailability(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         viewModel.switchTemplateAvailability(isSeller, isEnable)
 
         //Then
         Assert.assertEquals(
-            expectedResponse.templateData.mapToTemplateUiModel().isEnabled,
+            expectedResponse.data.mapToTemplateUiModel().isEnabled,
             (viewModel.templateAvailability.value?.second as Success).data.isEnabled
         )
     }
@@ -37,20 +42,22 @@ class SetAvailabilityTemplateViewModelTest: BaseChatTemplateViewModel()  {
         //Given
         val isEnable = true
         val isSeller = true
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isSuccess = true
-            it.templateData.isIsEnable = isEnable
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData(
+                isSuccess = true,
+                isIsEnable = isEnable
+            )
+        )
         coEvery {
             setAvailabilityTemplateUseCase.setAvailability(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         viewModel.switchTemplateAvailability(isSeller, isEnable)
 
         //Then
         Assert.assertEquals(
-            expectedResponse.templateData.mapToTemplateUiModel().isEnabled,
+            expectedResponse.data.mapToTemplateUiModel().isEnabled,
             (viewModel.templateAvailability.value?.second as Success).data.isEnabled
         )
     }
@@ -60,20 +67,22 @@ class SetAvailabilityTemplateViewModelTest: BaseChatTemplateViewModel()  {
         //Given
         val isEnable = false
         val isSeller = false
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isSuccess = true
-            it.templateData.isIsEnable = isEnable
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData(
+                isSuccess = true,
+                isIsEnable = isEnable
+            )
+        )
         coEvery {
             setAvailabilityTemplateUseCase.setAvailability(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         viewModel.switchTemplateAvailability(isSeller, isEnable)
 
         //Then
         Assert.assertEquals(
-            expectedResponse.templateData.mapToTemplateUiModel().isEnabled,
+            expectedResponse.data.mapToTemplateUiModel().isEnabled,
             (viewModel.templateAvailability.value?.second as Success).data.isEnabled
         )
     }
@@ -83,20 +92,22 @@ class SetAvailabilityTemplateViewModelTest: BaseChatTemplateViewModel()  {
         //Given
         val isEnable = false
         val isSeller = true
-        val expectedResponse = TemplateDataWrapper().also {
-            it.templateData.isSuccess = true
-            it.templateData.isIsEnable = isEnable
-        }
+        val expectedResponse = TemplateDataWrapper(
+            data = TemplateData(
+                isSuccess = true,
+                isIsEnable = isEnable
+            )
+        )
         coEvery {
             setAvailabilityTemplateUseCase.setAvailability(any())
-        } returns expectedResponse.templateData
+        } returns expectedResponse.data
 
         //When
         viewModel.switchTemplateAvailability(isSeller, isEnable)
 
         //Then
         Assert.assertEquals(
-            expectedResponse.templateData.mapToTemplateUiModel().isEnabled,
+            expectedResponse.data.mapToTemplateUiModel().isEnabled,
             (viewModel.templateAvailability.value?.second as Success).data.isEnabled
         )
     }
