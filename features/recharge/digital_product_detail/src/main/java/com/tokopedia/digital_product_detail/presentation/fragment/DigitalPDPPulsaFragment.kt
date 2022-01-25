@@ -268,6 +268,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     showCheckIcon()
                     clearErrorState()
                 } else {
+                    hideCheckIcon()
                     setErrorInputField(msg)
                 }
             }

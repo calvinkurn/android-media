@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.recharge_component.result.RechargeLoadingResult
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.*
@@ -29,9 +30,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
+    private var loadingJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect()
     )
+    
+    var isBuyWidgetShown = false
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -70,8 +74,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<String>>
         get() = _addToCartResult
 
-    private val _clientNumberValidatorMsg = MutableLiveData<String>()
-    val clientNumberValidatorMsg: LiveData<String>
+    private val _clientNumberValidatorMsg = MutableLiveData<RechargeLoadingResult<String>>()
+    val clientNumberValidatorMsg: LiveData<RechargeLoadingResult<String>>
         get() = _clientNumberValidatorMsg
 
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
@@ -111,7 +115,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             operatorData = repo.getOperatorList(menuId)
             delay(DELAY_TIME)
-            _catalogPrefixSelect.postValue(RechargeNetworkResult.Success())
+            _catalogPrefixSelect.postValue(RechargeNetworkResult.Success(operatorData))
         }) {
             _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
         }
@@ -149,18 +153,23 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun validateClientNumber(clientNumber: String) {
-        var errorMessage = ""
-        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
-            val phoneIsValid = Pattern.compile(validation.rule)
-                .matcher(clientNumber).matches()
-            if (!phoneIsValid) {
-                errorMessage = validation.message
+        loadingJob?.cancel()
+        loadingJob = viewModelScope.launch {
+            var errorMessage = ""
+            for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
+                val phoneIsValid = Pattern.compile(validation.rule)
+                    .matcher(clientNumber).matches()
+                if (!phoneIsValid) {
+                    errorMessage = validation.message
+                }
             }
+            _clientNumberValidatorMsg.postValue(RechargeLoadingResult.Success(errorMessage))
+            delay(VALIDATOR_DELAY_TIME)
         }
-        _clientNumberValidatorMsg.postValue(errorMessage)
     }
 
     companion object {
         const val DELAY_TIME = 200L
+        const val VALIDATOR_DELAY_TIME = 3000L
     }
 }
