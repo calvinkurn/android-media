@@ -55,8 +55,7 @@ class AttachmentPreviewAdapter(
     }
 
     override fun getItemCount(): Int {
-        val sendable = attachments.firstOrNull() as? DeferredAttachment ?: return attachments.size
-        return if (sendable.isLoading || sendable.isError) 1 else attachments.size
+        return attachments.size
     }
 
     override fun onBindViewHolder(holder: AttachmentPreviewViewHolder<SendablePreview>, position: Int) {
