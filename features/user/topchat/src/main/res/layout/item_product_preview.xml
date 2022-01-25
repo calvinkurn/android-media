@@ -8,20 +8,21 @@
     android:layout_marginStart="@dimen/dp_topchat_1"
     android:layout_marginTop="@dimen/dp_topchat_6"
     android:layout_marginBottom="@dimen/unify_space_2"
-    android:minHeight="@dimen/unify_space_64"
-    android:paddingTop="@dimen/unify_space_8"
-    android:paddingBottom="@dimen/unify_space_8">
+    android:minHeight="@dimen/unify_space_64">
 
     <ImageView
         android:id="@+id/iv_product"
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
         android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_8"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_bias="0.0"
         tools:src="@color/Unify_G200" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -109,6 +110,7 @@
         android:layout_marginTop="@dimen/unify_space_2"
         android:ellipsize="end"
         android:maxLines="1"
+        android:paddingBottom="@dimen/unify_space_8"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/iv_close"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -133,6 +135,7 @@
         android:id="@+id/iv_close"
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:layout_marginEnd="@dimen/dp_topchat_10"
         android:contentDescription="@null"
         android:paddingStart="@dimen/dp_topchat_6"
