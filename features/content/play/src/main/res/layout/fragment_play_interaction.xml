@@ -125,18 +125,6 @@
         />
 
     <include
-        android:id="@+id/view_pinned_voucher"
-        layout="@layout/view_pinned_voucher"
-        android:visibility="gone"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
-        app:layout_constraintStart_toStartOf="@id/view_size"
-        app:layout_constraintEnd_toEndOf="@id/view_size"
-        />
-
-    <include
         android:id="@+id/view_pinned"
         layout="@layout/view_pinned"
         android:layout_width="0dp"
@@ -145,8 +133,8 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_pinned_voucher"
         app:layout_constraintEnd_toStartOf="@id/view_share_experience"
+        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintWidth_default="wrap"
