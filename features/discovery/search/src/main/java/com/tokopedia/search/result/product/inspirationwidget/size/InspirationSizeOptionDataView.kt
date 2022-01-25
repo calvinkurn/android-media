@@ -29,6 +29,5 @@ class InspirationSizeOptionDataView(
         private const val VALUE_ID = "0"
     }
 
-    var isSelected: Boolean = false
     val option = filters.option
 }
