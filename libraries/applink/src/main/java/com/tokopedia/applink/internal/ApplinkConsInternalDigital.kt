@@ -43,4 +43,14 @@ object ApplinkConsInternalDigital {
     const val APPLINK_RECHARGE_SLICE = "tokopedia-android-internal://recharge_slice/main"
     const val SEARCH_NUMBER = "$INTERNAL_DIGITAL/searchnumber"
     const val FAVORITE_NUMBER = "$INTERNAL_DIGITAL/favoritenumber"
+
+    /**
+     * Applink Digital PDP Revamp 2022
+     */
+
+    const val DIGITAL_PDP_PULSA = "$INTERNAL_DIGITAL/pdp_pulsa"
+    /** Paket data and roaming using this same applink*/
+    const val DIGITAL_PDP_PAKET_DATA = "$INTERNAL_DIGITAL/pdp_paket_data"
+
+    /** End Applink Digital PDP Revamp 2022*/
 }
