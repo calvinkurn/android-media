@@ -49,7 +49,7 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
             PlayWidgetState(
                 model = PlayWidgetUiMock.getSamplePlayWidget(),
                 widgetType = PlayWidgetType.Small,
-                isLoading = false,
+                isLoading = true,
             ),
             PlayWidgetState(
                 model = PlayWidgetUiMock.getSamplePlayWidget(),

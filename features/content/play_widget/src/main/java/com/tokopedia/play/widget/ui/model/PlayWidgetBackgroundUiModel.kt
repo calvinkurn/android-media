@@ -8,7 +8,7 @@ data class PlayWidgetBackgroundUiModel(
     val overlayImageAppLink: String,
     val overlayImageWebLink: String,
     val gradientColors: List<String>,
-    val backgroundUrl: String
+    val backgroundUrl: String,
 ) {
     companion object {
         val Empty: PlayWidgetBackgroundUiModel

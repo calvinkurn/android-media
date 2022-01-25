@@ -73,10 +73,6 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
 
     private var mIsAutoPlay: Boolean = false
 
-//    private val adapter = PlayWidgetCardSmallAdapter(
-//            bannerCardListener = smallBannerListener,
-//            channelCardListener = channelCardListener
-//    )
     private val adapter = PlayWidgetSmallAdapter(
         cardChannelListener = cardChannelListener,
         cardBannerListener = cardBannerListener,

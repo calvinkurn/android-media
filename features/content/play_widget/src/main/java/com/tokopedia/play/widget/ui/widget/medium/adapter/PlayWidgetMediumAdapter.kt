@@ -12,12 +12,14 @@ internal class PlayWidgetMediumAdapter(
     imageBlurUtil: ImageBlurUtil,
     cardChannelListener: PlayWidgetMediumViewHolder.Channel.Listener,
     cardBannerListener: PlayWidgetMediumViewHolder.Banner.Listener,
+    cardTranscodeListener: PlayWidgetMediumViewHolder.Transcode.Listener,
 ) : BaseDiffUtilAdapter<PlayWidgetItemUiModel>() {
 
     init {
         delegatesManager
             .addDelegate(PlayWidgetMediumAdapterDelegate.Banner(cardBannerListener))
             .addDelegate(PlayWidgetMediumAdapterDelegate.Channel(cardChannelListener))
+            .addDelegate(PlayWidgetMediumAdapterDelegate.Transcode(cardTranscodeListener))
     }
 
     override fun areItemsTheSame(

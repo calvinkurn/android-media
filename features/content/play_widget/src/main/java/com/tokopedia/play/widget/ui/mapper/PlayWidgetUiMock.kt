@@ -28,9 +28,12 @@ object PlayWidgetUiMock {
         return List(size) {
             if (it == size-1) getSampleBannerModel()
             else {
-                val channelType = when (cardItemTypeRandom.nextInt(0, 4)) {
+                val channelType = when (cardItemTypeRandom.nextInt(0, 6)) {
                     0 -> PlayWidgetChannelType.Upcoming
                     1 -> PlayWidgetChannelType.Vod
+                    2 -> PlayWidgetChannelType.FailedTranscoding
+                    3 -> PlayWidgetChannelType.Deleting
+                    4 -> PlayWidgetChannelType.Transcoding
                     else -> PlayWidgetChannelType.Live
                 }
                 getSampleChannelModel(channelType)

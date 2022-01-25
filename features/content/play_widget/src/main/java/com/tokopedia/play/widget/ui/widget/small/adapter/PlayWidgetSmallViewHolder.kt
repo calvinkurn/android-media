@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui.widget.small.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.widget.small.PlayWidgetCardSmallBannerView
@@ -19,6 +20,10 @@ class PlayWidgetSmallViewHolder {
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val bannerView = itemView as PlayWidgetCardSmallBannerView
+
+        init {
+            itemView.setOnClickListener(listener::onBannerClicked)
+        }
 
         fun bind(data: PlayWidgetBannerUiModel) {
             bannerView.setData(data)
@@ -41,12 +46,15 @@ class PlayWidgetSmallViewHolder {
 
     class Channel private constructor(
         itemView: View,
-        listener: Listener,
+        private val listener: Listener,
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val channelView = itemView as PlayWidgetCardSmallChannelView
 
         fun bind(data: PlayWidgetChannelUiModel) {
+            itemView.addOnImpressionListener(data.impressHolder) {
+                listener.onChannelImpressed(itemView, data, adapterPosition)
+            }
             channelView.setData(data)
         }
 

@@ -3,11 +3,13 @@ package com.tokopedia.play.widget.ui.widget.medium.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumChannelView
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumBannerView
+import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumTranscodeView
 
 /**
  * Created by kenny.hadisaputra on 24/01/22
@@ -56,7 +58,7 @@ class PlayWidgetMediumViewHolder {
 
     class Channel private constructor(
         itemView: View,
-        listener: Listener,
+        private val listener: Listener,
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val channelView = itemView as PlayWidgetCardMediumChannelView
@@ -80,6 +82,9 @@ class PlayWidgetMediumViewHolder {
         }
 
         fun bind(data: PlayWidgetChannelUiModel) {
+            itemView.addOnImpressionListener(data.impressHolder) {
+                listener.onChannelImpressed(itemView, data, adapterPosition)
+            }
             channelView.setData(data)
         }
 
@@ -117,6 +122,48 @@ class PlayWidgetMediumViewHolder {
                 view: View,
                 item: PlayWidgetChannelUiModel,
                 position: Int
+            )
+        }
+    }
+
+    class Transcode private constructor(
+        itemView: View,
+        listener: Listener,
+    ) : RecyclerView.ViewHolder(itemView) {
+
+        private val transcodeView = itemView as PlayWidgetCardMediumTranscodeView
+
+        init {
+            transcodeView.setListener(object : PlayWidgetCardMediumTranscodeView.Listener {
+                override fun onFailedTranscodingChannelDeleteButtonClicked(
+                    view: View,
+                    item: PlayWidgetChannelUiModel
+                ) {
+                    listener.onFailedTranscodingChannelDeleteButtonClicked(view, item, adapterPosition)
+                }
+            })
+        }
+
+        fun bind(data: PlayWidgetChannelUiModel) {
+            transcodeView.setData(data)
+        }
+
+        companion object {
+            fun create(
+                parent: ViewGroup,
+                listener: Listener
+            ) = Transcode(
+                itemView = PlayWidgetCardMediumTranscodeView(parent.context),
+                listener = listener,
+            )
+        }
+
+        interface Listener {
+
+            fun onFailedTranscodingChannelDeleteButtonClicked(
+                view: View,
+                item: PlayWidgetChannelUiModel,
+                position: Int,
             )
         }
     }

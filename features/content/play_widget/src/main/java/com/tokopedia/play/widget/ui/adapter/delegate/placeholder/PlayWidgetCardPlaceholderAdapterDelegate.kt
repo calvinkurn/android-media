@@ -10,11 +10,11 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
  * Created by jegul on 12/10/20
  */
 class PlayWidgetCardPlaceholderAdapterDelegate
-    : TypedAdapterDelegate<PlayWidgetUiModel, PlayWidgetUiModel, PlayWidgetCardPlaceholderViewHolder>(
+    : TypedAdapterDelegate<Unit, Unit, PlayWidgetCardPlaceholderViewHolder>(
         PlayWidgetCardPlaceholderViewHolder.layout
 ) {
 
-    override fun onBindViewHolder(item: PlayWidgetUiModel, holder: PlayWidgetCardPlaceholderViewHolder) {
+    override fun onBindViewHolder(item: Unit, holder: PlayWidgetCardPlaceholderViewHolder) {
         holder.bind()
     }
 

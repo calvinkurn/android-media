@@ -1,5 +1,7 @@
 package com.tokopedia.play.widget.ui.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.play.widget.analytic.ImpressionableModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 
@@ -15,7 +17,10 @@ data class PlayWidgetUiModel(
     val config: PlayWidgetConfigUiModel,
     val background: PlayWidgetBackgroundUiModel,
     val items: List<PlayWidgetItemUiModel>,
-) {
+) : ImpressionableModel {
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
+
     companion object {
         val Empty: PlayWidgetUiModel
             get() = PlayWidgetUiModel(
@@ -35,7 +40,10 @@ sealed class PlayWidgetItemUiModel
 data class PlayWidgetBannerUiModel(
     val appLink: String,
     val imageUrl: String,
-) : PlayWidgetItemUiModel()
+) : PlayWidgetItemUiModel(), ImpressionableModel {
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
+}
 
 data class PlayWidgetChannelUiModel(
     val channelId: String,
@@ -54,7 +62,9 @@ data class PlayWidgetChannelUiModel(
     val poolType: String,
     val recommendationType: String,
     val hasAction: Boolean,
-) : PlayWidgetItemUiModel() {
+) : PlayWidgetItemUiModel(), ImpressionableModel {
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
 
     val hasPromo: Boolean
         get() = promoType != PlayWidgetPromoType.NoPromo && promoType != PlayWidgetPromoType.Unknown
