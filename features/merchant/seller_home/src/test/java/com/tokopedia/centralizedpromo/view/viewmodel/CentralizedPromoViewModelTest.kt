@@ -178,6 +178,14 @@ class CentralizedPromoViewModelTest {
         } returns false
 
         coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+
+        coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
         } returns true
 
@@ -214,6 +222,14 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
 
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -237,6 +253,14 @@ class CentralizedPromoViewModelTest {
 
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
