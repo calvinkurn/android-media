@@ -27,6 +27,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.switch
@@ -252,8 +253,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _atcRecomTokonowNonLogin = SingleLiveEvent<RecommendationItem>()
     val atcRecomTokonowNonLogin: LiveData<RecommendationItem> get() = _atcRecomTokonowNonLogin
 
-    private val _playWidgetModel = MutableLiveData<Result<PlayWidgetUiModel>>()
-    val playWidgetModel: LiveData<Result<PlayWidgetUiModel>> = _playWidgetModel
+    private val _playWidgetModel = MutableLiveData<Result<PlayWidgetState>>()
+    val playWidgetModel: LiveData<Result<PlayWidgetState>> = _playWidgetModel
 
     private val _playWidgetReminderSwitch = MutableLiveData<Result<PlayWidgetReminderType>>()
     val playWidgetReminderSwitch: LiveData<Result<PlayWidgetReminderType>> = _playWidgetReminderSwitch
@@ -1186,13 +1187,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun updatePlayWidgetToggleReminder(
-        playWidgetUiModel: PlayWidgetUiModel,
+        playWidgetState: PlayWidgetState,
         channelId: String,
         reminderType: PlayWidgetReminderType
     ) {
         launchCatchError(block = {
             val updatedUi = playWidgetTools.updateActionReminder(
-                playWidgetUiModel, channelId, reminderType
+                playWidgetState, channelId, reminderType
             )
             _playWidgetModel.value = Success(updatedUi)
 
@@ -1201,14 +1202,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _playWidgetReminderSwitch.value = Success(reminderType)
             } else {
                 val reversedToggleUi = playWidgetTools.updateActionReminder(
-                    playWidgetUiModel, channelId, reminderType.switch()
+                    playWidgetState, channelId, reminderType.switch()
                 )
                 _playWidgetModel.value = Success(reversedToggleUi)
                 _playWidgetReminderSwitch.value = Fail(Throwable())
             }
         }, onError = {
             val reversedToggleUi = playWidgetTools.updateActionReminder(
-                playWidgetUiModel, channelId, reminderType.switch()
+                playWidgetState, channelId, reminderType.switch()
             )
             _playWidgetModel.value = Success(reversedToggleUi)
             _playWidgetReminderSwitch.value = Fail(it)

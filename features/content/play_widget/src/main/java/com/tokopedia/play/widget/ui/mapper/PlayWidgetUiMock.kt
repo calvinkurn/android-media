@@ -49,7 +49,7 @@ object PlayWidgetUiMock {
     private fun getSampleChannelModel(channelType: PlayWidgetChannelType) = PlayWidgetChannelUiModel(
         channelId = "123",
         title = "Google Assistant review with me",
-        widgetType = channelType,
+        channelType = channelType,
         appLink = "",
         startTime = "",
         totalView = PlayWidgetTotalView("10,0 rb", true),
@@ -66,6 +66,7 @@ object PlayWidgetUiMock {
         hasGiveaway = true,
         poolType = "",
         recommendationType = "",
+        channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(

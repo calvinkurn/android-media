@@ -32,10 +32,8 @@ import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
-import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
@@ -1014,7 +1012,7 @@ class ShopHomeViewModelTest {
                 mockChannelId,
                 mockTotalView
         )
-        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.widgetUiModel as? PlayWidgetUiModel.Small)
+        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.playWidgetState as? PlayWidgetUiModel.Small)
         assert((playWidgetUiModel?.items?.first() as? PlayWidgetSmallChannelUiModel)?.totalView == mockTotalView)
     }
 
@@ -1102,7 +1100,7 @@ class ShopHomeViewModelTest {
             mockChannelId,
             true
         )
-        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.widgetUiModel as? PlayWidgetUiModel.Medium)
+        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.playWidgetState as? PlayWidgetUiModel.Medium)
         assert((playWidgetUiModel?.items?.first() as? PlayWidgetMediumChannelUiModel)?.reminderType == mockReminderType)
     }
 
@@ -1169,7 +1167,7 @@ class ShopHomeViewModelTest {
                 mockChannelId,
                 false
         )
-        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.widgetUiModel as? PlayWidgetUiModel.Medium)
+        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.playWidgetState as? PlayWidgetUiModel.Medium)
         assert((playWidgetUiModel?.items?.first() as? PlayWidgetMediumChannelUiModel)?.reminderType == mockReminderType)
     }
 

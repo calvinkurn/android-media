@@ -89,8 +89,8 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     }
 
     override fun isPlayable(): Boolean {
-        return mModel.widgetType == PlayWidgetChannelType.Live ||
-                mModel.widgetType == PlayWidgetChannelType.Vod
+        return mModel.channelType == PlayWidgetChannelType.Live ||
+                mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onDetachedFromWindow() {
@@ -103,8 +103,8 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
 
         ivCover.setImageUrl(model.video.coverUrl)
 
-        handleType(model.widgetType)
-        handleTotalView(model.widgetType, model.totalView)
+        handleType(model.channelType)
+        handleTotalView(model.channelType, model.totalView)
         handleGiveaway(model.hasGiveaway)
 
         tvTitle.text = model.title

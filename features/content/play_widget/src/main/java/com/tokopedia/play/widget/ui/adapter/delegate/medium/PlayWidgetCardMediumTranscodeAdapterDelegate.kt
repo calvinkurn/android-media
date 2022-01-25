@@ -30,7 +30,7 @@ class PlayWidgetCardMediumTranscodeAdapterDelegate(
 
     override fun isForViewType(itemList: List<PlayWidgetItemUiModel>, position: Int, isFlexibleType: Boolean): Boolean {
         val item = itemList[position]
-        return if (item is PlayWidgetChannelUiModel) item.widgetType in allowedTypes
+        return if (item is PlayWidgetChannelUiModel) item.channelType in allowedTypes
         else false
     }
 }

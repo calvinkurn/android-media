@@ -7,7 +7,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -89,8 +88,8 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     override fun isPlayable(): Boolean {
-        return mModel.widgetType == PlayWidgetChannelType.Live ||
-                mModel.widgetType == PlayWidgetChannelType.Vod
+        return mModel.channelType == PlayWidgetChannelType.Live ||
+                mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onDetachedFromWindow() {
@@ -103,8 +102,8 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         ivCover.setImageUrl(data.video.coverUrl)
 
-        handleType(data.widgetType)
-        handleTotalView(data.widgetType, data.totalView)
+        handleType(data.channelType)
+        handleTotalView(data.channelType, data.totalView)
         handleGiveaway(data.hasGiveaway)
 
         tvTitle.text = data.title

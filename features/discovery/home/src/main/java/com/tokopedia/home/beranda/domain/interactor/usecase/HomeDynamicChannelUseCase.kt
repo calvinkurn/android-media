@@ -35,6 +35,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
@@ -178,8 +179,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                             CarouselPlayWidgetDataModel,
-                            PlayWidgetUiModel>(widgetRepository = homePlayRepository) { visitableFound, data, position ->
-                        visitableFound.copy(widgetUiModel = data)
+                            PlayWidgetState>(widgetRepository = homePlayRepository) { visitableFound, data, position ->
+                        visitableFound.copy(widgetState = data)
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<

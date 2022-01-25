@@ -7,7 +7,6 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
 
@@ -87,7 +86,7 @@ internal class PlayWidgetMediumAdapterDelegate private constructor() {
             isFlexibleType: Boolean
         ): Boolean {
             val item = itemList[position]
-            return if (item is PlayWidgetChannelUiModel) item.widgetType in allowedTypes
+            return if (item is PlayWidgetChannelUiModel) item.channelType in allowedTypes
             else false
         }
     }
@@ -104,7 +103,7 @@ internal class PlayWidgetMediumAdapterDelegate private constructor() {
             isFlexibleType: Boolean
         ): Boolean {
             val item = itemList[position]
-            return if (item is PlayWidgetChannelUiModel) item.widgetType in allowedTypes
+            return if (item is PlayWidgetChannelUiModel) item.channelType in allowedTypes
             else false
         }
 

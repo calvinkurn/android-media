@@ -104,7 +104,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         thumbnail.setImageUrl(model.video.coverUrl)
 
-        when (model.widgetType) {
+        when (model.channelType) {
             PlayWidgetChannelType.Deleting -> setDeletingModel(model)
             PlayWidgetChannelType.Upcoming -> setUpcomingModel(model)
             else -> setActiveModel(model)
@@ -114,7 +114,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
         tvAuthor.visibility = if (model.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
-        tvStartTime.visibility = if (model.startTime.isNotEmpty() && model.widgetType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
+        tvStartTime.visibility = if (model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
@@ -138,7 +138,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = if (model.hasAction) View.VISIBLE else View.GONE
-        liveBadge.visibility = if (model.video.isLive && model.widgetType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
+        liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
         totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.GONE
@@ -154,7 +154,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
     private fun setDeletingModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = View.GONE
-        liveBadge.visibility = if (model.video.isLive && model.widgetType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
+        liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
         totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.VISIBLE
@@ -210,8 +210,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     }
 
     override fun isPlayable(): Boolean {
-        return mModel.widgetType == PlayWidgetChannelType.Live ||
-                mModel.widgetType == PlayWidgetChannelType.Vod
+        return mModel.channelType == PlayWidgetChannelType.Live ||
+                mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onAttachedToWindow() {

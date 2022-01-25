@@ -19,6 +19,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import dagger.Component
 

@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.model.ext
 
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
@@ -10,16 +11,14 @@ private val watchableChannelTypes = listOf(PlayWidgetChannelType.Live, PlayWidge
 
 val PlayWidgetUiModel.hasSuccessfulTranscodedChannel: Boolean
     get() = items.any {
-//        it is PlayWidgetChannelUiModel &&
-//                it.channelTypeTransition.prevType == PlayWidgetChannelType.Transcoding &&
-//                it.channelTypeTransition.currentType in watchableChannelTypes
-        false
+        it is PlayWidgetChannelUiModel &&
+                it.channelTypeTransition.prevType == PlayWidgetChannelType.Transcoding &&
+                it.channelTypeTransition.currentType in watchableChannelTypes
     }
 
 val PlayWidgetUiModel.hasFailedTranscodedChannel: Boolean
     get() = items.any {
-//        it is PlayWidgetChannelUiModel &&
-//                it.channelTypeTransition.prevType == PlayWidgetChannelType.Transcoding &&
-//                it.channelTypeTransition.currentType == PlayWidgetChannelType.FailedTranscoding
-        false
+        it is PlayWidgetChannelUiModel &&
+                it.channelTypeTransition.prevType == PlayWidgetChannelType.Transcoding &&
+                it.channelTypeTransition.currentType == PlayWidgetChannelType.FailedTranscoding
     }

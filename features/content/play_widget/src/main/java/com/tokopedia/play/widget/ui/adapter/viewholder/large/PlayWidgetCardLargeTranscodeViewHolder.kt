@@ -74,7 +74,7 @@ class PlayWidgetCardLargeTranscodeViewHolder(
             .load(item.video.coverUrl)
             .into(transcodingCoverTarget)
 
-        when (item.widgetType) {
+        when (item.channelType) {
             PlayWidgetChannelType.Transcoding -> setTranscodingModel(item)
             PlayWidgetChannelType.FailedTranscoding -> setFailedTranscodingModel(item)
             else -> {

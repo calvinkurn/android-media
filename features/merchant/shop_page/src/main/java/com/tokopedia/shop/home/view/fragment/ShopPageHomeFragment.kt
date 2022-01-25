@@ -32,7 +32,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -58,9 +57,8 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -2779,7 +2777,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.deleteChannel(channelId)
     }
 
-    override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, position: Int) {
+    override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, position: Int) {
         showPlayWidgetBottomSheet(item)
     }
 
@@ -2811,26 +2809,24 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun observePlayWidget() {
         viewModel?.playWidgetObservable?.observe(viewLifecycleOwner, Observer { carouselPlayWidgetUiModel ->
             shopPlayWidgetAnalytic.widgetId = carouselPlayWidgetUiModel?.widgetId.orEmpty()
-            shopHomeAdapter.updatePlayWidget(carouselPlayWidgetUiModel?.widgetUiModel)
+            shopHomeAdapter.updatePlayWidget(carouselPlayWidgetUiModel?.playWidgetState)
 
-            val widget = carouselPlayWidgetUiModel?.widgetUiModel
+            val widget = carouselPlayWidgetUiModel?.playWidgetState
 
-            if (widget is PlayWidgetUiModel.Medium) {
-                if (widget.hasSuccessfulTranscodedChannel) showWidgetTranscodeSuccessToaster()
+            if (widget?.model?.hasSuccessfulTranscodedChannel == true) showWidgetTranscodeSuccessToaster()
 
-                val parent = parentFragment
-                if (parent is InterfaceShopPageHeader) {
-                    val recyclerView = getRecyclerView(view)
+            val parent = parentFragment
+            if (parent is InterfaceShopPageHeader) {
+                val recyclerView = getRecyclerView(view)
 
-                    if (parent.isNewlyBroadcastSaved() == true) {
-                        parent.clearIsNewlyBroadcastSaved()
-                        recyclerView?.addOneTimeGlobalLayoutListener {
-                            viewScope.launch {
-                                parent.collapseAppBar()
-                                val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
-                                val finalPosition = min(ShopUtil.getActualPositionFromIndex(widgetPosition), shopHomeAdapter.itemCount)
-                                recyclerView.stepScrollToPositionWithDelay(finalPosition, PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY)
-                            }
+                if (parent.isNewlyBroadcastSaved() == true) {
+                    parent.clearIsNewlyBroadcastSaved()
+                    recyclerView?.addOneTimeGlobalLayoutListener {
+                        viewScope.launch {
+                            parent.collapseAppBar()
+                            val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
+                            val finalPosition = min(ShopUtil.getActualPositionFromIndex(widgetPosition), shopHomeAdapter.itemCount)
+                            recyclerView.stepScrollToPositionWithDelay(finalPosition, PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY)
                         }
                     }
                 }
@@ -2880,12 +2876,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetMediumChannelUiModel) {
+    private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetChannelUiModel) {
         shopPlayWidgetAnalytic.onImpressMoreActionChannel(channelUiModel)
         getPlayWidgetActionBottomSheet(channelUiModel).show(childFragmentManager)
     }
 
-    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetMediumChannelUiModel): PlayWidgetSellerActionBottomSheet {
+    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetChannelUiModel): PlayWidgetSellerActionBottomSheet {
         if (!::playWidgetActionBottomSheet.isInitialized) {
             playWidgetActionBottomSheet = PlayWidgetSellerActionBottomSheet()
         }

@@ -65,9 +65,9 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
             position: Int
         ) {
             if (mWidgetListener != null
-                && (item.widgetType == PlayWidgetChannelType.Live
-                        || item.widgetType == PlayWidgetChannelType.Vod
-                        || item.widgetType == PlayWidgetChannelType.Upcoming
+                && (item.channelType == PlayWidgetChannelType.Live
+                        || item.channelType == PlayWidgetChannelType.Vod
+                        || item.channelType == PlayWidgetChannelType.Upcoming
                         || GlobalConfig.isSellerApp())
             ) {
                 mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)

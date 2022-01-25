@@ -103,7 +103,7 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
 
         thumbnail.setImageUrl(model.video.coverUrl)
 
-        when (model.widgetType) {
+        when (model.channelType) {
             PlayWidgetChannelType.Deleting -> setDeletingModel(model)
             PlayWidgetChannelType.Upcoming -> setUpcomingModel()
             else -> setActiveModel(model)
@@ -114,7 +114,7 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
         tvTitle.showWithCondition(model.title.isNotEmpty())
         tvAuthor.showWithCondition(model.partner.name.isNotEmpty())
 
-        val startTimeIsShown = model.startTime.isNotEmpty() && model.widgetType == PlayWidgetChannelType.Upcoming
+        val startTimeIsShown = model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming
 
         tvStartTime.shouldShowWithAction(startTimeIsShown){
             tvStartTime.text = model.startTime
@@ -136,7 +136,7 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
-        val isLiveBadgeShown = model.video.isLive && model.widgetType == PlayWidgetChannelType.Live
+        val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
         liveBadge.showWithCondition(isLiveBadgeShown)
         reminderBadge.gone()
         totalViewBadge.showWithCondition(model.totalView.isVisible)
@@ -151,7 +151,7 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
     }
 
     private fun setDeletingModel(model: PlayWidgetChannelUiModel) {
-        val isLiveBadgeShown = model.video.isLive && model.widgetType == PlayWidgetChannelType.Live
+        val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
         liveBadge.showWithCondition(isLiveBadgeShown)
         reminderBadge.gone()
         totalViewBadge.showWithCondition(model.totalView.isVisible)
@@ -208,8 +208,8 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
     }
 
     override fun isPlayable(): Boolean {
-        return mModel.widgetType == PlayWidgetChannelType.Live ||
-                mModel.widgetType == PlayWidgetChannelType.Vod
+        return mModel.channelType == PlayWidgetChannelType.Live ||
+                mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onAttachedToWindow() {

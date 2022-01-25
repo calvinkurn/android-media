@@ -16,7 +16,7 @@ class CarouselPlayWidgetViewHolder(
 ) : AbstractViewHolder<CarouselPlayWidgetUiModel>(playWidgetViewHolder.itemView) {
 
     override fun bind(element: CarouselPlayWidgetUiModel) {
-        playWidgetViewHolder.bind(element.widgetUiModel, this)
+        playWidgetViewHolder.bind(element.playWidgetState, this)
         setWidgetImpressionListener(element)
     }
 

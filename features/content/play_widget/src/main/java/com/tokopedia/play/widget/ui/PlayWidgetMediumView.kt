@@ -15,18 +15,12 @@ import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.medium.PlayWidgetMediumAnalyticListener
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
-import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumTranscodeViewHolder
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardMediumItemDecoration
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
@@ -114,9 +108,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             )
 
             if (mWidgetListener != null
-                    && (item.widgetType == PlayWidgetChannelType.Live
-                            || item.widgetType == PlayWidgetChannelType.Vod
-                            || item.widgetType == PlayWidgetChannelType.Upcoming
+                    && (item.channelType == PlayWidgetChannelType.Live
+                            || item.channelType == PlayWidgetChannelType.Vod
+                            || item.channelType == PlayWidgetChannelType.Upcoming
                             || GlobalConfig.isSellerApp())) {
                 mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
             } else {

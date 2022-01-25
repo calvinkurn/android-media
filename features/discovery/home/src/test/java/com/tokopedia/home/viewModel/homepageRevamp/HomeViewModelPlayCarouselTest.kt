@@ -1,29 +1,20 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.model.PlayChannel
-import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayLiveDynamicRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomePlayUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.play.widget.data.PlayWidget
-import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -143,7 +134,7 @@ class HomeViewModelPlayCarouselTest {
         }
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
                 actionOnFound = { model, index ->
-                    Assert.assertTrue(model.widgetUiModel == mockPlayWidgetUiModel)
+                    Assert.assertTrue(model.widgetState == mockPlayWidgetUiModel)
                 },
                 actionOnNotFound = {
                     Assert.assertTrue(false)
@@ -179,7 +170,7 @@ class HomeViewModelPlayCarouselTest {
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
                 actionOnFound = { model, index ->
-                    Assert.assertTrue(model.widgetUiModel == mockPlayWidgetUiModel)
+                    Assert.assertTrue(model.widgetState == mockPlayWidgetUiModel)
                 },
                 actionOnNotFound = {
                     Assert.assertTrue(false)

@@ -10,7 +10,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -104,7 +103,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         thumbnail.setImageUrl(data.video.coverUrl)
 
-        when (data.widgetType) {
+        when (data.channelType) {
             PlayWidgetChannelType.Deleting -> setDeletingModel(data)
             PlayWidgetChannelType.Upcoming -> setUpcomingModel()
             else -> setActiveModel(data)
@@ -114,7 +113,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         tvTitle.visibility = if (data.title.isNotEmpty()) View.VISIBLE else View.GONE
         tvAuthor.visibility = if (data.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
-        tvStartTime.visibility = if (data.startTime.isNotEmpty() && data.widgetType == PlayWidgetChannelType.Upcoming) {
+        tvStartTime.visibility = if (data.startTime.isNotEmpty() && data.channelType == PlayWidgetChannelType.Upcoming) {
             View.VISIBLE
         } else View.GONE
 
@@ -140,7 +139,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = if (model.hasAction) View.VISIBLE else View.GONE
-        liveBadge.visibility = if (model.video.isLive && model.widgetType == PlayWidgetChannelType.Live) {
+        liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) {
             View.VISIBLE
         } else View.GONE
         reminderBadge.visibility = View.GONE
@@ -158,7 +157,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     private fun setDeletingModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = View.GONE
-        liveBadge.visibility = if (model.video.isLive && model.widgetType == PlayWidgetChannelType.Live) {
+        liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) {
             View.VISIBLE
         } else View.GONE
         reminderBadge.visibility = View.GONE
@@ -216,8 +215,8 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     override fun isPlayable(): Boolean {
-        return mModel.widgetType == PlayWidgetChannelType.Live ||
-                mModel.widgetType == PlayWidgetChannelType.Vod
+        return mModel.channelType == PlayWidgetChannelType.Live ||
+                mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onAttachedToWindow() {

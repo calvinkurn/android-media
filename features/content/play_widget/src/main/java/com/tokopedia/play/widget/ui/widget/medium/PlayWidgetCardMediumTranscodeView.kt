@@ -102,7 +102,7 @@ class PlayWidgetCardMediumTranscodeView : FrameLayout {
             .load(data.video.coverUrl)
             .into(transcodingCoverTarget)
 
-        when (data.widgetType) {
+        when (data.channelType) {
             PlayWidgetChannelType.Transcoding -> setTranscodingModel(data)
             PlayWidgetChannelType.FailedTranscoding -> setFailedTranscodingModel(data)
             else -> {}

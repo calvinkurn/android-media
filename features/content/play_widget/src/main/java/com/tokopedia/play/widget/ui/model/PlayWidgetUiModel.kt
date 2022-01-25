@@ -55,13 +55,14 @@ data class PlayWidgetChannelUiModel(
     val reminderType: PlayWidgetReminderType,
     val partner: PlayWidgetPartnerUiModel,
     val video: PlayWidgetVideoUiModel,
-    val widgetType: PlayWidgetChannelType,
+    val channelType: PlayWidgetChannelType,
     val hasGiveaway: Boolean,
     val share: PlayWidgetShareUiModel,
     val performanceSummaryLink: String,
     val poolType: String,
     val recommendationType: String,
     val hasAction: Boolean,
+    val channelTypeTransition: PlayWidgetChannelTypeTransition,
 ) : PlayWidgetItemUiModel(), ImpressionableModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
