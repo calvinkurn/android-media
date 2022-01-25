@@ -47,6 +47,7 @@ import javax.inject.Inject
 class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val BUNDLE_KEY_COUPON = "coupon"
         private const val EMPTY_STRING = ""
         private const val SCREEN_NAME = "Product coupon preview page"
         private const val ZERO: Long = 0
@@ -56,6 +57,14 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
         fun newInstance(): ProductCouponPreviewFragment {
             return ProductCouponPreviewFragment()
+        }
+
+        fun newInstance(coupon: Coupon): ProductCouponPreviewFragment {
+            val args = Bundle()
+            args.putSerializable(BUNDLE_KEY_COUPON, coupon)
+            val fragment = ProductCouponPreviewFragment()
+            fragment.arguments = args
+            return fragment
         }
 
     }
@@ -135,6 +144,30 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         observeValidCoupon()
         observeCreateCouponResult()
         observeBroadcastCoupon()
+        observeUpdateCouponResult()
+
+        if(isUpdateMode()) {
+            changeToolbarTitle(getString(R.string.update_coupon_product))
+            changeButtonBehavior()
+            displayCouponDetail()
+        }
+    }
+
+    private fun changeButtonBehavior() {
+        binding.btnCreateCoupon.text = getString(R.string.save_changes)
+        binding.btnCreateCoupon.setOnClickListener { updateCoupon() }
+    }
+
+    private fun isUpdateMode() : Boolean {
+        val coupon : Coupon? = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon
+        return coupon != null
+    }
+
+    private fun displayCouponDetail() {
+        val coupon : Coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon ?: return
+        this.couponSettings = coupon.settings
+        this.couponProducts = coupon.products
+        this.couponInformation = coupon.information
     }
 
     private fun setupViews() {
@@ -159,6 +192,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             copyToClipboard(content)
         }
 
+    }
+
+    private fun changeToolbarTitle(title : String) {
+        binding.header.headerView?.text = title
     }
 
     private fun observeValidCoupon() {
@@ -194,6 +231,20 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             }
         })
     }
+
+    private fun observeUpdateCouponResult() {
+        viewModel.updateCouponResult.observe(viewLifecycleOwner, { broadCastMetaData ->
+            when(broadCastMetaData) {
+                is Success -> {
+
+                }
+                is Fail -> {
+
+                }
+            }
+        })
+    }
+
 
     fun setOnNavigateToCouponInformationPageListener(onNavigateToCouponInformationPage: () -> Unit) {
         this.onNavigateToCouponInformationPage = onNavigateToCouponInformationPage
@@ -437,7 +488,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private fun copyToClipboard(content: String) {
         ClipboardHandler().copyToClipboard(requireActivity(), content)
         Toaster.build(
-            binding.root ?: return,
+            binding.root,
             getString(R.string.coupon_code_copied_to_clipboard)
         ).show()
     }
@@ -445,10 +496,18 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private fun createCoupon() {
         viewModel.createCoupon(
             ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
-            false,
             couponInformation ?: return,
             couponSettings ?: return,
-            couponProducts,
+            couponProducts
+        )
+    }
+
+    private fun updateCoupon() {
+        viewModel.updateCoupon(
+            ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
+            couponInformation ?: return,
+            couponSettings ?: return,
+            couponProducts
         )
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.domain.usecase
+package com.tokopedia.vouchercreation.product.create.domain.usecase.update
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
@@ -14,49 +14,62 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import javax.inject.Inject
 
-class CreateCouponUseCase @Inject constructor(
-    private val createCouponProductUseCase: CreateCouponProductUseCase,
+class UpdateCouponFacadeUseCase @Inject constructor(
+    private val updateCouponUseCase: UpdateCouponUseCase,
     private val initiateVoucherUseCase: InitiateVoucherUseCase
 ) {
+
+    companion object {
+        private const val IS_UPDATE_MODE = true
+    }
 
     suspend fun execute(
         scope: CoroutineScope,
         sourceId: String,
-        isUpdateMode: Boolean,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
-    ): Int {
+    ): Boolean {
         val uploadImageDeferred = scope.async { uploadImage(sourceId, couponProducts) }
-        val initiateVoucherDeferred = scope.async { initiateVoucher(isUpdateMode) }
+        val initiateVoucherDeferred = scope.async { initiateVoucher(IS_UPDATE_MODE) }
 
         val imageUrl = uploadImageDeferred.await()
         val voucher = initiateVoucherDeferred.await()
 
-        val createCouponDeferred = scope.async { createCoupon(couponInformation, couponSettings, couponProducts, voucher.token, imageUrl) }
+        val updateCouponDeferred = scope.async {
+            updateCoupon(
+                couponInformation,
+                couponSettings,
+                couponProducts,
+                voucher.token,
+                imageUrl
+            )
+        }
 
-        val createdCouponId = createCouponDeferred.await()
+        val isUpdateSuccess = updateCouponDeferred.await()
 
-        return createdCouponId
+        return isUpdateSuccess
     }
 
-    private suspend fun createCoupon(
+
+    private suspend fun updateCoupon(
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
         token: String,
-        imageUrl : String
-    ): Int {
+        imageUrl: String
+    ): Boolean {
 
-        val params = createCouponProductUseCase.createRequestParam(
+        val params = updateCouponUseCase.createRequestParam(
             couponInformation,
             couponSettings,
             couponProducts,
             token,
             imageUrl
         )
-        createCouponProductUseCase.params = params
-        return createCouponProductUseCase.executeOnBackground()
+        updateCouponUseCase.params = params
+
+        return updateCouponUseCase.executeOnBackground()
 
     }
 
@@ -78,14 +91,15 @@ class CreateCouponUseCase @Inject constructor(
             )
         )
 
-        val imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+        val imageGeneratorUseCase =
+            ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
         val param = ImageGeneratorUseCase.createParam(sourceId, imageParams)
         imageGeneratorUseCase.params = param
 
         return imageGeneratorUseCase.executeOnBackground()
     }
 
-    private suspend fun initiateVoucher(isUpdateMode : Boolean): InitiateVoucherUiModel {
+    private suspend fun initiateVoucher(isUpdateMode: Boolean): InitiateVoucherUiModel {
         initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
         initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(isUpdateMode)
         return initiateVoucherUseCase.executeOnBackground()

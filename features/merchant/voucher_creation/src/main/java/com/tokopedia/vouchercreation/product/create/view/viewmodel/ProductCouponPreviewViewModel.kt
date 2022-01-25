@@ -12,7 +12,8 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
-import com.tokopedia.vouchercreation.product.create.domain.usecase.CreateCouponUseCase
+import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponUseCase
+import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.shop.voucherlist.model.remote.ChatBlastSellerMetadata
 import kotlinx.coroutines.withContext
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class ProductCouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val createCouponUseCase: CreateCouponUseCase,
-    private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase
+    private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase,
+    private val updateCouponUseCase: UpdateCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _areInputValid = MutableLiveData<Boolean>()
@@ -34,6 +36,9 @@ class ProductCouponPreviewViewModel @Inject constructor(
 
     private val _broadCastMetadata = MutableLiveData<Result<ChatBlastSellerMetadata>>()
     val broadCastMetadata: LiveData<Result<ChatBlastSellerMetadata>> = _broadCastMetadata
+
+    private val _updateCouponResult = MutableLiveData<Result<Boolean>>()
+    val updateCouponResult: LiveData<Result<Boolean>> = _updateCouponResult
 
     fun validateCoupon(
         couponSettings: CouponSettings?,
@@ -61,7 +66,6 @@ class ProductCouponPreviewViewModel @Inject constructor(
 
     fun createCoupon(
         sourceId: String,
-        isUpdateMode: Boolean,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>
@@ -72,7 +76,6 @@ class ProductCouponPreviewViewModel @Inject constructor(
                     createCouponUseCase.execute(
                         this,
                         sourceId,
-                        isUpdateMode,
                         couponInformation,
                         couponSettings,
                         couponProducts
@@ -86,8 +89,6 @@ class ProductCouponPreviewViewModel @Inject constructor(
         )
     }
 
-
-
     fun getBroadCastMetaData() {
         launchCatchError(
             block = {
@@ -98,6 +99,31 @@ class ProductCouponPreviewViewModel @Inject constructor(
             },
             onError = {
                 _broadCastMetadata.setValue(Fail(it))
+            }
+        )
+    }
+
+    fun updateCoupon(
+        sourceId: String,
+        couponInformation: CouponInformation,
+        couponSettings: CouponSettings,
+        couponProducts: List<CouponProduct>
+    ) {
+        launchCatchError(
+            block = {
+                val result = withContext(dispatchers.io) {
+                    updateCouponUseCase.execute(
+                        this,
+                        sourceId,
+                        couponInformation,
+                        couponSettings,
+                        couponProducts
+                    )
+                }
+                _updateCouponResult.setValue(Success(result))
+            },
+            onError = {
+                _updateCouponResult.setValue(Fail(it))
             }
         )
     }

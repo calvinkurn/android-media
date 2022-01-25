@@ -1,9 +1,13 @@
-package com.tokopedia.vouchercreation.product.create.data
+package com.tokopedia.vouchercreation.product.create.data.request
+
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class CreateCouponProductParams(
+class UpdateCouponRequestParams(
+    @SerializedName("voucher_id")
+    @Expose
+    val voucherId: Int = 0,
     @SerializedName("benefit_idr")
     @Expose
     val benefitIdr: Int = 0,

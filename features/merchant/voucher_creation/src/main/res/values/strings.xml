@@ -420,6 +420,8 @@
     <string name="image_ratio_square">1:1</string>
     <string name="image_ratio_wide">16:9</string>
     <string name="coupon_preview">Tampilan Kupon</string>
+    <string name="update_coupon_product">Ubah Kupon Produk</string>
+    <string name="save_changes">Simpan Perubahan</string>
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>

@@ -2,7 +2,7 @@ package com.tokopedia.vouchercreation.product.create.domain.usecase
 
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.product.create.data.CouponPreviewRequestParams
+import com.tokopedia.vouchercreation.product.create.data.request.CouponPreviewRequestParams
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase

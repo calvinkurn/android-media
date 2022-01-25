@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.data
+package com.tokopedia.vouchercreation.product.create.data.response
 
 
 import com.google.gson.annotations.SerializedName
