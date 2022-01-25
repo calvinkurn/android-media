@@ -29,4 +29,7 @@
     <string name="shc_content_desc_image_carousel_empty">carousel empty</string>
     <string name="mission_selling_tokopedia">Misi berjualan Tokopedia</string>
     <string name="shc_title_progress_milestone_widget">Kemajuan</string>
+    <string name="shc_last_updated_same_day">Update terakhir hari ini, %1$s</string>
+    <string name="shc_last_updated_yesterday">Update terakhir kemarin"</string>
+    <string name="shc_last_updated_more_then_yesterday">Update terakhir %1$s</string>
 </resources>

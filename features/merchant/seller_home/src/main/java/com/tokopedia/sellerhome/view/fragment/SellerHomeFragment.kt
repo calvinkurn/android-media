@@ -671,6 +671,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendMilestoneWidgetMinimizeClickEvent()
     }
 
+    override fun reloadMultiLineGraphWidget(element: MultiLineGraphWidgetUiModel) {
+        getMultiLineGraphData(listOf(element))
+    }
+
+    override fun reloadMilestoneWidget(model: MilestoneWidgetUiModel) {
+        getMilestoneData(listOf(model))
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view

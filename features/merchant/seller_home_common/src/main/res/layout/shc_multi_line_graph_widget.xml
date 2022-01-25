@@ -12,11 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/shc_super_large_widget_height">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineShcMultiLineGraphStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="12dp" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcMultiLineGraphTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
@@ -45,9 +52,9 @@
             android:id="@+id/rvShcGraphMetrics"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/shc_dimen_12dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="@dimen/shc_dimen_12dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvShcMultiLineGraphTitle"
@@ -101,12 +108,11 @@
             android:id="@+id/icShcRefreshMultiLineGraph"
             android:layout_width="26dp"
             android:layout_height="26dp"
-            android:layout_marginStart="12dp"
             android:background="@drawable/bg_shc_shadow_circle"
             android:padding="6dp"
             app:icon_name="RELOAD"
             app:layout_constraintBottom_toBottomOf="@+id/tvShcMultiLineLastUpdated"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guidelineShcMultiLineGraphStart"
             app:layout_constraintTop_toTopOf="@+id/tvShcMultiLineLastUpdated" />
 
         <com.tokopedia.unifyprinciples.Typography

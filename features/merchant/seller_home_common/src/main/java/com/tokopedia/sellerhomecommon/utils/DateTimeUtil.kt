@@ -10,6 +10,11 @@ import java.util.concurrent.TimeUnit
 
 object DateTimeUtil {
 
+    const val FORMAT_DD_MMM_YYYY = "dd MMM yyyy"
+    const val FORMAT_HH_MM = "HH:mm"
+    const val ZERO = 0
+    val ONE_DAY_MILLIS: Long = TimeUnit.DAYS.toMillis(1)
+
     fun getLocale(): Locale {
         return Locale("id")
     }
@@ -19,7 +24,12 @@ object DateTimeUtil {
         return sdf.format(timeMillis)
     }
 
-    fun format(timeMillis: Long, pattern: String, timeZone: TimeZone, locale: Locale = getLocale()): String {
+    fun format(
+        timeMillis: Long,
+        pattern: String,
+        timeZone: TimeZone,
+        locale: Locale = getLocale()
+    ): String {
         val sdf = SimpleDateFormat(pattern, locale).apply {
             setTimeZone(timeZone)
         }
@@ -27,12 +37,18 @@ object DateTimeUtil {
     }
 
     fun getNPastDaysTimestamp(daysBefore: Long): Long {
-        return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
+        return Calendar.getInstance(getLocale()).timeInMillis.minus(
+            TimeUnit.DAYS.toMillis(
+                daysBefore
+            )
+        )
     }
 
     fun getNNextDaysTimestamp(days: Long): Long {
         return Calendar.getInstance(getLocale()).timeInMillis.plus(TimeUnit.DAYS.toMillis(days))
     }
 
-    fun getFormattedDate(daysBefore: Long, format: String) = format(getNPastDaysTimestamp(daysBefore), format)
+    fun getFormattedDate(daysBefore: Long, format: String): String {
+        return format(getNPastDaysTimestamp(daysBefore), format)
+    }
 }

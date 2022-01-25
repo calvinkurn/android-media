@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -15,6 +16,7 @@ import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcMultiLineGraphWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.MultiLineMetricsAdapter
@@ -24,7 +26,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.XYAxisUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.MultiLineGraphTooltipView
 import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
-import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
+import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -122,6 +124,7 @@ class MultiLineGraphViewHolder(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
         if (element?.isComparePeriodeOnly == true) {
             metricsAdapter.items.forEach {
@@ -185,6 +188,7 @@ class MultiLineGraphViewHolder(
 
     private fun setOnLoadingState() {
         binding.shcMlgSuccessState.gone()
+        binding.icShcRefreshMultiLineGraph.gone()
         errorStateBinding.commonWidgetErrorState.gone()
         loadingStateBinding.shcMlgLoadingState.visible()
     }
@@ -193,14 +197,12 @@ class MultiLineGraphViewHolder(
         setupTitle(element.title)
         loadingStateBinding.shcMlgLoadingState.gone()
         binding.shcMlgSuccessState.visible()
+        binding.icShcRefreshMultiLineGraph.gone()
         getWidgetComponents().forEach {
             it.gone()
         }
         errorStateBinding.commonWidgetErrorState.visible()
-        ImageHandler.loadImageWithId(
-            errorStateBinding.imgWidgetOnError,
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        )
+        errorStateBinding.imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
 
         setTagNotification(element.tag)
         setupTooltip(element)
@@ -280,7 +282,12 @@ class MultiLineGraphViewHolder(
         with(binding) {
             element.data?.lastUpdated?.let { lastUpdated ->
                 tvShcMultiLineLastUpdated.isVisible = true
-                tvShcMultiLineLastUpdated.text = DateTimeUtil.format(lastUpdated, "dd MM yyy, hh:mm")
+                tvShcMultiLineLastUpdated.text = Utils.LastUpdated
+                    .getCopy(root.context, lastUpdated)
+            }
+            icShcRefreshMultiLineGraph.isVisible = element.isFromCache
+            icShcRefreshMultiLineGraph.setOnClickListener {
+                listener.reloadMultiLineGraphWidget(element)
             }
         }
     }
@@ -364,6 +371,7 @@ class MultiLineGraphViewHolder(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupMetricCards(items: List<MultiLineMetricUiModel>) {
         with(binding) {
             shcMlgSuccessState.post {
@@ -729,5 +737,7 @@ class MultiLineGraphViewHolder(
         fun sendMultiLineGraphCtaClick(element: MultiLineGraphWidgetUiModel) {}
 
         fun sendMultiLineGraphEmptyStateCtaClick(element: MultiLineGraphWidgetUiModel) {}
+
+        fun reloadMultiLineGraphWidget(element: MultiLineGraphWidgetUiModel) {}
     }
 }
