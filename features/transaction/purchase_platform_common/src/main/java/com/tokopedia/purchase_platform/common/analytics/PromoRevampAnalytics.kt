@@ -123,20 +123,8 @@ object PromoRevampAnalytics {
         sendEventCategoryAction(CLICK_COURIER, CATEGORY_COURIER_SELECTION, CLICK_PILIH_PROMO_LAIN_ON_BOTTOMSHEET_PROMO_ERROR)
     }
 
-    /*
-    * {
-  "event": "viewBGPIris",
-  "eventAction": "view autoapply promo toaster",
-  "eventCategory": "cart",
-  "eventLabel": "{{promo code}} - {{cart_id}}",
-  "businessUnit": "promo",
-  "currentSite": "tokopediamarketplace",
-  "userId": "user_id"
-}
-    * */
-
-    fun eventViewAutoApplyPromoToaster(userId: String, promoCode: String, cartId: String, message: String) {
-        val eventLabel = "$promoCode - $cartId - $message"
+    fun eventViewAutoApplyPromoToaster(userId: String, promoCodes: List<String>, cartIds: List<String>, message: String) {
+        val eventLabel = "${promoCodes.joinToString(",")} - ${cartIds.joinToString(",")} - $message"
         val gtmData = TrackAppUtils.gtmData(VIEW_BGP_IRIS, CATEGORY_CART, VIEW_AUTO_APPLY_PROMO_TOASTER, eventLabel)
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
         gtmData[ExtraKey.USER_ID] = userId

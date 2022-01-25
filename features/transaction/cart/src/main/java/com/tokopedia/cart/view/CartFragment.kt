@@ -1950,9 +1950,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (lastApplyPromoData.additionalInfo.errorDetail.message.isNotEmpty()) {
             showToastMessageGreen(lastApplyPromoData.additionalInfo.errorDetail.message)
             PromoRevampAnalytics.eventCartViewPromoMessage(lastApplyPromoData.additionalInfo.errorDetail.message)
+            sendTrackerAutoApplyPromo(lastApplyPromoData)
         }
         val lastApplyUiModel = CartUiModelMapper.mapLastApplySimplified(lastApplyPromoData)
         renderPromoCheckout(lastApplyUiModel)
+    }
+
+    private fun sendTrackerAutoApplyPromo(lastApplyPromoData: LastApplyPromoData) {
+        val promoCodes = mutableListOf<String>()
+        val cartIds = mutableListOf<String>()
+        promoCodes.addAll(lastApplyPromoData.codes)
+        lastApplyPromoData.listVoucherOrders.forEach {
+            promoCodes.add(it.code)
+            cartIds.add(it.cartId)
+        }
+        PromoRevampAnalytics.eventViewAutoApplyPromoToaster(userSession.userId, promoCodes, cartIds, lastApplyPromoData.additionalInfo.errorDetail.message)
     }
 
     private fun validateShowPopUpMessage(cartData: CartData) {
