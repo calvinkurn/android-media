@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
@@ -33,6 +34,32 @@ object FeatureRecommendationMapper {
         return null
     }
 
+    fun isTokomemberWidgetShow(engineData: FeatureEngineData?): Boolean {
+        if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
+            engineData.featureEngineItem.forEach { featureEngineItem ->
+                try {
+                    val jsonObject = JSONObject(featureEngineItem.detail)
+                    if (jsonObject[TYPE_TOKOMEMBER].toString().equals(TYPE_TDN_PRODUCT, true)){
+                        return true
+                    }
+                } catch (e: Exception) { }
+            }
+        }
+        return false
+    }
+
+    fun getTokomemberRequestParams(thanksPageData: ThanksPageData): Pair<Int,Float>{
+        var totalPrice= 0F
+        val storeId = 0
+        thanksPageData.shopOrder.forEach {
+            it.purchaseItemList.forEach { orderItem ->
+                totalPrice += orderItem.totalPrice
+            }
+        }
+        //TODO get shopid
+        return Pair(storeId, totalPrice)
+    }
+
     fun getFeatureList(engineData: FeatureEngineData?): GyroRecommendation? {
         if (engineData == null)
             return null
@@ -60,7 +87,7 @@ object FeatureRecommendationMapper {
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
                     when (jsonObject[KEY_TYPE].toString().lowercase()) {
-                        TYPE_LIST, TYPE_TOKOMEMBER -> {
+                        TYPE_LIST -> {
                             add(getFeatureRecommendationListItem(featureEngineItem))
                         }
                     }
@@ -79,7 +106,7 @@ object FeatureRecommendationMapper {
     }
 
     private const val KEY_TYPE = "type"
-    const val TYPE_LIST = "list"
+    private const val TYPE_LIST = "list"
     const val TYPE_TOKOMEMBER = "tokomember"
     private const val TYPE_TDN_USER = "tdn_user"
     const val TYPE_TDN_PRODUCT = "tdn_product"

@@ -20,6 +20,7 @@ import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
 import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroTokomemberItem
 
 
 const val KEY_NEED_LOGIN = "need_login"
@@ -70,19 +71,19 @@ class GyroView @JvmOverloads constructor(
         }
     }
 
-    override fun onItemDisplayed(gyroRecommendationListItem: GyroRecommendationListItem,
+    override fun onItemDisplayed(gyroRecommendationItem: Visitable<*>,
                                  position: Int) {
         if (::analytics.isInitialized || ::thanksPageData.isInitialized) {
-            when(gyroRecommendationListItem.type) {
-                TYPE_TOKOMEMBER -> {
+            when(gyroRecommendationItem) {
+                is GyroTokomemberItem -> {
                     analytics.onGyroRecommendationTokomemberView(
-                        gyroRecommendationListItem,
+                        gyroRecommendationItem ,
                         thanksPageData, position + 1
                     )
                 }
-                else -> {
+                is GyroRecommendationListItem -> {
                     analytics.onGyroRecommendationListView(
-                        gyroRecommendationListItem,
+                        gyroRecommendationItem,
                         thanksPageData, position + 1
                     )
                 }
@@ -90,19 +91,19 @@ class GyroView @JvmOverloads constructor(
         }
     }
 
-    override fun onItemClicked(gyroRecommendationListItem: GyroRecommendationListItem,
+    override fun onItemClicked(gyroRecommendationItem: Visitable<*>,
                                position: Int) {
         if (::analytics.isInitialized || ::thanksPageData.isInitialized) {
-            when (gyroRecommendationListItem.type) {
-                TYPE_TOKOMEMBER -> {
+            when (gyroRecommendationItem) {
+                is GyroTokomemberItem -> {
                     analytics.onGyroRecommendationTokomemberClick(
-                        gyroRecommendationListItem,
+                        gyroRecommendationItem,
                         thanksPageData, position + 1
                     )
                 }
-                else -> {
+                is GyroRecommendationListItem -> {
                     analytics.onGyroRecommendationListClick(
-                        gyroRecommendationListItem,
+                        gyroRecommendationItem,
                         thanksPageData, position + 1
                     )
                 }

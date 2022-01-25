@@ -10,8 +10,10 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.tokomember.model.MembershipGetShopRegistrationWidget
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
+import com.tokopedia.tokomember.usecase.TokomemberUsecase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,6 +30,7 @@ class ThanksPageDataViewModel @Inject constructor(
     private val getDefaultAddressUseCase: GetDefaultAddressUseCase,
     private val thankYouTopAdsViewModelUseCase: ThankYouTopAdsViewModelUseCase,
     private val membershipRegisterUseCase: MembershipRegisterUseCase,
+    private val tokomemberUsecase: TokomemberUsecase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
@@ -35,7 +38,9 @@ class ThanksPageDataViewModel @Inject constructor(
     val gyroRecommendationLiveData = MutableLiveData<GyroRecommendation>()
     val topTickerLiveData = MutableLiveData<Result<List<TickerData>>>()
     val defaultAddressLiveData = MutableLiveData<Result<GetDefaultChosenAddressResponse>>()
-    val memberShipRegisterData = MutableLiveData<Result<MembershipRegister>>()
+    val membershipRegisterData = MutableLiveData<Result<MembershipRegister>>()
+    val tokomemberShopData = MutableLiveData<Result<MembershipGetShopRegistrationWidget>>()
+
 
     val topAdsDataLiveData = MutableLiveData<TopAdsRequestParams>()
 
@@ -65,6 +70,11 @@ class ThanksPageDataViewModel @Inject constructor(
                     if (topAdsRequestParams != null) {
                         loadTopAdsViewModelData(topAdsRequestParams, thanksPageData)
                     }
+                    if (isTokomemberWidgetShow(it.engineData)){
+                        val queryParam : Pair<Int,Float> =
+                            getTokomemberRequestParams(thanksPageData)
+                        getTokomemberData(queryParam.first, queryParam.second)
+                    }
                     postGyroRecommendation(it.engineData)
                 }
             }
@@ -86,6 +96,14 @@ class ThanksPageDataViewModel @Inject constructor(
 
     private fun getTopAdsRequestParams(engineData: FeatureEngineData?): TopAdsRequestParams? {
         return FeatureRecommendationMapper.getTopAdsParams(engineData)
+    }
+
+    private fun isTokomemberWidgetShow(engineData: FeatureEngineData?): Boolean {
+        return FeatureRecommendationMapper.isTokomemberWidgetShow(engineData)
+    }
+
+    private fun getTokomemberRequestParams(engineData: ThanksPageData): Pair<Int,Float> {
+        return FeatureRecommendationMapper.getTokomemberRequestParams(engineData)
     }
 
     private fun postGyroRecommendation(engineData: FeatureEngineData?) {
@@ -124,13 +142,23 @@ class ThanksPageDataViewModel @Inject constructor(
         })
     }
 
+    fun getTokomemberData(shopId:Int, amount:Float) {
+        tokomemberUsecase.getTokomemberData(shopId,amount,{
+            it?.let {
+                tokomemberShopData.postValue(Success(it))
+            }
+        },{
+            tokomemberShopData.postValue(Fail(it))
+        })
+    }
+
     fun registerTokomember(membershipCardID:String) {
         membershipRegisterUseCase.registerMembership(membershipCardID ,{
             it?.let {
-                memberShipRegisterData.postValue(Success(it))
+                membershipRegisterData.postValue(Success(it))
             }
         },{
-            memberShipRegisterData.postValue(Fail(it))
+            membershipRegisterData.postValue(Fail(it))
         })
     }
 
@@ -141,6 +169,8 @@ class ThanksPageDataViewModel @Inject constructor(
         thankYouTopAdsViewModelUseCase.cancelJobs()
         thanksPageMapperUseCase.cancelJobs()
         gyroEngineMapperUseCase.cancelJobs()
+        tokomemberUsecase.cancelJobs()
+        membershipRegisterUseCase.cancelJobs()
         super.onCleared()
     }
 

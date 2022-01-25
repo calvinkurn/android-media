@@ -1,24 +1,42 @@
 package com.tokopedia.tokomember.usecase
 
-import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tokomember.util.TM_BOTTOMSHEET_DATA
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.tokopedia.tokomember.model.MembershipGetShopRegistrationWidget
+import com.tokopedia.tokomember.model.ShopRegisterResponse
+import com.tokopedia.tokomember.repository.TokomemberRepository
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
-class TokomemberUsecase @Inject constructor() {
+class TokomemberUsecase @Inject constructor(private val tokomemberRepository: TokomemberRepository) :
+    UseCase<ShopRegisterResponse>() {
 
-    @Inject
-    lateinit var mTmBottomSheetUsecase: MultiRequestGraphqlUseCase
-
-    @GqlQuery("TmBottomSheetData", TM_BOTTOMSHEET_DATA)
-    suspend fun getTmBottomSheetData() = withContext(Dispatchers.IO) {
-        mTmBottomSheetUsecase.clearRequest()
-        val request = GraphqlRequest(TmBottomSheetData.GQL_QUERY,
-            Any::class.java,false)
-        mTmBottomSheetUsecase.addRequest(request)
-        mTmBottomSheetUsecase.executeOnBackground()
+    var shopId by Delegates.notNull<Int>()
+    var amount by Delegates.notNull<Float>()
+    fun getTokomemberData(
+        shopId: Int?,
+        amount: Float?,
+        success: (MembershipGetShopRegistrationWidget?) -> Unit,
+        onFail: (Throwable) -> Unit
+    ) {
+        if (shopId != null) {
+            this.shopId = shopId
+        }
+        if (amount != null) {
+            this.amount = amount
+        }
+        execute({
+            success(it.data?.membershipGetShopRegistrationWidget)
+        }, {
+            onFail(it)
+        })
     }
+
+    override suspend fun executeOnBackground(): ShopRegisterResponse {
+        return tokomemberRepository.getTokomemberData(shopId, amount)
+    }
+}
+
+object TokomemberShopParams{
+    const val SHOP_ID = "shopID"
+    const val AMOUNT = "amount"
 }

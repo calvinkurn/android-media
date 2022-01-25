@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmerImage"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmerTitle"
+        android:layout_width="@dimen/unify_space_96"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toEndOf="@+id/shimmerImage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmerDesc1"
+        android:layout_width="@dimen/unify_space_128"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintStart_toEndOf="@+id/shimmerImage"
+        app:layout_constraintTop_toBottomOf="@+id/shimmerTitle"
+        app:loader_type="rect" />
+<!--
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="@dimen/unify_space_96"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintStart_toEndOf="@+id/shimmerImage"
+        app:layout_constraintTop_toBottomOf="@+id/shimmerDesc1"
+        app:loader_type="rect" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

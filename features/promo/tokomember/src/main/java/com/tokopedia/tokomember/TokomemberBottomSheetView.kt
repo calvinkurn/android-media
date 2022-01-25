@@ -5,16 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.tokomember.di.DaggerTokomemberComponent
-import com.tokopedia.tokomember.util.LiveDataResult
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
-import javax.inject.Inject
 
 class TokomemberBottomSheetView : BottomSheetUnify() {
 
@@ -39,9 +34,6 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: TokomemberBotttomSheetViewModel
 
     private fun init(){
         val view = View.inflate(context, R.layout.activity_tokomember, null)
@@ -53,11 +45,6 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
 
         DaggerTokomemberComponent.builder()
             .build().inject(this)
-        if (context is AppCompatActivity) {
-            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-            viewModel = viewModelProvider[TokomemberBotttomSheetViewModel::class.java]
-        }
-        setupListeners()
     }
 
     private fun setUpBottomSheet(){
@@ -69,22 +56,6 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
             bottomSheet.isGestureInsetBottomIgnored = true
             customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels / 2).toDp()
         }
-    }
-
-    fun setupListeners() {
-        viewModel.listLiveData.observe(context as AppCompatActivity, Observer {
-            when (it.data) {
-                LiveDataResult.STATUS.LOADING -> {
-                    handleLoading(true)
-                }
-                LiveDataResult.STATUS.SUCCESS -> {
-                    handleSuccess(it.data)
-                }
-                LiveDataResult.STATUS.ERROR -> {
-                    handleError(it.error)
-                }
-            }
-        })
     }
 
     private fun handleError(error: Throwable?) {

@@ -10,7 +10,7 @@ import javax.inject.Scope
 annotation class TokomemberScope
 
 @TokomemberScope
-@Component(modules = [ TokomemberDispatcherModule::class, TokomemberViewmodelModule::class])
+@Component(modules = [ TokomemberDispatcherModule::class])
 
 interface TokomemberComponent {
     fun inject(view: TokomemberBottomSheetView)

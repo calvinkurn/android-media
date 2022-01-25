@@ -31,6 +31,7 @@ import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroTokomemberItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,13 +65,13 @@ class GyroRecommendationAnalytics @Inject constructor(
         }, onError = {})
     }
 
-    fun onGyroRecommendationTokomemberView(gyroRecommendationListItem: GyroRecommendationListItem,
+    fun onGyroRecommendationTokomemberView(gyroRecommendationItem: GyroTokomemberItem,
                                      thanksPageData: ThanksPageData, position: Int) {
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
                 val data = getParentTrackingNodeTokoMember(
                     PROMO_VIEW_TOKOMEMBER, VIEW_TOKOMEMBER_ACION,
-                    thanksPageData, gyroRecommendationListItem)
+                    thanksPageData, gyroRecommendationItem)
                 analyticTracker.sendGeneralEvent(data)
             }
         }, onError = {})
@@ -89,12 +90,12 @@ class GyroRecommendationAnalytics @Inject constructor(
         }, onError = {})
     }
 
-    fun onGyroRecommendationTokomemberClick(gyroRecommendationListItem: GyroRecommendationListItem,
+    fun onGyroRecommendationTokomemberClick(gyroRecommendationItem: GyroTokomemberItem,
                                       thanksPageData: ThanksPageData, position: Int) {
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
                 val data = getParentTrackingNodeTokoMember(PROMO_CLICK_TOKOMEMBER, CLICK_TOKOMEMBER_ACION,
-                    thanksPageData, gyroRecommendationListItem)
+                    thanksPageData, gyroRecommendationItem)
                 analyticTracker.sendGeneralEvent(data)
             }
         }, onError = {})
@@ -131,7 +132,7 @@ class GyroRecommendationAnalytics @Inject constructor(
 
     private fun getParentTrackingNodeTokoMember(eventName: String, eventAction: String,
                                       thanksPageData: ThanksPageData,
-                                      gyroRecommendationListItem: GyroRecommendationListItem): MutableMap<String, Any> {
+                                      gyroRecommendationListItem: GyroTokomemberItem): MutableMap<String, Any> {
         return mutableMapOf(
             KEY_EVENT to eventName,
             KEY_EVENT_CATEGORY to VIEW_TOKOMEMBER_CATEGORY,

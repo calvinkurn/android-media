@@ -6,7 +6,41 @@ import com.tokopedia.tokomember.util.FollowWidgetType.Companion.MEMBERSHIP_OPEN
 
 const val IO = "IO"
 
-const val TM_BOTTOMSHEET_DATA =""""""
+const val TM_REGISTRATION_SHOP_DATA ="""
+     query membershipGetShopRegistrationWidget(${'$'}shopID: Int!, ${'$'}amount: Int!) {
+  membershipGetShopRegistrationWidget(orderData: {
+        shopID: ${'$'}shopID, amount: ${'$'}amount } ) {
+        resultStatus {
+        code
+        message
+        reason
+    }
+    widgetContent {
+        imageURL
+        title
+        description
+        isShown
+        isOpenBottomSheet
+        url
+        appLink
+        usecase
+    }
+    bottomSheetContent {
+        imageURL
+        title
+        description
+        cta {
+            text
+            url
+            appLink
+            isShown
+        }
+    }
+    membershipType
+    cardID
+  }
+ }
+"""
 
 const val MEMBERSHIP_REGISTER ="""
     mutation membershipRegister(${'$'}cardID: Int!) {
