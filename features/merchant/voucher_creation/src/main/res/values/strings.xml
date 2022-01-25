@@ -11,6 +11,8 @@
     <string name="mvc_used">Terpakai</string>
     <string name="mvc_remaining_quota">Sisa kuota</string>
     <string name="mvc_edit_quota">Ubah Kuota</string>
+    <string name="mvc_edit_period">Ubah Periode</string>
+    <string name="mvc_edit">Ubah</string>
     <string name="mvc_edit_shown_period">Ubah Periode Tampil</string>
     <string name="mvc_view_detail_and_edit_voucher">Lihat Detail &amp; Ubah Voucher</string>
     <string name="mvc_view_detail">Lihat Detail</string>
