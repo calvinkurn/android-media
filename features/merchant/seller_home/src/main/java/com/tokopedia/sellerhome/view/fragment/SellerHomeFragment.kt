@@ -522,7 +522,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 when (mission.missionButton.urlType) {
                     BaseMilestoneMissionUiModel.UrlType.REDIRECT -> {
                         activity?.let {
-                            RouteManager.route(it, mission.missionButton.appLink)
+                            val mIntent = RouteManager.getIntent(it, mission.missionButton.appLink)
+                            it.startActivityForResult(mIntent, REQ_CODE_MILESTONE_WIDGET)
                         }
                     }
                     BaseMilestoneMissionUiModel.UrlType.SHARE -> {

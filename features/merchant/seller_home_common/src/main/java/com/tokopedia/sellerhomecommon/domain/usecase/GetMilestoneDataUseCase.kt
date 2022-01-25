@@ -19,6 +19,17 @@ class GetMilestoneDataUseCase(
     gqlRepository, milestoneMapper, dispatchers, GqlGetMilestoneData.QUERY, false
 ) {
 
+    companion object {
+        private const val DATA_KEYS = "dataKeys"
+
+        fun createParams(dataKeys: List<String>): RequestParams = RequestParams.create().apply {
+            val mDataKeys = dataKeys.map {
+                DataKeyModel(key = it)
+            }
+            putObject(DATA_KEYS, mDataKeys)
+        }
+    }
+
     override val classType: Class<GetMilestoneDataResponse>
         get() = GetMilestoneDataResponse::class.java
 
@@ -27,7 +38,10 @@ class GetMilestoneDataUseCase(
     }
 
     override suspend fun executeOnBackground(): List<MilestoneDataUiModel> {
-        val gqlRequest = GraphqlRequest(GqlGetMilestoneData, classType, params.parameters)
+        val gqlRequest = GraphqlRequest(
+            GqlGetMilestoneData, GetMilestoneDataResponse::class.java,
+            params.parameters
+        )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(classType)
@@ -40,17 +54,6 @@ class GetMilestoneDataUseCase(
             throw NullPointerException("milestone widget data can not be null")
         } else {
             throw RuntimeException(gqlErrors.firstOrNull()?.message.orEmpty())
-        }
-    }
-
-    companion object {
-        private const val DATA_KEYS = "dataKeys"
-
-        fun createParams(dataKeys: List<String>): RequestParams = RequestParams.create().apply {
-            val mDataKeys = dataKeys.map {
-                DataKeyModel(key = it)
-            }
-            putObject(DATA_KEYS, mDataKeys)
         }
     }
 }

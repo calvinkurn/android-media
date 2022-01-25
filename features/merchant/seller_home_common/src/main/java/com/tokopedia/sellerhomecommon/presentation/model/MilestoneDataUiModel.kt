@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.model.ImpressHolder
+import java.util.*
 
 data class MilestoneDataUiModel(
     override var dataKey: String = "",
@@ -18,11 +19,17 @@ data class MilestoneDataUiModel(
     val isShowMission: Boolean = true,
     val milestoneProgress: MilestoneProgressbarUiModel = MilestoneProgressbarUiModel(),
     val milestoneMissions: List<BaseMilestoneMissionUiModel> = emptyList(),
-    val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel()
+    val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel(),
+    val deadlineMillis: Long = 0L
 ) : BaseDataUiModel {
 
     override fun isWidgetEmpty(): Boolean {
-        return milestoneMissions.isNullOrEmpty()
+        return milestoneMissions.isNullOrEmpty() || isOverDue()
+    }
+
+    fun isOverDue(): Boolean {
+        val now = Date().time
+        return deadlineMillis < now
     }
 }
 
@@ -75,8 +82,14 @@ data class MilestoneMissionUiModel(
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
     override val missionButton: MissionButtonUiModel = MissionButtonUiModel(),
-    override val impressHolder: ImpressHolder = ImpressHolder()
-) : BaseMilestoneMissionUiModel
+    override val impressHolder: ImpressHolder = ImpressHolder(),
+    val missionProgress: MissionProgressUiModel = MissionProgressUiModel()
+) : BaseMilestoneMissionUiModel {
+
+    fun isProgressAvailable(): Boolean {
+        return missionProgress.target.isNotBlank() && missionProgress.completed.isNotBlank()
+    }
+}
 
 data class MilestoneFinishMissionUiModel(
     override val itemMissionKey: String = BaseMilestoneMissionUiModel.FINISH_MISSION_KEY,
