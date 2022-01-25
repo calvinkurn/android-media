@@ -5,10 +5,8 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat.startActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.activity.ServerLoggerActivity
-import com.tokopedia.analyticsdebugger.websocket.ui.activity.WebSocketLoggingActivity
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.LoggingToServerUiModel
 import com.tokopedia.logger.ServerLogger.log
@@ -80,6 +78,8 @@ class LoggingToServerViewHolder(
             priorityLogger = Priority.P1
         } else if (priority == "P2") {
             priorityLogger = Priority.P2
+        } else if (priority == "SF") {
+            priorityLogger = Priority.SF
         }
         if (priorityLogger != null) {
             log(priorityLogger, tag, messageMap)
