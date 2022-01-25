@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.inspirationwidget.card
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -9,8 +9,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.T
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductInspirationCardOptionChipLayoutBinding
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
-import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.utils.createColorSampleDrawable
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify

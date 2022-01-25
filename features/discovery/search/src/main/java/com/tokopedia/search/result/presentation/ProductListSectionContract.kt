@@ -19,7 +19,6 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
 import java.util.*
@@ -82,11 +81,11 @@ interface ProductListSectionContract {
         fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
         fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
         fun onQuickFilterSelected(filter: Filter, option: Option)
-        fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>)
+        fun initFilterController(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)
-        fun isQuickFilterSelected(option: Option?): Boolean
+        fun isFilterSelected(option: Option?): Boolean
         fun setProductCount(productCountText: String?)
         val className: String
         fun sendTrackingOpenFilterPage()
@@ -123,8 +122,6 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
-        fun initSizeOptionFilter(dataView: List<InspirationSizeDataView>)
-        fun setSelectedSizeOption(dataView: List<InspirationSizeDataView>)
     }
 
     interface Presenter : CustomerPresenter<View> {

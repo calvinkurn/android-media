@@ -30,7 +30,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -88,15 +87,12 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.GlobalNavDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
-import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter.OnItemChangeView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
@@ -106,7 +102,6 @@ import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
@@ -118,11 +113,13 @@ import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceM
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
+import com.tokopedia.search.result.product.ProductListParameterListener
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
 import com.tokopedia.search.utils.removeQuickFilterElevation
@@ -159,7 +156,6 @@ class ProductListFragment: BaseDaggerFragment(),
         RecommendationListener,
         InspirationCarouselListener,
         BroadMatchListener,
-        InspirationCardListener,
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
         SearchNavigationClickListener,
@@ -167,7 +163,7 @@ class ProductListFragment: BaseDaggerFragment(),
         ChooseAddressListener,
         BannerListener,
         LastFilterListener,
-        InspirationSizeOptionListener {
+        ProductListParameterListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -387,6 +383,12 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun initAdapter() {
         val topAdsConfig = topAdsConfig ?: return
 
+        val inspirationWidgetListenerDelegate = InspirationWidgetListenerDelegate(
+            activity,
+            filterController,
+            this,
+        )
+
         val productListTypeFactory = ProductListTypeFactoryImpl(
             productListener = this,
             tickerListener = this,
@@ -397,7 +399,7 @@ class ProductListFragment: BaseDaggerFragment(),
             recommendationListener = this,
             inspirationCarouselListener = this,
             broadMatchListener = this,
-            inspirationCardListener = this,
+            inspirationCardListener = inspirationWidgetListenerDelegate,
             searchInTokopediaListener = SearchInTokopediaListenerDelegate(activity),
             searchNavigationListener = this,
             topAdsImageViewListener = this,
@@ -405,7 +407,7 @@ class ProductListFragment: BaseDaggerFragment(),
             bannerListener = this,
             lastFilterListener = this,
             topAdsConfig = topAdsConfig,
-            inspirationSizeOptionListener = this,
+            inspirationSizeListener = inspirationWidgetListenerDelegate,
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
@@ -1058,14 +1060,14 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     //region Quick Filter
-    override fun isQuickFilterSelected(option: Option?): Boolean {
+    override fun isFilterSelected(option: Option?): Boolean {
         option ?: return false
 
         return filterController.getFilterViewState(option.uniqueId)
     }
 
     override fun onQuickFilterSelected(filter: Filter, option: Option) {
-        val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
+        val isQuickFilterSelectedReversed = !isFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
         val queryParams = filterController.getParameter().addFilterOrigin()
@@ -1089,7 +1091,7 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventClickQuickFilter(filterName, filterValue, isSelected, getUserId())
     }
 
-    override fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>) {
+    override fun initFilterController(quickFilterList: List<Filter>) {
         filterController.initFilterController(searchParameter?.getSearchParameterHashMap(), quickFilterList)
     }
 
@@ -1410,12 +1412,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, String?>)
         } ?: ""
 
-    private fun Map<String, String>.addFilterOrigin(): Map<String, String> =
-        toMutableMap().also {
-            it[SearchApiConst.ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
-        }
-
-    private fun refreshSearchParameter(queryParams: Map<String, String>) {
+    override fun refreshSearchParameter(queryParams: Map<String, String>) {
         searchParameter?.resetParams(queryParams)
         searchNavigationListener?.updateSearchParameter(searchParameter)
         filterController.refreshMapParameter(queryParams)
@@ -1929,68 +1926,6 @@ class ProductListFragment: BaseDaggerFragment(),
             broadMatchDataView.keyword,
             broadMatchDataView.dimension90,
         )
-    }
-    //endregion
-
-    //region Inspiration Cards / Inspiration Widget
-    override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {
-        trackEventClickInspirationCardOption(optionData)
-
-        redirectionStartActivity(optionData.applink, optionData.url)
-    }
-
-    override fun onInspirationSizeOptionClicked(sizeOptionDataView: InspirationSizeOptionDataView, option: Option) {
-        val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
-        filterController.setFilter(option, isQuickFilterSelectedReversed)
-
-        refreshSearchParameter(filterController.getParameter())
-
-        reloadData()
-
-        if (isQuickFilterSelectedReversed) {
-            sizeOptionDataView.click(TrackApp.getInstance().gtm)
-        }
-    }
-
-    override fun initSizeOptionFilter(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
-        if (inspirationSizeDataViewList.isEmpty()) return
-
-        val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
-
-        filterController.appendFilterList(
-            searchParameterMap,
-            inspirationSizeDataViewList.map { dataView ->
-                Filter(
-                    options = dataView.data.optionSizeData.map { optionSize ->
-                        Option(
-                            key = optionSize.filters.key,
-                            value = optionSize.filters.value,
-                            name = optionSize.filters.name
-                        )
-                    }
-                )
-            }
-        )
-    }
-
-    override fun setSelectedSizeOption(inspirationSizeDataViewList: List<InspirationSizeDataView>) {
-        inspirationSizeDataViewList.forEach { element ->
-            element.data.optionSizeData.forEach {
-                val option = Option(
-                    key = it.filters.key,
-                    value = it.filters.value,
-                    name = it.filters.name,
-                    inputState = true.toString(),
-                )
-
-                it.isSelected = isQuickFilterSelected(option)
-            }
-        }
-    }
-
-    private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {
-        val label = option.inspirationCardType + " - " + queryKey + " - " + option.text
-        SearchTracking.trackEventClickInspirationCardOption(label)
     }
     //endregion
 

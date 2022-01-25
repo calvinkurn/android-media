@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.inspirationwidget.card
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductInspirationCardOptionRelatedLayoutBinding
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
-import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationCardOptionRelatedViewHolder(

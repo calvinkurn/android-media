@@ -2,16 +2,29 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
+import com.tokopedia.search.result.presentation.model.SeparatorDataView
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
+import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
+import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeOptionDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
-import io.mockk.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
+import io.mockk.verifyOrder
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.Is.`is`
+import org.hamcrest.core.IsCollectionContaining.hasItems
 import org.junit.Test
 import rx.Subscriber
 
@@ -19,6 +32,7 @@ private const val inspirationCardResponseFirstPage = "searchproduct/inspirationc
 private const val inspirationCardResponseOnlyPosition9 = "searchproduct/inspirationcard/in-position-9.json"
 private const val inspirationCardResponseWithoutTopAds = "searchproduct/inspirationcard/without-topads.json"
 private const val inspirationCardResponseSamePosition = "searchproduct/inspirationcard/same-position.json"
+private const val inspirationSizeResponseFirstPage = "searchproduct/inspirationsize/in-first-page.json"
 
 internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestFixtures() {
     private val visitableListSlot = slot<List<Visitable<*>>>()
@@ -112,7 +126,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                     visitable.shouldBeInstanceOf<InspirationCardDataView>(
                             "visitable list at index $index should be InspirationCardViewModel"
                     )
-                    (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[0])
+                    (visitable as InspirationCardDataView).assertInspirationSizeViewModel(inspirationWidget[0])
                 }
                 else -> visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
@@ -122,23 +136,22 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
     }
 
-    private fun InspirationCardDataView.assertInspirationCardViewModel(inspirationWidget: SearchProductModel.InspirationCardData) {
+    private fun InspirationCardDataView.assertInspirationSizeViewModel(inspirationWidget: SearchProductModel.InspirationWidgetData) {
         data.title shouldBe inspirationWidget.title
         data.type shouldBe inspirationWidget.type
         data.position shouldBe inspirationWidget.position
-        data.optionCardData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
-        data.optionSizeData.size shouldBe 0
+        optionCardData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
 
         inspirationWidget.inspirationWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
-            data.optionCardData[index].assertInspirationCardOptionViewModel(
+            optionCardData[index].assertInspirationSizeOptionViewModel(
                     inspirationWidgetOption, data.type
             )
         }
     }
 
-    private fun InspirationCardOptionDataView.assertInspirationCardOptionViewModel(
-            inspirationWidgetOption: SearchProductModel.InspirationCardOption,
-            type: String
+    private fun InspirationCardOptionDataView.assertInspirationSizeOptionViewModel(
+        inspirationWidgetOption: SearchProductModel.InspirationWidgetOption,
+        type: String
     ) {
         text shouldBe inspirationWidgetOption.text
         img shouldBe inspirationWidgetOption.img
@@ -188,7 +201,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[i])
+                (visitable as InspirationCardDataView).assertInspirationSizeViewModel(inspirationWidget[i])
                 i++
             }
             else {
@@ -243,7 +256,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[0])
+                (visitable as InspirationCardDataView).assertInspirationSizeViewModel(inspirationWidget[0])
             }
             else {
                 visitable.shouldBeInstanceOf<ProductItemDataView>(
@@ -299,7 +312,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[i])
+                (visitable as InspirationCardDataView).assertInspirationSizeViewModel(inspirationWidget[i])
                 i++
             }
             else {
@@ -332,7 +345,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                     visitable.shouldBeInstanceOf<InspirationCardDataView>(
                             "visitable list at index $index should be InspirationCardViewModel"
                     )
-                    (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[2])
+                    (visitable as InspirationCardDataView).assertInspirationSizeViewModel(inspirationWidget[2])
                 }
                 else -> {
                     visitable.shouldBeInstanceOf<ProductItemDataView>(
@@ -399,7 +412,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
+                (visitable as InspirationCardDataView).assertInspirationSizeViewModel(inspirationWidget[inspirationWidgetIndex[i]])
                 i++
             }
             else {
@@ -434,7 +447,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
+                (visitable as InspirationCardDataView).assertInspirationSizeViewModel(inspirationWidget[inspirationWidgetIndex[i]])
                 i++
             }
             else {
@@ -443,5 +456,129 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 )
             }
         }
+    }
+
+    @Test
+    fun `Show inspiration size`() {
+        val searchProductModel = inspirationSizeResponseFirstPage.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel with Inspiration Card`(
+            searchProductModel
+        )
+
+        `When Load Data`()
+
+        `Then verify view set product list`()
+        `Then verify init filter controller from inspiration size`(
+            searchProductModel.searchInspirationWidget
+        )
+        `Then verify visitable list has correct inspiration size and product sequence on first page`(
+            searchProductModel
+        )
+    }
+
+    private fun `Then verify init filter controller from inspiration size`(
+        inspirationWidget: SearchProductModel.SearchInspirationWidget
+    ) {
+        val actualFilterListSlot = slot<List<Filter>>()
+
+        verify {
+            productListView.initFilterController(capture(actualFilterListSlot))
+        }
+
+        // Comparing Option list because Filter class does not have `equals` function
+        val actualOptionList = actualFilterListSlot.captured.map { it.options }.flatten()
+        val expectedOptionList = inspirationWidget.filters().map { it.options }.flatten()
+        assertThat(actualOptionList, hasItems(*expectedOptionList.toTypedArray()))
+    }
+
+    private fun `Then verify visitable list has correct inspiration size and product sequence on first page`(
+        searchProductModel: SearchProductModel
+    ) {
+        val visitableList = visitableListSlot.captured
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
+
+        // 0 -> search product count data
+        // 1 -> separator
+        // 2 -> inspiration size (position 0)
+        // 3 -> separator
+        // 4 -> product
+        // 5 -> product
+        // 6 -> product
+        // 7 -> product
+        // 8 -> product
+        // 9 -> product
+        // 10 -> product
+        // 11 -> product
+        // 12 -> product
+        // 13 -> product
+        // 14 -> product
+        // 15 -> product
+        // 16 -> product
+        // 17 -> product
+        // 18 -> separator
+        // 19 -> inspiration size (position 14)
+        // 20 -> separator
+
+        visitableList.size shouldBe 21
+
+        visitableList.forEachIndexed { index, visitable ->
+            when (index) {
+                0 -> {
+                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
+                        "visitable list at index $index should be SearchProductCountViewModel"
+                    )
+                }
+                1, 3, 18, 20 -> {
+                    visitable.shouldBeInstanceOf<SeparatorDataView>(
+                        "visitable list at index $index should be Separator"
+                    )
+                }
+                2 -> {
+                    visitable.shouldBeInstanceOf<InspirationSizeDataView>(
+                        "visitable list at index $index should be InspirationSizeViewModel"
+                    )
+                    (visitable as InspirationSizeDataView).assertInspirationSizeViewModel(inspirationWidget[0])
+                }
+                19 -> {
+                    visitable.shouldBeInstanceOf<InspirationSizeDataView>(
+                        "visitable list at index $index should be InspirationSizeViewModel"
+                    )
+                    (visitable as InspirationSizeDataView).assertInspirationSizeViewModel(inspirationWidget[1])
+                }
+                else -> visitable.shouldBeInstanceOf<ProductItemDataView>(
+                    "visitable list at index $index should be ProductItemViewModel"
+                )
+            }
+        }
+    }
+
+    private fun InspirationSizeDataView.assertInspirationSizeViewModel(
+        inspirationWidget: SearchProductModel.InspirationWidgetData,
+    ) {
+        data.title shouldBe inspirationWidget.title
+        data.type shouldBe inspirationWidget.type
+        data.position shouldBe inspirationWidget.position
+        optionSizeData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
+
+        inspirationWidget.inspirationWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
+            optionSizeData[index].assertInspirationSizeOptionViewModel(
+                inspirationWidgetOption, data.type,
+            )
+        }
+    }
+
+    private fun InspirationSizeOptionDataView.assertInspirationSizeOptionViewModel(
+        inspirationWidgetOption: SearchProductModel.InspirationWidgetOption,
+        type: String,
+    ) {
+        text shouldBe inspirationWidgetOption.text
+        img shouldBe inspirationWidgetOption.img
+        url shouldBe inspirationWidgetOption.url
+        applink shouldBe inspirationWidgetOption.applink
+        hexColor shouldBe inspirationWidgetOption.color
+        inspirationCardType shouldBe type
+        filters.key shouldBe inspirationWidgetOption.filters.key
+        filters.name shouldBe inspirationWidgetOption.filters.name
+        filters.value shouldBe inspirationWidgetOption.filters.value
     }
 }

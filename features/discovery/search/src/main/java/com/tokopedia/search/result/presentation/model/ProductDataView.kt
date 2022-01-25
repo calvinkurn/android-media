@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 
@@ -22,8 +22,7 @@ class ProductDataView() : Parcelable {
     var cpmModel: CpmModel? = null
     var globalNavDataView: GlobalNavDataView? = null
     var inspirationCarouselDataView = listOf<InspirationCarouselDataView>()
-    var inspirationCardDataView = listOf<InspirationCardDataView>()
-    var inspirationSizeDataView = listOf<InspirationSizeDataView>()
+    var inspirationWidgetDataView = listOf<InspirationWidgetVisitable>()
     var defaultView = 0
     var relatedDataView: RelatedDataView? = null
     var totalDataText = ""

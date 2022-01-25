@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.model
+package com.tokopedia.search.result.product.inspirationwidget.size
 
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
@@ -30,4 +30,5 @@ class InspirationSizeOptionDataView(
     }
 
     var isSelected: Boolean = false
+    val option = filters.option
 }

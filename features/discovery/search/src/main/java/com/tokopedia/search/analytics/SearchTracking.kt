@@ -1,10 +1,9 @@
 package com.tokopedia.search.analytics
 
-import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.Iris
@@ -805,16 +804,6 @@ object SearchTracking {
             BROADMATCH_LIST_NAME,
             organicStatus,
             componentId
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickInspirationCardOption(label: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_INSPIRATION_CARD,
-                label
         )
     }
 
