@@ -40,7 +40,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
     private var mFilterChipListener: ClientNumberFilterChipListener? = null
 
-    private var inputNumberValidator: ((String) -> Boolean)? = null
+    private var inputNumberValidator: ((String) -> String)? = null
 
     private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
 
@@ -90,13 +90,13 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                     }
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        hideClearIcon()
                         if (s?.toString()?.isEmpty() == true) {
                             clearErrorState()
+                        } else {
+                            executeValidator(s.toString())
                         }
-
-                        hideClearIcon()
                         mInputFieldListener?.onRenderOperator(true)
-                        executeValidator(s.toString())
                     }
                 })
 
@@ -242,15 +242,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         binding.clientNumberWidgetInputField.isLoading = isLoading
     }
 
-    private fun setValidated(isValidated: Boolean) {
-        if (isValidated) {
-            showCheckIcon()
-        } else {
-            // [Misael] dummy error
-            setErrorInputField("dummy")
-        }
-    }
-
     private fun showCheckIcon() {
         binding.clientNumberWidgetInputField.icon1.show()
     }
@@ -354,8 +345,17 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     private fun executeValidator(s: String) {
         if (s.isNumeric()) {
-            setValidated(inputNumberValidator?.invoke(
-                CommonTopupBillsUtil.formatPrefixClientNumber(s)) == true)
+            val errorMessage = inputNumberValidator?.invoke(
+                CommonTopupBillsUtil.formatPrefixClientNumber(s))
+
+            errorMessage?.run {
+                if (isEmpty()) {
+                    showCheckIcon()
+                    clearErrorState()
+                } else {
+                    setErrorInputField(this)
+                }
+            }
         }
     }
 
@@ -374,7 +374,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         mFilterChipListener = filterChipListener
     }
 
-    fun setInputNumberValidator(func: (inputNumber: String) -> Boolean) {
+    fun setInputNumberValidator(func: (inputNumber: String) -> String) {
         inputNumberValidator = func
     }
 

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
@@ -37,6 +38,7 @@ import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPul
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
@@ -47,12 +49,14 @@ import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -162,7 +166,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.menuDetailData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetMenuDetail(it.data)
-                is RechargeNetworkResult.Fail -> onFailedGetMenuDetail()
+                is RechargeNetworkResult.Fail -> onFailedGetMenuDetail(it.error)
                 is RechargeNetworkResult.Loading -> {
                     onShimmeringRecommendation()
                 }
@@ -171,15 +175,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data.first, it.data.second)
-                is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber()
-                is RechargeNetworkResult.Loading -> {}
+                is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber(it.error)
+                is RechargeNetworkResult.Loading -> {
+                    binding?.rechargePdpPulsaClientNumberWidget?.setFilterChipShimmer(true)
+                }
             }
         })
 
         viewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator(it.data)
-                is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator()
+                is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
                 is RechargeNetworkResult.Loading -> {}
             }
         })
@@ -261,12 +267,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         shouldRefreshInputNumber: Boolean
     ) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
+            setFilterChipShimmer(false, favoriteNumber.isEmpty())
             if (favoriteNumber.isNotEmpty()) {
                 if (shouldRefreshInputNumber) {
                     setInputNumber(favoriteNumber[0].clientNumber)
                     setContactName(favoriteNumber[0].clientName)
                 }
-                setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
                 dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
@@ -277,18 +283,36 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onSuccessGetPrefixOperator(operatorList: TelcoCatalogPrefixSelect) {
         this.operatorData = operatorList
         renderProduct()
+        initClientNumberValidator()
     }
 
-    private fun onFailedGetMenuDetail() {
-
+    private fun onFailedGetMenuDetail(throwable: Throwable) {
+        val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+            activity, throwable, ErrorHandler.Builder().build()
+        )
+        binding?.run {
+            NetworkErrorHelper.showEmptyState(
+                activity,
+                rechargePdpPulsaPageContainer,
+                errMsg,
+                "${getString(com.tokopedia.abstraction.R.string.msg_network_error_2)}. Kode Error: ($errCode)",
+                null,
+                DEFAULT_ICON_RES
+            ) {
+                getCatalogMenuDetail()
+            }
+        }
     }
 
-    private fun onFailedGetFavoriteNumber() {
-
+    private fun onFailedGetFavoriteNumber(throwable: Throwable) {
+        binding?.run {
+            rechargePdpPulsaClientNumberWidget.setFilterChipShimmer(false, true)
+            showErrorToaster(throwable)
+        }
     }
 
-    private fun onFailedGetPrefixOperator() {
-
+    private fun onFailedGetPrefixOperator(throwable: Throwable) {
+        showErrorToaster(throwable)
     }
 
     private fun initClientNumberWidget() {
@@ -300,7 +324,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 )
             )
             setInputFieldType(RechargeClientNumberWidget.InputFieldType.Telco)
-            setInputNumberValidator { true }
             setListener(
                 inputFieldListener = object :
                     RechargeClientNumberWidget.ClientNumberInputFieldListener {
@@ -312,8 +335,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             } else {
                                 renderProduct()
                             }
-                            binding?.rechargePdpPulsaClientNumberWidget?.setLoading(false)
                         }
+                        binding?.rechargePdpPulsaClientNumberWidget?.setLoading(false)
                     }
 
                     override fun onClearInput() {
@@ -350,6 +373,20 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     }
                 }
             )
+        }
+    }
+
+    private fun initClientNumberValidator() {
+        binding?.rechargePdpPulsaClientNumberWidget?.setInputNumberValidator {
+            var errorMessage = ""
+            for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
+                val phoneIsValid = Pattern.compile(validation.rule)
+                    .matcher(it).matches()
+                if (!phoneIsValid) {
+                    errorMessage = validation.message
+                }
+            }
+            errorMessage
         }
     }
 
@@ -604,6 +641,24 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun showErrorToaster(throwable: Throwable) {
+        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+            requireContext(),
+            throwable,
+            ErrorHandler.Builder()
+                .className(this::class.java.simpleName)
+                .build()
+        )
+        view?.run {
+            Toaster.build(
+                this,
+                errorMessage.orEmpty(),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        }
+    }
+
 
     /**
      * RechargeDenomGridListener
@@ -697,6 +752,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         const val MINIMUM_OPERATOR_PREFIX = 4
         const val MINIMUM_VALID_NUMBER_LENGTH = 10
         const val MAXIMUM_VALID_NUMBER_LENGTH = 14
+        const val DEFAULT_ICON_RES = 0
 
         const val DEFAULT_SPACE_HEIGHT = 81
 
