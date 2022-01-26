@@ -1,5 +1,6 @@
-package com.tokopedia.vouchercreation.product.create.data
+package com.tokopedia.vouchercreation.product.create.data.source
 
+import com.tokopedia.vouchercreation.product.create.data.service.ImageGeneratorService
 import okhttp3.ResponseBody
 import javax.inject.Inject
 
@@ -22,7 +23,9 @@ class ImageGeneratorRemoteDataSource @Inject constructor(
         voucherStartTime: String,
         voucherFinishTime: String,
         productCount: Int,
-        productImage1: String,
+        firstProductImageUrl: String,
+        secondProductImageUrl: String,
+        thirdProductImageUrl: String,
         audienceTarget: String
     ): ResponseBody {
         return imageGeneratorService.previewImage(
@@ -40,7 +43,9 @@ class ImageGeneratorRemoteDataSource @Inject constructor(
             voucherStartTime,
             voucherFinishTime,
             productCount,
-            productImage1,
+            firstProductImageUrl,
+            secondProductImageUrl,
+            thirdProductImageUrl,
             audienceTarget
         )
     }

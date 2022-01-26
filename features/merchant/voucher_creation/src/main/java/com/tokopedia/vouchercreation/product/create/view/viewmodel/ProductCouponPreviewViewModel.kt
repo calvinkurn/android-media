@@ -13,7 +13,6 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformat
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ShareMetadata
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponImagePreviewUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetShareMetadataFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
@@ -26,6 +25,10 @@ class ProductCouponPreviewViewModel @Inject constructor(
     private val getShareMetadataUseCase: GetShareMetadataFacadeUseCase,
     private val updateCouponUseCase: UpdateCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        private const val NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE = 3
+    }
 
     private val _areInputValid = MutableLiveData<Boolean>()
     val areInputValid: LiveData<Boolean>
@@ -127,5 +130,19 @@ class ProductCouponPreviewViewModel @Inject constructor(
                 _updateCouponResult.setValue(Fail(it))
             }
         )
+    }
+
+    fun getMostSoldProductImageUrls(couponProducts: List<CouponProduct>): ArrayList<String> {
+       val mostSoldProductsImageUrls = couponProducts.sortedByDescending { it.soldCount }
+           .take(NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE)
+           .map { it.imageUrl }
+
+        val imageUrls = arrayListOf<String>()
+
+        mostSoldProductsImageUrls.forEach { imageUrl ->
+            imageUrls.add(imageUrl)
+        }
+
+        return imageUrls
     }
 }

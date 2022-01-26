@@ -603,13 +603,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun displayCouponPreviewBottomSheet() {
-        //TODO which image should be used
-        val imageUrl = couponProducts.maxByOrNull { it.soldCount }?.imageUrl.orEmpty()
+        val imageUrls = viewModel.getMostSoldProductImageUrls(couponProducts)
         val bottomSheet = CouponPreviewBottomSheet.newInstance(
             couponInformation ?: return,
             couponSettings ?: return,
             couponProducts.size,
-            imageUrl
+            imageUrls
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }

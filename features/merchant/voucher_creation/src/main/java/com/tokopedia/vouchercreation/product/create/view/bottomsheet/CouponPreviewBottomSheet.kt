@@ -23,6 +23,10 @@ import javax.inject.Inject
 class CouponPreviewBottomSheet : BottomSheetUnify() {
 
     companion object {
+        private const val EMPTY_STRING = ""
+        private const val FIRST_IMAGE_URL = 0
+        private const val SECOND_IMAGE_URL = 1
+        private const val THIRD_IMAGE_URL = 2
         private const val BUNDLE_KEY_COUPON_INFORMATION = "information"
         private const val BUNDLE_KEY_COUPON_SETTINGS = "settings"
         private const val BUNDLE_KEY_PRODUCT_COUNT = "product-count"
@@ -33,13 +37,13 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
             couponInformation: CouponInformation,
             couponSettings: CouponSettings,
             productCount: Int,
-            productImageUrl: String
+            productImageUrls: ArrayList<String>
         ): CouponPreviewBottomSheet {
             val args = Bundle()
             args.putSerializable(BUNDLE_KEY_COUPON_INFORMATION, couponInformation)
             args.putSerializable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
             args.putInt(BUNDLE_KEY_PRODUCT_COUNT, productCount)
-            args.putString(BUNDLE_KEY_PRODUCT_IMAGE_URL, productImageUrl)
+            args.putStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL, productImageUrls)
             val fragment = CouponPreviewBottomSheet()
             fragment.arguments = args
             return fragment
@@ -80,6 +84,7 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupCouponTypeChips()
         observeCouponImage()
+        previewCoupon(ImageRatio.HORIZONTAL)
     }
 
     private fun observeCouponImage() {
@@ -90,27 +95,40 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
 
     private fun setupCouponTypeChips() {
         with(binding) {
+            chipImageHorizontal.selectedChangeListener = { isSelected ->
+                if (isSelected) {
+                    previewCoupon(ImageRatio.HORIZONTAL)
+                }
+            }
+            chipImageRatioSquare.selectedChangeListener = { isSelected ->
+                if (isSelected) {
+                    previewCoupon(ImageRatio.SQUARE)
+                }
+            }
+            chipImageVertical.selectedChangeListener = { isSelected ->
+                if (isSelected) {
+                    previewCoupon(ImageRatio.VERTICAL)
+                }
+            }
 
             chipImageHorizontal.chip_container.setOnClickListener {
                 chipImageHorizontal.chipType = ChipsUnify.TYPE_SELECTED
                 chipImageRatioSquare.chipType = ChipsUnify.TYPE_NORMAL
                 chipImageVertical.chipType = ChipsUnify.TYPE_NORMAL
-                previewCoupon(ImageRatio.HORIZONTAL)
             }
 
             chipImageRatioSquare.chip_container.setOnClickListener {
                 chipImageHorizontal.chipType = ChipsUnify.TYPE_NORMAL
                 chipImageRatioSquare.chipType = ChipsUnify.TYPE_SELECTED
                 chipImageVertical.chipType = ChipsUnify.TYPE_NORMAL
-                previewCoupon(ImageRatio.SQUARE)
             }
 
             chipImageVertical.chip_container.setOnClickListener {
                 chipImageHorizontal.chipType = ChipsUnify.TYPE_NORMAL
                 chipImageRatioSquare.chipType = ChipsUnify.TYPE_NORMAL
                 chipImageVertical.chipType = ChipsUnify.TYPE_SELECTED
-                previewCoupon(ImageRatio.VERTICAL)
             }
+
         }
 
 
@@ -132,15 +150,28 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
         val couponSettings =
             arguments?.getSerializable(BUNDLE_KEY_COUPON_SETTINGS) as? CouponSettings ?: return
         val productCount = arguments?.getInt(BUNDLE_KEY_PRODUCT_COUNT).orZero()
-        val productImageUrl = arguments?.getString(BUNDLE_KEY_PRODUCT_IMAGE_URL).orEmpty()
+        val productImageUrls = arguments?.getStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL) ?: arrayListOf()
+
+        val firstProductImageUrl = productImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL)
+        val secondProductImageUrl = productImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL)
+        val thirdImageUrl = productImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL)
 
         viewModel.previewImage(
             couponInformation,
             couponSettings,
             productCount,
-            productImageUrl,
+            firstProductImageUrl,
+            secondProductImageUrl,
+            thirdImageUrl,
             imageRatio
         )
     }
 
+    private fun ArrayList<String>.getIndexAtOrEmpty(index : Int) : String {
+        return try {
+            this[index]
+        } catch(e: Exception) {
+            EMPTY_STRING
+        }
+    }
 }

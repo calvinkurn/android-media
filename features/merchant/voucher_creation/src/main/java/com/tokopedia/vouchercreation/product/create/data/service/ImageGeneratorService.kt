@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.data
+package com.tokopedia.vouchercreation.product.create.data.service
 
 import okhttp3.ResponseBody
 import retrofit2.http.GET
@@ -22,7 +22,9 @@ interface ImageGeneratorService {
         @Query("voucher_start_time") voucherStartTime: String,
         @Query("voucher_finish_time") voucherFinishTime: String,
         @Query("product_count") productCount: Int,
-        @Query("product_image_1") productImage1: String,
+        @Query("product_image_1") firstProductImageUrl: String,
+        @Query("product_image_2") secondProductImageUrl: String,
+        @Query("product_image_3") thirdProductImageUrl: String,
         @Query("audience_target") audienceTarget: String
     ): ResponseBody
 }

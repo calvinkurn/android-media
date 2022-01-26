@@ -3,7 +3,7 @@ package com.tokopedia.vouchercreation.common.di.module
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
-import com.tokopedia.vouchercreation.product.create.data.ImageGeneratorService
+import com.tokopedia.vouchercreation.product.create.data.service.ImageGeneratorService
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
