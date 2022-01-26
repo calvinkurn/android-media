@@ -99,10 +99,6 @@
   **[] $VALUES;
   public *;
 }
--keep public enum com.tokopedia.home_component.model$** {
-  **[] $VALUES;
-  public *;
-}
 #END GLIDE
 
 #https://github.com/airbnb/DeepLinkDispatch/issues/44
@@ -243,10 +239,6 @@
 -dontwarn com.tokopedia.home.beranda.presentation.viewModel.**inlined**
 -dontwarn com.tokopedia.home.beranda.presentation.view.**
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
--dontwarn com.tokopedia.home.beranda.domain.interactor.usecase.**
--dontwarn com.tokopedia.home.beranda.domain.interactor.repository.**
--dontwarn com.tokopedia.home.beranda.domain.interactor.usecase.**inlined**
--dontwarn com.tokopedia.home.beranda.domain.interactor.repository.**inlined**
 -dontwarn com.tokopedia.sortfilter.SortFilter*
 
 
