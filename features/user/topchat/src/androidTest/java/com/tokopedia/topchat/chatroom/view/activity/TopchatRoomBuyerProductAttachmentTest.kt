@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.test.application.annotations.UiTest
@@ -197,6 +198,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+            generate3PreAttachPayload(exProductId)
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
@@ -423,6 +426,26 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     }
 
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
+
+    override fun getAttachProductData(totalProduct: Int): Intent {
+        val products = ArrayList<ResultProduct>(totalProduct)
+        for (i in 0 until totalProduct) {
+            products.add(
+                    ResultProduct(
+                            exProductId,
+                            "tokopedia://product/1111",
+                            ProductPreviewAttribute.productThumbnail,
+                            "Rp ${i + 1}5.000.000",
+                            "${i + 1} ${ProductPreviewAttribute.productName}"
+                    )
+            )
+        }
+        return Intent().apply {
+            putParcelableArrayListExtra(
+                    ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products
+            )
+        }
+    }
 
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)

@@ -29,6 +29,20 @@ class GetChatPreAttachPayloadUseCaseStub(
         }
     }
 
+    fun generate3PreAttachPayload(
+            productId: String
+    ): PreAttachPayloadResponse {
+        return alterResponseOf(defaultResponsePath) { response ->
+            val list = response.getAsJsonObject(chatPreAttachPayload)
+                    .getAsJsonArray(list)
+            list.add(list[0])
+            list.add(list[0])
+            list.forEach {
+                it.asJsonObject.addProperty(id, productId)
+            }
+        }
+    }
+
     companion object {
         private const val chatPreAttachPayload = "chatPreAttachPayload"
         private const val list = "list"

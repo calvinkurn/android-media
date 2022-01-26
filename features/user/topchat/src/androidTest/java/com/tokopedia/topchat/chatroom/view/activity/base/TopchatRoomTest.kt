@@ -858,7 +858,7 @@ abstract class TopchatRoomTest {
             )
     }
 
-    protected fun getAttachProductData(totalProduct: Int): Intent {
+    protected open fun getAttachProductData(totalProduct: Int): Intent {
         val products = ArrayList<ResultProduct>(totalProduct)
         for (i in 0 until totalProduct) {
             products.add(
