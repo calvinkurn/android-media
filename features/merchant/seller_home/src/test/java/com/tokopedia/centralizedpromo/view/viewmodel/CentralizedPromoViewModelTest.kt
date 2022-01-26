@@ -1,6 +1,7 @@
 package com.tokopedia.centralizedpromo.view.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
@@ -49,6 +50,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase
+
+    @RelaxedMockK
+    lateinit var sharedPref: SharedPreferences
 
     @RelaxedMockK
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
@@ -101,6 +105,7 @@ class CentralizedPromoViewModelTest {
             getChatBlastSellerMetadataUseCase,
             voucherCashbackEligibleUseCase,
             remoteConfig,
+            sharedPref,
             coroutineTestRule.dispatchers
         )
     }
