@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.product.create.domain.entity
 
+import java.io.Serializable
+
 data class CouponSettings(
     val type: CouponType,
     val discountType: DiscountType,
@@ -10,4 +12,4 @@ data class CouponSettings(
     val quota: Int,
     val minimumPurchase: Int,
     val estimatedMaxExpense: Long
-)
+) : Serializable

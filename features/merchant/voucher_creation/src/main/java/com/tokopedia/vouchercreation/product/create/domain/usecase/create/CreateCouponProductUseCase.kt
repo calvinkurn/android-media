@@ -1,6 +1,5 @@
-package com.tokopedia.vouchercreation.product.create.domain.usecase
+package com.tokopedia.vouchercreation.product.create.domain.usecase.create
 
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -9,8 +8,8 @@ import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductParams
-import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductResponse
+import com.tokopedia.vouchercreation.product.create.data.request.CreateCouponProductParams
+import com.tokopedia.vouchercreation.product.create.data.response.CreateCouponProductResponse
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import javax.inject.Inject
 
@@ -52,11 +51,13 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
         val endDate = couponInformation.period.endDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
         val endHour = couponInformation.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
 
-        val benefitType = when (couponSettings.discountType) {
-            DiscountType.NONE -> ""
-            DiscountType.NOMINAL -> "idr"
-            DiscountType.PERCENTAGE -> "percent"
+        val benefitType = when {
+            couponSettings.type == CouponType.FREE_SHIPPING -> "idr"
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> "idr"
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> "percent"
+            else -> "idr"
         }
+
         val couponType = when (couponSettings.type) {
             CouponType.NONE -> ""
             CouponType.CASHBACK -> "cashback"
@@ -86,7 +87,7 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
             targetBuyer = 0,
             minimumTierLevel = 0,
             isLockToProduct = 1,
-            productIds = couponProducts.joinToString(separator = ",") { it.id.toString() },
+            productIds = couponProducts.joinToString(separator = ",") { it.id },
             productIdsCsvUrl = ""
         )
 

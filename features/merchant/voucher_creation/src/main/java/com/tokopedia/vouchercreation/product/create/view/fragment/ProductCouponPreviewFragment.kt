@@ -38,23 +38,37 @@ import com.tokopedia.vouchercreation.product.create.view.bottomsheet.CouponPrevi
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndConditionBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
+import com.tokopedia.vouchercreation.product.create.view.dialog.UpdateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import java.net.URLEncoder
+import java.util.*
 import javax.inject.Inject
 
 
 class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val BUNDLE_KEY_COUPON = "coupon"
+        private const val BUNDLE_KEY_MODE = "mode"
         private const val EMPTY_STRING = ""
         private const val SCREEN_NAME = "Product coupon preview page"
         private const val ZERO: Long = 0
         private const val ROTATION_ANGLE_ZERO = 0f
         private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
         private const val ROTATION_ANIM_DURATION_IN_MILLIS : Long = 300
+
         fun newInstance(): ProductCouponPreviewFragment {
             return ProductCouponPreviewFragment()
+        }
+
+        fun newInstance(coupon: Coupon, mode : Mode): ProductCouponPreviewFragment {
+            val args = Bundle()
+            args.putSerializable(BUNDLE_KEY_COUPON, coupon)
+            args.putSerializable(BUNDLE_KEY_MODE, mode)
+            val fragment = ProductCouponPreviewFragment()
+            fragment.arguments = args
+            return fragment
         }
 
     }
@@ -72,15 +86,23 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private var onNavigateToCouponInformationPage: () -> Unit = {}
     private var onNavigateToCouponSettingsPage: () -> Unit = {}
     private var onNavigateToProductListPage: () -> Unit = {}
+    private var onUpdateCouponSuccess : ()-> Unit = {}
     private var couponSettings: CouponSettings? = null
     private var couponInformation: CouponInformation? = null
     private var couponProducts: List<CouponProduct> = emptyList()
     private var isCardExpanded = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductCouponPreviewViewModel::class.java) }
+    private var couponId = -1
     private val createCouponErrorNotice by lazy {
-        CreateProductCouponFailedDialog(requireActivity(), ::onTryAgain, ::onRequestHelp)
+        CreateProductCouponFailedDialog(requireActivity(), ::onRetryCreateCoupon, ::onRequestHelp)
     }
+
+    private val updateCouponErrorNotice by lazy {
+        UpdateProductCouponFailedDialog(requireActivity(), ::onRetryUpdateCoupon, ::onRequestHelp)
+    }
+
+    private var pageMode = Mode.CREATE
 
     private val CouponType.label: String
         get() {
@@ -110,6 +132,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             }
         }
 
+    enum class Mode {
+        CREATE,
+        UPDATE,
+        DUPLICATE
+    }
+
     override fun getScreenName() = SCREEN_NAME
     override fun initInjector() {
         DaggerVoucherCreationComponent.builder()
@@ -130,10 +158,38 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        handleArguments()
         setupViews()
         observeValidCoupon()
         observeCreateCouponResult()
-        observeBroadcastCoupon()
+        observeShareMetaDataResult()
+        observeUpdateCouponResult()
+
+        if(isUpdateMode()) {
+            changeToolbarTitle(getString(R.string.update_coupon_product))
+            changeButtonBehavior()
+            displayCouponDetail()
+        }
+    }
+
+    private fun handleArguments() {
+        pageMode = arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode ?: Mode.CREATE
+    }
+
+    private fun changeButtonBehavior() {
+        binding.btnCreateCoupon.text = getString(R.string.save_changes)
+        binding.btnCreateCoupon.setOnClickListener { updateCoupon() }
+    }
+
+    private fun isUpdateMode() : Boolean {
+        return pageMode == Mode.UPDATE
+    }
+
+    private fun displayCouponDetail() {
+        val coupon : Coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon ?: return
+        this.couponSettings = coupon.settings
+        this.couponProducts = coupon.products
+        this.couponInformation = coupon.information
     }
 
     private fun setupViews() {
@@ -160,6 +216,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     }
 
+    private fun changeToolbarTitle(title : String) {
+        binding.header.headerView?.text = title
+    }
+
     private fun observeValidCoupon() {
         viewModel.areInputValid.observe(viewLifecycleOwner, { areInputValid ->
             binding.btnCreateCoupon.isEnabled = areInputValid
@@ -171,28 +231,60 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private fun observeCreateCouponResult() {
         viewModel.createCoupon.observe(viewLifecycleOwner, { result ->
             if (result is Success) {
-                viewModel.getBroadCastMetaData()
+                this.couponId = result.data
+                viewModel.getShareMetaData()
             } else {
                 createCouponErrorNotice.show()
             }
         })
     }
 
-    private fun observeBroadcastCoupon() {
-        viewModel.broadCastMetadata.observe(viewLifecycleOwner, { broadCastMetaData ->
-            when(broadCastMetaData) {
+    private fun observeShareMetaDataResult() {
+        viewModel.shareMetadata.observe(viewLifecycleOwner, { result ->
+            when (result) {
                 is Success -> {
-                    //TODO implement this with real data
-                    val coupon = Coupon(0, "",couponInformation ?: return@observe, couponSettings?: return@observe, couponProducts)
-                    showBroadCastVoucherBottomSheet(coupon, broadCastMetaData.data.promo)
+                    /*val startDate = Calendar.getInstance().apply { set(2022, 0, 25, 22, 30, 0) }
+                    val endDate = Calendar.getInstance().apply {  set(2022, 0, 30, 22, 0, 0) }
+                    val period = CouponInformation.Period(startDate.time, endDate.time)
+
+                    showBroadCastVoucherBottomSheet(
+                        CouponInformation(CouponInformation.Target.SPECIAL, "Kenangan", "KOPKEN", period),
+                        result.data.promo,
+                        result.data.shopName
+                    )*/
+
+                    showBroadCastVoucherBottomSheet(
+                        couponInformation ?: return@observe,
+                        result.data.promo,
+                        result.data.shopName
+                    )
                 }
                 is Fail -> {
-                    val coupon = Coupon(0, "",couponInformation ?: return@observe, couponSettings?: return@observe, couponProducts)
-                    showBroadCastVoucherBottomSheet(coupon, Int.ZERO)
+                    showBroadCastVoucherBottomSheetWithoutShareToSocialMediaCapability()
                 }
             }
         })
     }
+
+    private fun observeUpdateCouponResult() {
+        viewModel.updateCouponResult.observe(viewLifecycleOwner, { result ->
+            when(result) {
+                is Success -> {
+                    onUpdateCouponSuccess()
+                    val text = when(pageMode) {
+                        Mode.CREATE -> EMPTY_STRING
+                        Mode.UPDATE -> getString(R.string.coupon_updated)
+                        Mode.DUPLICATE -> getString(R.string.coupon_duplicated)
+                    }
+                    showToaster(text)
+                }
+                is Fail -> {
+                    updateCouponErrorNotice.show()
+                }
+            }
+        })
+    }
+
 
     fun setOnNavigateToCouponInformationPageListener(onNavigateToCouponInformationPage: () -> Unit) {
         this.onNavigateToCouponInformationPage = onNavigateToCouponInformationPage
@@ -218,6 +310,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         this.couponInformation =  couponInformation
     }
 
+    fun setOnUpdateCouponSuccess(onUpdateCouponSuccess : ()-> Unit) {
+        this.onUpdateCouponSuccess = onUpdateCouponSuccess
+    }
+
+    fun getCouponInformationData() = this.couponInformation
+
 
     override fun onResume() {
         super.onResume()
@@ -237,10 +335,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             CouponInformation.Target.PUBLIC -> getString(R.string.mvc_public)
             CouponInformation.Target.SPECIAL -> getString(R.string.mvc_special)
         }
-
         binding.tpgCouponTarget.text = target
+
         binding.tpgCouponName.text = coupon.name
-        binding.tpgCouponCode.text = coupon.code
+        handleCouponCodeVisibility(coupon.code, coupon.target)
 
         val startDate = coupon.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val startHour = coupon.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
@@ -249,6 +347,15 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
         val period = String.format(getString(R.string.placeholder_coupon_period), startDate, startHour, endDate, endHour)
         binding.tpgCouponPeriod.text = period
+    }
+
+    private fun handleCouponCodeVisibility(couponCode : String, target: CouponInformation.Target) {
+        when (target) {
+            CouponInformation.Target.PUBLIC -> binding.groupCouponCode.gone()
+            CouponInformation.Target.SPECIAL -> binding.groupCouponCode.visible()
+        }
+
+        binding.tpgCouponCode.text = couponCode
     }
 
     private fun refreshCouponSettingsSection(coupon: CouponSettings) {
@@ -427,7 +534,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private fun copyToClipboard(content: String) {
         ClipboardHandler().copyToClipboard(requireActivity(), content)
         Toaster.build(
-            binding.root ?: return,
+            binding.root,
             getString(R.string.coupon_code_copied_to_clipboard)
         ).show()
     }
@@ -435,15 +542,23 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private fun createCoupon() {
         viewModel.createCoupon(
             ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
-            false,
             couponInformation ?: return,
             couponSettings ?: return,
-            couponProducts,
+            couponProducts
+        )
+    }
+
+    private fun updateCoupon() {
+        viewModel.updateCoupon(
+            ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
+            couponInformation ?: return,
+            couponSettings ?: return,
+            couponProducts
         )
     }
 
     
-    private fun onTryAgain() {
+    private fun onRetryCreateCoupon() {
         VoucherCreationTracking.sendCreateVoucherClickTracking(
             step = VoucherCreationStep.REVIEW,
             action = VoucherCreationAnalyticConstant.EventAction.Click.FAILED_POP_UP_TRY_AGAIN,
@@ -451,6 +566,16 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         )
         createCouponErrorNotice.dismiss()
         createCoupon()
+    }
+
+    private fun onRetryUpdateCoupon() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+            step = VoucherCreationStep.REVIEW,
+            action = VoucherCreationAnalyticConstant.EventAction.Click.FAILED_POP_UP_TRY_AGAIN,
+            userId = userSession.userId
+        )
+        updateCouponErrorNotice.dismiss()
+        updateCoupon()
     }
 
     private fun onRequestHelp() {
@@ -463,15 +588,16 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, VoucherUrl.HELP_URL)
     }
 
-    private fun showBroadCastVoucherBottomSheet(coupon: Coupon, freeBroadcastQuota : Int) {
-        val bottomSheet = BroadcastCouponBottomSheet.newInstance(coupon, freeBroadcastQuota)
+    private fun showBroadCastVoucherBottomSheet(couponInformation: CouponInformation, freeBroadcastQuota : Int, shopName : String) {
+        val bottomSheet = BroadcastCouponBottomSheet.newInstance(couponInformation, freeBroadcastQuota)
         bottomSheet.setOnBroadCastClickListener {
             VoucherCreationTracking.sendBroadCastChatClickTracking(
                 category = VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.PAGE,
                 shopId = userSession.shopId
             )
-            SharingUtil.shareToBroadCastChat(requireContext(), coupon.id)
+            SharingUtil.shareToBroadCastChat(requireContext(), couponId)
         }
+        bottomSheet.setOnShareToSocialMediaClickListener { displayShareBottomSheet(shopName, couponInformation) }
         bottomSheet.setCloseClickListener {
             VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.REVIEW,
@@ -484,15 +610,39 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager)
     }
 
+    private fun showBroadCastVoucherBottomSheetWithoutShareToSocialMediaCapability() {
+        val modifiedCouponInformation = couponInformation?.copy(target = CouponInformation.Target.SPECIAL)
+        showBroadCastVoucherBottomSheet(modifiedCouponInformation ?: return, Int.ZERO, EMPTY_STRING)
+    }
+
     private fun displayTermAndConditionBottomSheet() {
         val bottomSheet = TermAndConditionBottomSheet.newInstance(requireActivity(), getString(R.string.coupon_tnc))
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun displayCouponPreviewBottomSheet() {
-        val coupon = Coupon(0, "",couponInformation ?: return, couponSettings?: return, couponProducts)
-        val bottomSheet = CouponPreviewBottomSheet.newInstance(coupon)
+        val imageUrls = viewModel.getMostSoldProductImageUrls(couponProducts)
+        val bottomSheet = CouponPreviewBottomSheet.newInstance(
+            couponInformation ?: return,
+            couponSettings ?: return,
+            couponProducts.size,
+            imageUrls
+        )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
+    private fun displayShareBottomSheet(shopName : String, couponInformation: CouponInformation) {
+        //TODO implement share component
+        val startDate = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT_DAY_MONTH)
+        val endDate = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT_DAY_MONTH)
+
+        val template = getString(R.string.placeholder_share_coupon_product_wording)
+        val wording = String.format(template, shopName, startDate, endDate, "")
+
+    }
+
+    private fun showToaster(text : String) {
+        if (text.isEmpty()) return
+        Toaster.build(binding.root, text).show()
+    }
 }

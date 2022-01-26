@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.domain.usecase
+package com.tokopedia.vouchercreation.product.create.domain.usecase.create
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
@@ -14,26 +14,37 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import javax.inject.Inject
 
-class CreateCouponUseCase @Inject constructor(
+class CreateCouponFacadeUseCase @Inject constructor(
     private val createCouponProductUseCase: CreateCouponProductUseCase,
     private val initiateVoucherUseCase: InitiateVoucherUseCase
 ) {
 
+    companion object {
+        private const val IS_UPDATE_MODE = false
+    }
+
     suspend fun execute(
         scope: CoroutineScope,
         sourceId: String,
-        isUpdateMode: Boolean,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
     ): Int {
-        val uploadImageDeferred = scope.async { uploadImage(sourceId, couponProducts) }
-        val initiateVoucherDeferred = scope.async { initiateVoucher(isUpdateMode) }
+        //val uploadImageDeferred = scope.async { uploadImage(sourceId, couponProducts) }
+        val initiateVoucherDeferred = scope.async { initiateVoucher(IS_UPDATE_MODE) }
 
-        val imageUrl = uploadImageDeferred.await()
+       // val imageUrl = uploadImageDeferred.await()
         val voucher = initiateVoucherDeferred.await()
 
-        val createCouponDeferred = scope.async { createCoupon(couponInformation, couponSettings, couponProducts, voucher.token, imageUrl) }
+        val createCouponDeferred = scope.async {
+            createCoupon(
+                couponInformation,
+                couponSettings,
+                couponProducts,
+                voucher.token,
+                "https://images.tokopedia.net/img/VqbcmM/2021/8/19/78c9335e-e949-4549-9b31-e637eae9e1e0.png"
+            )
+        }
 
         val createdCouponId = createCouponDeferred.await()
 

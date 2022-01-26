@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.domain.entity
 
+import java.io.Serializable
 import java.util.*
 
 data class CouponInformation(
@@ -7,10 +8,10 @@ data class CouponInformation(
     val name: String,
     val code: String,
     val period: Period
-) {
-    enum class Target {
+) : Serializable {
+    enum class Target : Serializable {
         PUBLIC,
         SPECIAL
     }
-    data class Period(val startDate : Date, val endDate : Date)
+    data class Period(val startDate : Date, val endDate : Date) : Serializable
 }
