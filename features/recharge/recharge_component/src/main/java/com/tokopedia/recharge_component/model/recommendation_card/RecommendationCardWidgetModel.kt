@@ -1,5 +1,7 @@
 package com.tokopedia.recharge_component.model.recommendation_card
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 data class RecommendationCardWidgetModel(
     val layoutType: RecommendationCardEnum = RecommendationCardEnum.BIG,
     val imageUrl: String = "",
@@ -7,5 +9,7 @@ data class RecommendationCardWidgetModel(
     val price: String = "",
     val appUrl: String = "",
     val productType: String = "",
-    val productExpired: String = ""
-)
+    val productExpired: String = "",
+    val id: String = "",
+    val categoryId: String = "",
+): ImpressHolder()

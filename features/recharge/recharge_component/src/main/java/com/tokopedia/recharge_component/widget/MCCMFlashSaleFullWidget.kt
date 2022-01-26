@@ -43,7 +43,7 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
 
                         }
                     })
-                renderAdapter(denomFullListener, denomData.listDenomData)
+                renderAdapter(denomFullListener, denomData.listDenomData, DenomWidgetEnum.MCCM_FULL_TYPE)
             }
         }
     }
@@ -66,12 +66,12 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
 
                     }
                 })
-                renderAdapter(denomFullListener, denomData.listDenomData)
+                renderAdapter(denomFullListener, denomData.listDenomData, DenomWidgetEnum.FLASH_FULL_GRID)
             }
         }
     }
 
-    private fun renderAdapter(denomFullListener: RechargeDenomFullListener, listDenomFull: List<DenomData>){
+    private fun renderAdapter(denomFullListener: RechargeDenomFullListener, listDenomFull: List<DenomData>, denomType: DenomWidgetEnum){
         val adapterDenomFull = DenomFullAdapter()
         with(widgetRechargeMCCMFlashSaleFullWidget){
             rvMccmFull.run {
@@ -81,7 +81,7 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
                     setDenomFullList(listDenomFull)
                     listener = denomFullListener
                     selectedProductIndex = null
-                    denomWidgetType = DenomWidgetEnum.MCCM_TYPE
+                    denomWidgetType = denomType
                     adapter = adapterDenomFull
                     layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 }

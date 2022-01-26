@@ -119,7 +119,11 @@ class DigitalPDPDataPlanFragment :
     /**
      * DenomGrid Listener
      */
-    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int, isShowBuyWidget: Boolean) {
+    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int, productListTitle: String, isShowBuyWidget: Boolean) {
+
+    }
+
+    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
 
     }
 

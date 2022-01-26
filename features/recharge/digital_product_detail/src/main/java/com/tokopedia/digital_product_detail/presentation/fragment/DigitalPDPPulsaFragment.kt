@@ -75,7 +75,8 @@ import kotlin.math.abs
 
 class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     RechargeDenomGridListener,
-    RechargeBuyWidgetListener
+    RechargeBuyWidgetListener,
+    RechargeRecommendationCardListener
 {
 
     @Inject
@@ -557,14 +558,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     fun renderRecommendation(recommendations: List<RecommendationCardWidgetModel>) {
         binding?.let {
             it.rechargePdpPulsaRecommendationWidget.show()
-            it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(recommendationListener = object :
-                RechargeRecommendationCardListener {
-                    override fun onProductRecommendationCardClicked(applinkUrl: String) {
-                        context?.let {
-                            RouteManager.route(it, applinkUrl)
-                        }
-                    }
-                },
+            it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(this,
                 getString(R.string.digital_pdp_recommendation_title),
                 recommendations
             )
@@ -639,6 +633,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
+                digitalPDPTelcoAnalytics.impressionBannerEmptyState(
+                    "TODO Creative Link",
+                    categoryId.toString(),
+                    DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                    "Loyalty",
+                    userSession.userId
+                )
                 rechargePdpPulsaEmptyStateWidget.show()
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
@@ -799,10 +800,30 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
      * RechargeDenomGridListener
      */
     override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+                                    productListTitle: String,
                                     isShowBuyWidget: Boolean) {
-        if (layoutType == DenomWidgetEnum.MCCM_TYPE){
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
             onClearSelectedDenomGrid()
+            digitalPDPTelcoAnalytics.clickMCCMProduct(
+                productListTitle,
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                "//TODO LOYALTY",
+                userSession.userId,
+                denomGrid,
+                layoutType,
+                position
+            )
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+            digitalPDPTelcoAnalytics.clickProductCluster(
+                productListTitle,
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                "//TODO LOYALTY",
+                userSession.userId,
+                denomGrid,
+                position
+            )
             onClearSelectedMCCM()
         }
 
@@ -813,10 +834,32 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
+            digitalPDPTelcoAnalytics.impressionProductMCCM(
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                "//TODO LOYALTY",
+                userSession.userId,
+                denomGrid,
+                layoutType,
+                position
+            )
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+            digitalPDPTelcoAnalytics.impressionProductCluster(
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                "//TODO LOYALTY",
+                userSession.userId,
+                denomGrid,
+                position
+            )
+        }
+    }
+
     /**
      * RechargeBuyWidgetListener
      */
-
 
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
@@ -834,9 +877,46 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun onClickedChevron(denom: DenomData) {
+        digitalPDPTelcoAnalytics.clickChevronBuyWidget(
+            DigitalPDPTelcoUtil.getCategoryName(denom.categoryId.toInt()),
+            operator.attributes.name,
+            denom.price,
+            denom.slashPrice,
+            userSession.userId
+        )
         fragmentManager?.let {
             SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
         }
+    }
+
+    /**
+     * RechargeRecommendationCardListener
+     */
+
+    override fun onProductRecommendationCardClicked(recommendation: RecommendationCardWidgetModel, position: Int) {
+        digitalPDPTelcoAnalytics.clickLastTransactionIcon(
+            getString(R.string.digital_pdp_recommendation_title),
+            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            "//TODO LOYALTY",
+            userSession.userId,
+            recommendation,
+            position
+        )
+        context?.let {
+            RouteManager.route(it, recommendation.appUrl)
+        }
+    }
+
+    override fun onProductRecommendationCardImpression(recommendation: RecommendationCardWidgetModel, position: Int) {
+        digitalPDPTelcoAnalytics.impressionLastTransactionIcon(
+            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            "//TODO LOYALTY",
+            userSession.userId,
+            recommendation,
+            position
+        )
     }
 
 
