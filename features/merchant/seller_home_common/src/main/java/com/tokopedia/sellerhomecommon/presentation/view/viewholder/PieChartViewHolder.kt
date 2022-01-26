@@ -3,16 +3,17 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.config.PieChartConfig
 import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.*
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
@@ -105,6 +106,7 @@ class PieChartViewHolder(
                 } else {
                     setupPieChart(element)
                 }
+                setupLastUpdatedInfo(element)
             } else {
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, element)
@@ -115,10 +117,25 @@ class PieChartViewHolder(
             }
         } else {
             setupPieChart(element)
+            setupLastUpdatedInfo(element)
         }
 
         root.addOnImpressionListener(element.impressHolder) {
             listener.sendPieChartImpressionEvent(element)
+        }
+    }
+
+    private fun setupLastUpdatedInfo(element: PieChartWidgetUiModel) {
+        with(binding) {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                tvShcPieChartLastUpdated.isVisible = true
+                tvShcPieChartLastUpdated.text = Utils.LastUpdated
+                    .getCopy(root.context, lastUpdated)
+            }
+            icShcRefreshPieChart.isVisible = element.isFromCache
+            icShcRefreshPieChart.setOnClickListener {
+                listener.reloadPieChartWidget(element)
+            }
         }
     }
 
@@ -131,8 +148,7 @@ class PieChartViewHolder(
             tvPieChartSubValue.gone()
             emptyStateBinding.groupShcPieChartEmpty.gone()
 
-            ImageHandler.loadImageWithId(
-                errorStateBinding.imgWidgetOnError,
+            errorStateBinding.imgWidgetOnError.loadImage(
                 com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
             )
         }
@@ -182,14 +198,25 @@ class PieChartViewHolder(
             val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
             val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
             btnShcPieChartSeeMore.visibility = ctaVisibility
-            icShcPieChartSeeMore.visibility = ctaVisibility
             btnShcPieChartSeeMore.text = element.ctaText
 
             if (isCtaVisible) {
+                val iconColor = root.context.getResColor(
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                )
+                val iconWidth = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                val iconHeight = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                btnShcPieChartSeeMore.setUnifyDrawableEnd(
+                    IconUnify.CHEVRON_RIGHT,
+                    iconColor,
+                    iconWidth,
+                    iconHeight
+                )
                 btnShcPieChartSeeMore.setOnClickListener {
-                    onSeeMoreClicked(element)
-                }
-                icShcPieChartSeeMore.setOnClickListener {
                     onSeeMoreClicked(element)
                 }
             }
@@ -231,9 +258,9 @@ class PieChartViewHolder(
                 }
             }
         }
-        ImageHandler.loadImageWithoutPlaceholderAndError(
-            emptyStateBinding.imgShcPieChartEmpty,
-            element.emptyState.imageUrl.takeIf { it.isNotBlank() } ?: SellerHomeUrl.IMG_EMPTY_STATE)
+        val imageUrl = element.emptyState.imageUrl
+            .takeIf { it.isNotBlank() } ?: SellerHomeUrl.IMG_EMPTY_STATE
+        emptyStateBinding.imgShcPieChartEmpty.loadImage(imageUrl)
     }
 
     interface Listener : BaseViewHolderListener {
@@ -241,5 +268,6 @@ class PieChartViewHolder(
         fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {}
         fun sendPieChartEmptyStateCtaClickEvent(element: PieChartWidgetUiModel) {}
         fun sendPieChartSeeMoreClickEvent(model: PieChartWidgetUiModel) {}
+        fun reloadPieChartWidget(element: PieChartWidgetUiModel) {}
     }
 }

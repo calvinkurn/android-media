@@ -696,6 +696,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getCardData(listOf(element))
     }
 
+    override fun reloadPieChartWidget(element: PieChartWidgetUiModel) {
+        getPieChartData(listOf(element))
+    }
+
     override fun reloadTableWidget(element: TableWidgetUiModel) {
         getTableData(listOf(element))
     }

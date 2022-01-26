@@ -108,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="btnShcTableEmpty, shcTableView" />
+                app:constraint_referenced_ids="btnShcTableEmpty, shcTableView, tvShcTableOnEmpty" />
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icShcRefreshTable"
@@ -149,7 +149,7 @@
                 android:id="@+id/btnTableCta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="@dimen/layout_lvl2"
                 android:gravity="end"
@@ -160,9 +160,10 @@
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/shcTableView"
+                app:layout_constraintTop_toBottomOf="@+id/barrierShcTable"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
+                tools:layout_constraintTop_toBottomOf="@+id/shcTableView"
                 tools:text="Selengkapnya"
                 tools:visibility="visible" />
 
