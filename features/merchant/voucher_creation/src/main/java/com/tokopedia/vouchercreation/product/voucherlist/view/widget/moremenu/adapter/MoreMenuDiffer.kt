@@ -1,8 +1,8 @@
-package com.tokopedia.vouchercreation.product.moremenu.adapter
+package com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
 
 /**
  * @author Said Faisal on 24/11/2021

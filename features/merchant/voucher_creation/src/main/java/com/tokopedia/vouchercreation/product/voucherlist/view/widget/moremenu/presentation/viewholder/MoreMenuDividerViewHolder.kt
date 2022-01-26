@@ -1,12 +1,12 @@
-package com.tokopedia.vouchercreation.product.moremenu.presentation.viewholder
+package com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
 
-class MenuDividerViewHolder(itemView: View?) : AbstractViewHolder<MoreMenuUiModel.ItemDivider>(itemView) {
+class MoreMenuDividerViewHolder(itemView: View?) : AbstractViewHolder<MoreMenuUiModel.ItemDivider>(itemView) {
 
     companion object {
         @LayoutRes

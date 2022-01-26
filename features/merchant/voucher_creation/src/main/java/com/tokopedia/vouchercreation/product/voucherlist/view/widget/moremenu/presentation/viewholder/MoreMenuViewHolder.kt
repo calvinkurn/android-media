@@ -1,22 +1,16 @@
-package com.tokopedia.vouchercreation.product.moremenu.presentation.viewholder
+package com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.ItemMvcBottomsheetMoreMenuBinding
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel
-import kotlinx.android.synthetic.main.item_mvc_bottomsheet_menu.view.*
-import kotlinx.android.synthetic.main.item_mvc_bottomsheet_menu.view.tvTitle
-import kotlinx.android.synthetic.main.item_mvc_bottomsheet_more_menu.view.*
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
 
 class MoreMenuViewHolder(
         itemView: View?,

@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.moremenu.presentation.bottomsheet
+package com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,41 +12,34 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.databinding.BottomsheetMvcMoreMenuBinding
-import com.tokopedia.vouchercreation.product.moremenu.adapter.MoreMenuAdapter
-import com.tokopedia.vouchercreation.product.moremenu.adapter.MoreMenuDiffer
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.EditQuota
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.EditPeriod
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.EditVoucher
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.ViewDetail
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.ItemDivider
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.BroadCast
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.DownloadVoucher
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.CancelVoucher
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.ShareVoucher
-import com.tokopedia.vouchercreation.product.moremenu.data.model.MoreMenuUiModel.DuplicateVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.adapter.MoreMenuAdapter
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.adapter.MoreMenuDiffer
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditQuotaVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditPeriodVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ViewDetailVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ItemDivider
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.BroadCastChat
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DownloadVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.CancelVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ShareVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DuplicateVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.StopVoucher
 
 class MoreMenuBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val IS_ACTIVE = "is_active"
         const val TAG: String = "MoreMenuBottomSheet"
 
         @JvmStatic
-        fun createInstance(isActiveVoucher: Boolean): MoreMenuBottomSheet = MoreMenuBottomSheet().apply {
-            arguments = Bundle().apply {
-                putBoolean(IS_ACTIVE, isActiveVoucher)
-            }
-        }
+        fun createInstance(): MoreMenuBottomSheet = MoreMenuBottomSheet()
     }
 
     private var binding by autoClearedNullable<BottomsheetMvcMoreMenuBinding>()
 
-    private val isActiveVoucher by lazy {
-        arguments?.getBoolean(IS_ACTIVE) ?: false
-    }
-
-    private var menuAdapter: MoreMenuAdapter? = null
+    private var moreMenuAdapter: MoreMenuAdapter? = null
+    private var status: Int = VoucherStatusConst.NOT_STARTED
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initBottomSheet()
@@ -57,8 +50,9 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         setupView()
     }
 
-    fun setOnItemClickListener(voucher: String, callback: (MoreMenuUiModel) -> Unit) {
-        this.menuAdapter = MoreMenuAdapter(callback, MoreMenuDiffer())
+    fun setOnItemClickListener(@VoucherStatusConst voucherStatus: Int, callback: (MoreMenuUiModel) -> Unit) {
+        status = voucherStatus
+        moreMenuAdapter = MoreMenuAdapter(callback, MoreMenuDiffer())
     }
 
     fun show(fm: FragmentManager) {
@@ -72,12 +66,12 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() {
-        val menuItem = getMenuListByStatusVoucher(VoucherStatusConst.NOT_STARTED)
-        menuAdapter?.submitList(menuItem)
+        val menuItem = getMenuListByStatusVoucher(status)
+        moreMenuAdapter?.submitList(menuItem)
 
         binding?.rvMvcBottomSheetMenu?.run {
             layoutManager = LinearLayoutManager(context)
-            adapter = menuAdapter
+            adapter = moreMenuAdapter
         }
     }
 
@@ -93,11 +87,11 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getUpcomingStatusVoucherMenu(): List<MoreMenuUiModel> =
             listOf(
-                    EditQuota(
+                    EditQuotaVoucher(
                         title = context?.getString(R.string.mvc_edit_quota).orEmpty(),
                         icon = IconUnify.COUPON
                     ),
-                    EditPeriod(
+                    EditPeriodVoucher(
                         title = context?.getString(R.string.mvc_edit_period).orEmpty(),
                         icon = IconUnify.CALENDAR
                     ),
@@ -105,12 +99,12 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                         title = context?.getString(R.string.mvc_edit).orEmpty(),
                         icon = IconUnify.EDIT
                     ),
-                    ViewDetail(
+                    ViewDetailVoucher(
                         title = context?.getString(R.string.mvc_view_detail).orEmpty(),
                         icon = IconUnify.CLIPBOARD
                     ),
                     ItemDivider,
-                    BroadCast(
+                    BroadCastChat(
                         title = context?.getString(R.string.mvc_broadcast_chat).orEmpty(),
                         icon = IconUnify.BROADCAST
                     ),
@@ -127,16 +121,16 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getOngoingStatusVoucherMenu(): List<MoreMenuUiModel> =
             listOf(
-                    EditQuota(
+                    EditQuotaVoucher(
                         title = context?.getString(R.string.mvc_edit_quota).orEmpty(),
                         icon = IconUnify.COUPON
                     ),
-                    ViewDetail(
+                    ViewDetailVoucher(
                         title = context?.getString(R.string.mvc_view_detail).orEmpty(),
                         icon = IconUnify.CLIPBOARD
                     ),
                     ItemDivider,
-                    BroadCast(
+                    BroadCastChat(
                         title = context?.getString(R.string.mvc_broadcast_chat).orEmpty(),
                         icon = IconUnify.BROADCAST
                     ),
@@ -149,7 +143,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                         icon = IconUnify.DOWNLOAD
                     ),
                     ItemDivider,
-                    CancelVoucher(
+                    StopVoucher(
                         title = context?.getString(R.string.mvc_stop).orEmpty(),
                         icon = IconUnify.CLEAR
                     )
@@ -157,7 +151,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getEndedStatusVoucherMenu(): List<MoreMenuUiModel> =
             listOf(
-                    ViewDetail(
+                    ViewDetailVoucher(
                         title = context?.getString(R.string.mvc_view_detail).orEmpty(),
                         icon = IconUnify.CLIPBOARD
                     )
@@ -169,7 +163,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                         title = context?.getString(R.string.mvc_duplicate).orEmpty(),
                         icon = IconUnify.COPY
                     ),
-                    ViewDetail(
+                    ViewDetailVoucher(
                         title = context?.getString(R.string.mvc_view_detail).orEmpty(),
                         icon = IconUnify.CLIPBOARD
                     )

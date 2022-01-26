@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.moremenu.data.entity
+package com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.model
 
 data class MoreMenuItemEventAction(
     val ongoingAction: String? = null,

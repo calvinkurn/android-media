@@ -1,53 +1,38 @@
-package com.tokopedia.vouchercreation.product.moremenu
+package com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
-import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
-import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
-import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
-import com.tokopedia.vouchercreation.common.utils.shareVoucher
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
-import com.tokopedia.vouchercreation.product.moremenu.data.entity.MoreMenuItemEventAction
-import com.tokopedia.vouchercreation.product.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
-import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.model.MoreMenuItemEventAction
 import com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.MoreMenuUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
-import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.EditQuotaBottomSheet
 
 class MoreMenuActivity : AppCompatActivity() {
 
     private var isActiveVoucher = false
 
-    private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
-        return@lazy MoreMenuBottomSheet.createInstance(isActiveVoucher)
-    }
+//    private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
+//        return@lazy MoreMenuBottomSheet.createInstance(isActiveVoucher)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_product_detail)
 
-        moreBottomSheet?.show(supportFragmentManager)
-        moreBottomSheet?.setOnItemClickListener(voucher = "") { moreMenuUiModel ->
-//            onMoreMenuItemClickListener(moreMenuUiModel, voucher = null)
-        }
+//        moreBottomSheet?.show(supportFragmentManager)
+//        moreBottomSheet?.setOnItemClickListener(1) { moreMenuUiModel ->
+////            onMoreMenuItemClickListener(moreMenuUiModel, voucher = null)
+//        }
     }
 
     private fun hitMoreMenuItemEventTracker(moreMenuItemEventAction: MoreMenuItemEventAction, @VoucherStatusConst status: Int? = null) {
