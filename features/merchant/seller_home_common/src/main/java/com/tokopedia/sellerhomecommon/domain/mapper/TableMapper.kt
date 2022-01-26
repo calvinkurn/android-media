@@ -41,26 +41,11 @@ class TableMapper @Inject constructor(
         private const val CONST_ONE = 1
     }
 
+    private var dataKeys: List<DataKeyModel> = emptyList()
+
     override fun mapRemoteDataToUiData(
         response: GetTableDataResponse,
         isFromCache: Boolean
-    ): List<TableDataUiModel> {
-        return response.fetchSearchTableWidgetData.data.map { table ->
-            TableDataUiModel(
-                dataKey = table.dataKey,
-                error = table.errorMsg,
-                dataSet = getTableDataSet(table.data, MAX_ROWS_PER_PAGE),
-                isFromCache = isFromCache,
-                showWidget = table.showWidget.orFalse(),
-                lastUpdated = getLastUpdatedMillis(table.dataKey, isFromCache)
-            )
-        }
-    }
-
-    fun mapRemoteDataToUiData(
-        response: GetTableDataResponse,
-        isFromCache: Boolean,
-        dataKeys: List<DataKeyModel>
     ): List<TableDataUiModel> {
         return response.fetchSearchTableWidgetData.data.mapIndexed { i, table ->
             var maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ROWS_PER_PAGE
@@ -75,9 +60,14 @@ class TableMapper @Inject constructor(
                 error = table.errorMsg,
                 dataSet = getTableDataSet(table.data, maxDisplay),
                 isFromCache = isFromCache,
-                showWidget = table.showWidget.orFalse()
+                showWidget = table.showWidget.orFalse(),
+                lastUpdated = getLastUpdatedMillis(table.dataKey, isFromCache)
             )
         }
+    }
+
+    fun setDataKeys(dataKeys: List<DataKeyModel>) {
+        this.dataKeys = dataKeys
     }
 
     private fun getTableDataSet(

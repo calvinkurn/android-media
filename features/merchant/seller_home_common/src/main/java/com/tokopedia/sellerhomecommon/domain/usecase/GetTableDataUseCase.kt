@@ -72,7 +72,8 @@ class GetTableDataUseCase(
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetTableDataResponse>()
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
-            return tableMapper.mapRemoteDataToUiData(data, isFromCache, dataKeys)
+            tableMapper.setDataKeys(dataKeys)
+            return tableMapper.mapRemoteDataToUiData(data, isFromCache)
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
