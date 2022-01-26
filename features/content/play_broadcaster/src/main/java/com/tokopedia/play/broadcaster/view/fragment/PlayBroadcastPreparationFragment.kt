@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormState
@@ -18,6 +19,7 @@ import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
@@ -155,6 +157,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             binding.viewPreparationMenu.isSetTitleChecked(true)
         }
 
+        parentViewModel.observableCover.observe(viewLifecycleOwner) {
+            binding.viewPreparationMenu.isSetCoverChecked(true)
+            when (val croppedCover = it.croppedCover) {
+                is CoverSetupState.Cropped -> binding.formCover.setCover(croppedCover.coverImage.toString())
+                is CoverSetupState.Cropping.Image -> binding.formCover.setCover(croppedCover.coverImage.toString())
+                else -> binding.formCover.setCover(null)
+            }
+        }
+
         titleSetupViewModel.observableUploadEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
@@ -165,17 +176,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     if (!it.hasBeenHandled) {
                         binding.formTitle.setLoading(false)
                         showTitleForm(false)
-                    }
-                }
-            }
-        }
-
-        coverSetupViewModel.observableUploadCoverEvent.observe(viewLifecycleOwner) {
-            when (it) {
-                is NetworkResult.Success -> {
-                    val data = it.data.getContentIfNotHandled()
-                    if (data != null) {
-                        binding.formCover.setCover(coverSetupViewModel.coverUri)
                     }
                 }
             }
