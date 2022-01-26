@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.util
 
 import android.graphics.Typeface
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -18,8 +17,6 @@ import com.tokopedia.home_component.util.DateHelper.isExpired
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.recharge_component.digital_card.presentation.model.*
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData

@@ -13,7 +13,6 @@ import com.tokopedia.digital.home.model.RechargeHomePageProductCardCustomBannerV
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.util.ParallaxScrollEffectListener
-import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
