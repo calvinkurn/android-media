@@ -8,8 +8,42 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsUnifyBinding
-import com.tokopedia.digital.home.model.*
-import com.tokopedia.digital.home.presentation.adapter.viewholder.*
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
+import com.tokopedia.digital.home.model.RechargeHomepageBannerEmptyModel
+import com.tokopedia.digital.home.model.RechargeHomepageBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
+import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
+import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
+import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
+import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageProductCardsModel
+import com.tokopedia.digital.home.model.RechargeHomepageRecommendationBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageSwipeBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageThreeIconsModel
+import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
+import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
+import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
+import com.tokopedia.digital.home.model.RechargeProductCardUnifyModel
+import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageBannerEmptyViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageCarousellViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageCategoryViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualBannersViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualIconsViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageFavoriteViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLoadingViewholder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardUnifyViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardsViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageRecommendationBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageSingleBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageSwipeBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageThreeIconsViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTickerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageVideoHighlightViewHolder
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
@@ -17,13 +51,26 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
-import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
+import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
+import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.Lego4AutoDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.home_component.visitable.QuestWidgetModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
 
 class RechargeHomepageAdapterTypeFactory(
-        val listener: RechargeHomepageItemListener,
-        private val reminderWidgetCallback: RechargeHomepageReminderWidgetCallback,
-        private val dynamicLegoBannerCallback: RechargeHomepageDynamicLegoBannerCallback)
-    : BaseAdapterTypeFactory(), HomeComponentTypeFactory {
+    val listener: RechargeHomepageItemListener,
+    private val reminderWidgetCallback: RechargeHomepageReminderWidgetCallback,
+    private val dynamicLegoBannerCallback: RechargeHomepageDynamicLegoBannerCallback
+) : BaseAdapterTypeFactory(), HomeComponentTypeFactory {
 
     fun type(bannerModel: RechargeHomepageBannerModel): Int {
         return RechargeHomepageBannerViewHolder.LAYOUT
@@ -84,9 +131,11 @@ class RechargeHomepageAdapterTypeFactory(
     fun type(productCardUnifyModel: RechargeProductCardUnifyModel): Int =
         RechargeHomepageProductCardUnifyViewHolder.LAYOUT
 
-    fun type(threeIconsModel: RechargeHomepageThreeIconsModel): Int{
-        return RechargeHomepageThreeIconsViewHolder.LAYOUT
-    }
+    fun type(threeIconsModel: RechargeHomepageThreeIconsModel): Int =
+        RechargeHomepageThreeIconsViewHolder.LAYOUT
+
+    fun type(recommendationBannerModel: RechargeHomepageRecommendationBannerModel): Int =
+        RechargeHomepageRecommendationBannerViewHolder.LAYOUT
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
@@ -104,7 +153,7 @@ class RechargeHomepageAdapterTypeFactory(
         return ReminderWidgetViewHolder.LAYOUT
     }
 
-    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int{
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
         return 0
     }
 
@@ -152,23 +201,72 @@ class RechargeHomepageAdapterTypeFactory(
         return when (type) {
             RechargeHomepageLoadingViewholder.LAYOUT -> RechargeHomepageLoadingViewholder(parent)
             // Home Components
-            ReminderWidgetViewHolder.LAYOUT -> ReminderWidgetViewHolder(parent, reminderWidgetCallback)
-            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, dynamicLegoBannerCallback, dynamicLegoBannerCallback)
+            ReminderWidgetViewHolder.LAYOUT -> ReminderWidgetViewHolder(
+                parent,
+                reminderWidgetCallback
+            )
+            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(
+                parent,
+                dynamicLegoBannerCallback,
+                dynamicLegoBannerCallback
+            )
             // Recharge
-            RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, listener)
-            RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, listener)
-            RechargeHomepageDualIconsViewHolder.LAYOUT -> RechargeHomepageDualIconsViewHolder(parent, listener)
-            RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
-            RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(parent, listener)
-            RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
-            RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(parent, listener)
-            RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(parent, listener)
-            RechargeHomepageProductCardsViewHolder.LAYOUT -> RechargeHomepageProductCardsViewHolder(parent, listener)
-            RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(parent, listener)
-            RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerViewHolder(parent, listener)
-            RechargeHomepageCarousellViewHolder.LAYOUT -> RechargeHomepageCarousellViewHolder(parent, listener)
-            RechargeHomepageTickerViewHolder.LAYOUT -> RechargeHomepageTickerViewHolder(parent, listener)
-            RechargeHomepageSwipeBannerViewHolder.LAYOUT -> RechargeHomepageSwipeBannerViewHolder(parent, listener)
+            RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageDualIconsViewHolder.LAYOUT -> RechargeHomepageDualIconsViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageProductCardsViewHolder.LAYOUT -> RechargeHomepageProductCardsViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageCarousellViewHolder.LAYOUT -> RechargeHomepageCarousellViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageTickerViewHolder.LAYOUT -> RechargeHomepageTickerViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageSwipeBannerViewHolder.LAYOUT -> RechargeHomepageSwipeBannerViewHolder(
+                parent,
+                listener
+            )
             RechargeHomepageProductCardUnifyViewHolder.LAYOUT -> {
                 val binding = ViewRechargeHomeProductCardsUnifyBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -177,7 +275,19 @@ class RechargeHomepageAdapterTypeFactory(
                 )
                 RechargeHomepageProductCardUnifyViewHolder(binding, listener)
             }
-            RechargeHomepageThreeIconsViewHolder.LAYOUT -> RechargeHomepageThreeIconsViewHolder(parent, listener)
+            RechargeHomepageThreeIconsViewHolder.LAYOUT -> RechargeHomepageThreeIconsViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageRecommendationBannerViewHolder.LAYOUT -> {
+                val binding = ViewRechargeHomeRecommendationBannerBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
+
+                RechargeHomepageRecommendationBannerViewHolder(binding, listener)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }
