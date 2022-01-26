@@ -165,12 +165,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val FILTER_STOCK_LABEL = "Stok"
         private const val FILTER_CATEGORIES_LABEL = "Kategori"
         private const val PADDING_RV = 10
-
-        private const val ERROR_WISHLIST_V2 = "Error observingWishlistV2() -"
-        private const val ERROR_WISHLIST_DATA = "Error observingWishlistData() -"
-        private const val ERROR_DELETE_WISHLIST_V2 = "Error observingDeleteWishlistV2() -"
-        private const val ERROR_BULK_DELETE_WISHLIST_V2 = "Error observingBulkDeleteWishlistV2() -"
-        private const val ERROR_WISHLIST_V2_ATC = "Error observingAtc() -"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -278,11 +272,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
 
-                    val labelError = "$ERROR_WISHLIST_V2 $errorMessage"
+                    val labelError = String.format(
+                            getString(Rv2.string.on_error_observing_wishlist_v2_string_builder),
+                            userSession.userId ?: "",
+                            errorMessage,
+                            result.throwable.message ?: "")
                     // log error type to newrelic
                     ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                     // log to crashlytics
-                    logToCrashlytics(result.throwable)
+                    logToCrashlytics(labelError, result.throwable)
                 }
             }
         })
@@ -365,11 +363,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
 
-                    val labelError = "$ERROR_WISHLIST_DATA $errorMessage"
+                    val labelError = String.format(
+                            getString(Rv2.string.on_error_observing_wishlist_data_string_builder),
+                            userSession.userId ?: "",
+                            errorMessage,
+                            result.throwable.message ?: "")
                     // log error type to newrelic
                     ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                     // log to crashlytics
-                    logToCrashlytics(result.throwable)
+                    logToCrashlytics(labelError, result.throwable)
                 }
             }
         })
@@ -608,11 +610,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
 
-                    val labelError = "$ERROR_DELETE_WISHLIST_V2 $errorMessage"
+                    val labelError = String.format(
+                            getString(Rv2.string.on_error_observing_delete_wishlist_v2_string_builder),
+                            userSession.userId ?: "",
+                            errorMessage,
+                            result.throwable.message ?: "")
                     // log error type to newrelic
                     ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                     // log to crashlytics
-                    logToCrashlytics(result.throwable)
+                    logToCrashlytics(labelError, result.throwable)
                 }
             }
         })
@@ -648,11 +654,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
 
-                    val labelError = "$ERROR_BULK_DELETE_WISHLIST_V2 $errorMessage"
+                    val labelError = String.format(
+                            getString(Rv2.string.on_error_observing_bulk_delete_wishlist_v2_string_builder),
+                            userSession.userId ?: "",
+                            errorMessage,
+                            result.throwable.message ?: "")
                     // log error type to newrelic
                     ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                     // log to crashlytics
-                    logToCrashlytics(result.throwable)
+                    logToCrashlytics(labelError, result.throwable)
                 }
             }
         })
@@ -690,11 +700,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         }
                         showToaster(errorMessage, "", Toaster.TYPE_ERROR)
 
-                        val labelError = "$ERROR_WISHLIST_V2_ATC $errorMessage"
+                        val labelError = String.format(
+                                getString(Rv2.string.on_error_observing_atc_string_builder),
+                                userSession.userId ?: "",
+                                errorMessage,
+                                throwable.message ?: "")
                         // log error type to newrelic
                         ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                         // log to crashlytics
-                        logToCrashlytics(throwable)
+                        logToCrashlytics(labelError, throwable)
                     }
                 }
             }
@@ -1312,9 +1326,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         loaderDialog?.dialog?.dismiss()
     }
 
-    private fun logToCrashlytics(throwable: Throwable) {
+    private fun logToCrashlytics(errorMsg: String, throwable: Throwable) {
         if (!GlobalConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().recordException(throwable)
+            FirebaseCrashlytics.getInstance().recordException(Exception(errorMsg, throwable))
         } else {
             throwable.printStackTrace()
         }
