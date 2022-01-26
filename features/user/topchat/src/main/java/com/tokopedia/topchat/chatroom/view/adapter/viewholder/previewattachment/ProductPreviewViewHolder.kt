@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment
 
 import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -37,7 +38,8 @@ class ProductPreviewViewHolder(
     private val productSizeVariant = itemView.findViewById<LinearLayout>(R.id.ll_variant_size)
     private val productSizeVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_size)
     private val loader = itemView.findViewById<LoaderUnify>(R.id.lu_product_preview)
-    private val retry = itemView.findViewById<IconUnify>(R.id.iu_retry_product_preview)
+    private val retryContainer = itemView.findViewById<LinearLayout>(R.id.ll_retry_product_preview)
+    private val retryBtn = itemView.findViewById<FrameLayout>(R.id.iu_retry_product_preview)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             view = container,
@@ -49,6 +51,20 @@ class ProductPreviewViewHolder(
             shadowColor = R.color.topchat_dms_black_12,
             elevation = R.dimen.dp_topchat_2,
             shadowRadius = R.dimen.dp_topchat_2,
+            shadowGravity = Gravity.CENTER,
+            useViewPadding = true
+    )
+
+    private val retryBg = ViewUtil.generateBackgroundWithShadow(
+            view = retryContainer,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
+            topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
+            bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
+            bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
+            shadowColor = R.color.topchat_dms_black_12,
+            elevation = R.dimen.dp_topchat_4,
+            shadowRadius = R.dimen.dp_topchat_4,
             shadowGravity = Gravity.CENTER,
             useViewPadding = true
     )
@@ -95,7 +111,8 @@ class ProductPreviewViewHolder(
         showLoading(false)
         showError(true)
         hideProductComponents()
-        retry?.setOnClickListener {
+        retryBtn?.background = retryBg
+        retryBtn?.setOnClickListener {
             attachmentItemPreviewListener.retryLoadCurrentAttachment()
         }
     }
@@ -113,7 +130,7 @@ class ProductPreviewViewHolder(
     }
 
     private fun showError(isError: Boolean) {
-        retry?.showWithCondition(isError)
+        retryContainer?.showWithCondition(isError)
     }
 
     private fun bindProductName(model: TopchatProductAttachmentPreviewUiModel) {
