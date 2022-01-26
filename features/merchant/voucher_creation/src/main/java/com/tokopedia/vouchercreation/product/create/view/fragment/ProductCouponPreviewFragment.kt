@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -12,6 +13,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
@@ -260,6 +262,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
                     )
                 }
                 is Fail -> {
+                    showError(result.throwable)
                     showBroadCastVoucherBottomSheetWithoutShareToSocialMediaCapability()
                 }
             }
@@ -279,6 +282,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
                     showToaster(text)
                 }
                 is Fail -> {
+                    showError(result.throwable)
                     updateCouponErrorNotice.show()
                 }
             }
@@ -639,10 +643,16 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         val template = getString(R.string.placeholder_share_coupon_product_wording)
         val wording = String.format(template, shopName, startDate, endDate, "")
 
+
     }
 
     private fun showToaster(text : String) {
         if (text.isEmpty()) return
         Toaster.build(binding.root, text).show()
+    }
+
+    private fun showError(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(requireActivity(), throwable)
+        Toaster.build(binding.root, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 }
