@@ -155,9 +155,11 @@ class PlayBroadcastSetupBottomSheet :
     }
 
     override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
-        navigateToFragment(
-                fragmentClass = PlayTitleAndTagsSetupFragment::class.java,
-        )
+        dialog?.onBackPressed()
+        /** TODO: remove this later */
+//        navigateToFragment(
+//                fragmentClass = PlayTitleAndTagsSetupFragment::class.java,
+//        )
 
         return null
     }
@@ -227,7 +229,7 @@ class PlayBroadcastSetupBottomSheet :
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(
-                PlayEtalasePickerFragment::class.java
+                PlayCoverSetupFragment::class.java
         )
     }
 

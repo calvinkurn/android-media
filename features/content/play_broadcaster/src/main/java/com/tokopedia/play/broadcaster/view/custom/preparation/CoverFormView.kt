@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.custom.preparation
 
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -41,8 +42,8 @@ class CoverFormView: ConstraintLayout {
         mListener = null
     }
 
-    fun setCover(imageUrl: String) {
-        binding.ivCoverFormPreview.setImageUrl(imageUrl)
+    fun setCover(imageUri: Uri?) {
+        binding.ivCoverFormPreview.setImageURI(imageUri)
     }
 
     fun setTitle(title: String) {

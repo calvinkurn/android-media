@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparati
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormState
 import com.tokopedia.play.broadcaster.ui.state.PlayTitleFormUiState
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
@@ -19,6 +20,7 @@ import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
@@ -27,6 +29,7 @@ import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.fragment_play_broadcast_preparation.*
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -46,6 +49,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
     private lateinit var titleSetupViewModel: PlayTitleAndTagsSetupViewModel
+    private lateinit var coverSetupViewModel: PlayCoverSetupViewModel
 
     /** View */
     private var _binding: FragmentPlayBroadcastPreparationBinding? = null
@@ -64,6 +68,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         titleSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayTitleAndTagsSetupViewModel::class.java)
+        coverSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayCoverSetupViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -164,6 +169,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 }
             }
         }
+
+        coverSetupViewModel.observableUploadCoverEvent.observe(viewLifecycleOwner) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    val data = it.data.getContentIfNotHandled()
+                    if (data != null) {
+                        binding.formCover.setCover(coverSetupViewModel.coverUri)
+                    }
+                }
+            }
+        }
     }
 
     /** Form */
@@ -235,7 +251,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onClickCoverPreview() {
-        TODO("Not yet implemented")
+        openCoverSetupFragment()
     }
 
     /** Helper */
@@ -256,5 +272,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             duration = duration,
             actionLabel = actionLabel,
         )
+    }
+
+    private fun openCoverSetupFragment() {
+        val setupClass = PlayBroadcastSetupBottomSheet::class.java
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
+        setupFragment.show(childFragmentManager)
     }
 }

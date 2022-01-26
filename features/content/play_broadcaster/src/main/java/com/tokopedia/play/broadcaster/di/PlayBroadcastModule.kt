@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.LiveBroadcasterManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
@@ -18,6 +19,10 @@ import com.tokopedia.play.broadcaster.pusher.mediator.rollence.AbTestBroadcaster
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
+import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
+import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
+import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
@@ -30,7 +35,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 
-@Module
+@Module(includes = [MediaUploaderModule::class])
 class PlayBroadcastModule {
 
     @Provides
@@ -106,4 +111,12 @@ class PlayBroadcastModule {
          */
 //        return PlayBroadcastMockMapper()
     }
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideCoverImageUtil(@ApplicationContext context: Context): PlayCoverImageUtil = PlayCoverImageUtilImpl(context)
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideCoverImageTransformer(): ImageTransformer = PlayMinimumCoverImageTransformer()
 }
