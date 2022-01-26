@@ -1,12 +1,14 @@
 package com.tokopedia.centralizedpromo.view.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
+import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
@@ -49,6 +51,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase
+
+    @RelaxedMockK
+    lateinit var sharedPref: SharedPreferences
 
     @RelaxedMockK
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
@@ -101,6 +106,7 @@ class CentralizedPromoViewModelTest {
             getChatBlastSellerMetadataUseCase,
             voucherCashbackEligibleUseCase,
             remoteConfig,
+            sharedPref,
             coroutineTestRule.dispatchers
         )
     }
@@ -242,6 +248,114 @@ class CentralizedPromoViewModelTest {
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
                 (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
+    }
+
+    @Test
+    fun `When voucher cashback sharedPref returns true but eligible, should not return create voucher applink`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
+        } returns true
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        val expectedApplink = "tokopedia-android-internal://sellerapp/create-voucher"
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(2)?.applink != expectedApplink)
+    }
+
+    @Test
+    fun `When voucher cashback sharedPref returns false but eligible, should return create voucher applink`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
+        } returns false
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        val expectedApplink = "tokopedia-android-internal://sellerapp/create-voucher"
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(2)?.applink == expectedApplink)
+    }
+
+    @Test
+    fun `When voucher product sharedPref returns true, should not return create voucher product applink`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns true
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        val expectedApplink = "sellerapp://create-voucher-product"
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(4)?.applink != expectedApplink)
+    }
+
+    @Test
+    fun `When voucher product sharedPref returns false, should return create voucher product applink`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        val expectedApplink = "sellerapp://create-voucher-product"
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(4)?.applink == expectedApplink)
     }
 
     @Test
