@@ -470,7 +470,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         if (couponType == CouponType.FREE_SHIPPING) {
             binding.groupMinimumPurchaseType.gone()
         } else {
-            binding.groupMinimumPurchaseType.visible()
+            binding.groupMinimumPurchaseType.gone()
             binding.tpgMinimumPurchaseType.text = minimumPurchaseType.label
         }
 
