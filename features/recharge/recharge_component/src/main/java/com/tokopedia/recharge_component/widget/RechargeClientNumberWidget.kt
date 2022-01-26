@@ -422,7 +422,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         private const val REGEX_IS_NUMERIC = "^[0-9\\s]*$"
         private const val SORT_FILTER_PADDING_8 = 8
         private const val SORT_FILTER_PADDING_16 = 16
-        private const val SORT_FILTER_LIMIT = 6
+        private const val SORT_FILTER_LIMIT = 3
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
 
