@@ -9,7 +9,7 @@ import com.tokopedia.play.broadcaster.databinding.ViewPlayBroActionBarBinding
 /**
  * Created By : Jonathan Darwin on January 25, 2022
  */
-class ActionBarView: ConstraintLayout  {
+class ActionBarView : ConstraintLayout  {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(

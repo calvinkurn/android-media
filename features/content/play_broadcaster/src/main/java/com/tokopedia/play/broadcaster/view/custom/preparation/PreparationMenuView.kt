@@ -11,7 +11,7 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 /**
  * Created By : Jonathan Darwin on January 25, 2022
  */
-class PreparationMenuView: ConstraintLayout {
+class PreparationMenuView : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(

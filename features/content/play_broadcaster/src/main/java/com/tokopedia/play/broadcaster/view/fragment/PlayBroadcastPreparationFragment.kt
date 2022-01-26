@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
-import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormState
-import com.tokopedia.play.broadcaster.ui.state.PlayTitleFormUiState
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
@@ -26,7 +24,7 @@ import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -46,7 +44,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private lateinit var titleSetupViewModel: PlayTitleAndTagsSetupViewModel
 
     /** View */
-    private var _binding: FragmentPlayBroadcastPreparationBinding? = null
+    private var _binding by viewBinding<FragmentPlayBroadcastPreparationBinding>()
     private val binding get() = _binding!!
 
     /** Others */
@@ -69,12 +67,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPlayBroadcastPreparationBinding.inflate(
-            LayoutInflater.from(requireContext()),
-            container,
-            false
-        )
-        return _binding?.root
+        return inflater.inflate(R.layout.fragment_play_broadcast_preparation, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
