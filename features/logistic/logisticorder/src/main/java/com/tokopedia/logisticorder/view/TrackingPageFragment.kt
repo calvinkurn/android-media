@@ -25,13 +25,10 @@ import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
-import com.tokopedia.logisticorder.domain.response.TrackingData
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
-import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
-import com.tokopedia.logisticorder.utils.DateUtil
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
@@ -49,6 +46,7 @@ import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import rx.Observable
 import rx.Subscriber
@@ -61,11 +59,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var dateUtil: DateUtil
-    @Inject
-    lateinit var mAnalytics: OrderAnalyticsOrderTracking
-
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -170,7 +163,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         val model = trackingDataModel.trackOrder
         binding?.referenceNumber?.text = model.shippingRefNum
         if (model.detail.serviceCode.isEmpty()) binding?.descriptionLayout?.visibility = View.GONE
-        if (model.detail.sendDate.isNotEmpty()) binding?.deliveryDate?.text = dateUtil.getFormattedDate(model.detail.sendDate)
+        if (model.detail.sendDate.isNotEmpty()) binding?.deliveryDate?.text = DateUtil.formatDate("yyyy-MM-dd", "dd MMMM yyyy", model.detail.sendDate)
         binding?.storeName?.text = model.detail.shipperName
         binding?.storeAddress?.text = model.detail.shipperCity
         binding?.serviceCode?.text = model.detail.serviceCode
@@ -192,10 +185,8 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status ==  SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
-            binding?.dividerTippingGojek?.visibility = View.VISIBLE
         } else {
             binding?.tippingGojekLayout?.root?.visibility = View.GONE
-            binding?.dividerTippingGojek?.visibility = View.GONE
         }
     }
 
@@ -271,11 +262,15 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.retryPickupButton?.isEnabled = true
             binding?.retryPickupButton?.setOnClickListener {
                 binding?.retryPickupButton?.isEnabled = false
-                mOrderId?.let { it -> viewModel.retryBooking(it) }
-                mAnalytics.eventClickButtonCariDriver(mOrderId)
+                mOrderId?.let { it ->
+                    viewModel.retryBooking(it)
+                    OrderAnalyticsOrderTracking.eventClickButtonCariDriver(it)
+                }
             }
             binding?.tvRetryStatus?.visibility = View.GONE
-            mAnalytics.eventViewButtonCariDriver(mOrderId)
+            mOrderId?.let {
+                OrderAnalyticsOrderTracking.eventViewButtonCariDriver(it)
+            }
         } else {
             binding?.retryPickupButton?.visibility = View.GONE
             if (deadline > 0) {
@@ -315,8 +310,10 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         if (remainingSeconds <= 0) return
         val timeInMillis = remainingSeconds * 1000
         val strFormat = if (context != null) context?.getString(R.string.retry_dateline_info) else ""
-        mAnalytics.eventViewLabelTungguRetry(
-                DateUtils.formatElapsedTime(timeInMillis / 1000), mOrderId)
+        mOrderId?.let {
+            OrderAnalyticsOrderTracking.eventViewLabelTungguRetry(
+                    DateUtils.formatElapsedTime(timeInMillis / 1000), it)
+        }
         mCountDownTimer = object : CountDownTimer(timeInMillis, PER_SECOND.toLong()) {
             override fun onTick(millsUntilFinished: Long) {
                 if (context != null) {
@@ -368,7 +365,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         } else {
             binding?.trackingHistory?.visibility = View.VISIBLE
             binding?.trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil, mOrderId?.toLong(), this)
+            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, userSession, mOrderId?.toLong(), this)
         }
     }
 
@@ -481,7 +478,8 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 //                .build()
 //        )
 
-        val newUrl = "https://1.bp.blogspot.com/-x_3z-B3eDCQ/XQ8qZh_l-2I/AAAAAAAAC2k/7tlk8ILLbqcdhDdeKMC4xjD2oNwUcr3QwCLcBGAs/s1600/foto%2Bkecil.jpg"
+        val newUrl =
+            "https://1.bp.blogspot.com/-x_3z-B3eDCQ/XQ8qZh_l-2I/AAAAAAAAC2k/7tlk8ILLbqcdhDdeKMC4xjD2oNwUcr3QwCLcBGAs/s1600/foto%2Bkecil.jpg"
         binding?.root?.let {
             binding?.imgProof?.let { imgProof ->
                 Glide.with(it.context)
@@ -500,8 +498,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                 binding?.imagePreviewLarge?.visibility = View.GONE
             }
         }
-
-
     }
 
 }

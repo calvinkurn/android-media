@@ -28,37 +28,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_reference_number"
-                android:textColor="@color/Unify_N300"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/top_padding"
-                app:typographyType="body_2" />
+                app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reference_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
-                android:textColor="@color/Unify_N700_68"
-                android:textSize="@dimen/sp_18"
-                android:textStyle="bold"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/lbl_ref_num"
-                app:typographyType="heading_3"
+                app:typographyType="heading_5"
                 tools:text="486118" />
-
-            <View
-                android:id="@+id/ref_layout_separator"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:background="@color/Unify_N100"
-                app:layout_constraintTop_toBottomOf="@id/reference_number"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_delivery_date"
@@ -68,13 +54,13 @@
                 android:layout_marginRight="8dp"
                 android:paddingTop="8dp"
                 android:text="@string/label_delivery_date"
-                android:textColor="@color/Unify_N200"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
-                app:layout_constraintTop_toBottomOf="@id/ref_layout_separator"
-                app:typographyType="body_2" />
+                app:layout_constraintTop_toBottomOf="@id/reference_number"
+                app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/delivery_date"
@@ -82,13 +68,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/lbl_delivery_date"
-                app:typographyType="body_2"
+                app:typographyType="heading_6"
                 tools:text="1 February 2017" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -99,13 +85,13 @@
                 android:layout_marginRight="8dp"
                 android:paddingTop="16dp"
                 android:text="@string/label_seller_courier_tracking"
-                android:textColor="@color/Unify_N200"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/delivery_date"
-                app:typographyType="body_2" />
+                app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/store_name"
@@ -113,13 +99,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/lbl_seller_courier_tracking"
-                app:typographyType="body_2"
+                app:typographyType="heading_6"
                 tools:text="Nama Penjual" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -128,13 +114,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/store_name"
-                app:typographyType="body_2"
+                app:typographyType="heading_6"
                 tools:text="Bandung" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -145,14 +131,14 @@
                 android:layout_marginLeft="8dp"
                 android:paddingTop="8dp"
                 android:text="@string/label_service_code"
-                android:textColor="@color/Unify_N200"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintBaseline_toBaselineOf="@id/lbl_delivery_date"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
                 app:layout_constraintStart_toEndOf="@id/center"
-                app:layout_constraintTop_toBottomOf="@id/ref_layout_separator"
-                app:typographyType="body_2" />
+                app:layout_constraintTop_toBottomOf="@id/reference_number"
+                app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/service_code"
@@ -160,13 +146,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
                 app:layout_constraintStart_toEndOf="@id/center"
                 app:layout_constraintTop_toBottomOf="@id/lbl_service_code"
-                app:typographyType="body_2"
+                app:typographyType="heading_6"
                 tools:text="REG15" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -177,14 +163,14 @@
                 android:layout_marginLeft="8dp"
                 android:paddingTop="16dp"
                 android:text="@string/label_buyer"
-                android:textColor="@color/Unify_N200"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintBaseline_toBaselineOf="@id/lbl_seller_courier_tracking"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
                 app:layout_constraintStart_toEndOf="@id/center"
                 app:layout_constraintTop_toBottomOf="@id/service_code"
-                app:typographyType="body_2" />
+                app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/buyer_name"
@@ -192,13 +178,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
                 app:layout_constraintStart_toEndOf="@id/center"
                 app:layout_constraintTop_toBottomOf="@id/lbl_buyer"
-                app:typographyType="body_2"
+                app:typographyType="heading_6"
                 tools:text="Saiful Jamil" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -207,13 +193,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
                 app:layout_constraintStart_toEndOf="@id/center"
                 app:layout_constraintTop_toBottomOf="@id/buyer_name"
-                app:typographyType="body_2"
+                app:typographyType="heading_6"
                 tools:text="Grogol Petamburan Jakarta" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -221,9 +207,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/tracking_label_eta"
-                android:textColor="@color/Unify_N200"
+                android:textColor="@color/Unify_N700_68"
                 android:paddingTop="@dimen/dp_16"
-                app:typographyType="body_2"
+                app:typographyType="body_3"
                 app:layout_constraintTop_toBottomOf="@id/store_address"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
@@ -235,8 +221,8 @@
                 android:id="@+id/eta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_68"
-                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="heading_6"
                 app:layout_constraintTop_toBottomOf="@id/lbl_eta"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
@@ -249,7 +235,7 @@
                 android:layout_marginTop="@dimen/unify_space_24"
                 app:layout_constraintTop_toBottomOf="@id/description_barrier"
                 android:background="@color/Unify_N50"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <include
                 android:id="@+id/tipping_gojek_layout"
@@ -260,20 +246,8 @@
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintTop_toBottomOf="@id/divider_tipping_gojek"
-                android:visibility="visible" />
-
-            <View
-                android:id="@+id/detail_layout_separator"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/Unify_N100"
-                app:layout_constraintTop_toBottomOf="@id/tipping_gojek_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                />
+                android:visibility="visible"
+                tools:visibility="gone"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_tracking_status"
@@ -281,21 +255,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/label_tracking_status"
-                android:textColor="@color/Unify_N300"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
-                app:layout_constraintTop_toBottomOf="@id/detail_layout_separator"
-                app:typographyType="body_2" />
+                app:layout_constraintTop_toBottomOf="@id/tipping_gojek_layout"
+                app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/current_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_Y500"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/lbl_tracking_status"
-                app:typographyType="body_2"
+                app:typographyType="heading_4"
                 tools:text="On Process" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
