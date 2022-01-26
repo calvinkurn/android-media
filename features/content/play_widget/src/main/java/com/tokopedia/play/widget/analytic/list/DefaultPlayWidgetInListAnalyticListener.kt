@@ -19,7 +19,6 @@ class DefaultPlayWidgetInListAnalyticListener (
 
     override fun onImpressPlayWidget(view: PlayWidgetView, item: PlayWidgetUiModel, widgetPositionInList: Int) {
         verticalWidgetPosition = widgetPositionInList
-//        if (item is PlayWidgetConfigProvider) businessWidgetPosition = item.config.businessWidgetPosition
         businessWidgetPosition = item.config.businessWidgetPosition
         analytic.onImpressPlayWidget(view, item, widgetPositionInList, businessWidgetPosition)
     }

@@ -179,6 +179,6 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
         fun onChannelClicked(
             view: PlayWidgetCardSmallChannelView,
             model: PlayWidgetChannelUiModel
-        ) {}
+        )
     }
 }

@@ -29,11 +29,6 @@ class PlayWidgetViewHolder(
     }
 
     fun bind(item: PlayWidgetState, holderWrapper: RecyclerView.ViewHolder) {
-//        if (item is ImpressionableModel) {
-//            coordinator.getImpressionHelper().impress(itemView, item) {
-//                mListener?.onWidgetImpressed(playWidgetView, item, holderWrapper.adapterPosition)
-//            }
-//        }
         coordinator.getImpressionHelper().impress(itemView, item.impressHolder) {
             mListener?.onWidgetImpressed(playWidgetView, item.model, holderWrapper.adapterPosition)
         }
