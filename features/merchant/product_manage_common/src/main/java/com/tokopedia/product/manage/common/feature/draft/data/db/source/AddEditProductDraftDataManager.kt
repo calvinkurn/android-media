@@ -21,12 +21,16 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return draftDao.getDraft(productId)
     }
 
+    fun getAllDraftsFlow(shopId: String): Flow<List<AddEditProductDraftEntity>> {
+        return draftDao.getAllDraftsFlow(shopId)
+    }
+
     fun getAllDrafts(shopId: String): List<AddEditProductDraftEntity> {
         return draftDao.getAllDrafts(shopId)
     }
 
-    fun getAllDraftsCount(shopId: String): Flow<Long> {
-        return draftDao.getAllDraftsCount(shopId)
+    fun getAllDraftsCountFlow(shopId: String): Flow<Long> {
+        return draftDao.getAllDraftsCountFlow(shopId)
     }
 
     fun deleteAllDrafts(shopId: String): Boolean {

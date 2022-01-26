@@ -16,6 +16,11 @@ class AddEditProductDraftDataSource @Inject constructor(private val dataManager:
         return dataManager.getDraft(productId)
     }
 
+    fun getAllDraftsFlow(shopId: String): Flow<List<AddEditProductDraftEntity>> {
+        checkUpdateBlankShopId(shopId)
+        return dataManager.getAllDraftsFlow(shopId)
+    }
+
     fun getAllDrafts(shopId: String): List<AddEditProductDraftEntity> {
         checkUpdateBlankShopId(shopId)
         return dataManager.getAllDrafts(shopId)
@@ -23,7 +28,7 @@ class AddEditProductDraftDataSource @Inject constructor(private val dataManager:
 
     fun getAllDraftsCount(shopId: String): Flow<Long> {
         checkUpdateBlankShopId(shopId)
-        return dataManager.getAllDraftsCount(shopId)
+        return dataManager.getAllDraftsCountFlow(shopId)
     }
 
     fun deleteDraft(productId: Long): Boolean {

@@ -9,9 +9,11 @@ interface AddEditProductDraftRepository {
 
     fun getDraft(productId: Long): ProductDraft
 
+    suspend fun getAllDraftsFlow(): Flow<List<ProductDraft>>
+
     fun getAllDrafts(): List<ProductDraft>
 
-    fun getAllDraftsCount(): Flow<Long>
+    fun getAllDraftsCountFlow(): Flow<Long>
 
     fun deleteDraft(productId: Long): Boolean
 

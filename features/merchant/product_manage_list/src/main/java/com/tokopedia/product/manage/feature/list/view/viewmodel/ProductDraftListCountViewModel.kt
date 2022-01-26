@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.feature.draft.domain.usecase.ClearAllDraftProductsUseCase
-import com.tokopedia.product.manage.common.feature.draft.domain.usecase.GetAllDraftProductsCountUseCase
+import com.tokopedia.product.manage.common.feature.draft.domain.usecase.GetAllDraftProductsCountFlowUseCase
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.usecase.RequestParams
@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductDraftListCountViewModel @Inject constructor(
-        private val getAllDraftProductsCountUseCase: GetAllDraftProductsCountUseCase,
+        private val getAllDraftProductsCountFlowUseCase: GetAllDraftProductsCountFlowUseCase,
         private val clearAllDraftProductsUseCase: ClearAllDraftProductsUseCase,
         private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
         private val userSession: UserSessionInterface,
@@ -48,7 +48,7 @@ class ProductDraftListCountViewModel @Inject constructor(
         }
 
         if(access.addProduct) {
-            getAllDraftProductsCountUseCase.executeOnBackground()
+            getAllDraftProductsCountFlowUseCase.executeOnBackground()
                 .flowOn(dispatchers.io)
                 .catch {
                     _getAllDraftCountResult.value = Fail(it)

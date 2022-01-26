@@ -5,11 +5,11 @@ import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetAllDraftProductsCountUseCase @Inject constructor(
+class GetAllDraftProductsCountFlowUseCase @Inject constructor(
     private val draftRepository: AddEditProductDraftRepository
 ): UseCase<Flow<Long>>() {
 
     override suspend fun executeOnBackground(): Flow<Long> {
-        return draftRepository.getAllDraftsCount()
+        return draftRepository.getAllDraftsCountFlow()
     }
 }

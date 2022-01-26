@@ -202,8 +202,6 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
         draftListAdapter = ProductDraftListAdapter(this)
         rvDraft?.adapter = draftListAdapter
         rvDraft?.layoutManager = LinearLayoutManager(context)
-
-        viewModel.getAllProductDraft()
         displayLoader()
     }
 
