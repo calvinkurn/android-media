@@ -57,9 +57,11 @@ object FingerprintDialogHelper {
 
             val mainImgView = view?.findViewById<ImageUnify>(R.id.bottom_sheet_reg_biom_main_img)
 
-            Glide.with(activity)
-                .load(BIOMETRIC_OFFERING_MAIN_IMG)
-                .into(mainImgView)
+            mainImgView?.run {
+                Glide.with(activity)
+                    .load(BIOMETRIC_OFFERING_MAIN_IMG)
+                    .into(this)
+            }
 
             primaryBtn?.setOnClickListener {
                 onPrimaryBtnClicked()
@@ -85,9 +87,11 @@ object FingerprintDialogHelper {
 
             val mainImgView = view?.findViewById<ImageUnify>(R.id.bottom_sheet_success_biom_main_img)
 
-            Glide.with(activity)
-                .load(BIOMETRIC_OFFERING_SUCCESS_IMG)
-                .into(mainImgView)
+            mainImgView?.run {
+                Glide.with(activity)
+                    .load(BIOMETRIC_OFFERING_SUCCESS_IMG)
+                    .into(this)
+            }
 
             primaryBtn?.setOnClickListener {
                 onPrimaryBtnClicked()
