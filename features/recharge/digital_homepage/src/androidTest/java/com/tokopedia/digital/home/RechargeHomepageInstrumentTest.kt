@@ -26,6 +26,7 @@ import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsA
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
+import com.tokopedia.recharge_component.digital_card.presentation.adapter.viewholder.DigitalUnifyCardViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
@@ -77,6 +78,7 @@ class RechargeHomepageInstrumentTest {
         check_product_banner_section()
         check_reminder_section()
         check_3_icons_section()
+        check_product_card_custom_banner_section()
 
         assertThat(
                 getAnalyticsWithQuery(gtmLogDBSource, context, SUBHOME_ANALYTIC_VALIDATOR_QUERY),
@@ -226,9 +228,22 @@ class RechargeHomepageInstrumentTest {
     private fun check_3_icons_section(){
         Thread.sleep(1000)
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageThreeIconsViewHolder>(13)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageThreeIconsViewHolder>(14)
         )
         onView(withId(R.id.rv_three_icons)).check(matches(isDisplayed()))
+    }
+
+    private fun check_product_card_custom_banner_section(){
+        Thread.sleep(1000)
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions.scrollToPosition<RechargeHomepageThreeIconsViewHolder>(15)
+        )
+        onView(withId(R.id.rv_recharge_product)).check(matches(isDisplayed()))
+        Thread.sleep(1000)
+        onView(withId(R.id.rv_recharge_product)).perform(
+            RecyclerViewActions.scrollToPosition<DigitalUnifyCardViewHolder>(3)
+        )
+        Thread.sleep(2000)
     }
 
     companion object {
