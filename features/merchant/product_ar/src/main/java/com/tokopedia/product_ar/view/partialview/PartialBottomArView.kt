@@ -77,7 +77,7 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
         isClickable = false
     }
 
-    fun stopLoadingButton() =with(atcButton) {
+    fun stopLoadingButton() = with(atcButton) {
         isLoading = false
         isClickable = true
     }

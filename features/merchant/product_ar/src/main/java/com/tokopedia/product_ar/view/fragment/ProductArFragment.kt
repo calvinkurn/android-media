@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,11 +17,10 @@ import androidx.lifecycle.lifecycleScope
 import com.modiface.mfemakeupkit.MFEMakeupEngine
 import com.modiface.mfemakeupkit.data.MFETrackingData
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2.Companion.POSITION_TOP
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
@@ -36,6 +36,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.pref.CoachMarkProductPref
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -149,31 +150,18 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         val shouldShowCoachmark = coachMarkSharedPref?.getCoachMarkState() == false
 
         if (shouldShowCoachmark) {
-            val coachMarkList = arrayListOf<CoachMark2Item>()
-            val coachMarkView = CoachMark2(requireContext())
-            partialBottomArView?.rvVariant?.apply {
-                val title1 = context.getString(R.string.coachmark_1_title_ar)
-                val desc1 = context.getString(R.string.coachmark_1_desc_ar)
-                coachMarkList.add(CoachMark2Item(this,
-                        title1, position = POSITION_TOP, description = desc1))
-            }
+            context?.let {
+                val coachMarkView = CoachMark2(it)
 
-            binding?.animatedTxtIcon2?.getIconInstanceView()?.run {
-                val title2 = context.getString(R.string.coachmark_2_title_ar)
-                val desc2 = context.getString(R.string.coachmark_2_desc_ar)
-                coachMarkList.add(CoachMark2Item(this,
-                        title2, position = POSITION_TOP, description = desc2))
+                val steps = ArCoachMarkUtil.buildCoachMark(
+                        context = requireContext(),
+                        rvVariant = partialBottomArView?.rvVariant,
+                        animatedTxtIcon2 = binding?.animatedTxtIcon2,
+                        icCompareAr = binding?.icCompareAr
+                )
+                coachMarkView.showCoachMark(steps)
+                coachMarkSharedPref?.setCoachMarkState(true)
             }
-
-            binding?.icCompareAr?.run {
-                val title3 = context.getString(R.string.coachmark_2_title_ar)
-                val desc3 = context.getString(R.string.coachmark_2_desc_ar)
-                coachMarkList.add(CoachMark2Item(this,
-                        title3, position = POSITION_TOP, description = desc3))
-            }
-
-            ArCoachMarkUtil.showCoachMark(coachMarkView, coachMarkList)
-            coachMarkSharedPref?.setCoachMarkState(true)
         }
     }
 
@@ -557,7 +545,18 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     override fun onButtonClicked(productId: String) {
-        viewModel?.doAtc()
+        if (viewModel?.userSessionInterface?.isLoggedIn == false) {
+            SingleClick.doSomethingBeforeTime {
+                context?.let {
+                    RouteManager.route(it, ApplinkConst.LOGIN)
+                    partialBottomArView?.stopLoadingButton()
+                }
+            }
+        } else {
+            SingleClick.doSomethingBeforeTime(delayInterval = 300) {
+                viewModel?.doAtc()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -611,6 +610,31 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
             } else {
                 binding?.txtNoDetection?.hideAnimated()
             }
+
+            Handler().postDelayed({
+                if (p0?.hasFacePoints() == false) {
+                    disableCompareIcon()
+                } else {
+                    enableCompareIcon()
+                }
+            }, 500)
+        }
+    }
+
+    private fun disableCompareIcon() {
+        binding?.icCompareAr?.run {
+            if (!isEnabled) return@run
+
+            isEnabled = false
+            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_compare_disabled))
+        }
+    }
+
+    private fun enableCompareIcon() {
+        binding?.icCompareAr?.run {
+            if (isEnabled) return@run
+            isEnabled = true
+            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_compare_icon))
         }
     }
 

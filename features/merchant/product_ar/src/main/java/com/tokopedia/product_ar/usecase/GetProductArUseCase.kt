@@ -27,6 +27,10 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
                       categoryID
                       shopType
                       categoryName
+                      categoryDetail {
+                        id
+                        name
+                      }
                     }
                     options {
                       psku

@@ -3,6 +3,7 @@ package com.tokopedia.product_ar.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.product.Category
 
 data class ProductArResponse(
         @SerializedName("pdpGetARData")
@@ -37,5 +38,8 @@ data class ArMetaData(
         val shopType: String = "",
         @SerializedName("categoryName")
         @Expose
-        val categoryName: String = ""
+        val categoryName: String = "",
+        @SerializedName("categoryDetail")
+        @Expose
+        val categoryDetail: List<Category> = listOf()
 )

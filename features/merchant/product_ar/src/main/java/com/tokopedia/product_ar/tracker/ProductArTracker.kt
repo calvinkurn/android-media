@@ -102,6 +102,10 @@ object ProductArTracker {
         val price = arData?.getFinalPrice()?.toString() ?: ""
         val stock = arData?.getFinalStock()?.toString() ?: ""
 
+        val categoryNameLvl1 = arMetaData.categoryDetail.firstOrNull()?.name ?: ""
+        val categoryNameLvl2 = arMetaData.categoryDetail.getOrNull(1)?.name ?: ""
+        val categoryNameLvl3 = arMetaData.categoryDetail.getOrNull(3)?.name ?: ""
+        val itemCategory = "$categoryNameLvl1 / $categoryNameLvl2 / $categoryNameLvl3 /  ${arMetaData.categoryID}"
         val mapEvent = mapOf(
                 "event" to EVENT_ATC,
                 "eventAction" to ACTION_CLICK_ATC_AR,
@@ -115,7 +119,7 @@ object ProductArTracker {
                         "category_id" to arMetaData.categoryID,
                         "dimension45" to cartId,
                         "item_brand" to arMetaData.shopName,
-                        "item_category" to " name / level2 name / level3 name / child_cat_id",
+                        "item_category" to itemCategory,
                         "item_id" to productId,
                         "item_name" to productName,
                         "item_variant" to productId,
