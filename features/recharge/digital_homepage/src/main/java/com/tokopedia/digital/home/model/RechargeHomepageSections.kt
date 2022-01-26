@@ -437,7 +437,7 @@ data class RechargeHomepageSwipeBannerModel(val section: RechargeHomepageSection
 
 }
 
-data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.Section) :
+open class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.Section) :
     RechargeHomepageSectionModel {
 
     // use 1 media type for all items
