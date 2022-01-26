@@ -223,6 +223,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
