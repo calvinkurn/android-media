@@ -9,12 +9,10 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/bottom_sheet_reg_biom_main_img"
         android:layout_width="250dp"
         android:layout_height="200dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/img_register_biometric"
-        app:srcCompat="@drawable/img_register_biometric"
-        />
+        android:scaleType="fitCenter" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_marginTop="@dimen/unify_space_16"

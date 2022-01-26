@@ -6,9 +6,13 @@ import androidx.fragment.app.FragmentActivity
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 object FingerprintDialogHelper {
+
+    const val BIOMETRIC_OFFERING_MAIN_IMG = "https://images.tokopedia.net/img/android/user/home_account/img_register_biometric.png"
+    const val BIOMETRIC_OFFERING_SUCCESS_IMG = "https://images.tokopedia.net/img/android/user/home_account/img_biometric_register_success.png"
 
     fun showFingerprintLockoutDialog(context: Context?, onPositiveButtonClick: () -> Unit? = {}, onDismiss: () -> Unit? = {}) {
         context?.run {
@@ -45,9 +49,17 @@ object FingerprintDialogHelper {
 
     fun createBiometricOfferingDialog(activity: FragmentActivity, onPrimaryBtnClicked: () -> Unit?, onSecondaryBtnClicked: () -> Unit?, onCloseBtnClicked: () -> Unit?): BottomSheetUnify {
         return BottomSheetUnify().apply {
+
             val view = View.inflate(activity, R.layout.bottom_sheet_register_fingerprint_layout, null)
             val primaryBtn = view?.findViewById<UnifyButton>(R.id.bottom_sheet_reg_biom_primary_btn)
             val secondaryBtn = view?.findViewById<UnifyButton>(R.id.bottom_sheet_reg_biom_secondary_btn)
+
+            val mainImgView = view?.findViewById<ImageUnify>(R.id.bottom_sheet_reg_biom_main_img)
+
+            Glide.with(activity)
+                .load(BIOMETRIC_OFFERING_MAIN_IMG)
+                .into(mainImgView)
+
             primaryBtn?.setOnClickListener {
                 onPrimaryBtnClicked()
             }
@@ -69,6 +81,13 @@ object FingerprintDialogHelper {
         BottomSheetUnify().apply {
             val view = View.inflate(activity, R.layout.bottom_sheet_register_fingerprint_success, null)
             val primaryBtn = view?.findViewById<UnifyButton>(R.id.bottom_sheet_success_biom_primary_btn)
+
+            val mainImgView = view?.findViewById<ImageUnify>(R.id.bottom_sheet_success_biom_main_img)
+
+            Glide.with(activity)
+                .load(BIOMETRIC_OFFERING_SUCCESS_IMG)
+                .into(mainImgView)
+
             primaryBtn?.setOnClickListener {
                 onPrimaryBtnClicked()
                 dismiss()
