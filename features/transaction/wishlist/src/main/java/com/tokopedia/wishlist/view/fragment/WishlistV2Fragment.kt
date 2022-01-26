@@ -315,6 +315,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 wishlistLoaderLayout.root.gone()
                 rvWishlist.gone()
                 emptyStateGlobalWishlistV2.gone()
+                clWishlistHeader.gone()
                 hideTotalLabel()
                 globalErrorWishlistV2.visible()
                 globalErrorWishlistV2.setType(errorType)
