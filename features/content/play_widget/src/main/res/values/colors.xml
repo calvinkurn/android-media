@@ -16,12 +16,11 @@
     <color name="play_widget_dms_small_overlay_gradient_center">#4D000000</color>
     <color name="play_widget_dms_small_overlay_gradient_bottom">#CC000000</color>
 
-    <color name="play_widget_dms_large_overlay_gradient_top">#3D212121</color>
-    <color name="play_widget_dms_large_overlay_gradient_center">#29212121</color>
-    <color name="play_widget_dms_large_overlay_gradient_bottom">#00212121</color>
-    <color name="play_widget_dms_large_overlay_gradient_light">#CC212121</color>
-    <color name="play_widget_dms_large_overlay_gradient_dark">#7A212121</color>
-    <color name="play_widget_dms_large_overlay_gradient_bottom_dark">#D9000000</color>
+    <color name="play_widget_dms_overlay_gradient_1">#3D212121</color>
+    <color name="play_widget_dms_overlay_gradient_2">#29212121</color>
+    <color name="play_widget_dms_overlay_gradient_3">#00212121</color>
+    <color name="play_widget_dms_overlay_gradient_4">#CC212121</color>
+    <color name="play_widget_dms_overlay_gradient_5">#D9000000</color>
 
     <color name="play_widget_dms_jumbo_overlay_gradient_white">#00000000</color>
     <color name="play_widget_dms_jumbo_overlay_gradient_darker">#00000000</color>
