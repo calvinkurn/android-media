@@ -4,7 +4,6 @@ import android.accounts.NetworkErrorException
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.app.Activity
-import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Typeface
@@ -13,9 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -615,6 +612,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             if (it.status == STATUS_DONE) {
                 activity?.runOnUiThread {
                     viewModel.getPopupsInfo(it.productId)
+                    shouldScrollToTop = true
                     getFiltersTab(withDelay = true)
                     getProductList(withDelay = true, isRefresh = true)
                     viewModel.clearDataSource()

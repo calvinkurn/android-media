@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.common.feature.datasource.LocalDataSourceImpl.PreferencesKeys.PRODUCT_ID
 import com.tokopedia.product.manage.common.feature.datasource.LocalDataSourceImpl.PreferencesKeys.STATUS
 import com.tokopedia.product.manage.common.feature.datasource.model.UserPreferences
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -30,6 +31,7 @@ class LocalDataSourceImpl(
     companion object {
         const val PREFERENCE_KEY_STATUS = "STATUS"
         const val PREFERENCE_KEY_PRODUCT_ID = "PRODUCT_ID"
+        const val DELAY = 1000L
     }
 
     private object PreferencesKeys {
@@ -48,6 +50,7 @@ class LocalDataSourceImpl(
             }
             .distinctUntilChanged()
             .map { preferences ->
+                delay(DELAY)
                 val status = preferences[STATUS].orZero()
                 val productId = preferences[PRODUCT_ID].orEmpty()
                 UserPreferences(status, productId)
