@@ -3,6 +3,7 @@ package com.tokopedia.loginfingerprint.view.dialog
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.bumptech.glide.Glide
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
