@@ -27,11 +27,11 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (listRecommendationProduct.get(position).layoutType.ordinal) {
             RecommendationCardEnum.BIG.ordinal -> {
-                (holder as RecommendationCardBigViewHolder).bind(listRecommendationProduct[position])
+                (holder as RecommendationCardBigViewHolder).bind(listRecommendationProduct[position], position)
             }
 
             RecommendationCardEnum.SMALL.ordinal -> {
-                (holder as RecommendationCardSmallViewHolder).bind(listRecommendationProduct[position])
+                (holder as RecommendationCardSmallViewHolder).bind(listRecommendationProduct[position], position)
             }
         }
     }
