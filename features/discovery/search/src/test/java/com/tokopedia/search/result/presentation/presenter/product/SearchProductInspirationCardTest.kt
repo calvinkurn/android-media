@@ -93,7 +93,7 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
 
     private fun `Then verify visitable list has correct inspiration card and product sequence on first page`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
-        val inspirationWidget = searchProductModel.searchInspirationWidget.data.filter { it.type != "unknown_random_type" }
+        val inspirationWidget = searchProductModel.validInspirationWidget()
 
         // 0 -> search product count data
         // 1 -> product
@@ -124,7 +124,7 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
                 }
                 9 -> {
                     visitable.shouldBeInstanceOf<InspirationCardDataView>(
-                            "visitable list at index $index should be InspirationCardViewModel"
+                        "visitable list at index $index should be InspirationCardViewModel"
                     )
                     (visitable as InspirationCardDataView).assertInspirationSizeViewModel(inspirationWidget[0])
                 }
@@ -133,8 +133,14 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
                 )
             }
         }
-
     }
+
+    private fun SearchProductModel.validInspirationWidget() =
+        searchInspirationWidget
+            .data
+            .filter {
+                it.type != "unknown_random_type" && it.position >= 0
+            }
 
     private fun InspirationCardDataView.assertInspirationSizeViewModel(inspirationWidget: SearchProductModel.InspirationWidgetData) {
         data.title shouldBe inspirationWidget.title
@@ -180,7 +186,7 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
 
     private fun `Then verify visitable list has correct inspiration card and product sequence after load more`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
-        val inspirationWidget = searchProductModel.searchInspirationWidget.data.filter { it.type != "unknown_random_type" }
+        val inspirationWidget = searchProductModel.validInspirationWidget()
 
         // 0 -> product
         // 1 -> product
