@@ -31,6 +31,13 @@ class PlayWidgetCardJumboBannerView : ConstraintLayout {
         background = view.findViewById(R.id.play_widget_banner)
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        layoutParams = layoutParams.apply {
+            height = measuredWidth
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
     fun setData(data: PlayWidgetBannerUiModel) {
         background.loadImage(data.imageUrl)
 
