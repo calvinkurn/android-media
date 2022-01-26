@@ -13,7 +13,7 @@ import com.tokopedia.vouchercreation.product.create.data.response.CreateCouponPr
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import javax.inject.Inject
 
-class CreateCouponProductFacadeUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
+class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
     BaseGqlUseCase<Int>() {
 
 
@@ -51,11 +51,13 @@ class CreateCouponProductFacadeUseCase @Inject constructor(private val gqlReposi
         val endDate = couponInformation.period.endDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
         val endHour = couponInformation.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
 
-        val benefitType = when (couponSettings.discountType) {
-            DiscountType.NONE -> ""
-            DiscountType.NOMINAL -> "idr"
-            DiscountType.PERCENTAGE -> "percent"
+        val benefitType = when {
+            couponSettings.type == CouponType.FREE_SHIPPING -> "idr"
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> "idr"
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> "percent"
+            else -> "idr"
         }
+
         val couponType = when (couponSettings.type) {
             CouponType.NONE -> ""
             CouponType.CASHBACK -> "cashback"
@@ -85,7 +87,7 @@ class CreateCouponProductFacadeUseCase @Inject constructor(private val gqlReposi
             targetBuyer = 0,
             minimumTierLevel = 0,
             isLockToProduct = 1,
-            productIds = couponProducts.joinToString(separator = ",") { it.id.toString() },
+            productIds = couponProducts.joinToString(separator = ",") { it.id },
             productIdsCsvUrl = ""
         )
 

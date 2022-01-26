@@ -14,8 +14,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import javax.inject.Inject
 
-class CreateCouponUseCase @Inject constructor(
-    private val createCouponProductUseCase: CreateCouponProductFacadeUseCase,
+class CreateCouponFacadeUseCase @Inject constructor(
+    private val createCouponProductUseCase: CreateCouponProductUseCase,
     private val initiateVoucherUseCase: InitiateVoucherUseCase
 ) {
 
@@ -30,13 +30,21 @@ class CreateCouponUseCase @Inject constructor(
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
     ): Int {
-        val uploadImageDeferred = scope.async { uploadImage(sourceId, couponProducts) }
+        //val uploadImageDeferred = scope.async { uploadImage(sourceId, couponProducts) }
         val initiateVoucherDeferred = scope.async { initiateVoucher(IS_UPDATE_MODE) }
 
-        val imageUrl = uploadImageDeferred.await()
+       // val imageUrl = uploadImageDeferred.await()
         val voucher = initiateVoucherDeferred.await()
 
-        val createCouponDeferred = scope.async { createCoupon(couponInformation, couponSettings, couponProducts, voucher.token, imageUrl) }
+        val createCouponDeferred = scope.async {
+            createCoupon(
+                couponInformation,
+                couponSettings,
+                couponProducts,
+                voucher.token,
+                "https://images.tokopedia.net/img/VqbcmM/2021/8/19/78c9335e-e949-4549-9b31-e637eae9e1e0.png"
+            )
+        }
 
         val createdCouponId = createCouponDeferred.await()
 

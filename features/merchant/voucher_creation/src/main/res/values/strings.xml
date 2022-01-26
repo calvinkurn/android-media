@@ -426,6 +426,7 @@
     <string name="update_coupon_product">Ubah Kupon Produk</string>
     <string name="save_changes">Simpan Perubahan</string>
     <string name="coupon_updated">Kupon sudah diperbarui.</string>
+    <string name="coupon_duplicated">Kupon berhasil di duplikat</string>
     <string name="placeholder_share_coupon_product_wording">Tersedia kupon untuk produk tertentu dari toko %s hanya di \@Tokopedia. Mulai %s sampai %s! %s</string>
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
