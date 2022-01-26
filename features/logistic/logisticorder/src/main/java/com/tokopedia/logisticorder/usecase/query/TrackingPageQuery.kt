@@ -43,6 +43,7 @@ object TrackingPageQuery {
                   time
                   proof {
                     image_id
+                    #description
                   }
                   partner_name
                 }

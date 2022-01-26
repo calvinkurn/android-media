@@ -42,7 +42,7 @@ import timber.log.Timber;
 public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder> {
 
     public interface OnImageClicked {
-        void onImageItemClicked(String imageId, Long orderId);
+        void onImageItemClicked(String imageId, Long orderId, String proofDescription);
     }
 
     private List<TrackHistoryModel> trackingHistoryData;
@@ -117,7 +117,7 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
                     .into(holder.imageProof);
 
             holder.imageProof.setOnClickListener(view -> {
-                listener.onImageItemClicked(trackingHistoryData.get(position).getProof().getImageId(), orderId);
+                listener.onImageItemClicked(trackingHistoryData.get(position).getProof().getImageId(), orderId, trackingHistoryData.get(position).getProof().getDescription());
             });
 //        }
     }

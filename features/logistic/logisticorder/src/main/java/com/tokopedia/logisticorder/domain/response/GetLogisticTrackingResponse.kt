@@ -70,7 +70,9 @@ data class Detail(
 
 data class Proof(
         @SerializedName("image_id")
-        val imageId: String = ""
+        val imageId: String = "",
+        @SerializedName("description")
+        val description: String = ""
 )
 
 data class TrackHistory(

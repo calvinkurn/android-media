@@ -470,7 +470,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         }
     }
 
-    override fun onImageItemClicked(imageId: String, orderId: Long) {
+    override fun onImageItemClicked(imageId: String, orderId: Long, description: String) {
         // todo TO BE REVERTED, TESTING ONLY
 //        val url = getDeliveryImage(imageId, orderId, "large",
 //                userSession.userId, 1, userSession.deviceId)
@@ -493,10 +493,14 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             }
         }
 
-        binding?.imagePreviewLarge?.visibility = View.VISIBLE
-        binding?.iconClose?.setOnClickListener {
-            binding?.imagePreviewLarge?.visibility = View.GONE
+        binding?.run {
+            proofDescription.text = description
+            imagePreviewLarge.visibility = View.VISIBLE
+            iconClose.setOnClickListener {
+                binding?.imagePreviewLarge?.visibility = View.GONE
+            }
         }
+
 
     }
 
