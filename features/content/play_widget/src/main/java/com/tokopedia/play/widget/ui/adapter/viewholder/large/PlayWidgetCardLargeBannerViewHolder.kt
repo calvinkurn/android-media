@@ -2,13 +2,10 @@ package com.tokopedia.play.widget.ui.adapter.viewholder.large
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.custom.PlayWidgetCardJumboBannerView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
-import com.tokopedia.play_common.view.loadImage
 
 /**
  * @author by astidhiyaa on 11/01/22
