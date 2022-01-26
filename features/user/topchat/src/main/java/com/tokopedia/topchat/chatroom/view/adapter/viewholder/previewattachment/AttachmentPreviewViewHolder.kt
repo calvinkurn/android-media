@@ -15,7 +15,7 @@ abstract class AttachmentPreviewViewHolder<in T: SendablePreview>(
         fun retryLoadCurrentAttachment()
     }
 
-    private val closeButton: ImageView? = getButtonView(itemView)
+    protected val closeButton: ImageView? = getButtonView(itemView)
 
     abstract fun getButtonView(itemView: View): ImageView?
 

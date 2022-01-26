@@ -109,6 +109,7 @@ class ProductPreviewViewHolder(
 
     private fun showLoading(isLoading: Boolean) {
         loader?.showWithCondition(isLoading)
+        closeButton?.showWithCondition(!isLoading)
     }
 
     private fun showError(isError: Boolean) {
