@@ -2,12 +2,10 @@ package com.tokopedia.play.widget.ui.adapter.viewholder.jumbo
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.ui.custom.PlayWidgetCardJumboBannerView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
-import com.tokopedia.play_common.view.loadImage
 
 /**
  * @author by astidhiyaa on 12/01/22
@@ -16,27 +14,27 @@ class PlayWidgetCardJumboBannerViewHolder(
     itemView: View,
     private val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
-    
-    init {
-        //re-use from large
-        itemView.layoutParams = itemView.layoutParams.apply {
-            height = itemView.context.resources.getDimensionPixelSize(R.dimen.play_widget_card_jumbo_height)
+
+    private val playWidgetBannerView: PlayWidgetCardJumboBannerView = itemView.findViewById(R.id.play_widget_banner_big)
+    private val playWidgetBannerListener = object : PlayWidgetCardJumboBannerView.Listener {
+        override fun onBannerClicked(view: View, item: PlayWidgetBannerUiModel) {
+            listener.onBannerClicked(view, item, position)
         }
     }
 
-    private var background: AppCompatImageView = itemView.findViewById(R.id.play_widget_banner)
+    init {
+        playWidgetBannerView.setListener(playWidgetBannerListener)
+        playWidgetBannerView.setWidgetSizeType(isJumbo = true)
+    }
+
 
     fun bind(item: PlayWidgetBannerUiModel) {
-        background.loadImage(item.imageUrl)
-        itemView.setOnClickListener {
-            listener.onBannerClicked(it, item, adapterPosition)
-            RouteManager.route(it.context, item.appLink)
-        }
+        playWidgetBannerView.setData(item)
     }
 
     companion object {
         @LayoutRes
-        val layoutRes = R.layout.item_play_widget_card_banner_large
+        val layoutRes = R.layout.view_card_banner
     }
 
     interface Listener {

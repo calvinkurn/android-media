@@ -26,6 +26,8 @@ class PlayWidgetCardJumboBannerView : ConstraintLayout {
 
     private var mListener: Listener? = null
 
+    private var isJumbo: Boolean = true
+
     init {
         val view = View.inflate(context, R.layout.item_play_widget_card_banner_jumbo, this)
         background = view.findViewById(R.id.play_widget_banner)
@@ -33,9 +35,13 @@ class PlayWidgetCardJumboBannerView : ConstraintLayout {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         layoutParams = layoutParams.apply {
-            height = measuredWidth
+            height = if(isJumbo) measuredWidth else context.resources.getDimensionPixelSize(R.dimen.play_widget_card_large_height)
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
+    fun setWidgetSizeType(isJumbo: Boolean){
+        this.isJumbo = isJumbo
     }
 
     fun setData(data: PlayWidgetBannerUiModel) {

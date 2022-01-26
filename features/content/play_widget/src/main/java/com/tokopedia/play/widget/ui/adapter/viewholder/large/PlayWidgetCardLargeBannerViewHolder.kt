@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.ui.custom.PlayWidgetCardJumboBannerView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play_common.view.loadImage
 
@@ -17,23 +18,25 @@ class PlayWidgetCardLargeBannerViewHolder(
     private val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
 
-    private var background: AppCompatImageView = itemView.findViewById(R.id.play_widget_banner)
+    private val playWidgetBannerView: PlayWidgetCardJumboBannerView = itemView.findViewById(R.id.play_widget_banner_big)
+    private val playWidgetBannerListener = object : PlayWidgetCardJumboBannerView.Listener {
+        override fun onBannerClicked(view: View, item: PlayWidgetBannerUiModel) {
+            listener.onBannerClicked(view, item, position)
+        }
+    }
 
     init {
-        //if re-use from medium, need to change layout params here
+        playWidgetBannerView.setListener(playWidgetBannerListener)
+        playWidgetBannerView.setWidgetSizeType(isJumbo = false)
     }
 
     fun bind(item: PlayWidgetBannerUiModel) {
-        background.loadImage(item.imageUrl)
-        itemView.setOnClickListener {
-            listener.onBannerClicked(it, item, adapterPosition)
-            RouteManager.route(it.context, item.appLink)
-        }
+        playWidgetBannerView.setData(item)
     }
 
     companion object {
         @LayoutRes
-        val layoutRes = R.layout.item_play_widget_card_banner_large
+        val layoutRes = R.layout.view_card_banner
     }
 
     interface Listener {
