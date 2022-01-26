@@ -30,6 +30,7 @@
     <string name="path_voucher_list_history" translatable="false">/voucher-list/history</string>
     <string name="path_voucher_detail" translatable="false">/voucher-detail</string>
     <string name="path_voucher_detail_product" translatable="false">/voucher-detail-product</string>
+    <string name="path_voucher_product_list" translatable="false">/voucher-product-list</string>
     <string name="path_campaign_list" translatable="false">/campaign-list</string>
     <string name="path_seller_menu" translatable="false">/seller-menu</string>
     <string name="path_seller_action" translatable="false">/seller-action</string>
