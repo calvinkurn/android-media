@@ -1,6 +1,5 @@
 package com.tokopedia.wishlist.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -23,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
@@ -68,7 +68,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
-import com.tokopedia.wishlist.BuildConfig
 import com.tokopedia.wishlist.R as Rv2
 import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
@@ -1299,7 +1298,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun logToCrashlytics(throwable: Throwable) {
-        if (!BuildConfig.DEBUG) {
+        if (!GlobalConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().recordException(throwable)
         } else {
             throwable.printStackTrace()
