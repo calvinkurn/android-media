@@ -224,6 +224,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.isError = true
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1355,7 +1357,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickAttachProductMenu()
         chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+            generate3PreAttachPayload(DEFAULT_PRODUCT_ID)
         intendingAttachProduct(3)
         clickPlusIconMenu()
         clickAttachProductMenu()
@@ -1377,11 +1379,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intendingAttachProduct(3)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+            generate3PreAttachPayload(DEFAULT_PRODUCT_ID)
         clickPlusIconMenu()
         clickAttachProductMenu()
         chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         clickCloseAttachmentPreview(0)
 
         // Then
