@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4">
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_section_title"
         android:layout_width="0dp"
@@ -33,6 +35,8 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/product_card_custom_banner_margin"
+        android:layout_marginEnd="@dimen/product_card_custom_banner_margin"
         app:card_background_color="@color/dms_product_card_custom_banner_background_color"
         app:layout_constraintTop_toBottomOf="@id/tv_section_title">
         <FrameLayout
@@ -50,9 +54,11 @@
                     android:layout_height="match_parent"/>
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/parallax_image"
-                    android:layout_width="@dimen/product_card_flashsale_width"
+                    android:layout_width="@dimen/product_card_custom_banner_width"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/product_card_custom_banner_image_margin_top"
                     android:layout_marginStart="@dimen/recharge_custom_product_card_iv_margin"
+                    android:paddingHorizontal="@dimen/spacing_lvl4"
                     android:clickable="true"
                     android:focusable="true"/>
             </FrameLayout>
@@ -62,9 +68,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginBottom="@dimen/unify_space_12"
-                android:paddingStart="@dimen/product_card_flashsale_width"
+                android:paddingStart="@dimen/product_card_custom_banner_width"
                 android:paddingEnd="@dimen/spacing_lvl3"
                 android:clipToPadding="false"
+                android:overScrollMode="never"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="10"
                 tools:spanCount="3"
@@ -73,7 +80,7 @@
         </FrameLayout>
     </com.tokopedia.unifycomponents.CardUnify>
     <include
-        android:id="@+id/view_recharge_home_product_cards_unify_shimmering"
+        android:id="@+id/view_recharge_home_product_cards_shimmering"
         layout="@layout/view_recharge_home_product_cards_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
