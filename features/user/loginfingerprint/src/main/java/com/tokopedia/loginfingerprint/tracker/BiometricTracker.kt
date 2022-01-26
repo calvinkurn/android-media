@@ -202,7 +202,7 @@ class BiometricTracker {
                 EVENT_CLICK_BIOMETRIC,
                 CATEGORY_LOGOUT_PAGE,
                 ACTION_CLICK_BIOMETRIC_ACTIVATION,
-                "$EVENT_LABEL_FAILED - reason")
+                "$EVENT_LABEL_FAILED - $reason")
         )
     }
 
