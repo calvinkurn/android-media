@@ -18,7 +18,7 @@ import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
 /**
  * Created by kenny.hadisaputra on 24/01/22
  */
-class PlayWidgetMediumViewHolder {
+class PlayWidgetMediumViewHolder private constructor() {
 
     internal class Overlay private constructor(
         itemView: View,

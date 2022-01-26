@@ -1,7 +1,5 @@
 package com.tokopedia.play.widget.ui.model
 
-import com.tokopedia.play.widget.ui.type.PlayWidgetSize
-
 /**
  * Created by kenny.hadisaputra on 24/01/22
  */

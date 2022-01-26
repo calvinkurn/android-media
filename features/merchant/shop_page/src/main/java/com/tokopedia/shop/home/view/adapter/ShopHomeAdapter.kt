@@ -454,14 +454,14 @@ class ShopHomeAdapter(
     /**
      * Play Widget
      */
-    fun updatePlayWidget(widgetUiModel: PlayWidgetState?) {
+    fun updatePlayWidget(playWidgetState: PlayWidgetState?) {
         val newList = getNewVisitableItems()
         newList.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
             if (position == -1) return@let
-            if (widgetUiModel == null || widgetUiModel.isLoading || isPlayWidgetEmpty(widgetUiModel.model)) {
+            if (playWidgetState == null || playWidgetState.isLoading || isPlayWidgetEmpty(playWidgetState.model)) {
                 newList.removeAt(position)
             } else {
-                (newList.getOrNull(position) as? CarouselPlayWidgetUiModel)?.copy(playWidgetState = widgetUiModel)?.apply {
+                (newList.getOrNull(position) as? CarouselPlayWidgetUiModel)?.copy(playWidgetState = playWidgetState)?.apply {
                     widgetState = WidgetState.FINISH
                     isNewData = true
                 }?.also {

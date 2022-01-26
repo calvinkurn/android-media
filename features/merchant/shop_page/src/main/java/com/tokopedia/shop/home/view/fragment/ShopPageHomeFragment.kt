@@ -49,10 +49,10 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
+import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
-import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
@@ -1292,7 +1292,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 handleWishlistAction(productCardOptionsModel)
             }
         })
-        if (requestCode == PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE && data != null) {
+        if (requestCode == PlayWidgetConst.KEY_PLAY_WIDGET_REQUEST_CODE && data != null) {
             notifyPlayWidgetTotalView(data)
             notifyPlayWidgetReminder(data)
         }
@@ -2765,7 +2765,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         } else {
             val intent = RouteManager.getIntent(requireContext(), appLink)
-            startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
+            startActivityForResult(intent, PlayWidgetConst.KEY_PLAY_WIDGET_REQUEST_CODE)
         }
     }
 
@@ -2795,14 +2795,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun notifyPlayWidgetTotalView(data: Intent) {
-        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
-        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
+        val channelId = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_CHANNEL_ID)
+        val totalView = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_TOTAL_VIEW)
         viewModel?.updatePlayWidgetTotalView(channelId, totalView)
     }
 
     private fun notifyPlayWidgetReminder(data: Intent) {
-        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
-        val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+        val channelId = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_CHANNEL_ID)
+        val isReminder = data.getBooleanExtra(PlayWidgetConst.KEY_EXTRA_IS_REMINDER, false)
         viewModel?.updatePlayWidgetReminder(channelId, isReminder)
     }
 
