@@ -1390,7 +1390,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun setBeautyFest(dynamicChannel: HomeDynamicChannelModel) {
         val isEligibleForBeautyFest = isEligibleForBeautyFest()
         if (isEligibleForBeautyFest && !dynamicChannel.isCache && counterBypassFirstNetworkHomeData > 0) {
-            getHomeViewModel().getBeautyFest(dynamicChannel.list)
+            getHomeViewModel().getBeautyFest(dynamicChannel)
         } else if (isEligibleForBeautyFest) {
             beautyFestEvent = BEAUTY_FEST_NOT_SET
             renderBeautyFestHeader()

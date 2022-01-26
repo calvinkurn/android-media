@@ -553,9 +553,9 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getBeautyFest(data: List<Visitable<*>>) {
+    fun getBeautyFest(homeDynamicChannelModel: HomeDynamicChannelModel) {
         launch{
-            _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(data))
+            _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(homeDynamicChannelModel))
         }
     }
 

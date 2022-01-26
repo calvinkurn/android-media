@@ -29,6 +29,7 @@ class HomeDataMapper(
         var processingAtf = homeData.atfData?.isProcessingAtf?: false
         var processingDynamicChannel = homeData.isProcessingDynamicChannel
 
+        var isChannelBeautyFest = false
         if (isCache) {
             processingAtf = false
             processingDynamicChannel = false
@@ -38,6 +39,24 @@ class HomeDataMapper(
             }
             if (homeData.dynamicHomeChannel.channels.isEmpty() && haveCachedData) {
                 throw IllegalStateException(DC_ERROR_MESSAGE)
+            }
+            for (channel in homeData.dynamicHomeChannel.channels) {
+                isChannelBeautyFest = when(channel.id) {
+                    //hardcoded channel id as beauty fest channel id
+                    "129362",
+                    "129363",
+                    "129364",
+                    "129365",
+                    "129366",
+                    "129367",
+                    "129368",
+                    "129369",
+                    "129370",
+                    "129371" -> true
+                    else -> false
+                }
+                if(isChannelBeautyFest)
+                    break
             }
         }
         val firstPage = homeData.token.isNotEmpty()
@@ -64,7 +83,8 @@ class HomeDataMapper(
                 isCache = isCache,
                 isFirstPage = firstPage,
                 homeChooseAddressData = HomeChooseAddressData(true),
-            flowCompleted = false
+            flowCompleted = false,
+                isBeautyFest = isChannelBeautyFest
         )
     }
 }

@@ -19,7 +19,8 @@ data class HomeDynamicChannelModel(
         val isFirstPage: Boolean = false,
         var homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
         var topadsNextPageToken: String = "",
-        var flowCompleted: Boolean = true
+        var flowCompleted: Boolean = true,
+        val isBeautyFest: Boolean = false
 ) {
     private var _list: MutableList<Visitable<*>> = list.toMutableList()
 
