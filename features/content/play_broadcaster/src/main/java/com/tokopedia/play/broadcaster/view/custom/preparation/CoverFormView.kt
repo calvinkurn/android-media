@@ -31,9 +31,34 @@ class CoverFormView: ConstraintLayout {
     )
     private var mListener: Listener? = null
 
+    init {
+        binding.icCloseCoverForm.setOnClickListener { mListener?.onCloseCoverForm() }
+        binding.clCoverFormPreview.setOnClickListener { mListener?.onClickCoverPreview() }
+    }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mListener = null
+    }
+
+    fun setCover(imageUrl: String) {
+        binding.ivCoverFormPreview.setImageUrl(imageUrl)
+    }
+
+    fun setTitle(title: String) {
+        binding.tvCoverFormTitle.text = title
+    }
+
+    fun setShopName(shopName: String) {
+        binding.tvCoverFormShopName.text = shopName
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
 
     interface Listener {
-
+        fun onCloseCoverForm()
+        fun onClickCoverPreview()
     }
 }

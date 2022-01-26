@@ -72,6 +72,14 @@
         tools:visibility="visible"
         />
 
+    <com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
+        android:id="@+id/form_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_preparation_main"
         android:layout_width="wrap_content"

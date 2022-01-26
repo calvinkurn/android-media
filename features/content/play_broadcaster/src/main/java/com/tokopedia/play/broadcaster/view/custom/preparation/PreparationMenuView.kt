@@ -35,7 +35,7 @@ class PreparationMenuView: ConstraintLayout {
 
     init {
         binding.clBroSetTitle.setOnClickListener { mListener?.onClickSetTitle() }
-        binding.clBroSetProduct.setOnClickListener { mListener?.onClickSetCover() }
+        binding.clBroSetCover.setOnClickListener { mListener?.onClickSetCover() }
         binding.clBroSetProduct.setOnClickListener { mListener?.onClickSetProduct() }
     }
 

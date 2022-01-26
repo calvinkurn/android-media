@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormState
 import com.tokopedia.play.broadcaster.ui.state.PlayTitleFormUiState
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
+import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -38,7 +39,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
     ActionBarView.Listener,
     PreparationMenuView.Listener,
-    TitleFormView.Listener {
+    TitleFormView.Listener,
+    CoverFormView.Listener {
 
     /** ViewModel */
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
@@ -104,6 +106,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     true
                 }
             }
+            binding.formCover.visibility == View.VISIBLE -> {
+                showCoverForm(false)
+                true
+            }
             else -> super.onBackPressed()
         }
     }
@@ -122,17 +128,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupListener() {
-        binding.viewActionBar.setListener(this)
-        binding.viewPreparationMenu.setListener(this)
-        binding.formTitle.setListener(this)
+        binding.apply {
+            viewActionBar.setListener(this@PlayBroadcastPreparationFragment)
+            viewPreparationMenu.setListener(this@PlayBroadcastPreparationFragment)
+            formTitle.setListener(this@PlayBroadcastPreparationFragment)
+            formCover.setListener(this@PlayBroadcastPreparationFragment)
 
-        binding.flBroStartLivestream.setOnClickListener {
-            /** TODO: start countdown */
-        }
+            flBroStartLivestream.setOnClickListener {
+                /** TODO: start countdown */
+            }
 
-        binding.icBroPreparationSwitchCamera.setOnClickListener {
-            parentViewModel.switchCamera()
-            analytic.clickSwitchCameraOnSetupPage()
+            icBroPreparationSwitchCamera.setOnClickListener {
+                parentViewModel.switchCamera()
+                analytic.clickSwitchCameraOnSetupPage()
+            }
         }
     }
 
@@ -173,6 +182,22 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
+    private fun showCoverForm(isShow: Boolean) {
+        if(isShow) {
+            showMainComponent(false)
+
+            /** TODO: set cover if exists */
+            binding.formCover.setTitle(parentViewModel.channelTitle)
+            binding.formCover.setShopName(parentViewModel.getShopName())
+            binding.formCover.visibility = View.VISIBLE
+        }
+        else {
+            showMainComponent(true)
+
+            binding.formCover.visibility = View.GONE
+        }
+    }
+
     /** Callback Action Bar */
     override fun onClickClosePreparation() {
         analytic.clickCloseOnSetupPage()
@@ -185,7 +210,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onClickSetCover() {
-        TODO("Not yet implemented")
+        showCoverForm(true)
     }
 
     override fun onClickSetProduct() {
@@ -202,6 +227,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         hideKeyboard()
         binding.formTitle.setLoading(true)
         titleSetupViewModel.uploadTitle(title)
+    }
+
+    /** Callback Cover Form */
+    override fun onCloseCoverForm() {
+        activity?.onBackPressed()
+    }
+
+    override fun onClickCoverPreview() {
+        TODO("Not yet implemented")
     }
 
     /** Helper */
