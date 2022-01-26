@@ -15,7 +15,6 @@ data class OrderPayment(
     val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
     val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
     val revampErrorMessage: OrderPaymentRevampErrorMessage = OrderPaymentRevampErrorMessage(),
-    val errorTickerMessage: String = "",
     val isDisablePayButton: Boolean = false,
         // flag to determine continue using ovo flow
     val isOvoOnlyCampaign: Boolean = false,
@@ -30,7 +29,7 @@ data class OrderPayment(
         get() = gatewayCode.contains("OVO")
 
     fun isError(): Boolean {
-        return isCalculationError || errorMessage.message.isNotEmpty() || errorTickerMessage.isNotEmpty()
+        return isCalculationError || errorData != null || walletErrorData != null
     }
 
     fun getRealFee(): Double {

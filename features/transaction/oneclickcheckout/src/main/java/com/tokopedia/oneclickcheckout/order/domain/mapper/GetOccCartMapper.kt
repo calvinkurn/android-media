@@ -14,7 +14,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerD
 import com.tokopedia.purchase_platform.common.utils.Utils
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class GetOccCartMapper @Inject constructor() {
@@ -277,7 +276,6 @@ class GetOccCartMapper @Inject constructor() {
                 creditCard = mapPaymentCreditCard(payment, data),
                 errorMessage = mapPaymentErrorMessage(payment.errorMessage),
                 revampErrorMessage = mapPaymentRevampErrorMessage(payment.occRevampErrorMessage),
-                errorTickerMessage = data.errorTicker,
                 isDisablePayButton = payment.isDisablePayButton,
                 isOvoOnlyCampaign = payment.isOvoOnlyCampaign,
                 ovoData = mapPaymentOvoData(payment.ovoAdditionalData, data),

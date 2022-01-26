@@ -20,8 +20,6 @@ class GetOccCartData(
         val keroUnixTime: String = "",
         @SerializedName("kero_discom_token")
         val keroDiscomToken: String = "",
-        @SerializedName("error_ticker")
-        val errorTicker: String = "",
         @SerializedName("tickers")
         val tickers: List<Ticker> = emptyList(),
         @SerializedName("occ_main_onboarding")
