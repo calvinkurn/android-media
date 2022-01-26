@@ -3,11 +3,10 @@ package com.tokopedia.play.widget.ui.adapter.viewholder.medium
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelMediumView
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 
 /**
  * Created by mzennis on 05/10/20.
@@ -20,15 +19,15 @@ class PlayWidgetCardMediumChannelViewHolder(
     private val playWidgetCardChannelMediumView: PlayWidgetCardChannelMediumView = itemView as PlayWidgetCardChannelMediumView
     private val widgetCardMediumListener = object : PlayWidgetCardChannelMediumView.Listener {
 
-        override fun onChannelClicked(view: View, item: PlayWidgetMediumChannelUiModel) {
+        override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel) {
             listener.onChannelClicked(view, item, adapterPosition)
         }
 
-        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, reminderType: PlayWidgetReminderType) {
+        override fun onToggleReminderChannelClicked(item: PlayWidgetChannelUiModel, reminderType: PlayWidgetReminderType) {
             listener.onToggleReminderChannelClicked(item, reminderType, adapterPosition)
         }
 
-        override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel) {
+        override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel) {
             listener.onMenuActionButtonClicked(view, item, adapterPosition)
         }
     }
@@ -37,10 +36,10 @@ class PlayWidgetCardMediumChannelViewHolder(
         playWidgetCardChannelMediumView.setListener(widgetCardMediumListener)
     }
 
-    fun bind(item: PlayWidgetMediumChannelUiModel) {
-        itemView.addOnImpressionListener(item.impressHolder) {
-            listener.onChannelImpressed(itemView, item, adapterPosition)
-        }
+    fun bind(item: PlayWidgetChannelUiModel) {
+//        itemView.addOnImpressionListener(item.impressHolder) {
+//            listener.onChannelImpressed(itemView, item, adapterPosition)
+//        }
         playWidgetCardChannelMediumView.setModel(item)
     }
 
@@ -58,25 +57,25 @@ class PlayWidgetCardMediumChannelViewHolder(
 
         fun onChannelImpressed(
                 view: View,
-                item: PlayWidgetMediumChannelUiModel,
+                item: PlayWidgetChannelUiModel,
                 position: Int
         )
 
         fun onChannelClicked(
                 view: View,
-                item: PlayWidgetMediumChannelUiModel,
+                item: PlayWidgetChannelUiModel,
                 position: Int
         )
 
         fun onToggleReminderChannelClicked(
-                item: PlayWidgetMediumChannelUiModel,
+                item: PlayWidgetChannelUiModel,
                 reminderType: PlayWidgetReminderType,
                 position: Int
         )
 
         fun onMenuActionButtonClicked(
                 view: View,
-                item: PlayWidgetMediumChannelUiModel,
+                item: PlayWidgetChannelUiModel,
                 position: Int
         )
     }

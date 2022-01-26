@@ -4,19 +4,19 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallChannelViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 
 /**
  * Created by jegul on 07/10/20
  */
 class PlayWidgetCardSmallChannelAdapterDelegate(
         private val smallCardChannelListener: PlayWidgetCardSmallChannelViewHolder.Listener
-) : TypedAdapterDelegate<PlayWidgetSmallChannelUiModel, PlayWidgetSmallItemUiModel, PlayWidgetCardSmallChannelViewHolder>(
+) : TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetCardSmallChannelViewHolder>(
         PlayWidgetCardSmallChannelViewHolder.layout
 ) {
 
-    override fun onBindViewHolder(item: PlayWidgetSmallChannelUiModel, holder: PlayWidgetCardSmallChannelViewHolder) {
+    override fun onBindViewHolder(item: PlayWidgetChannelUiModel, holder: PlayWidgetCardSmallChannelViewHolder) {
         holder.bind(item)
     }
 

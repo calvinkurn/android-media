@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.sample
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
@@ -10,18 +11,18 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
  */
 class PlayWidgetSampleAdapter(
         coordinatorMap: Map<PlayWidgetCoordinator, PlayWidgetViewHolder?>
-) : BaseDiffUtilAdapter<PlayWidgetUiModel>(isFlexibleType = true) {
+) : BaseDiffUtilAdapter<PlayWidgetState>(isFlexibleType = true) {
 
     init {
         delegatesManager
                 .addDelegate(PlayWidgetViewAdapterDelegate(coordinatorMap))
     }
 
-    override fun areItemsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {
+    override fun areItemsTheSame(oldItem: PlayWidgetState, newItem: PlayWidgetState): Boolean {
         return true
     }
 
-    override fun areContentsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {
+    override fun areContentsTheSame(oldItem: PlayWidgetState, newItem: PlayWidgetState): Boolean {
         return oldItem == newItem
     }
 }

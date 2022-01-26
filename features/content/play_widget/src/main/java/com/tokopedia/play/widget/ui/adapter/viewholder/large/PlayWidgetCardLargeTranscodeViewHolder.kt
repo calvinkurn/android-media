@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.model.PlayWidgetLargeChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -68,7 +68,7 @@ class PlayWidgetCardLargeTranscodeViewHolder(
         })
     }
 
-    fun bind(item: PlayWidgetLargeChannelUiModel) {
+    fun bind(item: PlayWidgetChannelUiModel) {
         Glide.with(thumbnail.context)
             .asBitmap()
             .load(item.video.coverUrl)
@@ -82,8 +82,8 @@ class PlayWidgetCardLargeTranscodeViewHolder(
         }
     }
 
-    private fun setTranscodingModel(model: PlayWidgetLargeChannelUiModel) {
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+    private fun setTranscodingModel(model: PlayWidgetChannelUiModel) {
+        totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
         promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
 
         tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
@@ -91,14 +91,14 @@ class PlayWidgetCardLargeTranscodeViewHolder(
 
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
-        tvTotalView.text = model.totalView
+        tvTotalView.text = model.totalView.totalViewFmt
 
         llWidgetContainer.visibility = View.VISIBLE
         llLoadingContainer.visibility = View.VISIBLE
         llError.visibility = View.GONE
     }
 
-    private fun setFailedTranscodingModel(model: PlayWidgetLargeChannelUiModel) {
+    private fun setFailedTranscodingModel(model: PlayWidgetChannelUiModel) {
         totalViewBadge.visibility = View.GONE
         promoBadge.visibility = View.GONE
 
@@ -122,7 +122,7 @@ class PlayWidgetCardLargeTranscodeViewHolder(
 
         fun onFailedTranscodingChannelDeleteButtonClicked(
             view: View,
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         )
     }

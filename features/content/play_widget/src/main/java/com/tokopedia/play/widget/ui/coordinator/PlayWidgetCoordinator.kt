@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -26,7 +27,7 @@ class PlayWidgetCoordinator(
     private val scope = CoroutineScope(mainCoroutineDispatcher)
 
     private var mWidget: PlayWidgetView? = null
-    private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder
+    private var mState: PlayWidgetState = PlayWidgetState(isLoading = true)
 
     private var mListener: PlayWidgetListener? = null
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
@@ -71,10 +72,8 @@ class PlayWidgetCoordinator(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        val currentModel = mModel
-        if (currentModel is PlayWidgetConfigProvider) {
-            autoRefreshCoordinator.configureAutoRefresh(currentModel.config)
-        }
+        val currentModel = mState
+        autoRefreshCoordinator.configureAutoRefresh(currentModel.model.config)
         autoPlayCoordinator.onResume()
     }
 
@@ -110,14 +109,12 @@ class PlayWidgetCoordinator(
         mWidget?.setAnalyticListener(listener)
     }
 
-    fun connect(widget: PlayWidgetView, model: PlayWidgetUiModel) {
-        mModel = model
-        widget.setModel(model)
+    fun connect(widget: PlayWidgetView, state: PlayWidgetState) {
+        mState = state
+        widget.setState(state)
 
-        if (model is PlayWidgetConfigProvider) {
-            autoRefreshCoordinator.configureAutoRefresh(model.config)
-            autoPlayCoordinator.configureAutoPlay(widget, model.config)
-        }
+        autoRefreshCoordinator.configureAutoRefresh(state.model.config)
+        autoPlayCoordinator.configureAutoPlay(widget, state.model.config)
     }
 
     fun setImpressionHelper(helper: ImpressionHelper) {

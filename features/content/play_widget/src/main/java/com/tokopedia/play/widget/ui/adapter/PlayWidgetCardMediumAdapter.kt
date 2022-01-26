@@ -9,8 +9,8 @@ import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMedi
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumTranscodeViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 
 
@@ -23,22 +23,22 @@ class PlayWidgetCardMediumAdapter(
         channelCardListener: PlayWidgetCardMediumChannelViewHolder.Listener,
         bannerCardListener: PlayWidgetCardMediumBannerViewHolder.Listener,
         transcodeCardListener: PlayWidgetCardMediumTranscodeViewHolder.Listener
-) : BaseDiffUtilAdapter<PlayWidgetMediumItemUiModel>() {
+) : BaseDiffUtilAdapter<PlayWidgetItemUiModel>() {
 
     init {
         delegatesManager
-                .addDelegate(PlayWidgetCardMediumOverlayAdapterDelegate(overlayCardListener))
+//                .addDelegate(PlayWidgetCardMediumOverlayAdapterDelegate(overlayCardListener))
                 .addDelegate(PlayWidgetCardMediumChannelAdapterDelegate(channelCardListener))
                 .addDelegate(PlayWidgetCardMediumBannerAdapterDelegate(bannerCardListener))
                 .addDelegate(PlayWidgetCardMediumTranscodeAdapterDelegate(imageBlurUtil, transcodeCardListener))
     }
 
-    override fun areItemsTheSame(oldItem: PlayWidgetMediumItemUiModel, newItem: PlayWidgetMediumItemUiModel): Boolean {
-        return if (oldItem is PlayWidgetMediumChannelUiModel && newItem is PlayWidgetMediumChannelUiModel) oldItem.channelId == newItem.channelId
+    override fun areItemsTheSame(oldItem: PlayWidgetItemUiModel, newItem: PlayWidgetItemUiModel): Boolean {
+        return if (oldItem is PlayWidgetChannelUiModel && newItem is PlayWidgetChannelUiModel) oldItem.channelId == newItem.channelId
         else oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: PlayWidgetMediumItemUiModel, newItem: PlayWidgetMediumItemUiModel): Boolean {
+    override fun areContentsTheSame(oldItem: PlayWidgetItemUiModel, newItem: PlayWidgetItemUiModel): Boolean {
         return oldItem == newItem
     }
 }

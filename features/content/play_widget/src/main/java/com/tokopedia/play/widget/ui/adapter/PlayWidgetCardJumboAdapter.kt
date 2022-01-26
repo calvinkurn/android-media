@@ -7,8 +7,8 @@ import com.tokopedia.play.widget.ui.adapter.delegate.jumbo.PlayWidgetCardJumboTr
 import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboChannelViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboTranscodeViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 
 /**
@@ -20,7 +20,7 @@ class PlayWidgetCardJumboAdapter(
     bannerCardListener: PlayWidgetCardJumboBannerViewHolder.Listener,
     transcodeListener: PlayWidgetCardJumboTranscodeViewHolder.Listener
 ) :
-    BaseDiffUtilAdapter<PlayWidgetJumboItemUiModel>() {
+    BaseDiffUtilAdapter<PlayWidgetItemUiModel>() {
 
     init {
         delegatesManager
@@ -30,15 +30,15 @@ class PlayWidgetCardJumboAdapter(
     }
 
     override fun areItemsTheSame(
-        oldItem: PlayWidgetJumboItemUiModel,
-        newItem: PlayWidgetJumboItemUiModel
+        oldItem: PlayWidgetItemUiModel,
+        newItem: PlayWidgetItemUiModel
     ): Boolean {
-        return if (oldItem is PlayWidgetJumboChannelUiModel && newItem is PlayWidgetJumboChannelUiModel) oldItem.channelId == newItem.channelId
+        return if (oldItem is PlayWidgetChannelUiModel && newItem is PlayWidgetChannelUiModel) oldItem.channelId == newItem.channelId
         else oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: PlayWidgetJumboItemUiModel,
-        newItem: PlayWidgetJumboItemUiModel
+        oldItem: PlayWidgetItemUiModel,
+        newItem: PlayWidgetItemUiModel
     ): Boolean = (oldItem == newItem)
 }

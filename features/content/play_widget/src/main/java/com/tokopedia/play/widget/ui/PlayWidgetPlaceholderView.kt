@@ -37,7 +37,7 @@ class PlayWidgetPlaceholderView : ConstraintLayout {
     }
 
     fun setData() {
-        adapter.setItemsAndAnimateChanges(List(PLACEHOLDER_COUNT) { PlayWidgetUiModel.Placeholder })
+        adapter.setItemsAndAnimateChanges(List(PLACEHOLDER_COUNT) { })
     }
 
     companion object {

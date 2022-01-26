@@ -6,9 +6,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play_common.view.loadImage
-
 
 /**
  * Created by mzennis on 07/10/20.
@@ -20,7 +19,7 @@ class PlayWidgetCardMediumBannerViewHolder(
 
     private var background: AppCompatImageView = itemView.findViewById(R.id.play_widget_banner)
 
-    fun bind(item: PlayWidgetMediumBannerUiModel) {
+    fun bind(item: PlayWidgetBannerUiModel) {
         background.loadImage(item.imageUrl)
         itemView.setOnClickListener {
             listener.onBannerClicked(it, item, adapterPosition)
@@ -36,7 +35,7 @@ class PlayWidgetCardMediumBannerViewHolder(
 
         fun onBannerClicked(
                 view: View,
-                item: PlayWidgetMediumBannerUiModel,
+                item: PlayWidgetBannerUiModel,
                 position: Int
         )
     }

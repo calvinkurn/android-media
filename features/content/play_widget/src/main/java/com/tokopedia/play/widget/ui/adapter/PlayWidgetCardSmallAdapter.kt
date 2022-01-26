@@ -5,8 +5,8 @@ import com.tokopedia.play.widget.ui.adapter.delegate.small.PlayWidgetCardSmallBa
 import com.tokopedia.play.widget.ui.adapter.delegate.small.PlayWidgetCardSmallChannelAdapterDelegate
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallChannelViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 
 /**
  * Created by jegul on 07/10/20
@@ -14,7 +14,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetSmallItemUiModel
 class PlayWidgetCardSmallAdapter(
         bannerCardListener: PlayWidgetCardSmallBannerViewHolder.Listener,
         channelCardListener: PlayWidgetCardSmallChannelViewHolder.Listener
-) : BaseDiffUtilAdapter<PlayWidgetSmallItemUiModel>() {
+) : BaseDiffUtilAdapter<PlayWidgetItemUiModel>() {
 
     init {
         delegatesManager
@@ -22,12 +22,12 @@ class PlayWidgetCardSmallAdapter(
                 .addDelegate(PlayWidgetCardSmallChannelAdapterDelegate(channelCardListener))
     }
 
-    override fun areItemsTheSame(oldItem: PlayWidgetSmallItemUiModel, newItem: PlayWidgetSmallItemUiModel): Boolean {
-        return if (oldItem is PlayWidgetSmallChannelUiModel && newItem is PlayWidgetSmallChannelUiModel) oldItem.channelId == newItem.channelId
+    override fun areItemsTheSame(oldItem: PlayWidgetItemUiModel, newItem: PlayWidgetItemUiModel): Boolean {
+        return if (oldItem is PlayWidgetChannelUiModel && newItem is PlayWidgetChannelUiModel) oldItem.channelId == newItem.channelId
         else oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: PlayWidgetSmallItemUiModel, newItem: PlayWidgetSmallItemUiModel): Boolean {
+    override fun areContentsTheSame(oldItem: PlayWidgetItemUiModel, newItem: PlayWidgetItemUiModel): Boolean {
         return oldItem == newItem
     }
 }

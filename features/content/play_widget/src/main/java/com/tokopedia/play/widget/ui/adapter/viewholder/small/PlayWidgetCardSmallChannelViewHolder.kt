@@ -2,10 +2,9 @@ package com.tokopedia.play.widget.ui.adapter.viewholder.small
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelSmallView
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
  * Created by jegul on 06/10/20
@@ -19,7 +18,7 @@ class PlayWidgetCardSmallChannelViewHolder(
 
     private val widgetCardSmallListener = object : PlayWidgetCardChannelSmallView.Listener {
 
-        override fun onChannelClicked(view: PlayWidgetCardChannelSmallView, model: PlayWidgetSmallChannelUiModel) {
+        override fun onChannelClicked(view: PlayWidgetCardChannelSmallView, model: PlayWidgetChannelUiModel) {
             listener.onChannelClicked(itemView, model, adapterPosition)
         }
     }
@@ -28,10 +27,10 @@ class PlayWidgetCardSmallChannelViewHolder(
         playWidgetCardSmallView.setListener(widgetCardSmallListener)
     }
 
-    fun bind(item: PlayWidgetSmallChannelUiModel) {
-        itemView.addOnImpressionListener(item.impressHolder) {
-            listener.onChannelImpressed(itemView, item, adapterPosition)
-        }
+    fun bind(item: PlayWidgetChannelUiModel) {
+//        itemView.addOnImpressionListener(item.impressHolder) {
+//            listener.onChannelImpressed(itemView, item, adapterPosition)
+//        }
         playWidgetCardSmallView.setModel(item)
     }
 
@@ -43,14 +42,14 @@ class PlayWidgetCardSmallChannelViewHolder(
 
         fun onChannelImpressed(
                 view: View,
-                item: PlayWidgetSmallChannelUiModel,
+                item: PlayWidgetChannelUiModel,
                 position: Int
         )
 
         fun onChannelClicked(
-                view: View,
-                item: PlayWidgetSmallChannelUiModel,
-                position: Int
+            view: View,
+            item: PlayWidgetChannelUiModel,
+            position: Int
         )
     }
 }

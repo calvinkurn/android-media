@@ -713,10 +713,10 @@ class FeedViewModel @Inject constructor(
 
         val currentValue = _playWidgetModel.value
         if (currentValue is Success) {
-            val model = currentValue.data.playWidgetUiModel
+            val model = currentValue.data.playWidgetState
             _playWidgetModel.value = Success(
                 data = currentValue.data.copy(
-                    playWidgetUiModel = playWidgetTools.updateTotalView(model, channelId, totalView)
+                    playWidgetState = playWidgetTools.updateTotalView(model, channelId, totalView)
                 )
             )
         }

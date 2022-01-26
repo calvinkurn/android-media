@@ -49,14 +49,14 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
     private val channelCardListener = object : PlayWidgetCardJumboChannelViewHolder.Listener {
         override fun onChannelImpressed(
             view: View,
-            item: PlayWidgetJumboChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
         }
 
         override fun onChannelClicked(
             view: View,
-            item: PlayWidgetJumboChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
             if (mWidgetListener != null
@@ -72,7 +72,7 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
         }
 
         override fun onToggleReminderChannelClicked(
-            item: PlayWidgetJumboChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
             position: Int
         ) {
@@ -89,13 +89,13 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
     private val bannerCardListener = object : PlayWidgetCardJumboBannerViewHolder.Listener {
         override fun onBannerClicked(
             view: View,
-            item: PlayWidgetJumboBannerUiModel,
+            item: PlayWidgetBannerUiModel,
             position: Int
         ) {
         }
     }
     private val transcodeCardListener = object : PlayWidgetCardJumboTranscodeViewHolder.Listener {
-        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetJumboChannelUiModel, position: Int) {
+        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetJumboView, item.channelId)
         }
     }
@@ -132,7 +132,7 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
         recyclerViewItem.adapter = adapter
     }
 
-    fun setData(data: PlayWidgetUiModel.Jumbo) {
+    fun setData(data: PlayWidgetUiModel) {
         adapter.setItemsAndAnimateChanges(data.items)
 
         mIsAutoPlay = data.config.autoPlay

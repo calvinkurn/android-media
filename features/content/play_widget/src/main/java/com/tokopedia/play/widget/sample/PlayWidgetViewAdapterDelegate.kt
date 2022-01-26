@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
@@ -12,11 +13,11 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
  */
 class PlayWidgetViewAdapterDelegate(
         coordinatorMap: Map<PlayWidgetCoordinator, PlayWidgetViewHolder?>
-) : TypedAdapterDelegate<PlayWidgetUiModel, PlayWidgetUiModel, PlayWidgetViewHolder>(PlayWidgetViewHolder.layout) {
+) : TypedAdapterDelegate<PlayWidgetState, PlayWidgetState, PlayWidgetViewHolder>(PlayWidgetViewHolder.layout) {
 
     private val mCoordinatorMap = coordinatorMap.toMutableMap()
 
-    override fun onBindViewHolder(item: PlayWidgetUiModel, holder: PlayWidgetViewHolder) {
+    override fun onBindViewHolder(item: PlayWidgetState, holder: PlayWidgetViewHolder) {
         holder.bind(item)
     }
 
