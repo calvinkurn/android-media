@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class HomeDataMapper(
@@ -29,7 +30,7 @@ class HomeDataMapper(
         var processingAtf = homeData.atfData?.isProcessingAtf?: false
         var processingDynamicChannel = homeData.isProcessingDynamicChannel
 
-        var isChannelBeautyFest = false
+        var isChannelBeautyFest = HomeRevampFragment.BEAUTY_FEST_NOT_SET
         if (isCache) {
             processingAtf = false
             processingDynamicChannel = false
@@ -52,10 +53,10 @@ class HomeDataMapper(
                     "129368",
                     "129369",
                     "129370",
-                    "129371" -> true
-                    else -> false
+                    "129371" -> HomeRevampFragment.BEAUTY_FEST_TRUE
+                    else -> HomeRevampFragment.BEAUTY_FEST_FALSE
                 }
-                if(isChannelBeautyFest)
+                if(isChannelBeautyFest == HomeRevampFragment.BEAUTY_FEST_TRUE)
                     break
             }
         }
@@ -83,7 +84,7 @@ class HomeDataMapper(
                 isCache = isCache,
                 isFirstPage = firstPage,
                 homeChooseAddressData = HomeChooseAddressData(true),
-            flowCompleted = false,
+                flowCompleted = false,
                 isBeautyFest = isChannelBeautyFest
         )
     }
