@@ -1735,7 +1735,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, mediaType: String, shopId: String, playChannelId: String, isClickIcon: Boolean) {
         if (isClickIcon)
         feedAnalytics.eventClickOpenComment(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString(), type, isFollowed, authorType, mediaType)
-        else if (type == TYPE_FEED_X_CARD_PLAY && !isClickIcon)
+        else if ((type == TYPE_FEED_X_CARD_PLAY || type == TYPE_FEED_X_CARD_POST) && !isClickIcon)
         feedAnalytics.eventClickLihatSemuaComment(playChannelId, type, isFollowed, authorType, mediaType)
 
         gotToKolComment(positionInFeed, id, authorType, mediaType == MediaType.VIDEO, isFollowed, type)
@@ -1866,10 +1866,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onFullScreenCLick(feedXCard: FeedXCard, positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreenButton: Boolean) {
+        var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id
+
         if (isFullScreenButton)
-        feedAnalytics.eventClickFullScreenIconVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id, feedXCard.media.firstOrNull()?.type?:"")
+        feedAnalytics.eventClickFullScreenIconVOD(finalId, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id, feedXCard.media.firstOrNull()?.type?:"")
         else
-        feedAnalytics.eventClicklanjutMenontonVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id, feedXCard.media.firstOrNull()?.type?:"")
+        feedAnalytics.eventClicklanjutMenontonVOD(finalId, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id, feedXCard.media.firstOrNull()?.type?:"")
         val finalApplink = if (!shouldTrack) {
              Uri.parse(redirectUrl)
                     .buildUpon()
@@ -1892,8 +1894,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun addVODView(feedXCard: FeedXCard, playChannelId: String, rowNumber: Int, time: Long, hitTrackerApi: Boolean) {
-        if (!hitTrackerApi)
-        feedAnalytics.eventAddView(playChannelId,feedXCard.typename,feedXCard.followers.isFollowed,feedXCard.author.id,time, feedXCard.media.firstOrNull()?.type?:"")
+        if (!hitTrackerApi) {
+            var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id
+
+            feedAnalytics.eventAddView(finalId, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id, time, feedXCard.media.firstOrNull()?.type
+                    ?: "")
+        }
         if (hitTrackerApi) {
             if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
                 feedViewModel.trackLongVideoView(feedXCard.id, rowNumber)
@@ -2792,7 +2798,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     adapterPosition,
                     item.feedXCard.typename,
                     !item.feedXCard.followers.isFollowed,
-                    item.feedXCard.author.id
+                    item.feedXCard.author.id,
+                        item.feedXCard.media.firstOrNull()?.type ?: ""
                 )
 
                 if (item.feedXCard.followers.isFollowed)
@@ -2840,7 +2847,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         adapterPosition,
                         item.feedXCard.typename,
                         !item.feedXCard.followers.isFollowed,
-                        item.feedXCard.author.id
+                        item.feedXCard.author.id,
+                        item.feedXCard.media.firstOrNull()?.type?:""
                 )
 
                 if (item.feedXCard.followers.isFollowed)

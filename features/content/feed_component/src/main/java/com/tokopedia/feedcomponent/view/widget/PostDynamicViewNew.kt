@@ -1436,7 +1436,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             vod_volumeIcon?.setOnClickListener {
                 changeMuteStateVideo(vod_volumeIcon)
-                setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true, feedMedia.type)
+                setMuteUnmuteVOD(vod_volumeIcon, finalId.toString(), isFollowed, id, isVideoTap = false, isVOD = true, feedMedia.type)
 
             }
         }
@@ -1531,7 +1531,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 vod_layout_video?.videoSurfaceView?.setOnClickListener {
                     if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
                         changeMuteStateVideo(vod_volumeIcon)
-                        setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true, feedMedia.type)
+                        var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
+                        setMuteUnmuteVOD(vod_volumeIcon, finalId.toString(), feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true, feedMedia.type)
                     }
                 }
                 vod_full_screen_icon?.setOnClickListener {
