@@ -637,7 +637,11 @@ class ShopHomeViewModel @Inject constructor(
 
     private fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetUiModel) -> CarouselPlayWidgetUiModel) {
         val currentValue = _playWidgetObservable.value
-        if (currentValue != null) _playWidgetObservable.postValue(onUpdate(currentValue))
+        if (currentValue != null) {
+            launchCatchError(dispatcherProvider.immediate, block = {
+                _playWidgetObservable.value = onUpdate(currentValue)
+            }) {}
+        }
     }
 
     fun getWidgetContentData(
