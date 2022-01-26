@@ -89,6 +89,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private var onNavigateToCouponSettingsPage: () -> Unit = {}
     private var onNavigateToProductListPage: () -> Unit = {}
     private var onUpdateCouponSuccess : ()-> Unit = {}
+    private var onCreateSuccess : ()-> Unit = {}
     private var couponSettings: CouponSettings? = null
     private var couponInformation: CouponInformation? = null
     private var couponProducts: List<CouponProduct> = emptyList()
@@ -232,8 +233,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     private fun observeCreateCouponResult() {
         viewModel.createCoupon.observe(viewLifecycleOwner, { result ->
+            binding.btnCreateCoupon.isLoading = false
             if (result is Success) {
                 this.couponId = result.data
+                onUpdateCouponSuccess()
                 viewModel.getShareMetaData()
             } else {
                 createCouponErrorNotice.show()
@@ -245,16 +248,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         viewModel.shareMetadata.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    /*val startDate = Calendar.getInstance().apply { set(2022, 0, 25, 22, 30, 0) }
-                    val endDate = Calendar.getInstance().apply {  set(2022, 0, 30, 22, 0, 0) }
-                    val period = CouponInformation.Period(startDate.time, endDate.time)
-
-                    showBroadCastVoucherBottomSheet(
-                        CouponInformation(CouponInformation.Target.SPECIAL, "Kenangan", "KOPKEN", period),
-                        result.data.promo,
-                        result.data.shopName
-                    )*/
-
                     showBroadCastVoucherBottomSheet(
                         couponInformation ?: return@observe,
                         result.data.promo,
@@ -271,6 +264,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     private fun observeUpdateCouponResult() {
         viewModel.updateCouponResult.observe(viewLifecycleOwner, { result ->
+            binding.btnCreateCoupon.isLoading = false
             when(result) {
                 is Success -> {
                     onUpdateCouponSuccess()
@@ -312,6 +306,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     fun setCouponInformationData(couponInformation : CouponInformation) {
         this.couponInformation =  couponInformation
+    }
+
+    fun setOnCreateCouponSuccess(onCreateSuccess : ()-> Unit) {
+        this.onCreateSuccess = onCreateSuccess
     }
 
     fun setOnUpdateCouponSuccess(onUpdateCouponSuccess : ()-> Unit) {
@@ -544,6 +542,9 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun createCoupon() {
+        binding.btnCreateCoupon.isLoading = true
+        binding.btnCreateCoupon.loadingText = getString(R.string.please_wait)
+
         viewModel.createCoupon(
             ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
             couponInformation ?: return,
@@ -553,6 +554,9 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun updateCoupon() {
+        binding.btnCreateCoupon.isLoading = true
+        binding.btnCreateCoupon.loadingText = getString(R.string.please_wait)
+
         viewModel.updateCoupon(
             ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
             couponInformation ?: return,
