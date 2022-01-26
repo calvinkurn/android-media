@@ -209,6 +209,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false): BottomSh
                 Toaster.build(it, getString(R.string.postal_code_field_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             } else {
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                viewBinding?.etKodepos?.textFieldInput?.text?.let { input -> this.postalCode = input.toString() }
                 districtAddressData?.let { data -> discomRevampListener?.onChooseZipcode(data, postalCode, isPinpoint) }
                 dismiss()
             }
@@ -228,7 +229,6 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false): BottomSh
 
     override fun onZipCodeClicked(zipCode: String) {
         AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
-        this.postalCode = zipCode
         viewBinding?.rvKodeposChips?.visibility = View.GONE
         viewBinding?.etKodepos?.textFieldInput?.run {
             setText(zipCode)
