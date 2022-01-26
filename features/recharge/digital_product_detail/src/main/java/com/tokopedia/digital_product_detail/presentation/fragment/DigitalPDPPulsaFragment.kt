@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -29,7 +28,6 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
@@ -41,6 +39,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBa
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -63,7 +62,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.abs
 
 /**
  * @author by firmanda on 04/01/21
@@ -171,15 +169,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         onHideBuyWidget()
                     }
 
-                    //TODO [Misael] add checkoutPassData and update checkoutPassData with new input number
                 } else {
                     showEmptyState()
                 }
             } catch (exception: NoSuchElementException) {
-                // [Misael] mahal atau ngga ya setiap kali kosongin bikin TelcoOperator baru
                 operator = TelcoOperator()
                 rechargePdpPulsaClientNumberWidget.setErrorInputField(
                     getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                    true
                 )
             }
         }
@@ -290,8 +287,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.rechargePdpPulsaClientNumberWidget?.run {
                 if (favoriteNumber.isNotEmpty()){
                     if (shouldRefreshInputNumber && clientNumber.isEmpty()) {
-                        setInputNumber(favoriteNumber[0].clientNumber)
-                        setContactName(favoriteNumber[0].clientName)
+                        setInputNumber(favoriteNumber[0].subtitle)
+                        setContactName(favoriteNumber[0].title)
                    }
                     setFilterChipShimmer(false, favoriteNumber.isEmpty())
                     setFavoriteNumber(favoriteNumber)
@@ -664,9 +661,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         categoryId: String,
         inputNumberActionTypeIndex: Int
     ) {
-        //TODO [Misael] handle InputNumberAction type for tracker
-
-        //TODO [Firman] handle checkout pass data
+        if (!inputNumberActionTypeIndex.isLessThanZero()) {
+            inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
+        }
 
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setContactName(clientName)

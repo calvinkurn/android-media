@@ -11,9 +11,9 @@ data class TopupBillsPersoFavNumberItem(
     @SerializedName("mediaURL")
     val mediaUrl: String = "",
     @SerializedName("title")
-    val clientName: String = "",
+    val title: String = "",
     @SerializedName("subtitle")
-    val clientNumber: String = "",
+    val subtitle: String = "",
     @SerializedName("trackingData")
     val trackingData: TopupBillsPersoFavNumberTrackingData = TopupBillsPersoFavNumberTrackingData()
 ): Parcelable
