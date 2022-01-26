@@ -226,4 +226,6 @@
 
     <string name="play_bro_title_form_hint">Tulis Judul Live</string>
     <string name="play_bro_title_form_instruction">Buat judul yang kreatif dan bisa bikin calon penonton penasaran!</string>
+
+    <string name="play_bro_cover_form_instruction">Pilih cover yang keren &amp; menarik perhatian, ya!</string>
 </resources>
