@@ -58,6 +58,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -90,6 +91,10 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    api (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 }
 
 project.ext {

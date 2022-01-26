@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -37,6 +38,8 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -65,6 +68,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
+import com.tokopedia.wishlist.BuildConfig
 import com.tokopedia.wishlist.R as Rv2
 import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
@@ -266,7 +270,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 is Fail -> {
                     finishRefresh()
                     onFailedGetWishlistV2(result.throwable)
-                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    // log error type to newrelic
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                    // log to crashlytics
+                    logToCrashlytics(result.throwable)
                 }
             }
         })
@@ -346,7 +355,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
                 is Fail -> {
                     finishRefresh()
-                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    // log error type to newrelic
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                    // log to crashlytics
+                    logToCrashlytics(result.throwable)
                 }
             }
         })
@@ -582,7 +596,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     }
                 }
                 is Fail -> {
-                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    // log error type to newrelic
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                    // log to crashlytics
+                    logToCrashlytics(result.throwable)
                 }
             }
         })
@@ -615,7 +634,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     }
                 }
                 is Fail -> {
-                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    // log error type to newrelic
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                    // log to crashlytics
+                    logToCrashlytics(result.throwable)
                 }
             }
         })
@@ -652,6 +676,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             errorMessage = ctx.getString(Rv2.string.wishlist_v2_common_error_msg)
                         }
                         showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+
+                        // log error type to newrelic
+                        ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                        // log to crashlytics
+                        logToCrashlytics(throwable)
                     }
                 }
             }
@@ -1267,5 +1296,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun hideLoadingDialog() {
         loaderDialog?.dialog?.dismiss()
+    }
+
+    private fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
     }
 }
