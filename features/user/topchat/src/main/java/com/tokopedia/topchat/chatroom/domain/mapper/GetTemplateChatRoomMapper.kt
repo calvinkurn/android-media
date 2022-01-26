@@ -7,21 +7,17 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import retrofit2.Response
-import rx.functions.Func1
-import java.util.*
+import java.util.ArrayList
 import javax.inject.Inject
 
-/**
- * @author : Steven 03/01/19
- */
-class GetTemplateChatRoomMapper @Inject constructor() : Func1<Response<DataResponse<TemplateData>>, GetTemplateUiModel> {
+class GetTemplateChatRoomMapper  @Inject constructor() {
 
-    override fun call(response: Response<DataResponse<TemplateData>>): GetTemplateUiModel {
+    fun map(response: Response<DataResponse<TemplateData>>): GetTemplateUiModel {
         val body = response.body()
         if(body != null) {
             if (body.header == null ||
-                    (body.header != null && body.header.messages.isEmpty()) ||
-                    (body.header != null && body.header.messages[0].isBlank())) {
+                (body.header != null && body.header.messages.isEmpty()) ||
+                (body.header != null && body.header.messages[0].isBlank())) {
                 val pojo: TemplateData = body.data
                 return convertToDomain(pojo)
             } else {

@@ -606,7 +606,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         AtfKey.TYPE_BANNER -> {
                             val job = async {
                                 try {
-                                    val dynamicChannel = homePageBannerRepository.getRemoteData()
+                                    val bannerParam = Bundle().apply {
+                                        this.putString(
+                                            HomePageBannerRepository.BANNER_LOCATION_PARAM,
+                                            homeChooseAddressRepository.getRemoteData()?.convertToLocationParams())
+                                    }
+                                    val dynamicChannel = homePageBannerRepository.getRemoteData(bannerParam)
                                     dynamicChannel.let {
                                         if (it.banner.slides?.size?:0 >= MINIMUM_BANNER_TO_SHOW) {
                                             val channelFromResponse = it.banner

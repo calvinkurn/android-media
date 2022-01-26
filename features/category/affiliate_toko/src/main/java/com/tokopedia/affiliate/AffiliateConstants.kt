@@ -65,3 +65,5 @@ const val AFFILIATE_YT_REGEX = "((?:http|https):\\/\\/)?(www\\.)?youtube\\.com\\
 const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?(vt\\.tiktok\\.com)\\/[\\w-]+"
 
 const val AFFILIATE_TWITTER_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(twitter.com)\\/[\\w-]+"
+
+const val COACHMARK_TAG = "affiliate_coachmark_onboarding"

@@ -29,7 +29,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCardDataView
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
@@ -62,7 +62,7 @@ class ProductViewModelMapper {
         val productDataView = ProductDataView()
 
         productDataView.adsModel = searchProductModel.topAdsModel
-        productDataView.globalNavDataView = convertToViewModel(
+        productDataView.globalNavDataView = GlobalNavDataView.create(
             searchProductModel.globalSearchNavigation
         )
         productDataView.cpmModel = searchProductModel.cpmModel
@@ -115,42 +115,6 @@ class ProductViewModelMapper {
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
 
         return productDataView
-    }
-
-    private fun convertToViewModel(globalSearchNavigation: GlobalSearchNavigation): GlobalNavDataView? {
-        return if (globalSearchNavigation.data.globalNavItems.isNotEmpty())
-            GlobalNavDataView(
-                    globalSearchNavigation.data.source,
-                    globalSearchNavigation.data.title,
-                    globalSearchNavigation.data.keyword,
-                    globalSearchNavigation.data.navTemplate,
-                    globalSearchNavigation.data.background,
-                    globalSearchNavigation.data.seeAllApplink,
-                    globalSearchNavigation.data.seeAllUrl,
-                    globalSearchNavigation.data.isShowTopAds,
-                    convertToViewModel(globalSearchNavigation.data.globalNavItems)
-            )
-        else null
-    }
-
-    private fun convertToViewModel(globalNavItems: List<GlobalNavItem>): List<GlobalNavDataView.Item> {
-        return globalNavItems.mapIndexed { index, globalNavItem ->
-            val position = index + 1
-
-            GlobalNavDataView.Item(
-                    globalNavItem.categoryName,
-                    globalNavItem.name,
-                    globalNavItem.info,
-                    globalNavItem.imageUrl,
-                    globalNavItem.applink,
-                    globalNavItem.url,
-                    globalNavItem.subtitle,
-                    globalNavItem.strikethrough,
-                    globalNavItem.backgroundUrl,
-                    globalNavItem.logoUrl,
-                    position,
-            )
-        }
     }
 
     private fun convertToRelatedViewModel(
