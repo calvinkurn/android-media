@@ -6,10 +6,11 @@ import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogMenuD
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogPrefixSelectRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeFavoriteNumberRepositoryImpl
-import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPPulsaRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
 import dagger.Binds
@@ -44,5 +45,9 @@ abstract class DigitalPDPBindModule {
 
     @Binds
     @DigitalPDPScope
-    abstract fun bindDigitalPDPRepository(repo: DigitalPDPRepositoryImpl): DigitalPDPRepository
+    abstract fun bindRechargeInputMultiTabRepository(repo: Recha): RechargeCatalogProductInputMultiTabRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindDigitalPDPRepository(repo: DigitalPDPRepositoryImpl): DigitalPDPPulsaRepository
 }
