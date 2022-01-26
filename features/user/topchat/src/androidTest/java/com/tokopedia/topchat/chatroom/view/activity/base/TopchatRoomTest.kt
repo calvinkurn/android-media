@@ -214,6 +214,7 @@ abstract class TopchatRoomTest {
 
     companion object {
         const val MSG_ID = "66961"
+        const val EX_PRODUCT_ID = "1111"
         var chatComponentStub: ChatComponentStub? = null
         var keyboardStateIdling: CountingIdlingResource? = null
     }
