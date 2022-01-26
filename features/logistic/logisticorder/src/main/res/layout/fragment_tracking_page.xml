@@ -525,18 +525,36 @@
             android:layout_marginStart="@dimen/dp_20"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
             app:icon_name="CLOSE"
             tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_proof"
-            android:layout_width="match_parent"
-            android:layout_height="380dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dms_tracking_preview_static_black"
+            android:textAlignment="center"
+            android:text="Foto sepenuhnya diambil dan merupakan tanggung jawab kurir."
+            android:textColor="@color/Unify_Background"
+            app:typographyType="body_3"
+            app:layout_constraintBottom_toBottomOf="@id/img_proof"
+            app:layout_constraintEnd_toEndOf="@id/img_proof"
+            app:layout_constraintStart_toStartOf="@id/img_proof" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
