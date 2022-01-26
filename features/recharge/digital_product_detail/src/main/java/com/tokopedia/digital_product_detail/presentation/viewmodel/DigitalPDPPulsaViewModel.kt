@@ -14,6 +14,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
@@ -36,6 +37,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     )
 
     var isEligibleToBuy = false
+
+    var selectedGridProduct = SelectedGridProduct()
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -162,6 +165,19 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             delay(VALIDATOR_DELAY_TIME)
             _clientNumberValidatorMsg.postValue(errorMessage)
         }
+    }
+
+    fun onResetSelectedProduct(){
+        selectedGridProduct = SelectedGridProduct()
+    }
+
+    fun getSelectedPositionId(listDenomData: List<DenomData>, id: String): Int?{
+        var selectedProductPositionId : Int? = null
+        listDenomData.forEachIndexed { index, denomData ->
+            if (denomData.id.equals(id, false)) selectedProductPositionId = index
+        }
+        if (selectedProductPositionId == null) onResetSelectedProduct()
+        return selectedProductPositionId
     }
 
     companion object {

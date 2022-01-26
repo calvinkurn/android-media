@@ -22,7 +22,10 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
 
     private val adapterDenomGrid = DenomGridAdapter()
 
-    fun renderDenomGridLayout(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel){
+    fun renderDenomGridLayout(denomGridListener: RechargeDenomGridListener,
+                              denomData: DenomWidgetModel,
+                              selectedProductPosition: Int? = null
+    ){
         if (!denomData.listDenomData.isNullOrEmpty()) {
             with(rechargeDenomGridViewBinding) {
                 denomGridShimmering.root.hide()
@@ -35,7 +38,7 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
                     adapterDenomGrid.clearDenomGridData()
                     adapterDenomGrid.setDenomGridList(denomData.listDenomData)
                     adapterDenomGrid.listener = denomGridListener
-                    adapterDenomGrid.selectedProductIndex = null
+                    adapterDenomGrid.selectedProductIndex = selectedProductPosition
                     adapterDenomGrid.denomWidgetType = DenomWidgetEnum.GRID_TYPE
                     adapter = adapterDenomGrid
                     layoutManager = GridLayoutManager(context, GRID_SIZE)

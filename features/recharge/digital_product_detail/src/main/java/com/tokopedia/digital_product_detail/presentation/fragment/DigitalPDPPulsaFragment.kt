@@ -34,6 +34,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
@@ -177,7 +178,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 } else {
                     showEmptyState()
                 }
-                onHideBuyWidget()
             } catch (exception: NoSuchElementException) {
                 // [Misael] mahal atau ngga ya setiap kali kosongin bikin TelcoOperator baru
                 operator = TelcoOperator()
@@ -263,6 +263,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 } else {
                     hideCheckIcon()
                     setErrorInputField(msg)
+                    onHideBuyWidget()
                 }
             }
         })
@@ -374,7 +375,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     override fun onClearInput() {
                         operator = TelcoOperator()
                         showEmptyState()
-                        onHideBuyWidget()
                         digitalPDPTelcoAnalytics.eventClearInputNumber(
                             DigitalPDPTelcoUtil.getCategoryName(categoryId),
                             userSession.userId
@@ -400,7 +400,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 autoCompleteListener = object :
                     RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
                     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
-                        onHideBuyWidget()
                         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
                         if (isFavoriteContact) {
                             digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
@@ -438,9 +437,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     }
 
                     override fun onClickFilterChip(isLabeled: Boolean) {
-                        onHideBuyWidget()
                         inputNumberActionType = InputNumberActionType.CHIP
                         if (isLabeled) {
+                            onHideBuyWidget()
                             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
@@ -531,7 +530,19 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel) {
         binding?.let {
-            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData)
+            var selectedPosition = viewModel.getSelectedPositionId(denomData.listDenomData,
+                viewModel.selectedGridProduct.denomData.id)
+            if (viewModel.selectedGridProduct.denomData.id.isNotEmpty()
+                && viewModel.selectedGridProduct.position >= 0
+                && viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.GRID_TYPE
+                && viewModel.isEligibleToBuy
+            ){
+                onShowBuyWidget(viewModel.selectedGridProduct.denomData)
+            } else {
+                selectedPosition = null
+                onHideBuyWidget()
+            }
+            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData, selectedPosition)
             it.rechargePdpPulsaDenomGridWidget.show()
         }
     }
@@ -819,6 +830,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             onClearSelectedMCCM()
         }
 
+        viewModel.selectedGridProduct = SelectedGridProduct(denomGrid, layoutType, position)
+
         if (isShowBuyWidget && viewModel.isEligibleToBuy) {
             onShowBuyWidget(denomGrid)
         } else {
@@ -829,8 +842,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     /**
      * RechargeBuyWidgetListener
      */
-
-
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
