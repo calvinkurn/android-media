@@ -14,9 +14,10 @@ import javax.inject.Inject
 class DigitalDenomMCCMGridUiMapper @Inject constructor() {
 
     fun mapCatalogDenom(catalogData: CatalogData): DenomMCCMModel {
-        val productsMCCM = catalogData.product.dataCollections.filter {
+        val dataCollectionMCCM = catalogData.product.dataCollections.filter {
             it.clusterType.contains(CLUSTER_MCCM_TYPE, true)
-        }.firstOrNull()?.products
+        }.firstOrNull()
+        val productsMCCM = dataCollectionMCCM?.products
 
         val productsDenom = catalogData.product.dataCollections.filterNot {
             it.clusterType.contains(CLUSTER_MCCM_TYPE, true)
@@ -35,20 +36,20 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
                             it.attributes.productLabels[0].equals(SPECIAL_PROMO_LABEL, true)
                         else false,
                         title = it.attributes.desc,
-                        price = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPrice ?: "0" else it.attributes.price,
-                        pricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.promo?.newPricePlain ?: 0 else it.attributes.pricePlain.toIntOrZero(),
+                        price = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPrice ?: EMPTY_PRICE else it.attributes.price,
+                        pricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.promo?.newPricePlain ?: EMPTY_PRICE_PLAIN else it.attributes.pricePlain.toIntOrZero(),
                         specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
                         slashPrice = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.price  else "",
-                        slashPricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain.toIntOrZero() ?: 0 else 0
+                        slashPricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain.toIntOrZero() ?: EMPTY_PRICE_PLAIN else EMPTY_PRICE_PLAIN
                     )
                 }
             } else emptyList()
         )
 
         val mccmWidget =  DenomWidgetModel(
-            mainTitle = catalogData.product.text,
-            listDenomData = if (!productsDenom.isNullOrEmpty()){ //TODO Change to MCCM Data
-                productsDenom.map {
+            mainTitle = mappingMCCMTitle(dataCollectionMCCM?.clusterType),
+            listDenomData = if (!productsMCCM.isNullOrEmpty()){
+                productsMCCM.map {
                     DenomData(
                         id = it.id,
                         promoStatus = if (it.attributes.promo != null) PROMO_STATUS_TRUE else PROMO_STATUS_FALSE,
@@ -59,11 +60,11 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
                         else false,
                         title = it.attributes.desc,
                         discountLabel = "10%", //TODO Change to real data
-                        price = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPrice ?: "0" else it.attributes.price,
-                        pricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.promo?.newPricePlain ?: 0 else it.attributes.pricePlain.toIntOrZero(),
+                        price = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPrice ?: EMPTY_PRICE else it.attributes.price,
+                        pricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.promo?.newPricePlain ?: EMPTY_PRICE_PLAIN else it.attributes.pricePlain.toIntOrZero(),
                         specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
                         slashPrice = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.price  else "",
-                        slashPricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain.toIntOrZero() ?: 0 else 0
+                        slashPricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain.toIntOrZero() ?: EMPTY_PRICE_PLAIN else EMPTY_PRICE_PLAIN
                     )
                 }
             } else emptyList()
@@ -72,10 +73,20 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
         return DenomMCCMModel(denomWidget, mccmWidget)
     }
 
+    private fun mappingMCCMTitle(mccmTitle: String?): String{
+        return if (!mccmTitle.isNullOrEmpty())
+            mccmTitle.split(MCCM_LIMITER).get(1)
+            else ""
+    }
+
     companion object {
         const val CLUSTER_MCCM_TYPE = "MCCM"
         const val SPECIAL_PROMO_LABEL: String = "Traktiran Pengguna Baru"
         const val PROMO_STATUS_TRUE = "1"
         const val PROMO_STATUS_FALSE = "0"
+
+        const val EMPTY_PRICE = "0"
+        const val EMPTY_PRICE_PLAIN = 0
+        const val MCCM_LIMITER = "_"
     }
 }

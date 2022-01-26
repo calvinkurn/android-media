@@ -25,7 +25,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         _observableDenomData.postValue(RechargeNetworkResult.Loading)
     }
 
-
     fun getRechargeCatalogInput(menuId: Int, operator: String){
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val denomGrid = repo.getDenomGridList(menuId, operator)

@@ -6,4 +6,5 @@
     <string name="total_discount">Total Discount</string>
     <string name="total_pay">Total Bayar</string>
     <string name="digital_pdp_recommendation_title">Paling sering kamu beli &#128071;</string>
+    <string name="error_message_with_code">%s. Kode Error: (%s)</string>
 </resources>

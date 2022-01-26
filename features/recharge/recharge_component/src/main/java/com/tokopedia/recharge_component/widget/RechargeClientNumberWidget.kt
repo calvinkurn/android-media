@@ -40,8 +40,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
     private var mFilterChipListener: ClientNumberFilterChipListener? = null
 
-    private var inputNumberValidator: ((String) -> Boolean)? = null
-
     private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
 
     private var textFieldStaticLabel: String = ""
@@ -90,13 +88,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                     }
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        if (s?.toString()?.isEmpty() == true) {
-                            clearErrorState()
-                        }
-
                         hideClearIcon()
+                        clearErrorState()
+                        setLoading(s?.toString()?.isNotEmpty() == true)
                         mInputFieldListener?.onRenderOperator(true)
-                        executeValidator(s.toString())
                     }
                 })
 
@@ -241,20 +236,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         binding.clientNumberWidgetInputField.isLoading = isLoading
     }
 
-    private fun setValidated(isValidated: Boolean) {
-        if (isValidated) {
-            showCheckIcon()
-        } else {
-            // [Misael] dummy error
-            setErrorInputField("dummy")
-        }
-    }
-
-    private fun showCheckIcon() {
+    fun showCheckIcon() {
         binding.clientNumberWidgetInputField.icon1.show()
     }
 
-    private fun hideCheckIcon() {
+    fun hideCheckIcon() {
         binding.clientNumberWidgetInputField.icon1.hide()
     }
 
@@ -355,13 +341,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    private fun executeValidator(s: String) {
-        if (s.isNumeric()) {
-            setValidated(inputNumberValidator?.invoke(
-                CommonTopupBillsUtil.formatPrefixClientNumber(s)) == true)
-        }
-    }
-
     fun hideSoftKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(this.windowToken, 0)
@@ -375,10 +354,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         mInputFieldListener = inputFieldListener
         mAutoCompleteListener = autoCompleteListener
         mFilterChipListener = filterChipListener
-    }
-
-    fun setInputNumberValidator(func: (inputNumber: String) -> Boolean) {
-        inputNumberValidator = func
     }
 
     interface ClientNumberInputFieldListener {
