@@ -56,6 +56,10 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
             parallaxImage.loadImage(section.mediaUrl)
             tvSectionTitle.text = section.title
             tvSectionSeeAll.text = section.textLink
+
+            tvSectionSeeAll.setOnClickListener {
+                listener.onRechargeBannerAllItemClicked(section)
+            }
         }
     }
 
