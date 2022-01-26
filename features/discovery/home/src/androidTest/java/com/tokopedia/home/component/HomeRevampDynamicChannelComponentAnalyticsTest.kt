@@ -80,7 +80,8 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         val recyclerView: RecyclerView =
                 activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
-                recyclerView = recyclerView
+                recyclerView = recyclerView,
+                fullLayout = true
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
@@ -339,6 +340,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             login()
+            Thread.sleep(4000)
             doActivityTestByModelClass(dataModelClass = RechargeBUWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 checkRechargeBUWidget(viewHolder, i)
             }
