@@ -5,6 +5,12 @@ apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
 
+repositories{
+    flatDir {
+        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
+    }
+}
+
 buildscript {
     repositories {
         google()

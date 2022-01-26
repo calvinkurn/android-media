@@ -1,0 +1,28 @@
+[
+  {
+    "data": {
+      "kycProjectInfo": {
+        "IsAllowToRegister": true,
+        "IsSelfie": true,
+        "Message": "",
+        "Reason": [],
+        "Status": 3,
+        "StatusName": "Belum Terverifikasi",
+        "TypeList": [
+          {
+            "IsAllowToUpload": true,
+            "Status": 3,
+            "StatusName": "Belum Terverifikasi",
+            "TypeID": 1
+          },
+          {
+            "IsAllowToUpload": true,
+            "Status": 3,
+            "StatusName": "Belum Terverifikasi",
+            "TypeID": 2
+          }
+        ]
+      }
+    }
+  }
+]
