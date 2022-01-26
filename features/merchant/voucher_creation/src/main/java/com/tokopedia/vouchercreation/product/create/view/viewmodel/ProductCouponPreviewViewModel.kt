@@ -13,15 +13,16 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformat
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ShareMetadata
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponImagePreviewUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetShareMetadataFacadeUseCase
-import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponUseCase
+import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductCouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val createCouponUseCase: CreateCouponUseCase,
+    private val createCouponUseCase: CreateCouponFacadeUseCase,
     private val getShareMetadataUseCase: GetShareMetadataFacadeUseCase,
     private val updateCouponUseCase: UpdateCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {

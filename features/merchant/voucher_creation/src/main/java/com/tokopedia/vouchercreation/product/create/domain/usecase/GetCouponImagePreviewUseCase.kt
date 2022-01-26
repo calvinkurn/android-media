@@ -2,17 +2,24 @@ package com.tokopedia.vouchercreation.product.create.domain.usecase
 
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.product.create.data.ImageGeneratorRemoteDataSource
 import com.tokopedia.vouchercreation.product.create.data.request.CouponPreviewRequestParams
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import okhttp3.ResponseBody
 import javax.inject.Inject
 
 class GetCouponImagePreviewUseCase @Inject constructor(
-    private val getShopBasicDataUseCase: ShopBasicDataUseCase
+    private val getShopBasicDataUseCase: ShopBasicDataUseCase,
+    private val remoteDataSource: ImageGeneratorRemoteDataSource
 ) {
+
+    companion object {
+        private const val SOURCE_ID = "aaGBeS"
+    }
 
     suspend fun execute(
         scope: CoroutineScope,
@@ -21,7 +28,7 @@ class GetCouponImagePreviewUseCase @Inject constructor(
         productCount: Int,
         productImageUrl: String,
         imageRatio: ImageRatio
-    ): Int {
+    ): ResponseBody {
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
         val shop = shopDeferred.await()
 
@@ -36,19 +43,19 @@ class GetCouponImagePreviewUseCase @Inject constructor(
             )
         }
 
-        generateImageDeferred.await()
+        val image = generateImageDeferred.await()
 
-        return -1
+        return image
     }
 
-    private fun generateImage(
+    private suspend fun generateImage(
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         productCount: Int,
         productImageUrl: String,
         imageRatio: ImageRatio,
         shop: ShopBasicDataResult
-    ) {
+    ): ResponseBody {
         val formattedImageRatio = when (imageRatio) {
             ImageRatio.SQUARE -> "square"
             ImageRatio.VERTICAL -> "vertical"
@@ -83,8 +90,8 @@ class GetCouponImagePreviewUseCase @Inject constructor(
 
         val audienceTarget = "all-users"
 
-        //TODO Upload image to public image
-        val params = CouponPreviewRequestParams(
+        return remoteDataSource.previewImage(
+            SOURCE_ID,
             formattedImageRatio,
             couponVisibility,
             benefitType,

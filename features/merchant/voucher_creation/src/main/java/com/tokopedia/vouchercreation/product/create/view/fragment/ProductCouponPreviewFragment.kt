@@ -240,7 +240,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
                     )*/
 
                     showBroadCastVoucherBottomSheet(
-                        couponInformation ?: return@observe, result.data.promo,
+                        couponInformation ?: return@observe,
+                        result.data.promo,
                         result.data.shopName
                     )
                 }

@@ -13,7 +13,7 @@ import com.tokopedia.vouchercreation.product.create.data.response.CreateCouponPr
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import javax.inject.Inject
 
-class CreateCouponProductFacadeUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
+class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
     BaseGqlUseCase<Int>() {
 
 
