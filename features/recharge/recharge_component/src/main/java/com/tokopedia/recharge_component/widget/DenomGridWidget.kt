@@ -38,6 +38,7 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
                     adapterDenomGrid.clearDenomGridData()
                     adapterDenomGrid.setDenomGridList(denomData.listDenomData)
                     adapterDenomGrid.listener = denomGridListener
+                    adapterDenomGrid.productTitleList = denomData.mainTitle
                     adapterDenomGrid.selectedProductIndex = selectedProductPosition
                     adapterDenomGrid.denomWidgetType = DenomWidgetEnum.GRID_TYPE
                     adapter = adapterDenomGrid

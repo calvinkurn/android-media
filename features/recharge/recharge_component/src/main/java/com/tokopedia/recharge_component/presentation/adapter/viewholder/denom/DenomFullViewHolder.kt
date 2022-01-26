@@ -129,7 +129,7 @@ class DenomFullViewHolder(
                 } else resources.getDimension(R.dimen.widget_denom_full_width).toInt()
 
                 cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else
-                    if (denomType == DenomWidgetEnum.MCCM_TYPE) CardUnify.TYPE_SHADOW
+                    if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE) CardUnify.TYPE_SHADOW
                     else CardUnify.TYPE_BORDER
             }
 

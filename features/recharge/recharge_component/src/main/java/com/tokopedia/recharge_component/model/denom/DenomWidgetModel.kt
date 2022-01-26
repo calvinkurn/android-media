@@ -1,5 +1,7 @@
 package com.tokopedia.recharge_component.model.denom
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 data class DenomWidgetModel(
    val mainTitle: String = "",
    val subTitle: String = "",
@@ -28,4 +30,4 @@ data class DenomData(
     val pricePlain: Int = 0,
     val isShowChevron: Boolean = true,
     val appLink: String = "",
-)
+): ImpressHolder()

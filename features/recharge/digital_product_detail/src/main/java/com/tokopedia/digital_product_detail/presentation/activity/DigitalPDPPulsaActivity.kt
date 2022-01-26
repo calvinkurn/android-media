@@ -18,8 +18,8 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPPulsaFragment
-import com.tokopedia.digital_product_detail.presentation.utils.setupOrderListIcon
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil.DEFAULT_MENU_ID_TELCO
+import com.tokopedia.digital_product_detail.presentation.utils.setupOrderListIcon
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
