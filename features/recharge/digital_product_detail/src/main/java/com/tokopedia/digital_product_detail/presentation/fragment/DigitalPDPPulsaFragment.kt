@@ -221,8 +221,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
-                    onSuccessDenomGrid(denomData.data.denomWidgetModel)
-                    onSuccessMCCM(denomData.data.mccmFlashSaleModel)
+                    val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomWidgetModel.listDenomData)
+                    val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.mccmFlashSaleModel.listDenomData)
+
+                    onSuccessDenomGrid(denomData.data.denomWidgetModel, selectedPositionDenom)
+                    onSuccessMCCM(denomData.data.mccmFlashSaleModel, selectedPositionMCCM)
+
+                    if (selectedPositionDenom == null && selectedPositionMCCM == null) {
+                        onHideBuyWidget()
+                    }
                 }
 
                 is RechargeNetworkResult.Fail -> {
@@ -530,16 +537,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun onSuccessDenomGrid(denomData: DenomWidgetModel) {
+    private fun onSuccessDenomGrid(denomData: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
-            var selectedPosition = viewModel.getSelectedPositionId(denomData.listDenomData)
+            var selectedInitialPosition = selectedPosition
             if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)){
                 onShowBuyWidget(viewModel.selectedGridProduct.denomData)
             } else {
-                selectedPosition = null
-                onHideBuyWidget()
+                selectedInitialPosition = null
             }
-            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData, selectedPosition)
+            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData, selectedInitialPosition)
             it.rechargePdpPulsaDenomGridWidget.show()
         }
     }
@@ -579,18 +585,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
+    private fun onSuccessMCCM(denomGrid: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
-            var selectedPosition = viewModel.getSelectedPositionId(denomGrid.listDenomData)
+            var selectedInitialPosition = selectedPosition
             if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_GRID_TYPE)){
                 onShowBuyWidget(viewModel.selectedGridProduct.denomData)
             } else {
-                selectedPosition = null
-                onHideBuyWidget()
+                selectedInitialPosition = null
             }
             it.rechargePdpPulsaPromoWidget.show()
             it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid,
-                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedPosition)
+                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition)
         }
     }
 

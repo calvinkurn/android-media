@@ -16,12 +16,15 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.*
 import java.util.regex.Pattern
@@ -130,7 +133,11 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
             _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
         }) {
-            _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
+            if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                _addToCartResult.postValue(RechargeNetworkResult.Fail(MessageErrorException(it.message)))
+            } else {
+                _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
+            }
         }
     }
 
@@ -174,7 +181,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             if (denomData.id.equals(selectedGridProduct.denomData.id, false)
                 && selectedGridProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
         }
-        if (selectedProductPositionId == null) onResetSelectedProduct()
+        if (selectedProductPositionId == null) {
+            onResetSelectedProduct()
+        }
         return selectedProductPositionId
     }
 
