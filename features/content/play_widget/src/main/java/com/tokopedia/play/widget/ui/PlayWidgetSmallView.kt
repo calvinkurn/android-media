@@ -11,9 +11,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.small.PlayWidgetSmallAnalyticListener
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
-import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallBannerViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallChannelViewHolder
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetSmallListener

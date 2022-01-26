@@ -66,7 +66,7 @@ class PlayWidgetCardMediumTranscodeView : FrameLayout {
     private val transcodingCoverTarget: CustomTarget<Bitmap>
 
     init {
-        val view = View.inflate(context, R.layout.item_play_widget_card_medium_transcode, this)
+        val view = View.inflate(context, R.layout.view_play_widget_card_medium_transcode, this)
         thumbnail = view.findViewById(R.id.play_widget_thumbnail)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
         promoBadge = view.findViewById(R.id.play_widget_badge_promo)

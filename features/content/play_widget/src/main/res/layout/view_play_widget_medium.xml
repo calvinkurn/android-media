@@ -79,7 +79,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/play_widget_medium_title"
             tools:itemCount="10"
-            tools:listitem="@layout/item_play_widget_card_channel_medium"
+            tools:listitem="@layout/view_play_widget_card_medium_channel"
             tools:orientation="horizontal"
             tools:spanCount="3" />
 

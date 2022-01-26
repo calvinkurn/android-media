@@ -11,7 +11,6 @@ import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigProvider
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import kotlinx.coroutines.*
 

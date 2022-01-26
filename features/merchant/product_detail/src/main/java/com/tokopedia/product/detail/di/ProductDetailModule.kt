@@ -11,9 +11,7 @@ import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
-import com.tokopedia.play.widget.ui.type.PlayWidgetSize
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL

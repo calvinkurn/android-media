@@ -88,9 +88,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -1034,9 +1033,9 @@ class DiscoveryFragment :
             OPEN_PLAY_CHANNEL -> {
                 if (data == null)
                     return
-                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
-                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-                val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+                val channelId = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_CHANNEL_ID).orEmpty()
+                val totalView = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+                val isReminder = data.getBooleanExtra(PlayWidgetConst.KEY_EXTRA_IS_REMINDER, false)
                 if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel){
                     val discoveryPlayWidgetViewModel = (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
                     discoveryPlayWidgetViewModel.updatePlayWidgetTotalView(channelId, totalView)

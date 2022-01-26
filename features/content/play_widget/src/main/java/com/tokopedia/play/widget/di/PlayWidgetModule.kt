@@ -11,7 +11,7 @@ import dagger.Provides
 /**
  * Created by jegul on 09/11/20
  */
-@Module(includes = [PlayWidgetMapperModule::class])
+@Module
 class PlayWidgetModule {
 
     @Provides
