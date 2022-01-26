@@ -5,12 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
+import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
-import java.util.*
 
 class CreateCouponProductActivity : AppCompatActivity() {
 
@@ -128,6 +127,14 @@ class CreateCouponProductActivity : AppCompatActivity() {
         }*/
     }
 
+    private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
+        val couponInfoFragment = CreateCouponDetailFragment()
+        couponInfoFragment.setOnCouponSaved { coupon ->
+            popFragment()
+            couponPreviewFragment.setCouponInformationData(coupon)
+        }
+        return couponInfoFragment
+    }
 
     private fun displayCouponPreviewFragment() {
         supportFragmentManager

@@ -144,6 +144,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         }
                     }
 
+                    add(CreateProductCoupon(product))
+
                     if(broadcastChat) {
                         add(CreateBroadcastChat(product))
                     }

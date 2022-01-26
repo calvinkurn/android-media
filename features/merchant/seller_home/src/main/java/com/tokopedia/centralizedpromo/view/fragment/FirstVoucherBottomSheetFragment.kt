@@ -1,14 +1,18 @@
 package com.tokopedia.centralizedpromo.view.fragment
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.adapter.FirstVoucherAdapter
@@ -26,16 +30,37 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance() = FirstVoucherBottomSheetFragment().apply {
+        fun createInstance(voucherType: String,
+                           productId: String?) = FirstVoucherBottomSheetFragment().apply {
+            val bundle = Bundle().apply {
+                putString(SellerHomeApplinkConst.VOUCHER_TYPE, voucherType)
+                if (productId != null) {
+                    putString(SellerHomeApplinkConst.PRODUCT_ID, productId)
+                }
+            }
+            arguments = bundle
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
+
+        private const val TAG = "first_voucher"
     }
 
     private val impressHolder: ImpressHolder = ImpressHolder()
     private var binding by autoClearedNullable<CentralizedPromoFirstVoucherBottomsheetLayoutBinding>()
 
+    private val voucherType by lazy {
+        arguments?.getString(SellerHomeApplinkConst.VOUCHER_TYPE).orEmpty()
+    }
+
+    private val productId by lazy {
+        arguments?.getString(SellerHomeApplinkConst.PRODUCT_ID)
+    }
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var sharedPref: SharedPreferences
 
     override fun onResume() {
         super.onResume()
@@ -68,6 +93,13 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+    fun show(fragmentManager: FragmentManager) {
+        if (fragmentManager.isStateSaved || isAdded) {
+            return
+        }
+        show(fragmentManager, TAG)
+    }
+
     private fun initInjector() {
         DaggerSellerHomeComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -76,22 +108,76 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     }
 
     private fun initView() {
+        setupCloseClickListener()
+        setupBottomSheetText()
+        setupRecyclerView()
+        setupButtonClick()
+    }
+
+    private fun setupCloseClickListener() {
         setCloseClickListener {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(userSession.userId, true)
             dismiss()
         }
+    }
 
+    private fun setupBottomSheetText() {
+        when (voucherType) {
+            SellerHomeApplinkConst.TYPE_PRODUCT -> {
+                binding?.firstVoucherBottomSheetTitle?.text =
+                    context?.getString(R.string.centralized_promo_bottomsheet_product_coupon_title)
+                binding?.firstVoucherButton?.text =
+                    context?.getString(R.string.centralized_promo_bottomsheet_product_coupon_next)
+            }
+            else -> {
+                binding?.firstVoucherBottomSheetTitle?.text =
+                    context?.getString(R.string.centralized_promo_bottomsheet_title)
+                binding?.firstVoucherButton?.text =
+                    context?.getString(R.string.centralized_promo_bottomsheet_next)
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
         binding?.firstVoucherRecyclerView?.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            val itemList = FirstVoucherDataSource.getFirstVoucherInfoItems()
+            val itemList =
+                when (voucherType) {
+                    SellerHomeApplinkConst.TYPE_PRODUCT -> FirstVoucherDataSource.getFirstProductCouponInfoItems()
+                    else -> FirstVoucherDataSource.getFirstVoucherCashbackInfoItems()
+                }
             adapter = FirstVoucherAdapter(itemList)
         }
+    }
 
+    private fun setupButtonClick() {
         binding?.firstVoucherButton?.setOnClickListener {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(userSession.userId, false)
-            RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+            val voucherApplink =
+                if (voucherType == SellerHomeApplinkConst.TYPE_PRODUCT) {
+                    setVoucherProductSharedPrefValue()
+                    if (productId == null) {
+                        ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
+                    } else {
+                        "${ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT}/$productId"
+                    }
+                } else {
+                    ApplinkConstInternalSellerapp.CREATE_VOUCHER
+                }
+            RouteManager.route(context, voucherApplink)
             this.dismiss()
         }
     }
+
+    private fun setVoucherProductSharedPrefValue() {
+        sharedPref.run {
+            val isFirstTime = getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+            if (isFirstTime) {
+                edit().putBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, false)
+                    .apply()
+            }
+        }
+    }
+
 }
