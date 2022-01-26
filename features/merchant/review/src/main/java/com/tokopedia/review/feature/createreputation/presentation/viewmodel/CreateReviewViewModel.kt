@@ -62,7 +62,7 @@ class CreateReviewViewModel @Inject constructor(
 
     companion object {
         const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
-        const val LOCAL_IMAGE_SOURCE = "storage"
+        const val HTTP_PREFIX = "http"
         const val MAX_IMAGE_COUNT = 5
     }
 
@@ -218,8 +218,8 @@ class CreateReviewViewModel @Inject constructor(
         imagesFedIntoPicker: MutableList<String>
     ): MutableList<BaseImageReviewUiModel> {
         // Remove old image
-        originalImages = imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
         val mergedImagePaths = mergeImagePickerResultWithOriginalImages(imagePickerResult, imagesFedIntoPicker)
+        originalImages = mergedImagePaths.filter { it.startsWith(HTTP_PREFIX) }.toMutableList()
         when (mergedImagePaths.size) {
             MAX_IMAGE_COUNT -> {
                 imageData = (mergedImagePaths.map {
