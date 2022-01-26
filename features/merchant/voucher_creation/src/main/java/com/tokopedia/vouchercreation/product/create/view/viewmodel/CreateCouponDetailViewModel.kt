@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.product.create.view.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -11,8 +12,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.NonNullLiveData
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.view.uimodel.CouponTargetEnum
 import com.tokopedia.vouchercreation.product.create.view.uimodel.CouponTargetUiModel
+import com.tokopedia.vouchercreation.product.create.view.uimodel.convertToCouponTargetEnum
 import com.tokopedia.vouchercreation.shop.create.domain.usecase.validation.PeriodValidationUseCase
 import com.tokopedia.vouchercreation.shop.create.domain.usecase.validation.VoucherTargetValidationUseCase
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.validation.PeriodValidation
@@ -56,21 +59,40 @@ class CreateCouponDetailViewModel @Inject constructor(
     val periodValidationLiveData: LiveData<Result<PeriodValidation>>
         get() = mPeriodValidationLiveData
 
-    fun populateCouponTarget() {
+    private val mAllInputValid = MediatorLiveData<Boolean>().apply {
+        addSource(mCouponValidationResult) {
+            value = validateAllInput()
+        }
+        addSource(mPeriodValidationLiveData) {
+            value = validateAllInput()
+        }
+    }
+    val allInputValid: LiveData<Boolean>
+        get() = mAllInputValid
+
+    private fun validateAllInput(): Boolean {
+        val couponValidation = mCouponValidationResult.value
+        val periodValidation = mPeriodValidationLiveData.value
+        return if (couponValidation is Success && periodValidation is Success) {
+            !couponValidation.data.checkHasError() && !periodValidation.data.getIsHaveError()
+        } else false
+    }
+
+    fun populateCouponTarget(selectedCoupon: CouponTargetEnum? = null) {
         mCouponTargetList.value = listOf(
             CouponTargetUiModel(
                 R.drawable.ic_im_umum,
                 R.string.mvc_create_target_public,
                 R.string.mvc_create_coupon_target_public_desc,
                 CouponTargetEnum.PUBLIC,
-                selected = false,
+                selected = selectedCoupon == CouponTargetEnum.PUBLIC,
             ),
             CouponTargetUiModel(
                 R.drawable.ic_im_terbatas,
                 R.string.mvc_create_target_private,
                 R.string.mvc_create_coupon_target_private_desc,
                 CouponTargetEnum.PRIVATE,
-                selected = false,
+                selected = selectedCoupon == CouponTargetEnum.PRIVATE,
             ),
         )
     }
@@ -119,4 +141,12 @@ class CreateCouponDetailViewModel @Inject constructor(
         )
     }
 
+    fun setCouponInformation(couponInformationData: CouponInformation) {
+        couponInformationData.let {
+            populateCouponTarget(it.target.convertToCouponTargetEnum())
+            setSelectedCouponTarget(it.target.convertToCouponTargetEnum())
+            setStartDateCalendar(GregorianCalendar().apply { time = it.period.startDate })
+            setEndDateCalendar(GregorianCalendar().apply { time = it.period.endDate })
+        }
+    }
 }
