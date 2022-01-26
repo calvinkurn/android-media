@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
@@ -33,6 +34,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
@@ -174,7 +176,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         onHideBuyWidget()
                     }
 
-                    //TODO [Misael] add checkoutPassData and update checkoutPassData with new input number
                 } else {
                     showEmptyState()
                 }
@@ -217,29 +218,28 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         })
 
 
-        viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
+        viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
-                    onSuccessDenomGrid(denomData.data)
+                    val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomWidgetModel.listDenomData)
+                    val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.mccmFlashSaleModel.listDenomData)
+
+                    onSuccessDenomGrid(denomData.data.denomWidgetModel, selectedPositionDenom)
+                    onSuccessMCCM(denomData.data.mccmFlashSaleModel, selectedPositionMCCM)
+
+                    if (selectedPositionDenom == null && selectedPositionMCCM == null) {
+                        onHideBuyWidget()
+                    }
                 }
 
                 is RechargeNetworkResult.Fail -> {
-                    view?.let {
-                        onFailedDenomGrid()
-                        //TODO add fail
-                    }
+                    onFailedDenomGrid()
+                    onLoadingAndFailMCCM()
                 }
 
                 is RechargeNetworkResult.Loading -> {
                     onShimmeringDenomGrid()
-                }
-            }
-        })
-
-        viewModel.observableMCCMData.observe(viewLifecycleOwner, { mccmData ->
-            when (mccmData) {
-                is RechargeNetworkResult.Success -> {
-                    onSuccessMCCM(mccmData.data)
+                    onLoadingAndFailMCCM()
                 }
             }
         })
@@ -253,7 +253,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
                 is RechargeNetworkResult.Fail -> {
                     onLoadingBuyWidget(false)
-                    //TODO Fail
+                    showErrorToaster(atcData.error)
                 }
 
                 is RechargeNetworkResult.Loading -> {
@@ -271,6 +271,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 } else {
                     hideCheckIcon()
                     setErrorInputField(msg)
+                    onHideBuyWidget()
                 }
             }
         })
@@ -299,6 +300,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         renderRecommendation(data.recommendations)
         renderTicker(data.tickers)
+    }
+
+    private fun onFailedRecommendation(){
+        binding?.rechargePdpPulsaRecommendationWidget?.renderFailRecommendation()
     }
 
     private fun onSuccessGetFavoriteNumber(
@@ -340,6 +345,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 getCatalogMenuDetail()
             }
         }
+        onFailedRecommendation()
     }
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
@@ -442,6 +448,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     override fun onClickFilterChip(isLabeled: Boolean) {
                         inputNumberActionType = InputNumberActionType.CHIP
                         if (isLabeled) {
+                            onHideBuyWidget()
                             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
@@ -530,9 +537,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun onSuccessDenomGrid(denomData: DenomWidgetModel) {
+    private fun onSuccessDenomGrid(denomData: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
-            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData)
+            var selectedInitialPosition = selectedPosition
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)){
+                onShowBuyWidget(viewModel.selectedGridProduct.denomData)
+            } else {
+                selectedInitialPosition = null
+            }
+            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData, selectedInitialPosition)
             it.rechargePdpPulsaDenomGridWidget.show()
         }
     }
@@ -572,10 +585,23 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
+    private fun onSuccessMCCM(denomGrid: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
+            var selectedInitialPosition = selectedPosition
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_GRID_TYPE)){
+                onShowBuyWidget(viewModel.selectedGridProduct.denomData)
+            } else {
+                selectedInitialPosition = null
+            }
             it.rechargePdpPulsaPromoWidget.show()
-            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid,
+                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition)
+        }
+    }
+
+    private fun onLoadingAndFailMCCM(){
+        binding?.let {
+            it.rechargePdpPulsaPromoWidget.renderFailMCCMGrid()
         }
     }
 
@@ -698,8 +724,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     ) {
         //TODO [Misael] handle InputNumberAction type for tracker
 
-        //TODO [Firman] handle checkout pass data
-
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setContactName(clientName)
             setInputNumber(clientNumber)
@@ -795,6 +819,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun addToCart(){
+        viewModel.addToCart(
+            viewModel.digitalCheckoutPassData,
+            DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+            DigitalSubscriptionParams(),
+            userSession.userId
+        )
+    }
+
 
     /**
      * RechargeDenomGridListener
@@ -826,6 +859,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             )
             onClearSelectedMCCM()
         }
+
+        viewModel.selectedGridProduct = SelectedGridProduct(denomGrid, layoutType, position)
 
         if (isShowBuyWidget && viewModel.isEligibleToBuy) {
             onShowBuyWidget(denomGrid)
@@ -860,20 +895,18 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     /**
      * RechargeBuyWidgetListener
      */
-
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
             denom, userSession.userId.generateRechargeCheckoutToken(),
             binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?:"",
             operator.id
         )
-
-        viewModel.addToCart(
-            viewModel.digitalCheckoutPassData,
-            DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-            DigitalSubscriptionParams(),
-            userSession.userId
-        )
+        if (userSession.isLoggedIn){
+            addToCart()
+        } else {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+        }
     }
 
     override fun onClickedChevron(denom: DenomData) {
@@ -956,6 +989,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 }
                 // [Misael] shouldRefreshInputNumber nnti gaperlu karena prefill ambil dari tempat lain
                 getFavoriteNumber(shouldRefreshInputNumber = false)
+            } else if( requestCode == REQUEST_CODE_LOGIN ) {
+                addToCart()
             }
         }
     }
@@ -982,5 +1017,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         private const val EXTRA_PARAM = "extra_param"
 
         const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
+
+        private const val REQUEST_CODE_LOGIN = 1010
+
     }
 }
