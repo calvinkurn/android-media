@@ -1,6 +1,5 @@
-package com.tokopedia.vouchercreation.product.create.domain.usecase
+package com.tokopedia.vouchercreation.product.create.domain.usecase.create
 
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -9,12 +8,12 @@ import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductParams
-import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductResponse
+import com.tokopedia.vouchercreation.product.create.data.request.CreateCouponProductParams
+import com.tokopedia.vouchercreation.product.create.data.response.CreateCouponProductResponse
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import javax.inject.Inject
 
-class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
+class CreateCouponProductFacadeUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
     BaseGqlUseCase<Int>() {
 
 

@@ -52,6 +52,10 @@ class CreateCouponProductActivity : AppCompatActivity() {
             //TODO : @Deyo Replace with your product list fragment
         }
 
+        couponPreviewFragment.setOnUpdateCouponSuccess {
+            popFragment()
+        }
+
        /* couponInformationFragment.setOnCouponSaved { coupon ->
             popFragment()
 
@@ -86,17 +90,20 @@ class CreateCouponProductActivity : AppCompatActivity() {
                         1,
                         18000,
                         5,
-                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg"
+                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
+                        19
                     ),
                     CouponProduct(
                         2,
                         25000,
                         4,
-                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg"
+                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
+                        49
                     )
                 )
             )
         }
+
 
         /*couponProducts.setOnCouponSaved { products ->
             popFragment()

@@ -2,7 +2,7 @@ package com.tokopedia.vouchercreation.product.create.domain.usecase
 
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.product.create.data.CouponPreviewRequestParams
+import com.tokopedia.vouchercreation.product.create.data.request.CouponPreviewRequestParams
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
@@ -16,50 +16,70 @@ class GetCouponImagePreviewUseCase @Inject constructor(
 
     suspend fun execute(
         scope: CoroutineScope,
-        imageRatio: ImageRatio,
-        coupon: Coupon
+        couponInformation: CouponInformation,
+        couponSettings: CouponSettings,
+        productCount: Int,
+        productImageUrl: String,
+        imageRatio: ImageRatio
     ): Int {
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
         val shop = shopDeferred.await()
 
-        val generateImageDeferred  = scope.async { generateImage(coupon, imageRatio, shop) }
+        val generateImageDeferred = scope.async {
+            generateImage(
+                couponInformation,
+                couponSettings,
+                productCount,
+                productImageUrl,
+                imageRatio,
+                shop
+            )
+        }
+
         generateImageDeferred.await()
 
         return -1
     }
 
-    private fun generateImage(coupon: Coupon, imageRatio: ImageRatio, shop : ShopBasicDataResult) {
+    private fun generateImage(
+        couponInformation: CouponInformation,
+        couponSettings: CouponSettings,
+        productCount: Int,
+        productImageUrl: String,
+        imageRatio: ImageRatio,
+        shop: ShopBasicDataResult
+    ) {
         val formattedImageRatio = when (imageRatio) {
             ImageRatio.SQUARE -> "square"
             ImageRatio.VERTICAL -> "vertical"
             ImageRatio.HORIZONTAL -> "horizontal"
         }
 
-        val couponVisibility = when (coupon.information.target) {
+        val couponVisibility = when (couponInformation.target) {
             CouponInformation.Target.PUBLIC -> "public"
             CouponInformation.Target.SPECIAL -> "private"
         }
 
-        val benefitType = when (coupon.settings.type) {
+        val benefitType = when (couponSettings.type) {
             CouponType.NONE -> ""
             CouponType.CASHBACK -> "cashback"
             CouponType.FREE_SHIPPING -> "gratis-ongkir"
         }
 
-        val cashbackType = when (coupon.settings.discountType) {
+        val cashbackType = when (couponSettings.discountType) {
             DiscountType.NONE -> ""
             DiscountType.NOMINAL -> "nominal"
             DiscountType.PERCENTAGE -> "percentage"
         }
 
-        val symbol = if (coupon.settings.discountAmount >= 1000) {
+        val symbol = if (couponSettings.discountAmount >= 1000) {
             "rb"
         } else {
             "jt"
         }
 
-        val startTime = coupon.information.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
-        val endTime = coupon.information.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
+        val startTime = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
+        val endTime = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
 
         val audienceTarget = "all-users"
 
@@ -69,16 +89,16 @@ class GetCouponImagePreviewUseCase @Inject constructor(
             couponVisibility,
             benefitType,
             cashbackType,
-            coupon.settings.discountPercentage,
-            coupon.settings.discountAmount,
+            couponSettings.discountPercentage,
+            couponSettings.discountAmount,
             symbol,
             shop.logo,
             shop.shopName,
-            coupon.information.code,
+            couponInformation.code,
             startTime,
             endTime,
-            coupon.products.size,
-            coupon.products[0].imageUrl,
+            productCount,
+            productImageUrl,
             audienceTarget
         )
     }
