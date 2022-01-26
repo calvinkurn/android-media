@@ -1,10 +1,10 @@
 package com.tokopedia.search.result.product.globalnavwidget
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalNavItem
+import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalSearchNavigation
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
 @Suppress("LongParameterList")
@@ -18,7 +18,7 @@ class GlobalNavDataView(
     val seeAllUrl: String = "",
     val isShowTopAds: Boolean = false,
     val itemList: List<Item> = listOf(),
-) : Parcelable, Visitable<ProductListTypeFactory?>, ImpressHolder() {
+): Visitable<ProductListTypeFactory?>, ImpressHolder() {
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -37,7 +37,7 @@ class GlobalNavDataView(
         val backgroundUrl: String = "",
         val logoUrl: String = "",
         val position: Int = 0,
-    ) : Parcelable {
+    ) {
 
         fun getGlobalNavItemAsObjectDataLayer(creativeName: String?): Any {
             return DataLayer.mapOf(
@@ -47,88 +47,43 @@ class GlobalNavDataView(
                     "position", position.toString()
             )
         }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        override fun writeToParcel(dest: Parcel, ignored: Int) {
-            dest.writeString(categoryName)
-            dest.writeString(name)
-            dest.writeString(info)
-            dest.writeString(imageUrl)
-            dest.writeString(applink)
-            dest.writeString(url)
-            dest.writeString(subtitle)
-            dest.writeString(strikethrough)
-            dest.writeString(backgroundUrl)
-            dest.writeString(logoUrl)
-            dest.writeInt(position)
-        }
-
-        constructor(parcel: Parcel): this (
-            categoryName = parcel.readString() ?: "",
-            name = parcel.readString() ?: "",
-            info = parcel.readString() ?: "",
-            imageUrl = parcel.readString() ?: "",
-            applink = parcel.readString() ?: "",
-            url = parcel.readString() ?: "",
-            subtitle = parcel.readString() ?: "",
-            strikethrough = parcel.readString() ?: "",
-            backgroundUrl = parcel.readString() ?: "",
-            logoUrl = parcel.readString() ?: "",
-            position = parcel.readInt(),
-        )
-
-        companion object {
-            @JvmField
-            val CREATOR: Parcelable.Creator<Item> = object : Parcelable.Creator<Item> {
-                override fun createFromParcel(source: Parcel): Item {
-                    return Item(source)
-                }
-
-                override fun newArray(size: Int): Array<Item?> {
-                    return arrayOfNulls(size)
-                }
-            }
-        }
     }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(source)
-        dest.writeString(title)
-        dest.writeString(keyword)
-        dest.writeString(navTemplate)
-        dest.writeString(background)
-        dest.writeString(seeAllApplink)
-        dest.writeString(seeAllUrl)
-        dest.writeTypedList(itemList)
-    }
-
-    constructor(parcel: Parcel): this(
-        source = parcel.readString() ?: "",
-        title = parcel.readString() ?: "",
-        keyword = parcel.readString() ?: "",
-        navTemplate = parcel.readString() ?: "",
-        background = parcel.readString() ?: "",
-        seeAllApplink = parcel.readString() ?: "",
-        seeAllUrl = parcel.readString() ?: "",
-        itemList = parcel.createTypedArrayList(Item.CREATOR) ?: listOf(),
-    )
 
     companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<GlobalNavDataView> = object : Parcelable.Creator<GlobalNavDataView> {
-            override fun createFromParcel(source: Parcel): GlobalNavDataView {
-                return GlobalNavDataView(source)
-            }
+        fun create(globalSearchNavigation: GlobalSearchNavigation): GlobalNavDataView? {
+            val data = globalSearchNavigation.data
+            if (data.globalNavItems.isEmpty()) return null
 
-            override fun newArray(size: Int): Array<GlobalNavDataView?> {
-                return arrayOfNulls(size)
+            return GlobalNavDataView(
+                source = data.source,
+                title = data.title,
+                keyword = data.keyword,
+                navTemplate = data.navTemplate,
+                background = data.background,
+                seeAllApplink = data.seeAllApplink,
+                seeAllUrl = data.seeAllUrl,
+                isShowTopAds = data.isShowTopAds,
+                itemList = convertToViewModel(data.globalNavItems)
+            )
+        }
+
+        private fun convertToViewModel(globalNavItems: List<GlobalNavItem>): List<Item> {
+            return globalNavItems.mapIndexed { index, globalNavItem ->
+                val position = index + 1
+
+                Item(
+                    globalNavItem.categoryName,
+                    globalNavItem.name,
+                    globalNavItem.info,
+                    globalNavItem.imageUrl,
+                    globalNavItem.applink,
+                    globalNavItem.url,
+                    globalNavItem.subtitle,
+                    globalNavItem.strikethrough,
+                    globalNavItem.backgroundUrl,
+                    globalNavItem.logoUrl,
+                    position,
+                )
             }
         }
     }
