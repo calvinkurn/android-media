@@ -9,11 +9,14 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomBannerV2Binding
+import com.tokopedia.digital.home.model.RechargeHomePageProductCardCustomBannerV2Model
 import com.tokopedia.digital.home.model.RechargeHomepageSections
-import com.tokopedia.digital.home.model.RechargeProductCardUnifyModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.util.ParallaxScrollEffectListener
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnifyCardAdapterTypeFactory
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.viewholder.DigitalUnifyCardViewHolder
@@ -22,7 +25,7 @@ import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalU
 class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     val view: View,
     val listener: RechargeHomepageItemListener
-): AbstractViewHolder<RechargeProductCardUnifyModel>(view) {
+): AbstractViewHolder<RechargeHomePageProductCardCustomBannerV2Model>(view) {
 
     companion object{
         @LayoutRes
@@ -30,16 +33,18 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     }
 
     private lateinit var section: RechargeHomepageSections.Section
+    private val rvPool = RecyclerView.RecycledViewPool()
 
-    override fun bind(element: RechargeProductCardUnifyModel) {
+    override fun bind(element: RechargeHomePageProductCardCustomBannerV2Model) {
         val bind = ViewRechargeHomeProductCardCustomBannerV2Binding.bind(itemView)
         section = element.section
-
         if (section.items.isNotEmpty()){
+            hideSimmer(bind)
             setupInitialView(bind, section)
-            setupList(bind, element)
+            setupList(bind, RechargeHomepageSectionMapper.mapSectionToDGUModel(element.section))
             setSnapEffect(bind)
         }else{
+            showShimmer(bind)
             listener.loadRechargeSectionData(element.visitableId())
         }
     }
@@ -57,17 +62,18 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
 
     private fun setupList(
         bind: ViewRechargeHomeProductCardCustomBannerV2Binding,
-        element: RechargeProductCardUnifyModel
+        element: List<DigitalUnifyModel>
     ){
         val layoutManagers = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         with(bind){
             parallaxImage.alpha = 1f
             with(rvRechargeProduct){
                 resetLayout()
+                setRecycledViewPool(rvPool)
                 layoutManager = layoutManagers
                 adapter = BaseAdapter(
                     DigitalUnifyCardAdapterTypeFactory(digitalUnifyCardListener),
-                    element.digitalUnifyItems
+                    element
                 )
                 addOnScrollListener(object : ParallaxScrollEffectListener(layoutManagers){
                     override fun translatedX(translatedX: Float) {
@@ -79,7 +85,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                     }
 
                     override fun getPixelSize(): Int =
-                        itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.product_card_flashsale_width)
+                        itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.product_card_custom_banner_width)
                 })
             }
         }
@@ -88,6 +94,24 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     private fun setSnapEffect(bind: ViewRechargeHomeProductCardCustomBannerV2Binding){
         val snapHelper = GravitySnapHelper(Gravity.START)
         snapHelper.attachToRecyclerView(bind.rvRechargeProduct)
+    }
+
+    private fun showShimmer(bind: ViewRechargeHomeProductCardCustomBannerV2Binding){
+        with(bind){
+            tvSectionSeeAll.hide()
+            tvSectionTitle.hide()
+            contentContainer.hide()
+            viewRechargeHomeProductCardsShimmering.root.visible()
+        }
+    }
+
+    private fun hideSimmer(bind: ViewRechargeHomeProductCardCustomBannerV2Binding){
+        with(bind){
+            tvSectionSeeAll.visible()
+            tvSectionTitle.visible()
+            contentContainer.visible()
+            viewRechargeHomeProductCardsShimmering.root.hide()
+        }
     }
 
     private fun RecyclerView.resetLayout() {
