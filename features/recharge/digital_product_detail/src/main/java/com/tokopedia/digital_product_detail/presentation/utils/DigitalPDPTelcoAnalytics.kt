@@ -44,7 +44,7 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.INPUT_MANUAL_NUMBER,
             TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}"
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -53,7 +53,7 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.INPUT_FROM_CONTACT,
             TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}"
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -62,7 +62,7 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.INPUT_FROM_FAVORITE_NUMBER,
             TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}"
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -85,7 +85,7 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_FAVORITE_NUMBER_CHIP,
             TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -112,7 +112,7 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_FAVORITE_CONTACT_CHIP,
             TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -126,7 +126,7 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_NUMBER,
             TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -140,7 +140,7 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_CONTACT,
             TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -149,7 +149,7 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLEAR_INPUT_NUMBER,
             TrackAppUtils.EVENT_LABEL, categoryName
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -158,11 +158,10 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_ON_CONTACT_ICON,
             TrackAppUtils.EVENT_LABEL, categoryName
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    //1
     fun impressionProductCluster(
         categoryName: String,
         operatorName: String,
@@ -184,7 +183,6 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
     }
 
-    //2
     fun clickProductCluster(
         productListName: String,
         categoryName: String,
@@ -208,7 +206,6 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    //9
     fun impressionLastTransactionIcon(
         categoryName: String,
         operatorName: String,
@@ -230,7 +227,6 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
     }
 
-    //10
     fun clickLastTransactionIcon(
         productListName: String,
         categoryName: String,
@@ -254,7 +250,6 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    //13
     fun impressionBannerEmptyState(
         creativeUrl: String, categoryId: String, categoryName: String,
         loyaltyStatus: String, userId: String
@@ -270,17 +265,15 @@ class DigitalPDPTelcoAnalytics {
 
     }
 
-    //14
     fun clickLoginWidget(categoryName: String, userId: String) {
         val data = DataLayer.mapOf(
             TrackAppUtils.EVENT_ACTION, CLICK_LOGIN_WIDGET,
             TrackAppUtils.EVENT_LABEL, "${categoryName}"
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    //15
     fun impressionProductMCCM(
         categoryName: String,
         operatorName: String,
@@ -309,7 +302,6 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
     }
 
-    //18
     fun clickChevronBuyWidget(
         categoryName: String, operatorName: String, discountPrice: String,
         normalPrice: String, userId: String
@@ -323,11 +315,10 @@ class DigitalPDPTelcoAnalytics {
             TrackAppUtils.EVENT_LABEL,
             "${categoryName}_${operatorName}_${finalNormalPrice}_${finalDiscountPrice}"
         )
-        data.clickDigitaltemList(userId)
+        data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    //20
     fun clickMCCMProduct(
         productListName: String,
         categoryName: String,
@@ -383,7 +374,7 @@ class DigitalPDPTelcoAnalytics {
         return this
     }
 
-    fun MutableMap<String, Any>.clickDigitaltemList(userId: String): MutableMap<String, Any> {
+    fun MutableMap<String, Any>.clickDigitalItemList(userId: String): MutableMap<String, Any> {
         addGeneralTracker(userId)
         this[TrackAppUtils.EVENT] = CLICK_DIGITAL
         return this
