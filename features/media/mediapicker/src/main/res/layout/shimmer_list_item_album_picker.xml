@@ -12,5 +12,9 @@
     <include layout="@layout/shimmer_item_album_picker"/>
     <include layout="@layout/shimmer_item_album_picker"/>
     <include layout="@layout/shimmer_item_album_picker"/>
+    <include layout="@layout/shimmer_item_album_picker"/>
+    <include layout="@layout/shimmer_item_album_picker"/>
+    <include layout="@layout/shimmer_item_album_picker"/>
+    <include layout="@layout/shimmer_item_album_picker"/>
 
 </LinearLayout>

@@ -16,6 +16,7 @@ import com.tokopedia.picker.R
 import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.ui.fragment.camera.recyclers.adapter.CameraSliderAdapter
 import com.tokopedia.picker.ui.fragment.camera.recyclers.managers.SliderLayoutManager
+import com.tokopedia.picker.ui.uimodel.internal.CameraSelectionMode
 import com.tokopedia.picker.utils.DEFAULT_DURATION_LABEL
 import com.tokopedia.picker.utils.anim.CameraButton.animStartRecording
 import com.tokopedia.picker.utils.anim.CameraButton.animStopRecording
@@ -34,13 +35,8 @@ class CameraControllerComponent(
     , ViewTreeObserver.OnScrollChangedListener
     , CameraSliderAdapter.Listener {
 
-    private fun cameraModeList() = listOf(
-        context.getString(R.string.picker_camera_picture_mode),
-        context.getString(R.string.picker_camera_video_mode)
-    )
-
     private val adapter by lazy {
-        CameraSliderAdapter(cameraModeList(), this)
+        CameraSliderAdapter(CameraSelectionMode.create(), this)
     }
 
     // camera mode slider
@@ -94,17 +90,23 @@ class CameraControllerComponent(
     }
 
     override fun onScrollChanged() {
-        if (getActiveCameraMode() == RecyclerView.NO_POSITION) return
-        listener.onCameraModeChanged(getActiveCameraMode())
+        val position = getActiveCameraMode()
+
+        if (position == RecyclerView.NO_POSITION) return
+
+        listener.onCameraModeChanged(position)
 
         if (isPhotoMode()) {
-            photoModeUiState()
+            photoModeButtonState()
         } else if (isVideoMode()) {
-            videoModeUiState()
+            videoModeButtonState()
         }
     }
 
     override fun release() {
+        videoDurationTimer?.cancel()
+        videoDurationTimer = null
+
         if (param.isIncludeVideo) {
             lstCameraMode.viewTreeObserver.removeOnScrollChangedListener(this)
         }
@@ -117,11 +119,11 @@ class CameraControllerComponent(
             }
             param.isOnlyVideo -> {
                 listener.onCameraModeChanged(VIDEO_MODE)
-                videoModeUiState()
+                videoModeButtonState()
             }
             else -> {
                 listener.onCameraModeChanged(PHOTO_MODE)
-                photoModeUiState()
+                photoModeButtonState()
             }
         }
     }
@@ -171,6 +173,8 @@ class CameraControllerComponent(
     }
 
     fun onVideoDurationChanged(durationLabel: (String) -> Unit) {
+        videoDurationTimer = null
+
         videoDurationTimer = Timer()
         videoDurationInMillis = 0L
 
@@ -247,11 +251,11 @@ class CameraControllerComponent(
         lstCameraMode.setPadding(padding, 0, padding, 0)
     }
 
-    private fun photoModeUiState() {
+    private fun photoModeButtonState() {
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_photo)
     }
 
-    private fun videoModeUiState() {
+    private fun videoModeButtonState() {
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_video)
     }
 

@@ -55,7 +55,7 @@ class AlbumRepositoryImpl constructor(
         var recentMediaSize = 0
 
         return this.map {
-            val totalInAlbum = it.count + 1
+            val totalInAlbum = it.count
             recentMediaSize += totalInAlbum
 
             it
@@ -69,7 +69,7 @@ class AlbumRepositoryImpl constructor(
                     id = RECENT_ALBUM_ID,
                     name = RECENT_ALBUM_NAME,
                     preview = firstMediaPreviewUri,
-                    count = recentMediaSize
+                    count = recentMediaSize + 1
                 ))
             }
     }

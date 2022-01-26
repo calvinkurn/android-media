@@ -25,7 +25,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: ActivityAlbumBinding? by viewBinding()
-    private val param = PickerUiConfig.pickerParam()
+    private val param by lazy { PickerUiConfig.pickerParam() }
 
     private val viewModel by lazy {
         ViewModelProvider(

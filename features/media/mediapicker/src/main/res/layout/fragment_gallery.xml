@@ -10,7 +10,7 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/selector"
+        android:id="@+id/album_selector"
         layout="@layout/widget_album_selector" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -20,7 +20,7 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav_drawer"
-        app:layout_constraintTop_toBottomOf="@+id/selector" />
+        app:layout_constraintTop_toBottomOf="@+id/album_selector" />
 
     <com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
         android:id="@+id/bottom_nav_drawer"

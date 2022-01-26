@@ -1,17 +1,18 @@
 package com.tokopedia.picker.ui.fragment.camera.recyclers.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.picker.R
 import com.tokopedia.picker.databinding.ViewItemCameraModeSliderBinding
+import com.tokopedia.picker.ui.uimodel.internal.CameraSelectionMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CameraSliderAdapter(
-    private val elements: List<String>,
+    private val elements: MutableList<CameraSelectionMode>,
     private val listener: Listener
 ) : RecyclerView.Adapter<CameraSliderAdapter.CameraSliderViewHolder>() {
 
@@ -23,9 +24,7 @@ class CameraSliderAdapter(
         holder.bind(elements[position])
     }
 
-    override fun getItemCount(): Int {
-        return elements.size
-    }
+    override fun getItemCount() = elements.size
 
     class CameraSliderViewHolder(
         private val listener: Listener,
@@ -33,17 +32,15 @@ class CameraSliderAdapter(
     ) : RecyclerView.ViewHolder(view) {
 
         private val binding: ViewItemCameraModeSliderBinding? by viewBinding()
-        private val context by lazy { itemView.context }
 
-        fun bind(element: String) {
-            binding?.btnMode?.text = element
+        fun bind(element: CameraSelectionMode) {
+            binding?.btnMode?.text = itemView.context.getString(element.name)
 
-            binding?.btnMode?.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    android.R.color.white
-                )
-            )
+            if (element.isSelected) {
+                binding?.btnMode?.setBackgroundColor(Color.CYAN)
+            } else {
+                binding?.btnMode?.setBackgroundColor(Color.TRANSPARENT)
+            }
 
             itemView.setOnClickListener {
                 listener.onCameraSliderItemClicked(it)

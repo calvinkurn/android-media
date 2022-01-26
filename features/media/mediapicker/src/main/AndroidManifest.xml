@@ -10,7 +10,8 @@
     <application>
         <activity
             android:name=".ui.activity.main.PickerActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -22,7 +23,9 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.album.AlbumActivity"/>
+        <activity
+            android:name=".ui.activity.album.AlbumActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -81,8 +81,8 @@ open class PickerActivity : BaseActivity()
 
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
-    private val param = PickerUiConfig.pickerParam()
 
+    private val param by lazy { PickerUiConfig.pickerParam() }
     private val medias = arrayListOf<MediaUiModel>()
 
     private val viewModel by lazy {
@@ -112,12 +112,17 @@ open class PickerActivity : BaseActivity()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
-        restoreDataState(savedInstanceState)
         setupQueryAndUIConfigBuilder()
+        restoreDataState(savedInstanceState)
 
         initInjector()
         initView()
         initObservable()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        PickerUiConfig.pickerParam = null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -142,7 +147,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        medias.forEach {
+        medias.distinct().forEach {
             println("MEDIAPICKER -> ${it.path}")
         }
     }
@@ -190,12 +195,8 @@ open class PickerActivity : BaseActivity()
             viewModel.uiEvent.collect {
                 when (it) {
                     is EventState.SelectionChanged -> {
+                        medias.clear()
                         medias.addAll(it.data)
-                        if (it.data.isNotEmpty()) {
-                            navToolbar.showContinueButton()
-                        } else {
-                            navToolbar.hideContinueButton()
-                        }
                     }
                     is EventState.CameraCaptured -> {
                         it.data?.let { media -> medias.add(media) }
@@ -203,14 +204,16 @@ open class PickerActivity : BaseActivity()
                     }
                     is EventState.SelectionAdded -> {
                         medias.add(it.data)
-                        navToolbar.showContinueButton()
                     }
                     is EventState.SelectionRemoved -> {
                         medias.remove(it.media)
-                        navToolbar.hideContinueButton()
                     }
                 }
             }
+
+            navToolbar.showContinueButtonWithCondition(
+                medias.isNotEmpty()
+            )
         }
     }
 

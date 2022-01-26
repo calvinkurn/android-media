@@ -15,7 +15,6 @@ import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
 import com.tokopedia.picker.ui.widget.selectornav.viewholder.PlaceholderViewHolder
 import com.tokopedia.picker.ui.widget.selectornav.viewholder.ThumbnailViewHolder
 import com.tokopedia.picker.utils.ActionType
-import com.tokopedia.picker.utils.isVideoFormat
 
 class MediaSelectionAdapter(
     mediaPathList: List<MediaUiModel>,
@@ -105,7 +104,7 @@ class MediaSelectionAdapter(
         this.medias.add(media)
 
         listener?.onDataSetChanged(
-            ActionType.Add(medias, null)
+            ActionType.Add(medias, media, null)
         )
         notifyDataSetChanged()
     }
@@ -118,9 +117,7 @@ class MediaSelectionAdapter(
     }
 
     fun hasAtLeastOneVideo(): Boolean {
-        return this.medias.any {
-            isVideoFormat(it.path)
-        }
+        return this.medias.any { it.isVideo() }
     }
 
     fun getData(): List<MediaUiModel> {
@@ -201,7 +198,7 @@ class MediaSelectionAdapter(
     private fun removeData(index: Int) {
         if (index > -1) {
             val mediaToRemove = medias[index]
-            if (isVideoFormat(medias[index].path)) totalVideo -= 1
+            if (medias[index].isVideo()) totalVideo -= 1
 
             medias.removeAt(index)
 

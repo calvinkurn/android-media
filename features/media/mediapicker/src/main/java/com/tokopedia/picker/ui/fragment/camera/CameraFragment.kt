@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.otaliastudios.cameraview.*
+import com.otaliastudios.cameraview.CameraOptions
+import com.otaliastudios.cameraview.PictureResult
+import com.otaliastudios.cameraview.VideoResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.component.uiComponent
@@ -30,7 +32,6 @@ import com.tokopedia.picker.ui.uimodel.MediaUiModel.Companion.captureToMediaUiMo
 import com.tokopedia.picker.utils.EventState
 import com.tokopedia.picker.utils.exceptionHandler
 import com.tokopedia.picker.utils.generateFile
-import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
@@ -44,9 +45,8 @@ open class CameraFragment : BaseDaggerFragment()
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: FragmentCameraBinding? by viewBinding()
+    private val param by lazy { PickerUiConfig.pickerParam() }
     private var listener: PickerActivityListener? = null
-
-    private val param = PickerUiConfig.pickerParam()
 
     private var isTakingPictureMode = true
     private var isFlashOn = false
@@ -99,9 +99,9 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onDestroyView() {
         super.onDestroyView()
         exceptionHandler {
-            listener = null
             preview.release()
             controller.release()
+            listener = null
         }
     }
 
@@ -147,7 +147,7 @@ open class CameraFragment : BaseDaggerFragment()
             } else {
                 preview.onStartTakeVideo()
                 controller.onVideoDurationChanged {
-                    requireActivity().runOnUiThread {
+                    Handler(Looper.getMainLooper()).post {
                         controller.setVideoDurationLabel(it)
                     }
                 }
@@ -161,7 +161,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun hasVideoAddedOnMediaSelection(): Boolean {
         return listener?.mediaSelected()?.any {
-            isVideoFormat(it.path)
+            it.isVideo()
         } == true
     }
 
@@ -195,7 +195,8 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onVideoTaken(result: VideoResult) {
-        onRenderThumbnailCameraCaptured(result.file)
+//        val extractDuration = result.maxDuration
+//        onRenderThumbnailCameraCaptured(result.file)
     }
 
     override fun onPictureTaken(result: PictureResult) {

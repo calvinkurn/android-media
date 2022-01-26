@@ -27,7 +27,6 @@ import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.EventState
-import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -37,7 +36,7 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: FragmentGalleryBinding? by viewBinding()
-    private val param = PickerUiConfig.pickerParam()
+    private val param by lazy { PickerUiConfig.pickerParam() }
 
     private val adapter by lazy {
         GalleryAdapter(emptyList(), ::selectMedia)
@@ -75,7 +74,7 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
             val bucketName = data?.getStringExtra(AlbumActivity.INTENT_BUCKET_NAME)
 
             // set the title of album selector
-            binding?.selector?.txtName?.text = bucketName
+            binding?.albumSelector?.txtName?.text = bucketName
 
             // fetch album by bucket id
             viewModel.fetch(bucketId, param)
@@ -100,11 +99,10 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
     override fun onDataSetChanged(action: ActionType) {
         when (action) {
             is ActionType.Add -> {
-                viewModel.send(EventState.SelectionChanged(action.data))
+                viewModel.send(EventState.SelectionAdded(action.media))
             }
             is ActionType.Remove -> {
                 viewModel.send(EventState.SelectionRemoved(action.mediaToRemove))
-                viewModel.send(EventState.SelectionChanged(action.data))
             }
             is ActionType.Reorder -> {
                 viewModel.send(EventState.SelectionChanged(action.data))
@@ -162,7 +160,7 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
     }
 
     private fun setupWidgetAlbumSelector() {
-        binding?.selector?.container?.setOnClickListener {
+        binding?.albumSelector?.container?.setOnClickListener {
             startActivityForResult(Intent(
                 requireContext(),
                 AlbumActivity::class.java
@@ -189,13 +187,13 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
     }
 
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
-        val mediaSelection = binding?.bottomNavDrawer?.getData()?: emptyList()
+        val mediaSelectionDrawer = binding?.bottomNavDrawer?.getData()?: emptyList()
 
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
-            val hasAtLeastOneVideo = binding?.bottomNavDrawer?.hasAtLeastOneVideo()?: false
-            val mediaSelectionSize = mediaSelection.size
+            val hasAtLeastOneVideoOnDrawer = binding?.bottomNavDrawer?.hasAtLeastOneVideo()?: false
+            val mediaSelectionDrawerSize = mediaSelectionDrawer.size
 
-            if (isVideoFormat(media.path) && hasAtLeastOneVideo && !isSelected) {
+            if (media.isVideo() && hasAtLeastOneVideoOnDrawer && !isSelected) {
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.picker_selection_limit_video),
@@ -204,13 +202,22 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
                 return false
             }
 
-            if (mediaSelectionSize >= param.limit && !isSelected) {
+            if (mediaSelectionDrawerSize >= param.limit && !isSelected) {
                 Toast.makeText(
                     requireContext(),
                     getString(
                         R.string.picker_selection_limit_message,
                         param.limit
                     ),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return false
+            }
+
+            if (media.isVideo() && !media.isVideoDurationMinimumValid(requireContext()) && !isSelected) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.picker_video_duration_min_limit),
                     Toast.LENGTH_SHORT
                 ).show()
                 return false
@@ -223,7 +230,7 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
             }
 
         } else if (PickerUiConfig.paramType == PickerSelectionType.SINGLE) {
-            if (mediaSelection.isNotEmpty()) {
+            if (mediaSelectionDrawer.isNotEmpty()) {
                 adapter.removeAllSelectedSingleClick()
             }
         }

@@ -1,7 +1,10 @@
 package com.tokopedia.picker.ui.uimodel
 
+import android.content.Context
 import android.net.Uri
 import android.os.Parcelable
+import com.tokopedia.picker.utils.extractVideoDuration
+import com.tokopedia.picker.utils.isVideoFormat
 import kotlinx.parcelize.Parcelize
 import java.io.File
 import java.util.*
@@ -15,7 +18,18 @@ data class MediaUiModel(
     val isFromCamera: Boolean = false,
 ) : Parcelable {
 
+    fun isVideo() = isVideoFormat(path)
+
+    fun isVideoDurationMinimumValid(context: Context): Boolean {
+        if (!isVideo()) return false
+
+        val extractDuration = extractVideoDuration(context, id)?: 0
+        return extractDuration >= VIDEO_DURATION_MINIMUM
+    }
+
     companion object {
+        const val VIDEO_DURATION_MINIMUM = 3000
+
         fun File.captureToMediaUiModel() = MediaUiModel(
             id = System.currentTimeMillis(),
             name = name,

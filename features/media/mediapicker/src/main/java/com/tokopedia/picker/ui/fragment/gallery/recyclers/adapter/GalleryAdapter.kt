@@ -17,7 +17,6 @@ import com.tokopedia.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.MediaDiffUtil
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.utils.extractVideoDuration
-import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.picker.utils.pickerLoadImage
 import com.tokopedia.picker.utils.toVideoDurationFormat
 import com.tokopedia.utils.view.binding.viewBinding
@@ -137,10 +136,9 @@ class GalleryAdapter(
         }
 
         private fun videoDurationLabel(element: MediaUiModel) {
-            val isVideo = isVideoFormat(element.path)
-            binding?.bgVideoShadow?.showWithCondition(isVideo)
+            binding?.bgVideoShadow?.showWithCondition(element.isVideo())
 
-            if (isVideo) {
+            if (element.isVideo()) {
                 val duration = extractVideoDuration(context, element.id)
                 binding?.viewLabel?.text = duration.toVideoDurationFormat()
                 binding?.viewLabel?.show()

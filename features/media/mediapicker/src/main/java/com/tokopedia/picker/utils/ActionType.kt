@@ -5,6 +5,7 @@ import com.tokopedia.picker.ui.uimodel.MediaUiModel
 sealed class ActionType {
     class Add(
         val data: List<MediaUiModel>,
+        val media: MediaUiModel,
         val error: String?
     ): ActionType()
 

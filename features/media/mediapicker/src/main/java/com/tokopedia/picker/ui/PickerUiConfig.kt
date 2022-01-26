@@ -5,8 +5,6 @@ import com.tokopedia.applink.ApplinkConst.MediaPicker
 import com.tokopedia.picker.common.PickerModeType
 import com.tokopedia.picker.common.PickerPageType
 import com.tokopedia.picker.common.PickerSelectionType
-import com.tokopedia.picker.ui.uimodel.MediaUiModel
-import com.tokopedia.picker.utils.isVideoFormat
 
 object PickerUiConfig {
 
@@ -19,10 +17,8 @@ object PickerUiConfig {
     @PickerSelectionType
     var paramType = PickerSelectionType.MULTIPLE
 
-    // picker global parameter
-    private var pickerParam: PickerParam? = null
+    var pickerParam: PickerParam? = null
 
-    // TODO mode
     fun pickerParam(): PickerParam {
         val isOnlyVideo = paramMode == PickerModeType.VIDEO_ONLY
         val isIncludeVideo = paramMode == PickerModeType.COMMON
