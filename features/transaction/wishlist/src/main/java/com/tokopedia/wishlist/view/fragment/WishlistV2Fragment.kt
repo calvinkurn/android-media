@@ -165,6 +165,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val FILTER_STOCK_LABEL = "Stok"
         private const val FILTER_CATEGORIES_LABEL = "Kategori"
         private const val PADDING_RV = 10
+
+        private const val ERROR_WISHLIST_V2 = "Error observingWishlistV2() -"
+        private const val ERROR_WISHLIST_DATA = "Error observingWishlistData() -"
+        private const val ERROR_DELETE_WISHLIST_V2 = "Error observingDeleteWishlistV2() -"
+        private const val ERROR_BULK_DELETE_WISHLIST_V2 = "Error observingBulkDeleteWishlistV2() -"
+        private const val ERROR_WISHLIST_V2_ATC = "Error observingAtc() -"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -271,8 +277,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     onFailedGetWishlistV2(result.throwable)
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+
+                    val labelError = "$ERROR_WISHLIST_V2 $errorMessage"
                     // log error type to newrelic
-                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                     // log to crashlytics
                     logToCrashlytics(result.throwable)
                 }
@@ -356,8 +364,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     finishRefresh()
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+
+                    val labelError = "$ERROR_WISHLIST_DATA $errorMessage"
                     // log error type to newrelic
-                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                     // log to crashlytics
                     logToCrashlytics(result.throwable)
                 }
@@ -597,8 +607,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+
+                    val labelError = "$ERROR_DELETE_WISHLIST_V2 $errorMessage"
                     // log error type to newrelic
-                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                     // log to crashlytics
                     logToCrashlytics(result.throwable)
                 }
@@ -635,8 +647,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+
+                    val labelError = "$ERROR_BULK_DELETE_WISHLIST_V2 $errorMessage"
                     // log error type to newrelic
-                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                    ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                     // log to crashlytics
                     logToCrashlytics(result.throwable)
                 }
@@ -676,8 +690,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         }
                         showToaster(errorMessage, "", Toaster.TYPE_ERROR)
 
+                        val labelError = "$ERROR_WISHLIST_V2_ATC $errorMessage"
                         // log error type to newrelic
-                        ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to errorMessage))
+                        ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                         // log to crashlytics
                         logToCrashlytics(throwable)
                     }
