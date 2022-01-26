@@ -40,8 +40,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
     private var mFilterChipListener: ClientNumberFilterChipListener? = null
 
-//    private var inputNumberValidator: ((String) -> String)? = null
-
     private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
 
     private var textFieldStaticLabel: String = ""
@@ -340,25 +338,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-//    private fun executeValidator(s: String) {
-//        setLoading(true)
-//        if (s.isNumeric()) {
-//            val errorMessage = inputNumberValidator?.invoke(
-//                CommonTopupBillsUtil.formatPrefixClientNumber(s))
-//
-//            errorMessage?.run {
-//                if (isEmpty()) {
-//                    setLoading(false)
-//                    showCheckIcon()
-//                    clearErrorState()
-//                } else {
-//                    setLoading(false)
-//                    setErrorInputField(this)
-//                }
-//            }
-//        }
-//    }
-
     fun hideSoftKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(this.windowToken, 0)
@@ -373,10 +352,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         mAutoCompleteListener = autoCompleteListener
         mFilterChipListener = filterChipListener
     }
-
-//    fun setInputNumberValidator(func: (inputNumber: String) -> String) {
-//        inputNumberValidator = func
-//    }
 
     interface ClientNumberInputFieldListener {
         fun onRenderOperator(isDelayed: Boolean)

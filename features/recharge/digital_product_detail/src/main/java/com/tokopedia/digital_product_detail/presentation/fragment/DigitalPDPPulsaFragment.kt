@@ -153,13 +153,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
                     /* validate client number */
                     viewModel.validateClientNumber(rechargePdpPulsaClientNumberWidget.getInputNumber())
-                    // TODO: [Misael] benerin condition ini
-                    if (true) {
-                        hitTrackingForInputNumber(
-                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
-                            selectedOperator.operator.attributes.name
-                        )
-                    }
+                    hitTrackingForInputNumber(
+                        DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                        selectedOperator.operator.attributes.name
+                    )
 
                     if (operator.id != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
                             .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
@@ -328,12 +325,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
             activity, throwable, ErrorHandler.Builder().build()
         )
+        val errMsgSub = getString(
+            R.string.error_message_with_code,
+            getString(com.tokopedia.abstraction.R.string.msg_network_error_2),
+            errCode
+        )
         binding?.run {
             NetworkErrorHelper.showEmptyState(
                 activity,
                 rechargePdpPulsaPageContainer,
                 errMsg,
-                "${getString(com.tokopedia.abstraction.R.string.msg_network_error_2)}. Kode Error: ($errCode)",
+                errMsgSub,
                 null,
                 DEFAULT_ICON_RES
             ) {
