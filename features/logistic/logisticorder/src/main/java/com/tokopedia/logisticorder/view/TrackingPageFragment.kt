@@ -492,7 +492,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         }
 
         binding?.run {
-            proofDescription.text = description
+//            proofDescription.text = description
             imagePreviewLarge.visibility = View.VISIBLE
             iconClose.setOnClickListener {
                 binding?.imagePreviewLarge?.visibility = View.GONE
