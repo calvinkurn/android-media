@@ -1025,6 +1025,9 @@ class PlayViewModel @AssistedInject constructor(
      * Updating channel status
      */
     private fun updateChannelStatus() {
+        val currentStatus = _status.value.channelStatus.statusType
+        if (currentStatus.isFreeze || currentStatus.isBanned) return
+
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val channelStatus = repo.getChannelStatus(channelId)
             _status.update {

@@ -100,9 +100,8 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     show_cart
                     show_pinned_product
                     ping_interval
-                    max_chars
-                    max_retries
-                    min_reconnect_delay
+                    active
+                    freezed
                     has_promo
                     reminder{
                       is_set
