@@ -94,20 +94,20 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             holder.dotTrail.setVisibility(View.VISIBLE);
             holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N200));
         }
-
-        if (trackingHistoryData.get(position).getProof().getImageId().isEmpty()) {
-            holder.imageProof.setVisibility(View.GONE);
-        } else {
-            holder.imageProof.setVisibility(View.VISIBLE);
-            UserSessionInterface userSession = new UserSession(holder.context);
-            String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small",
-                    userSession.getUserId(), 1, userSession.getDeviceId());
-            String authKey = String.format("%s %s", TrackingPageUtil.INSTANCE.getHEADER_VALUE_BEARER(), userSession.getAccessToken());
-
-            GlideUrl newUrl = new GlideUrl(url, new LazyHeaders.Builder()
-                    .addHeader(TrackingPageUtil.INSTANCE.getHEADER_KEY_AUTH(), authKey)
-                    .build());
-
+        // todo to be reverted, testing only
+//        if (trackingHistoryData.get(position).getProof().getImageId().isEmpty()) {
+//            holder.imageProof.setVisibility(View.GONE);
+//        } else {
+//            holder.imageProof.setVisibility(View.VISIBLE);
+//            UserSessionInterface userSession = new UserSession(holder.context);
+//            String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small",
+//                    userSession.getUserId(), 1, userSession.getDeviceId());
+//            String authKey = String.format("%s %s", TrackingPageUtil.INSTANCE.getHEADER_VALUE_BEARER(), userSession.getAccessToken());
+//
+//            GlideUrl newUrl = new GlideUrl(url, new LazyHeaders.Builder()
+//                    .addHeader(TrackingPageUtil.INSTANCE.getHEADER_KEY_AUTH(), authKey)
+//                    .build());
+        String newUrl = "https://1.bp.blogspot.com/-x_3z-B3eDCQ/XQ8qZh_l-2I/AAAAAAAAC2k/7tlk8ILLbqcdhDdeKMC4xjD2oNwUcr3QwCLcBGAs/s1600/foto%2Bkecil.jpg";
             Glide.with(holder.context)
                     .load(newUrl)
                     .centerCrop()
@@ -119,7 +119,7 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             holder.imageProof.setOnClickListener(view -> {
                 listener.onImageItemClicked(trackingHistoryData.get(position).getProof().getImageId(), orderId);
             });
-        }
+//        }
     }
 
     private void setTitleColor(TrackingHistoryViewHolder holder, int position) {
