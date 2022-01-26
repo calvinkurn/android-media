@@ -16,7 +16,6 @@ import com.tokopedia.product.manage.common.feature.list.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
@@ -120,7 +119,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
             tvDraftProduct?.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
-                startActivityForResult(intent, REQUEST_CODE_DRAFT_PRODUCT)
+                startActivity(intent)
             }
             tvDraftProduct?.visibility = View.VISIBLE
         }

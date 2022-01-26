@@ -94,7 +94,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ETALASE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_PICK_ETALASE
@@ -2006,14 +2005,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                             }
                         }
                         else -> {}
-                    }
-                }
-                REQUEST_CODE_DRAFT_PRODUCT -> {
-                    if (resultCode == Activity.RESULT_OK) {
-                        activity?.runOnUiThread {
-                            getFiltersTab(withDelay = true)
-                            getProductList(withDelay = true, isRefresh = true)
-                        }
                     }
                 }
                 else -> {
