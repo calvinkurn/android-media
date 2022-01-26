@@ -37,7 +37,11 @@ object CommonTopupBillsDataMapper {
 
     fun mapPersoFavNumberItemToContactDataView(clientNumbers: List<TopupBillsPersoFavNumberItem>): List<TopupBillsAutoComplete> {
         return clientNumbers.map {
-            TopupBillsAutoCompleteContactDataView(it.clientName, it.clientNumber)
+            if (it.subtitle.isNotEmpty()) {
+                TopupBillsAutoCompleteContactDataView(it.title, it.subtitle)
+            } else {
+                TopupBillsAutoCompleteContactDataView("", it.title)
+            }
         }
     }
 }

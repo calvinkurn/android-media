@@ -80,7 +80,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
                 addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
-                        // [Misael] explore showClearIcon here
+
                     }
 
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -136,23 +136,22 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
         // create each chip
         for (number in favnum.take(SORT_FILTER_LIMIT)) {
-            if (number.clientName.isEmpty()) {
+            if (number.subtitle.isEmpty()) {
                 mFilterChipListener?.onShowFilterChip(false)
             } else {
                 mFilterChipListener?.onShowFilterChip(true)
             }
-            val chipText = if (number.clientName.isEmpty())
-                number.clientNumber else number.clientName
-            val sortFilterItem = SortFilterItem(chipText, type = ChipsUnify.TYPE_ALTERNATE)
+            val sortFilterItem = SortFilterItem(number.title, type = ChipsUnify.TYPE_ALTERNATE)
             sortFilterItem.listener = {
-                if (number.clientName.isEmpty()) {
+                if (number.subtitle.isEmpty()) {
                     setContactName("")
+                    setInputNumber(number.title)
                     mFilterChipListener?.onClickFilterChip(false)
                 } else {
-                    setContactName(number.clientName)
+                    setContactName(number.title)
+                    setInputNumber(number.subtitle)
                     mFilterChipListener?.onClickFilterChip(true)
                 }
-                setInputNumber(number.clientNumber)
                 clearFocusAutoComplete()
             }
             sortFilter.add(sortFilterItem)
@@ -247,12 +246,16 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun isErrorMessageShown(): Boolean = binding.clientNumberWidgetInputField.isInputError
 
-    fun setErrorInputField(errorMessage: String) {
+    fun setErrorInputField(errorMessage: String, resetProvider: Boolean = false) {
         binding.clientNumberWidgetInputField.run {
             val temp = textInputLayout.helperText.toString()
             if (temp != errorMessage) {
                 setMessage(errorMessage)
                 isInputError = true
+
+                if (resetProvider) {
+                    binding.clientNumberWidgetOperatorGroup.hide()
+                }
             }
         }
     }
