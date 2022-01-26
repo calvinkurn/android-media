@@ -57,14 +57,19 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleMilestoneWidget"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:drawablePadding="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/iconShcToggleMission"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toStartOf="@+id/timerShcMilestone"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneStart"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_max="wrap"
+        app:layout_constraintWidth_percent="0.60"
         app:typographyType="heading_5"
         tools:text="Misi berjualan tokopedia" />
 
