@@ -51,7 +51,7 @@
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN600"
         tools:text="Berlaku hingga: 20 Nov 2019  |  Tersisa: 8" />
 
     <com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
@@ -59,9 +59,10 @@
         android:layout_width="@dimen/dp_attachvoucher_270"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/unify_space_4"
         android:clipToPadding="false"
         android:padding="@dimen/spacing_lvl3"
-        app:layout_constraintStart_toStartOf="@+id/title"
+        app:layout_constraintStart_toEndOf="@id/rbSelect"
         app:layout_constraintTop_toBottomOf="@+id/validStatus"
         app:vchElevation="@dimen/spacing_lvl3" />
 

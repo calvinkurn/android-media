@@ -1,5 +1,5 @@
 <resources>
-    <string name="title_attachvoucher">Lampirkan Voucher Toko</string>
+    <string name="title_attachvoucher">Lampirkan Kupon Toko</string>
     <string name="title_attachvoucher_button_attach">Lampirkan</string>
     <string name="desc_attachvoucher_status">Berlaku hingga: %1$s | Tersisa : %2$d</string>
     <string name="title_attachvoucher_empty">Kamu belum punya \nVoucher Toko</string>
