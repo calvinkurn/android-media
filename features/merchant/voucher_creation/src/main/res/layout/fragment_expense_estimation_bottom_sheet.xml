@@ -61,43 +61,16 @@
         app:layout_constraintTop_toBottomOf="@id/tpgDescription1"
         app:typographyType="body_2" />
 
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/bullet"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintBottom_toBottomOf="@+id/tpgDescription3"
-        app:layout_constraintEnd_toStartOf="@+id/guideline4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tpgDescription3" />
-
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgDescription3"
-        android:layout_width="0dp"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_height="wrap_content"
-        android:text="@string/max_expense_estimation_3"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/tpgDescription2"
-        app:typographyType="body_2" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography17"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_32"
         android:text="@string/mvc_create_tips_calculation"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/unify_space_32"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography16"
+        app:layout_constraintTop_toBottomOf="@+id/tpgDescription2"
         app:typographyType="heading_5" />
 
     <com.tokopedia.unifyprinciples.Typography
