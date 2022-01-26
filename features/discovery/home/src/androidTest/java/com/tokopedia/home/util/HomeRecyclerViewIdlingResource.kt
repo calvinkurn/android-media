@@ -6,16 +6,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.disableHomeAnimation
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 
 private const val NAME = "Recycler view has item idling resource"
 
 internal class HomeRecyclerViewIdlingResource(
     private val recyclerView: RecyclerView?,
     private val name: String? = NAME,
-    private val limitCountToIdle: Int = 0,
-    private val fullLayout: Boolean = false
+    private val limitCountToIdle: Int = 0
 ) : IdlingResource {
 
     private var resourceCallback: IdlingResource.ResourceCallback? = null
@@ -33,23 +30,10 @@ internal class HomeRecyclerViewIdlingResource(
     }
 
     private fun HomeRecycleAdapter?.isNonCacheData(): Boolean {
-        if (!fullLayout) {
-            return this != null && itemCount >= limitCountToIdle && (
-                    this.currentList.find { it is HomeRecommendationFeedDataModel } != null ||
-                            this.currentList.find { it is HomeRetryModel } != null
-                    )
-        } else {
-            return this != null && itemCount >= limitCountToIdle && (
-                    listContainsExternalModel(this.currentList) ||
-                            this.currentList.find { it is HomeRetryModel } != null
-                    )
-        }
-    }
-
-    private fun listContainsExternalModel(currentList: List<Any>): Boolean {
-        return currentList.find { it is HomeRecommendationFeedDataModel } != null &&
-                currentList.find { it is ReminderWidgetModel } != null &&
-                currentList.find { it is RechargeBUWidgetDataModel } != null
+        return this != null && itemCount >= limitCountToIdle && (
+                this.currentList.find { it is HomeRecommendationFeedDataModel } != null ||
+                        this.currentList.find { it is HomeRetryModel } != null
+                )
     }
 
     override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {
