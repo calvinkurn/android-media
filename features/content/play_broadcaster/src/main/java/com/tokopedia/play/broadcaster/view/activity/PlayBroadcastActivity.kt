@@ -38,10 +38,7 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
-import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
+import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -316,7 +313,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
                 openBroadcastActivePage()
                 showDialogContinueLiveStreaming()
             }
-            ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
+            /** TODO: this should be removed soon */
+//            ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
             else -> openBroadcastSetupPage()
         }
     }
@@ -357,7 +355,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     }
 
     private fun openBroadcastSetupPage() {
-        navigateToFragment(PlayBroadcastPrepareFragment::class.java)
+        navigateToFragment(PlayBroadcastPreparationFragment::class.java)
         analytic.openSetupScreen()
     }
 

@@ -27,6 +27,11 @@ abstract class PlayBroadcastFragmentModule {
 
     @Binds
     @IntoMap
+    @FragmentKey(PlayBroadcastPreparationFragment::class)
+    abstract fun getPlayBroadcastPreparationFragment(fragment: PlayBroadcastPreparationFragment): Fragment
+
+    @Binds
+    @IntoMap
     @FragmentKey(PlayBroadcastSummaryFragment::class)
     abstract fun getPlayBroadcastSummaryFragment(fragment: PlayBroadcastSummaryFragment): Fragment
 

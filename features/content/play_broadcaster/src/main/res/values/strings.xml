@@ -218,4 +218,12 @@
     <string name="play_bro_product_tag_stock_empty">Stok Habis</string>
     <string name="play_bro_product_tag_no_price">Rp -</string>
     <string name="play_bro_product_discount_template">%d%%</string>
+
+    <!-- New Preparation -->
+    <string name="play_bro_title_label">Judul</string>
+    <string name="play_bro_cover_label">Cover</string>
+    <string name="play_bro_product_label">Produk</string>
+
+    <string name="play_bro_title_form_hint">Tulis Judul Live</string>
+    <string name="play_bro_title_form_instruction">Buat judul yang kreatif dan bisa bikin calon penonton penasaran!</string>
 </resources>
