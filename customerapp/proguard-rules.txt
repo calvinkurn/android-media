@@ -99,6 +99,10 @@
   **[] $VALUES;
   public *;
 }
+-keep public enum com.tokopedia.home_component.model$** {
+  **[] $VALUES;
+  public *;
+}
 #END GLIDE
 
 #https://github.com/airbnb/DeepLinkDispatch/issues/44
