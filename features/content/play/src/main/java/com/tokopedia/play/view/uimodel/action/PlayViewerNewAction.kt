@@ -55,4 +55,9 @@ object CloseSharingOptionAction: PlayViewerNewAction()
 object ScreenshotTakenAction: PlayViewerNewAction()
 data class SharePermissionAction(val label: String): PlayViewerNewAction()
 
+/**
+ * Product
+ */
+object RetryGetTagItemsAction : PlayViewerNewAction()
+
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
