@@ -541,6 +541,23 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
 
 }
 
+data class RechargeHomePageProductCardCustomBannerV2Model(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel{
+    override fun visitableId(): String {
+        return section.id
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomePageProductCardCustomBannerV2Model){
+            section == b.section
+        }else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}
+
 data class RechargeHomepageThreeIconsModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel{
     override fun visitableId(): String {
         return section.id

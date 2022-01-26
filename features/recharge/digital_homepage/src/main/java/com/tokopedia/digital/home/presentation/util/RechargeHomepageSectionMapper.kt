@@ -18,6 +18,8 @@ import com.tokopedia.home_component.util.DateHelper.isExpired
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.*
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -139,6 +141,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_SWIPE_BANNER -> RechargeHomepageSwipeBannerModel(it)
                     SECTION_PRODUCT_CARD_DGU -> RechargeProductCardUnifyModel(it)
                     SECTION_3_ICONS -> RechargeHomepageThreeIconsModel(it)
+                    SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2 -> RechargeHomePageProductCardCustomBannerV2Model(it)
                     else -> null
                 }
             }
@@ -337,6 +340,91 @@ object RechargeHomepageSectionMapper {
         return when (this) {
             null -> emptyList()
             else -> collectIndexesOf()
+        }
+    }
+
+    fun mapSectionToDGUModel(section: RechargeHomepageSections.Section): List<DigitalUnifyModel>{
+        // use 1 media type for all items
+        var mediaImageType: String = ""
+
+        return section.items.map {
+            // use the first media type only
+            if (mediaImageType.isEmpty()) {
+                mediaImageType = it.attributes.mediaUrlType
+            }
+
+            val discountLabel: String = when {
+                it.attributes.cashback.isNotEmpty() -> it.attributes.cashback
+                it.attributes.specialDiscount.isNotEmpty() -> it.attributes.specialDiscount
+                else -> it.label3
+            }
+
+            val discountType: String = when {
+                it.attributes.cashback.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_CASHBACK
+                it.attributes.specialDiscount.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_SPECIAL
+                it.label3.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_SLASH
+                else -> ""
+            }
+
+            val discountLabelType: Int = when (discountType) {
+                DigitalUnifyConst.DISCOUNT_CASHBACK -> Label.HIGHLIGHT_LIGHT_GREEN
+                DigitalUnifyConst.DISCOUNT_SPECIAL, DigitalUnifyConst.DISCOUNT_SLASH -> Label.HIGHLIGHT_LIGHT_RED
+                else -> 0
+            }
+
+            return@map DigitalUnifyModel(
+                id = it.id,
+                mediaUrl = it.mediaUrl,
+                mediaType = mediaImageType,
+                mediaTitle = it.attributes.mediaUrlTitle,
+                iconUrl = it.attributes.iconUrl,
+                iconBackgroundColor = "",
+                campaign = DigitalCardCampaignModel(
+                    text = it.attributes.campaignLabelText,
+                    textColor = it.attributes.campaignLabelTextColor,
+                    backgroundUrl = it.attributes.campaignLabelBackgroundUrl
+                ),
+                productInfoLeft = DigitalCardInfoModel(
+                    text = it.subtitle,
+                    textColor = it.attributes.subtitleColor
+                ),
+                productInfoRight = DigitalCardInfoModel(
+                    text = it.title,
+                    textColor = it.attributes.titleColor
+                ),
+                title = it.content,
+                rating = DigitalCardRatingModel(
+                    ratingType = it.attributes.ratingType,
+                    rating = it.attributes.rating,
+                    review = it.attributes.review
+                ),
+                specialInfo = DigitalCardInfoModel(
+                    text = it.attributes.specialInfoText,
+                    textColor = it.attributes.specialInfoColor
+                ),
+                priceData = DigitalCardPriceModel(
+                    price = it.label2,
+                    discountLabel = discountLabel,
+                    discountType = discountType,
+                    discountLabelType = discountLabelType,
+                    slashedPrice = it.label1,
+                    pricePrefix = it.attributes.pricePrefix,
+                    priceSuffix = it.attributes.priceSuffix
+                ),
+                cashback = it.attributes.cashback,
+                subtitle = it.attributes.soldValue,
+                soldPercentage = DigitalCardSoldPercentageModel(
+                    showPercentage = it.attributes.showSoldPercentage,
+                    value = it.attributes.soldPercentageValue,
+                    label = it.attributes.soldPercentageLabel,
+                    labelColor = it.attributes.soldPercentageLabelColor
+                ),
+                actionButton = DigitalCardActionModel(
+                    text = it.textlink,
+                    buttonType = it.buttonType,
+                    applink = it.applink
+                )
+            )
         }
     }
 }
