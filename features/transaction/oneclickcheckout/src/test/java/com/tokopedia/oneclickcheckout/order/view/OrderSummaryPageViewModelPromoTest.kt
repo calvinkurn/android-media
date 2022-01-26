@@ -14,7 +14,11 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -69,7 +73,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(promoCode, promoRequest.codes.first())
-        assertEquals(listOf(promoCode, helper.logisticPromo.promoCode), promoRequest.orders.first()!!.codes)
+        assertEquals(listOf(promoCode, helper.logisticPromo.promoCode), promoRequest.orders.first().codes)
     }
 
     @Test
@@ -86,7 +90,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(true, promoRequest.codes.isEmpty())
-        assertEquals(true, promoRequest.orders.first()!!.codes.isEmpty())
+        assertEquals(true, promoRequest.orders.first().codes.isEmpty())
     }
 
     @Test
@@ -104,7 +108,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(true, promoRequest.codes.isEmpty())
-        assertEquals(listOf(promoCode), promoRequest.orders.first()!!.codes)
+        assertEquals(listOf(promoCode), promoRequest.orders.first().codes)
     }
 
     @Test

@@ -12,7 +12,6 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils
-import java.util.*
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -423,9 +422,9 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
-        return OccPrompt(promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
+        return OccPrompt(promptResponse.type.lowercase(), promptResponse.title,
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
-            OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
+            OccPromptButton(it.text, it.link, it.action.lowercase(), it.color.lowercase())
         })
     }
 }

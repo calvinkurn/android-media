@@ -388,7 +388,6 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
     companion object {
         const val VIEW_TYPE = 3
-        const val MAX_NOTES_LENGTH = 144
 
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f

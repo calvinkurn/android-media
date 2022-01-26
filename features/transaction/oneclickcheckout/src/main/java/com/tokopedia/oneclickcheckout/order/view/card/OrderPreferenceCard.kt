@@ -816,8 +816,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f
-        private const val FLOAT_12 = 12F
-        private const val PROPOTION_10 = 10
 
         private const val MAIN_ADDRESS_LEFT_MARGIN = 8
         private const val NOT_MAIN_ADDRESS_LEFT_MARGIN = 16
