@@ -77,7 +77,6 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.ui.Quick
 import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
-import com.tokopedia.product.manage.databinding.DialogProductAddBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -169,6 +168,7 @@ import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import android.text.TextPaint
 
 open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageAdapterFactoryImpl>(),
         ProductViewHolder.ProductViewHolderView,
@@ -1306,43 +1306,38 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun initPopUpDialog(productId: String): DialogUnify {
         context?.let { context ->
-            activity?.let { activity ->
-                val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setCancelable(false)
-                val dialogBinding = DialogProductAddBinding.inflate(
-                    LayoutInflater.from(context),
-                    null,
-                    false
-                )
-                dialog.setContentView(dialogBinding.root)
-
-                dialogBinding.filterSubmitButton.setOnClickListener {
-                    RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
-                    activity.finish()
-                }
-
-                dialogBinding.btnProductList.setOnClickListener {
-                    goToPDP(productId)
-                    dialog.dismiss()
-                }
-                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
-
+            return DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
-                spanText.setSpan(StyleSpan(Typeface.BOLD),
-                    START_SPAN_INDEX, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spanText.setSpan(ForegroundColorSpan(backgroundColor),
-                    START_SPAN_INDEX, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                val cs = object : ClickableSpan() {
+                spanText.setSpan(object : ClickableSpan() {
                     override fun onClick(v: View) {
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
-                        activity.finish()
+                        activity?.finish()
                     }
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = backgroundColor
+                        ds.isUnderlineText = false
+                    }
+                },
+                    spanText.length - 5,
+                    spanText.length - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                spanText.setSpan(StyleSpan(Typeface.BOLD),
+                    spanText.length - 5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                setTitle(getString(R.string.popup_label_static))
+                setDescription(spanText)
+                setPrimaryCTAText(getString(R.string.courier_option))
+                setPrimaryCTAClickListener {
+                    RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
+                    activity?.finish()
                 }
-                spanText.setSpan(cs, START_SPAN_INDEX, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                dialogBinding.txtTipsTrick.movementMethod = LinkMovementMethod.getInstance()
-                dialogBinding.txtTipsTrick.text = spanText
-                return dialog
+                setPrimaryCTAText(getString(R.string.product_option))
+                setSecondaryCTAClickListener {
+                    goToPDP(productId)
+                    dismiss()
+                }
             }
         }
         return DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)

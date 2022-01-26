@@ -148,11 +148,8 @@
 
     <string name="product_manage_max_count">%s+</string>
 
-    <string name="popup_tips_trick_clickable">baru di sini.</string>
-    <string name="popup_label_static">Produk pertamamu siap</string>
-    <string name="popup_label_static_second">dijual!</string>
-    <string name="popup_label_tips_trick">Masih bingung? Cek tip &amp; trik penjual</string>
-    <string name="popup_label_tips_trick_second">baru di sini.</string>
+    <string name="popup_tips_trick_clickable">Masih bingung? Cek tip &amp; trik penjual baru di sini.</string>
+    <string name="popup_label_static">Produk pertamamu siap dijual!</string>
 
     <string name="title_activity_manage_product">Daftar Produk</string>
     <string name="title_add_product">TAMBAH PRODUK</string>

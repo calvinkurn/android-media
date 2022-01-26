@@ -201,7 +201,7 @@ class ProductManageViewModel @Inject constructor(
     fun clearDataSource() {
         launchCatchError(block = {
             clearDataSourceUseCase.executeOnBackground()
-        }) { }
+        }) { /* do nothing */ }
     }
 
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
