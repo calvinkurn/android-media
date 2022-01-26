@@ -34,9 +34,9 @@ class PlayWidgetCardJumboChannelViewHolder(
     }
 
     fun bind(item: PlayWidgetChannelUiModel) {
-//        itemView.addOnImpressionListener(item.impressHolder) {
-//            listener.onChannelImpressed(itemView, item, adapterPosition)
-//        }
+        itemView.addOnImpressionListener(item.impressHolder) {
+            listener.onChannelImpressed(itemView, item, adapterPosition)
+        }
         playWidgetCardChannelJumboView.setModel(item)
     }
 

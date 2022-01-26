@@ -16,6 +16,13 @@ class PlayWidgetCardJumboBannerViewHolder(
     itemView: View,
     private val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
+    
+    init {
+        //re-use from large
+        itemView.layoutParams = itemView.layoutParams.apply {
+            height = itemView.context.resources.getDimensionPixelSize(R.dimen.play_widget_card_jumbo_height)
+        }
+    }
 
     private var background: AppCompatImageView = itemView.findViewById(R.id.play_widget_banner)
 
@@ -29,7 +36,7 @@ class PlayWidgetCardJumboBannerViewHolder(
 
     companion object {
         @LayoutRes
-        val layoutRes = R.layout.item_play_widget_card_banner_jumbo
+        val layoutRes = R.layout.item_play_widget_card_banner_large
     }
 
     interface Listener {
