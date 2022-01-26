@@ -41,7 +41,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
         if (section.items.isNotEmpty()){
             hideSimmer(bind)
             setupInitialView(bind, section)
-            setupList(bind, RechargeHomepageSectionMapper.mapSectionToDGUModel(element.section))
+            setupList(bind, element.digitalUnifyItems)
             setSnapEffect(bind)
         }else{
             showShimmer(bind)
