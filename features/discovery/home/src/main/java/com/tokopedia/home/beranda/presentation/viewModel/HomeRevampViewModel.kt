@@ -554,9 +554,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun getBeautyFest(homeDynamicChannelModel: HomeDynamicChannelModel) {
-        launch{
-            _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(homeDynamicChannelModel))
-        }
+        _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(homeDynamicChannelModel))
     }
 
     fun deleteQuestWidget() {
