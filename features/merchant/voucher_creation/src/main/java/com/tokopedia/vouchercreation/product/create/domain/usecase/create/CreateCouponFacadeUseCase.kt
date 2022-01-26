@@ -30,10 +30,10 @@ class CreateCouponFacadeUseCase @Inject constructor(
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
     ): Int {
-        val uploadImageDeferred = scope.async { uploadImage(sourceId, couponProducts) }
+        //val uploadImageDeferred = scope.async { uploadImage(sourceId, couponProducts) }
         val initiateVoucherDeferred = scope.async { initiateVoucher(IS_UPDATE_MODE) }
 
-        val imageUrl = uploadImageDeferred.await()
+       // val imageUrl = uploadImageDeferred.await()
         val voucher = initiateVoucherDeferred.await()
 
         val createCouponDeferred = scope.async {
@@ -42,7 +42,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
                 couponSettings,
                 couponProducts,
                 voucher.token,
-                imageUrl
+                "https://images.tokopedia.net/img/VqbcmM/2021/8/19/78c9335e-e949-4549-9b31-e637eae9e1e0.png"
             )
         }
 

@@ -72,8 +72,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
             couponPreviewFragment.setCouponSettingsData(couponSettings)
 
             //Stub the coupon preview data for testing purpose
-            val startDate = Calendar.getInstance().apply { set(2022, 0, 20, 22, 30, 0) }
-            val endDate = Calendar.getInstance().apply {  set(2022, 0, 25, 22, 0, 0) }
+            val startDate = Calendar.getInstance().apply { set(2022, 0, 26, 22, 30, 0) }
+            val endDate = Calendar.getInstance().apply {  set(2022, 0, 30, 22, 0, 0) }
             val period = CouponInformation.Period(startDate.time, endDate.time)
             couponPreviewFragment.setCouponInformationData(
                 CouponInformation(
@@ -88,28 +88,28 @@ class CreateCouponProductActivity : AppCompatActivity() {
             couponPreviewFragment.setCouponProductsData(
                 listOf(
                     CouponProduct(
-                        1,
+                        "2147956088",
                         18000,
                         5.0F,
                         "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_1.jpg",
                         19
                     ),
                     CouponProduct(
-                        2,
-                        25000,
+                        "15455652",
+                        18000,
                         4.7F,
                         "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_2.jpg",
                         1000
                     ),
                     CouponProduct(
-                        3,
+                        "15429644",
                         18000,
                         5.0F,
                         "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_3.jpg",
                         2100
                     ),
                     CouponProduct(
-                        4,
+                        "15409031",
                         25000,
                         4.0F,
                         "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_4.jpg",

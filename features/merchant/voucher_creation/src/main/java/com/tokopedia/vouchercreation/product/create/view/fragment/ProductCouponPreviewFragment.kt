@@ -50,6 +50,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_COUPON = "coupon"
+        private const val BUNDLE_KEY_MODE = "mode"
         private const val EMPTY_STRING = ""
         private const val SCREEN_NAME = "Product coupon preview page"
         private const val ZERO: Long = 0
@@ -61,9 +62,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             return ProductCouponPreviewFragment()
         }
 
-        fun newInstance(coupon: Coupon): ProductCouponPreviewFragment {
+        fun newInstance(coupon: Coupon, mode : Mode): ProductCouponPreviewFragment {
             val args = Bundle()
             args.putSerializable(BUNDLE_KEY_COUPON, coupon)
+            args.putSerializable(BUNDLE_KEY_MODE, mode)
             val fragment = ProductCouponPreviewFragment()
             fragment.arguments = args
             return fragment
@@ -100,6 +102,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         UpdateProductCouponFailedDialog(requireActivity(), ::onRetryUpdateCoupon, ::onRequestHelp)
     }
 
+    private var pageMode = Mode.CREATE
+
     private val CouponType.label: String
         get() {
             return when (this) {
@@ -128,6 +132,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             }
         }
 
+    enum class Mode {
+        CREATE,
+        UPDATE,
+        DUPLICATE
+    }
+
     override fun getScreenName() = SCREEN_NAME
     override fun initInjector() {
         DaggerVoucherCreationComponent.builder()
@@ -148,6 +158,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        handleArguments()
         setupViews()
         observeValidCoupon()
         observeCreateCouponResult()
@@ -161,14 +172,17 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun handleArguments() {
+        pageMode = arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode ?: Mode.CREATE
+    }
+
     private fun changeButtonBehavior() {
         binding.btnCreateCoupon.text = getString(R.string.save_changes)
         binding.btnCreateCoupon.setOnClickListener { updateCoupon() }
     }
 
     private fun isUpdateMode() : Boolean {
-        val coupon : Coupon? = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon
-        return coupon != null
+        return pageMode == Mode.UPDATE
     }
 
     private fun displayCouponDetail() {
@@ -257,10 +271,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             when(result) {
                 is Success -> {
                     onUpdateCouponSuccess()
-                    Toaster.build(
-                        binding.root,
-                        getString(R.string.coupon_updated)
-                    ).show()
+                    val text = when(pageMode) {
+                        Mode.CREATE -> EMPTY_STRING
+                        Mode.UPDATE -> getString(R.string.coupon_updated)
+                        Mode.DUPLICATE -> getString(R.string.coupon_duplicated)
+                    }
+                    showToaster(text)
                 }
                 is Fail -> {
                     updateCouponErrorNotice.show()
@@ -621,5 +637,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         val template = getString(R.string.placeholder_share_coupon_product_wording)
         val wording = String.format(template, shopName, startDate, endDate, "")
 
+    }
+
+    private fun showToaster(text : String) {
+        if (text.isEmpty()) return
+        Toaster.build(binding.root, text).show()
     }
 }
