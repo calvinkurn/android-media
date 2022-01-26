@@ -20,7 +20,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -32,11 +31,12 @@ import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
@@ -125,8 +125,9 @@ internal fun createBroadMatchListener(): BroadMatchListener {
 
 internal fun createGlobalNavListener(): GlobalNavListener {
     return object: GlobalNavListener {
-        override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item?, keyword: String?) {}
-        override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView?) {}
+        override fun onGlobalNavWidgetImpressed(globalNavDataView: GlobalNavDataView) {}
+        override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item, keyword: String) {}
+        override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView) {}
     }
 }
 
