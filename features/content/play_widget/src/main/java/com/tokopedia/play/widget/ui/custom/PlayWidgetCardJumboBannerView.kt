@@ -44,6 +44,11 @@ class PlayWidgetCardJumboBannerView : ConstraintLayout {
         mListener = listener
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        setListener(null)
+    }
+
     interface Listener {
         fun onBannerClicked(
             view: View,
