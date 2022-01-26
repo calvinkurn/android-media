@@ -1306,7 +1306,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun initPopUpDialog(productId: String): DialogUnify {
         context?.let { context ->
-            return DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+            return DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(object : ClickableSpan() {
@@ -1333,7 +1333,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
                     activity?.finish()
                 }
-                setPrimaryCTAText(getString(R.string.product_option))
+                setSecondaryCTAText(getString(R.string.product_option))
                 setSecondaryCTAClickListener {
                     goToPDP(productId)
                     dismiss()
