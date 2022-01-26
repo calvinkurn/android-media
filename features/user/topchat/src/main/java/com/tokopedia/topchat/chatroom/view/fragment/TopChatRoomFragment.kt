@@ -2690,7 +2690,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun uploadImage(image: ImageUploadServiceModel) {
+    protected open fun uploadImage(image: ImageUploadServiceModel) {
         context?.applicationContext?.let {
             UploadImageChatService.enqueueWork(
                 it, image, viewModel.roomMetaData.msgId
