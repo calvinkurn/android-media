@@ -1,5 +1,15 @@
 package com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu
 
+/*
+@author: Said Faisal
+
+THIS IS JUST TEMP ACTIVITY
+
+IT WILL BE DELETED SOON
+ */
+
+
+
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
