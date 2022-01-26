@@ -704,6 +704,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getTableData(listOf(element))
     }
 
+    override fun reloadBarChartWidget(element: BarChartWidgetUiModel) {
+        getBarChartData(listOf(element))
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view

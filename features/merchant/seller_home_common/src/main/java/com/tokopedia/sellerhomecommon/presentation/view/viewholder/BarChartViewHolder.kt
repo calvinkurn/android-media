@@ -118,6 +118,7 @@ class BarChartViewHolder(
                 } else {
                     animateHideEmptyState()
                 }
+                setupLastUpdatedInfo(element)
             } else {
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, element)
@@ -128,6 +129,21 @@ class BarChartViewHolder(
             }
         } else {
             animateHideEmptyState()
+            setupLastUpdatedInfo(element)
+        }
+    }
+
+    private fun setupLastUpdatedInfo(element: BarChartWidgetUiModel) {
+        with(binding) {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                tvShcBarChartLastUpdated.isVisible = true
+                tvShcBarChartLastUpdated.text = Utils.LastUpdated
+                    .getCopy(root.context, lastUpdated)
+            }
+            icShcRefreshBarChart.isVisible = element.isFromCache
+            icShcRefreshBarChart.setOnClickListener {
+                listener.reloadBarChartWidget(element)
+            }
         }
     }
 
@@ -269,14 +285,25 @@ class BarChartViewHolder(
             val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
             val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
             btnShcBarChartMore.visibility = ctaVisibility
-            btnShcBarChartNext.visibility = ctaVisibility
             btnShcBarChartMore.text = element.ctaText
 
             if (isCtaVisible) {
+                val iconColor = root.context.getResColor(
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                )
+                val iconWidth = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                val iconHeight = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                btnShcBarChartMore.setUnifyDrawableEnd(
+                    IconUnify.CHEVRON_RIGHT,
+                    iconColor,
+                    iconWidth,
+                    iconHeight
+                )
                 btnShcBarChartMore.setOnClickListener {
-                    onSeeMoreClicked(element)
-                }
-                btnShcBarChartNext.setOnClickListener {
                     onSeeMoreClicked(element)
                 }
             }
@@ -377,5 +404,6 @@ class BarChartViewHolder(
         fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {}
         fun sendBarChartEmptyStateCtaClick(model: BarChartWidgetUiModel) {}
         fun sendBarChartSeeMoreClickEvent(model: BarChartWidgetUiModel) {}
+        fun reloadBarChartWidget(element: BarChartWidgetUiModel) {}
     }
 }

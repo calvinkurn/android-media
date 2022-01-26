@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.BarChartMetricModel
 import com.tokopedia.sellerhomecommon.domain.model.BarChartValueModel
 import com.tokopedia.sellerhomecommon.domain.model.ChartSummaryModel
@@ -17,7 +18,9 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 10/07/20
  */
 
-class BarChartMapper @Inject constructor() :
+class BarChartMapper @Inject constructor(
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
+) : BaseWidgetMapper(lastUpdatedSharedPref),
     BaseResponseMapper<GetBarChartDataResponse, List<BarChartDataUiModel>> {
 
     companion object {
@@ -39,7 +42,8 @@ class BarChartMapper @Inject constructor() :
                     summary = mapBarChartSummary(it.data.summary)
                 ),
                 isFromCache = isFromCache,
-                showWidget = it.showWidget.orFalse()
+                showWidget = it.showWidget.orFalse(),
+                lastUpdated = getLastUpdatedMillis(it.dataKey, isFromCache)
             )
         }
     }
