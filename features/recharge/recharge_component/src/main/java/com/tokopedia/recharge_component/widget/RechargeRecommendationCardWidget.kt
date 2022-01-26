@@ -45,4 +45,11 @@ class RechargeRecommendationCardWidget @JvmOverloads constructor(@NotNull contex
         }
     }
 
+    fun renderFailRecommendation(){
+        with(rechargeRecommendationViewBinding){
+            shimmeringRecommendation.root.hide()
+            root.hide()
+        }
+    }
+
 }
