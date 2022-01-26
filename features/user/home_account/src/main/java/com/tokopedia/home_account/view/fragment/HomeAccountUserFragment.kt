@@ -552,6 +552,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         }
     }
 
+    private fun isEnableBiometricOffering(): Boolean {
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING, false)
+    }
+
     private fun setupObserver() {
         viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -1146,8 +1150,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
-                homeAccountAnalytic.trackOnClickLogoutDialog()
-                viewModel.getFingerprintStatus()
+                if(isEnableBiometricOffering()) {
+                    homeAccountAnalytic.trackOnClickLogoutDialog()
+                    viewModel.getFingerprintStatus()
+                } else {
+                    showDialogLogout()
+                }
             }
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
                 RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
@@ -1562,6 +1570,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             "android_user_home_account_tokopoints"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
+        private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING = "android_user_home_account_biometric_offering"
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
         private const val LINK_STATUS_ROLLOUT = "goto_linking"
 
