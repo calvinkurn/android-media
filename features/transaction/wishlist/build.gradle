@@ -87,15 +87,13 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.rxJava
 
+    implementation (rootProject.ext.firebase.crashlytics) { transitive = true }
+
     // unit test
     testImplementation rootProject.ext.testDependencies.mockk
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
-    api (rootProject.ext.firebase.crashlytics) {
-        transitive = true
-    }
 }
 
 project.ext {
