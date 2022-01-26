@@ -24,7 +24,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
 ): GraphqlUseCase<ChannelDetailsWithRecomResponse>(gqlRepository) {
 
     init {
-        setGraphqlQuery(GetChannelDetailsWithRecomUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(GetChannelDetailsWithRecomUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(ChannelDetailsWithRecomResponse::class.java)
