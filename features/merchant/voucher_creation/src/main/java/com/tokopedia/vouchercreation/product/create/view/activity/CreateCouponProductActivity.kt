@@ -42,7 +42,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun setupViews() {
         couponPreviewFragment.setOnNavigateToCouponInformationPageListener {
-            //TODO : @Faisal Replace with your coupon information fragment
+            replaceFragment(setupCreateCouponDetailFragment(), TAG_FRAGMENT_COUPON_INFORMATION)
         }
         couponPreviewFragment.setOnNavigateToCouponSettingsPageListener {
             couponSettingFragment.setCouponSettings(couponSettings)
@@ -56,32 +56,11 @@ class CreateCouponProductActivity : AppCompatActivity() {
             popFragment()
         }
 
-       /* couponInformationFragment.setOnCouponSaved { coupon ->
-            popFragment()
-
-            //TODO : @Faisal please map your coupon information data to CouponInformation model
-
-            couponPreviewFragment.setCouponInformationData(couponInformation)
-        }*/
-
         couponSettingFragment.setOnCouponSaved { couponSettings ->
             popFragment()
 
             this.couponSettings = couponSettings
             couponPreviewFragment.setCouponSettingsData(couponSettings)
-
-            //Stub the coupon preview data for testing purpose
-            val startDate = Calendar.getInstance().apply { set(2022, 0, 20, 22, 30, 0) }
-            val endDate = Calendar.getInstance().apply {  set(2022, 0, 25, 22, 0, 0) }
-            val period = CouponInformation.Period(startDate.time, endDate.time)
-            couponPreviewFragment.setCouponInformationData(
-                CouponInformation(
-                    CouponInformation.Target.PUBLIC,
-                    "Kupon Kopi Kenangan",
-                    "KOPKEN",
-                    period
-                )
-            )
 
             //Stub the products data for testing purpose
             couponPreviewFragment.setCouponProductsData(
@@ -114,7 +93,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
-        val couponInfoFragment = CreateCouponDetailFragment()
+        val couponInformationData = couponPreviewFragment.getCouponInformationData()
+        val couponInfoFragment = CreateCouponDetailFragment(couponInformationData)
         couponInfoFragment.setOnCouponSaved { coupon ->
             popFragment()
             couponPreviewFragment.setCouponInformationData(coupon)

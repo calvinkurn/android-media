@@ -297,6 +297,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         this.onUpdateCouponSuccess = onUpdateCouponSuccess
     }
 
+    fun getCouponInformationData() = this.couponInformation
+
 
     override fun onResume() {
         super.onResume()

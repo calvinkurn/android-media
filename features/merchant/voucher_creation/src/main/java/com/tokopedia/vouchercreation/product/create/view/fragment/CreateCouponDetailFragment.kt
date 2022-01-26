@@ -25,13 +25,17 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.databinding.FragmentMvcCreateCouponDetailBinding
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.view.adapter.CreateCouponTargetAdapter
 import com.tokopedia.vouchercreation.product.create.view.uimodel.CouponTargetEnum
+import com.tokopedia.vouchercreation.product.create.view.uimodel.convertToCouponInformationTarget
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CreateCouponDetailViewModel
 import java.util.*
 import javax.inject.Inject
 
-class CreateCouponDetailFragment : BaseDaggerFragment(){
+class CreateCouponDetailFragment(
+    private val couponInformationData: CouponInformation? = null
+) : BaseDaggerFragment(){
 
     companion object {
         private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
@@ -45,6 +49,8 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
     private val tickerErrorCouponValidation by lazy { binding?.layoutCouponName?.tickerErrorCouponValidation}
     private val tfuCouponDateStart by lazy { binding?.layoutCouponDate?.tfuCouponDateStart }
     private val tfuCouponDateEnd by lazy { binding?.layoutCouponDate?.tfuCouponDateEnd }
+    private var onCouponSaved: (CouponInformation) -> Unit = {}
+    private val targetAdapter = CreateCouponTargetAdapter(::onCouponTargetChanged)
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -84,21 +90,28 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
         observeInputDate()
         observeCouponValidationResult()
         observePeriodValidationResult()
+        observeAllInputValid()
 
         viewModel.setStartDateCalendar(GregorianCalendar())
         viewModel.setEndDateCalendar(GregorianCalendar())
         viewModel.populateCouponTarget()
+
+        if (couponInformationData != null) {
+            viewModel.setCouponInformation(couponInformationData)
+            tfuFillCouponName?.textFieldInput?.setText(couponInformationData.name)
+            tfuFillCouponCode?.textFieldInput?.setText(couponInformationData.code)
+        }
     }
 
     private fun observeCouponTargetList() {
         viewModel.couponTargetList.observe(viewLifecycleOwner) {
             targetAdapter.setData(it)
-            rvTarget?.requestLayout()
         }
     }
 
     private fun observeSelectedCouponTarget() {
         viewModel.selectedCouponTarget.observe(viewLifecycleOwner) {
+            if (it == CouponTargetEnum.PUBLIC) tfuFillCouponCode?.textFieldInput?.setText("")
             tfuFillCouponCode?.isVisible = it == CouponTargetEnum.PRIVATE
             btnCouponCreateNext?.isButtonEnabled = true
         }
@@ -124,7 +137,6 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
                     activity?.run {
                         KeyboardHandler.hideSoftKeyboard(this)
                     }
-                    // TODO: navigate to next page
                 } else {
                     when {
                         validationResult.isPublicError.isNotBlank() -> {
@@ -157,7 +169,6 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
                     activity?.run {
                         KeyboardHandler.hideSoftKeyboard(this)
                     }
-                    // TODO: navigate to next page
                 } else {
                      (validationResult.dateStartError.isNotBlank() ||
                              validationResult.hourStartError.isNotBlank()).run {
@@ -174,6 +185,24 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
             } else if (it is Fail) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                 view?.showErrorToaster(errorMessage)
+            }
+        }
+    }
+
+    private fun observeAllInputValid() {
+        viewModel.allInputValid.observe(viewLifecycleOwner) {
+            if (it) {
+                onCouponSaved.invoke(
+                    CouponInformation(
+                        viewModel.selectedCouponTarget.value.convertToCouponInformationTarget(),
+                        tfuFillCouponName?.textFieldInput?.text.toString(),
+                        tfuFillCouponCode?.textFieldInput?.text.toString(),
+                        CouponInformation.Period(
+                            viewModel.startDateCalendarLiveData.value?.time ?: Date(),
+                            viewModel.endDateCalendarLiveData.value?.time ?: Date()
+                        )
+                    )
+                )
             }
         }
     }
@@ -247,5 +276,9 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
 
     private fun RecyclerView.setRecyclerViewToVertical() {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    fun setOnCouponSaved(onCouponSaved: (CouponInformation) -> Unit) {
+        this.onCouponSaved = onCouponSaved
     }
 }
