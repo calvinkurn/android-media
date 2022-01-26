@@ -40,6 +40,7 @@ class ServerChannelAdapter :
 
         fun bind(data: String) {
             with(binding) {
+                labelServerLogger.text = data
                 when (data) {
                     ServerLoggerConstants.SCALYR -> {
                         labelServerLogger.setLabelType(Label.HIGHLIGHT_DARK_RED)

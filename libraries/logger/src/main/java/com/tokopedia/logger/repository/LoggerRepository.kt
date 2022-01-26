@@ -80,7 +80,7 @@ class LoggerRepository(
         limit: Int,
         offset: Int
     ): List<Logger> {
-        return if (serverChannel.isNotBlank()) logDao.getLoggerList(
+        return if (serverChannel.isBlank()) logDao.getLoggerList(
             limit,
             offset
         ) else logDao.getLoggerListFilter(serverChannel, limit, offset)

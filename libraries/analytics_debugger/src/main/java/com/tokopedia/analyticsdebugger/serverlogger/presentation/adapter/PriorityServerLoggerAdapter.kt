@@ -13,7 +13,7 @@ class PriorityServerLoggerAdapter(private val serverLoggerListener: ServerLogger
     private val priorityLoggerList = mutableListOf<ItemPriorityUiModel>()
 
     fun setPriorityList(items: List<ItemPriorityUiModel>) {
-        if (priorityLoggerList.isNullOrEmpty()) return
+        if (items.isNullOrEmpty()) return
         this.priorityLoggerList.clear()
         this.priorityLoggerList.addAll(items)
         notifyDataSetChanged()
@@ -47,15 +47,19 @@ class PriorityServerLoggerAdapter(private val serverLoggerListener: ServerLogger
 
     inner class PriorityServerLoggerViewHolder(private val binding: ItemPriorityChipsBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: ItemPriorityUiModel) {
             with(binding) {
                 chipsPriority.chipText = item.priorityName
+                chipsPriority.chipSize = ChipsUnify.SIZE_MEDIUM
                 chipsPriority.chipType =
                     if (item.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
-                serverLoggerListener.onChipsClicked(
-                    adapterPosition,
-                    chipsPriority.chipText.orEmpty()
-                )
+                chipsPriority.setOnClickListener {
+                    serverLoggerListener.onChipsClicked(
+                        adapterPosition,
+                        chipsPriority.chipText.orEmpty()
+                    )
+                }
             }
         }
     }

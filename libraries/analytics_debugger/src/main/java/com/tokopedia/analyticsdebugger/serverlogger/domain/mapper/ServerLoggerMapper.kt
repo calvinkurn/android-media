@@ -49,7 +49,7 @@ class ServerLoggerMapper @Inject constructor(
             val loggerUiModel = ServerLoggerUiModel(
                 serverChannel = serverChannelList,
                 tag = tag,
-                previewMessage = formatDataExcerpt(it.message),
+                previewMessage = formatDataExcerpt(message),
                 message = message,
                 dateTime = getDateFormat(it.timeStamp),
                 priority = it.serverChannel

@@ -9,6 +9,7 @@ import com.tokopedia.analyticsdebugger.serverlogger.domain.usecase.GetLoggerList
 import com.tokopedia.analyticsdebugger.serverlogger.domain.usecase.GetPriorityListUseCase
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.BaseServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerState
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerConstants
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -30,15 +31,17 @@ class ServerLoggerViewModel @Inject constructor(
 
     private val _serverLoggerPagination = MutableStateFlow(listOf<ServerLoggerUiModel>())
     private val _priorityChips = MutableStateFlow(ServerLoggerPriorityUiModel())
+    private val _isLoading = MutableStateFlow(false)
 
-    val dataState: Flow<List<BaseServerLoggerUiModel>> = combine(
+    val dataState: Flow<ServerLoggerState> = combine(
         _serverLoggerPagination,
-        _priorityChips
-    ) { serverLoggerPagination, priorityChips ->
-        mutableListOf<BaseServerLoggerUiModel>().apply {
+        _priorityChips,
+        _isLoading
+    ) { serverLoggerPagination, priorityChips, loading ->
+        ServerLoggerState(mutableListOf<BaseServerLoggerUiModel>().apply {
             add(priorityChips)
             addAll(serverLoggerPagination)
-        }
+        }, loading)
     }.flowOn(coroutineDispatchers.computation)
 
     private val _messageEvent = MutableSharedFlow<String>()
@@ -56,12 +59,15 @@ class ServerLoggerViewModel @Inject constructor(
         priority: String,
         page: Int = ServerLoggerConstants.FIRST_PAGE,
     ) {
+        _isLoading.value = true
         loadPriority(priority)
         loadServerLogger(query, priority, page)
+        _isLoading.value = false
     }
 
     fun loadServerLogger(query: String, priority: String, page: Int) {
         val offset = ServerLoggerConstants.LIMIT * page
+        _isLoading.value = true
         launchCatchError(block = {
             val serverLoggerResult =
                 getLoggerListUseCase.execute(query, priority, ServerLoggerConstants.LIMIT, offset)
@@ -69,6 +75,7 @@ class ServerLoggerViewModel @Inject constructor(
         }) {
             _messageEvent.emit(it.localizedMessage.orEmpty())
         }
+        _isLoading.value = false
     }
 
     private fun loadPriority(chipsSelected: String) {

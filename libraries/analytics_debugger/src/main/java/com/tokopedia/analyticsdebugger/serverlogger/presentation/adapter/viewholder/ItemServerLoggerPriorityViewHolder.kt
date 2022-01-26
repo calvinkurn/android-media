@@ -7,9 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.databinding.ItemServerLoggerPriorityListBinding
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.PriorityServerLoggerAdapter
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerLoggerAdapter
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerLoggerListener
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemPriorityUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerItemDecoration
 import com.tokopedia.kotlin.extensions.view.isZero
 
@@ -30,11 +32,21 @@ class ItemServerLoggerPriorityViewHolder(
     override fun bind(element: ServerLoggerPriorityUiModel?) {
         if (element == null) return
         with(binding) {
-            setPriorityList(element.priority)
+            setRecyclerViewPriority(element.priority)
         }
     }
 
-    private fun ItemServerLoggerPriorityListBinding.setPriorityList(data: List<ItemPriorityUiModel>) {
+    override fun bind(element: ServerLoggerPriorityUiModel?, payloads: MutableList<Any>) {
+        if (element == null || payloads.isNullOrEmpty()) return
+
+        when (payloads.getOrNull(0) as? Int) {
+            ServerLoggerAdapter.PAYLOAD_SELECTED_CHIPS -> {
+                setPriorityList(element.priority)
+            }
+        }
+    }
+
+    private fun ItemServerLoggerPriorityListBinding.setRecyclerViewPriority(data: List<ItemPriorityUiModel>) {
         priorityServerLogger = PriorityServerLoggerAdapter(serverLoggerListener)
         rvSLPriority.run {
             if (itemDecorationCount.isZero()) {
@@ -43,7 +55,11 @@ class ItemServerLoggerPriorityViewHolder(
             layoutManager =
                 LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = priorityServerLogger
-            priorityServerLogger?.setPriorityList(data)
+            setPriorityList(data)
         }
+    }
+
+    private fun setPriorityList(data: List<ItemPriorityUiModel>) {
+        priorityServerLogger?.setPriorityList(data)
     }
 }

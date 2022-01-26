@@ -1,8 +1,6 @@
 package com.tokopedia.analyticsdebugger.serverlogger.presentation.fragment
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -47,9 +45,7 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
 
     private var binding by autoClearedNullable<FragmentServerLoggerBinding>()
 
-    private val viewModel: ServerLoggerViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(ServerLoggerViewModel::class.java)
-    }
+    private lateinit var viewModel: ServerLoggerViewModel
 
     private val serverLoggerAdapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
         ServerLoggerAdapterTypeFactory(this)
@@ -60,6 +56,7 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ServerLoggerViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -114,8 +111,12 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
 
     override fun loadInitialData() {
         swipeToRefresh?.isRefreshing = false
-        showLoader()
+        serverLoggerAdapter.removeBaseServerLoggerList()
         viewModel.loadInitialData(getSearchbarText(), getChipsSelectedName())
+    }
+
+    override fun onSwipeRefresh() {
+        loadInitialData()
     }
 
     override fun getScreenName(): String = TAG
@@ -134,7 +135,6 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
         serverLoggerAdapter.run {
             updateChipsSelected(position)
             removeServerLoggerList()
-            showLoading()
         }
         viewModel.loadServerLogger(
             getSearchbarText(),
@@ -151,6 +151,7 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
         binding?.searchbarSl?.searchBarTextField?.run {
             setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    serverLoggerAdapter.removeServerLoggerList()
                     viewModel.loadServerLogger(
                         getSearchbarText(),
                         getChipsSelectedName(),
@@ -160,6 +161,9 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
                 }
                 return@setOnEditorActionListener false
             }
+        }
+        binding?.searchbarSl?.clearListener = {
+            loadInitialData()
         }
     }
 
@@ -176,17 +180,18 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
     }
 
     private fun observeDataState() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.dataState.collectLatest {
-                hideLoader()
-                hideLoading()
-                setServerLoggerList(it)
+                setLoading(it.isLoading)
+                setServerLoggerList(it.data)
             }
         }
     }
 
+    private fun setLoading(loading: Boolean) = if (loading) showLoading() else hideLoading()
+
     private fun observeMessageEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.messageEvent.collectLatest {
                 showToaster(it)
             }
@@ -214,21 +219,19 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
     }
 
     private fun setServerLoggerList(items: List<BaseServerLoggerUiModel>) {
+        val hasNext = items.size == ServerLoggerConstants.LIMIT
         val serverLoggerList =
             serverLoggerAdapter.list.filterIsInstance(ServerLoggerUiModel::class.java)
-        if (serverLoggerList.size.isMoreThanZero()) {
+        if (serverLoggerList.isEmpty() && items.isEmpty()) {
+            serverLoggerAdapter.removeServerLoggerList()
+            binding?.tvSlNotFound?.show()
+        } else if (serverLoggerList.size.isMoreThanZero() && items.isNotEmpty()) {
             serverLoggerAdapter.addServerLoggerListData(items)
         } else {
+            binding?.tvSlNotFound?.hide()
             serverLoggerAdapter.setServerLoggerData(items)
         }
-    }
-
-    private fun hideLoader() {
-        binding?.loader?.hide()
-    }
-
-    private fun showLoader() {
-        binding?.loader?.show()
+        updateScrollListenerState(hasNext)
     }
 
     companion object {

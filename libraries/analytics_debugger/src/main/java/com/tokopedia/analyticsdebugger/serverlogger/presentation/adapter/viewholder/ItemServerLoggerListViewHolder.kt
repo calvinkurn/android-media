@@ -36,16 +36,6 @@ class ItemServerLoggerListViewHolder(view: View) : AbstractViewHolder<ServerLogg
         }
     }
 
-    override fun bind(element: ServerLoggerUiModel?, payloads: MutableList<Any>) {
-        if (element == null || payloads.isNullOrEmpty()) return
-
-        when (payloads.getOrNull(0) as? Int) {
-            ServerLoggerAdapter.PAYLOAD_SELECTED_CHIPS -> {
-                setServerChannelList(element.serverChannel)
-            }
-        }
-    }
-
     private fun ItemServerLoggerListBinding.setRecyclerView(data: List<String>) {
         serverChannelAdapter = ServerChannelAdapter()
         rvSLChannel.run {

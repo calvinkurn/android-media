@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 
-class ServerLoggerItemDecoration: RecyclerView.ItemDecoration() {
+class ServerLoggerItemDecoration : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -15,9 +15,8 @@ class ServerLoggerItemDecoration: RecyclerView.ItemDecoration() {
     ) {
         val position = parent.getChildAdapterPosition(view)
         if (position.isMoreThanZero()) {
-            parent.adapter.also {
-                outRect.right = view.resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.spacing_lvl3)
-            }
+            outRect.left =
+                view.resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.spacing_lvl3)
         }
     }
 }

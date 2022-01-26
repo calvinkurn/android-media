@@ -25,6 +25,12 @@ class ServerLoggerAdapter(serverLoggerAdapterTypeFactory: ServerLoggerAdapterTyp
         notifyItemRangeInserted(visitables.size, serverLoggerList.size)
     }
 
+    fun removeBaseServerLoggerList() {
+        val baseServerLoggerListCount = visitables.count { it is BaseServerLoggerUiModel }
+        visitables.removeAll { it is BaseServerLoggerUiModel }
+        notifyItemRangeRemoved(visitables.size, baseServerLoggerListCount)
+    }
+
     fun removeServerLoggerList() {
         val serverLoggerListCount = visitables.count { it is ServerLoggerUiModel }
         visitables.removeAll { it is ServerLoggerUiModel }

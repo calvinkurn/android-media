@@ -62,7 +62,7 @@ class LoggingToServerViewHolder(
             } else {
                 val message = splitMessage[i]
                 if (!TextUtils.isEmpty(message)) {
-                    val keyValue = message.split(regexEqualSign).toTypedArray()
+                    val keyValue = message.split(regexEqualSign.toRegex()).toTypedArray()
                     if (getOrNull(keyValue, 0) != null && getOrNull(keyValue, 1) != null) {
                         messageMap[keyValue[0]] = keyValue[1]
                     } else {

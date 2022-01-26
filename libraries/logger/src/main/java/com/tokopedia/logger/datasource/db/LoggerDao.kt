@@ -20,7 +20,7 @@ interface LoggerDao {
     @Query("SELECT * FROM LOG_TABLE WHERE server_channel == :serverChannel ORDER BY timestamp DESC LIMIT :limit OFFSET :offset")
     suspend fun getLoggerListFilter(serverChannel: String, limit: Int, offset: Int): List<Logger>
 
-    @Query("SELECT DISTINCT server_channel FROM LOG_TABLE")
+    @Query("SELECT DISTINCT server_channel FROM log_table")
     suspend fun getPriorityList(): List<String>
 
     @Query("SELECT * FROM LOG_TABLE WHERE post_priority == 1 ORDER BY timestamp ASC LIMIT :limit")

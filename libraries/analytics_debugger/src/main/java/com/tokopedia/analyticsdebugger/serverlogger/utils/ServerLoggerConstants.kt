@@ -6,5 +6,5 @@ object ServerLoggerConstants {
     const val EMBRACE = "Embrace"
 
     const val FIRST_PAGE = 1
-    const val LIMIT = 15
+    const val LIMIT = 10
 }

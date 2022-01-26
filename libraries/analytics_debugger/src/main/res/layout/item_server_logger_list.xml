@@ -19,7 +19,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_3"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
             tools:text="GQL_ERROR" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -30,7 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTagSL"
-            app:typographyType="body_1"
+            app:typographyType="body_2"
             tools:text="P1"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -50,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvMessageSL"
