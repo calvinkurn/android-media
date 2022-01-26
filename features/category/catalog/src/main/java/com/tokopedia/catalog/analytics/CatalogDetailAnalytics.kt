@@ -180,8 +180,8 @@ object CatalogDetailAnalytics {
             const val ACTION_ADD_WISHLIST = "add wishlist"
             const val ACTION_REMOVE_WISHLIST = "remove wishlist"
 
-            const val CLICK_MORE_DESCRIPTION = "click lihat selengkapnya deskripsi"
-            const val CLICK_MORE_SPECIFICATIONS = "click lihat selengkapnya spesifikasi"
+            const val CLICK_MORE_DESCRIPTION = "click deskripsi lihat selengkapnya"
+            const val CLICK_MORE_SPECIFICATIONS = "click spesifikasi lihat selengkapnya"
             const val CLICK_TAB_SPECIFICATIONS = "click tab spesifikasi lihat selengkapnya"
             const val CLICK_TAB_DESCRIPTION = "click tab deskripsi lihat selengkapnya"
             const val CLICK_VIDEO_WIDGET = "click video widget"
