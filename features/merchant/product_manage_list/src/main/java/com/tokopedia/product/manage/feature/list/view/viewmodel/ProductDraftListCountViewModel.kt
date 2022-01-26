@@ -2,8 +2,8 @@ package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.feature.draft.domain.usecase.ClearAllDraftProductsUseCase
 import com.tokopedia.product.manage.common.feature.draft.domain.usecase.GetAllDraftProductsCountUseCase
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
@@ -14,8 +14,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -41,9 +41,10 @@ class ProductDraftListCountViewModel @Inject constructor(
         val access = if (userSession.isShopOwner) {
             ProductManageAccessMapper.mapProductManageOwnerAccess()
         } else {
-            val shopId = userSession.shopId
-            val response = getProductManageAccessUseCase.execute(shopId)
-            ProductManageAccessMapper.mapToProductManageAccess(response)
+            withContext(dispatchers.io) {
+                val shopId = userSession.shopId
+                ProductManageAccessMapper.mapToProductManageAccess(getProductManageAccessUseCase.execute(shopId))
+            }
         }
 
         if(access.addProduct) {
