@@ -532,13 +532,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel) {
         binding?.let {
-            var selectedPosition = viewModel.getSelectedPositionId(denomData.listDenomData,
-                viewModel.selectedGridProduct.denomData.id)
-            if (viewModel.selectedGridProduct.denomData.id.isNotEmpty()
-                && viewModel.selectedGridProduct.position >= 0
-                && viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.GRID_TYPE
-                && viewModel.isEligibleToBuy
-            ){
+            var selectedPosition = viewModel.getSelectedPositionId(denomData.listDenomData)
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)){
                 onShowBuyWidget(viewModel.selectedGridProduct.denomData)
             } else {
                 selectedPosition = null
@@ -586,8 +581,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
         binding?.let {
+            var selectedPosition = viewModel.getSelectedPositionId(denomGrid.listDenomData)
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_GRID_TYPE)){
+                onShowBuyWidget(viewModel.selectedGridProduct.denomData)
+            } else {
+                selectedPosition = null
+                onHideBuyWidget()
+            }
             it.rechargePdpPulsaPromoWidget.show()
-            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid,
+                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedPosition)
         }
     }
 

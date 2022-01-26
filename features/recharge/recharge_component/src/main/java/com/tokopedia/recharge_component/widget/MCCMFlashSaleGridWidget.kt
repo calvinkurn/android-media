@@ -27,7 +27,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
         LayoutInflater.from(context), this, true)
     private val adapterDenomGrid = DenomGridAdapter()
 
-    fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel, textColor: String){
+    fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel, textColor: String, selectedProductIndex: Int? = null){
         with(widgetRechargeMCCMFlashSaleGridWidget){
             if (!denomData.listDenomData.isNullOrEmpty()) {
                 root.show()
@@ -44,12 +44,12 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
                         }
                     })
-                renderAdapter(denomGridListener, denomData.mainTitle, denomData.listDenomData, DenomWidgetEnum.MCCM_GRID_TYPE)
+                renderAdapter(denomGridListener, denomData.mainTitle, denomData.listDenomData, DenomWidgetEnum.MCCM_GRID_TYPE, selectedProductIndex)
             }
         }
     }
 
-    fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel, textColor: String){
+    fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel, textColor: String, selectedProductIndex: Int? = null){
         with(widgetRechargeMCCMFlashSaleGridWidget){
             if (!denomData.listDenomData.isNullOrEmpty()) {
                 root.show()
@@ -67,7 +67,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
                         }
                     })
-                renderAdapter(denomGridListener, denomData.mainTitle, denomData.listDenomData, DenomWidgetEnum.FLASH_GRID_TYPE)
+                renderAdapter(denomGridListener, denomData.mainTitle, denomData.listDenomData, DenomWidgetEnum.FLASH_GRID_TYPE, selectedProductIndex)
             }
         }
     }
@@ -83,14 +83,14 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
-    private fun renderAdapter(denomGridListener: RechargeDenomGridListener, denomListTitle: String, listDenomGrid: List<DenomData>, denomType: DenomWidgetEnum){
+    private fun renderAdapter(denomGridListener: RechargeDenomGridListener, denomListTitle: String, listDenomGrid: List<DenomData>, denomType: DenomWidgetEnum, selectedProduct: Int? = null){
         with(widgetRechargeMCCMFlashSaleGridWidget){
             rvMccmGrid.apply {
                 show()
                 adapterDenomGrid.clearDenomGridData()
                 adapterDenomGrid.setDenomGridList(listDenomGrid)
                 adapterDenomGrid.listener = denomGridListener
-                adapterDenomGrid.selectedProductIndex = null
+                adapterDenomGrid.selectedProductIndex = selectedProduct
                 adapterDenomGrid.denomWidgetType = denomType
                 adapterDenomGrid.productTitleList = denomListTitle
                 adapter = adapterDenomGrid

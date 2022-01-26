@@ -18,6 +18,7 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -167,18 +168,26 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun onResetSelectedProduct(){
-        selectedGridProduct = SelectedGridProduct()
-    }
-
-    fun getSelectedPositionId(listDenomData: List<DenomData>, id: String): Int?{
+    fun getSelectedPositionId(listDenomData: List<DenomData>): Int?{
         var selectedProductPositionId : Int? = null
         listDenomData.forEachIndexed { index, denomData ->
-            if (denomData.id.equals(id, false)) selectedProductPositionId = index
+            if (denomData.id.equals(selectedGridProduct.denomData.id, false)
+                && selectedGridProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
         }
         if (selectedProductPositionId == null) onResetSelectedProduct()
         return selectedProductPositionId
     }
+
+    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean = (selectedGridProduct.denomData.id.isNotEmpty()
+            && selectedGridProduct.position >= 0
+            && selectedGridProduct.denomWidgetEnum == layoutType
+            && isEligibleToBuy)
+
+    private fun onResetSelectedProduct(){
+        selectedGridProduct = SelectedGridProduct()
+    }
+
+
 
     companion object {
         const val DELAY_TIME = 200L
