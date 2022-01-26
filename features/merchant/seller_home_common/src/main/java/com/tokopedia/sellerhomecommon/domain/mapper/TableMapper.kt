@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 
 import android.graphics.Color
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
@@ -16,7 +17,9 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 30/06/20
  */
 
-class TableMapper @Inject constructor() :
+class TableMapper @Inject constructor(
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
+) : BaseWidgetMapper(lastUpdatedSharedPref),
     BaseResponseMapper<GetTableDataResponse, List<TableDataUiModel>> {
 
     companion object {
@@ -48,7 +51,8 @@ class TableMapper @Inject constructor() :
                 error = table.errorMsg,
                 dataSet = getTableDataSet(table.data, MAX_ROWS_PER_PAGE),
                 isFromCache = isFromCache,
-                showWidget = table.showWidget.orFalse()
+                showWidget = table.showWidget.orFalse(),
+                lastUpdated = getLastUpdatedMillis(table.dataKey, isFromCache)
             )
         }
     }
@@ -114,7 +118,9 @@ class TableMapper @Inject constructor() :
                 }
             }
 
-            if (i.plus(oneRowCount).rem(maxRowsPerPage) == zeroRowCount && rowCount >= maxRowsPerPage) {
+            if (i.plus(oneRowCount)
+                    .rem(maxRowsPerPage) == zeroRowCount && rowCount >= maxRowsPerPage
+            ) {
                 val tablePage = TablePageUiModel(headers, rows)
                 tablePages.add(tablePage)
                 rows = mutableListOf()
@@ -184,5 +190,4 @@ class TableMapper @Inject constructor() :
             .substringBefore("\"").substringBefore(";")
             .replace("[^A-Za-z0-9#]+".toRegex(), "")
     }
-
 }

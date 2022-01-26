@@ -103,42 +103,68 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
                 app:typographyType="body_3" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierShcTable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="btnShcTableEmpty, shcTableView" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icShcRefreshTable"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:background="@drawable/bg_shc_shadow_circle"
+                android:padding="6dp"
+                android:visibility="gone"
+                app:icon_name="RELOAD"
+                app:layout_constraintBottom_toBottomOf="@+id/tvShcTableLastUpdated"
+                app:layout_constraintStart_toStartOf="@+id/shcTableView"
+                app:layout_constraintTop_toTopOf="@+id/tvShcTableLastUpdated"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvShcTableLastUpdated"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/Unify_N700_68"
+                android:textStyle="italic"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnTableCta"
+                app:layout_constraintStart_toEndOf="@+id/icShcRefreshTable"
+                app:layout_constraintTop_toBottomOf="@+id/barrierShcTable"
+                app:layout_constraintVertical_bias="0"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:layout_constraintTop_toBottomOf="@+id/shcTableView"
+                tools:text="Update terakhir hari ini, 15:00 WIB"
+                tools:visibility="visible" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btnTableCta"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="@dimen/layout_lvl2"
                 android:gravity="end"
                 android:paddingStart="@dimen/layout_lvl0"
-                android:paddingLeft="@dimen/layout_lvl0"
                 android:paddingEnd="@dimen/spacing_lvl2"
-                android:paddingRight="@dimen/spacing_lvl2"
                 android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/fontSize_lvl3"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/icTableCta"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/shcTableView"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler" />
-
-            <ImageView
-                android:id="@+id/icTableCta"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:layout_marginRight="@dimen/layout_lvl2"
-                android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@id/btnTableCta"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/btnTableCta"
-                app:srcCompat="@drawable/ic_arrow_right_default" />
+                app:typographyWeight="reguler"
+                tools:text="Selengkapnya"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/shcTableErrorStateView"

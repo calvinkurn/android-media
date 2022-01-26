@@ -696,6 +696,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getCardData(listOf(element))
     }
 
+    override fun reloadTableWidget(element: TableWidgetUiModel) {
+        getTableData(listOf(element))
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view
