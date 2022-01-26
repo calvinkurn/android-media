@@ -366,6 +366,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {
         try {
+            /* Check for login status, to reduce user network usage and to prevent log spiking at new relic */
             if(userSession.isLoggedIn()) {
                 String newToken = getNewToken(response, finalRequest);
                 if (newToken.isEmpty()) {
@@ -390,6 +391,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response refreshToken(Chain chain, Response response, Request finalRequest)  {
         try {
+            /* Check for login status, to reduce user network usage and to prevent log spiking at new relic */
             if(userSession.isLoggedIn()) {
                 String newToken = getNewToken(response, finalRequest);
                 if (newToken.isEmpty()) {
