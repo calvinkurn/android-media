@@ -307,9 +307,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         setFilterChipShimmer(false, favoriteNumber.isEmpty())
             if (favoriteNumber.isNotEmpty()){
                 if (shouldRefreshInputNumber && clientNumber.isEmpty()) {
-                    setInputNumber(favoriteNumber[0].clientNumber)
-                    setContactName(favoriteNumber[0].clientName)
-               }
+                    setInputNumber("081208120812")
+                    setContactName("[Misael]")
+                }
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
