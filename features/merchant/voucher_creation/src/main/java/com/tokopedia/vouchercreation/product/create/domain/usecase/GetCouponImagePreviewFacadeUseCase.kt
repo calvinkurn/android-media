@@ -2,26 +2,35 @@ package com.tokopedia.vouchercreation.product.create.domain.usecase
 
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.product.create.data.request.CouponPreviewRequestParams
+import com.tokopedia.vouchercreation.product.create.data.source.ImageGeneratorRemoteDataSource
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import okhttp3.ResponseBody
 import javax.inject.Inject
 
-class GetCouponImagePreviewUseCase @Inject constructor(
-    private val getShopBasicDataUseCase: ShopBasicDataUseCase
+class GetCouponImagePreviewFacadeUseCase @Inject constructor(
+    private val getShopBasicDataUseCase: ShopBasicDataUseCase,
+    private val remoteDataSource: ImageGeneratorRemoteDataSource
 ) {
+
+    companion object {
+        private const val SOURCE_ID = "aaGBeS"
+        private const val EMPTY_STRING = ""
+    }
 
     suspend fun execute(
         scope: CoroutineScope,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         productCount: Int,
-        productImageUrl: String,
+        firstProductImageUrl: String,
+        secondProductImageUrl: String,
+        thirdProductImageUrl: String,
         imageRatio: ImageRatio
-    ): Int {
+    ): ResponseBody {
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
         val shop = shopDeferred.await()
 
@@ -30,25 +39,29 @@ class GetCouponImagePreviewUseCase @Inject constructor(
                 couponInformation,
                 couponSettings,
                 productCount,
-                productImageUrl,
+                firstProductImageUrl,
+                secondProductImageUrl,
+                thirdProductImageUrl,
                 imageRatio,
                 shop
             )
         }
 
-        generateImageDeferred.await()
+        val image = generateImageDeferred.await()
 
-        return -1
+        return image
     }
 
-    private fun generateImage(
+    private suspend fun generateImage(
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         productCount: Int,
-        productImageUrl: String,
+        firstProductImageUrl: String,
+        secondProductImageUrl: String,
+        thirdProductImageUrl: String,
         imageRatio: ImageRatio,
         shop: ShopBasicDataResult
-    ) {
+    ): ResponseBody {
         val formattedImageRatio = when (imageRatio) {
             ImageRatio.SQUARE -> "square"
             ImageRatio.VERTICAL -> "vertical"
@@ -61,15 +74,16 @@ class GetCouponImagePreviewUseCase @Inject constructor(
         }
 
         val benefitType = when (couponSettings.type) {
-            CouponType.NONE -> ""
+            CouponType.NONE -> EMPTY_STRING
             CouponType.CASHBACK -> "cashback"
             CouponType.FREE_SHIPPING -> "gratis-ongkir"
         }
 
-        val cashbackType = when (couponSettings.discountType) {
-            DiscountType.NONE -> ""
-            DiscountType.NOMINAL -> "nominal"
-            DiscountType.PERCENTAGE -> "percentage"
+        val cashbackType = when {
+            couponSettings.type == CouponType.FREE_SHIPPING -> "nominal"
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> "nominal"
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> "percentage"
+            else -> EMPTY_STRING
         }
 
         val symbol = if (couponSettings.discountAmount >= 1000) {
@@ -83,8 +97,8 @@ class GetCouponImagePreviewUseCase @Inject constructor(
 
         val audienceTarget = "all-users"
 
-        //TODO Upload image to public image
-        val params = CouponPreviewRequestParams(
+        return remoteDataSource.previewImage(
+            SOURCE_ID,
             formattedImageRatio,
             couponVisibility,
             benefitType,
@@ -98,7 +112,9 @@ class GetCouponImagePreviewUseCase @Inject constructor(
             startTime,
             endTime,
             productCount,
-            productImageUrl,
+            firstProductImageUrl,
+            secondProductImageUrl,
+            thirdProductImageUrl,
             audienceTarget
         )
     }

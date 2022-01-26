@@ -49,7 +49,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
             replaceFragment(couponSettingFragment, TAG_FRAGMENT_COUPON_SETTINGS)
         }
         couponPreviewFragment.setOnNavigateToProductListPageListener {
-            //TODO : @Deyo Replace with your product list fragment
+            //TODO : @Deyo Navigate to product list fragment
         }
 
         couponPreviewFragment.setOnUpdateCouponSuccess {
@@ -66,25 +66,39 @@ class CreateCouponProductActivity : AppCompatActivity() {
             couponPreviewFragment.setCouponProductsData(
                 listOf(
                     CouponProduct(
-                        1,
+                        "2147956088",
                         18000,
-                        5,
-                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
+                        5.0F,
+                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_1.jpg",
                         19
                     ),
                     CouponProduct(
-                        2,
+                        "15455652",
+                        18000,
+                        4.7F,
+                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_2.jpg",
+                        1000
+                    ),
+                    CouponProduct(
+                        "15429644",
+                        18000,
+                        5.0F,
+                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_3.jpg",
+                        2100
+                    ),
+                    CouponProduct(
+                        "15409031",
                         25000,
-                        4,
-                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                        49
+                        4.0F,
+                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_4.jpg",
+                        31000
                     )
                 )
             )
         }
 
 
-        /*couponProducts.setOnCouponSaved { products ->
+        /*productListFragment.setOnProductsSelected { products ->
             popFragment()
 
             //TODO : @Deyo please map your products data to List<CouponProduct>
