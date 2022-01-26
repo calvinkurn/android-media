@@ -31,8 +31,11 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.ui.state.*
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastPreparationUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
@@ -172,6 +175,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val _observableLivePusherStats = MutableLiveData<LivePusherStatistic>()
     private val _observableLivePusherInfo = MutableLiveData<PlayLiveLogState>()
 
+    /** Preparation */
+    private val _titleForm = MutableStateFlow(PlayTitleFormUiModel())
+
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
         PinnedMessageUiModel.Empty()
@@ -191,6 +197,15 @@ internal class PlayBroadcastViewModel @Inject constructor(
         PinnedMessageUiState(
             message = if (it.isActive && !it.isInvalidId) it.message else "",
             editStatus = it.editStatus
+        )
+    }
+
+    val preparationUiState = combine(
+        _titleForm,
+        _isExiting
+    ) { titleForm, _ ->
+        PlayBroadcastPreparationUiState(
+            titleForm = titleForm
         )
     }
 
@@ -312,7 +327,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
             // get channel when channel status is paused
             if (configUiModel.channelType == ChannelType.Pause
                     // also when complete draft is true
-                    || configUiModel.channelType == ChannelType.CompleteDraft) {
+                    || configUiModel.channelType == ChannelType.CompleteDraft
+                    || configUiModel.channelType == ChannelType.Draft) {
                 val err = getChannelById(configUiModel.channelId)
                 if (err != null) {
                     throw err
@@ -890,6 +906,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun getShopIconUrl(): String = userSession.shopAvatar
+
+    fun getShopName(): String = userSession.shopName
 
     companion object {
 

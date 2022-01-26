@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N700_68">
+
+    <com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
+        android:id="@+id/view_action_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
+        android:id="@+id/view_preparation_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/fl_bro_start_livestream"
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/layout_lvl7"
+        android:layout_marginBottom="@dimen/spacing_lvl8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bro_start_livestream_border"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_start_livestream_border"
+
+            />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bro_start_livestream"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_lvl3"
+            android:src="@drawable/ic_start_livestream" />
+
+    </FrameLayout>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_bro_preparation_switch_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CAMERA_SWITCH"
+        app:layout_constraintBottom_toBottomOf="@id/fl_bro_start_livestream"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fl_bro_start_livestream"
+        app:layout_constraintTop_toTopOf="@id/fl_bro_start_livestream" />
+
+    <com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
+        android:id="@+id/form_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_preparation_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="view_action_bar, view_preparation_menu,
+                                        fl_bro_start_livestream, ic_bro_preparation_switch_camera"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
