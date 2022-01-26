@@ -47,7 +47,7 @@ class PlayWidgetCardLargeBannerView : ConstraintLayout {
     interface Listener {
         fun onBannerClicked(
             view: View,
-            item: PlayWidgetBannerUiModel,
+            item: PlayWidgetBannerUiModel
         )
     }
 }
