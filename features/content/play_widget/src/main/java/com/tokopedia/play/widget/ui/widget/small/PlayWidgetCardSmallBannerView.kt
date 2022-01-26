@@ -68,6 +68,10 @@ class PlayWidgetCardSmallBannerView : FrameLayout {
         }
     }
 
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
     interface Listener {
         fun onBannerClicked(view: PlayWidgetCardSmallBannerView)
     }

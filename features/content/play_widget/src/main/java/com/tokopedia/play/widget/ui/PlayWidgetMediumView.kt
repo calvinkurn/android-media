@@ -205,7 +205,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                 firstView?.let {
                     val distanceFromLeft = it.left
-                    val translateX = distanceFromLeft * 0.03f
+                    val translateX = distanceFromLeft * 0.2f
                     overlayImage.translationX = translateX
 
                     if (distanceFromLeft <= 0) {
@@ -224,10 +224,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 }
             }
         })
-    }
-
-    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        return super.onInterceptTouchEvent(ev)
     }
 
     fun setData(data: PlayWidgetUiModel) {

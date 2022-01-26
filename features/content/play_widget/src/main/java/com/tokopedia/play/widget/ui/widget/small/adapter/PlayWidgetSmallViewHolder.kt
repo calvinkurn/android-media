@@ -22,7 +22,11 @@ class PlayWidgetSmallViewHolder {
         private val bannerView = itemView as PlayWidgetCardSmallBannerView
 
         init {
-            itemView.setOnClickListener(listener::onBannerClicked)
+            bannerView.setListener(object : PlayWidgetCardSmallBannerView.Listener {
+                override fun onBannerClicked(view: PlayWidgetCardSmallBannerView) {
+                    listener.onBannerClicked(view)
+                }
+            })
         }
 
         fun bind(data: PlayWidgetBannerUiModel) {
@@ -50,6 +54,17 @@ class PlayWidgetSmallViewHolder {
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val channelView = itemView as PlayWidgetCardSmallChannelView
+
+        init {
+            channelView.setListener(object : PlayWidgetCardSmallChannelView.Listener {
+                override fun onChannelClicked(
+                    view: PlayWidgetCardSmallChannelView,
+                    model: PlayWidgetChannelUiModel
+                ) {
+                    listener.onChannelClicked(view, model, adapterPosition)
+                }
+            })
+        }
 
         fun bind(data: PlayWidgetChannelUiModel) {
             itemView.addOnImpressionListener(data.impressHolder) {
