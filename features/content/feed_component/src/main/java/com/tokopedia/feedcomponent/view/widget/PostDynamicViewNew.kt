@@ -2012,9 +2012,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             gridList.setPadding(0, 0, 0, 0)
         } else {
             gridList.setPadding(
-                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.dp_3),
+                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_3),
                 0,
-                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.dp_3),
+                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_3),
                 0
             )
         }

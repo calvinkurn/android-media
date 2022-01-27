@@ -93,6 +93,12 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
+        views {
+          label
+          count
+          countFmt
+          mods
+        }
         like {
           label
           count

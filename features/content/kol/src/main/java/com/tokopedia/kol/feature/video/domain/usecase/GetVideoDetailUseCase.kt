@@ -6,6 +6,7 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -21,7 +22,7 @@ class GetVideoDetailUseCase
         try {
             return  getDynamicFeedUseCase.execute(cursor, limit, detailId)
         } catch (e: Throwable) {
-            e.printStackTrace()
+            Timber.e(e)
             throw e
         }
     }

@@ -10,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -29,7 +30,7 @@ class GetPostDetailUseCase @Inject constructor(
             postdetailViewModel.footerModel = convertToPostDetailFooterModel(dynamicFeedDomainModel)
             return postdetailViewModel
         } catch (e: Throwable) {
-            e.printStackTrace()
+            Timber.e(e)
             throw e
         }
     }

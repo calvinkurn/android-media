@@ -169,10 +169,10 @@ open class DynamicPostViewHolder(v: View,
             if (template.avatarBadge && header.avatarBadgeImage.isNotBlank()) {
                 itemView.authorBadge.show()
                 itemView.authorBadge.loadImage(header.avatarBadgeImage)
-                itemView.authorTitle.setMargin(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_8), 0)
+                itemView.authorTitle.setMargin(itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4), 0, itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8), 0)
             } else {
                 itemView.authorBadge.hide()
-                itemView.authorTitle.setMargin(itemView.getDimens(R.dimen.dp_8), 0, itemView.getDimens(R.dimen.dp_8), 0)
+                itemView.authorTitle.setMargin(itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8), 0, itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8), 0)
             }
 
             itemView.authorTitle.shouldShowWithAction(template.avatarTitle) {

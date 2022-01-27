@@ -101,7 +101,7 @@ class KolPostDetailPresenter @Inject constructor(
         try {
             return getPostDetailUseCase.execute(cursor = "", detailId = detailId)
         } catch (e: Throwable) {
-            e.printStackTrace()
+            Timber.e(e)
             throw e
         }
     }

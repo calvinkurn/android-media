@@ -22,7 +22,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXComments
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
@@ -49,7 +48,6 @@ import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
@@ -70,7 +68,6 @@ open class DynamicPostUIViewHolder(v: View,
                                    private val userSession: UserSessionInterface)
     : AbstractViewHolder<DynamicPostUiModel>(v) {
 
-    var captionTv: Typography = itemView.caption
     lateinit var adapter: PostPagerAdapter
 
     companion object {
@@ -89,17 +86,12 @@ open class DynamicPostUIViewHolder(v: View,
 
         const val NEWLINE = "(\r\n|\n)"
 
-        const val TYPE_DETAIL = "detail"
-        const val SOURCE_FEEDS = "feeds"
-        const val SOURCE_PROFILE = "profile"
-        const val SOURCE_SHOP = "shop"
-        const val SOURCE_DETAIL = "detail"
+
         private const val CONTENT_IMAGE = "image"
         private const val CONTENT_VIDEO = "video"
+        private const val CONTENT_LONG_VIDEO = "long-video"
 
 
-        const val POSTTAG_PRODUCT = "product"
-        const val POSTTAG_BUTTONCTA = "buttoncta"
         const val ANIMATION_DURATION = 2000L
     }
 
@@ -115,7 +107,6 @@ open class DynamicPostUIViewHolder(v: View,
         bindContentList(element.feedXCard.id.toIntOrZero(), element.feedXCard)
         bindPostTag(element.feedXCard.id.toIntOrZero(), element.feedXCard)
         bindFooter(element.feedXCard)
-//        bindTracking(element.feedXCard.impressHolder, element.trackingPostModel)
     }
 
     override fun bind(element: DynamicPostUiModel?, payloads: MutableList<Any>) {
@@ -158,8 +149,6 @@ open class DynamicPostUIViewHolder(v: View,
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
         val followCta =
                 FollowCta(authorID = author.id, authorType = authorType, isFollow = feedXCard.followers.isFollowed)
-//        itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
-//            itemView.authorImage.shouldShowWithAction(template.avatar) {
                 if (!TextUtils.isEmpty(author.logoURL)) {
                     itemView.authorImage.loadImageCircle(author.logoURL)
                 } else {
@@ -176,15 +165,14 @@ open class DynamicPostUIViewHolder(v: View,
                         followCta,
                         author.id)
                 }
-//            }
 
             if (author.badgeURL.isNotBlank()) {
                 itemView.authorBadge.show()
                 itemView.authorBadge.loadImage(author.badgeURL)
-                itemView.authorTitle.setMargin(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_8), 0)
+                itemView.authorTitle.setMargin(itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4), 0, itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8), 0)
             } else {
                 itemView.authorBadge.hide()
-                itemView.authorTitle.setMargin(itemView.getDimens(R.dimen.dp_8), 0, itemView.getDimens(R.dimen.dp_8), 0)
+                itemView.authorTitle.setMargin(itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8), 0, itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8), 0)
             }
 
             itemView.authorTitle.shouldShowWithAction(author.name.isNotEmpty()) {
@@ -223,7 +211,6 @@ open class DynamicPostUIViewHolder(v: View,
                 bindFollow(feedXCard)
             }
 
-//            itemView.menu.shouldShowWithAction(template.report) {
                 if (canShowMenu(feedXCard.reportable, feedXCard.deletable, feedXCard.editable)) {
                     itemView.menu.setOnClickListener {
                         listener.onMenuClick(
@@ -243,8 +230,6 @@ open class DynamicPostUIViewHolder(v: View,
                 } else{
                     itemView.menu.hide()
                 }
-//            }
-//        }
     }
 
     private fun canShowMenu(reportable: Boolean, deletable: Boolean, editable: Boolean): Boolean {
@@ -301,10 +286,6 @@ open class DynamicPostUIViewHolder(v: View,
     }
 
 
-//    private fun shouldShowHeader(feedXCard: FeedXCard): Boolean {
-//        return template.avatar || template.avatarBadge || template.avatarDate
-//                || template.avatarTitle || template.followCta || template.report
-//    }
 
     open fun bindCaption(feedXCard: FeedXCard, trackingPostModel: TrackingPostModel) {
         val tagConverter = TagConverter()
@@ -329,14 +310,11 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.caption.text = tagConverter.convertToLinkifyHashtag(
                         SpannableString(MethodChecker.fromHtml(captionText)), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
                 itemView.caption.setOnClickListener {
-//                    if (!TextUtils.isEmpty(caption.appLink)) {
-//                        listener.onCaptionClick(adapterPosition, caption.appLink)
-//                    } else {
                         if (itemView.caption.text.endsWith(getString(R.string.feed_component_read_more_button))) listener.onReadMoreClicked(trackingPostModel)
 
                         itemView.caption.text = tagConverter.convertToLinkifyHashtag(SpannableString(feedXCard.text),
                                 colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
-//                    }
+
                 }
                 itemView.caption.movementMethod = LinkMovementMethod.getInstance()
             } else {
@@ -387,7 +365,7 @@ open class DynamicPostUIViewHolder(v: View,
             itemView.contentViewPager.offscreenPageLimit = adapter.count
             itemView.tabLayout.setupWithViewPager(itemView.contentViewPager)
             //Visibility gone
-            itemView.tabLayout.visibility = if (adapter.count > 1) View.GONE else View.GONE
+            itemView.tabLayout.visibility =  View.GONE
         }
     }
     private fun mapPostContent(feedXCard: FeedXCard): MutableList<BasePostViewModel> {
@@ -395,6 +373,10 @@ open class DynamicPostUIViewHolder(v: View,
         for (media in feedXCard.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
+                CONTENT_LONG_VIDEO  ->if (media.coverUrl.isNotBlank()
+                        && media.mediaUrl.isNotBlank()) {
+                    list.add(mapPostVideo(media))
+                }
                 CONTENT_VIDEO -> {
                     if (media.coverUrl.isNotBlank()
                             && media.mediaUrl.isNotBlank()) {
@@ -424,15 +406,7 @@ open class DynamicPostUIViewHolder(v: View,
 
 
     private fun bindFooter(feedXCard: FeedXCard) {
-//        itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
             itemView.footerBackground.visibility = View.GONE
-//            if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text) && !isPostTagAvailable) {
-//                itemView.layoutFooterAction.show()
-//                itemView.footerAction.text = footer.buttonCta.text
-//                itemView.footerAction.setOnClickListener { listener.onFooterActionClick(adapterPosition, footer.buttonCta.appLink) }
-//            } else {
-//                itemView.layoutFooterAction.hide()
-//            }
 
             if (feedXCard.like.count > 0) {
                 itemView.likeGroup.show()
@@ -486,11 +460,9 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.commentGroup.hide()
             }
 
-//            if (template.share) {
                 itemView.shareGroup.show()
                 val desc = getString(R.string.feed_share_default_text)
 
-//            itemView.shareText.text = footer.share.text
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
                         adapterPosition,
@@ -522,17 +494,7 @@ open class DynamicPostUIViewHolder(v: View,
                     )
                 }
 
-//            } else {
-//                itemView.shareGroup.hide()
-//            }
-
-//            if (template.stats) {
-//                itemView.statsIcon.shouldShowWithAction(true) {
-//                    itemView.statsIcon.setOnClickListener { listener.onStatsClick(footer.stats.text, id.toString(), footer.stats.productIDs, footer.like.value, footer.comment.value) }
-//                }
-//            } else
                 itemView.statsIcon.hide()
-//        }
 
     }
     private fun isVideo(media: FeedXMedia?): Boolean {
@@ -579,22 +541,11 @@ open class DynamicPostUIViewHolder(v: View,
 
 
     private fun bindPostTag(postId: Int, feedXCard: FeedXCard) {
-//        itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
-//            if (postTag.text.isNotEmpty()) {
-//                itemView.cardTitlePostTag.text = postTag.text
-//                itemView.cardTitlePostTag.show()
-//            } else {
-//                itemView.cardTitlePostTag.hide()
-//            }
             if (feedXCard.tags.isNotEmpty()) {
                 itemView.rvPosttag.show()
                 itemView.rvPosttag.setHasFixedSize(true)
                 val layoutManager: RecyclerView.LayoutManager =
-//                        when (feedType) {
-//                    SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
-//                    else ->
                 LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-//                }
                 val authorType = if (feedXCard.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
 
                 itemView.rvPosttag.isNestedScrollingEnabled = false
@@ -605,12 +556,8 @@ open class DynamicPostUIViewHolder(v: View,
             } else {
                 itemView.rvPosttag.hide()
             }
-//        }
     }
 
-    private fun shouldShowPostTag(postTag: PostTag, template: TemplateBody): Boolean {
-        return template.postTag || isPostTagAvailable(postTag)
-    }
 
     private fun isPostTagAvailable(postTag: PostTag): Boolean {
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
@@ -620,8 +567,6 @@ open class DynamicPostUIViewHolder(v: View,
         val needToRezise = postTagItemList.size > 1
         val itemList: MutableList<BasePostTagViewModel> = ArrayList()
         for (postTagItem in postTagItemList) {
-//            when (postTagItem.type) {
-//                POSTTAG_PRODUCT -> {
                     val item = ProductPostTagViewModel(
                             postTagItem.id,
                             postTagItem.name,
@@ -644,22 +589,6 @@ open class DynamicPostUIViewHolder(v: View,
                     item.postId = postId
                     item.positionInFeed = positionInFeed
                     itemList.add(item)
-//                }
-//                POSTTAG_BUTTONCTA -> {
-//                    val item = CtaPostTagViewModel(
-//                            postTagItem.id,
-//                            postTagItem.text,
-//                            postTagItem.type,
-//                            postTagItem.applink,
-//                            postTagItem.weblink,
-//                            postTagItem.position,
-//                            postTagItem)
-//                    item.feedType = feedType
-//                    item.postId = postId
-//                    item.positionInFeed = positionInFeed
-//                    itemList.add(item)
-//                }
-//            }
         }
         return itemList
     }

@@ -43,18 +43,13 @@ object VideoUtil {
             height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toInt() ?: 0
             retriever.release()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
 
         return VideoSize(width, height)
     }
 
     fun Uri.getImageDimensions(context: Context): VideoSize {
-//        var mBmp = Glide.with(context)
-//            .asBitmap()
-//            .load(this)
-//            .submit()
-//            .get()
 
         val options: BitmapFactory.Options = BitmapFactory.Options()
         options.inJustDecodeBounds = true

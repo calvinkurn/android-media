@@ -499,7 +499,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     }
                     else {
                         val firstSelectedMedia = imageAdapter.selectionOrder.getOrderList().last()
-//                        val firstSelectedMedia = imageAdapter.dataList[imageAdapter.getListOfIndexWhichAreSelected()[0]]
                         if(imageAdapterData.asset is PhotosData) {
                             zoomInfo = getZoomInfoForImage(firstSelectedMedia, imageAdapterData)
                         }
@@ -512,7 +511,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                         zoomInfo = prepareZoomInfo(imageAdapterData)
                     }
                     selectedMediaView.loadAsset(imageAdapterData, zoomInfo)
-//                    selectedMediaView.loadAsset(imageAdapterData, prepareZoomInfo(imageAdapterData))
                 } else {
                     //DO nothing
                 }
@@ -706,10 +704,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun handleSuccessSelectedUri(uris: List<Uri>) {
-//        if(true){
-//            startActivity(Intent(context,DummyActivity::class.java))
-//            return
-//        }
+
         if (!uris.isNullOrEmpty()) {
 
             val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed

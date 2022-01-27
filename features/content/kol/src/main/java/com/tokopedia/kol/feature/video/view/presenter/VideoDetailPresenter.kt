@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -63,7 +64,7 @@ class VideoDetailPresenter
         try {
             return getVideoDetailUseCase.execute(cursor = "", detailId = detailId)
         } catch (e: Throwable) {
-            e.printStackTrace()
+            Timber.e(e)
             throw e
         }
     }
