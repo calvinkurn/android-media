@@ -1154,6 +1154,10 @@ open class TopChatViewModel @Inject constructor(
         onGoingStockUpdate[productId] = result
     }
 
+    fun updateMessageId(messageId: String) {
+        roomMetaData.updateMessageId(messageId)
+    }
+
     companion object {
         const val TAG = "TopchatWebSocketViewModel"
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"

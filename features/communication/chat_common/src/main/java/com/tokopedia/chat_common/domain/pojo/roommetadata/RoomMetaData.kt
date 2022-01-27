@@ -13,6 +13,7 @@ class RoomMetaData(
         private set
 
     fun updateMessageId(messageId: String) {
+        if (messageId.isEmpty()) return
         this.msgId = messageId
     }
 

@@ -457,6 +457,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.updateMessageId(messageId)
         setupBackground()
         setupViewState()
         setupArguments(savedInstanceState)
@@ -679,6 +680,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun onSuccessGetMessageId(messageId: String) {
         this.messageId = messageId
+        viewModel.updateMessageId(messageId)
         loadInitialData()
         if (chatRoomFlexModeListener?.isFlexMode() == true) {
             chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = messageId)
