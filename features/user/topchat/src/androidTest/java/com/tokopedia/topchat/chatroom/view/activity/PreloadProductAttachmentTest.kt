@@ -74,7 +74,25 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         ProductPreviewResult.isNotLoadingAt(0)
     }
 
-    // TODO: should send text only when attach product preview is loading
+    @Test
+    fun should_send_text_only_when_attach_product_preview_is_loading() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.delayResponseIndefinitely()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // When
+        clickComposeArea()
+        typeMessage("test")
+        clickSendBtn()
+
+        // Then
+        ProductPreviewResult.isLoadingAt(0)
+    }
+
     // TODO: should send sticker only when attach product preview is loading
     // TODO: should send text only when attach product preview is error
     // TODO: should send sticker only when attach product preview is loading
