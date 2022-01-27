@@ -8,6 +8,7 @@ import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicData
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import javax.inject.Inject
 
@@ -17,8 +18,10 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 ) {
 
     companion object {
-        private const val SOURCE_ID = "aaGBeS"
+        private const val SOURCE_ID = "ZmygOT"
         private const val EMPTY_STRING = ""
+        private const val THOUSAND  = 1_000f
+        private const val MILLION = 1_000_000f
     }
 
     suspend fun execute(
@@ -30,7 +33,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         secondProductImageUrl: String,
         thirdProductImageUrl: String,
         imageRatio: ImageRatio
-    ): ResponseBody {
+    ): ByteArray {
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
         val shop = shopDeferred.await()
 
@@ -49,7 +52,9 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 
         val image = generateImageDeferred.await()
 
-        return image
+        val imageByteArray = withContext(scope.coroutineContext) { image.bytes() }
+
+        return imageByteArray
     }
 
     private suspend fun generateImage(
@@ -86,11 +91,20 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             else -> EMPTY_STRING
         }
 
-        val symbol = if (couponSettings.discountAmount >= 1000) {
-            "rb"
-        } else {
-            "jt"
+        val symbol = when {
+            couponSettings.discountAmount < THOUSAND -> EMPTY_STRING
+            couponSettings.discountAmount >= MILLION -> "jt"
+            couponSettings.discountAmount >= THOUSAND -> "rb"
+            else -> EMPTY_STRING
         }
+
+        val formattedDiscountAmount = when {
+            couponSettings.discountAmount < THOUSAND -> couponSettings.discountAmount
+            couponSettings.discountAmount >= MILLION -> couponSettings.discountAmount / MILLION
+            couponSettings.discountAmount >= THOUSAND -> couponSettings.discountAmount / THOUSAND
+            else -> couponSettings.discountAmount
+        }
+
 
         val startTime = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val endTime = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
@@ -104,7 +118,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             benefitType,
             cashbackType,
             couponSettings.discountPercentage,
-            couponSettings.discountAmount,
+            formattedDiscountAmount,
             symbol,
             shop.logo,
             shop.shopName,

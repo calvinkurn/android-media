@@ -13,7 +13,6 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
 import javax.inject.Inject
 
 class CouponPreviewViewModel @Inject constructor(
@@ -22,8 +21,8 @@ class CouponPreviewViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
 
-    private val _couponImage = SingleLiveEvent<Result<ResponseBody>>()
-    val couponImage: LiveData<Result<ResponseBody>>
+    private val _couponImage = SingleLiveEvent<Result<ByteArray>>()
+    val couponImage: LiveData<Result<ByteArray>>
         get() = _couponImage
 
     fun previewImage(

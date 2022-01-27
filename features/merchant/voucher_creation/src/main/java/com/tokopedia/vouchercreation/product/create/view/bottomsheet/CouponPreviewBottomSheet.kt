@@ -21,6 +21,10 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponPreviewViewModel
 import javax.inject.Inject
+import com.bumptech.glide.Glide
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.LoaderUnify
 
 
 class CouponPreviewBottomSheet : BottomSheetUnify() {
@@ -92,9 +96,13 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
 
     private fun observeCouponImage() {
         viewModel.couponImage.observe(viewLifecycleOwner, { result ->
-            if (result is Success) {
+            binding.loader.gone()
+            binding.imgCoupon.visible()
 
+            if (result is Success) {
+                displayImage(result.data)
             } else {
+
             }
         })
     }
@@ -150,6 +158,10 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
     }
 
     private fun previewCoupon(imageRatio: ImageRatio) {
+        binding.imgCoupon.gone()
+        binding.loader.type = LoaderUnify.TYPE_CIRCULAR
+        binding.loader.visible()
+
         val couponInformation =
             arguments?.getSerializable(BUNDLE_KEY_COUPON_INFORMATION) as? CouponInformation
                 ?: return
@@ -171,6 +183,18 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
             thirdImageUrl,
             imageRatio
         )
+    }
+
+    /**
+     * Display image in safely manner to prevent out of memory exception error when image size is
+     * too big
+     */
+    private fun displayImage(image : ByteArray) {
+        try {
+            Glide.with(binding.imgCoupon.context).asBitmap().load(image).into(binding.imgCoupon)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun ArrayList<String>.getIndexAtOrEmpty(index : Int) : String {
