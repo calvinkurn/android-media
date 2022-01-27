@@ -17,6 +17,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
+import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter
@@ -39,7 +40,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
+open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
     private var switchTemplate: SwitchUnify? = null
     private var recyclerView: RecyclerView? = null
     private var templateContainer: View? = null
@@ -149,14 +150,15 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
     }
 
     override fun initInjector() {
-        activity?.let {
-            val appComponent = (it.application as BaseMainApplication)
-                    .baseAppComponent
-            val daggerTemplateChatComponent = DaggerTemplateChatComponent.builder()
-                    .baseAppComponent(appComponent)
-                    .build() as DaggerTemplateChatComponent
-            daggerTemplateChatComponent.inject(this)
-        }
+        initializeComponent().inject(this)
+    }
+
+    protected open fun initializeComponent(): TemplateChatComponent {
+        val appComponent = (requireActivity().application as BaseMainApplication)
+            .baseAppComponent
+        return DaggerTemplateChatComponent.builder()
+            .baseAppComponent(appComponent)
+            .build() as DaggerTemplateChatComponent
     }
 
     override fun setTemplate(listTemplate: List<Visitable<*>>?) {
@@ -359,7 +361,6 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
         const val INDEX_RESULT = "index"
         const val MODE_RESULT = "mode"
 
-        @JvmStatic
         fun createInstance(extras: Bundle?): TemplateChatFragment {
             val fragment = TemplateChatFragment()
             fragment.arguments = extras

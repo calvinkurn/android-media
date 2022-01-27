@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.unifyprinciples.R
 
-class EditTemplateChatActivity : BaseSimpleActivity() {
+open class EditTemplateChatActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (intent != null && intent.extras != null) {

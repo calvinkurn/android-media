@@ -8,7 +8,7 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class SetAvailabilityTemplateUseCase @Inject constructor(
+open class SetAvailabilityTemplateUseCase @Inject constructor(
     private val templateRepository: TemplateRepository,
     private val dispatcher: CoroutineDispatchers
 ) {

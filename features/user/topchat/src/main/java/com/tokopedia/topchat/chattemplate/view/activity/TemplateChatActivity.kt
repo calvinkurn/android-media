@@ -10,7 +10,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topchat.R
 
-class TemplateChatActivity : BaseSimpleActivity() {
+open class TemplateChatActivity : BaseSimpleActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbar.title = getString(R.string.title_template_chat)
@@ -28,6 +29,10 @@ class TemplateChatActivity : BaseSimpleActivity() {
 
     override fun getScreenName(): String {
         return ChatTemplateAnalytics.Companions.SCREEN_TEMPLATE_CHAT_SETTING
+    }
+
+    override fun getTagFragment(): String {
+        return TAG
     }
 
     companion object {

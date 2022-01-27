@@ -24,7 +24,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import com.tokopedia.topchat.common.chat.api.ChatApi
-import com.tokopedia.topchat.common.chat.api.ChatApiKt
+import com.tokopedia.topchat.common.chat.api.ChatTemplateApi
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImpl
@@ -136,19 +136,23 @@ class TemplateChatModule {
 
     @ActivityScope
     @Provides
-    fun provideChatApiKt(@InboxQualifier retrofit: Retrofit): ChatApiKt {
-        return retrofit.create(ChatApiKt::class.java)
+    fun provideChatApiKt(@InboxQualifier retrofit: Retrofit): ChatTemplateApi {
+        return retrofit.create(ChatTemplateApi::class.java)
     }
 
     @ActivityScope
     @Provides
-    fun provideTemplateRepositoryKt(templateRepositoryImpl: TemplateRepositoryImpl): TemplateRepository {
+    fun provideTemplateRepository(
+        templateRepositoryImpl: TemplateRepositoryImpl
+    ): TemplateRepository {
         return templateRepositoryImpl
     }
 
     @ActivityScope
     @Provides
-    fun provideEditTemplateRepositoryKt(editTemplateRepositoryImpl: EditTemplateRepositoryImpl): EditTemplateRepository {
+    fun provideEditTemplateRepository(
+        editTemplateRepositoryImpl: EditTemplateRepositoryImpl
+    ): EditTemplateRepository {
         return editTemplateRepositoryImpl
     }
 

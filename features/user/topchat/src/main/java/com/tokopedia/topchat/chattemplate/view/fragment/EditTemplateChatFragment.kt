@@ -23,12 +23,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel
 import com.tokopedia.topchat.common.util.Events
 import rx.Observable
 
-class EditTemplateChatFragment : BaseDaggerFragment() {
+open class EditTemplateChatFragment : BaseDaggerFragment() {
     private var counter: TextView? = null
     private var error: TextView? = null
     private var submit: TextView? = null
@@ -206,14 +207,15 @@ class EditTemplateChatFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        if (activity != null && activity?.application != null) {
-            val appComponent = (activity?.application as BaseMainApplication)
-                .baseAppComponent
-            val daggerTemplateChatComponent = DaggerTemplateChatComponent.builder()
-                .baseAppComponent(appComponent)
-                .build() as DaggerTemplateChatComponent
-            daggerTemplateChatComponent.inject(this)
-        }
+        initializeComponent().inject(this)
+    }
+
+    protected open fun initializeComponent(): TemplateChatComponent {
+        val appComponent = (requireActivity().application as BaseMainApplication)
+            .baseAppComponent
+        return DaggerTemplateChatComponent.builder()
+            .baseAppComponent(appComponent)
+            .build() as DaggerTemplateChatComponent
     }
 
     private fun onResult(editTemplateViewModel: EditTemplateResultModel, index: Int, s: String) {
@@ -277,7 +279,7 @@ class EditTemplateChatFragment : BaseDaggerFragment() {
         private const val DISABLE_DELETE = 130
         private const val ENABLE_DELETE = 255
         private const val ENABLED_KEY_RESULT = "enabled"
-        @JvmStatic
+
         fun createInstance(extras: Bundle?): EditTemplateChatFragment {
             val fragment = EditTemplateChatFragment()
             fragment.arguments = extras
