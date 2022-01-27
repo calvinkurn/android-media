@@ -225,4 +225,60 @@ class AttachVoucherViewModelTest {
         viewModel.toggleFilter(1)
         coVerify { filterObserver.onChanged(-1) }
     }
+
+    @Test
+    fun `should give false when there is a filter`() {
+        //When
+        viewModel.toggleFilter(1)
+        val result = viewModel.hasNoFilter()
+
+        //Then
+        assertEquals(1, viewModel.filter.value)
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun `should give true when filter is NO_FILTER`() {
+        //When
+        viewModel.toggleFilter(NO_FILTER)
+        val result = viewModel.hasNoFilter()
+
+        //Then
+        assertEquals(NO_FILTER, viewModel.filter.value)
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun `should give true when filter is null`() {
+        //When
+        val result = viewModel.hasNoFilter()
+
+        //Then
+        assertEquals(null, viewModel.filter.value)
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun `test set currentPage`() {
+        // Given
+        val expectedPage = 1
+
+        // When
+        viewModel.currentPage = expectedPage
+
+        // Then
+        assertEquals(expectedPage, viewModel.currentPage)
+    }
+
+    @Test
+    fun `test set isLoading`() {
+        // Given
+        val expectedLoading = true
+
+        // When
+        viewModel.isLoading = expectedLoading
+
+        // Then
+        assertEquals(expectedLoading, viewModel.isLoading)
+    }
 }
