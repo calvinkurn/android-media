@@ -33,4 +33,18 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.attachments.size, 1)
     }
+
+    @Test
+    fun should_reload_pre_load_product_attachment() {
+        // Given
+        coEvery { chatPreAttachPayload(any()) } returns defaultPreAttachResponse
+        coEvery { chatAttachmentMapper.map(any<PreAttachPayloadResponse>()) } returns realChatMapper.map(defaultPreAttachResponse)
+
+        // When
+        viewModel.loadProductPreview(listOf("1"))
+        viewModel.reloadCurrentAttachment()
+
+        // Then
+        assertEquals(viewModel.attachments.size, 1)
+    }
 }
