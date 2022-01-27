@@ -1008,7 +1008,7 @@ open class TopChatViewModel @Inject constructor(
 
     fun loadProductPreview(productIds: List<String>) {
         if (productIds.isEmpty()) return
-        if (productIds.isNotEmpty()) clearAttachmentPreview()
+        clearAttachmentPreview()
         launchCatchError(block = {
             showLoadingProductPreview(productIds)
             if (!alreadyHasAttachmentData(productIds)) {

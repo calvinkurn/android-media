@@ -24,11 +24,13 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_pre_load_product_attachment() {
         // Given
+        val product = defaultPreAttachResponse.chatPreAttachPayload.list[0]
         coEvery { chatPreAttachPayload(any()) } returns defaultPreAttachResponse
         coEvery { chatAttachmentMapper.map(any<PreAttachPayloadResponse>()) } returns realChatMapper.map(defaultPreAttachResponse)
 
         // When
-        viewModel.loadProductPreview(listOf("1"))
+        viewModel.loadProductPreview(listOf(product.id))
+        viewModel.loadProductPreview(listOf(product.id))
 
         // Then
         assertEquals(viewModel.attachments.size, 1)
