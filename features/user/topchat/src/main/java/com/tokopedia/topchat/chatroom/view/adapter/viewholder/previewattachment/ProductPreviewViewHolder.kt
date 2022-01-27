@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,9 +21,9 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 
 class ProductPreviewViewHolder(
-    itemView: View, attachmentItemPreviewListener: AttachmentItemPreviewListener
+        itemView: View, attachmentItemPreviewListener: AttachmentItemPreviewListener
 ) : AttachmentPreviewViewHolder<TopchatProductAttachmentPreviewUiModel>(
-    itemView, attachmentItemPreviewListener
+        itemView, attachmentItemPreviewListener
 ) {
 
     private val productImage = itemView.findViewById<ImageView>(R.id.iv_product)
@@ -125,16 +124,27 @@ class ProductPreviewViewHolder(
     }
 
     private fun showLoading(isLoading: Boolean) {
-        if (ViewUtil.areSystemAnimationsEnabled(itemView.context)) {
-            loader?.apply {
-                circular?.clearAnimationCallbacks()
-                circularWhite?.clearAnimationCallbacks()
-                shimmer?.clearAnimationCallbacks()
-                avd?.clearAnimationCallbacks()
-            }
-        }
         loader?.showWithCondition(isLoading)
         closeButton?.showWithCondition(!isLoading)
+        setupLoadingAnimation()
+    }
+
+    private fun setupLoadingAnimation() {
+        if (!ViewUtil.areSystemAnimationsEnabled(itemView.context)) {
+            loader?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View?) {
+                    loader.apply {
+                        avd?.clearAnimationCallbacks()
+                        avd?.stop()
+                    }
+                    loader.removeOnAttachStateChangeListener(this)
+                }
+
+                override fun onViewDetachedFromWindow(v: View?) {
+                    loader.removeOnAttachStateChangeListener(this)
+                }
+            })
+        }
     }
 
     private fun showError(isError: Boolean) {
@@ -156,7 +166,7 @@ class ProductPreviewViewHolder(
         if (model.hasColorVariant()) {
             productColorVariant.show()
             productColorVariantValue?.text = ellipsizeLongText(
-                model.colorVariant, MAX_VARIANT_LABEL_CHAR)
+                    model.colorVariant, MAX_VARIANT_LABEL_CHAR)
         } else {
             productColorVariant?.hide()
         }
@@ -164,7 +174,7 @@ class ProductPreviewViewHolder(
         val productHasSizeVariant = model.hasSizeVariant()
         productSizeVariant?.shouldShowWithAction(productHasSizeVariant) {
             productSizeVariantValue?.text = ellipsizeLongText(
-                model.sizeVariant, MAX_VARIANT_LABEL_CHAR)
+                    model.sizeVariant, MAX_VARIANT_LABEL_CHAR)
         }
     }
 
