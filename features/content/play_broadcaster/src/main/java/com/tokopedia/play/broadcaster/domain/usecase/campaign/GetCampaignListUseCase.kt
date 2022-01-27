@@ -112,13 +112,12 @@ class GetCampaignListUseCase @Inject constructor(
         }
      """
 
-     // TODO: make sure request nya udh bener, dan hapus param / default value yg gak perlu
      fun createParams(
-         shopId: String = "1961630", // https://www.tokopedia.com/voc123, content.prod.automation3+frontendtest@tokopedia.com
-         campaignType: Int = 1, // 0: FLASH_SALE_BY_SELLER, 1: RILISAN_SPESIAL
-         campaignListType: Int = 1, // params for shop etalase, must be used with listType: 1
+         shopId: String,
+         campaignType: Int = 1, // 1: RILISAN_SPESIAL
+         campaignListType: Int = 0, // 0: DEFAULT_LIST
          campaignStatus: IntArray = intArrayOf(6, 7, 14), // 6 (Ready), 14 (Ready Locked), 7 (Ongoing)
-         rows: Int = 10,
+         rows: Int = 15,
          offset: Int = 0,
          orderBy: Int = 0, // 0: DEFAULT_SORT (by campaign_id), 1: SORT_BY_CAMPAIGN_NAME, 2: SORT_BY_START_DATE, 3: SORT_BY_STATUS_ID, 4: SORT_BY_NPL_STATUS, 5: SORT_BY_UPDATE_TIME
          orderRule: Int = 0 // 0: ASC, 1: DESC
