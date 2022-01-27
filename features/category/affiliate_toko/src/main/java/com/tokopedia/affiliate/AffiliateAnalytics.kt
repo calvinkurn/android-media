@@ -107,6 +107,7 @@ object AffiliateAnalytics {
             const val EVENT_PROMO_CLICK = "promoClick"
 
             const val CLICK_REGISTER = "clickRegister"
+            const val CLICK_PG = "clickPG"
         }
     }
 
@@ -120,6 +121,7 @@ object AffiliateAnalytics {
             const val PROMOSIKAN_BOTTOM_SHEET = "promosikan page - bottom sheet"
             const val PENDAPATAN_PAGE = "pendapatan page"
             const val REGISTRATION_PAGE = "registration page"
+            const val AFFILIATE_REGISTRATION_PAGE = "affiliate registration page"
         }
     }
 
@@ -148,6 +150,9 @@ object AffiliateAnalytics {
             const val CLICK_SELANJUTNYA = "click - selanjutnya"
             const val CLICK_DAFTAR = "click - daftar"
             const val CLICK_TARIK_SALDO = "click - tarik saldo"
+            const val CLICK_KELUAR = "click - keluar"
+            const val CLICK_MASUK = "click - masuk"
+            const val CLICK_PELJARI = "click - pelajari"
         }
     }
 
@@ -169,6 +174,8 @@ object AffiliateAnalytics {
         companion object {
             const val INCOMING = "incoming"
             const val OUTGOING = "outgoing"
+            const val LOGIN = "login"
+            const val NON_LOGIN = "non login"
         }
     }
 
