@@ -107,6 +107,11 @@ object CommonTopupBillsGqlQuery {
               label
               icon
             }
+            user_perso {
+                prefill
+                user_type
+                loyalty_status
+            }
             recommendations {
               iconUrl
               title

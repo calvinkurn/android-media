@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
+import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
@@ -94,6 +95,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
     private var operator = TelcoOperator()
+    private var loyaltyStatus = ""
     private var clientNumber = ""
     private var productId =  0
     private var menuId = 0
@@ -134,7 +136,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         observeData()
 
         getCatalogMenuDetail()
-        getFavoriteNumber()
         getPrefixOperatorData()
     }
 
@@ -194,7 +195,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         })
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
             when (it) {
-                is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data.first, it.data.second)
+                is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber(it.error)
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPulsaClientNumberWidget?.setFilterChipShimmer(true)
@@ -282,34 +283,32 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.getPrefixOperator(menuId)
     }
 
-    private fun getFavoriteNumber(
-        categoryId: Int = this.categoryId,
-        shouldRefreshInputNumber: Boolean = true
-    ) {
-        viewModel.getFavoriteNumber(listOf(categoryId), shouldRefreshInputNumber)
+    private fun getFavoriteNumber(categoryId: Int = this.categoryId) {
+        viewModel.getFavoriteNumber(listOf(categoryId))
     }
 
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+        loyaltyStatus = data.userPerso.loyaltyStatus
+        getFavoriteNumber()
+
+        renderPrefill(data.userPerso)
         renderRecommendation(data.recommendations)
         renderTicker(data.tickers)
+    }
+
+    private fun renderPrefill(data: TopupBillsUserPerso) {
+        binding?.rechargePdpPulsaClientNumberWidget?.setInputNumber(data.prefill)
     }
 
     private fun onFailedRecommendation(){
         binding?.rechargePdpPulsaRecommendationWidget?.renderFailRecommendation()
     }
 
-    private fun onSuccessGetFavoriteNumber(
-        favoriteNumber: List<TopupBillsPersoFavNumberItem>,
-        shouldRefreshInputNumber: Boolean
-    ) {
+    private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
         setFilterChipShimmer(false, favoriteNumber.isEmpty())
             if (favoriteNumber.isNotEmpty()){
-                if (shouldRefreshInputNumber && clientNumber.isEmpty()) {
-                    setInputNumber("081208120812")
-                    setContactName("[Misael]")
-                }
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
@@ -412,14 +411,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
-                                "[Misael] loyaltyStatus",
+                                loyaltyStatus,
                                 userSession.userId
                             )
                         } else {
                             digitalPDPTelcoAnalytics.clickFavoriteNumberAutoComplete(
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
-                                "[Misael] loyaltyStatus",
+                                loyaltyStatus,
                                 userSession.userId
                             )
                         }
@@ -431,13 +430,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         if (isLabeled) {
                             digitalPDPTelcoAnalytics.impressionFavoriteContactChips(
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
-                                "[Misael] loyaltyStatus",
+                                loyaltyStatus,
                                 userSession.userId
                             )
                         } else {
                             digitalPDPTelcoAnalytics.impressionFavoriteNumberChips(
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
-                                "[Misael] loyaltyStatus",
+                                loyaltyStatus,
                                 userSession.userId
                             )
                         }
@@ -450,14 +449,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
-                                "[Misael] loyaltyStatus",
+                                loyaltyStatus,
                                 userSession.userId,
                             )
                         } else {
                             digitalPDPTelcoAnalytics.clickFavoriteNumberChips(
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
-                                "[Misael] loyaltyStatus",
+                                loyaltyStatus,
                                 userSession.userId
                             )
                         }
@@ -661,7 +660,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     "TODO Creative Link",
                     categoryId.toString(),
                     DigitalPDPTelcoUtil.getCategoryName(categoryId),
-                    "Loyalty",
+                    loyaltyStatus,
                     userSession.userId
                 )
                 rechargePdpPulsaEmptyStateWidget.show()
@@ -841,7 +840,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 productListTitle,
                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                 operator.attributes.name,
-                "//TODO LOYALTY",
+                loyaltyStatus,
                 userSession.userId,
                 denomGrid,
                 layoutType,
@@ -852,7 +851,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 productListTitle,
                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                 operator.attributes.name,
-                "//TODO LOYALTY",
+                loyaltyStatus,
                 userSession.userId,
                 denomGrid,
                 position
@@ -874,7 +873,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             digitalPDPTelcoAnalytics.impressionProductMCCM(
                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                 operator.attributes.name,
-                "//TODO LOYALTY",
+                loyaltyStatus,
                 userSession.userId,
                 denomGrid,
                 layoutType,
@@ -884,7 +883,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             digitalPDPTelcoAnalytics.impressionProductCluster(
                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
                 operator.attributes.name,
-                "//TODO LOYALTY",
+                loyaltyStatus,
                 userSession.userId,
                 denomGrid,
                 position
@@ -931,7 +930,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             getString(R.string.digital_pdp_recommendation_title),
             DigitalPDPTelcoUtil.getCategoryName(categoryId),
             operator.attributes.name,
-            "//TODO LOYALTY",
+            loyaltyStatus,
             userSession.userId,
             recommendation,
             position
@@ -945,7 +944,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         digitalPDPTelcoAnalytics.impressionLastTransactionIcon(
             DigitalPDPTelcoUtil.getCategoryName(categoryId),
             operator.attributes.name,
-            "//TODO LOYALTY",
+            loyaltyStatus,
             userSession.userId,
             recommendation,
             position
@@ -987,8 +986,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
-                // [Misael] shouldRefreshInputNumber nnti gaperlu karena prefill ambil dari tempat lain
-                getFavoriteNumber(shouldRefreshInputNumber = false)
+                getFavoriteNumber()
             } else if( requestCode == REQUEST_CODE_LOGIN ) {
                 addToCart()
             }
