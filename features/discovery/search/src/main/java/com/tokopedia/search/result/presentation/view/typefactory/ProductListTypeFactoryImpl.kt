@@ -11,7 +11,6 @@ import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
@@ -36,7 +35,6 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductEmptySearchViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
@@ -57,7 +55,6 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
-import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
@@ -70,7 +67,9 @@ import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListe
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
-
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
 import com.tokopedia.topads.sdk.base.Config
 
 @Suppress("LongParameterList")

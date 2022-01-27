@@ -87,7 +87,6 @@ import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
@@ -105,7 +104,6 @@ import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
@@ -120,6 +118,8 @@ import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
@@ -148,26 +148,25 @@ import java.util.*
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
-        OnItemChangeView,
-        ProductListSectionContract.View,
-        ProductListener,
-        TickerListener,
-        SuggestionListener,
-        GlobalNavListener,
-        BannerAdsListener,
-        EmptyStateListener,
-        RecommendationListener,
-        InspirationCarouselListener,
-        BroadMatchListener,
-        InspirationCardListener,
-        QuickFilterElevation,
-        SortFilterBottomSheet.Callback,
-        SearchNavigationClickListener,
-        TopAdsImageViewListener,
-        ChooseAddressListener,
-        BannerListener,
-        LastFilterListener,
-        InspirationSizeOptionListener {
+    OnItemChangeView,
+    ProductListSectionContract.View,
+    ProductListener,
+    TickerListener,
+    SuggestionListener,
+    BannerAdsListener,
+    EmptyStateListener,
+    RecommendationListener,
+    InspirationCarouselListener,
+    BroadMatchListener,
+    InspirationCardListener,
+    QuickFilterElevation,
+    SortFilterBottomSheet.Callback,
+    SearchNavigationClickListener,
+    TopAdsImageViewListener,
+    ChooseAddressListener,
+    BannerListener,
+    LastFilterListener,
+    InspirationSizeOptionListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -391,7 +390,7 @@ class ProductListFragment: BaseDaggerFragment(),
             productListener = this,
             tickerListener = this,
             suggestionListener = this,
-            globalNavListener = this,
+            globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity),
             bannerAdsListener = this,
             emptyStateListener = this,
             recommendationListener = this,
@@ -907,44 +906,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel) {
         showProductCardOptions(this, productCardOptionsModel)
-    }
-    //endregion
-
-    //region Global Nav Widget
-    override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item?, keyword: String?) {
-        if (item == null) return
-
-        redirectionStartActivity(item.applink, item.url)
-
-        SearchTracking.trackEventClickGlobalNavWidgetItem(
-                item.getGlobalNavItemAsObjectDataLayer(item.name),
-                keyword ?: "",
-                item.name,
-                item.applink
-        )
-    }
-
-    override fun onGlobalNavWidgetClickSeeAll(model: GlobalNavDataView?) {
-        if (model == null) return
-
-        redirectionStartActivity(model.seeAllApplink, model.seeAllUrl)
-
-        SearchTracking.eventUserClickSeeAllGlobalNavWidget(
-                model.keyword,
-                model.title,
-                model.seeAllApplink
-        )
-    }
-
-    override fun sendImpressionGlobalNav(globalNavDataView: GlobalNavDataView) {
-        val dataLayerList = ArrayList<Any>()
-        globalNavDataView.itemList.forEach { item ->
-            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer(item.applink))
-        }
-
-        trackingQueue?.let {
-            SearchTracking.trackEventImpressionGlobalNavWidgetItem(it, dataLayerList, globalNavDataView.keyword)
-        }
     }
     //endregion
 
