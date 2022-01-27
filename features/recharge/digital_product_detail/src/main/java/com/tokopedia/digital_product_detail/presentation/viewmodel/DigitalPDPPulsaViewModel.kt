@@ -181,9 +181,6 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             if (denomData.id.equals(selectedGridProduct.denomData.id, false)
                 && selectedGridProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
         }
-        if (selectedProductPositionId == null) {
-            onResetSelectedProduct()
-        }
         return selectedProductPositionId
     }
 
@@ -192,7 +189,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             && selectedGridProduct.denomWidgetEnum == layoutType
             && isEligibleToBuy)
 
-    private fun onResetSelectedProduct(){
+    fun onResetSelectedProduct(){
         selectedGridProduct = SelectedGridProduct()
     }
 
