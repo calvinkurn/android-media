@@ -30,7 +30,7 @@ object CatalogUtil {
     }
 
     fun getShareUrl(catalogId : String) : String{
-        return "${CATALOG_URL}$catalogId"
+        return "${CatalogConstant.CATALOG_DEEPLINK_PREFIX}$catalogId"
     }
 
     fun getImagesFromCatalogImages(catalogImages: ArrayList<CatalogImage>?): ArrayList<String>? {
