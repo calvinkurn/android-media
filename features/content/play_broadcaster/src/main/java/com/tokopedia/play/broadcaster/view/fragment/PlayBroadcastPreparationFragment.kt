@@ -8,20 +8,12 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
-import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
-import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormState
-import com.tokopedia.play.broadcaster.ui.state.PlayTitleFormUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
-import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
@@ -41,12 +33,9 @@ import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_play_broadcast_preparation.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.util.*
+import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -69,7 +58,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private lateinit var scheduleViewModel: BroadcastScheduleViewModel
 
     /** View */
-    private var _binding: FragmentPlayBroadcastPreparationBinding? = null
+    private var _binding by viewBinding<FragmentPlayBroadcastPreparationBinding>()
     private val binding get() = _binding!!
 
     /** Others */
@@ -94,12 +83,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPlayBroadcastPreparationBinding.inflate(
-            LayoutInflater.from(requireContext()),
-            container,
-            false
-        )
-        return _binding?.root
+        return inflater.inflate(R.layout.fragment_play_broadcast_preparation, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationCoverFor
 /**
  * Created By : Jonathan Darwin on January 26, 2022
  */
-class CoverFormView: ConstraintLayout {
+class CoverFormView : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(

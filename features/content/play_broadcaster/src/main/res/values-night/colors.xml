@@ -5,7 +5,4 @@
 
     <color name="play_dms_bg_cover_image_setup">#4D40454C</color>
     <color name="play_dms_bg_choose_cover">#40454C</color>
-
-    <!-- Preparation -->
-    <color name="play_dms_broadcast_start_livestream">#E02954</color>
 </resources>

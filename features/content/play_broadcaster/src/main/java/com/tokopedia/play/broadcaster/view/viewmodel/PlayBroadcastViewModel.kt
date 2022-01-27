@@ -193,13 +193,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
             )
         }
 
-    private val _titleFormUiState = _titleForm.map {
-        PlayTitleFormUiState(
-            title = it.title,
-            status = it.status
-        )
-    }
-
     private val _pinnedMessageUiState = _pinnedMessage.map {
         PinnedMessageUiState(
             message = if (it.isActive && !it.isInvalidId) it.message else "",
@@ -208,7 +201,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     val preparationUiState = combine(
-        _titleFormUiState.distinctUntilChanged(),
+        _titleForm,
         _isExiting
     ) { titleForm, _ ->
         PlayBroadcastPreparationUiState(
