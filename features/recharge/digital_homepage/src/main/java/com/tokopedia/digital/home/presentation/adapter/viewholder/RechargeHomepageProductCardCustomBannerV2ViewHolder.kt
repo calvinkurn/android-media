@@ -88,7 +88,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                     }
 
                     override fun getPixelSize(): Int =
-                        itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.product_card_custom_banner_width)
+                        itemView.resources.getDimensionPixelSize(com.tokopedia.digital.home.R.dimen.product_card_custom_banner_width)
                 })
             }
         }
