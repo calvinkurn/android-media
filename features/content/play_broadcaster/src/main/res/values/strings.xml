@@ -226,4 +226,12 @@
 
     <string name="play_bro_title_form_hint">Tulis Judul Live</string>
     <string name="play_bro_title_form_instruction">Buat judul yang kreatif dan bisa bikin calon penonton penasaran!</string>
+
+    <!--Campaign & Etalase-->
+    <string name="play_bro_campaign">Campaign</string>
+    <string name="play_bro_etalase">Etalase</string>
+    <string name="play_bro_upcoming_campaign">Mendatang</string>
+    <string name="play_bro_ongoing_campaign">Berlangsung</string>
+    <string name="play_bro_etalase_product_stock">%d Produk</string>
+    <string name="play_bro_campaign_date_start_end">%s s.d. %s</string>
 </resources>

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroEtalaseListBodyBinding
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroEtalaseListHeaderBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
@@ -41,16 +42,27 @@ internal class PlayBroEtalaseListViewHolder private constructor() {
         fun bind(item: EtalaseListModel.Body) {
             binding.ivEtalase.loadImage(item.campaignUiModel.imageUrl)
             binding.tvEtalaseTitle.text = item.campaignUiModel.title
-            binding.tvTotalProduct.text = "${item.campaignUiModel.totalProduct} Produk"
-            binding.tvDateDesc.text = "${item.campaignUiModel.startDateFmt} s.d. ${item.campaignUiModel.endDateFmt}"
+            binding.tvTotalProduct.text = itemView.context.getString(
+                R.string.play_bro_etalase_product_stock,
+                item.campaignUiModel.totalProduct
+            )
+            binding.tvDateDesc.text = itemView.context.getString(
+                R.string.play_bro_campaign_date_start_end,
+                item.campaignUiModel.startDateFmt,
+                item.campaignUiModel.endDateFmt,
+            )
 
             when (item.campaignUiModel.status.status) {
                 CampaignStatus.Ongoing -> {
-                    binding.labelStatus.setLabel("Berlangsung")
+                    binding.labelStatus.setLabel(
+                        itemView.context.getString(R.string.play_bro_ongoing_campaign)
+                    )
                     binding.labelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
                 }
                 CampaignStatus.Ready, CampaignStatus.ReadyLocked -> {
-                    binding.labelStatus.setLabel("Mendatang")
+                    binding.labelStatus.setLabel(
+                        itemView.context.getString(R.string.play_bro_upcoming_campaign)
+                    )
                     binding.labelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_ORANGE)
                 }
                 else -> {}

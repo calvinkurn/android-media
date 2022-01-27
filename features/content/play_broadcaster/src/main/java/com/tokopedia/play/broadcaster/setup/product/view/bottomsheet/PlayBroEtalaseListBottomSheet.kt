@@ -15,11 +15,9 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseLi
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -95,10 +93,10 @@ class PlayBroEtalaseListBottomSheet @Inject constructor(
     ) {
         val title = buildString {
             if (campaignList.isNotEmpty()) {
-                append("Campaign")
+                append(getString(R.string.play_bro_campaign))
                 append(" & ")
             }
-            append("Etalase")
+            append(getString(R.string.play_bro_etalase))
         }
         setTitle(title)
     }
@@ -112,7 +110,7 @@ class PlayBroEtalaseListBottomSheet @Inject constructor(
 
         val etalaseList = buildList {
             if (campaignList.isNotEmpty()) {
-                add(EtalaseListModel.Header("Campaign"))
+                add(EtalaseListModel.Header(getString(R.string.play_bro_campaign)))
                 addAll(campaignList.map(EtalaseListModel::Body))
             }
         }
