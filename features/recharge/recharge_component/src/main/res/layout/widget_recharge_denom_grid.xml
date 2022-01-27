@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/widget_denom_margin"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
@@ -25,7 +25,7 @@
         android:nestedScrollingEnabled="false"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl4" />
 
     <include

@@ -865,6 +865,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         if (isShowBuyWidget && viewModel.isEligibleToBuy) {
             onShowBuyWidget(denomGrid)
         } else {
+            viewModel.onResetSelectedProduct()
             onHideBuyWidget()
         }
     }
