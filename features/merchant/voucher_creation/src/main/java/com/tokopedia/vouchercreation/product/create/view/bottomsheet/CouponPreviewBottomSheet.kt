@@ -7,11 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -21,10 +27,6 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponPreviewViewModel
 import javax.inject.Inject
-import com.bumptech.glide.Glide
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.LoaderUnify
 
 
 class CouponPreviewBottomSheet : BottomSheetUnify() {
@@ -38,6 +40,9 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_COUPON_SETTINGS = "settings"
         private const val BUNDLE_KEY_PRODUCT_COUNT = "product-count"
         private const val BUNDLE_KEY_PRODUCT_IMAGE_URL = "imageUrl"
+        private const val SCREEN_HEIGHT_FULL = 1f
+        private const val SCREEN_HEIGHT_ONE_HALF = 1.5f
+        private const val SCREEN_HEIGHT_MULTIPLIED = 2
 
         @JvmStatic
         fun newInstance(
@@ -89,9 +94,9 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupCouponTypeChips()
+        setupChipsClickListener()
+        binding.chipImageHorizontal.chipType = ChipsUnify.TYPE_SELECTED
         observeCouponImage()
-        previewCoupon(ImageRatio.HORIZONTAL)
     }
 
     private fun observeCouponImage() {
@@ -102,26 +107,29 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
             if (result is Success) {
                 displayImage(result.data)
             } else {
-
+                Toaster.build(binding.root, getString(R.string.error_message_failed_get_image), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             }
         })
     }
 
-    private fun setupCouponTypeChips() {
+    private fun setupChipsClickListener() {
         with(binding) {
             chipImageHorizontal.selectedChangeListener = { isSelected ->
                 if (isSelected) {
                     previewCoupon(ImageRatio.HORIZONTAL)
+                    changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_FULL)
                 }
             }
             chipImageRatioSquare.selectedChangeListener = { isSelected ->
                 if (isSelected) {
                     previewCoupon(ImageRatio.SQUARE)
+                    changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF)
                 }
             }
             chipImageVertical.selectedChangeListener = { isSelected ->
                 if (isSelected) {
                     previewCoupon(ImageRatio.VERTICAL)
+                    changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED)
                 }
             }
 
@@ -204,4 +212,16 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
             EMPTY_STRING
         }
     }
+
+    private fun changeImageViewHeight(height : Float) {
+        binding.imgCoupon.layoutParams.height = height.toInt()
+        binding.imgCoupon.requestLayout()
+    }
+
+    private fun getDeviceHeight(): Float {
+        val displayMetrics = resources.displayMetrics
+        return displayMetrics.heightPixels / displayMetrics.density
+    }
+
+
 }
