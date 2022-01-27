@@ -236,7 +236,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             binding.btnCreateCoupon.isLoading = false
             if (result is Success) {
                 this.couponId = result.data
-                onUpdateCouponSuccess()
+                onCreateSuccess()
                 viewModel.getShareMetaData()
             } else {
                 createCouponErrorNotice.show()

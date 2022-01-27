@@ -58,6 +58,10 @@ class CreateCouponProductActivity : AppCompatActivity() {
             popFragment()
         }
 
+        couponPreviewFragment.setOnCreateCouponSuccess {
+            popFragment()
+        }
+
         couponSettingFragment.setOnCouponSaved { couponSettings ->
             popFragment()
 
