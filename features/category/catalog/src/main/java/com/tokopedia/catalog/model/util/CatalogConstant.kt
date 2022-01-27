@@ -27,7 +27,7 @@ object CatalogConstant {
 
     const val ZERO_VALUE = "0"
 
-    const val CATALOG_DEEPLINK_PREFIX = "https://tokopedia/catalog/"
+    const val CATALOG_DEEPLINK_PREFIX = "https://www.tokopedia.com/catalog/"
     const val CATALOG_URL = "tokopedia://catalog/"
     const val CATALOG_SHARE = "share"
 
