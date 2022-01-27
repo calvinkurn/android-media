@@ -48,6 +48,11 @@ object RechargeCCGqlQuery {
             name
             paramName
             text
+            validations {
+              title
+              message
+              rule
+            }
             prefixes {
               key
               value
@@ -57,9 +62,6 @@ object RechargeCCGqlQuery {
                   name
                   image_url
                   default_product_id
-                  rule{
-                    maximum_length
-                  }
                 }
               }
             }
