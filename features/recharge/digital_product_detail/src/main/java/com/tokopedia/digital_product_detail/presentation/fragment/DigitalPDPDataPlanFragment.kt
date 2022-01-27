@@ -43,10 +43,8 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.P
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.digital_product_detail.data.model.data.SelectedFullProduct
-import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
@@ -58,7 +56,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
-import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
@@ -421,7 +418,7 @@ class DigitalPDPDataPlanFragment :
     private fun onSuccessMCCM(denomFull: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
             var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_GRID_TYPE)){
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)){
                 onShowBuyWidget(viewModel.selectedFullProduct.denomData)
             } else {
                 selectedInitialPosition = null
@@ -871,7 +868,7 @@ class DigitalPDPDataPlanFragment :
             userSession.userId
         )
         fragmentManager?.let {
-            SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
+            // TODO: show different Bottom Sheet maybe?
         }
     }
 
