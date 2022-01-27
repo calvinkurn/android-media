@@ -371,10 +371,15 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun textViewRequestFocus() {
-        searchTextView?.setText(lastQuery)
-        onTextChanged(lastQuery)
+        try {
+            if (lastQuery == null) return
+            searchTextView?.setText(lastQuery)
+            onTextChanged(lastQuery)
 
-        searchTextViewShowKeyboard()
+            searchTextViewShowKeyboard()
+        } catch (throwable: Throwable) {
+
+        }
     }
 
     private fun searchTextViewShowKeyboard() {
