@@ -23,9 +23,12 @@ class DenomFullWidget @JvmOverloads constructor(
     private var rechargeDenomFullWidgetBinding =
         WidgetRechargeDenomFullBinding.inflate(LayoutInflater.from(context), this, true)
 
+    private val adapterDenomFull = DenomFullAdapter()
+
     fun renderDenomFullLayout(
         denomFullListener: RechargeDenomFullListener,
-        denomData: DenomWidgetModel
+        denomData: DenomWidgetModel,
+        selectedProductPosition: Int? = null
     ) {
         if (!denomData.listDenomData.isNullOrEmpty()) {
             val adapterDenomFull = DenomFullAdapter()
@@ -41,7 +44,8 @@ class DenomFullWidget @JvmOverloads constructor(
                         clearDenomFullData()
                         setDenomFullList(denomData.listDenomData)
                         listener = denomFullListener
-                        selectedProductIndex = null
+                        productTitleList = denomData.mainTitle
+                        selectedProductIndex = selectedProductPosition
                         denomWidgetType = DenomWidgetEnum.FULL_TYPE
                         adapter = adapterDenomFull
                         layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -61,6 +65,13 @@ class DenomFullWidget @JvmOverloads constructor(
 
     fun renderFailDenomFull() {
         rechargeDenomFullWidgetBinding.root.hide()
+    }
+
+    fun clearSelectedProduct(){
+        adapterDenomFull.run {
+            selectedProductIndex = null
+            notifyDataSetChanged()
+        }
     }
 
 }

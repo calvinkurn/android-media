@@ -17,6 +17,8 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
 
     var denomWidgetType: DenomWidgetEnum = DenomWidgetEnum.FULL_TYPE
 
+    var productTitleList: String = ""
+
     var listener: RechargeDenomFullListener? = null
 
     override fun getItemCount(): Int = listDenom.size
@@ -40,10 +42,19 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
         return DenomFullViewHolder(this, binding)
     }
 
-    override fun onDenomFullClicked(denomGrid: DenomData, position: Int) {
-        if (selectedProductIndex == null) {
+    override fun onDenomFullClicked(denomFull: DenomData,
+                                    layoutType: DenomWidgetEnum, position: Int,
+                                    productListTitle: String,
+                                    isShowBuyWidget: Boolean) {
+        var isNeedtoShowBuyWidget = isShowBuyWidget
+
+        if (selectedProductIndex == null){
             selectedProductIndex = position
             notifyItemChanged(position)
+        } else if (selectedProductIndex == position) {
+            selectedProductIndex = null
+            notifyItemChanged(position)
+            isNeedtoShowBuyWidget = false
         } else {
             selectedProductIndex?.let { selectedPos ->
                 notifyItemChanged(selectedPos)
@@ -51,7 +62,15 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
             selectedProductIndex = position
             notifyItemChanged(position)
         }
-        listener?.onDenomFullClicked(denomGrid, position)
+        listener?.onDenomFullClicked(denomFull, denomWidgetType, position, productTitleList, isNeedtoShowBuyWidget)
+    }
+
+    override fun onDenomFullImpression(
+        denomFull: DenomData,
+        layoutType: DenomWidgetEnum,
+        position: Int
+    ) {
+        listener?.onDenomFullImpression(denomFull, layoutType, position)
     }
 
     override fun onChevronDenomClicked(denomGrid: DenomData, position: Int) {

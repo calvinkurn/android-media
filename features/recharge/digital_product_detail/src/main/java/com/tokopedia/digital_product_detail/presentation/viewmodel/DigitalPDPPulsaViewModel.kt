@@ -191,8 +191,6 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         selectedGridProduct = SelectedGridProduct()
     }
 
-
-
     companion object {
         const val DELAY_TIME = 200L
         const val VALIDATOR_DELAY_TIME = 3000L
