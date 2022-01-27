@@ -10,6 +10,8 @@ import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCar
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeOptionDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeListener
 import com.tokopedia.search.utils.addFilterOrigin
+import com.tokopedia.search.utils.applinkopener.ApplinkOpener
+import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.track.TrackApp
 import java.lang.ref.WeakReference
 
@@ -17,7 +19,9 @@ class InspirationWidgetListenerDelegate(
     context: Context?,
     private val filterController: FilterController,
     private val parameterListener: ProductListParameterListener,
-): InspirationCardListener, InspirationSizeListener {
+): InspirationCardListener,
+    InspirationSizeListener,
+    ApplinkOpener by ApplinkOpenerDelegate {
 
     private val weakContext: WeakReference<Context?> = WeakReference(context)
 
@@ -26,7 +30,7 @@ class InspirationWidgetListenerDelegate(
 
         trackEventClickInspirationCardOption(optionData)
 
-        RouteManager.route(context, optionData.applink)
+        openApplink(context, optionData.applink)
     }
 
     private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {
