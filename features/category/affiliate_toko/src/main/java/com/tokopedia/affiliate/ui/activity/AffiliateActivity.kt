@@ -8,7 +8,6 @@ import android.os.Looper
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -21,15 +20,11 @@ import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
-import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.ui.custom.*
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
-import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
-import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
-import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -41,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -63,7 +59,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private lateinit var affiliateVM: AffiliateViewModel
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
-    private var userActionRequiredForRegister = true
 
     private var isUserBlackListed = false
     private var isAffiliateWalletEnabled = false
@@ -111,13 +106,11 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun afterViewCreated() {
-        initRollence()
-        initBottomNavigationView()
-        setObservers()
-        if (userSessionInterface.isLoggedIn)
+        if (userSessionInterface.isLoggedIn) {
+            setObservers()
             affiliateVM.getAffiliateValidateUser()
-        else
-            showLoginPortal()
+        }
+        else showLoginPortal()
     }
 
     private fun initRollence() {
@@ -133,16 +126,13 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun showLoginPortal() {
         AffiliateRegistrationActivity.newInstance(this)
-//        if (fragmentStack.isEmpty() || (fragmentStack.peek() != (AffiliateLoginFragment::class.java.canonicalName)))
-//            openFragment(AffiliateLoginFragment.getFragmentInstance(this))
+        finish()
     }
 
     private fun showAffiliatePortal() {
-        clearBackStack()
+        initRollence()
+        initBottomNavigationView()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
-        if(findViewById<LottieBottomNavbar>(R.id.bottom_navbar)?.visibility !=  View.VISIBLE)
-            affiliateBottomNavigation?.populateBottomNavigationView()
-        affiliateBottomNavigation?.showBottomNav()
         pushOpenScreenEvent()
     }
 
@@ -214,7 +204,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
     private fun enableTouch(){
-        window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     private fun getPromoFragmentView(): AffiliateLinkTextField? {
@@ -247,13 +237,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         )
     }
 
-    private fun clearBackStack() {
-        for (frag in supportFragmentManager.fragments) {
-            supportFragmentManager.popBackStack()
-        }
-        fragmentStack.clear()
-    }
-
     private fun initBottomNavigationView() {
         affiliateBottomNavigation = AffiliateBottomNavbar(
             findViewById(R.id.bottom_navbar),
@@ -266,6 +249,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             INCOME_MENU = 3
             HELP_MENU = 2
         }
+        affiliateBottomNavigation?.showBottomNav()
+        affiliateBottomNavigation?.populateBottomNavigationView()
     }
 
     override fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean): Boolean {
@@ -292,17 +277,16 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
                 showAffiliatePortal()
-            } else if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == false &&
-                validateUserdata.validateAffiliateUserStatus.data?.isRegistered == false
-            ) {
-                showFraudTicker()
-            } else {
-                if (!userActionRequiredForRegister)
-                    navigateToPortfolioFragment()
-                else {
-                    showLoginPortal()
-                }
+            } else{
+                showLoginPortal()
             }
+        })
+
+        affiliateVM.progressBar().observe(this,{
+            if(it)
+                findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.show()
+            else
+                findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.hide()
         })
 
         affiliateVM.getErrorMessage().observe(this, { error ->
@@ -310,7 +294,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 is UnknownHostException, is SocketTimeoutException -> {
                     Toaster.build(
                         findViewById<FrameLayout>(R.id.parent_view),
-                        getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
+                        getString(R.string.affiliate_internet_error),
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR
                     ).show()
@@ -320,49 +304,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 }
             }
         })
-    }
-
-    private fun showFraudTicker() {
-        var currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.name)
-        if (currentFragment == null) {
-            showLoginPortal()
-            currentFragment = supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.name)
-        }
-        currentFragment?.let { fragment ->
-            (fragment as? AffiliateLoginFragment)?.showFraudTicker()
-        }
-
-    }
-
-    override fun onRegistrationSuccessful() {
-        showSplashScreen()
-    }
-
-    var splashHandler: Handler? = null
-    var isBackEnabled = true
-
-    private val splashRunnable = Runnable {
-        isBackEnabled = true
-        findViewById<Group>(R.id.splash_group)?.hide()
-        showAffiliatePortal()
-    }
-
-    private fun showSplashScreen() {
-        findViewById<Typography>(R.id.splash_title).text =
-            getString(R.string.affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate).replace(
-                "{name}",
-                userSessionInterface.name
-            )
-        findViewById<Group>(R.id.splash_group)?.show()
-        isBackEnabled = false
-        splashHandler = Handler(Looper.getMainLooper())
-        splashHandler?.postDelayed(splashRunnable, AFFILIATE_SPLASH_TIME)
-    }
-
-    override fun onDestroy() {
-        splashHandler?.removeCallbacks(splashRunnable)
-        super.onDestroy()
     }
 
     private fun openFragment(fragment: Fragment) {
@@ -427,7 +368,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun onBackPressed() {
-        if(!isBackEnabled) return
         val currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
         if (currentFragment != null && currentFragment.isVisible) {
@@ -490,23 +430,4 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         return isUserBlackListed
     }
 
-    override fun navigateToTermsFragment(channels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
-//        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(this).apply {
-//            setChannels(channels)
-//        })
-        val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliateTermsAndConditionFragment::class.java.name)
-        if (currentFragment != null) {
-//            (currentFragment as? AffiliateTermsAndConditionFragment)?.setChannels(channels)
-        }
-    }
-
-    override fun navigateToPortfolioFragment() {
-//        openFragment(AffiliatePortfolioFragment.getFragmentInstance(this))
-    }
-
-    override fun validateUserStatus() {
-        userActionRequiredForRegister = true
-        affiliateVM.getAffiliateValidateUser()
-    }
 }

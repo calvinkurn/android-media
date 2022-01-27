@@ -31,7 +31,6 @@ class AffiliateHomeViewModel @Inject constructor(
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var dataPlatformShimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
-    private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementData>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
@@ -40,18 +39,6 @@ class AffiliateHomeViewModel @Inject constructor(
     private var rangeChanged = MutableLiveData<Boolean>()
     private var showProductCount = true
     private var lastID = "0"
-
-    fun getAffiliateValidateUser() {
-        launchCatchError(block = {
-            progressBar.value = true
-            validateUserdata.value =
-                affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
-        }, onError = {
-            progressBar.value = false
-            it.printStackTrace()
-            errorMessage.value = it
-        })
-    }
 
     fun getAnnouncementInformation() {
         launchCatchError(block = {
@@ -178,7 +165,6 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getRangeChanged(): LiveData<Boolean> = rangeChanged
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getAffiliateErrorMessage(): LiveData<Throwable> = affiliateErrorMessage
-    fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementData> = affiliateAnnouncement
     fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
     fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> =
