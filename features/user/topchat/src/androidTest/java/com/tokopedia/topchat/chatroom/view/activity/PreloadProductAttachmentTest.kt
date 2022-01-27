@@ -198,7 +198,26 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         assertSrwPreviewContentIsHidden()
     }
 
-    // TODO: should show srw preview when user retry attach product preview is success
+    @Test
+    fun should_show_srw_preview_when_user_retry_attach_product_preview_is_success() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwUseCase.defaultResponse
+        getChatPreAttachPayloadUseCase.setError()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // When
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+                .generatePreAttachPayload(exProductId)
+        ProductPreviewRobot.clickRetryButtonAt(0)
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+    }
+
     // TODO: should hide close button on loading state
 
 }
