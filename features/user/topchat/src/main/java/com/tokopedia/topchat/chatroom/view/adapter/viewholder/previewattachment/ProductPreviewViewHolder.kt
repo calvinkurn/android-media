@@ -125,6 +125,14 @@ class ProductPreviewViewHolder(
     }
 
     private fun showLoading(isLoading: Boolean) {
+        if (ViewUtil.areSystemAnimationsEnabled(itemView.context)) {
+            loader?.apply {
+                circular?.clearAnimationCallbacks()
+                circularWhite?.clearAnimationCallbacks()
+                shimmer?.clearAnimationCallbacks()
+                avd?.clearAnimationCallbacks()
+            }
+        }
         loader?.showWithCondition(isLoading)
         closeButton?.showWithCondition(!isLoading)
     }
