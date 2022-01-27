@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matcher
@@ -15,6 +16,13 @@ object ProductPreviewResult {
             withRecyclerView(R.id.rv_attachment_preview)
                 .atPositionOnView(position, variantResourceId)
         ).check(matches(matcher))
+    }
+
+    fun isLoadingAt(position: Int) {
+        onView(
+                withRecyclerView(R.id.rv_attachment_preview)
+                        .atPositionOnView(position, R.id.lu_product_preview)
+        ).check(matches(isDisplayed()))
     }
 
 }

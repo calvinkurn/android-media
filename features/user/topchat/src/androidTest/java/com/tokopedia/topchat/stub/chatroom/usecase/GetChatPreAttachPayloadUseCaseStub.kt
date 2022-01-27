@@ -49,6 +49,10 @@ class GetChatPreAttachPayloadUseCaseStub(
         }
     }
 
+    fun delayResponseIndefinitely() {
+        repository.delayMs = Int.MAX_VALUE.toLong()
+    }
+
     companion object {
         private const val chatPreAttachPayload = "chatPreAttachPayload"
         private const val list = "list"

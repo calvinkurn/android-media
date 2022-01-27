@@ -43,32 +43,9 @@ import org.junit.Test
 @UiTest
 class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
-    lateinit var productPreview: ProductPreview
-    private val testVariantSize = "S"
-    private val testVariantColor = "Putih"
-    private val exProductId = "1111"
-
     @Before
     override fun before() {
         super.before()
-        productPreview = ProductPreview(
-            exProductId,
-            ProductPreviewAttribute.productThumbnail,
-            ProductPreviewAttribute.productName,
-            "Rp 23.000.000",
-            "",
-            testVariantColor,
-            "",
-            "",
-            testVariantSize,
-            "tokopedia://product/1111",
-            false,
-            "",
-            "Rp 50.000.000",
-            500000.0,
-            "50%",
-            false
-        )
         addToCartUseCase.isError = false
     }
 
@@ -447,10 +424,34 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
     }
 
-    private fun putProductAttachmentIntent(intent: Intent) {
-        val productPreviews = listOf(productPreview)
-        val stringProductPreviews = CommonUtil.toJson(productPreviews)
-        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+    companion object {
+        val testVariantSize = "S"
+        val testVariantColor = "Putih"
+        val exProductId = "1111"
+        fun putProductAttachmentIntent(intent: Intent) {
+            val productPreviews = listOf(
+                    ProductPreview(
+                            exProductId,
+                            ProductPreviewAttribute.productThumbnail,
+                            ProductPreviewAttribute.productName,
+                            "Rp 23.000.000",
+                            "",
+                            testVariantColor,
+                            "",
+                            "",
+                            testVariantSize,
+                            "tokopedia://product/1111",
+                            false,
+                            "",
+                            "Rp 50.000.000",
+                            500000.0,
+                            "50%",
+                            false
+                    )
+            )
+            val stringProductPreviews = CommonUtil.toJson(productPreviews)
+            intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+        }
     }
 
     private fun getZeroStockAttachment(): ChatAttachmentResponse {

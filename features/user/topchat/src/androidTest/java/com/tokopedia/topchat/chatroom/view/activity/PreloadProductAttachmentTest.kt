@@ -1,10 +1,27 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult
+import org.junit.Test
 
 class PreloadProductAttachmentTest: TopchatRoomTest() {
 
-    // TODO: should show loading product preview
+    @Test
+    fun should_show_loading_product_preview() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.response
+        getChatPreAttachPayloadUseCase.delayResponseIndefinitely()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        ProductPreviewResult.isLoadingAt(0)
+    }
+
     // TODO: should render actual product data for product preview when success pre attach product payload
     // TODO: should show error product preview when error pre attach product payload
     // TODO: should retry preload product attachment when user click retry
