@@ -125,17 +125,6 @@ class FeaturedShopViewHolder(
         binding?.featuredShopBackground?.setOnClickListener {
             listener.onFeaturedShopBannerBackgroundClicked(element.channelModel)
         }
-//        binding?.bannerTitle?.text = element.channelModel.channelBanner.title
-//        binding?.bannerDescription?.let {
-//            if (element.channelModel.channelBanner.description.isNotEmpty()) {
-//                it.show()
-//                it.text = element.channelModel.channelBanner.description
-//            } else {
-//                it.gone()
-//            }
-//        }
-//        binding?.bannerTitle?.setTextColor(textColor)
-//        binding?.bannerDescription?.setTextColor(textColor)
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 listener.onSeeAllClicked(element.channelModel, adapterPosition)
