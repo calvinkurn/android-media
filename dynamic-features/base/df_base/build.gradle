@@ -80,6 +80,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.smartBills)
     implementation projectOrAar(rootProject.ext.features.digitalCheckout)
     implementation projectOrAar(rootProject.ext.features.rechargePdpEmoney)
+    implementation projectOrAar(rootProject.ext.features.digitalProductDetail)
 
     //Discovery
     implementation projectOrAar(rootProject.ext.features.similarSearch)
