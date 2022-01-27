@@ -17,8 +17,8 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         onSuccess: (WidgetDetail) -> Unit,
         onError: (Throwable) -> Unit,
         productCategory: String,
-        listofAmount: List<Double>,
-        listOfUrls: ArrayList<String?>,
+        listofAmount: HashMap<String, String>,
+        listOfUrls: HashMap<String, String>,
     ) {
         try {
             this.setTypeClass(WidgetDetail::class.java)
@@ -38,7 +38,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
 
 
     private fun getRequestParams(
-        productCategory: String, listofAmount: List<Double>, listOfUrls: ArrayList<String?>
+        productCategory: String, listofAmount: HashMap<String, String>, listOfUrls: HashMap<String, String>
     ): MutableMap<String, Any?> {
 
         var listOfVariantDetail: MutableList<WidgetRequestModel> =
@@ -48,17 +48,12 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
     }
 
     private fun setAmountList(
-        listofAmount: List<Double>,
-        listOfUrls: ArrayList<String?>
+        listofAmount: HashMap<String, String>,
+        listOfUrls: HashMap<String, String>
     ): MutableList<WidgetRequestModel> {
-        var listOfVariantDetail: MutableList<WidgetRequestModel> = ArrayList()
-        for (i in listofAmount.indices) {
-            listOfVariantDetail.add(
-                WidgetRequestModel(
-                    amount = listofAmount[i],
-                    redirectionUrl = listOfUrls[i]
-                )
-            )
+        val listOfVariantDetail: MutableList<WidgetRequestModel> = ArrayList()
+        listofAmount.forEach { (key, value) ->
+            listOfVariantDetail.add(WidgetRequestModel(amount = value.toDouble(), redirectionUrl = listOfUrls[key]))
         }
         return listOfVariantDetail
     }

@@ -34,8 +34,6 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private var idToPriceMap = HashMap<String, String>()
     private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
-    private var listOfPrice: ArrayList<Double> = ArrayList()
-    private var listOfUrls: ArrayList<String?> = ArrayList()
     private var categoryId: String? = null
     private lateinit var productID: String
     private lateinit var productPrice: String
@@ -141,8 +139,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                 categoryId?.let {
                     fintechWidgetViewModel.getWidgetData(
                         it,
-                        listOfPrice,
-                        listOfUrls
+                        idToPriceMap,
+                        idToProductUrl
                     )
                 }
             } else {
@@ -150,7 +148,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                     getChipDataAndUpdate(idToPriceMap[productID])
                 else
                     categoryId?.let {
-                        fintechWidgetViewModel.getWidgetData(it, listOfPrice, listOfUrls)
+                        fintechWidgetViewModel.getWidgetData(it, idToPriceMap,
+                            idToProductUrl)
                     }
             }
 
@@ -185,8 +184,6 @@ class PdpFintechWidget @JvmOverloads constructor(
         categoryId = productCategoryId
         idToProductUrl = idToProductUrlMap
 
-        productIdToPrice.values.map { it.toDouble() }.toCollection(listOfPrice)
-        idToProductUrlMap.values.map { it }.toCollection(listOfUrls)
 
     }
 

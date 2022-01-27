@@ -275,15 +275,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateFintechData(selectedProductId: String,variantData: ProductVariant?, productInfo: DynamicProductInfoP1?) {
-        if(productInfo !=null) {
-            var productIdToPriceMap = HashMap<String, String>()
-            var productIdToProductUrl = HashMap<String, String>()
-            var productCategoryId: String = productInfo.basic.category.id
+        productInfo?.let{ productDetail->
+            val productIdToPriceMap = HashMap<String, String>()
+            val productIdToProductUrl = HashMap<String, String>()
+            val productCategoryId: String = productDetail.basic.category.id
             if (variantData == null) {
-                productIdToPriceMap[productInfo.basic.productID] =
-                    productInfo.data.price.value.toString()
-                productIdToProductUrl[productInfo.basic.productID] = productInfo.basic.url
-
+                productIdToPriceMap[productDetail.basic.productID] =
+                    productDetail.data.price.value.toString()
+                productIdToProductUrl[productDetail.basic.productID] = productDetail.basic.url
 
             } else {
                 for (i in variantData.children.indices) {
@@ -307,14 +306,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
                 }
             }
-        }
-        else
+        }?: kotlin.run {
             updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
             {
                 fintechWidgetMap?.run {
                     productId = selectedProductId
                 }
             }
+
+        }
+
+
 
     }
 
@@ -452,7 +454,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     totalReviewCount = it.rating.totalReviewTextAndImage
                 }
             }
-            
+
             updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
                 productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
             }
