@@ -15,6 +15,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.data.model.*
@@ -46,6 +47,7 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                            private val trainResendEmailUseCase: TrainResendEmailUseCase,
                                            private val rechargeSetFailUseCase: RechargeSetFailUseCase,
                                            private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+                                           private val irisSession: TopAdsIrisSession,
                                            private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory.Data>>()
@@ -195,7 +197,7 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         launch {
             try {
                 val params = topAdsImageViewUseCase.getQueryMap("", TDN_INVENTORY_ID, "", TDN_ADS_COUNT, TDN_DIMEN_ID, "", "", "")
-                val tdnData = topAdsImageViewUseCase.getImageData(params)
+                val tdnData = topAdsImageViewUseCase.getImageData(params,irisSession.getSessionId())
                 if (tdnData.isNotEmpty()) _tdnBannerResult.value = (tdnData[0].asSuccess())
             } catch (e: Exception) {
                 Timber.d(e)

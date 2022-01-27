@@ -28,6 +28,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -61,7 +62,8 @@ class NotificationViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private var addToCartUseCase: AddToCartUseCase,
     private var notifOrderListUseCase: NotifOrderListUseCase,
-    private val dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers,
+    private val irisSession: TopAdsIrisSession
 ) : BaseViewModel(dispatcher.io), INotificationViewModel {
 
     var filter: Long = NotifcenterDetailUseCase.FILTER_NONE
@@ -392,7 +394,7 @@ class NotificationViewModel @Inject constructor(
                         TOP_ADS_COUNT,
                         TOP_ADS_DIMEN_ID,
                         ""
-                    )
+                    ), irisSession.getSessionId()
                 )
                 if (results.isNotEmpty()) {
                     _topAdsBanner.postValue(NotificationTopAdsBannerUiModel(results.first()))

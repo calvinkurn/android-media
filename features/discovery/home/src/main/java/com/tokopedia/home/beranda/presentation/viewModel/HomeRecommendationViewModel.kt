@@ -7,15 +7,15 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
         private val getHomeRecommendationUseCase: GetHomeRecommendationUseCase,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+        private val irisSession: TopAdsIrisSession,
         homeDispatcher: CoroutineDispatchers
 ) : BaseViewModel(homeDispatcher.io){
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
@@ -40,14 +40,14 @@ class HomeRecommendationViewModel @Inject constructor(
                     var topAdsBanner = arrayListOf<TopAdsImageViewModel>()
                     if (homeBannerTopAds.isNotEmpty()) {
                         topAdsBanner = topAdsImageViewUseCase.getImageData(
-                                topAdsImageViewUseCase.getQueryMap(
-                                        "",
-                                        "1",
-                                        topAdsBannerNextPageToken,
-                                        homeBannerTopAds.size,
-                                        3,
-                                        ""
-                                )
+                            topAdsImageViewUseCase.getQueryMap(
+                                "",
+                                "1",
+                                topAdsBannerNextPageToken,
+                                homeBannerTopAds.size,
+                                3,
+                                ""
+                            ), irisSession.getSessionId()
                         )
                     }
                     if(topAdsBanner.isEmpty()){
@@ -96,7 +96,7 @@ class HomeRecommendationViewModel @Inject constructor(
                                 homeBannerTopAds.size,
                                 3,
                                 ""
-                        )
+                        ),irisSession.getSessionId()
                 )
                 if(topAdsBanner.isEmpty()){
                     list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel})

@@ -23,6 +23,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,7 +49,8 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getPhoneUseCase: GetUserProfile,
     private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
     private val walletPref: WalletPref,
-    private val dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers,
+    private val topAdsIrisSession: TopAdsIrisSession
 ) : BaseViewModel(dispatcher.main) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
@@ -190,7 +192,7 @@ class HomeAccountUserViewModel @Inject constructor(
                     AccountConstants.TDNBanner.DIMEN_ID,
                     AccountConstants.TDNBanner.EMPTY
                 )
-            topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
+            topAdsImageViewUseCase.getImageData(queryParams,topAdsIrisSession.getSessionId()).firstOrNull()
         } catch (t: Throwable) {
             null
         }
