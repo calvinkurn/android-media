@@ -54,14 +54,74 @@ class GetProductsInCampaignUseCase @Inject constructor(
                   imageUrl
                   imageURL700
                   price
+                  shop {
+                    ShopID
+                    Name
+                    URL
+                    URLMobile
+                    URLApps
+                    IsGold
+                    IsOfficial
+                  }
+                  wholesale {
+                    QuantityMin
+                    QuantityMax
+                    Price
+                  }
                   courierCount
                   condition
+                  departmentID
+                  labels {
+                    Title
+                    Color
+                  }
+                  badges {
+                    Title
+                    ImageURL
+                  }
                   rating
                   starRating
                   countReview
                   countSold
                   SKU
                   stock
+                  campaign {
+                    CampaignID
+                    DiscountPercentage
+                    DiscountedPrice
+                    OriginalPrice
+                    Cashback
+                    CustomStock
+                    StockSoldPercentage
+                    CampaignStatus
+                    ProductSystemStatus
+                    ProductAdminStatus
+                    StartDate
+                    EndDate
+                    CampaignTypeName
+                    CampaignShortName
+                    MaxOrder
+                    OriginalMaxOrder
+                    DiscountedPriceFmt
+                    OriginalPriceFmt
+                    OriginalStock
+                    OriginalStockStatus
+                    CampaignSoldCount
+                    OriginalCustomStock
+                    AppsOnly
+                    Applinks
+                    FinalPrice
+                    SellerPrice
+                    TokopediaSubsidy
+                    BookingStock
+                    IsBigCampaign
+                    MinOrder
+                    RedirectPageUrl
+                    RedirectPageApplink
+                    SpoilerPriceFmt
+                    SpoilerPrice
+                    HideGimmick
+                  }
                   returnable
                   status
                   hasCashback
@@ -72,6 +132,9 @@ class GetProductsInCampaignUseCase @Inject constructor(
                   priceUnfmt
                   isVariant
                   parentId
+                  variantsFilter
+                  childIds
+                  siblingIds
                   eggCrackingValidation
                   min_order
                 },

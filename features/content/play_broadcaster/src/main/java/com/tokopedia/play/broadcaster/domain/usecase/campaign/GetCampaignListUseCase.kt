@@ -70,11 +70,6 @@ class GetCampaignListUseCase @Inject constructor(
               order_rule: ${"$$PARAM_ORDER_RULE"}
             }
           }) {
-            response_header {
-              status
-              success
-              processTime
-            }
             campaign {
               campaign_id
               campaign_name
@@ -89,17 +84,38 @@ class GetCampaignListUseCase @Inject constructor(
               submission_end_date
               review_start_date
               review_end_date
+              product_summary {
+                total_item
+                sold_item
+                reserved_product
+                submitted_product
+                deleted_product
+                visible_product_count
+              }
               max_product_submission
               etalase_prefix
               redirect_url
               redirect_url_app
+              campaign_banner {
+                banner_id
+                file_path
+                banner_type
+              }
               finished_widget_time
               finished_widget_time_in_mins
+              campaign_relation_data {
+                id
+                name
+              }
               is_unique_buyer
               is_campaign_relation
               is_campaign_rule_submit
               is_shareable
               bitmask_is_set
+              gradient_color {
+                first_color
+                second_color
+              }
               notify_me_count
               use_upcoming_widget
               payment_type
@@ -115,7 +131,6 @@ class GetCampaignListUseCase @Inject constructor(
         }
      """
 
-     // TODO: make sure request nya udh bener, dan hapus param / default value yg gak perlu
      fun createParams(
          shopId: String, // https://www.tokopedia.com/voc123, content.prod.automation3+frontendtest@tokopedia.com
          campaignType: Int = 1, // 0: FLASH_SALE_BY_SELLER, 1: RILISAN_SPESIAL
