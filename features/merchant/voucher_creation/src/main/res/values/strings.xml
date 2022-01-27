@@ -410,9 +410,8 @@
     <string name="percent">%</string>
     <string name="percentage">Persentase</string>
     <string name="manage_product">Atur Produk</string>
-    <string name="max_expense_estimation_1">Biaya promosi akan terhitung setelah pembeli menggunakan Kupon Produk dalam pembelian.</string>
-    <string name="max_expense_estimation_2">Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
-    <string name="max_expense_estimation_3">Tidak perlu bayar di muka.</string>
+    <string name="max_expense_estimation_1">Kuota Kupon akan berkurang saat transaksi selesai.</string>
+    <string name="max_expense_estimation_2">Masa aktif kupon 1 minggu sejak diklaim pembeli untuk 1 kali pemakaian. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
     <string name="coupon_scheduled">Yay, Kupon dijadwalkan!</string>
     <string name="share_to_buyer">Bagikan ke Calon Pembeli</string>
     <string name="broadcast_suggestion">Potensi tingkatkan orderan toko 2x lipat.</string>
@@ -430,6 +429,7 @@
     <string name="coupon_updated">Kupon sudah diperbarui.</string>
     <string name="coupon_duplicated">Kupon berhasil di duplikat</string>
     <string name="placeholder_share_coupon_product_wording">Tersedia kupon untuk produk tertentu dari toko %s hanya di \@Tokopedia. Mulai %s sampai %s! %s</string>
+    <string name="please_wait">Mohon tunggu</string>
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>

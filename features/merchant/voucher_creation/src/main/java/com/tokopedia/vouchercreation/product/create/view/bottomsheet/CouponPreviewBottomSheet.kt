@@ -12,10 +12,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.databinding.BottomsheetCouponPreviewBinding
-import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponPreviewViewModel
 import javax.inject.Inject
 
@@ -88,8 +91,11 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
     }
 
     private fun observeCouponImage() {
-        viewModel.couponImage.observe(viewLifecycleOwner, { image ->
-            //TODO render data to image
+        viewModel.couponImage.observe(viewLifecycleOwner, { result ->
+            if (result is Success) {
+
+            } else {
+            }
         })
     }
 

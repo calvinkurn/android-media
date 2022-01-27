@@ -59,7 +59,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     private var selectedCouponType = CouponType.NONE
     private var selectedDiscountType = DiscountType.NONE
-    private var selectedMinimumPurchaseType = MinimumPurchaseType.NONE
+    private var selectedMinimumPurchaseType = MinimumPurchaseType.NOMINAL
     private var onCouponSaved: (CouponSettings) -> Unit = {}
     private lateinit var numberFormatter: DecimalFormat
     private var couponSettings: CouponSettings? = null

@@ -9,7 +9,7 @@ import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.data.request.CreateCouponProductParams
-import com.tokopedia.vouchercreation.product.create.data.response.CreateCouponProductResponse
+import com.tokopedia.vouchercreation.product.create.data.response.CreateCouponResponse
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import javax.inject.Inject
 
@@ -98,18 +98,17 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
     }
 
     override suspend fun executeOnBackground(): Int {
-        val request =
-            GraphqlRequest(MUTATION, CreateCouponProductResponse::class.java, params.parameters)
+        val request = GraphqlRequest(MUTATION, CreateCouponResponse::class.java, params.parameters)
         val response = gqlRepository.response(listOf(request))
 
-        val error = response.getError(CreateCouponProductResponse::class.java)
+        val error = response.getError(CreateCouponResponse::class.java)
         if (error.isNullOrEmpty()) {
-            val data = response.getData<CreateCouponProductResponse>()
+            val data = response.getData<CreateCouponResponse>()
 
-            if (data.data.merchantPromotionCreateMV.data.status != STATUS_SUCCESS) {
-                throw MessageErrorException(data.data.merchantPromotionCreateMV.message)
+            if (data.merchantPromotionCreateMV.data.status != STATUS_SUCCESS) {
+                throw MessageErrorException(data.merchantPromotionCreateMV.message)
             } else {
-                return data.data.merchantPromotionCreateMV.data.voucherId
+                return data.merchantPromotionCreateMV.data.voucherId
             }
         } else {
             throw MessageErrorException(error.joinToString(", ") {
