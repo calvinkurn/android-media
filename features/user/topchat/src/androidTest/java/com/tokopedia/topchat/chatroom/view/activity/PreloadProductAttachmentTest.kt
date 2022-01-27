@@ -182,7 +182,22 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         assertSrwPreviewContentIsHidden()
     }
 
-    // TODO: should hide srw preview when attach product preview is error
+    @Test
+    fun should_hide_srw_preview_when_attach_product_preview_is_error() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwUseCase.defaultResponse
+        getChatPreAttachPayloadUseCase.setError()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertTemplateChatVisibility(not(isDisplayed()))
+        assertSrwPreviewContentIsHidden()
+    }
+
     // TODO: should show srw preview when user retry attach product preview is success
     // TODO: should hide close button on loading state
 
