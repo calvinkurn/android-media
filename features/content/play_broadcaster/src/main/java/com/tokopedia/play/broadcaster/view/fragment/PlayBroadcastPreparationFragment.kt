@@ -213,10 +213,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         parentViewModel.observableCover.observe(viewLifecycleOwner) {
             when (val croppedCover = it.croppedCover) {
                 is CoverSetupState.Cropped.Uploaded -> {
-                    binding.viewPreparationMenu.isSetCoverChecked(true)
-
                     if(croppedCover.coverImage.toString().isNotEmpty() &&
                         croppedCover.coverImage.toString().contains("http")) {
+                        binding.viewPreparationMenu.isSetCoverChecked(true)
                         binding.formCover.setCover(croppedCover.coverImage.toString())
                     }
                 }
