@@ -31,7 +31,7 @@ class LocalDataSourceImpl(
     companion object {
         const val PREFERENCE_KEY_STATUS = "STATUS"
         const val PREFERENCE_KEY_PRODUCT_ID = "PRODUCT_ID"
-        const val DELAY = 1000L
+        const val DELAY = 1500L
     }
 
     private object PreferencesKeys {

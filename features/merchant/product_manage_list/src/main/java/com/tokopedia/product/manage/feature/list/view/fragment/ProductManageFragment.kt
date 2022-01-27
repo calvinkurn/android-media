@@ -610,13 +610,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private fun observeDataSource() {
         observe(viewModel.getDataSource) {
             if (it.status == STATUS_DONE) {
-                activity?.runOnUiThread {
-                    viewModel.getPopupsInfo(it.productId)
-                    shouldScrollToTop = true
-                    getFiltersTab(withDelay = true)
-                    getProductList(withDelay = true, isRefresh = true)
-                    viewModel.clearDataSource()
-                }
+                viewModel.getPopupsInfo(it.productId)
+                shouldScrollToTop = true
+                getFiltersTab(withDelay = true)
+                getProductList(withDelay = true, isRefresh = true)
+                viewModel.clearDataSource()
             }
         }
     }

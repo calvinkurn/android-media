@@ -13,7 +13,10 @@ import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,10 +40,10 @@ class AddEditProductDraftViewModel @Inject constructor(
         get() = _deleteAllDraft
 
     init {
-        initGetDataSource()
+        initGetProductDraft()
     }
 
-    private fun initGetDataSource() = launch {
+    private fun initGetProductDraft() = launch {
         getAllProductDraftFlowUseCase.executeOnBackground()
             .flowOn(coroutineDispatcher.io)
             .distinctUntilChanged()
