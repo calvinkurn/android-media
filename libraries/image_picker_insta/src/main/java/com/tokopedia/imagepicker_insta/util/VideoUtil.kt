@@ -7,6 +7,7 @@ import android.net.Uri
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.VideoSize
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 object VideoUtil {
