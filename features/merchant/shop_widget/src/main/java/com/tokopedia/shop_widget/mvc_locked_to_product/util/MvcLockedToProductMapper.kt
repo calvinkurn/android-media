@@ -88,7 +88,7 @@ object MvcLockedToProductMapper {
         productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data
     ): MvcLockedToProductGridProductUiModel {
         return MvcLockedToProductGridProductUiModel(
-            productResponse.productID.toString(),
+            productResponse.productID,
             productResponse.childIDs,
             productResponse.city,
             productResponse.minimumOrder,
@@ -161,7 +161,8 @@ object MvcLockedToProductMapper {
             voucherResponse.baseCode,
             voucherResponse.expiredWording,
             voucherResponse.totalQuotaLeft,
-            voucherResponse.totalQuotaLeftWording
+            voucherResponse.totalQuotaLeftWording,
+            voucherResponse.minPurchaseWording
         )
     }
 

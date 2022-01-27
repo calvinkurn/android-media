@@ -28,7 +28,7 @@ open class MvcLockedToProductVoucherViewHolder(
         viewBinding?.mvcTextContainer?.setData(
             uiModel.title,
             uiModel.expiredWording,
-            uiModel.totalQuotaLeftWording,
+            uiModel.minPurchaseWording,
             uiModel.shopImage
         )
     }

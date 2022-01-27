@@ -43,7 +43,10 @@ data class MvcLockedToProductResponse(
             var totalQuotaLeft: Int = 0,
             @SerializedName("totalQuotaLeftWording")
             @Expose
-            var totalQuotaLeftWording: String = ""
+            var totalQuotaLeftWording: String = "",
+            @SerializedName("minPurchaseWording")
+            @Expose
+            var minPurchaseWording: String = ""
         )
 
         data class ProductList(
@@ -60,10 +63,10 @@ data class MvcLockedToProductResponse(
             data class Data(
                 @SerializedName("productID")
                 @Expose
-                var productID: Int = 0,
+                var productID: String = "",
                 @SerializedName("childIDs")
                 @Expose
-                var childIDs: List<Int> = listOf(),
+                var childIDs: List<String> = listOf(),
                 @SerializedName("name")
                 @Expose
                 var name: String = "",

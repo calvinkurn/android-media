@@ -9,7 +9,8 @@ class MvcLockedToProductVoucherUiModel(
     val baseCode: String = "",
     val expiredWording: String = "",
     val totalQuotaLeft: Int = 0,
-    val totalQuotaLeftWording: String = ""
+    val totalQuotaLeftWording: String = "",
+    val minPurchaseWording: String = ""
 ): Visitable<MvcLockedToProductTypeFactory> {
     override fun type(typeFactory: MvcLockedToProductTypeFactory): Int {
         return typeFactory.type(this)

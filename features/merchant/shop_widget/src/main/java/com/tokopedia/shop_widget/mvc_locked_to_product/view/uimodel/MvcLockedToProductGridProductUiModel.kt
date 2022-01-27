@@ -7,7 +7,7 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.MvcLockedToP
 
 class MvcLockedToProductGridProductUiModel(
     val productID: String = "",
-    val childIDs: List<Int> = listOf(),
+    val childIDs: List<String> = listOf(),
     val city: String = "",
     val minimumOrder: Int = 0,
     val stock: Int = 0,

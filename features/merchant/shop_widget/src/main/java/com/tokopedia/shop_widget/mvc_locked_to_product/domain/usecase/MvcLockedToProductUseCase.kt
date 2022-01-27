@@ -64,6 +64,7 @@ class MvcLockedToProductUseCase @Inject constructor(
                   expiredTimer
                   totalQuotaLeft
                   totalQuotaLeftWording
+                  minPurchaseWording
                 }
                 productList {
                   totalProduct
