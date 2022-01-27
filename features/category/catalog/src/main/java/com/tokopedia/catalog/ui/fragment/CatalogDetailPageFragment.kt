@@ -403,7 +403,7 @@ class CatalogDetailPageFragment : Fragment(),
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         val shareString = resources.getString(com.tokopedia.catalog.R.string.catalog_share_string,
-                                catalogName,linkerShareData?.url)
+                                catalogName,linkerShareData?.shareUri)
                         SharingUtil.executeShareIntent(
                                 shareModel,
                                 linkerShareData,
