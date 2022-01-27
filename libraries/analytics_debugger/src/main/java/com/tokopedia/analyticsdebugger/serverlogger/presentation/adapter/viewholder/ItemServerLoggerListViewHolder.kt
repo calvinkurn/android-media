@@ -7,12 +7,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.databinding.ItemServerLoggerListBinding
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerChannelAdapter
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerLoggerAdapter
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerLoggerListener
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerItemDecoration
 import com.tokopedia.kotlin.extensions.view.isZero
 
-class ItemServerLoggerListViewHolder(view: View) : AbstractViewHolder<ServerLoggerUiModel>(view) {
+class ItemServerLoggerListViewHolder(
+    view: View,
+    private val serverLoggerListener: ServerLoggerListener
+) : AbstractViewHolder<ItemServerLoggerUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -23,7 +26,7 @@ class ItemServerLoggerListViewHolder(view: View) : AbstractViewHolder<ServerLogg
 
     private var serverChannelAdapter: ServerChannelAdapter? = null
 
-    override fun bind(element: ServerLoggerUiModel?) {
+    override fun bind(element: ItemServerLoggerUiModel?) {
         if (element == null) return
 
         with(binding) {
@@ -32,11 +35,15 @@ class ItemServerLoggerListViewHolder(view: View) : AbstractViewHolder<ServerLogg
             tvMessageSL.text = element.previewMessage
             tvDateTimeSL.text = element.dateTime
 
-            setRecyclerView(element.serverChannel)
+            setupRecyclerView(element.serverChannel)
+
+            root.setOnClickListener {
+                serverLoggerListener.onItemClicked(element)
+            }
         }
     }
 
-    private fun ItemServerLoggerListBinding.setRecyclerView(data: List<String>) {
+    private fun ItemServerLoggerListBinding.setupRecyclerView(data: List<String>) {
         serverChannelAdapter = ServerChannelAdapter()
         rvSLChannel.run {
             if (itemDecorationCount.isZero()) {

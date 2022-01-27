@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.analyticsdebugger.debugger.helper.formatDataExcerpt
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemPriorityUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerConstants
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.repository.LoggerRepository
@@ -22,9 +22,9 @@ class ServerLoggerMapper @Inject constructor(
     fun mapToLoggerListUiModel(
         loggerLocal: List<Logger>,
         keyword: String
-    ): List<ServerLoggerUiModel> {
+    ): List<ItemServerLoggerUiModel> {
         val decrypt = loggerRepository?.decrypt
-        val loggerUiModelList = mutableListOf<ServerLoggerUiModel>()
+        val loggerUiModelList = mutableListOf<ItemServerLoggerUiModel>()
         loggerLocal.forEach {
             val message = decrypt?.invoke(it.message).orEmpty()
             val obj = JSONObject(message)
@@ -46,7 +46,7 @@ class ServerLoggerMapper @Inject constructor(
                 serverChannelList.add(ServerLoggerConstants.EMBRACE)
             }
 
-            val loggerUiModel = ServerLoggerUiModel(
+            val loggerUiModel = ItemServerLoggerUiModel(
                 serverChannel = serverChannelList,
                 tag = tag,
                 previewMessage = formatDataExcerpt(message),
@@ -56,7 +56,10 @@ class ServerLoggerMapper @Inject constructor(
             )
 
             if (keyword.isNotBlank()) {
-                if (keyword in message || keyword in tag || keyword in serverChannelList) {
+                if (message.contains(keyword, true) ||
+                    tag.contains(keyword, true) ||
+                    serverChannelList.contains(keyword)
+                ) {
                     loggerUiModelList.add(loggerUiModel)
                 }
             } else {
@@ -66,15 +69,21 @@ class ServerLoggerMapper @Inject constructor(
         return loggerUiModelList
     }
 
-    fun mapToPriorityList(priorityList: List<String>, chipsSelected: String): ServerLoggerPriorityUiModel {
+    fun mapToPriorityList(
+        chipsSelected: String
+    ): ServerLoggerPriorityUiModel {
         return ServerLoggerPriorityUiModel(
-            priorityList.map {
+            getPriorityList().map {
                 ItemPriorityUiModel(
                     priorityName = it,
                     isSelected = it == chipsSelected
                 )
             }
         )
+    }
+
+    private fun getPriorityList(): List<String> {
+        return listOf(LoggerReporting.P1, LoggerReporting.P2, LoggerReporting.SF)
     }
 
     private fun getDateFormat(timeStamp: Long): String {

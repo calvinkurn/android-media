@@ -3,7 +3,7 @@ package com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.diffut
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemServerLoggerUiModel
 
 class ServerLoggerDiffUtilCallback(
     private val oldList: List<Visitable<*>>,
@@ -32,7 +32,7 @@ class ServerLoggerDiffUtilCallback(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
     ): Boolean {
-        return oldItem is ServerLoggerUiModel && newItem is ServerLoggerUiModel &&
+        return oldItem is ItemServerLoggerUiModel && newItem is ItemServerLoggerUiModel &&
                 oldItem.tag == newItem.tag &&
                 oldItem.priority == newItem.priority &&
                 oldItem.previewMessage == newItem.previewMessage &&

@@ -86,10 +86,6 @@ class LoggerRepository(
         ) else logDao.getLoggerListFilter(serverChannel, limit, offset)
     }
 
-    override suspend fun getPriorityList(): List<String> {
-        return logDao.getPriorityList()
-    }
-
     override suspend fun deleteAll() {
         logDao.deleteAll()
     }

@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -25,11 +27,11 @@ import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerL
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerLoggerListener
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.BaseServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.viewmodel.ServerLoggerViewModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerConstants
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Success
@@ -71,7 +73,8 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSearchBarView()
-        observeDataState()
+        observeBaseServerLogger()
+        observeServerLoggerList()
         observeMessageEvent()
         observeDeleteServerLogger()
     }
@@ -82,7 +85,7 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_menu_delete_web_socket) {
+        if (item.itemId == R.id.action_menu_delete_server_logger) {
             viewModel.deleteAllServerLogger()
             return true
         }
@@ -111,7 +114,10 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
 
     override fun loadInitialData() {
         swipeToRefresh?.isRefreshing = false
-        serverLoggerAdapter.removeBaseServerLoggerList()
+        binding?.tvSlNotFound?.hide()
+        serverLoggerAdapter.removeServerLoggerList()
+        setLoading(true)
+        endlessRecyclerViewScrollListener.resetState()
         viewModel.loadInitialData(getSearchbarText(), getChipsSelectedName())
     }
 
@@ -132,14 +138,31 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
     }
 
     override fun onChipsClicked(position: Int, chipsName: String) {
-        serverLoggerAdapter.run {
-            updateChipsSelected(position)
-            removeServerLoggerList()
-        }
+        serverLoggerAdapter.updateChipsSelected(position)
+        serverLoggerAdapter.removeServerLoggerList()
+        endlessRecyclerViewScrollListener.resetState()
+        setLoading(true)
         viewModel.loadServerLogger(
             getSearchbarText(),
             getChipsSelectedName(),
             ServerLoggerConstants.FIRST_PAGE
+        )
+    }
+
+    override fun onItemClicked(item: ItemServerLoggerUiModel) {
+        val bundle = bundleOf(
+            ServerLoggerDetailFragment.EXTRA_TAG to item.tag,
+            ServerLoggerDetailFragment.EXTRA_PRIORITY to item.priority,
+            ServerLoggerDetailFragment.EXTRA_MESSAGE to item.message,
+            ServerLoggerDetailFragment.EXTRA_DATE_TIME to item.dateTime
+        )
+        bundle.putStringArray(
+            ServerLoggerDetailFragment.EXTRA_SERVER_CHANNEL,
+            item.serverChannel.toTypedArray()
+        )
+        findNavController().navigate(
+            R.id.action_serverLoggerFragment_to_serverLoggerDetailFragment,
+            bundle
         )
     }
 
@@ -152,6 +175,8 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
             setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     serverLoggerAdapter.removeServerLoggerList()
+                    endlessRecyclerViewScrollListener.resetState()
+                    setLoading(true)
                     viewModel.loadServerLogger(
                         getSearchbarText(),
                         getChipsSelectedName(),
@@ -179,11 +204,26 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
             ?.priorityName.orEmpty()
     }
 
-    private fun observeDataState() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.dataState.collectLatest {
-                setLoading(it.isLoading)
-                setServerLoggerList(it.data)
+    private fun observeBaseServerLogger() {
+        observe(viewModel.serverLoggerPagination) {
+            setLoading(false)
+            when (it) {
+                is Success -> {
+                    setBaseServerLoggerList(it.data)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun observeServerLoggerList() {
+        observe(viewModel.itemServerLoggerUiList) {
+            setLoading(false)
+            when (it) {
+                is Success -> {
+                    setServerLoggerList(it.data)
+                }
+                else -> {}
             }
         }
     }
@@ -218,18 +258,25 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
         ).show()
     }
 
-    private fun setServerLoggerList(items: List<BaseServerLoggerUiModel>) {
-        val hasNext = items.size == ServerLoggerConstants.LIMIT
-        val serverLoggerList =
-            serverLoggerAdapter.list.filterIsInstance(ServerLoggerUiModel::class.java)
-        if (serverLoggerList.isEmpty() && items.isEmpty()) {
-            serverLoggerAdapter.removeServerLoggerList()
+    private fun setBaseServerLoggerList(items: List<BaseServerLoggerUiModel>) {
+        val serverLoggerList = items.filterIsInstance<ItemServerLoggerUiModel>()
+        if (serverLoggerList.isEmpty()) {
             binding?.tvSlNotFound?.show()
-        } else if (serverLoggerList.size.isMoreThanZero() && items.isNotEmpty()) {
-            serverLoggerAdapter.addServerLoggerListData(items)
         } else {
             binding?.tvSlNotFound?.hide()
             serverLoggerAdapter.setServerLoggerData(items)
+        }
+    }
+
+    private fun setServerLoggerList(items: List<ItemServerLoggerUiModel>) {
+        val hasNext = ServerLoggerConstants.LIMIT == items.size
+        val serverLoggerList = serverLoggerAdapter.list.filterIsInstance<ItemServerLoggerUiModel>()
+        if (items.isEmpty() && serverLoggerList.isEmpty()
+        ) {
+            binding?.tvSlNotFound?.show()
+        } else {
+            binding?.tvSlNotFound?.hide()
+            serverLoggerAdapter.addServerLoggerListData(items)
         }
         updateScrollListenerState(hasNext)
     }

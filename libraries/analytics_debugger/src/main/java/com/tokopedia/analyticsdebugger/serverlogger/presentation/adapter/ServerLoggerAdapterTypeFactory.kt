@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.viewholder.ItemServerLoggerListViewHolder
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.viewholder.ItemServerLoggerPriorityViewHolder
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemServerLoggerUiModel
 
 class ServerLoggerAdapterTypeFactory(
     private val serverLoggerListener: ServerLoggerListener
@@ -17,13 +17,16 @@ class ServerLoggerAdapterTypeFactory(
         return ItemServerLoggerPriorityViewHolder.LAYOUT
     }
 
-    override fun type(loggerUiModel: ServerLoggerUiModel): Int {
+    override fun type(loggerUiModelItem: ItemServerLoggerUiModel): Int {
         return ItemServerLoggerListViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ItemServerLoggerListViewHolder.LAYOUT -> ItemServerLoggerListViewHolder(parent)
+            ItemServerLoggerListViewHolder.LAYOUT -> ItemServerLoggerListViewHolder(
+                parent,
+                serverLoggerListener
+            )
             ItemServerLoggerPriorityViewHolder.LAYOUT -> ItemServerLoggerPriorityViewHolder(
                 parent,
                 serverLoggerListener

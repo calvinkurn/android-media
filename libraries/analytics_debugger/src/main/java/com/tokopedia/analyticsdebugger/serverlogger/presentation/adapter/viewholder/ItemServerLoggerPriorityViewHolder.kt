@@ -11,7 +11,6 @@ import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerL
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerLoggerListener
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemPriorityUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerItemDecoration
 import com.tokopedia.kotlin.extensions.view.isZero
 

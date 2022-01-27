@@ -2,7 +2,7 @@ package com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel
 
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.adapter.ServerLoggerAdapterTypeFactory
 
-data class ServerLoggerUiModel(
+data class ItemServerLoggerUiModel(
     val serverChannel: List<String> = emptyList(),
     val tag: String = "",
     val previewMessage: String = "",
