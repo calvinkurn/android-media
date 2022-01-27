@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ComponentName
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,13 +11,11 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSession
@@ -75,20 +72,20 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     private fun fetchBannerData() {
-        if (getComponent(components.id, components.pageEndPoint)?.properties?.dynamic == true) {
+        if (components.properties?.dynamic == true) {
             launchCatchError(block = {
 
                 if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
                     bannerData.value = components
                 }
             }, onError = {
-                getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
+                components.verticalProductFailState = true
             })
         }
     }
 
     fun layoutSelector(): Int {
-        return when (getComponent(components.id, components.pageEndPoint)?.name) {
+        return when (components.name) {
             ComponentNames.SingleBanner.componentName -> R.layout.disco_shimmer_single_banner_layout
             ComponentNames.DoubleBanner.componentName -> R.layout.disco_shimmer_double_banner_layout
             ComponentNames.TripleBanner.componentName -> R.layout.disco_shimmer_triple_banner_layout

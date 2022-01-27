@@ -9,7 +9,6 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
@@ -77,9 +76,6 @@ class BannerCarouselViewModel(application: Application, val component: Component
                 } else {
                     _hideShimmer.value = true
                 }
-                //verticalProductFailState used for?
-                getComponent(component.id, component.pageEndPoint)?.verticalProductFailState = true
-                this@BannerCarouselViewModel.syncData.value = true
             })
         }
     }
