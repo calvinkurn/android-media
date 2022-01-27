@@ -20,6 +20,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
         service_order
         status
         is_promo
+        ui_rates_hidden
         range_price {
           min_price
           max_price

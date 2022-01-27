@@ -52,6 +52,9 @@ public class ServiceData implements Parcelable {
     @SerializedName("mvc")
     @Expose
     private MerchantVoucherData merchantVoucherData;
+    @SerializedName("ui_rates_hidden")
+    @Expose
+    private boolean uiRatesHidden;
 
     public ServiceData() {
     }
@@ -65,6 +68,7 @@ public class ServiceData implements Parcelable {
         texts = in.readParcelable(ServiceTextData.class.getClassLoader());
         error = in.readParcelable(ErrorServiceData.class.getClassLoader());
         products = in.createTypedArrayList(ProductData.CREATOR);
+        uiRatesHidden = in.readByte() != 0;
     }
 
     @Override
@@ -76,6 +80,7 @@ public class ServiceData implements Parcelable {
         dest.writeParcelable(rangePrice, flags);
         dest.writeParcelable(texts, flags);
         dest.writeParcelable(error, flags);
+        dest.writeByte((byte) (uiRatesHidden ? 1 : 0));
         dest.writeTypedList(products);
     }
 
@@ -190,5 +195,13 @@ public class ServiceData implements Parcelable {
 
     public void setFeatures(FeaturesData features) {
         this.features = features;
+    }
+
+    public boolean isUiRatesHidden() {
+        return uiRatesHidden;
+    }
+
+    public void setUiRatesHidden(boolean uiRatesHidden) {
+        this.uiRatesHidden = uiRatesHidden;
     }
 }
