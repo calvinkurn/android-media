@@ -54,7 +54,6 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     override fun bind(element: BestSellerDataModel) {
         if(element.recommendationItemList.isNotEmpty()) {
             bestSellerDataModel = element
-
             initHeader(element)
             initFilterChip(element)
             initRecommendation(element)
