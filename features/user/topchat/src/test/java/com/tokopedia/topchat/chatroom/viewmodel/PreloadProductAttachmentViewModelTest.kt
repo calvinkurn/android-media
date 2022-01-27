@@ -47,4 +47,17 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.attachments.size, 1)
     }
+
+    @Test
+    fun should_not_ready_when_attachment_preview_is_loading() {
+        // Given
+        coEvery { chatPreAttachPayload(any()) } returns defaultPreAttachResponse
+        coEvery { chatAttachmentMapper.map(any<PreAttachPayloadResponse>()) } returns realChatMapper.map(defaultPreAttachResponse)
+
+        // When
+        viewModel.loadProductPreview(listOf("1"))
+
+        // Then
+        assertEquals(viewModel.isAttachmentPreviewReady(), false)
+    }
 }
