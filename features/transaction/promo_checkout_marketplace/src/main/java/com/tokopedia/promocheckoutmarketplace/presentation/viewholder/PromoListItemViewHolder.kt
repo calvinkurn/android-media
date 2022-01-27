@@ -1,8 +1,8 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewholder
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -13,12 +13,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
 import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketplaceModuleItemPromoCardBinding
+import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketplaceModuleSubLayoutPromoInfoBinding
 import com.tokopedia.promocheckoutmarketplace.presentation.IconHelper
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifyprinciples.Typography
 
 
 class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
@@ -307,18 +307,15 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 containerPromoInfoList.removeAllViews()
                 val promoInfoList = element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO }
                 promoInfoList.forEach {
-                    val promoInfoView = View.inflate(itemView.context, R.layout.promo_checkout_marketplace_module_sub_layout_promo_info, null)
-                            as ConstraintLayout
-                    val iconPromoInfo = promoInfoView.findViewById<IconUnify>(R.id.icon_promo_info)
-                    renderIcon(iconPromoInfo, IconHelper.getIcon(it.icon), getState(element))
-                    val textPromoInfo = promoInfoView.findViewById<Typography>(R.id.text_promo_info)
-                    textPromoInfo.text = HtmlLinkHelper(itemView.context, it.title).spannedString
+                    val promoInfoView = PromoCheckoutMarketplaceModuleSubLayoutPromoInfoBinding.inflate(LayoutInflater.from(itemView.context))
+                    renderIcon(promoInfoView.iconPromoInfo, IconHelper.getIcon(it.icon), getState(element))
+                    promoInfoView.textPromoInfo.text = HtmlLinkHelper(itemView.context, it.title).spannedString
                     if (!element.uiState.isParentEnabled || element.uiState.isDisabled || element.uiData.errorMessage.isNotBlank()) {
-                        textPromoInfo.setTextColor(colorTextDisabled)
+                        promoInfoView.textPromoInfo.setTextColor(colorTextDisabled)
                     } else {
-                        textPromoInfo.setTextColor(colorTextEnabledLowEmphasis)
+                        promoInfoView.textPromoInfo.setTextColor(colorTextEnabledLowEmphasis)
                     }
-                    containerPromoInfoList.addView(promoInfoView)
+                    containerPromoInfoList.addView(promoInfoView.root)
                 }
                 if (containerPromoInfoList.childCount > 0) {
                     containerPromoInfoList.show()
