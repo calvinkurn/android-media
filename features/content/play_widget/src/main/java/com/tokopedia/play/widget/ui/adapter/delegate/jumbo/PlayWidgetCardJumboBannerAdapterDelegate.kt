@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboBannerViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.large.PlayWidgetCardLargeBannerViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 
@@ -14,7 +13,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 class PlayWidgetCardJumboBannerAdapterDelegate(
     private val jumboCardBannerListener: PlayWidgetCardJumboBannerViewHolder.Listener
 ) : TypedAdapterDelegate<PlayWidgetBannerUiModel, PlayWidgetItemUiModel, PlayWidgetCardJumboBannerViewHolder>(
-    PlayWidgetCardLargeBannerViewHolder.layoutRes
+    PlayWidgetCardJumboBannerViewHolder.layoutRes
 ) {
 
     override fun onBindViewHolder(

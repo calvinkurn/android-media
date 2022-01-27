@@ -9,7 +9,6 @@ import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 07/10/20
@@ -56,6 +55,16 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
                 widgetType = PlayWidgetType.Medium,
                 isLoading = false
             ),
+            PlayWidgetState(
+                model = PlayWidgetUiMock.getSamplePlayWidget(),
+                widgetType = PlayWidgetType.Large,
+                isLoading = false
+            ),
+            PlayWidgetState(
+                model = PlayWidgetUiMock.getSamplePlayWidget(),
+                widgetType = PlayWidgetType.Jumbo,
+                isLoading = false
+            )
         )
     }
 }

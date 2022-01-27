@@ -17,10 +17,6 @@ class PlayWidgetCardLargeChannelViewHolder(
     private val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
 
-    init {
-        //if re-use from medium, need to change layout params here
-    }
-
     private val playWidgetCardChannelLargeView: PlayWidgetCardChannelLargeView = itemView as PlayWidgetCardChannelLargeView
     private val widgetCardLargeListener = object : PlayWidgetCardChannelLargeView.Listener {
 
@@ -34,6 +30,7 @@ class PlayWidgetCardLargeChannelViewHolder(
     }
 
     init {
+        //if re-use from medium, need to change layout params here
         playWidgetCardChannelLargeView.setListener(widgetCardLargeListener)
     }
 
