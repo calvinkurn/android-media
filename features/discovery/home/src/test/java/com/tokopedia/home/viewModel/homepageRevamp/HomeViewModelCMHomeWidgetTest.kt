@@ -126,11 +126,11 @@ class HomeViewModelCMHomeWidgetTest {
 
     @Test
     fun `CMHomeWidget must be deleted when deleteCMHomeWidgetData Api result is successful`() {
-        val mockChannel = DynamicHomeChannel.Channels()
+        val cmHomeWidgetDataModel = mockk<CMHomeWidgetDataModel>(relaxed = true)
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
-                    CMHomeWidgetDataModel( null, mockChannel)
+                    cmHomeWidgetDataModel
                 ))
         )
 
@@ -145,12 +145,6 @@ class HomeViewModelCMHomeWidgetTest {
             deleteCMHomeWidgetUseCase = deleteCMHomeWidgetUseCase
         )
 
-        //Widget must be showing with data
-        assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)
-        homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
-            assert((it as CMHomeWidgetDataModel).cmHomeWidgetData != null)
-        }
-
         homeViewModel.deleteCMHomeWidget()
 
         // deleteCMHomeWidgetData API called -> Success -> Widget must be deleted
@@ -159,11 +153,11 @@ class HomeViewModelCMHomeWidgetTest {
 
     @Test
     fun `CMHomeWidget must not be deleted when deleteCMHomeWidgetData Api result is failed`() {
-        val mockChannel = DynamicHomeChannel.Channels()
+        val cmHomeWidgetDataModel = mockk<CMHomeWidgetDataModel>(relaxed = true)
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
-                    CMHomeWidgetDataModel( null, mockChannel)
+                    cmHomeWidgetDataModel
                 ))
         )
 
@@ -177,14 +171,7 @@ class HomeViewModelCMHomeWidgetTest {
             deleteCMHomeWidgetUseCase = deleteCMHomeWidgetUseCase
         )
 
-        //Widget must be showing with data
-        assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)
-        homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
-            assert((it as CMHomeWidgetDataModel).cmHomeWidgetData != null)
-        }
-
         homeViewModel.deleteCMHomeWidget()
-
         // deleteCMHomeWidgetData API called -> Success -> Widget must be deleted
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)
     }
