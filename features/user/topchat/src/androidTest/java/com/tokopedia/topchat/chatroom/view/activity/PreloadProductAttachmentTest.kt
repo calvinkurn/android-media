@@ -148,7 +148,22 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         ProductPreviewResult.isErrorAt(0)
     }
 
-    // TODO: should show srw preview when attach product preview is success
+    @Test
+    fun should_show_srw_preview_when_attach_product_preview_is_success() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwUseCase.defaultResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+                .generatePreAttachPayload(exProductId)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+    }
+
     // TODO: should hide srw preview when attach product preview is loading
     // TODO: should hide srw preview when attach product preview is error
     // TODO: should show srw preview when user retry attach product preview is success
