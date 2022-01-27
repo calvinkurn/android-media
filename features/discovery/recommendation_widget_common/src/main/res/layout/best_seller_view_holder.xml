@@ -38,9 +38,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dynamic_channel_header" />
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/best_seller_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:paddingBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,13 +57,15 @@
             android:descendantFocusability="blocksDescendants"
             android:scrollbars="none"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp"
             android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/recommendation_carousel_item_view_holder"
             tools:visibility="visible" />
 
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/best_seller_loading_recommendation"

@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.customview.HeaderListener
@@ -121,6 +122,25 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
             binding?.bestSellerRecommendationRecyclerView?.show()
             binding?.bestSellerRecommendationRecyclerView?.layoutParams?.height = element.height
             binding?.bestSellerRecommendationRecyclerView?.layoutManager?.scrollToPosition(0)
+        }
+        if(element.filterChip.isEmpty()) {
+            val layoutParams = binding?.bestSellerContainer?.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.setMargins(0, 0, 0, 0)
+            binding?.bestSellerContainer?.layoutParams = layoutParams
+            binding?.bestSellerContainer?.translationY = itemView.context.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
+            binding?.bestSellerContainer?.setPadding(0, 0, 0, 5f.toDpInt())
+        }
+        else {
+            val layoutParams = binding?.bestSellerContainer?.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.setMargins(
+                0,
+                8f.toDpInt(),
+                0,
+                0
+            )
+            binding?.bestSellerContainer?.layoutParams = layoutParams
+            binding?.bestSellerContainer?.translationY = 0f
+            binding?.bestSellerContainer?.setPadding(0, 0, 0, 11f.toDpInt())
         }
     }
 
