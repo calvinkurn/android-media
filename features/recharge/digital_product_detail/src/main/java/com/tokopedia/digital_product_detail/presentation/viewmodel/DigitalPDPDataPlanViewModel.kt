@@ -36,10 +36,25 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         _filterData.add(valueItem)
     }
 
+    fun updateFilter(paramName: String, listKey: ArrayList<String>){
+        removeFilter(paramName)
+        addFilter(paramName, listKey)
+    }
+
+    fun removeFilter(paramName: String) {
+        val iterator = _filterData.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+            if (item.containsValue(paramName)) {
+                iterator.remove()
+            }
+        }
+    }
+
     fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
         _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
         launchCatchError(block = {
-            val denomGrid = repo.getProductInputMultiTabDenom(menuId, operator, clientNumber, _filterData)
+            val denomGrid = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber, _filterData)
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomGrid))
         }){
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
@@ -53,16 +68,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             _menuDetailData.postValue(RechargeNetworkResult.Success(menuDetail))
         }) {
             _menuDetailData.postValue(RechargeNetworkResult.Fail(it))
-        }
-    }
-
-    private fun removeFilter(paramName: String) {
-        val iterator = _filterData.iterator()
-        while (iterator.hasNext()) {
-            val item = iterator.next()
-            if (item.containsValue(paramName)) {
-                iterator.remove()
-            }
         }
     }
 
