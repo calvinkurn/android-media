@@ -203,8 +203,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
             showErrorToaster(it)
         })
 
-        rechargeCCViewModel.maxLength.observe(viewLifecycleOwner){
-            cc_widget_client_number.setMaxLength(it)
+        rechargeCCViewModel.rule.observe(viewLifecycleOwner){
+            cc_widget_client_number.setRules(it)
         }
     }
 
