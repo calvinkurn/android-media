@@ -750,9 +750,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         return lifecycle
     }
 
-    override fun getProductId(): String? {
-        return productId
-    }
+
 
     override fun getParentViewModelStoreOwner(): ViewModelStore {
         return  viewModelStore
@@ -1630,6 +1628,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val boeData = viewModel.getBebasOngkirDataByProductId()
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
+        productId?.let { productId ->
+            pdpUiUpdater?.updateFintechData(productId,null,null)
+        }
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
@@ -2044,7 +2045,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
 
-            pdpUiUpdater?.updateFintechData(viewModel.variantData,productInfo)
+            productId?.let {
+                pdpUiUpdater?.updateFintechData(it,viewModel.variantData,productInfo)
+            }
             renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
             val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
                 String.format(getString(R.string.pdp_search_hint_tokonow), productInfo.basic.category.name)
@@ -3334,8 +3337,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             productId = productInfo.basic.productID
 
-            //  Update productID in the listner so viewmodel can use
-            getProductId()
         }
     }
 

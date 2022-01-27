@@ -274,35 +274,48 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateFintechData(variantData: ProductVariant?, productInfo: DynamicProductInfoP1) {
-         var productIdToPriceMap = HashMap<String, String>()
-        var productIdToProductUrl = HashMap<String, String>()
-         var productCategoryId: String = productInfo.basic.category.id
-        if (variantData == null) {
-            productIdToPriceMap[productInfo.basic.productID] = productInfo.data.price.value.toString()
-            productIdToProductUrl[productInfo.basic.productID] = productInfo.basic.url
+    fun updateFintechData(selectedProductId: String,variantData: ProductVariant?, productInfo: DynamicProductInfoP1?) {
+        if(productInfo !=null) {
+            var productIdToPriceMap = HashMap<String, String>()
+            var productIdToProductUrl = HashMap<String, String>()
+            var productCategoryId: String = productInfo.basic.category.id
+            if (variantData == null) {
+                productIdToPriceMap[productInfo.basic.productID] =
+                    productInfo.data.price.value.toString()
+                productIdToProductUrl[productInfo.basic.productID] = productInfo.basic.url
 
 
-        } else {
-            for(i in variantData.children.indices) {
-                productIdToPriceMap[variantData.children[i].productId] = variantData.children[i].price.toString()
-                variantData.children[i].url?.let {
-                    productIdToProductUrl[variantData.children[i].productId] = it
+            } else {
+                for (i in variantData.children.indices) {
+                    productIdToPriceMap[variantData.children[i].productId] =
+                        variantData.children[i].price.toString()
+                    variantData.children[i].url?.let {
+                        productIdToProductUrl[variantData.children[i].productId] = it
+                    }
+
                 }
+            }
 
+            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
+            {
+                fintechWidgetMap?.run {
+                    productId = selectedProductId
+                    categoryId = productCategoryId
+                    idToPriceMap = productIdToPriceMap
+                    idToProductUrlMap = productIdToProductUrl
+
+
+                }
             }
         }
-
-        updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
-        {
-            fintechWidgetMap?.run {
-                categoryId = productCategoryId
-               idToPriceMap = productIdToPriceMap
-                idToProductUrlMap =productIdToProductUrl
-
-
+        else
+            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
+            {
+                fintechWidgetMap?.run {
+                    productId = selectedProductId
+                }
             }
-        }
+
     }
 
     fun updateVariantError() {

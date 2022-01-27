@@ -7,6 +7,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class FintechWidgetDataModel(
     val name: String = "",
     val type: String = "",
+    var productId: String = "",
     var categoryId: String? = null,
     var idToPriceMap: HashMap<String, String> = HashMap(),
     var idToProductUrlMap: HashMap<String, String> = HashMap()
@@ -20,7 +21,7 @@ data class FintechWidgetDataModel(
     override fun name() = name
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return false
+        return newData is FintechWidgetDataModel &&  newData.productId == this.productId
     }
 
     override fun newInstance() = this.copy()
