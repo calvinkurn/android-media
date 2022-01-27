@@ -1,46 +1,61 @@
 package com.tokopedia.tokopedianow.home.presentation.view.listener
 
-import android.content.Context
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
+import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
+import com.tokopedia.user.session.UserSessionInterface
 
 class BannerComponentCallback(
-    private val context: Context,
+    private val view: TokoNowView,
     private val viewModel: TokoNowHomeViewModel,
-    private val analytics: HomeAnalytics,
-    private val userId: String
+    private val userSession: UserSessionInterface,
+    private val analytics: HomeAnalytics
 ): BannerComponentListener {
 
-    private val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(context)
+    private val context by lazy { view.getFragmentPage().context }
 
     override fun onBannerClickListener(
         position: Int,
         channelGrid: ChannelGrid,
         channelModel: ChannelModel
     ) {
-        analytics.onClickBannerPromo(position, userId, channelModel, channelGrid)
+        context?.let {
+            switchService(
+                context = it,
+                param = channelGrid.param,
+                onRefreshPage = { localCacheModel ->
+                    onRefreshPage(localCacheModel)
+                },
+                onRedirectPage = {
+                    onRedirectPage(channelGrid)
+                }
+            )
 
-        switchService(
-            context = context,
-            param = channelGrid.param,
-            onRefreshPage = {
-                viewModel.switchService(it)
-            },
-            onRedirectPage = {
-                RouteManager.route(it, channelGrid.applink)
-            }
-        )
+            analytics.onClickBannerPromo(position, userSession.userId, channelModel, channelGrid)
+        }
     }
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        analytics.onImpressBannerPromo(userId, channelModel, localCacheModel.warehouse_id.toLongOrZero().toString())
+        context?.let {
+            val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+            val warehouseId = localCacheModel.warehouse_id.toLongOrZero().toString()
+
+            analytics.onImpressBannerPromo(
+                userSession.userId,
+                channelModel,
+                warehouseId
+            )
+        }
     }
 
     override fun isMainViewVisible(): Boolean = true
@@ -56,4 +71,21 @@ class BannerComponentCallback(
     override fun onPageDragStateChanged(isDrag: Boolean) { /* nothing to do */ }
 
     override fun onPromoAllClick(channelModel: ChannelModel) { /* nothing to do */ }
+
+    private fun onRefreshPage(localCacheModel: LocalCacheModel) {
+        if (userSession.isLoggedIn) {
+            viewModel.switchService(localCacheModel)
+        } else {
+            openLoginPage()
+        }
+    }
+
+    private fun onRedirectPage(channelGrid: ChannelGrid) {
+        RouteManager.route(context, channelGrid.applink)
+    }
+
+    private fun openLoginPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        view.getFragmentPage().startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
 }

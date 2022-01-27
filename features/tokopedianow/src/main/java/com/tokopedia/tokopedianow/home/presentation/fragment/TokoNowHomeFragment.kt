@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -65,6 +66,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
+import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
@@ -154,8 +156,8 @@ class TokoNowHomeFragment: Fragment(),
 
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
-        private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
-        private const val FIRST_INSTALL_CACHE_VALUE: Long = 30 * 60000
+        private const val DEFAULT_INTERVAL_HINT: Long = 10000L
+        private const val FIRST_INSTALL_CACHE_VALUE: Long = 1800000L
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val ITEM_VIEW_CACHE_SIZE = 20
         const val CATEGORY_LEVEL_DEPTH = 1
@@ -314,9 +316,15 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode != Activity.RESULT_OK) return
+
         when (requestCode) {
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
                 stickyLoginLoadContent()
+                refreshLayoutPage()
+            }
+            REQUEST_CODE_LOGIN -> {
+                refreshLayoutPage()
             }
         }
     }
@@ -1455,11 +1463,11 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun createSlideBannerCallback(): BannerComponentCallback {
-        return BannerComponentCallback(requireContext(), viewModelTokoNow, analytics, userSession.userId)
+        return BannerComponentCallback(this, viewModelTokoNow, userSession, analytics)
     }
 
     private fun createLegoBannerCallback(): DynamicLegoBannerCallback {
-        return DynamicLegoBannerCallback(requireContext(), viewModelTokoNow)
+        return DynamicLegoBannerCallback(this, viewModelTokoNow, userSession)
     }
 
     private fun createHomeSwitcherListener(): HomeSwitcherListener {

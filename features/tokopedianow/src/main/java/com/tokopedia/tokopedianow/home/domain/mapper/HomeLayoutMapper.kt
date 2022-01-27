@@ -105,7 +105,8 @@ object HomeLayoutMapper {
         hasTickerBeenRemoved: Boolean,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
-        localCacheModel: LocalCacheModel
+        localCacheModel: LocalCacheModel,
+        isLoggedIn: Boolean
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
@@ -117,20 +118,24 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
+                val state = HomeLayoutItemState.NOT_LOADED
                 val serviceType = localCacheModel.service_type
-                mapToHomeUiModel(layoutResponse, miniCartData = miniCartData, serviceType = serviceType)?.let { item ->
+
+                mapToHomeUiModel(layoutResponse, state, miniCartData, serviceType)?.let { item ->
                     add(item)
                 }
-                addSwitcherUiModel(layoutResponse, localCacheModel)
+
+                addSwitcherUiModel(layoutResponse, localCacheModel, isLoggedIn)
             }
         }
     }
 
     private fun MutableList<HomeLayoutItemUiModel>.addSwitcherUiModel(
         response: HomeLayoutResponse,
-        localCacheModel: LocalCacheModel
+        localCacheModel: LocalCacheModel,
+        isLoggedIn: Boolean
     ) {
-        if (response.layout == EDUCATIONAL_INFORMATION) {
+        if (response.layout == EDUCATIONAL_INFORMATION && isLoggedIn) {
             val switcherUiModel = createSwitcherUiModel(localCacheModel)
             switcherUiModel?.let { uiModel -> add(uiModel) }
         }
@@ -435,7 +440,7 @@ object HomeLayoutMapper {
         response: HomeLayoutResponse,
         state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
         miniCartData: MiniCartSimplifiedData? = null,
-        serviceType: String,
+        serviceType: String
     ): HomeLayoutItemUiModel? {
         return when (response.layout) {
             CATEGORY -> mapToCategoryLayout(response, state)
