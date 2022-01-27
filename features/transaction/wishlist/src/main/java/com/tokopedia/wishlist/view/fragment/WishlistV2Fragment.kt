@@ -931,7 +931,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                                         shareString
                                 )
                                 shareModel.channel?.let { ch ->
-                                    println("++ channel = $ch")
                                     WishlistV2Analytics.clickSharingChannel(wishlistId = wishlistItem.wishlistId,
                                             productId = wishlistItem.id, userId = userSession.userId, channel = ch)
                                 }
