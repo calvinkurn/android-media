@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.pdpsimulation.common.presentation.viewholder.*
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
@@ -17,6 +18,8 @@ class PayLaterAdapterFactoryImpl(
     override fun type(seeMoreOptionsUiModel: SeeMoreOptionsUiModel) = PayLaterSeeMoreViewHolder.LAYOUT
 
     override fun type(sectionTitleUiModel: SectionTitleUiModel) = PayLaterSectionHeaderViewHolder.LAYOUT
+
+    override fun type(viewModel: LoadingModel) = PayLaterShimmerViewHolder.LAYOUT
 
     override fun type(supervisorUiModel: SupervisorUiModel) = PayLaterSupervisorViewHolder.LAYOUT
     override fun type(content: Content): Int {
@@ -34,6 +37,7 @@ class PayLaterAdapterFactoryImpl(
             PayLaterSupervisorViewHolder.LAYOUT -> PayLaterSupervisorViewHolder(parent)
             PayLaterInstallmentInfoViewHolder.LAYOUT  -> PayLaterInstallmentInfoViewHolder(parent)
             InstallmentDividerViewHolder.LAYOUT  -> InstallmentDividerViewHolder(parent)
+            PayLaterShimmerViewHolder.LAYOUT -> PayLaterShimmerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

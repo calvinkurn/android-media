@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.paylater_section_header_item.view.*
 class PayLaterSectionHeaderViewHolder(itemView: View) :
     AbstractViewHolder<SectionTitleUiModel>(itemView) {
 
-
     companion object {
         val LAYOUT = R.layout.paylater_section_header_item
     }

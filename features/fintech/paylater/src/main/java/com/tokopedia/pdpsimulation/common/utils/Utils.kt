@@ -8,6 +8,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
+import java.lang.Exception
 
 object Utils {
 
@@ -20,10 +21,18 @@ object Utils {
         when(detail.cta.cta_type) {
             1 -> {
                 if (!detail.cta.android_url.isNullOrEmpty())
-                    RouteManager.route(
-                        context,
-                        detail.cta.android_url
-                    )
+                    try {
+                        RouteManager.route(
+                            context,
+                            detail.cta.android_url
+                        )
+                    } catch (e: Exception) {
+                        RouteManager.route(
+                            context,
+                            ApplinkConstInternalGlobal.WEBVIEW,
+                            detail.cta.web_url
+                        )
+                    }
             }
             2 -> {
                 if (!detail.cta.web_url.isNullOrEmpty() && detail.cta.bottomSheet != null && detail.cta.bottomSheet.isShow == true) {

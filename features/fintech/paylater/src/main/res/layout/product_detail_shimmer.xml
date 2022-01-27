@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/unify_space_12">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/ivProductCard"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/productName"
+        android:layout_width="@dimen/unify_space_128"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@+id/productVariant"
+        app:layout_constraintLeft_toRightOf="@+id/ivProductCard"
+        app:layout_constraintTop_toTopOf="@+id/ivProductCard"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:loader_type="rect"/>
+
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/productVariant"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/ivProductCard"
+        app:layout_constraintLeft_toRightOf="@+id/ivProductCard"
+        app:layout_constraintTop_toBottomOf="@+id/productName"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/productPrice"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginLeft="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toTopOf="@id/ivProductCard"
+        app:layout_constraintBottom_toBottomOf="@+id/ivProductCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:loader_type="rect"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

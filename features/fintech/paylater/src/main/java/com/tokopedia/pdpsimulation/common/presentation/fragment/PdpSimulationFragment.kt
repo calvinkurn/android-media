@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
@@ -30,6 +31,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
+import kotlinx.android.synthetic.main.paylater_action_step_bottomsheet_item.*
 import kotlinx.android.synthetic.main.product_detail.view.*
 import java.util.*
 import javax.inject.Inject
@@ -84,20 +86,20 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun handleAction(detail: Detail) {
         Toast.makeText(context, "Cta clicked", Toast.LENGTH_LONG).show()
 
-        /*Utils.handleClickNavigation(context, detail,
+        Utils.handleClickNavigation(context, detail,
             openHowToUse = {
                 bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it)
             },
             openGoPay = {
                 bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it)
             }
-        )*/
+        )
     }
 
     private fun openInstallmentBottomSheet(installment: InstallmentDetails) {
         Toast.makeText(context, "Open Installemt", Toast.LENGTH_LONG).show()
         val bundle = Bundle().apply { putParcelable(PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL, installment) }
-        //bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
+        bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
     }
 
     override fun onCreateView(
@@ -122,7 +124,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private fun initArguments() {
         payLaterViewModel.defaultTenure = defaultTenure
-        //tenureAdapter.lastSelectedPosition = defaultTenure
     }
 
     private fun initViews() {
@@ -132,6 +133,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         rvPayLaterOption.adapter = simulationAdapter
         rvPayLaterOption.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        simulationAdapter.showLoadingInAdapter()
     }
 
     private fun observeViewModel() {
@@ -145,13 +147,21 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> setSimulationView(it.data)
-                is Fail -> Toast.makeText(context, "failed", Toast.LENGTH_LONG).show()
+                is Fail -> simulationFailed(it.throwable)
             }
         })
     }
 
+    private fun simulationFailed(it: Throwable) {
+    }
+
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
         // hide loading
+        productDetail.visible() // test this
+        productInfoShimmer.gone()
+        rvPayLaterSimulation.visible()
+        rvPayLaterOption.visible()
+        payLaterBorder.visible()
         val defaultSimulationPosition = payLaterViewModel.tenureMap.get(defaultTenure) ?: 0
 
         tenureAdapter.setData(data)
@@ -164,7 +174,9 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private fun productDetailFail() {
         productInfoShimmer.gone()
-        productDetail.gone()
+        rvPayLaterSimulation.gone()
+        rvPayLaterOption.gone()
+        payLaterBorder.gone()
     }
 
     /**
@@ -172,7 +184,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
      */
     private fun productDetailSuccess(data: GetProductV3) {
         payLaterViewModel.getPayLaterAvailableDetail(data.price ?: 0.0, productId)
-        productInfoShimmer.gone()
         if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(0.0) == true)
             productDetail.gone()
         else
