@@ -88,6 +88,12 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
     @Test
     fun `when showing empty state ooc layout should run and give the success result`() {
+        val serviceType = "2h"
+        val localCacheModel = LocalCacheModel(
+            service_type = serviceType
+        )
+
+        viewModel.setLocalCacheModel(localCacheModel)
         viewModel.showEmptyState(EMPTY_STATE_OOC)
 
         val layout = RepurchaseLayoutUiModel(

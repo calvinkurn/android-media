@@ -211,7 +211,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 hasTickerBeenRemoved,
                 removeAbleWidgets,
                 miniCartSimplifiedData,
-                localCacheModel
+                localCacheModel,
+                userSession.isLoggedIn
             )
 
             getLayoutComponentData(warehouseId)

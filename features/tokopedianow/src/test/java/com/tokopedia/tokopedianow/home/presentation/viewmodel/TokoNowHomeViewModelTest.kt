@@ -2617,6 +2617,51 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `given current serviceType OOC when switchService success should switch service to 2h`() {
+        val currentServiceType = "ooc"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchService(localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
     fun `given current serviceType 2h when switchService success should switch service to 15m`() {
         val currentServiceType = "2h"
 
@@ -2693,6 +2738,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             ),
             service_type = serviceType
         )
+
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         onGetHomeLayoutData_thenReturn(listOf(
             HomeLayoutResponse(
@@ -2791,6 +2838,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             service_type = serviceType
         )
 
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+
         onGetHomeLayoutData_thenReturn(listOf(
             HomeLayoutResponse(
                 id = "2",
@@ -2884,6 +2933,58 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             warehouses = emptyList(),
             service_type = serviceType
         )
+
+        onGetHomeLayoutData_thenReturn(listOf(
+            HomeLayoutResponse(
+                id = "2",
+                layout = "tokonow_usp",
+                header = Header(
+                    name = "Tokonow USP",
+                    serverTimeUnix = 0
+                ),
+                token = ""
+            )
+        ), localCacheModel)
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = emptyList()
+        )
+
+        val layoutList = listOf(
+            TokoNowChooseAddressWidgetUiModel("0"),
+            HomeEducationalInformationWidgetUiModel(
+                "2",
+                HomeLayoutItemState.LOADED,
+                ServiceType.NOW_2H
+            )
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.SHOW
+        ))
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given user NOT logged in when getHomeLayout should NOT add switcher widget to layout list`() {
+        val serviceType = "2h"
+        val userLoggedIn = false
+
+        val localCacheModel = LocalCacheModel(
+            warehouses = listOf(
+                LocalWarehouseModel(warehouse_id = 12530, service_type = "15m"),
+                LocalWarehouseModel(warehouse_id = 15021, service_type = "2h")
+            ),
+            service_type = serviceType
+        )
+
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn)
 
         onGetHomeLayoutData_thenReturn(listOf(
             HomeLayoutResponse(
