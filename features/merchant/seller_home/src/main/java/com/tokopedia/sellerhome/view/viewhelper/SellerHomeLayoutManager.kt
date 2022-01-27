@@ -23,8 +23,8 @@ class SellerHomeLayoutManager(
         recycler: RecyclerView.Recycler?,
         state: RecyclerView.State?
     ): Int {
+        scrollVerticallyCallback()
         return try {
-            scrollVerticallyCallback()
             super.scrollVerticallyBy(dy, recycler, state)
         } catch (e: IndexOutOfBoundsException) {
             DEFAULT_SCROLL_DISTANCE
