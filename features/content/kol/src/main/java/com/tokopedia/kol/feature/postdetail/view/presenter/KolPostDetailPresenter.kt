@@ -86,7 +86,7 @@ class KolPostDetailPresenter @Inject constructor(
         view.showLoading()
 
         launchCatchError(context = baseDispatcher.main, block = {
-            getFeedNextPageResp = withContext(baseDispatcher.main) {
+            getFeedNextPageResp = withContext(baseDispatcher.io) {
                 getFeedDataResult(id.toString())
             }
 

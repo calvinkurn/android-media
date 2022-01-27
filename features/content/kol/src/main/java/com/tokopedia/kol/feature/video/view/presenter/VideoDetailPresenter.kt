@@ -49,7 +49,7 @@ class VideoDetailPresenter
     override fun getFeedDetail(detailId: String) {
 
         launchCatchError(context = baseDispatcher.main,block = {
-            getFeedNextPageResp = withContext(baseDispatcher.main) {
+            getFeedNextPageResp = withContext(baseDispatcher.io) {
                getFeedDataResult(detailId)
             }
 
