@@ -101,8 +101,8 @@ ext {
             sellerapp  : ":sellerapp"
     ]
 
-    lib = [
-            customerapp_on_demand: ":dynamic-features:lib:df_lib_on_demand"
+    feature_lib = [
+            travel: ":dynamic-features:travel:df_travel_lib"
     ]
 
     unifyIconVersion = '0.0.4'

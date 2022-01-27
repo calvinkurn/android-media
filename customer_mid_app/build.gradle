@@ -49,7 +49,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.explore)
     implementation projectOrAar(rootProject.ext.features.loyalty)
     implementation projectOrAar(rootProject.ext.features.commonElectronicMoney)
-    implementation projectOrAar(rootProject.ext.features.travelPassenger)
+//    implementation projectOrAar(rootProject.ext.features.travelPassenger)
     implementation projectOrAar(rootProject.ext.features.loyalty)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)

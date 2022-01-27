@@ -49,7 +49,7 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
-    implementation project(rootProject.ext.lib.customerapp_on_demand)
+    implementation project(rootProject.ext.feature_lib.travel)
 
     implementation projectOrAar(rootProject.ext.features.flight)
 
