@@ -1171,7 +1171,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                 }
                             } else {
                                 newWidgets.add(newWidget)
-                                Unit
                             }
                         }
                         recyclerView?.post {
@@ -1215,7 +1214,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
                 oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
                 oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
-                oldWidget.emptyState == newWidget.emptyState
+                oldWidget.emptyState == newWidget.emptyState && oldWidget.data?.lastUpdated == newWidget.data?.lastUpdated
     }
 
     @Suppress("UNCHECKED_CAST")
