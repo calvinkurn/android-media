@@ -1,10 +1,12 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.exProductId
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewRobot
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class PreloadProductAttachmentTest: TopchatRoomTest() {
@@ -164,7 +166,22 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         assertSrwPreviewContentIsVisible()
     }
 
-    // TODO: should hide srw preview when attach product preview is loading
+    @Test
+    fun should_hide_srw_preview_when_attach_product_preview_is_loading() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwUseCase.defaultResponse
+        getChatPreAttachPayloadUseCase.delayResponseIndefinitely()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertTemplateChatVisibility(not(isDisplayed()))
+        assertSrwPreviewContentIsHidden()
+    }
+
     // TODO: should hide srw preview when attach product preview is error
     // TODO: should show srw preview when user retry attach product preview is success
     // TODO: should hide close button on loading state
