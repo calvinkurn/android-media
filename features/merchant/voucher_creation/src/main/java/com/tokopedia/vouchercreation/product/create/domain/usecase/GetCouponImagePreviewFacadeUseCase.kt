@@ -98,13 +98,18 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             else -> EMPTY_STRING
         }
 
-        val formattedDiscountAmount = when {
-            couponSettings.discountAmount < THOUSAND -> couponSettings.discountAmount
-            couponSettings.discountAmount >= MILLION -> couponSettings.discountAmount / MILLION
-            couponSettings.discountAmount >= THOUSAND -> couponSettings.discountAmount / THOUSAND
-            else -> couponSettings.discountAmount
+        val formattedDiscountAmount : Double = when {
+            couponSettings.discountAmount < THOUSAND -> couponSettings.discountAmount.toDouble()
+            couponSettings.discountAmount >= MILLION -> (couponSettings.discountAmount / MILLION).toDouble()
+            couponSettings.discountAmount >= THOUSAND -> (couponSettings.discountAmount / THOUSAND).toDouble()
+            else -> (couponSettings.discountAmount).toDouble()
         }
 
+        val nominalAmount = if (isWholeNumber(formattedDiscountAmount)) {
+            formattedDiscountAmount.toInt()
+        } else {
+            formattedDiscountAmount.toFloat()
+        }
 
         val startTime = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val endTime = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
@@ -118,7 +123,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             benefitType,
             cashbackType,
             couponSettings.discountPercentage,
-            formattedDiscountAmount,
+            nominalAmount,
             symbol,
             shop.logo,
             shop.shopName,
@@ -131,6 +136,10 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             thirdProductImageUrl,
             audienceTarget
         )
+    }
+
+    private fun isWholeNumber(number : Double) : Boolean {
+        return kotlin.math.ceil(number / 3) == kotlin.math.floor(number / 3)
     }
 
 }

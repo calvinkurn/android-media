@@ -48,7 +48,7 @@ class CouponPreviewViewModel @Inject constructor(
                         imageRatio
                     )
                 }
-                    _couponImage.value = Success(result)
+                _couponImage.value = Success(result)
             },
             onError = {
                 _couponImage.setValue(Fail(it))
