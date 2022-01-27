@@ -4,11 +4,13 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
-import com.tokopedia.vouchercreation.common.extension.parseTo
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.data.request.GenerateImageParams
-import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GenerateImageUseCase
+import com.tokopedia.vouchercreation.product.create.util.GenerateImageParamsBuilder
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
@@ -19,14 +21,12 @@ import javax.inject.Inject
 class CreateCouponFacadeUseCase @Inject constructor(
     private val createCouponProductUseCase: CreateCouponProductUseCase,
     private val initiateVoucherUseCase: InitiateVoucherUseCase,
-    private val getShopBasicDataUseCase: ShopBasicDataUseCase
+    private val getShopBasicDataUseCase: ShopBasicDataUseCase,
+    private val imageBuilder: GenerateImageParamsBuilder
 ) {
 
     companion object {
         private const val IS_UPDATE_MODE = false
-        private const val EMPTY_STRING = ""
-        private const val THOUSAND = 1_000f
-        private const val MILLION = 1_000_000f
     }
 
     suspend fun execute(
@@ -35,29 +35,48 @@ class CreateCouponFacadeUseCase @Inject constructor(
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
-        firstImageUrl: String,
-        secondImageUrl: String,
-        thirdImageUrl: String
     ): Int {
         val initiateVoucherDeferred = scope.async { initiateVoucher(IS_UPDATE_MODE) }
         val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
 
         val shop = shopDeferred.await()
 
-        val uploadImageDeferred = scope.async {
-            uploadImage(
+        val generateImageDeferred = scope.async {
+            generateImage(
                 sourceId,
+                ImageRatio.HORIZONTAL,
                 couponInformation,
                 couponSettings,
                 shop,
-                couponProducts.size,
-                firstImageUrl,
-                secondImageUrl,
-                thirdImageUrl
+                couponProducts
             )
         }
 
-        val imageUrl = uploadImageDeferred.await()
+        val generateSquareImageDeferred = scope.async {
+            generateImage(
+                sourceId,
+                ImageRatio.SQUARE,
+                couponInformation,
+                couponSettings,
+                shop,
+                couponProducts
+            )
+        }
+
+        val generatePortraitImage = scope.async {
+            generateImage(
+                sourceId,
+                ImageRatio.VERTICAL,
+                couponInformation,
+                couponSettings,
+                shop,
+                couponProducts
+            )
+        }
+
+        val imageUrl = generateImageDeferred.await()
+        val squareImageUrl = generateSquareImageDeferred.await()
+        val portraitImageUrl = generatePortraitImage.await()
         val voucher = initiateVoucherDeferred.await()
 
         val createCouponDeferred = scope.async {
@@ -66,13 +85,13 @@ class CreateCouponFacadeUseCase @Inject constructor(
                 couponSettings,
                 couponProducts,
                 voucher.token,
-                imageUrl
+                imageUrl,
+                squareImageUrl,
+                portraitImageUrl
             )
         }
 
-        val createdCouponId = createCouponDeferred.await()
-
-        return createdCouponId
+        return createCouponDeferred.await()
     }
 
     private suspend fun createCoupon(
@@ -80,97 +99,56 @@ class CreateCouponFacadeUseCase @Inject constructor(
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
         token: String,
-        imageUrl: String
+        imageUrl: String,
+        imageSquare:String,
+        imagePortrait:String
     ): Int {
-
         val params = createCouponProductUseCase.createRequestParam(
             couponInformation,
             couponSettings,
             couponProducts,
             token,
-            imageUrl
+            imageUrl,
+            imageSquare,
+            imagePortrait
         )
         createCouponProductUseCase.params = params
         return createCouponProductUseCase.executeOnBackground()
-
     }
 
-    private suspend fun uploadImage(
+    private suspend fun generateImage(
         sourceId: String,
+        imageRatio: ImageRatio,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         shop: ShopBasicDataResult,
-        productCount: Int,
-        firstImageUrl: String,
-        secondImageUrl: String,
-        thirdImageUrl: String
+        products : List<CouponProduct>
     ): String {
-        val couponVisibility = when (couponInformation.target) {
-            CouponInformation.Target.PUBLIC -> "public"
-            CouponInformation.Target.SPECIAL -> "private"
-        }
+        val imageParams = imageBuilder.build(imageRatio, couponInformation, couponSettings, products, shop.logo, shop.shopName)
 
-        val benefitType = when (couponSettings.type) {
-            CouponType.NONE -> EMPTY_STRING
-            CouponType.CASHBACK -> "cashback"
-            CouponType.FREE_SHIPPING -> "gratis-ongkir"
-        }
-
-        val cashbackType = when {
-            couponSettings.type == CouponType.FREE_SHIPPING -> "nominal"
-            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> "nominal"
-            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> "percentage"
-            else -> EMPTY_STRING
-        }
-
-        val symbol = when {
-            couponSettings.discountAmount < THOUSAND -> EMPTY_STRING
-            couponSettings.discountAmount >= MILLION -> "jt"
-            couponSettings.discountAmount >= THOUSAND -> "rb"
-            else -> EMPTY_STRING
-        }
-
-        val formattedDiscountAmount: Float = when {
-            couponSettings.discountAmount < THOUSAND -> couponSettings.discountAmount.toFloat()
-            couponSettings.discountAmount >= MILLION -> (couponSettings.discountAmount / MILLION)
-            couponSettings.discountAmount >= THOUSAND -> (couponSettings.discountAmount / THOUSAND)
-            else -> couponSettings.discountAmount.toFloat()
-        }
-
-        val nominalAmount = if (isInteger(formattedDiscountAmount)) {
-            formattedDiscountAmount.toInt()
-        } else {
-            formattedDiscountAmount
-        }
-
-        val startTime = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
-        val endTime = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
-
-        val audienceTarget = "all-users"
-
-        val imageParams = arrayListOf(
-            GenerateImageParams("platform", "square"),
-            GenerateImageParams("is_public", couponVisibility),
-            GenerateImageParams("voucher_benefit_type", benefitType),
-            GenerateImageParams("voucher_cashback_type", cashbackType),
-            GenerateImageParams("voucher_cashback_percentage", couponSettings.discountPercentage.toString()),
-            GenerateImageParams("voucher_nominal_amount", nominalAmount.toString()),
-            GenerateImageParams("voucher_nominal_symbol", symbol),
-            GenerateImageParams("shop_logo", shop.logo),
-            GenerateImageParams("shop_name", shop.shopName),
-            GenerateImageParams("voucher_code", couponInformation.code),
-            GenerateImageParams("voucher_start_time", startTime),
-            GenerateImageParams("voucher_finish_time", endTime),
-            GenerateImageParams("product_count", productCount.toString()),
-            GenerateImageParams("product_image_1", firstImageUrl),
-            GenerateImageParams("product_image_2", secondImageUrl),
-            GenerateImageParams("product_image_3", thirdImageUrl),
-            GenerateImageParams("audience_target", audienceTarget)
+        val requestParams = arrayListOf(
+            GenerateImageParams("platform", imageParams.platform),
+            GenerateImageParams("is_public", imageParams.isPublic),
+            GenerateImageParams("voucher_benefit_type", imageParams.voucherBenefitType),
+            GenerateImageParams("voucher_cashback_type", imageParams.voucherCashbackType),
+            GenerateImageParams("voucher_cashback_percentage", imageParams.voucherCashbackPercentage),
+            GenerateImageParams("voucher_nominal_amount", imageParams.voucherNominalAmount),
+            GenerateImageParams("voucher_nominal_symbol", imageParams.voucherNominalSymbol),
+            GenerateImageParams("shop_logo", imageParams.shopLogo),
+            GenerateImageParams("shop_name", imageParams.shopName),
+            GenerateImageParams("voucher_code", imageParams.voucherCode),
+            GenerateImageParams("voucher_start_time", imageParams.voucherStartTime),
+            GenerateImageParams("voucher_finish_time", imageParams.voucherFinishTime),
+            GenerateImageParams("product_count", imageParams.productCount),
+            GenerateImageParams("product_image_1", imageParams.productImage1),
+            GenerateImageParams("product_image_2", imageParams.productImage2),
+            GenerateImageParams("product_image_3", imageParams.productImage3),
+            GenerateImageParams("audience_target", imageParams.audienceTarget)
         )
 
         val imageGeneratorUseCase =
             ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
-        val params = GenerateImageUseCase.createParam(sourceId, imageParams)
+        val params = GenerateImageUseCase.createParam(sourceId, requestParams)
         imageGeneratorUseCase.params = params
         return imageGeneratorUseCase.executeOnBackground()
     }
@@ -179,9 +157,5 @@ class CreateCouponFacadeUseCase @Inject constructor(
         initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
         initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(isUpdateMode)
         return initiateVoucherUseCase.executeOnBackground()
-    }
-
-    private fun isInteger(number: Float): Boolean {
-        return number % 1 == 0.0f
     }
 }
