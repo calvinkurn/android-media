@@ -53,6 +53,10 @@ class GetChatPreAttachPayloadUseCaseStub(
         repository.delayMs = Int.MAX_VALUE.toLong()
     }
 
+    fun setError() {
+        repository.createErrorMapResult(response::class.java, "")
+    }
+
     companion object {
         private const val chatPreAttachPayload = "chatPreAttachPayload"
         private const val list = "list"

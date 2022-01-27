@@ -39,7 +39,20 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         ProductPreviewResult.isNotErrorAt(0)
     }
 
-    // TODO: should show error product preview when error pre attach product payload
+    @Test
+    fun should_show_error_product_preview_when_error_pre_attach_product_payload() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.setError()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        ProductPreviewResult.isErrorAt(0)
+    }
+
     // TODO: should retry preload product attachment when user click retry
     // TODO: should send text only when attach product preview is loading
     // TODO: should send sticker only when attach product preview is loading
