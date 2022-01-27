@@ -80,6 +80,13 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                 }
             }, onError = {
                 components.verticalProductFailState = true
+                components.noOfPagesLoaded = 1
+                if (it is UnknownHostException || it is SocketTimeoutException) {
+                    components.verticalProductFailState = true
+//                    _showErrorState.value = true
+                } else {
+//                    _hideShimmer.value = true
+                }
             })
         }
     }
@@ -137,13 +144,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                             ?: "")
                 }
             }, onError = {
-                components.noOfPagesLoaded = 1
-                if (it is UnknownHostException || it is SocketTimeoutException) {
-                    components.verticalProductFailState = true
-//                    _showErrorState.value = true
-                } else {
-//                    _hideShimmer.value = true
-                }
+                it.printStackTrace()
             })
         } else {
             showLogin.value = true
