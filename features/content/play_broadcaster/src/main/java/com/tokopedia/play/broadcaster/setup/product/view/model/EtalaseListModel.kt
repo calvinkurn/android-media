@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.product.view.model
 
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 
 /**
  * Created by kenny.hadisaputra on 27/01/22
@@ -8,5 +9,6 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 sealed class EtalaseListModel {
 
     data class Header(val text: String) : EtalaseListModel()
-    data class Body(val campaignUiModel: CampaignUiModel) : EtalaseListModel()
+    data class Campaign(val campaignUiModel: CampaignUiModel) : EtalaseListModel()
+    data class Etalase(val etalaseUiModel: EtalaseUiModel) : EtalaseListModel()
 }

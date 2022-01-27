@@ -4,6 +4,8 @@ import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListRespo
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -11,7 +13,7 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
-class PlayBroProductMapper @Inject constructor() {
+class PlayBroProductUiMapper @Inject constructor() {
 
     private val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm 'WIB'", Locale.getDefault())
 
@@ -28,6 +30,17 @@ class PlayBroProductMapper @Inject constructor() {
                     text = it.statusText,
                 ),
                 totalProduct = it.productSummary.totalItem,
+            )
+        }
+    }
+
+    fun mapEtalaseList(response: List<ShopEtalaseModel>): List<EtalaseUiModel> {
+        return response.map {
+            EtalaseUiModel(
+                id = it.id,
+                imageUrl = it.imageUrl.orEmpty(),
+                title = it.name,
+                totalProduct = it.count,
             )
         }
     }

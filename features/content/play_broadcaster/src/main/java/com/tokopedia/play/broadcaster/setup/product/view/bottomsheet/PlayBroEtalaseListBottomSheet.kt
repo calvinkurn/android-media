@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -83,7 +84,12 @@ class PlayBroEtalaseListBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderBottomSheetTitle(state.campaignList)
-                renderEtalaseList(prevState?.campaignList, state.campaignList)
+                renderEtalaseList(
+                    prevState?.campaignList,
+                    state.campaignList,
+                    prevState?.etalaseList,
+                    state.etalaseList,
+                )
             }
         }
     }
@@ -104,18 +110,25 @@ class PlayBroEtalaseListBottomSheet @Inject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     private fun renderEtalaseList(
         prevCampaignList: List<CampaignUiModel>?,
-        campaignList: List<CampaignUiModel>
+        campaignList: List<CampaignUiModel>,
+        prevEtalaseList: List<EtalaseUiModel>?,
+        etalaseList: List<EtalaseUiModel>,
     ) {
-        if (prevCampaignList == campaignList) return
+        if (prevCampaignList == campaignList && prevEtalaseList == etalaseList) return
 
-        val etalaseList = buildList {
+        val combinedEtalaseList = buildList {
             if (campaignList.isNotEmpty()) {
                 add(EtalaseListModel.Header(getString(R.string.play_bro_campaign)))
-                addAll(campaignList.map(EtalaseListModel::Body))
+                addAll(campaignList.map(EtalaseListModel::Campaign))
+            }
+
+            if (etalaseList.isNotEmpty()) {
+                add(EtalaseListModel.Header(getString(R.string.play_bro_etalase)))
+                addAll(etalaseList.map(EtalaseListModel::Etalase))
             }
         }
 
-        etalaseListView.setEtalaseList(etalaseList)
+        etalaseListView.setEtalaseList(combinedEtalaseList)
     }
 
     companion object {

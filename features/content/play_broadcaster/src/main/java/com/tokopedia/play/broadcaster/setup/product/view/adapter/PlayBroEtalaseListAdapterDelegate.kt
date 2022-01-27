@@ -32,13 +32,33 @@ internal class PlayBroEtalaseListAdapterDelegate private constructor() {
         }
     }
 
-    internal class Body : TypedAdapterDelegate<
-            EtalaseListModel.Body,
+    internal class Campaign : TypedAdapterDelegate<
+            EtalaseListModel.Campaign,
             EtalaseListModel,
             PlayBroEtalaseListViewHolder.Body>(R.layout.view_empty) {
 
         override fun onBindViewHolder(
-            item: EtalaseListModel.Body,
+            item: EtalaseListModel.Campaign,
+            holder: PlayBroEtalaseListViewHolder.Body
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): PlayBroEtalaseListViewHolder.Body {
+            return PlayBroEtalaseListViewHolder.Body.create(parent)
+        }
+    }
+
+    internal class Etalase : TypedAdapterDelegate<
+            EtalaseListModel.Etalase,
+            EtalaseListModel,
+            PlayBroEtalaseListViewHolder.Body>(R.layout.view_empty) {
+
+        override fun onBindViewHolder(
+            item: EtalaseListModel.Etalase,
             holder: PlayBroEtalaseListViewHolder.Body
         ) {
             holder.bind(item)

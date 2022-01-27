@@ -11,15 +11,18 @@ internal class PlayBroEtalaseListAdapter : BaseDiffUtilAdapter<EtalaseListModel>
     init {
         delegatesManager
             .addDelegate(PlayBroEtalaseListAdapterDelegate.Header())
-            .addDelegate(PlayBroEtalaseListAdapterDelegate.Body())
+            .addDelegate(PlayBroEtalaseListAdapterDelegate.Campaign())
+            .addDelegate(PlayBroEtalaseListAdapterDelegate.Etalase())
     }
 
     override fun areItemsTheSame(
         oldItem: EtalaseListModel,
         newItem: EtalaseListModel
     ): Boolean {
-        return if (oldItem is EtalaseListModel.Body && newItem is EtalaseListModel.Body) {
+        return if (oldItem is EtalaseListModel.Campaign && newItem is EtalaseListModel.Campaign) {
             oldItem.campaignUiModel.id == newItem.campaignUiModel.id
+        } else if (oldItem is EtalaseListModel.Etalase && newItem is EtalaseListModel.Etalase) {
+            oldItem.etalaseUiModel.id == newItem.etalaseUiModel.id
         } else oldItem == newItem
     }
 
