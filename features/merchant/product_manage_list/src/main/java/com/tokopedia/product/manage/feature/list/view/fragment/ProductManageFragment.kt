@@ -1305,6 +1305,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             return DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
+                val textLinkLength = 5
+                val textLinkStart = 1
                 spanText.setSpan(object : ClickableSpan() {
                     override fun onClick(v: View) {
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
@@ -1315,12 +1317,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                         ds.isUnderlineText = false
                     }
                 },
-                    spanText.length - 5,
-                    spanText.length - 1,
+                    spanText.length - textLinkLength,
+                    spanText.length - textLinkStart,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                spanText.setSpan(StyleSpan(Typeface.BOLD),
-                    spanText.length - 5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spanText.setSpan(StyleSpan(Typeface.BOLD), spanText.length - textLinkLength, spanText.length - textLinkStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 setTitle(getString(R.string.popup_label_static))
                 setDescription(spanText)
