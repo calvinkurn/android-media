@@ -21,8 +21,8 @@ class PlayBroProductMapper @Inject constructor() {
                 id = it.campaignId,
                 title = it.campaignName,
                 imageUrl = it.coverImage,
-                startDateFmt = sdf.format((it.startDate * 1000).toDate()),
-                endDateFmt = sdf.format((it.endDate * 1000).toDate()),
+                startDateFmt = sdf.format((it.startDate * 1000).forceToUTCWithoutTimezone()),
+                endDateFmt = sdf.format((it.endDate * 1000).forceToUTCWithoutTimezone()),
                 status = CampaignStatusUiModel(
                     status = CampaignStatus.getById(it.statusId),
                     text = it.statusText,
@@ -32,7 +32,10 @@ class PlayBroProductMapper @Inject constructor() {
         }
     }
 
-    private fun Long.toDate(): Date {
-        return Date(this)
+    private fun Long.forceToUTCWithoutTimezone(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = Date(this)
+        calendar.add(Calendar.MILLISECOND, TimeZone.getDefault().rawOffset * -1)
+        return calendar.time
     }
 }

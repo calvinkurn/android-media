@@ -84,9 +84,23 @@ class PlayBroEtalaseListBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderBottomSheetTitle(state.campaignList)
                 renderEtalaseList(prevState?.campaignList, state.campaignList)
             }
         }
+    }
+
+    private fun renderBottomSheetTitle(
+        campaignList: List<CampaignUiModel>,
+    ) {
+        val title = buildString {
+            if (campaignList.isNotEmpty()) {
+                append("Campaign")
+                append(" & ")
+            }
+            append("Etalase")
+        }
+        setTitle(title)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
