@@ -8,23 +8,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormState
 import com.tokopedia.play.broadcaster.ui.state.PlayTitleFormUiState
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.*
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -37,6 +39,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -56,6 +59,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private lateinit var parentViewModel: PlayBroadcastViewModel
     private lateinit var titleSetupViewModel: PlayTitleAndTagsSetupViewModel
     private lateinit var coverSetupViewModel: PlayCoverSetupViewModel
+    private lateinit var scheduleViewModel: BroadcastScheduleViewModel
 
     /** View */
     private var _binding: FragmentPlayBroadcastPreparationBinding? = null
@@ -75,6 +79,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         titleSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayTitleAndTagsSetupViewModel::class.java)
         coverSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayCoverSetupViewModel::class.java)
+        scheduleViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(BroadcastScheduleViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -146,7 +151,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             formCover.setListener(this@PlayBroadcastPreparationFragment)
 
             flBroStartLivestream.setOnClickListener {
-                /** TODO: start countdown */
+                analytic.clickStartStreamingOnFinalSetupPage()
+
+                /** TODO: comment this first because we havent revamped the schedule functionality yet */
+//                val schedule = scheduleViewModel.schedule
+//                if (schedule is BroadcastScheduleUiModel.Scheduled) {
+//                    val currentTime = Date()
+//                    if (currentTime.before(schedule.time)) {
+//                        getEarlyLiveStreamDialog().show()
+//                        analytic.viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage()
+//                        return@setOnClickListener
+//                    }
+//                }
+
+                startCountDown()
             }
 
             icBroPreparationSwitchCamera.setOnClickListener {
@@ -273,7 +291,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         openCoverSetupFragment()
     }
 
-    /** Helper */
+    /** Others */
     private fun showMainComponent(isShow: Boolean) {
         binding.groupPreparationMain.visibility = if(isShow) View.VISIBLE else View.GONE
     }
@@ -293,10 +311,47 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
+    private fun startCountDown() {
+        showCountdown(true)
+
+        val animationProperty = PlayTimerLiveCountDown.AnimationProperty.Builder()
+            .setTextCountDownInterval(TIMER_TEXT_COUNTDOWN_INTERVAL)
+            .setTotalCount(parentViewModel.getBeforeLiveCountDownDuration())
+            .build()
+
+        binding.playPreparationCountdownTimer.startCountDown(animationProperty, object : PlayTimerLiveCountDown.Listener {
+            override fun onTick(milisUntilFinished: Long) {}
+
+            override fun onFinish() {
+//                createLiveStream()
+            }
+
+            override fun onCancelLiveStream() {
+                showCountdown(false)
+                analytic.clickCancelOnCountDown(parentViewModel.channelId, parentViewModel.channelTitle)
+            }
+        })
+    }
+
+    private fun showCountdown(isShow: Boolean) {
+        if(isShow) {
+            showMainComponent(false)
+            binding.playPreparationCountdownTimer.visibility = View.VISIBLE
+        }
+        else {
+            showMainComponent(true)
+            binding.playPreparationCountdownTimer.visibility = View.GONE
+        }
+    }
+
     private fun openCoverSetupFragment() {
         val setupClass = PlayBroadcastSetupBottomSheet::class.java
         val fragmentFactory = childFragmentManager.fragmentFactory
         val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
         setupFragment.show(childFragmentManager)
+    }
+
+    companion object {
+        private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
     }
 }

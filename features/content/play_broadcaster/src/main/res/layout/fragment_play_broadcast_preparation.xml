@@ -80,6 +80,17 @@
         tools:visibility="visible"
         />
 
+    <com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
+        android:id="@+id/play_preparation_countdown_timer"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_preparation_main"
         android:layout_width="wrap_content"
