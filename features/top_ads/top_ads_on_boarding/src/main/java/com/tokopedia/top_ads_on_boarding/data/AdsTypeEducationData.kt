@@ -12,8 +12,8 @@ object AdsTypeEducationData {
                 return mutableListOf(
                     AdsTypeEducationModel.Header(
                         title = "JENIS IKLAN YANG COCOK",
-                        subTitle = "Iklan Toko dan TDN",
-                        description = "Buat toko dan brand-mu makin dikenali dengan Iklan Toko dan TDN yang muncul di tempat-tempat strategis di pencarian dan rekomendasi.",
+                        subTitle = "Iklan produk",
+                        description = "Bantu calon pembeli menemukan produkmu dengan cepat lewat iklan yang muncul di hasil pencarian dan halaman rekomendasi.",
                         headerImage = Pair(
                             "topads_google_ads_type_image",
                             "https://images.tokopedia.net/img/android/res/singleDpi/topads_google_ads_type_image.png"

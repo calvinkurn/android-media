@@ -17,14 +17,17 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pointTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
         android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/pointIcon"
         app:layout_constraintTop_toTopOf="@id/pointIcon"
-        tools:text="Buat iklan dengan mudah"/>
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Buat iklan dengan mudah" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pointDescription"
