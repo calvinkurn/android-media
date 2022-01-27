@@ -111,7 +111,25 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         ProductPreviewResult.isLoadingAt(0)
     }
 
-    // TODO: should send text only when attach product preview is error
+    @Test
+    fun should_send_text_only_when_attach_product_preview_is_error() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.setError()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // When
+        clickComposeArea()
+        typeMessage("test")
+        clickSendBtn()
+
+        // Then
+        ProductPreviewResult.isErrorAt(0)
+    }
+
     // TODO: should send sticker only when attach product preview is error
     // TODO: should show srw preview when attach product preview is success
     // TODO: should hide srw preview when attach product preview is loading
