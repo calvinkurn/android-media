@@ -6,6 +6,18 @@
         "name": "operator_id",
         "paramName": "operator",
         "text": "Nomor Kartu Kredit",
+        "validations": [
+          {
+            "title": "Max 16 digits",
+            "message": "Maksimal 16 digits",
+            "rule": "^\\d{0,16}$"
+          },
+          {
+            "title": "Min 15 digits",
+            "message": "Minimal 15 digit",
+            "rule": "^\\d{15,}$"
+          }
+        ],
         "prefixes": [
           {
             "key": "856",
@@ -14,10 +26,7 @@
               "id": 856,
               "attributes": {
                 "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/qnb.png",
-                "default_product_id": 2695,
-                "rule": {
-                  "maximum_length": 16
-                }
+                "default_product_id": 2695
               }
             }
           },
@@ -28,10 +37,7 @@
               "id": 908,
               "attributes": {
                 "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/qnb.png",
-                "default_product_id": 9090,
-                "rule": {
-                  "maximum_length": 15
-                }
+                "default_product_id": 9090
               }
             }
           }
