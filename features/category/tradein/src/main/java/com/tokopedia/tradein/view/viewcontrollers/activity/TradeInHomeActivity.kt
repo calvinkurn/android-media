@@ -23,9 +23,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.common_tradein.model.HomeResult
+import com.tokopedia.common_tradein.model.HomeResult.PriceState
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.TradeInGTMConstants
@@ -35,8 +38,6 @@ import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInAddressFragment
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInFinalPriceFragment
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInInitialPriceFragment
-import com.tokopedia.common_tradein.model.HomeResult
-import com.tokopedia.common_tradein.model.HomeResult.PriceState
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.tradein.viewmodel.liveState.GoToHargaFinal
@@ -215,6 +216,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
                     Manifest.permission.VIBRATE),
                     MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
         } else {
+            progress_bar_layout.show()
             viewModel.getMaxPrice(laku6TradeIn, 0)
         }
     }
@@ -295,7 +297,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
     private fun init() {
         setLaku6()
         intent.data?.lastPathSegment?.let {
-            if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
+            if (it == TRADEIN_INITIAL_PRICE || it == FINAL_PRICE)
                 askPermissions()
             else {
                 setFragment()
@@ -356,6 +358,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
                         return
                     }
                 }
+                progress_bar_layout.show()
                 viewModel.getMaxPrice(laku6TradeIn, 0)
             } else {
                 showToast(getString(R.string.tradein_requires_permission_for_diagnostic),
