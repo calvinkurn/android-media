@@ -39,6 +39,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private var categoryId: String? = null
     private lateinit var productID: String
     private lateinit var productPrice: String
+    private var idToProductUrl = HashMap<String,String>()
 
 
     @Inject
@@ -72,7 +73,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun observeWidgetInfo(parentLifeCycleOwner: LifecycleOwner) {
-        fintechWidgetViewModel.widgetDetailLiveData.observe(parentLifeCycleOwner, {
+        fintechWidgetViewModel.widgetDetailLiveData.observe(parentLifeCycleOwner) {
             when (it) {
                 is Success -> {
                     setPriceToChipMap(it.data)
@@ -83,7 +84,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                     instanceProductUpdateListner.removeWidget()
                 }
             }
-        })
+        }
     }
 
     private fun setPriceToChipMap(widgetDetail: WidgetDetail) {
@@ -105,11 +106,13 @@ class PdpFintechWidget @JvmOverloads constructor(
         val recyclerView = baseView.findViewById<RecyclerView>(R.id.recycler_items)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
-            override fun clickedWidget(cta: Int, url: String) {
+            override fun clickedWidget(cta: Int, url: String,tenure:Int) {
                 instanceProductUpdateListner.fintechRedirection(
                     FintechRedirectionWidgetDataClass(
                         cta,
-                        url
+                        url,
+                        tenure,
+                        idToProductUrl[productID]
                     )
                 )
             }
@@ -176,11 +179,14 @@ class PdpFintechWidget @JvmOverloads constructor(
     fun updateidToPriceMap(
         productIdToPrice: HashMap<String, String>,
         listofProductUrl: ArrayList<String?>,
-        productCategoryId: String?
+        productCategoryId: String?,
+        idToProductUrlMap: HashMap<String, String>
     ) {
         idToPriceMap = productIdToPrice
         categoryId = productCategoryId
         listOfUrls = listofProductUrl
+        idToProductUrl = idToProductUrlMap
+
         productIdToPrice.values.map { it.toDouble() }.toCollection(listOfPrice)
 
     }

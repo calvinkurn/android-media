@@ -276,19 +276,23 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateFintechData(variantData: ProductVariant?, productInfo: DynamicProductInfoP1) {
          var productIdToPriceMap = HashMap<String, String>()
-         var productlistofUrls: ArrayList<String?> = ArrayList()
+        var productIdToProductUrl = HashMap<String, String>()
+        var productlistofUrls: ArrayList<String?> = ArrayList()
          var productCategoryId: String = productInfo.basic.category.id
         if (variantData == null) {
             productIdToPriceMap[productInfo.basic.productID] = productInfo.data.price.value.toString()
             productlistofUrls.add(productInfo.basic.url)
+            productIdToProductUrl[productInfo.basic.productID] = productInfo.basic.url
+
 
         } else {
             variantData.children.map { it.url }.toCollection(productlistofUrls)
             for(i in variantData.children.indices) {
                 productIdToPriceMap[variantData.children[i].productId] = variantData.children[i].price.toString()
                 variantData.children[i].url?.let {
-                    productlistofUrls.add(it)
+                    productIdToProductUrl[variantData.children[i].productId] = it
                 }
+
             }
         }
 
@@ -298,6 +302,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 categoryId = productCategoryId
                 listofProductUrl = productlistofUrls
                idToPriceMap = productIdToPriceMap
+                idToProductUrlMap =productIdToProductUrl
 
 
             }
