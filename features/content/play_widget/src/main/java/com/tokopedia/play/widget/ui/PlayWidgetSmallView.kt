@@ -11,14 +11,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.small.PlayWidgetSmallAnalyticListener
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
-import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallBannerViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallChannelViewHolder
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetSmallListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
+import com.tokopedia.play.widget.ui.widget.small.adapter.PlayWidgetSmallAdapter
+import com.tokopedia.play.widget.ui.widget.small.adapter.PlayWidgetSmallViewHolder
 
 /**
  * Created by jegul on 07/10/20
@@ -40,16 +39,16 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
     private var mAnalyticListener: PlayWidgetSmallAnalyticListener? = null
     private var mWidgetInternalListener: PlayWidgetInternalListener? = null
 
-    private val smallBannerListener = object : PlayWidgetCardSmallBannerViewHolder.Listener {
+    private val cardBannerListener = object : PlayWidgetSmallViewHolder.Banner.Listener {
 
         override fun onBannerClicked(view: View) {
             mAnalyticListener?.onClickBannerCard(this@PlayWidgetSmallView)
         }
     }
 
-    private val channelCardListener = object : PlayWidgetCardSmallChannelViewHolder.Listener {
+    private val cardChannelListener = object : PlayWidgetSmallViewHolder.Channel.Listener {
 
-        override fun onChannelImpressed(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
+        override fun onChannelImpressed(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mAnalyticListener?.onImpressChannelCard(
                 view = this@PlayWidgetSmallView,
                 item = item,
@@ -58,7 +57,7 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
             )
         }
 
-        override fun onChannelClicked(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
+        override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
             mAnalyticListener?.onClickChannelCard(
                 view = this@PlayWidgetSmallView,
@@ -71,9 +70,9 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
 
     private var mIsAutoPlay: Boolean = false
 
-    private val adapter = PlayWidgetCardSmallAdapter(
-            bannerCardListener = smallBannerListener,
-            channelCardListener = channelCardListener
+    private val adapter = PlayWidgetSmallAdapter(
+        cardChannelListener = cardChannelListener,
+        cardBannerListener = cardBannerListener,
     )
 
     init {
@@ -97,7 +96,7 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         mAnalyticListener = listener
     }
 
-    fun setData(data: PlayWidgetUiModel.Small) {
+    fun setData(data: PlayWidgetUiModel) {
         tvTitle.text = data.title
 
         tvSeeAll.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
@@ -137,10 +136,10 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         })
     }
 
-    private fun isNewItemAdded(items: List<PlayWidgetSmallItemUiModel>): Boolean {
+    private fun isNewItemAdded(items: List<PlayWidgetItemUiModel>): Boolean {
         return when {
             adapter.itemCount == 0 -> false
-            items.firstOrNull() !is PlayWidgetSmallChannelUiModel -> false
+            items.firstOrNull() !is PlayWidgetChannelUiModel -> false
             else -> !adapter.areItemsTheSame(items.first(), adapter.getItem(0))
         }
     }

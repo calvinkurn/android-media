@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelJumboView
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 
 /**
@@ -20,11 +20,11 @@ class PlayWidgetCardJumboChannelViewHolder(
     private val playWidgetCardChannelJumboView: PlayWidgetCardChannelJumboView = itemView as PlayWidgetCardChannelJumboView
     private val widgetCardJumboListener = object : PlayWidgetCardChannelJumboView.Listener {
 
-        override fun onChannelClicked(view: View, item: PlayWidgetJumboChannelUiModel) {
+        override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel) {
             listener.onChannelClicked(view, item, adapterPosition)
         }
 
-        override fun onToggleReminderChannelClicked(item: PlayWidgetJumboChannelUiModel, reminderType: PlayWidgetReminderType) {
+        override fun onToggleReminderChannelClicked(item: PlayWidgetChannelUiModel, reminderType: PlayWidgetReminderType) {
             listener.onToggleReminderChannelClicked(item, reminderType, adapterPosition)
         }
     }
@@ -33,7 +33,7 @@ class PlayWidgetCardJumboChannelViewHolder(
         playWidgetCardChannelJumboView.setListener(widgetCardJumboListener)
     }
 
-    fun bind(item: PlayWidgetJumboChannelUiModel) {
+    fun bind(item: PlayWidgetChannelUiModel) {
         itemView.addOnImpressionListener(item.impressHolder) {
             listener.onChannelImpressed(itemView, item, adapterPosition)
         }
@@ -49,18 +49,18 @@ class PlayWidgetCardJumboChannelViewHolder(
 
         fun onChannelImpressed(
             view: View,
-            item: PlayWidgetJumboChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         )
 
         fun onChannelClicked(
             view: View,
-            item: PlayWidgetJumboChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         )
 
         fun onToggleReminderChannelClicked(
-            item: PlayWidgetJumboChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
             position: Int
         )

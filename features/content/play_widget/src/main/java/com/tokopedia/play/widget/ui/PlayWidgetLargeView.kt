@@ -16,13 +16,11 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardLargeAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.large.PlayWidgetCardLargeBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.large.PlayWidgetCardLargeChannelViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.large.PlayWidgetCardLargeTranscodeViewHolder
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetLargeListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play_common.util.blur.ImageBlurUtil
 
 /**
  * @author by astidhiyaa on 11/01/22
@@ -54,14 +52,14 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
     private val channelCardListener = object : PlayWidgetCardLargeChannelViewHolder.Listener {
         override fun onChannelImpressed(
             view: View,
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
         }
 
         override fun onChannelClicked(
             view: View,
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
             if (mWidgetListener != null
@@ -77,7 +75,7 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
         }
 
         override fun onToggleReminderChannelClicked(
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
             position: Int
         ) {
@@ -94,23 +92,15 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
     private val bannerCardListener = object : PlayWidgetCardLargeBannerViewHolder.Listener {
         override fun onBannerClicked(
             view: View,
-            item: PlayWidgetLargeBannerUiModel,
+            item: PlayWidgetBannerUiModel,
             position: Int
         ) {
         }
     }
 
-    private val transcodeCardListener = object : PlayWidgetCardLargeTranscodeViewHolder.Listener {
-        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetLargeChannelUiModel, position: Int) {
-            mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetLargeView, item.channelId)
-        }
-    }
-
     private val adapter = PlayWidgetCardLargeAdapter(
-        imageBlurUtil = ImageBlurUtil(context),
         channelCardListener = channelCardListener,
         bannerCardListener = bannerCardListener,
-        transcodeCardListener = transcodeCardListener
     )
 
     private var mIsAutoPlay: Boolean = false
@@ -150,7 +140,7 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
         })
     }
 
-    fun setData(data: PlayWidgetUiModel.Large) {
+    fun setData(data: PlayWidgetUiModel) {
         recyclerViewItem.addOneTimeGlobalLayoutListener {
             mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
         }

@@ -31,6 +31,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -174,8 +175,8 @@ fun HomePlayUseCase.givenOnUpdatePlayToggleReminderReturn(returnValue: Boolean =
     coEvery { onUpdatePlayWidgetToggleReminder(any(), any()) } returns returnValue
 }
 
-fun HomePlayUseCase.givenOnGetPlayWidgetUiModelReturn(playWidgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder) {
-    coEvery { onGetPlayWidgetUiModel(any(), any(), any()) } returns playWidgetUiModel
+fun HomePlayUseCase.givenOnGetPlayWidgetUiModelReturn(playWidgetState: PlayWidgetState = PlayWidgetState(isLoading = true)) {
+    coEvery { onGetPlayWidgetUiModel(any(), any(), any()) } returns playWidgetState
 }
 
 fun HomePlayUseCase.givenOnUpdatePlayTotalViewReturn(carouselPlayWidgetDataModel: CarouselPlayWidgetDataModel = CarouselPlayWidgetDataModel(DynamicHomeChannel.Channels())) {
@@ -186,8 +187,8 @@ fun HomePlayUseCase.givenOnUpdateActionReminderReturn(carouselPlayWidgetDataMode
     coEvery { onUpdateActionReminder(any(), any(), any()) } returns carouselPlayWidgetDataModel
 }
 
-fun HomePlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshReturn(playWidgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder) {
-    coEvery { onGetPlayWidgetWhenShouldRefresh() } returns playWidgetUiModel
+fun HomePlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshReturn(playWidgetState: PlayWidgetState = PlayWidgetState(isLoading = true)) {
+    coEvery { onGetPlayWidgetWhenShouldRefresh() } returns playWidgetState
 }
 
 fun HomePlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshError() {

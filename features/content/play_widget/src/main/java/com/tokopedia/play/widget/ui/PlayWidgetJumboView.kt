@@ -14,12 +14,10 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardJumboAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboChannelViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboTranscodeViewHolder
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetJumboListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play_common.util.blur.ImageBlurUtil
 
 /**
  * @author by astidhiyaa on 12/01/22
@@ -49,14 +47,14 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
     private val channelCardListener = object : PlayWidgetCardJumboChannelViewHolder.Listener {
         override fun onChannelImpressed(
             view: View,
-            item: PlayWidgetJumboChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
         }
 
         override fun onChannelClicked(
             view: View,
-            item: PlayWidgetJumboChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
             if (mWidgetListener != null
@@ -72,7 +70,7 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
         }
 
         override fun onToggleReminderChannelClicked(
-            item: PlayWidgetJumboChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
             position: Int
         ) {
@@ -89,23 +87,15 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
     private val bannerCardListener = object : PlayWidgetCardJumboBannerViewHolder.Listener {
         override fun onBannerClicked(
             view: View,
-            item: PlayWidgetJumboBannerUiModel,
+            item: PlayWidgetBannerUiModel,
             position: Int
         ) {
         }
     }
-    private val transcodeCardListener = object : PlayWidgetCardJumboTranscodeViewHolder.Listener {
-        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetJumboChannelUiModel, position: Int) {
-            mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetJumboView, item.channelId)
-        }
-    }
-
 
     private val adapter = PlayWidgetCardJumboAdapter(
-        imageBlurUtil = ImageBlurUtil(context),
         channelCardListener = channelCardListener,
         bannerCardListener = bannerCardListener,
-        transcodeListener = transcodeCardListener
     )
 
     private var mIsAutoPlay: Boolean = false
@@ -132,7 +122,7 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
         recyclerViewItem.adapter = adapter
     }
 
-    fun setData(data: PlayWidgetUiModel.Jumbo) {
+    fun setData(data: PlayWidgetUiModel) {
         adapter.setItemsAndAnimateChanges(data.items)
 
         mIsAutoPlay = data.config.autoPlay

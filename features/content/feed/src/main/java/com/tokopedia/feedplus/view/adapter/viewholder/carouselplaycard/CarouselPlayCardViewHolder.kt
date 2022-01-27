@@ -12,7 +12,7 @@ class CarouselPlayCardViewHolder(
 ) : AbstractViewHolder<CarouselPlayCardViewModel>(playWidgetViewHolder.itemView) {
 
     override fun bind(element: CarouselPlayCardViewModel) {
-        playWidgetViewHolder.bind(element.playWidgetUiModel, this)
+        playWidgetViewHolder.bind(element.playWidgetState, this)
     }
 
     override fun bind(element: CarouselPlayCardViewModel, payloads: MutableList<Any>) {

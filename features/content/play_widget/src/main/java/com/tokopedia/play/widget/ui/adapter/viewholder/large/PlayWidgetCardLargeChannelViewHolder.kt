@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelLargeView
-import com.tokopedia.play.widget.ui.model.PlayWidgetLargeChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 
 /**
@@ -17,30 +17,27 @@ class PlayWidgetCardLargeChannelViewHolder(
     private val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
 
-    init {
-        //if re-use from medium, need to change layout params here
-    }
-
     private val playWidgetCardChannelLargeView: PlayWidgetCardChannelLargeView = itemView as PlayWidgetCardChannelLargeView
     private val widgetCardLargeListener = object : PlayWidgetCardChannelLargeView.Listener {
 
-        override fun onChannelClicked(view: View, item: PlayWidgetLargeChannelUiModel) {
+        override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel) {
             listener.onChannelClicked(view, item, adapterPosition)
         }
 
-        override fun onToggleReminderChannelClicked(item: PlayWidgetLargeChannelUiModel, reminderType: PlayWidgetReminderType) {
+        override fun onToggleReminderChannelClicked(item: PlayWidgetChannelUiModel, reminderType: PlayWidgetReminderType) {
             listener.onToggleReminderChannelClicked(item, reminderType, adapterPosition)
         }
     }
 
     init {
+        //if re-use from medium, need to change layout params here
         playWidgetCardChannelLargeView.setListener(widgetCardLargeListener)
     }
 
-    fun bind(item: PlayWidgetLargeChannelUiModel) {
-        itemView.addOnImpressionListener(item.impressHolder) {
-            listener.onChannelImpressed(itemView, item, adapterPosition)
-        }
+    fun bind(item: PlayWidgetChannelUiModel) {
+//        itemView.addOnImpressionListener(item.impressHolder) {
+//            listener.onChannelImpressed(itemView, item, adapterPosition)
+//        }
         playWidgetCardChannelLargeView.setModel(item)
     }
 
@@ -53,18 +50,18 @@ class PlayWidgetCardLargeChannelViewHolder(
 
         fun onChannelImpressed(
             view: View,
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         )
 
         fun onChannelClicked(
             view: View,
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         )
 
         fun onToggleReminderChannelClicked(
-            item: PlayWidgetLargeChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
             position: Int
         )

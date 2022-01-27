@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
@@ -453,14 +454,14 @@ class ShopHomeAdapter(
     /**
      * Play Widget
      */
-    fun updatePlayWidget(widgetUiModel: PlayWidgetUiModel?) {
+    fun updatePlayWidget(playWidgetState: PlayWidgetState?) {
         val newList = getNewVisitableItems()
         newList.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
             if (position == -1) return@let
-            if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder || isPlayWidgetEmpty(widgetUiModel)) {
+            if (playWidgetState == null || playWidgetState.isLoading || isPlayWidgetEmpty(playWidgetState.model)) {
                 newList.removeAt(position)
             } else {
-                (newList.getOrNull(position) as? CarouselPlayWidgetUiModel)?.copy(widgetUiModel = widgetUiModel)?.apply {
+                (newList.getOrNull(position) as? CarouselPlayWidgetUiModel)?.copy(playWidgetState = playWidgetState)?.apply {
                     widgetState = WidgetState.FINISH
                     isNewData = true
                 }?.also {
@@ -472,8 +473,7 @@ class ShopHomeAdapter(
     }
 
     private fun isPlayWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
-        return (widget as? PlayWidgetUiModel.Small)?.items?.isEmpty() == true
-                || (widget as? PlayWidgetUiModel.Medium)?.items?.isEmpty() == true
+        return widget.items.isEmpty()
     }
 
     fun updateShopHomeWidgetContentData(listWidgetContentData: Map<Pair<String, String>, BaseShopHomeWidgetUiModel?>) {

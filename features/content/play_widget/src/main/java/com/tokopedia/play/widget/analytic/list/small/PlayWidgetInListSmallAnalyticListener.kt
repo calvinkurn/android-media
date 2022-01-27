@@ -1,7 +1,7 @@
 package com.tokopedia.play.widget.analytic.list.small
 
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
  * Created by jegul on 02/11/20
@@ -9,32 +9,36 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
 interface PlayWidgetInListSmallAnalyticListener {
 
     fun onClickViewAll(
-            view: PlayWidgetSmallView,
-            verticalWidgetPosition: Int,
-            businessWidgetPosition: Int,
-    ) {}
+        view: PlayWidgetSmallView,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {
+    }
 
     fun onClickChannelCard(
-            view: PlayWidgetSmallView,
-            item: PlayWidgetSmallChannelUiModel,
-            channelPositionInList: Int,
-            isAutoPlay: Boolean,
-            verticalWidgetPosition: Int,
-            businessWidgetPosition: Int,
-    ) {}
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {
+    }
 
     fun onClickBannerCard(
-            view: PlayWidgetSmallView,
-            verticalWidgetPosition: Int,
-            businessWidgetPosition: Int,
-    ) {}
+        view: PlayWidgetSmallView,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {
+    }
 
     fun onImpressChannelCard(
-            view: PlayWidgetSmallView,
-            item: PlayWidgetSmallChannelUiModel,
-            channelPositionInList: Int,
-            isAutoPlay: Boolean,
-            verticalWidgetPosition: Int,
-            businessWidgetPosition: Int,
-    ) {}
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {
+    }
 }

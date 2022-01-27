@@ -488,7 +488,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPlayWidgetWhenShouldRefresh() {
         findWidget<CarouselPlayWidgetDataModel> { playWidget, index ->
             launchCatchError(block = {
-                updateWidget(playWidget.copy(widgetUiModel = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()), index)
+                updateWidget(playWidget.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()), index)
             }) {
                 deleteWidget(playWidget, index)
             }
@@ -511,8 +511,8 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) _playWidgetReminderEvent.value = Pair(channelId, reminderType)
         else {
             updateCarouselPlayWidget {
-                it.copy(widgetUiModel = homePlayUseCase.get().onGetPlayWidgetUiModel(
-                        it.widgetUiModel, channelId, reminderType
+                it.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetUiModel(
+                        it.widgetState, channelId, reminderType
                 ))
             }
             launch {
@@ -522,8 +522,8 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     else -> {
                         updateCarouselPlayWidget {
-                            it.copy(widgetUiModel = homePlayUseCase.get().onGetPlayWidgetUiModel(
-                                    it.widgetUiModel, channelId, reminderType
+                            it.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetUiModel(
+                                    it.widgetState, channelId, reminderType
                             ))
                         }
                         _playWidgetReminderObservable.postValue(Result.error(error = Throwable()))

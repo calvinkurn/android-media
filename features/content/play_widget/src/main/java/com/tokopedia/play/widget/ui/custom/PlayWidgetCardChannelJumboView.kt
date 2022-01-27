@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -62,7 +62,7 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
 
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
-    private lateinit var mModel: PlayWidgetJumboChannelUiModel
+    private lateinit var mModel: PlayWidgetChannelUiModel
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_channel_jumbo, this)
@@ -87,6 +87,13 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
         view.touchDelegate = compositeTouchDelegate
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        layoutParams = layoutParams.apply {
+            height = measuredWidth
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             pvVideo.showWithCondition(isPlaying)
@@ -97,7 +104,7 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
         mListener = listener
     }
 
-    fun setModel(model: PlayWidgetJumboChannelUiModel) {
+    fun setModel(model: PlayWidgetChannelUiModel) {
         this.mModel = model
 
         thumbnail.setImageUrl(model.video.coverUrl)
@@ -121,7 +128,7 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
 
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
-        tvTotalView.text = model.totalView
+        tvTotalView.text = model.totalView.totalViewFmt
         ivGiveaway.showWithCondition(model.hasGiveaway)
 
         setIconToggleReminder(model.reminderType)
@@ -134,11 +141,11 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
         }
     }
 
-    private fun setActiveModel(model: PlayWidgetJumboChannelUiModel) {
+    private fun setActiveModel(model: PlayWidgetChannelUiModel) {
         val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
         liveBadge.showWithCondition(isLiveBadgeShown)
         reminderBadge.gone()
-        totalViewBadge.showWithCondition(model.totalViewVisible)
+        totalViewBadge.showWithCondition(model.totalView.isVisible)
         llLoadingContainer.gone()
     }
 
@@ -149,11 +156,11 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
         llLoadingContainer.gone()
     }
 
-    private fun setDeletingModel(model: PlayWidgetJumboChannelUiModel) {
+    private fun setDeletingModel(model: PlayWidgetChannelUiModel) {
         val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
         liveBadge.showWithCondition(isLiveBadgeShown)
         reminderBadge.gone()
-        totalViewBadge.showWithCondition(model.totalViewVisible)
+        totalViewBadge.showWithCondition(model.totalView.isVisible)
         llLoadingContainer.visible()
     }
 
@@ -224,12 +231,12 @@ class PlayWidgetCardChannelJumboView : ConstraintLayout, PlayVideoPlayerReceiver
     interface Listener {
         fun onChannelClicked(
             view: View,
-            item: PlayWidgetJumboChannelUiModel
+            item: PlayWidgetChannelUiModel,
         )
 
         fun onToggleReminderChannelClicked(
-            item: PlayWidgetJumboChannelUiModel,
-            reminderType: PlayWidgetReminderType
+            item: PlayWidgetChannelUiModel,
+            reminderType: PlayWidgetReminderType,
         )
     }
 }
