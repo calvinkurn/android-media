@@ -848,10 +848,10 @@ data class SearchProductModel(
         @Expose
         val data: List<InspirationWidgetData> = listOf()
     ) {
-        fun filters(): List<Filter> =
+        fun asFilterList(): List<Filter> =
             data
                 .filter { it.type == TYPE_SIZE_PERSO }
-                .map { it.filter() }
+                .map { it.asFilter() }
     }
 
     data class InspirationWidgetData (
@@ -875,9 +875,9 @@ data class SearchProductModel(
         @Expose
         val trackingOption: Int = 0,
     ) {
-        fun filter(): Filter =
+        fun asFilter(): Filter =
             Filter(
-                options = inspirationWidgetOptions.map { it.option() }
+                options = inspirationWidgetOptions.map { it.asOption() }
             )
     }
 
@@ -910,7 +910,7 @@ data class SearchProductModel(
         @Expose
         val componentId: String,
     ) {
-        fun option() = Option(
+        fun asOption() = Option(
             key = filters.key,
             value = filters.value,
             name = filters.name,

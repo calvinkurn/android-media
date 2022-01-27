@@ -1564,7 +1564,7 @@ class ProductListPresenter @Inject constructor(
         if (dynamicFilterModel != null) return
 
         val quickFilterList = searchProductModel.quickFilterModel.filter
-        val inspirationWidgetFilterList = searchProductModel.searchInspirationWidget.filters()
+        val inspirationWidgetFilterList = searchProductModel.searchInspirationWidget.asFilterList()
         val filterList = quickFilterList + inspirationWidgetFilterList
 
         view.initFilterController(filterList)

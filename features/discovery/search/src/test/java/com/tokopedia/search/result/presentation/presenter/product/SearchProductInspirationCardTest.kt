@@ -21,9 +21,7 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import io.mockk.verifyOrder
-import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsCollectionContaining.hasItems
 import org.junit.Test
 import rx.Subscriber
@@ -493,7 +491,7 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
 
         // Comparing Option list because Filter class does not have `equals` function
         val actualOptionList = actualFilterListSlot.captured.map { it.options }.flatten()
-        val expectedOptionList = inspirationWidget.filters().map { it.options }.flatten()
+        val expectedOptionList = inspirationWidget.asFilterList().map { it.options }.flatten()
         assertThat(actualOptionList, hasItems(*expectedOptionList.toTypedArray()))
     }
 

@@ -1,19 +1,19 @@
 package com.tokopedia.search.result.product.inspirationwidget
 
 import android.content.Context
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeOptionDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeListener
+import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeOptionDataView
 import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
+import com.tokopedia.search.utils.contextprovider.ContextProvider
+import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.track.TrackApp
-import java.lang.ref.WeakReference
 
 class InspirationWidgetListenerDelegate(
     context: Context?,
@@ -21,13 +21,10 @@ class InspirationWidgetListenerDelegate(
     private val parameterListener: ProductListParameterListener,
 ): InspirationCardListener,
     InspirationSizeListener,
+    ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
 
-    private val weakContext: WeakReference<Context?> = WeakReference(context)
-
     override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {
-        val context = weakContext.get() ?: return
-
         trackEventClickInspirationCardOption(optionData)
 
         openApplink(context, optionData.applink)
