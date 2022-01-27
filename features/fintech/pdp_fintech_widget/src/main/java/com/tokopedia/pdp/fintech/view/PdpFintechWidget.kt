@@ -178,16 +178,15 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     fun updateidToPriceMap(
         productIdToPrice: HashMap<String, String>,
-        listofProductUrl: ArrayList<String?>,
         productCategoryId: String?,
         idToProductUrlMap: HashMap<String, String>
     ) {
         idToPriceMap = productIdToPrice
         categoryId = productCategoryId
-        listOfUrls = listofProductUrl
         idToProductUrl = idToProductUrlMap
 
         productIdToPrice.values.map { it.toDouble() }.toCollection(listOfPrice)
+        idToProductUrlMap.values.map { it }.toCollection(listOfUrls)
 
     }
 

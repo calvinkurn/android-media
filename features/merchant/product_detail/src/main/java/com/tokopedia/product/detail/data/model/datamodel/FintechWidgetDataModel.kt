@@ -8,7 +8,6 @@ data class FintechWidgetDataModel(
     val name: String = "",
     val type: String = "",
     var categoryId: String? = null,
-    var listofProductUrl : ArrayList<String?> = ArrayList(),
     var idToPriceMap: HashMap<String, String> = HashMap(),
     var idToProductUrlMap: HashMap<String, String> = HashMap()
 
