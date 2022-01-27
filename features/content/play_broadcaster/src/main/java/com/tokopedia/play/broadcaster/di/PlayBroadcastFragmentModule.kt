@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.di
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
+import com.tokopedia.play.broadcaster.setup.product.view.PlayBroProductSetupFragment
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.PlayBroEtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
@@ -59,4 +61,17 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayInteractiveLeaderBoardBottomSheet::class)
     abstract fun getInteractiveLeaderBoardBottomSheet(fragment: PlayInteractiveLeaderBoardBottomSheet): Fragment
+
+    /**
+     * Revamp
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroProductSetupFragment::class)
+    abstract fun getPlayBroProductSetupFragment(fragment: PlayBroProductSetupFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroEtalaseListBottomSheet::class)
+    abstract fun getPlayBroEtalaseAndCampaignListBottomSheet(fragment: PlayBroEtalaseListBottomSheet): Fragment
 }

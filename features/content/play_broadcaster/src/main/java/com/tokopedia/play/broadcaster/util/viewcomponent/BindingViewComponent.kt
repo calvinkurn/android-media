@@ -1,32 +1,28 @@
-package com.tokopedia.play_common.viewcomponent
+package com.tokopedia.play.broadcaster.util.viewcomponent
 
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import androidx.annotation.IdRes
 import androidx.annotation.StringRes
+import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play_common.viewcomponent.IViewComponent
 
 /**
- * Created by jegul on 31/07/20
+ * Created by kenny.hadisaputra on 27/01/22
  */
-abstract class ViewComponent(
-    view: View
+abstract class BindingViewComponent(
+    binding: ViewBinding
 ) : IViewComponent {
 
-    constructor(container: ViewGroup, @IdRes rootId: Int) : this(container.findViewById<View>(rootId))
+    override val id: Int = binding.root.id
 
-    override val id: Int = view.id
-
-    override val rootView: View = view
-
-    protected fun <V: View> findViewById(@IdRes id: Int): V = rootView.findViewById(id)
+    override val rootView: View = binding.root
 
     protected fun getString(@StringRes stringRes: Int): String {
         return rootView.context.getString(stringRes)
