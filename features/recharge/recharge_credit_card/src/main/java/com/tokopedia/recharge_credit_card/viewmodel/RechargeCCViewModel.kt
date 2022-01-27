@@ -27,12 +27,12 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
     private val _rechargeCreditCard = MutableLiveData<RechargeCreditCard>()
     private val _errorPrefix = MutableLiveData<Throwable>()
     private val _bankNotSupported = MutableLiveData<Throwable>()
-    private val _maxLength = MutableLiveData<Int>()
+    private val _rule = MutableLiveData<List<RuleModel>>()
 
     val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
     val errorPrefix: LiveData<Throwable> = _errorPrefix
     val bankNotSupported: LiveData<Throwable> = _bankNotSupported
-    val maxLength: LiveData<Int> = _maxLength
+    val rule: LiveData<List<RuleModel>> = _rule
 
     private var foundPrefix: Boolean = false
     var categoryName: String = ""
@@ -98,7 +98,14 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
             if (data.prefixSelect.prefixes.isNotEmpty()) {
                 data.prefixSelect.prefixes.map {
                     if (creditCard.startsWith(it.value)) {
-                        _maxLength.postValue(it.operator.attribute.rule.maximumLength)
+                        val validations = data.prefixSelect.validations.map { validation ->
+                            RuleModel(
+                                validation.title,
+                                validation.message,
+                                validation.rule
+                            )
+                        }
+                        _rule.postValue(validations)
                         foundPrefix = true
                         return@map _rechargeCreditCard.postValue(RechargeCreditCard(
                                 it.operator.id,
@@ -109,16 +116,13 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
                     }
                 }
             } else {
-                _maxLength.postValue(DEFAULT_MAX_LENGTH)
                 _bankNotSupported.postValue(MessageErrorException(""))
             }
 
             if (!foundPrefix) {
-                _maxLength.postValue(DEFAULT_MAX_LENGTH)
                 _bankNotSupported.postValue(MessageErrorException(""))
             }
         }) {
-            _maxLength.postValue(DEFAULT_MAX_LENGTH)
             _errorPrefix.postValue(it)
         }
     }
@@ -126,6 +130,5 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
     companion object {
         private const val CATEGORY_ID = "categoryId"
         private const val MENU_ID = "menuId"
-        private const val DEFAULT_MAX_LENGTH = 16
     }
 }
