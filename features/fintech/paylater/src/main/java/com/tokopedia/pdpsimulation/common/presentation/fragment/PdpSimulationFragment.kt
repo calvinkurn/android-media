@@ -19,10 +19,12 @@ import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterSimulationAdapter
-import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
-import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
+import com.tokopedia.pdpsimulation.common.utils.Utils
+import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterSimulationTenureAdapter
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterInstallmentFeeInfo
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -42,7 +44,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
+        val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
 
@@ -70,18 +72,33 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private fun getAdapterTypeFactory() = PayLaterAdapterFactoryImpl(
         interaction = PayLaterOptionInteraction(
-            onCtaClicked = {
-
-            },
-            installementDetails = {
-
-            },
+            onCtaClicked = { handleAction(it) },
+            installementDetails = { openInstallmentBottomSheet(it) },
             seeMoreOptions = { adapterPosition ->
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     simulationAdapter.updateOptionList(adapterPosition)
             }
         )
     )
+
+    private fun handleAction(detail: Detail) {
+        Toast.makeText(context, "Cta clicked", Toast.LENGTH_LONG).show()
+
+        Utils.handleClickNavigation(context, detail,
+            openHowToUse = {
+                bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it)
+            },
+            openGoPay = {
+                bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it)
+            }
+        )
+    }
+
+    private fun openInstallmentBottomSheet(installment: InstallmentDetails) {
+        Toast.makeText(context, "Open Installemt", Toast.LENGTH_LONG).show()
+        val bundle = Bundle().apply { putParcelable(PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL, installment) }
+        bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,18 +115,23 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initArguments()
+        initViews()
+        payLaterViewModel.getProductDetail(productId)
+    }
+
+    private fun initArguments() {
         payLaterViewModel.defaultTenure = defaultTenure
         tenureAdapter.lastSelectedPosition = defaultTenure
+    }
 
-        payLaterViewModel.getProductDetail(productId)
-
+    private fun initViews() {
         rvPayLaterSimulation.adapter = tenureAdapter
         rvPayLaterSimulation.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvPayLaterOption.adapter = simulationAdapter
         rvPayLaterOption.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        initListeners()
     }
 
     private fun observeViewModel() {
@@ -200,9 +222,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             }
         }
 
-    }
-
-    private fun initListeners() {
     }
 
     override fun getScreenName() = "PayLater & Cicilan"

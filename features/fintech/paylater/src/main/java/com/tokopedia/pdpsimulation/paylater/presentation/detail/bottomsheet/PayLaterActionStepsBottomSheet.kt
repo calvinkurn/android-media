@@ -21,8 +21,6 @@ import java.net.URLEncoder
 
 class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
-
-
     private var pdpSimulationCallback: PdpSimulationCallback? = null
     private val childLayoutRes = R.layout.paylater_action_steps_bottomsheet_widget
     private var actionUrl: String = ""
@@ -43,8 +41,8 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun getArgumentData() {
         arguments?.let {
-            //val payLaterItemProductData: Detail? = it.getParcelable(STEPS_DATA)
-            //setDataFromArguments(payLaterItemProductData)
+            val payLaterItemProductData: Detail? = it.getParcelable(STEPS_DATA)
+            setDataFromArguments(payLaterItemProductData)
         } ?: dismiss()
     }
 
@@ -53,39 +51,29 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
      * @param payLaterItemProductData this is all the product detail of the selected partner
      */
 
-    /*private fun setDataFromArguments(payLaterItemProductData: Detail?) {
+    private fun setDataFromArguments(payLaterItemProductData: Detail?) {
         payLaterItemProductData?.let {
-            partnerName = it.gateway_detail?.name ?: ""
-            actionUrl = it.cta?.android_url ?: ""
+            partnerName = it.gatewayDetail?.name ?: ""
+            actionUrl = it.cta.android_url ?: ""
             tenure = payLaterItemProductData.tenure ?: 0
-            if (it.cta?.cta_type == REDIRECT_TOKO_ENV) {
+            if (it.cta.cta_type == REDIRECT_TOKO_ENV) {
                 isWebUrl = false
             } else {
-                if (it.cta?.cta_type == HOWTOUSE) {
-                    if (it.gateway_detail?.how_toUse?.notes?.size != 0)
-                        noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
-                    it.gateway_detail?.how_toUse?.let { howToUseDetail ->
-                        listOfSteps = howToUseDetail.steps as ArrayList<String>
-                    }
-                    titleText =
-                        "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
-                } else {
-                    if (it.gateway_detail?.how_toApply?.notes?.size != 0)
-                        noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
-                    it.gateway_detail?.how_toApply?.let { howToApplyDetail ->
-                        listOfSteps = howToApplyDetail.steps as ArrayList<String>
-                    }
-                    titleText =
-                        "${resources.getString(R.string.pay_later_how_to_register)} ${partnerName ?: ""}"
+                if (it.gatewayDetail?.how_toUse?.notes?.size != 0)
+                    noteData = it.gatewayDetail?.how_toUse?.notes?.get(0) ?: ""
+                it.gatewayDetail?.how_toUse?.let { howToUseDetail ->
+                    listOfSteps = howToUseDetail.steps as ArrayList<String>
                 }
+                titleText =
+                    "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
             }
 
 
         }
-    }*/
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (!noteData.isNullOrEmpty())
+        if (!noteData.isEmpty())
             tickerPaylaterRegister.setTextDescription(noteData)
         else
             tickerPaylaterRegister.gone()
@@ -150,7 +138,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
 
-
     }
 
     private fun openUrlView(urlString: String) {
@@ -169,21 +156,15 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
         private const val TAG = "PayLaterActionStepsBottomSheet"
         const val STEPS_DATA = "stepsData"
-
-        // If CTA type is 4 the show How to Use list else show how to apply list
-        const val HOWTOUSE = 4
         const val REDIRECT_TOKO_ENV = 1
-
 
         fun show(
             bundle: Bundle,
-            pdpSimulationCallback: PdpSimulationCallback,
             childFragmentManager: FragmentManager
         ) {
             val actionStepsBottomSheet = PayLaterActionStepsBottomSheet().apply {
                 arguments = bundle
             }
-            actionStepsBottomSheet.pdpSimulationCallback = pdpSimulationCallback
             actionStepsBottomSheet.show(childFragmentManager, TAG)
         }
     }

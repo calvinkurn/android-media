@@ -1,9 +1,6 @@
 package com.tokopedia.pdpsimulation.common.presentation.adapter
 
-import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
-import com.tokopedia.pdpsimulation.paylater.domain.model.SectionTitleUiModel
-import com.tokopedia.pdpsimulation.paylater.domain.model.SeeMoreOptionsUiModel
-import com.tokopedia.pdpsimulation.paylater.domain.model.SupervisorUiModel
+import com.tokopedia.pdpsimulation.paylater.domain.model.*
 
 interface PayLaterAdapterFactory {
 
@@ -15,4 +12,5 @@ interface PayLaterAdapterFactory {
 
     fun type(supervisorUiModel: SupervisorUiModel): Int
 
+    fun type(content: Content): Int
 }
