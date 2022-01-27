@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.product.violation.ViolationDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel

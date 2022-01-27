@@ -69,7 +69,7 @@ import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCardDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
@@ -1081,8 +1081,6 @@ class ProductListPresenter @Inject constructor(
         if (isGlobalNavWidgetAvailable) {
             productDataView.globalNavDataView?.let {
                 list.add(it)
-
-                view.sendImpressionGlobalNav(it)
                 isShowHeadlineAdsBasedOnGlobalNav = it.isShowTopAds
             }
         }
