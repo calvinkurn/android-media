@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_CATEGORY_ID
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_CLIENT_NUMBER
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_MENU_ID
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_PRODUCT_ID
 import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPPulsaFragment
@@ -79,12 +81,5 @@ class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComp
 
     private fun setupAppBar() {
         (toolbar as HeaderUnify).transparentMode = true
-    }
-
-    companion object {
-        const val PARAM_MENU_ID = "menu_id"
-        const val PARAM_PRODUCT_ID = "product_id"
-        const val PARAM_CLIENT_NUMBER = "client_number"
-        const val PARAM_CATEGORY_ID = "category_id"
     }
 }

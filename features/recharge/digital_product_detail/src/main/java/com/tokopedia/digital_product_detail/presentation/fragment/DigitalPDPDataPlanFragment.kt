@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
@@ -32,6 +35,11 @@ class DigitalPDPDataPlanFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: DigitalPDPDataPlanViewModel
+
+    private var clientNumber = ""
+    private var productId =  0
+    private var menuId = 0
+    private var categoryId = TelcoCategoryType.CATEGORY_PAKET_DATA
 
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
@@ -58,8 +66,24 @@ class DigitalPDPDataPlanFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getDataFromBundle()
         getInitalData()
         observeData()
+    }
+
+    private fun getDataFromBundle() {
+        arguments?.run {
+            val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
+                ?: TopupBillsExtraParam()
+            clientNumber = digitalTelcoExtraParam.clientNumber
+            productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
+                categoryId = digitalTelcoExtraParam.categoryId.toInt()
+            }
+            if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
+                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+            }
+        }
     }
 
     private fun observeData() {
@@ -92,8 +116,8 @@ class DigitalPDPDataPlanFragment :
 
     private fun getInitalData() {
         //viewModel.addFilter("filter_tag_kuota", arrayListOf("1157"))
-        viewModel.getMenuDetail(290, true)
-        viewModel.getRechargeCatalogInputMultiTab(290, "17", "085")
+        viewModel.getMenuDetail(menuId, true)
+        viewModel.getRechargeCatalogInputMultiTab(menuId, "17", "085")
     }
 
     /**
@@ -109,9 +133,10 @@ class DigitalPDPDataPlanFragment :
 
 
     companion object {
-        fun newInstance(): DigitalPDPDataPlanFragment {
-            val fragment = DigitalPDPDataPlanFragment()
-            return fragment
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam) = DigitalPDPDataPlanFragment().also {
+            val bundle = Bundle()
+            bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, telcoExtraParam)
+            it.arguments = bundle
         }
     }
 }
