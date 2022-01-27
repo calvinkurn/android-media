@@ -23,6 +23,8 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         }
 
         // Then
+        // should hide close button on loading state
+        ProductPreviewResult.isNotCloseableAt(0)
         ProductPreviewResult.isLoadingAt(0)
     }
 
@@ -53,6 +55,8 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         }
 
         // Then
+        // should show close button on error state
+        ProductPreviewResult.isCloseableAt(0)
         ProductPreviewResult.isErrorAt(0)
     }
 
@@ -217,7 +221,5 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         // Then
         assertSrwPreviewContentIsVisible()
     }
-
-    // TODO: should hide close button on loading state
 
 }

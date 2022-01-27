@@ -19,6 +19,21 @@ object ProductPreviewResult {
         ).check(matches(matcher))
     }
 
+    fun isCloseableAt(position: Int) {
+        closeButtonIs(position, isDisplayed())
+    }
+
+    fun isNotCloseableAt(position: Int) {
+        closeButtonIs(position, not(isDisplayed()))
+    }
+
+    private fun closeButtonIs(position: Int, matcher: Matcher<View>) {
+        onView(
+                withRecyclerView(R.id.rv_attachment_preview)
+                        .atPositionOnView(position, R.id.iv_close)
+        ).check(matches(matcher))
+    }
+
     fun isLoadingAt(position: Int) {
         loadingIs(position, isDisplayed())
     }
