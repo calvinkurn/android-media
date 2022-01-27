@@ -99,7 +99,6 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     }
                     show_cart
                     show_pinned_product
-                    ping_interval
                     active
                     freezed
                     has_promo
