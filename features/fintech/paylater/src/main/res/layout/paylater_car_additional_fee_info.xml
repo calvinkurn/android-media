@@ -4,17 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
-    <com.tokopedia.unifyprinciples.Typography
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvInstallmentDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/unify_space_24"
-        android:text="@string/pay_later_cost_not_included"
+        android:layout_marginBottom="@dimen/unify_space_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_1"
-        app:typographyWeight="reguler" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

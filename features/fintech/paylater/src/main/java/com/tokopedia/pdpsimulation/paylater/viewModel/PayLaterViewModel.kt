@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
-import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
-import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
+import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.ProductDetailUseCase
@@ -32,7 +29,9 @@ class PayLaterViewModel @Inject constructor(
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
+
     var defaultTenure = 0
+    var tenureMap: Map<Int?, Int?> = mapOf()
 
     private var idlingResourceProvider =
         TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
@@ -75,10 +74,11 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
         idlingResourceProvider?.decrement()
-        mapperUseCase.mapResponseToUi({
-            if (it.isNotEmpty())
-                _payLaterOptionsDetailLiveData.value = Success(it)
-
+        mapperUseCase.mapResponseToUi({ data ->
+            if (data.isNotEmpty()) {
+                tenureMap = data.mapIndexed { index, simulationUiModel ->  simulationUiModel.tenure to index }.toMap()
+                _payLaterOptionsDetailLiveData.value = Success(data)
+            }
         }, {
             _payLaterOptionsDetailLiveData.value = Fail(it)
 

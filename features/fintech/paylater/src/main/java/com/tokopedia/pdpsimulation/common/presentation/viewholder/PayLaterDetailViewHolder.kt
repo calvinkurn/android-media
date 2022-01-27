@@ -106,7 +106,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
                 tvInstallmentDescription.gone()
             else {
                 tvInstallmentDescription.visible()
-                tvInstallmentDescription.text = element.subheader?.parseAsHtml()
+                tvInstallmentDescription.text = element.subheader.parseAsHtml()
             }
             partnerTenureInfo.setOnClickListener {
                 if (element.installementDetails != null)

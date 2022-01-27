@@ -104,7 +104,6 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
               android_url
               web_url
               cta_type
-              is_redirect_url
               button_color
               bottom_sheet {
                 show

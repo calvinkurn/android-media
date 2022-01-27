@@ -11,6 +11,7 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.common.utils.Utils
+import com.tokopedia.pdpsimulation.paylater.domain.model.BottomSheetDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.paylater_gopay_activation_bottomsheet.*
 
 class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
- /*   private var pdpSimulationCallback: PdpSimulationCallback? = null
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
     private lateinit var cta: Cta
     private var isWebLink = true
 
@@ -38,17 +39,16 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         getArgumentData()
         setDefaultParams()
         initBottomSheet()
-
     }
 
 
     private fun getArgumentData() {
         arguments?.let {
-            //cta = it.getParcelable<Cta>(GOPAY_BOTTOMSHEET_DETAIL) as Cta
-            parterName = it.getString(PARTER_NAME) ?: ""
-            tenure = it.getInt(TENURE)
-            montlyInstallment = it.getDouble(EMI_AMOUNT)
-            productId = it.getString(PRODUCT_ID)
+            cta = it.getParcelable<Cta>(GOPAY_BOTTOMSHEET_DETAIL) as Cta
+            //parterName = it.getString(PARTER_NAME) ?: ""
+            //tenure = it.getInt(TENURE)
+            //montlyInstallment = it.getDouble(EMI_AMOUNT)
+            //productId = it.getString(PRODUCT_ID)
             //redirectPosition = it.getInt(PAYLATER_PARTNER_POSITION)
 
         }
@@ -57,7 +57,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         renderUI()
         initListners()
-        sendImpressionAnalytics()
+        //sendImpressionAnalytics()
     }
 
     private fun renderUI() {
@@ -84,7 +84,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private fun initListners() {
         btnRegister.setOnClickListener {
-            sendClickAnalytics()
+            //sendClickAnalytics()
             if (::cta.isInitialized)
                 openRouteView(cta.android_url)
 
@@ -93,11 +93,12 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private fun openRouteView(androidUrl: String?) {
         if (isWebLink) {
-            pdpSimulationCallback?.setViewModelData(Utils.UpdateViewModelVariable.RefreshType, true)
+            // @Todo update by rohan
+            /*pdpSimulationCallback?.setViewModelData(Utils.UpdateViewModelVariable.RefreshType, true)
             pdpSimulationCallback?.setViewModelData(
                 Utils.UpdateViewModelVariable.PartnerPosition,
                 redirectPosition
-            )
+            )*/
             val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + androidUrl
             RouteManager.route(context, webViewAppLink)
         } else {
@@ -133,13 +134,14 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         showCloseIcon = true
         showHeader = true
         customPeekHeight = (getScreenHeight()).toDp()
-    }*/
+    }
 
     companion object {
 
         private const val TAG = "PayLaterTokopediaGopayBottomsheet"
         const val GOPAY_BOTTOMSHEET_DETAIL = "gopayBottomsheetDetail"
         const val PARTER_NAME = "partnerName"
+
         const val TENURE = " tenure"
         const val EMI_AMOUNT = "emiAmount"
         const val PRODUCT_ID = "productID"
@@ -147,14 +149,12 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
         fun show(
             bundle: Bundle,
-            pdpSimulationCallback: PdpSimulationCallback,
             childFragmentManager: FragmentManager
         ) {
             val payLaterTokopediaGopayBottomsheet = PayLaterTokopediaGopayBottomsheet().apply {
                 arguments = bundle
             }
             payLaterTokopediaGopayBottomsheet.show(childFragmentManager, TAG)
-            //payLaterTokopediaGopayBottomsheet.pdpSimulationCallback = pdpSimulationCallback
         }
     }
 
