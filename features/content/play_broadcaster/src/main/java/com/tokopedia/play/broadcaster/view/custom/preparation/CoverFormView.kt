@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationCoverFormBinding
 
 /**
@@ -43,9 +44,9 @@ class CoverFormView: ConstraintLayout {
         mListener = null
     }
 
-    fun setCover(imageUrl: String?) {
-        binding.ivCoverCircleImage.visibility = if(imageUrl == null) View.VISIBLE else View.GONE
-        binding.ivCoverFormPreview.setImageUrl(imageUrl ?: "")
+    fun setCover(imageUrl: String) {
+        binding.ivCoverCircleImage.visibility = View.GONE
+        binding.ivCoverFormPreview.setImageUrl(imageUrl)
     }
 
     fun setTitle(title: String) {

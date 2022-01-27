@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
@@ -32,7 +33,10 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_play_broadcast_preparation.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -40,7 +44,8 @@ import javax.inject.Inject
  */
 class PlayBroadcastPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
-    private val analytic: PlayBroadcastAnalytic
+    private val analytic: PlayBroadcastAnalytic,
+    private val dispatchers: CoroutineDispatchers
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
     ActionBarView.Listener,
     PreparationMenuView.Listener,
@@ -58,6 +63,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val binding get() = _binding!!
 
     /** Others */
+    private val scope = CoroutineScope(dispatchers.main)
     private val fragmentViewContainer = FragmentViewContainer()
 
     override fun getScreenName(): String = "Play Prepare Page"
@@ -99,6 +105,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        scope.cancel()
     }
 
     override fun onBackPressed(): Boolean {
@@ -158,11 +165,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
 
         parentViewModel.observableCover.observe(viewLifecycleOwner) {
-            binding.viewPreparationMenu.isSetCoverChecked(true)
             when (val croppedCover = it.croppedCover) {
-                is CoverSetupState.Cropped -> binding.formCover.setCover(croppedCover.coverImage.toString())
-                is CoverSetupState.Cropping.Image -> binding.formCover.setCover(croppedCover.coverImage.toString())
-                else -> binding.formCover.setCover(null)
+                is CoverSetupState.Cropped.Uploaded -> {
+                    binding.viewPreparationMenu.isSetCoverChecked(true)
+
+                    if(croppedCover.coverImage.toString().isNotEmpty()) {
+                        binding.formCover.setCover(croppedCover.coverImage.toString())
+                    }
+                }
             }
         }
 
@@ -176,6 +186,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     if (!it.hasBeenHandled) {
                         binding.formTitle.setLoading(false)
                         showTitleForm(false)
+                    }
+                }
+            }
+        }
+
+        coverSetupViewModel.observableUploadCoverEvent.observe(viewLifecycleOwner) {
+            when(it) {
+                is NetworkResult.Success -> {
+                    scope.launch {
+                        parentViewModel.getChannelDetail()
                     }
                 }
             }
