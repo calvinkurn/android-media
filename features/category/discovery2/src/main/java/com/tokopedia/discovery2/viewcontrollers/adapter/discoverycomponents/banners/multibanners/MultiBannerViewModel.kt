@@ -3,9 +3,12 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -15,12 +18,15 @@ import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -68,17 +74,26 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         fetchBannerData()
     }
 
-    fun fetchBannerData() {
-        if(components.properties?.dynamic == true) {
+    private fun fetchBannerData() {
+        if (getComponent(components.id, components.pageEndPoint)?.properties?.dynamic == true) {
             launchCatchError(block = {
 
-                if(bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)){
-                    this@MultiBannerViewModel.syncData.value = true
+                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
+                    bannerData.value = components
                 }
             }, onError = {
-                components.verticalProductFailState = true
-                this@MultiBannerViewModel.syncData.value = true
+                getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
             })
+        }
+    }
+
+    fun layoutSelector(): Int {
+        return when (getComponent(components.id, components.pageEndPoint)?.name) {
+            ComponentNames.SingleBanner.componentName -> R.layout.disco_shimmer_single_banner_layout
+            ComponentNames.DoubleBanner.componentName -> R.layout.disco_shimmer_double_banner_layout
+            ComponentNames.TripleBanner.componentName -> R.layout.disco_shimmer_triple_banner_layout
+            ComponentNames.QuadrupleBanner.componentName -> R.layout.disco_shimmer_quadruple_banner_layout
+            else -> R.layout.multi_banner_layout
         }
     }
 
@@ -121,10 +136,17 @@ class MultiBannerViewModel(val application: Application, var components: Compone
             launchCatchError(block = {
                 val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(getCampaignId(position))
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
-                    pushBannerStatus.value = Pair(position, pushSubscriptionResponse.notifierSetReminder.errorMessage ?: "")
+                    pushBannerStatus.value = Pair(position, pushSubscriptionResponse.notifierSetReminder.errorMessage
+                            ?: "")
                 }
             }, onError = {
-                it.printStackTrace()
+                components.noOfPagesLoaded = 1
+                if (it is UnknownHostException || it is SocketTimeoutException) {
+                    components.verticalProductFailState = true
+//                    _showErrorState.value = true
+                } else {
+//                    _hideShimmer.value = true
+                }
             })
         } else {
             showLogin.value = true
@@ -179,4 +201,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     fun getComponentPosition() = position
+    fun shouldShowShimmer(): Boolean {
+        return components.properties?.dynamic == true && components.noOfPagesLoaded != 1 && !components.verticalProductFailState
+    }
 }

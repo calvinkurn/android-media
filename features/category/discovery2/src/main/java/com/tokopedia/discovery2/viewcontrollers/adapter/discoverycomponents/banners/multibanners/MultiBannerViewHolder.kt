@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewcontrollers.fragment.PAGE_REFRESH_LOGIN
+import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -27,7 +28,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     private var context: Context
     private lateinit var bannerName: String
     private lateinit var multiBannerViewModel: MultiBannerViewModel
-    private lateinit var bannersItemList: ArrayList<BannerItem>
+    private var bannersItemList: ArrayList<BannerItem> = arrayListOf()
 
     init {
         context = constraintLayout.context
@@ -36,6 +37,9 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         multiBannerViewModel = discoveryBaseViewModel as MultiBannerViewModel
         getSubComponent().inject(multiBannerViewModel)
+        if (multiBannerViewModel.shouldShowShimmer()) {
+            constraintLayout.inflateLayout(multiBannerViewModel.layoutSelector(), true)
+        }
         multiBannerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { item ->
 
             if (!item.data.isNullOrEmpty()) {
@@ -48,7 +52,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
 
         multiBannerViewModel.getPushBannerStatusData().observe(fragment.viewLifecycleOwner, Observer {
             updateImage(it.first)
-            if(it.second.isNotEmpty()){
+            if (it.second.isNotEmpty()) {
                 Toaster.make(customItemView, it.second, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
         })
@@ -79,22 +83,11 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConst.LOGIN), PAGE_REFRESH_LOGIN)
         })
 
-        multiBannerViewModel.syncData.observe(fragment.viewLifecycleOwner, Observer {
-            if(it) {
-                val item = multiBannerViewModel.components
-                if (!item.data.isNullOrEmpty()) {
-                    constraintLayout.removeAllViews()
-                    bannersItemList = ArrayList()
-                    bannerName = item.name ?: ""
-                    addBanners(item.data!!)
-                }
-            }
-        })
     }
 
     private fun updateImage(position: Int) {
         if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
-            && !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
+                && !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
         ) {
             (bannersItemList[position].bannerImageView as ImageUnify).apply {
                 scaleType = ImageView.ScaleType.FIT_CENTER
@@ -132,9 +125,9 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
 
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-            data,
-            null,
-            Utils.getUserId(fragment.context)
+                data,
+                null,
+                Utils.getUserId(fragment.context)
         )
     }
 
@@ -146,7 +139,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         bannersItemList[index].bannerImageView.setOnClickListener {
             multiBannerViewModel.onBannerClicked(index, context)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
+                    ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
         }
     }
 }

@@ -11,9 +11,12 @@ import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -28,6 +31,12 @@ class BannerCarouselViewModel(application: Application, val component: Component
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
+    private val _hideShimmer = SingleLiveEvent<Boolean>()
+    val hideShimmer: LiveData<Boolean> = _hideShimmer
+
+    private val _showErrorState = SingleLiveEvent<Boolean>()
+    val showErrorState: LiveData<Boolean> = _showErrorState
+
     init {
         componentData.value = component
         component.data?.let {
@@ -35,9 +44,9 @@ class BannerCarouselViewModel(application: Application, val component: Component
                 bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BannerCarouselItemView.componentName,
                         component.name, position, component.properties?.design
                         ?: "")
-                title.value = component.properties?.bannerTitle ?: ""
             }
         }
+        title.value = component.properties?.bannerTitle ?: ""
     }
 
 
@@ -49,21 +58,34 @@ class BannerCarouselViewModel(application: Application, val component: Component
     private fun fetchBannerData() {
         if (getComponent(component.id, component.pageEndPoint)?.properties?.dynamic == true) {
             launchCatchError(block = {
-                if(bannerUseCase.loadFirstPageComponents(component.id, component.pageEndPoint)){
+                if (bannerUseCase.loadFirstPageComponents(component.id, component.pageEndPoint)) {
                     component.data?.let {
                         if (it.isNotEmpty()) {
                             bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BannerCarouselItemView.componentName,
                                     component.name, position, component.properties?.design
                                     ?: "")
-                            title.value = component.properties?.bannerTitle ?: ""
+                            componentData.value = component
                         }
                     }
+                    title.value = component.properties?.bannerTitle ?: ""
                 }
             }, onError = {
+                component.noOfPagesLoaded = 1
+                if (it is UnknownHostException || it is SocketTimeoutException) {
+                    component.verticalProductFailState = true
+                    _showErrorState.value = true
+                } else {
+                    _hideShimmer.value = true
+                }
+                //verticalProductFailState used for?
                 getComponent(component.id, component.pageEndPoint)?.verticalProductFailState = true
                 this@BannerCarouselViewModel.syncData.value = true
             })
         }
+    }
+
+    fun shouldShowShimmer(): Boolean {
+        return component.properties?.dynamic == true && component.noOfPagesLoaded != 1 && !component.verticalProductFailState
     }
 
     fun getComponentData(): LiveData<ArrayList<ComponentsItem>> = bannerCarouselList

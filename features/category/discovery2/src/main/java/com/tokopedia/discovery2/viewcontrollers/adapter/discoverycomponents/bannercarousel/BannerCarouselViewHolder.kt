@@ -8,7 +8,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -37,6 +39,9 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mBannerCarouselComponentViewModel = discoveryBaseViewModel as BannerCarouselViewModel
         getSubComponent().inject(mBannerCarouselComponentViewModel)
+        if(mBannerCarouselComponentViewModel.shouldShowShimmer()){
+            addShimmer()
+        }
         addDefaultItemDecorator()
         lihatSemuaTextView.setOnClickListener {
             RouteManager.route(fragment.activity, mBannerCarouselComponentViewModel.getLihatUrl())
@@ -61,7 +66,22 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
                     }
                 }
             })
+            mBannerCarouselComponentViewModel.hideShimmer.observe(it, { shouldHideShimmer ->
+                if (shouldHideShimmer) {
+                    mDiscoveryRecycleAdapter.setDataList(arrayListOf())
+                }
+            })
+
+            mBannerCarouselComponentViewModel.showErrorState.observe(it, { shouldShowError ->
+                if (shouldShowError) {
+                    handleError()
+                }
+            })
         }
+    }
+
+    private fun handleError() {
+        TODO("Not yet implemented")
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
@@ -96,6 +116,13 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
 
     private fun sendBannerCarouselImpression(item: List<DataItem>) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerImpression(item)
+    }
+
+    private fun addShimmer() {
+        val list: ArrayList<ComponentsItem> = ArrayList()
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        mDiscoveryRecycleAdapter.setDataList(list)
     }
 
 }
