@@ -319,8 +319,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
     private void abTestAndRemoteConfigSetup() {
         // remove background
-        if (!RemoveBackgroundConfig.remoteConfig(remoteConfig)) {
-            if (!RemoveBackgroundConfig.abTest()) {
+        if (!RemoveBackgroundConfig.abTest()) {
+            if (!RemoveBackgroundConfig.remoteConfig(remoteConfig)) {
                 imageEditActionType.remove(ImageEditActionType.ACTION_REMOVE_BACKGROUND);
             }
         }
