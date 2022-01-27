@@ -75,10 +75,24 @@ class DigitalPDPDataPlanFragment :
                 }
             }
         })
+
+        viewModel.menuDetailData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> {
+                    it.data.recommendations
+                }
+                is RechargeNetworkResult.Fail -> {
+                    it.error
+                }
+                is RechargeNetworkResult.Loading -> {
+                }
+            }
+        })
     }
 
     private fun getInitalData() {
-        viewModel.addFilter("filter_tag_kuota", arrayListOf("1157"))
+        //viewModel.addFilter("filter_tag_kuota", arrayListOf("1157"))
+        viewModel.getMenuDetail(290, true)
         viewModel.getRechargeCatalogInputMultiTab(290, "17", "085")
     }
 
