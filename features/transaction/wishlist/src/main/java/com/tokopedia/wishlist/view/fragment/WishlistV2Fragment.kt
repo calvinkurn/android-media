@@ -1297,6 +1297,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         currRecommendationListPage = 1
         loadWishlistV2()
         showSortFilter()
+        setTypeLayoutIcon()
     }
 
     private fun showSortFilter() {
