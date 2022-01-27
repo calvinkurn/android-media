@@ -15,9 +15,9 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.chatlist.di.ChatListScope
-import com.tokopedia.topchat.chatlist.domain.websocket.*
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -158,6 +158,6 @@ class ChatListNetworkModuleStub(
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
                 "&user_id=" + userSession.userId
-        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken)
+        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken, "chatlist")
     }
 }

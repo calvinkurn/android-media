@@ -150,10 +150,13 @@ open class ShopScoreMapper @Inject constructor(
         shopScoreVisitableList.apply {
             when {
                 isNewSeller || shopAge < NEW_SELLER_DAYS -> {
+                    val isEndTenureNewSeller = GoldMerchantUtil.isTenureNewSeller(
+                        shopAge
+                    )
                     val mapTimerNewSeller =
                         mapToTimerNewSellerUiModel(
                             shopAge,
-                            shopInfoPeriodUiModel.isEndTenureNewSeller, shopScore.toInt()
+                            isEndTenureNewSeller, shopScore.toInt()
                         )
                     if (mapTimerNewSeller.second) {
                         add(mapTimerNewSeller.first)
@@ -451,7 +454,8 @@ open class ShopScoreMapper @Inject constructor(
                             titleHeaderShopService = R.string.title_tenure_new_seller_score_under_60
                         }
                         shopScore in SHOP_SCORE_SIXTY..SHOP_SCORE_SEVENTY_NINE -> {
-                            titleHeaderShopService = R.string.title_tenure_new_seller_score_between_60_to_79
+                            titleHeaderShopService =
+                                R.string.title_tenure_new_seller_score_between_60_to_79
                         }
                         shopScore >= SHOP_SCORE_EIGHTY -> {
                             titleHeaderShopService = R.string.title_tenure_new_seller_score_more_80

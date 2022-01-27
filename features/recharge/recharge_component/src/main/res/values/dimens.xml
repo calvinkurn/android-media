@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="bu_widget_progress_fire_icon_width">12dp</dimen>
-    <dimen name="bu_widget_progress_fire_icon_height">13dp</dimen>
+    <dimen name="digital_card_progress_fire_icon_width">12dp</dimen>
+    <dimen name="digital_card_progress_fire_icon_height">13dp</dimen>
+    <dimen name="digital_unify_card_width">136dp</dimen>
+    <dimen name="digital_unify_card_minimum_height">254dp</dimen>
+    <dimen name="digital_unify_card_item_top_background_height">88dp</dimen>
+    <dimen name="digital_unify_card_floating_icon_background_size">46dp</dimen>
+    <dimen name="digital_unify_card_campaign_height">20dp</dimen>
 </resources>

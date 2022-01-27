@@ -63,10 +63,10 @@ class SomOrderExtensionViewModel @Inject constructor(
                 .OnSuccessGetOrderExtensionRequest(mappedResult)
         }
 
-    private suspend fun onFailedGetOrderExtensionRequest(errorMessage: String) =
+    private suspend fun onFailedGetOrderExtensionRequest(throwable: Throwable) =
         withContext(dispatcher.main) {
             orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
-                .OnFailedGetOrderExtensionRequest(errorMessage)
+                .OnFailedGetOrderExtensionRequest(throwable = throwable)
         }
 
     private fun startSendingOrderExtensionRequest(action: (OrderExtensionRequestInfoUiModel) -> Unit) {
@@ -76,6 +76,7 @@ class SomOrderExtensionViewModel @Inject constructor(
 
     private suspend fun onFailedSendingOrderExtensionRequest(
         errorMessage: String,
+        throwable: Throwable?,
         orderId: String,
         sendTracker: Boolean
     ) = withContext(dispatcher.main) {
@@ -87,7 +88,7 @@ class SomOrderExtensionViewModel @Inject constructor(
             )
         }
         orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
-            .OnFailedSendingOrderExtensionRequest(errorMessage)
+            .OnFailedSendingOrderExtensionRequest(errorMessage, throwable)
     }
 
     private suspend fun onOrderExtensionRequestCompleted(message: String, orderId: String) =
@@ -111,8 +112,7 @@ class SomOrderExtensionViewModel @Inject constructor(
             val mappedResult = somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(result)
             onSuccessGetSomRequestExtensionInfo(mappedResult)
         }, onError = {
-            val mappedError = somGetOrderExtensionRequestInfoMapper.mapError(it)
-            onFailedGetOrderExtensionRequest(mappedError)
+            onFailedGetOrderExtensionRequest(it)
         })
     }
 
@@ -132,7 +132,8 @@ class SomOrderExtensionViewModel @Inject constructor(
                         onFailedSendingOrderExtensionRequest(
                             errorMessage = mappedResult.message,
                             orderId = orderId,
-                            sendTracker = true
+                            sendTracker = true,
+                            throwable = null
                         )
                     } else {
                         onOrderExtensionRequestCompleted(
@@ -144,15 +145,16 @@ class SomOrderExtensionViewModel @Inject constructor(
                     onFailedSendingOrderExtensionRequest(
                         errorMessage = "",
                         orderId = orderId,
-                        sendTracker = false
+                        sendTracker = false,
+                        throwable = null
                     )
                 }
             }, onError = {
-                val mappedError = somOrderExtensionRequestResultMapper.mapError(it)
                 onFailedSendingOrderExtensionRequest(
-                    errorMessage = mappedError,
+                    errorMessage = "",
                     orderId = orderId,
-                    sendTracker = true
+                    sendTracker = true,
+                    throwable = it
                 )
             })
         }

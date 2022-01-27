@@ -192,8 +192,4 @@
     <string name="product_manage_back_to_home">Kembali ke Home</string>
     <string name="product_manage_no_access_description">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
     <string name="product_manage_refresh_page">Refresh Halaman</string>
-
-    <!--Product Manage List Tickers-->
-    <string name="product_manage_list_gopay_coins_cashback_info_ticker_title">Informasi untuk Seller</string>
-    <string name="product_manage_list_gopay_coins_cashback_info_ticker_description">Per 29 November 2021, seluruh cashback produkmu akan otomatis beralih ke GoPay Coins, ya. &lt;a href="tokopedia://webview?url=https://seller.tokopedia.com/edu/cashback-produk-gopaycoins"&gt;Baca Artikel&lt;/a&gt;</string>
 </resources>

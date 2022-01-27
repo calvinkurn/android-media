@@ -640,7 +640,7 @@ class MultiLineGraphViewHolder(
         return if (hexColor.isNotBlank()) {
             hexColor
         } else {
-            ChartColor.DEFAULT_LINE_COLOR
+            ChartColor.DMS_DEFAULT_LINE_COLOR
         }
     }
 

@@ -6,7 +6,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.HomeAndNavigationRevampSwitcherUiModel
-import com.tokopedia.remoteconfig.*
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
 import com.tokopedia.unifycomponents.UnifyButton
@@ -27,8 +28,6 @@ class HomeAndNavigationRevampSwitcherViewHolder(
         val btnNewBalanceWidget = itemView.findViewById<UnifyButton>(R.id.new_balance_widget_btn)
         val btnOldInbox = itemView.findViewById<UnifyButton>(R.id.old_inbox_btn)
         val btnNewInbox = itemView.findViewById<UnifyButton>(R.id.new_inbox_btn)
-        val btnOldCartCheckout = itemView.findViewById<UnifyButton>(R.id.old_cart_checkout_btn)
-        val btnNewCartCheckout = itemView.findViewById<UnifyButton>(R.id.new_cart_checkout_btn)
 
         itemView.context.apply {
             btnNewNavigation.setOnClickListener {
@@ -61,17 +60,6 @@ class HomeAndNavigationRevampSwitcherViewHolder(
                 Toast.makeText(this, "Inbox: New", Toast.LENGTH_SHORT).show()
             }
 
-            btnOldCartCheckout.setOnClickListener {
-                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(this)
-                remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "false")
-                Toast.makeText(this, "Applied", Toast.LENGTH_SHORT).show()
-            }
-
-            btnNewCartCheckout.setOnClickListener {
-                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(this)
-                remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "true")
-                Toast.makeText(this, "Applied", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 }

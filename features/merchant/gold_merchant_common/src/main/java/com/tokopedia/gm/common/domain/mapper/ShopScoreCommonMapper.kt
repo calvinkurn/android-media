@@ -15,9 +15,6 @@ open class ShopScoreCommonMapper @Inject constructor() {
             isNewSeller = GoldMerchantUtil.isNewSeller(
                 dateShopCreated
             ),
-            isEndTenureNewSeller = GoldMerchantUtil.isTenureNewSeller(
-                dateShopCreated
-            ),
             shopAge = GoldMerchantUtil.totalDays(
                 dateShopCreated
             ),

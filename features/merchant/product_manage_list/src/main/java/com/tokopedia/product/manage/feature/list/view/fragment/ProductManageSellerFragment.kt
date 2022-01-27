@@ -34,8 +34,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
         @JvmStatic
         fun newInstance(
-                filterOptions: ArrayList<String>,
-                searchKeyWord: String): ProductManageSellerFragment {
+            filterOptions: ArrayList<String>,
+            searchKeyWord: String
+        ): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
@@ -62,7 +63,12 @@ class ProductManageSellerFragment : ProductManageFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        activity?.window?.decorView?.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
         tvDraftProduct?.visibility = View.GONE
         getDefaultKeywordOptionFromArguments()
         getDefaultFilterOptionsFromArguments()
@@ -71,13 +77,13 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     override fun initInjector() {
         ProductManageListInstance.getComponent(requireContext())
-                .inject(this)
+            .inject(this)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
-        if(!hidden) {
+        if (!hidden) {
             sendNormalSendScreen()
         }
     }
@@ -115,10 +121,18 @@ class ProductManageSellerFragment : ProductManageFragment() {
         if (rowCount == 0L) {
             tvDraftProduct?.visibility = View.GONE
         } else {
-            tvDraftProduct?.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
+            tvDraftProduct?.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.product_manage_you_have_x_unfinished_product,
+                    rowCount
+                )
+            )
             tvDraftProduct?.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
+                val intent = RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT
+                )
                 startActivity(intent)
             }
             tvDraftProduct?.visibility = View.VISIBLE
@@ -138,7 +152,8 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     private fun getDefaultFilterOptionsFromArguments() {
         val filterOptionKeys: List<String> = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
-        val filterOptions: List<FilterOption> = FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
+        val filterOptions: List<FilterOption> =
+            FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
         super.setDefaultFilterOptions(filterOptions)
     }
 
@@ -149,6 +164,13 @@ class ProductManageSellerFragment : ProductManageFragment() {
                 is Fail -> {
                     onDraftCountLoadError()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.GET_ALL_DRAFT_COUNT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }

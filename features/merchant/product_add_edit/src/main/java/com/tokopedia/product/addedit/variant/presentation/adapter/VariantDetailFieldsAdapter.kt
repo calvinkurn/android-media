@@ -1,9 +1,9 @@
 package com.tokopedia.product.addedit.variant.presentation.adapter
 
-import android.os.Handler
-import android.os.Looper
+import android.annotation.SuppressLint
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
@@ -41,11 +41,6 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         notifyItemRangeInserted(targetPosition, viewModels.size)
     }
 
-    fun updateDetailInputField(adapterPosition: Int, variantDetailInputModel: VariantDetailInputLayoutModel) {
-        val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(variantDetailInputModel)
-        notifyElement(adapterPosition, variantDetailFieldsViewModel)
-    }
-
     fun updateSkuVisibilityStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isVisible: Boolean) {
         variantDetailFieldMapLayout.forEach { (adapterPosition, variantDetailInputModel) ->
             variantDetailInputModel.isSkuFieldVisible = isVisible
@@ -62,18 +57,31 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         }
     }
 
+    fun activateVariantStatus(combination: List<Int>) {
+        list.forEachIndexed { position, visitable ->
+            (visitable as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.apply {
+                if (this.combination == combination) {
+                    isActive = true
+                    notifyItemChanged(position)
+                }
+            }
+        }
+    }
+
     fun getDetailInputLayoutList(): List<VariantDetailInputLayoutModel> {
         return list.filterIsInstance<VariantDetailFieldsUiModel>().map {
             it.variantDetailInputLayoutModel
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun notifyElement(adapterPosition: Int, element: Visitable<*>) {
-        visitables[adapterPosition] = element
-        Handler(Looper.getMainLooper()).post {
-            try {
-                notifyItemChanged(adapterPosition)
-            } catch (e: Exception) {}
+        try {
+            visitables[adapterPosition] = element
+            notifyItemChanged(adapterPosition)
+        } catch (e: Exception) {
+            notifyDataSetChanged()
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
         }
     }
 }
