@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.Group
@@ -131,14 +132,15 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun showLoginPortal() {
         if (fragmentStack.isEmpty() || (fragmentStack.peek() != (AffiliateLoginFragment::class.java.canonicalName)))
-            openFragment(AffiliateLoginFragment.getFragmentInstance(this))
+            openFragment(AffiliateLoginFragment.getFragmentInstance())
     }
 
     private fun showAffiliatePortal() {
         clearBackStack()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
+        if(findViewById<LottieBottomNavbar>(R.id.bottom_navbar)?.visibility !=  View.VISIBLE)
+            affiliateBottomNavigation?.populateBottomNavigationView()
         affiliateBottomNavigation?.showBottomNav()
-        affiliateBottomNavigation?.populateBottomNavigationView()
         pushOpenScreenEvent()
     }
 
