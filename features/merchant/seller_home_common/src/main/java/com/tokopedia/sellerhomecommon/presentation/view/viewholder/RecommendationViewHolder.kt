@@ -132,7 +132,7 @@ class RecommendationViewHolder(
             }
             icShcRefreshRecommendation.isVisible = element.isFromCache
             icShcRefreshRecommendation.setOnClickListener {
-                listener.reloadRecommendationWidget(element)
+                listener.onReloadWidget(element)
             }
         }
     }
@@ -351,7 +351,5 @@ class RecommendationViewHolder(
             item: RecommendationItemUiModel
         ) {
         }
-
-        fun reloadRecommendationWidget(element: RecommendationWidgetUiModel) {}
     }
 }

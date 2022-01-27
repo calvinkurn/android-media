@@ -119,7 +119,7 @@ class MilestoneViewHolder(
             }
             icShcRefreshMilestone.isVisible = element.isFromCache
             icShcRefreshMilestone.setOnClickListener {
-                listener.reloadMilestoneWidget(element)
+                listener.onReloadWidget(element)
             }
         }
     }
@@ -213,21 +213,19 @@ class MilestoneViewHolder(
 
     private fun setupCountDownTimer(element: MilestoneWidgetUiModel) {
         val data = element.data ?: return
-        with(successStateBinding) {
-            val now = Date().time
-            val diffMillis = data.deadlineMillis.minus(now)
-            val nineDaysMillis = TimeUnit.DAYS.toMillis(NINE_CONST)
-            val fourDaysMillis = TimeUnit.DAYS.toMillis(FOUR_CONST)
-            val oneDaysMillis = TimeUnit.DAYS.toMillis(ONE_CONST)
+        val now = Date().time
+        val diffMillis = data.deadlineMillis.minus(now)
+        val nineDaysMillis = TimeUnit.DAYS.toMillis(NINE_CONST)
+        val fourDaysMillis = TimeUnit.DAYS.toMillis(FOUR_CONST)
+        val oneDaysMillis = TimeUnit.DAYS.toMillis(ONE_CONST)
 
-            when {
-                diffMillis < oneDaysMillis -> setupCountDownTimer(data.deadlineMillis)
-                diffMillis in oneDaysMillis until fourDaysMillis -> showTimerLastFourDays(data.deadlineMillis)
-                diffMillis in (fourDaysMillis.plus(LAST_ONE)) until nineDaysMillis -> {
-                    showTimerLastNineDays(data.deadlineMillis)
-                }
-                diffMillis > nineDaysMillis -> showTimerMoreThanNineDays(data.deadlineMillis)
+        when {
+            diffMillis < oneDaysMillis -> setupCountDownTimer(data.deadlineMillis)
+            diffMillis in oneDaysMillis until fourDaysMillis -> showTimerLastFourDays(data.deadlineMillis)
+            diffMillis in (fourDaysMillis.plus(LAST_ONE)) until nineDaysMillis -> {
+                showTimerLastNineDays(data.deadlineMillis)
             }
+            diffMillis > nineDaysMillis -> showTimerMoreThanNineDays(data.deadlineMillis)
         }
     }
 
@@ -400,7 +398,7 @@ class MilestoneViewHolder(
             containerShcMilestoneError.visible()
             tvShcMilestoneErrorStateTitle.text = element.title
             btnMilestoneError.setOnClickListener {
-                listener.reloadMilestoneWidget(element)
+                listener.onReloadWidget(element)
             }
 
             imgMilestoneOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
@@ -426,8 +424,6 @@ class MilestoneViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-
-        fun reloadMilestoneWidget(model: MilestoneWidgetUiModel) {}
 
         fun onMilestoneMissionActionClickedListener(
             element: MilestoneWidgetUiModel,

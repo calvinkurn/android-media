@@ -287,7 +287,7 @@ class MultiLineGraphViewHolder(
             }
             icShcRefreshMultiLineGraph.isVisible = element.isFromCache
             icShcRefreshMultiLineGraph.setOnClickListener {
-                listener.reloadMultiLineGraphWidget(element)
+                listener.onReloadWidget(element)
             }
         }
     }
@@ -737,7 +737,5 @@ class MultiLineGraphViewHolder(
         fun sendMultiLineGraphCtaClick(element: MultiLineGraphWidgetUiModel) {}
 
         fun sendMultiLineGraphEmptyStateCtaClick(element: MultiLineGraphWidgetUiModel) {}
-
-        fun reloadMultiLineGraphWidget(element: MultiLineGraphWidgetUiModel) {}
     }
 }

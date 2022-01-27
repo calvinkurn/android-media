@@ -172,6 +172,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var notifCenterCount = 0
     private var isFirstLoad = true
     private var isErrorToastShown = false
+    private var shouldShowSuccessToaster: Boolean = false
 
     private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
@@ -672,40 +673,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendMilestoneWidgetMinimizeClickEvent()
     }
 
-    override fun reloadMultiLineGraphWidget(element: MultiLineGraphWidgetUiModel) {
-        getMultiLineGraphData(listOf(element))
-    }
-
-    override fun reloadMilestoneWidget(model: MilestoneWidgetUiModel) {
-        getMilestoneData(listOf(model))
-    }
-
-    override fun reloadLineGraphWidget(element: LineGraphWidgetUiModel) {
-        getLineGraphData(listOf(element))
-    }
-
-    override fun reloadRecommendationWidget(element: RecommendationWidgetUiModel) {
-        getRecommendationData(listOf(element))
-    }
-
-    override fun reloadPostListWidget(element: PostListWidgetUiModel) {
-        getPostData(listOf(element))
-    }
-
-    override fun reloadCardWidget(element: CardWidgetUiModel) {
-        getCardData(listOf(element))
-    }
-
-    override fun reloadPieChartWidget(element: PieChartWidgetUiModel) {
-        getPieChartData(listOf(element))
-    }
-
-    override fun reloadTableWidget(element: TableWidgetUiModel) {
-        getTableData(listOf(element))
-    }
-
-    override fun reloadBarChartWidget(element: BarChartWidgetUiModel) {
-        getBarChartData(listOf(element))
+    override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
+        shouldShowSuccessToaster = true
+        getWidgetsData(listOf(widget))
     }
 
     fun setNavigationOtherMenuView(view: View?) {
@@ -1555,6 +1525,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             recyclerView?.post {
                 checkLoadingWidgets()
                 requestVisibleWidgetsData()
+            }
+        }
+        showWidgetSuccessToaster()
+    }
+
+    private fun showWidgetSuccessToaster() {
+        if (shouldShowSuccessToaster) {
+            shouldShowSuccessToaster = false
+
+            binding?.let {
+                val message = getString(R.string.sah_widget_success_toaster)
+                Toaster.build(it.root, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    .show()
             }
         }
     }

@@ -134,7 +134,7 @@ class PieChartViewHolder(
             }
             icShcRefreshPieChart.isVisible = element.isFromCache
             icShcRefreshPieChart.setOnClickListener {
-                listener.reloadPieChartWidget(element)
+                listener.onReloadWidget(element)
             }
         }
     }
@@ -268,6 +268,5 @@ class PieChartViewHolder(
         fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {}
         fun sendPieChartEmptyStateCtaClickEvent(element: PieChartWidgetUiModel) {}
         fun sendPieChartSeeMoreClickEvent(model: PieChartWidgetUiModel) {}
-        fun reloadPieChartWidget(element: PieChartWidgetUiModel) {}
     }
 }

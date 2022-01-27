@@ -147,7 +147,7 @@ class CardViewHolder(
         with(binding) {
             icShcRefreshCard.isVisible = element.isFromCache
             icShcRefreshCard.setOnClickListener {
-                listener.reloadCardWidget(element)
+                listener.onReloadWidget(element)
             }
         }
     }
@@ -187,7 +187,5 @@ class CardViewHolder(
         fun sendCardImpressionEvent(model: CardWidgetUiModel) {}
 
         fun sendCardClickTracking(model: CardWidgetUiModel) {}
-
-        fun reloadCardWidget(element: CardWidgetUiModel) {}
     }
 }

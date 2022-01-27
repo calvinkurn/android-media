@@ -184,7 +184,7 @@ class LineGraphViewHolder(
             }
             icShcRefreshLineGraph.isVisible = element.isFromCache
             icShcRefreshLineGraph.setOnClickListener {
-                listener.reloadLineGraphWidget(element)
+                listener.onReloadWidget(element)
             }
         }
     }
@@ -358,7 +358,5 @@ class LineGraphViewHolder(
         fun sendLineGraphCtaClickEvent(model: LineGraphWidgetUiModel) {}
 
         fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {}
-
-        fun reloadLineGraphWidget(element: LineGraphWidgetUiModel) {}
     }
 }

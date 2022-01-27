@@ -119,7 +119,7 @@ class PostListViewHolder(
             }
             icShcRefreshPost.isVisible = element.isFromCache
             icShcRefreshPost.setOnClickListener {
-                listener.reloadPostListWidget(element)
+                listener.onReloadWidget(element)
             }
         }
     }
@@ -381,7 +381,5 @@ class PostListViewHolder(
         fun sendPostListEmptyStateCtaClickEvent(element: PostListWidgetUiModel) {}
 
         fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {}
-
-        fun reloadPostListWidget(element: PostListWidgetUiModel) {}
     }
 }

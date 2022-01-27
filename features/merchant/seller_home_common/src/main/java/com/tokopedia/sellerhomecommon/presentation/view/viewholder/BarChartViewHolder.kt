@@ -142,7 +142,7 @@ class BarChartViewHolder(
             }
             icShcRefreshBarChart.isVisible = element.isFromCache
             icShcRefreshBarChart.setOnClickListener {
-                listener.reloadBarChartWidget(element)
+                listener.onReloadWidget(element)
             }
         }
     }
@@ -404,6 +404,5 @@ class BarChartViewHolder(
         fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {}
         fun sendBarChartEmptyStateCtaClick(model: BarChartWidgetUiModel) {}
         fun sendBarChartSeeMoreClickEvent(model: BarChartWidgetUiModel) {}
-        fun reloadBarChartWidget(element: BarChartWidgetUiModel) {}
     }
 }

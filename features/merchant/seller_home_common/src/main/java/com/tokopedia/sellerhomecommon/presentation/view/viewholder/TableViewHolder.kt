@@ -120,7 +120,7 @@ class TableViewHolder(
             }
             icShcRefreshTable.isVisible = element.isFromCache
             icShcRefreshTable.setOnClickListener {
-                listener.reloadTableWidget(element)
+                listener.onReloadWidget(element)
             }
         }
     }
@@ -304,6 +304,5 @@ class TableViewHolder(
         fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {}
         fun sendTableFilterImpression(element: TableWidgetUiModel) {}
         fun sendTableSeeMoreClickEvent(element: TableWidgetUiModel, isEmpty: Boolean) {}
-        fun reloadTableWidget(element: TableWidgetUiModel) {}
     }
 }

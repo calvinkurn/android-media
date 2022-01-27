@@ -157,5 +157,7 @@
     <string name="sah_social_fb_com_title">Keluarga Tokopedia</string>
     <string name="sah_social_fb_com_desc">Gabung grup Keluarga Tokopedia untuk berbagi info dan pengalaman ke sesama Seller.</string>
     <string name="sah_social_cta">Lihat</string>
-        
+
+    <string name="sah_widget_success_toaster">Berhasil melakukan pembaruan</string>
+
 </resources>
