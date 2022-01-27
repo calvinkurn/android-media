@@ -7,6 +7,14 @@ import java.security.NoSuchAlgorithmException;
 
 public class RechargeCCUtil {
 
+    private static final int FIRST_AMEX_DIVIDER_POSITION = 4;
+    private static final int SECOND_AMEX_DIVIDER_POSITION = 10;
+    private static final int FIRST_AMEX_DIVIDER_POSITION_CHECKER = FIRST_AMEX_DIVIDER_POSITION + 1;
+    private static final int SECOND_AMEX_DIVIDER_POSITION_CHECKER = SECOND_AMEX_DIVIDER_POSITION + 2;
+    private static final int THIRD_AMEX_DIVIDER_POSITION_CHECKER = SECOND_AMEX_DIVIDER_POSITION_CHECKER + 5;
+    private static final int DIVIDER_POSITION = 4;
+    private static final int LUHN_ALGORITHM_MODULO = 10;
+
     public static boolean isInputCorrect(Editable s, int totalSymbols, int dividerModulo, char divider) {
         boolean isCorrect = s.length() <= totalSymbols; // check size of entered string
         for (int i = 0; i < s.length(); i++) { // check that every element is right
@@ -19,19 +27,51 @@ public class RechargeCCUtil {
         return isCorrect;
     }
 
-    //this method used to separate cc per 4digits
-    public static String concatString(char[] digits, int dividerPosition, char divider) {
-        final StringBuilder formatted = new StringBuilder();
-
-        for (int i = 0; i < digits.length; i++) {
-            if (digits[i] != 0) {
-                formatted.append(digits[i]);
-                if ((i > 0) && (i < (digits.length - 1)) && (((i + 1) % dividerPosition) == 0)) {
-                    formatted.append(divider);
-                }
+    public static boolean isInputCorrectAmex(Editable s, int totalSymbols, char divider) {
+        boolean isCorrect = s.length() <= totalSymbols; // check size of entered string
+        for (int i = 0; i < s.length(); i++) { // check that every element is right
+            if ((i + 1) == FIRST_AMEX_DIVIDER_POSITION_CHECKER
+                    || (i + 1) == SECOND_AMEX_DIVIDER_POSITION_CHECKER
+                    || (i + 1) == THIRD_AMEX_DIVIDER_POSITION_CHECKER) {
+                isCorrect &= divider == s.charAt(i);
+            } else {
+                isCorrect &= Character.isDigit(s.charAt(i));
             }
         }
+        return isCorrect;
+    }
 
+    //this method used for separate cc with following patterns xxxx-xxxxxx-xxxxx
+    public static String concatStringWith15D(char[] text, char divider) {
+        StringBuilder formatted = new StringBuilder();
+        int count = 0;
+        for (char c : text) {
+            if (Character.isDigit(c)) {
+                if (count > 0
+                        && ((count == FIRST_AMEX_DIVIDER_POSITION)
+                        || (count == SECOND_AMEX_DIVIDER_POSITION))) {
+                    formatted.append(divider);
+                }
+                formatted.append(c);
+                ++count;
+            }
+        }
+        return formatted.toString();
+    }
+
+    //this method used for separate cc with following patterns xxxx-xxxx-xxxx-xxxx
+    public static String concatStringWith16D(char[] text, char divider){
+        StringBuilder formatted = new StringBuilder();
+        int count = 0;
+        for (char c : text) {
+            if (Character.isDigit(c)) {
+                if (count % DIVIDER_POSITION == 0 && count > 0) {
+                    formatted.append(divider);
+                }
+                formatted.append(c);
+                ++count;
+            }
+        }
         return formatted.toString();
     }
 
@@ -61,7 +101,7 @@ public class RechargeCCUtil {
             incNum = Integer.parseInt(String.valueOf(temp.charAt(i)));
             counter += (odd = !odd) ? incNum : luhnArr[incNum];
         }
-        return (counter % 10 == 0);
+        return (counter % LUHN_ALGORITHM_MODULO == 0);
     }
 
     public static String generateIdemPotencyCheckout(String userLoginId) {

@@ -47,5 +47,14 @@ class CatalogPrefixAttributes(
         val defaultProductId: String = "",
         @SerializedName("name")
         @Expose
-        val name: String = ""
+        val name: String = "",
+        @SerializedName("rule")
+        @Expose
+        val rule: Rule = Rule()
+)
+
+class Rule(
+        @SerializedName("maximum_length")
+        @Expose
+        val maximumLength: Int = 0
 )
