@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.exProductId
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult
@@ -22,7 +23,22 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         ProductPreviewResult.isLoadingAt(0)
     }
 
-    // TODO: should render actual product data for product preview when success pre attach product payload
+    @Test
+    fun should_render_actual_product_data_for_product_preview_when_success_pre_attach_product_payload() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+                .generatePreAttachPayload(exProductId)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        ProductPreviewResult.isNotLoadingAt(0)
+        ProductPreviewResult.isNotErrorAt(0)
+    }
+
     // TODO: should show error product preview when error pre attach product payload
     // TODO: should retry preload product attachment when user click retry
     // TODO: should send text only when attach product preview is loading

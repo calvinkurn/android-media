@@ -7,6 +7,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 
 object ProductPreviewResult {
@@ -19,10 +20,33 @@ object ProductPreviewResult {
     }
 
     fun isLoadingAt(position: Int) {
+        loadingIs(position, isDisplayed())
+    }
+
+    fun isNotLoadingAt(position: Int) {
+        loadingIs(position, not(isDisplayed()))
+    }
+
+    private fun loadingIs(position: Int, matcher: Matcher<View>) {
         onView(
                 withRecyclerView(R.id.rv_attachment_preview)
                         .atPositionOnView(position, R.id.lu_product_preview)
-        ).check(matches(isDisplayed()))
+        ).check(matches(matcher))
+    }
+
+    fun isErrorAt(position: Int) {
+        errorIs(position, isDisplayed())
+    }
+
+    fun isNotErrorAt(position: Int) {
+        errorIs(position, not(isDisplayed()))
+    }
+
+    private fun errorIs(position: Int, matcher: Matcher<View>) {
+        onView(
+                withRecyclerView(R.id.rv_attachment_preview)
+                        .atPositionOnView(position, R.id.ll_retry_product_preview)
+        ).check(matches(matcher))
     }
 
 }
