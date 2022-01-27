@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
@@ -32,6 +35,11 @@ class DigitalPDPDataPlanFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: DigitalPDPDataPlanViewModel
+
+    private var clientNumber = ""
+    private var productId =  0
+    private var menuId = 0
+    private var categoryId = TelcoCategoryType.CATEGORY_PAKET_DATA
 
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
@@ -58,62 +66,58 @@ class DigitalPDPDataPlanFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getDataFromBundle()
         getInitalData()
         observeData()
     }
 
-    private fun observeData() {
-        binding?.let {
-            it.widgetBuyWidget.showBuyWidget(
-                DenomData(
-                price = "Rp35.000",
-                    pricePlain = 35000,
-                    slashPrice = "Rp50.000",
-                    slashPricePlain = 50000
-            ), listener = object : RechargeBuyWidgetListener {
-                override fun onClickedChevron(product: DenomData) {
-                    fragmentManager?.let {
-                        SummaryPulsaBottomsheet(getString(R.string.summary_transaction), product).show(it, "")
-                    }
-                }
-
-                override fun onClickedButtonLanjutkan(product: DenomData) {
-
-                }
-            })
+    private fun getDataFromBundle() {
+        arguments?.run {
+            val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
+                ?: TopupBillsExtraParam()
+            clientNumber = digitalTelcoExtraParam.clientNumber
+            productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
+                categoryId = digitalTelcoExtraParam.categoryId.toInt()
+            }
+            if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
+                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+            }
         }
+    }
 
-        viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
-            when (denomData) {
+    private fun observeData() {
+        viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, {
+            when (it) {
                 is RechargeNetworkResult.Success -> {
-                    binding?.let {
-                        it.widgetDenomGrid.renderDenomGridLayout(this, denomData.data)
-                    }
+                    it.data
                 }
-
                 is RechargeNetworkResult.Fail -> {
-                    view?.let {
-                        binding?.let {
-                            it.widgetDenomGrid.renderFailDenomGrid()
-                        }
-                        Toaster.build(it, denomData.error.message ?: "Nei", Toaster.LENGTH_LONG)
-                            .show()
-                    }
+                    it.error
                 }
-
                 is RechargeNetworkResult.Loading -> {
-                    binding?.let {
-                        it.widgetDenomGrid.renderDenomGridShimmering()
-                    }
                 }
             }
+        })
 
+        viewModel.menuDetailData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> {
+                    it.data.recommendations
+                }
+                is RechargeNetworkResult.Fail -> {
+                    it.error
+                }
+                is RechargeNetworkResult.Loading -> {
+                }
+            }
         })
     }
 
     private fun getInitalData() {
-        viewModel.setInital()
-        viewModel.getRechargeCatalogInput(148, "17")
+        //viewModel.addFilter("filter_tag_kuota", arrayListOf("1157"))
+        viewModel.getMenuDetail(menuId, true)
+        viewModel.getRechargeCatalogInputMultiTab(menuId, "17", "085")
     }
 
     /**
@@ -129,9 +133,10 @@ class DigitalPDPDataPlanFragment :
 
 
     companion object {
-        fun newInstance(): DigitalPDPDataPlanFragment {
-            val fragment = DigitalPDPDataPlanFragment()
-            return fragment
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam) = DigitalPDPDataPlanFragment().also {
+            val bundle = Bundle()
+            bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, telcoExtraParam)
+            it.arguments = bundle
         }
     }
 }

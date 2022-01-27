@@ -31,6 +31,7 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
@@ -1013,7 +1014,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         const val PREFERENCES_NAME = "pdp_pulsa_preferences"
         const val FAVNUM_PERMISSION_CHECKER_IS_DENIED = "favnum_permission_checker_is_denied"
-        private const val EXTRA_PARAM = "extra_param"
 
         const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
 

@@ -1,15 +1,19 @@
 package com.tokopedia.digital_product_detail.di
 
-import com.tokopedia.digital_product_detail.data.repository.DigitalPDPRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.DigitalPDPPaketDataRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.DigitalPDPPulsaRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeAddToCartRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogInputMultiTabRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogMenuDetailRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogPrefixSelectRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeFavoriteNumberRepositoryImpl
-import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPPaketDataRepository
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPPulsaRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
 import dagger.Binds
@@ -44,5 +48,14 @@ abstract class DigitalPDPBindModule {
 
     @Binds
     @DigitalPDPScope
-    abstract fun bindDigitalPDPRepository(repo: DigitalPDPRepositoryImpl): DigitalPDPRepository
+    abstract fun bindRechargeInputMultiTabRepository(repo: RechargeCatalogInputMultiTabRepositoryImpl): RechargeCatalogProductInputMultiTabRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindDigitalPDPPulsaRepository(repo: DigitalPDPPulsaRepositoryImpl): DigitalPDPPulsaRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindDigitalPDPPaketDataRepository(repo: DigitalPDPPaketDataRepositoryImpl): DigitalPDPPaketDataRepository
+
 }

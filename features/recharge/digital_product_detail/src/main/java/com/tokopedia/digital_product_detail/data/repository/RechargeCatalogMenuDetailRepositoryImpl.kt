@@ -17,13 +17,14 @@ class RechargeCatalogMenuDetailRepositoryImpl @Inject constructor(
 
     override suspend fun getMenuDetail(
         menuId: Int,
-        isLoadFromCloud: Boolean
+        isLoadFromCloud: Boolean,
+        isBigRecommendation: Boolean
     ): MenuDetailModel = withContext(dispatchers.io) {
         val menuDetail = getRechargeCatalogMenuDetailUseCase.apply {
             setMenuDetailParams(menuId)
             setLoadFromCloud(isLoadFromCloud)
         }.executeOnBackground()
 
-        return@withContext mapper.mapMenuDetailModel(menuDetail.catalogMenuDetailData)
+        return@withContext mapper.mapMenuDetailModel(menuDetail.catalogMenuDetailData, isBigRecommendation)
     }
 }
