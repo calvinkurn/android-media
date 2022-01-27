@@ -1,0 +1,22 @@
+package com.tokopedia.digital_product_detail.data.repository
+
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPPaketDataRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
+import javax.inject.Inject
+
+class DigitalPDPPaketDataRepositoryImpl @Inject constructor(
+    private val rechargeAddToCardRepo: RechargeAddToCartRepository,
+    private val rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository,
+    private val rechargeCatalogPrefixSelectRepo: RechargeCatalogPrefixSelectRepository,
+    private val rechargeCatalogMenuDetailRepo: RechargeCatalogMenuDetailRepository,
+    private val rechargeCatalogProductInputMultiTabRepository: RechargeCatalogProductInputMultiTabRepository
+): DigitalPDPPaketDataRepository,
+    RechargeFavoriteNumberRepository by rechargeFavoriteNumberRepo,
+    RechargeCatalogPrefixSelectRepository by rechargeCatalogPrefixSelectRepo,
+    RechargeCatalogMenuDetailRepository by rechargeCatalogMenuDetailRepo,
+    RechargeAddToCartRepository by rechargeAddToCardRepo,
+    RechargeCatalogProductInputMultiTabRepository by rechargeCatalogProductInputMultiTabRepository

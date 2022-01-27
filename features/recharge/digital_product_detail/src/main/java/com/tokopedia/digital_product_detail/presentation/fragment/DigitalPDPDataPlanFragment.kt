@@ -63,57 +63,23 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun observeData() {
-        binding?.let {
-            it.widgetBuyWidget.showBuyWidget(
-                DenomData(
-                price = "Rp35.000",
-                    pricePlain = 35000,
-                    slashPrice = "Rp50.000",
-                    slashPricePlain = 50000
-            ), listener = object : RechargeBuyWidgetListener {
-                override fun onClickedChevron(product: DenomData) {
-                    fragmentManager?.let {
-                        SummaryPulsaBottomsheet(getString(R.string.summary_transaction), product).show(it, "")
-                    }
-                }
-
-                override fun onClickedButtonLanjutkan(product: DenomData) {
-
-                }
-            })
-        }
-
-        viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
-            when (denomData) {
+        viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, {
+            when (it) {
                 is RechargeNetworkResult.Success -> {
-                    binding?.let {
-                        it.widgetDenomGrid.renderDenomGridLayout(this, denomData.data)
-                    }
+                    it.data
                 }
-
                 is RechargeNetworkResult.Fail -> {
-                    view?.let {
-                        binding?.let {
-                            it.widgetDenomGrid.renderFailDenomGrid()
-                        }
-                        Toaster.build(it, denomData.error.message ?: "Nei", Toaster.LENGTH_LONG)
-                            .show()
-                    }
+                    it.error
                 }
-
                 is RechargeNetworkResult.Loading -> {
-                    binding?.let {
-                        it.widgetDenomGrid.renderDenomGridShimmering()
-                    }
                 }
             }
-
         })
     }
 
     private fun getInitalData() {
-        viewModel.setInital()
-        viewModel.getRechargeCatalogInput(148, "17")
+        viewModel.addFilter("filter_tag_kuota", arrayListOf("1157"))
+        viewModel.getRechargeCatalogInputMultiTab(290, "17", "085")
     }
 
     /**

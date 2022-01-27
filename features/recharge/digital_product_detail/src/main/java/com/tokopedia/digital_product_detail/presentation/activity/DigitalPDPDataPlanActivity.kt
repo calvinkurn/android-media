@@ -10,7 +10,7 @@ import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPData
 
 /**
  * @author by firmanda on 04/01/21
- * access applink
+ * access applink tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2
  * access internal applink tokopedia-android-internal://digital/pdp_paket_data
  */
 
