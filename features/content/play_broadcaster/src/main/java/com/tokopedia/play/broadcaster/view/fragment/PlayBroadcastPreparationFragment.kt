@@ -45,7 +45,6 @@ import javax.inject.Inject
 class PlayBroadcastPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val analytic: PlayBroadcastAnalytic,
-    private val dispatchers: CoroutineDispatchers
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
     ActionBarView.Listener,
     PreparationMenuView.Listener,
@@ -63,7 +62,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val binding get() = _binding!!
 
     /** Others */
-    private val scope = CoroutineScope(dispatchers.main)
     private val fragmentViewContainer = FragmentViewContainer()
 
     override fun getScreenName(): String = "Play Prepare Page"
@@ -105,7 +103,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        scope.cancel()
     }
 
     override fun onBackPressed(): Boolean {
@@ -169,7 +166,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 is CoverSetupState.Cropped.Uploaded -> {
                     binding.viewPreparationMenu.isSetCoverChecked(true)
 
-                    if(croppedCover.coverImage.toString().isNotEmpty()) {
+                    if(croppedCover.coverImage.toString().isNotEmpty() &&
+                            croppedCover.coverImage.toString().contains("http")) {
                         binding.formCover.setCover(croppedCover.coverImage.toString())
                     }
                 }
@@ -193,8 +191,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         coverSetupViewModel.observableUploadCoverEvent.observe(viewLifecycleOwner) {
             when(it) {
+                /** TODO: handle if error upload cover */
                 is NetworkResult.Success -> {
-                    scope.launch {
+                    viewLifecycleOwner.lifecycleScope.launch {
                         parentViewModel.getChannelDetail()
                     }
                 }
