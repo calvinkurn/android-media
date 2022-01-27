@@ -141,10 +141,10 @@ class TkpdHintTextInputLayout : LinearLayout {
         mErrorEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_errorEnabled, false)
         mErrorTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_errorTextAppearance, 0)
         mHelperEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_helperEnabled, false)
-        mHelperTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_helperTextAppearance, R.style.helperTextAppearance)
+        mHelperTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_helperTextAppearance, com.tokopedia.design.R.style.helperTextAppearance)
         mHelperText = a.getText(R.styleable.TkpdHintTextInputLayout_helper)
         isSuccessShown = a.getBoolean(R.styleable.TkpdHintTextInputLayout_successEnabled, false)
-        mSuccessTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_successTextAppearance, R.style.successTextAppearance)
+        mSuccessTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_successTextAppearance, com.tokopedia.design.R.style.successTextAppearance)
         mCounterEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
         mCounterMaxLength = a.getInt(R.styleable.TkpdHintTextInputLayout_counterMaxLength, INVALID_MAX_LENGTH)
         mCounterTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
@@ -192,7 +192,7 @@ class TkpdHintTextInputLayout : LinearLayout {
     }
 
     private fun init() {
-        val view = inflate(context, R.layout.hint_text_input_layout, this)
+        val view = inflate(context, com.tokopedia.design.R.layout.hint_text_input_layout, this)
         mFrameLayout = view.findViewById<View>(R.id.frame_content) as FrameLayout
         mTvLabel = view.findViewById<View>(R.id.tv_label) as TextView
         mTvHelper = view.findViewById<View>(R.id.tv_helper) as TextView
@@ -503,7 +503,7 @@ class TkpdHintTextInputLayout : LinearLayout {
         if (shouldShowPasswordIcon()) {
             if (mPasswordToggleView == null) {
                 mPasswordToggleView = LayoutInflater.from(context)
-                        .inflate(R.layout.design_text_input_password_icon,
+                        .inflate(com.tokopedia.design.R.layout.design_text_input_password_icon,
                                 mFrameLayout, false) as CheckableImageButton
                 mPasswordToggleView?.setImageDrawable(mPasswordToggleDrawable)
                 mPasswordToggleView?.contentDescription = mPasswordToggleContentDesc
