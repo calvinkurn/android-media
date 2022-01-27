@@ -6,7 +6,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 object RemoveBackgroundConfig {
 
     private const val ROLLENCE_KEY = "remove_bg_android"
-    private const val REMOTE_CONFIG_KEY = "media_watermark_editor_tool"
+    private const val REMOTE_CONFIG_KEY = "media_removebg_editor_tool"
 
     @JvmStatic
     fun abTest(): Boolean {
