@@ -14,6 +14,7 @@ class DigitalMenuDetailUiMapper @Inject constructor() {
     fun mapMenuDetailModel(data: TopupBillsMenuDetail): MenuDetailModel {
         return MenuDetailModel(
             catalog = data.catalog,
+            userPerso = data.userPerso,
             recommendations = data.recommendations.map {
                 RecommendationCardWidgetModel(
                     RecommendationCardEnum.SMALL,
