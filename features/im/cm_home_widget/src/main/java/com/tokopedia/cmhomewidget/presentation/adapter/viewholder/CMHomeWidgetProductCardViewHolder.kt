@@ -62,7 +62,10 @@ class CMHomeWidgetProductCardViewHolder(
 
     private fun setShopBadgeImage(shopBadgeImageUrl: String?) {
         shopBadgeImageUrl?.let {
-            binding.ivCmHomeWidgetProductShop.setImageUrl(it)
+            if (shopBadgeImageUrl.isNullOrBlank())
+                binding.ivCmHomeWidgetProductShop.visibility = View.GONE
+            else
+                binding.ivCmHomeWidgetProductShop.setImageUrl(it)
         }
     }
 
@@ -72,7 +75,10 @@ class CMHomeWidgetProductCardViewHolder(
 
     private fun setProductBadgeImage(productBadgeImageUrl: String?) {
         productBadgeImageUrl?.let { badgeImageUrl ->
-            binding.ivCmHomeWidgetProductBadge.setImageUrl(badgeImageUrl)
+            if (productBadgeImageUrl.isNullOrBlank())
+                binding.ivCmHomeWidgetProductBadge.visibility = View.GONE
+            else
+                binding.ivCmHomeWidgetProductBadge.setImageUrl(badgeImageUrl)
         }
     }
 
