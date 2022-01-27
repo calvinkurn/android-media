@@ -1251,8 +1251,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             binding?.run {
                 containerDelete.gone()
                 clWishlistHeader.visible()
-                wishlistV2StickyCountManageLabel.wishlistDivider.show()
-                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.show()
+                wishlistV2StickyCountManageLabel.wishlistDivider.visible()
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.visible()
             }
         }
         WishlistV2Analytics.clickAturOnWishlist()
@@ -1290,6 +1290,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private fun doRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = true
+            wishlistV2StickyCountManageLabel.wishlistDivider.visible()
+            wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.visible()
         }
         onLoadMore = false
         isFetchRecommendation = false
@@ -1297,7 +1299,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         currRecommendationListPage = 1
         loadWishlistV2()
         showSortFilter()
-        setTypeLayoutIcon()
     }
 
     private fun showSortFilter() {
