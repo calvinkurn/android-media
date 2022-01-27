@@ -319,10 +319,12 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
     private void abTestAndRemoteConfigSetup() {
         // remove background
-        if (!RemoveBackgroundConfig.abTest()) {
-            if (!RemoveBackgroundConfig.remoteConfig(remoteConfig)) {
+        if (RemoveBackgroundConfig.remoteConfig(remoteConfig)) {
+            if (!RemoveBackgroundConfig.abTest()) {
                 imageEditActionType.remove(ImageEditActionType.ACTION_REMOVE_BACKGROUND);
             }
+        } else {
+            imageEditActionType.remove(ImageEditActionType.ACTION_REMOVE_BACKGROUND);
         }
 
         // watermark
