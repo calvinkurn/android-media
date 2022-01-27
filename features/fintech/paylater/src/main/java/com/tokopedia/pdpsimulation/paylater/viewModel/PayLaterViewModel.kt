@@ -31,6 +31,7 @@ class PayLaterViewModel @Inject constructor(
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
 
     var defaultTenure = 0
+    var tenureMap: Map<Int?, Int?> = mapOf()
 
     private var idlingResourceProvider =
         TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
@@ -73,10 +74,11 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
         idlingResourceProvider?.decrement()
-        mapperUseCase.mapResponseToUi({
-            if (it.isNotEmpty())
-                _payLaterOptionsDetailLiveData.value = Success(it)
-
+        mapperUseCase.mapResponseToUi({ data ->
+            if (data.isNotEmpty()) {
+                tenureMap = data.mapIndexed { index, simulationUiModel ->  simulationUiModel.tenure to index }.toMap()
+                _payLaterOptionsDetailLiveData.value = Success(data)
+            }
         }, {
             _payLaterOptionsDetailLiveData.value = Fail(it)
 

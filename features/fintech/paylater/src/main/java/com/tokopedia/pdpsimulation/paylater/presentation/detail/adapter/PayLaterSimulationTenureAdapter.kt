@@ -12,7 +12,7 @@ class PayLaterSimulationTenureAdapter(
     RecyclerView.Adapter<PayLaterSimulationTenureViewHolder>() {
 
     private val tenureItemList = arrayListOf<SimulationUiModel>()
-    var lastSelectedPosition = 0
+    var lastSelectedPosition = -1
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

@@ -84,20 +84,20 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun handleAction(detail: Detail) {
         Toast.makeText(context, "Cta clicked", Toast.LENGTH_LONG).show()
 
-        Utils.handleClickNavigation(context, detail,
+        /*Utils.handleClickNavigation(context, detail,
             openHowToUse = {
                 bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it)
             },
             openGoPay = {
                 bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it)
             }
-        )
+        )*/
     }
 
     private fun openInstallmentBottomSheet(installment: InstallmentDetails) {
         Toast.makeText(context, "Open Installemt", Toast.LENGTH_LONG).show()
         val bundle = Bundle().apply { putParcelable(PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL, installment) }
-        bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
+        //bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
     }
 
     override fun onCreateView(
@@ -122,7 +122,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private fun initArguments() {
         payLaterViewModel.defaultTenure = defaultTenure
-        tenureAdapter.lastSelectedPosition = defaultTenure
+        //tenureAdapter.lastSelectedPosition = defaultTenure
     }
 
     private fun initViews() {
@@ -152,10 +152,13 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
         // hide loading
+        val defaultSimulationPosition = payLaterViewModel.tenureMap.get(defaultTenure) ?: 0
+
         tenureAdapter.setData(data)
-        rvPayLaterSimulation.scrollToPosition(defaultTenure)
+        tenureAdapter.lastSelectedPosition = defaultSimulationPosition
+        rvPayLaterSimulation.scrollToPosition(defaultSimulationPosition)
         simulationAdapter.addAllElements(
-            data[defaultTenure].simulationList ?: arrayListOf()
+            data[defaultSimulationPosition].simulationList ?: arrayListOf()
         )
     }
 
