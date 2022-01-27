@@ -14,15 +14,15 @@ abstract class ParallaxScrollEffectListener(
             val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
             firstView?.let {
                 val distanceFromLeft = it.left - getPixelSize()
-                val translateX = distanceFromLeft * 0.2f
+                val translateX = distanceFromLeft * DISTANCE_X
                 translatedX(translateX)
 
                 if (distanceFromLeft <= 0){
                     val itemSize = it.width.toFloat()
-                    val alpha = (abs(distanceFromLeft) / itemSize * 0.80f)
-                    setAlpha(1 - alpha)
+                    val alpha = (abs(distanceFromLeft) / itemSize * ALPHA_ITEM_PER_DISTANCE)
+                    setAlpha(ALPHA_SUBTRACTOR - alpha)
                 }else{
-                    setAlpha(1f)
+                    setAlpha(ALPHA_1)
                 }
             }
         }
@@ -31,4 +31,11 @@ abstract class ParallaxScrollEffectListener(
     abstract fun translatedX(translatedX: Float)
     abstract fun setAlpha(alpha: Float)
     abstract fun getPixelSize(): Int
+
+    companion object{
+        private const val ALPHA_1 = 1f
+        private const val ALPHA_SUBTRACTOR = 1
+        private const val ALPHA_ITEM_PER_DISTANCE = 0.80f
+        private const val DISTANCE_X = 0.2f
+    }
 }
