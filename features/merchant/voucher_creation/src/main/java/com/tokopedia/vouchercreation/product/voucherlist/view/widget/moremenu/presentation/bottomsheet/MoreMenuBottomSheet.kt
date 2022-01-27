@@ -15,17 +15,17 @@ import com.tokopedia.vouchercreation.databinding.BottomsheetMvcMoreMenuBinding
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.adapter.MoreMenuAdapter
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.adapter.MoreMenuDiffer
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditQuotaVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditPeriodVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ViewDetailVoucher
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ItemDivider
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditQuotaCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditPeriodCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ViewDetailCoupon
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.BroadCastChat
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DownloadVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.CancelVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ShareVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DuplicateVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.StopVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DownloadCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.CancelCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ShareCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DuplicateCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.StopCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditCoupon
 
 class MoreMenuBottomSheet : BottomSheetUnify() {
 
@@ -87,19 +87,19 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getUpcomingStatusVoucherMenu(): List<MoreMenuUiModel> =
             listOf(
-                    EditQuotaVoucher(
+                    EditQuotaCoupon(
                         title = context?.getString(R.string.mvc_edit_quota).orEmpty(),
                         icon = IconUnify.COUPON
                     ),
-                    EditPeriodVoucher(
+                    EditPeriodCoupon(
                         title = context?.getString(R.string.mvc_edit_period).orEmpty(),
                         icon = IconUnify.CALENDAR
                     ),
-                    EditVoucher(
+                    EditCoupon(
                         title = context?.getString(R.string.mvc_edit).orEmpty(),
                         icon = IconUnify.EDIT
                     ),
-                    ViewDetailVoucher(
+                    ViewDetailCoupon(
                         title = context?.getString(R.string.mvc_view_detail).orEmpty(),
                         icon = IconUnify.CLIPBOARD
                     ),
@@ -108,12 +108,12 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                         title = context?.getString(R.string.mvc_broadcast_chat).orEmpty(),
                         icon = IconUnify.BROADCAST
                     ),
-                    DownloadVoucher(
+                    DownloadCoupon(
                         title = context?.getString(R.string.mvc_download).orEmpty(),
                         icon = IconUnify.DOWNLOAD
                     ),
                     ItemDivider,
-                    CancelVoucher(
+                    CancelCoupon(
                         title = context?.getString(R.string.mvc_cancel).orEmpty(),
                         icon = IconUnify.CLEAR
                     )
@@ -121,11 +121,11 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getOngoingStatusVoucherMenu(): List<MoreMenuUiModel> =
             listOf(
-                    EditQuotaVoucher(
+                    EditQuotaCoupon(
                         title = context?.getString(R.string.mvc_edit_quota).orEmpty(),
                         icon = IconUnify.COUPON
                     ),
-                    ViewDetailVoucher(
+                    ViewDetailCoupon(
                         title = context?.getString(R.string.mvc_view_detail).orEmpty(),
                         icon = IconUnify.CLIPBOARD
                     ),
@@ -134,16 +134,16 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                         title = context?.getString(R.string.mvc_broadcast_chat).orEmpty(),
                         icon = IconUnify.BROADCAST
                     ),
-                    ShareVoucher(
+                    ShareCoupon(
                         title = context?.getString(R.string.mvc_share).orEmpty(),
                         icon = IconUnify.SHARE_MOBILE
                     ),
-                    DownloadVoucher(
+                    DownloadCoupon(
                         title = context?.getString(R.string.mvc_download).orEmpty(),
                         icon = IconUnify.DOWNLOAD
                     ),
                     ItemDivider,
-                    StopVoucher(
+                    StopCoupon(
                         title = context?.getString(R.string.mvc_stop).orEmpty(),
                         icon = IconUnify.CLEAR
                     )
@@ -151,7 +151,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getEndedStatusVoucherMenu(): List<MoreMenuUiModel> =
             listOf(
-                    ViewDetailVoucher(
+                    ViewDetailCoupon(
                         title = context?.getString(R.string.mvc_view_detail).orEmpty(),
                         icon = IconUnify.CLIPBOARD
                     )
@@ -159,11 +159,11 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getCanceledStatusVoucherMenu(): List<MoreMenuUiModel> =
             listOf(
-                    DuplicateVoucher(
+                    DuplicateCoupon(
                         title = context?.getString(R.string.mvc_duplicate).orEmpty(),
                         icon = IconUnify.COPY
                     ),
-                    ViewDetailVoucher(
+                    ViewDetailCoupon(
                         title = context?.getString(R.string.mvc_view_detail).orEmpty(),
                         icon = IconUnify.CLIPBOARD
                     )

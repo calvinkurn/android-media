@@ -12,25 +12,27 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.fragment.CouponLis
 class CouponListActivity: BaseSimpleActivity() {
 
     private val couponListFragment = CouponListFragment()
+
     override fun getLayoutRes() = R.layout.activity_mvc_coupon_list
 
     override fun getNewFragment() = couponListFragment
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-        couponListFragment.setOnEditCouponMenuSelected { coupon ->
-            displayCouponPreviewFragment(coupon)
-        }
-
+        initRedirectionPage()
         return super.onCreateView(name, context, attrs)
     }
 
-    private fun displayCouponPreviewFragment(coupon : Coupon) {
-        val couponPreviewFragment = ProductCouponPreviewFragment.newInstance(coupon, ProductCouponPreviewFragment.Mode.UPDATE)
+    private fun initRedirectionPage() {
+        couponListFragment.setOnRedirectToCouponPreview { coupon, mode ->
+            displayCouponPreviewFragment(coupon, mode)
+        }
+    }
+
+    private fun displayCouponPreviewFragment(coupon : Coupon, mode: ProductCouponPreviewFragment.Mode) {
+        val couponPreviewFragment = ProductCouponPreviewFragment.newInstance(coupon, mode)
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.parent_view, couponPreviewFragment)
             .commitAllowingStateLoss()
     }
-
-
 }

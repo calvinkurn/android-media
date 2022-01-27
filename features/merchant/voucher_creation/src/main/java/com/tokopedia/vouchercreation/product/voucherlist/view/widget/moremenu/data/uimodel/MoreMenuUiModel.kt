@@ -14,25 +14,25 @@ sealed class MoreMenuUiModel(
         return typeFactoryMore.type(this)
     }
 
-    data class EditQuotaVoucher(
+    data class EditQuotaCoupon(
         override val title: String,
         @DrawableRes
         override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class ShareVoucher(
+    data class ShareCoupon(
         override val title: String,
         @DrawableRes
         override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class EditPeriodVoucher(
+    data class EditPeriodCoupon(
         override val title: String,
         @DrawableRes
         override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class ViewDetailVoucher(
+    data class ViewDetailCoupon(
         override val title: String,
         @DrawableRes
         override val icon: Int
@@ -44,31 +44,31 @@ sealed class MoreMenuUiModel(
         override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class DownloadVoucher(
+    data class DownloadCoupon(
         override val title: String,
         @DrawableRes
         override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class DuplicateVoucher(
+    data class DuplicateCoupon(
         override val title: String,
         @DrawableRes
         override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class EditVoucher(
+    data class EditCoupon(
         override val title: String,
         @DrawableRes
         override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class CancelVoucher(
+    data class CancelCoupon(
         override val title: String,
         @DrawableRes
         override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class StopVoucher(
+    data class StopCoupon(
         override val title: String,
         @DrawableRes
         override val icon: Int
