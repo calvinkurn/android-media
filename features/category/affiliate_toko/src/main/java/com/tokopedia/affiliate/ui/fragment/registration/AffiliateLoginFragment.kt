@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -17,15 +18,12 @@ import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
-import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -36,7 +34,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_login_fragment_layout.*
 import javax.inject.Inject
 
-class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() {
+class AffiliateLoginFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -44,9 +42,9 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
 
-    private lateinit var affiliateLoginViewModel: AffiliateLoginViewModel
+    private lateinit var affiliateLoginSharedViewModel: AffiliateRegistrationSharedViewModel
 
-    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelProvider) }
 
     companion object {
         fun getFragmentInstance(): Fragment {
@@ -56,6 +54,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateLoginSharedViewModel = viewModelFragmentProvider.get(AffiliateRegistrationSharedViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -64,10 +63,15 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? AffiliateActivityInterface)?.let {
-            affiliateNavigationInterface = it
-        }
         afterViewCreated()
+    }
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        getComponent().injectLoginFragment(this)
     }
 
     private fun setupViewPager () {
@@ -110,6 +114,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     private fun afterViewCreated() {
         setupViewPager()
         setUpNavBar()
+        initObserver()
         checkLoggedIn()
         sendTracking()
     }
@@ -129,7 +134,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_login_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface?.handleBackButton(false)
+                activity?.onBackPressed()
             }
             actionTextView?.setOnClickListener {
                 AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_MICRO_SITE_LINK).show(childFragmentManager,"")
@@ -139,7 +144,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     private fun checkLoggedIn() {
         affiliate_login_ticker.hide()
-        if (!affiliateLoginViewModel.isUserLoggedIn()) {
+        if (!affiliateLoginSharedViewModel.isUserLoggedIn()) {
             affiliate_login_text.isVisible = true
             affiliate_login_text.text = getString(com.tokopedia.affiliate_toko.R.string.affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu)
             affiliate_daftar_text.text = getString(R.string.affiliate_belum_punya_akun_tokopedia)
@@ -159,7 +164,8 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_login_card.hide()
 
         } else {
-            affiliateNavigationInterface?.validateUserStatus()
+
+            affiliateLoginSharedViewModel.getAffiliateValidateUser()
 
             affiliate_login_text.isVisible = true
             affiliate_login_text.text = getString(R.string.affiliate_daftarkan_akun_ini)
@@ -169,7 +175,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_sign_up_btn.isVisible = true
             affiliate_sign_up_btn.setOnClickListener {
                 sendTrackerDaftar()
-                affiliateNavigationInterface?.navigateToPortfolioFragment()
+                affiliateLoginSharedViewModel.navigateToPortFolio()
             }
 
             affiliate_keluar_btn.setOnClickListener {
@@ -177,10 +183,29 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             }
 
             affiliate_login_card.show()
-            affiliate_user_name.text = affiliateLoginViewModel.getUserName()
-            affiliate_user_email.text = affiliateLoginViewModel.getUserEmail()
-            ImageHandler.loadImageCircle2(context, affiliate_user_image, affiliateLoginViewModel.getUserProfilePicture())
+            affiliate_user_name.text = affiliateLoginSharedViewModel.getUserName()
+            affiliate_user_email.text = affiliateLoginSharedViewModel.getUserEmail()
+            ImageHandler.loadImageCircle2(context, affiliate_user_image, affiliateLoginSharedViewModel.getUserProfilePicture())
         }
+    }
+
+    private fun initObserver() {
+        affiliateLoginSharedViewModel.getUserAction().observe(viewLifecycleOwner,{
+            when(it){
+                AffiliateRegistrationSharedViewModel.UserAction.RegisteredAction -> {
+                    onUserRegistered()
+                }
+                AffiliateRegistrationSharedViewModel.UserAction.FraudAction -> {
+                    showFraudTicker()
+                }
+                else -> {}
+            }
+        })
+    }
+
+    private fun onUserRegistered() {
+        RouteManager.route(context,"tokopedia://affiliate")
+        activity?.finish()
     }
 
     private fun sendTrackerDaftar() {
@@ -232,27 +257,12 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         }
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
-        return viewModelProvider
-    }
-
-    override fun initInject() {
-        getComponent().injectLoginFragment(this)
-    }
-
     private fun getComponent(): AffiliateComponent =
             DaggerAffiliateComponent
                     .builder()
                     .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                     .build()
 
-    override fun getViewModelType(): Class<AffiliateLoginViewModel> {
-        return AffiliateLoginViewModel::class.java
-    }
-
-    override fun setViewModel(viewModel: BaseViewModel) {
-        affiliateLoginViewModel = viewModel as AffiliateLoginViewModel
-    }
 
     fun showFraudTicker() {
         affiliate_sign_up_btn.isVisible = false

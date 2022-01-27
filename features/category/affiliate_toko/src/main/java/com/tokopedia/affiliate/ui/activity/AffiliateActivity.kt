@@ -132,8 +132,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showLoginPortal() {
-        if (fragmentStack.isEmpty() || (fragmentStack.peek() != (AffiliateLoginFragment::class.java.canonicalName)))
-            openFragment(AffiliateLoginFragment.getFragmentInstance())
+        AffiliateRegistrationActivity.newInstance(this)
+//        if (fragmentStack.isEmpty() || (fragmentStack.peek() != (AffiliateLoginFragment::class.java.canonicalName)))
+//            openFragment(AffiliateLoginFragment.getFragmentInstance(this))
     }
 
     private fun showAffiliatePortal() {
@@ -490,18 +491,18 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun navigateToTermsFragment(channels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
-        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance().apply {
-            setChannels(channels)
-        })
+//        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(this).apply {
+//            setChannels(channels)
+//        })
         val currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliateTermsAndConditionFragment::class.java.name)
         if (currentFragment != null) {
-            (currentFragment as? AffiliateTermsAndConditionFragment)?.setChannels(channels)
+//            (currentFragment as? AffiliateTermsAndConditionFragment)?.setChannels(channels)
         }
     }
 
     override fun navigateToPortfolioFragment() {
-        openFragment(AffiliatePortfolioFragment.getFragmentInstance())
+//        openFragment(AffiliatePortfolioFragment.getFragmentInstance(this))
     }
 
     override fun validateUserStatus() {

@@ -22,6 +22,7 @@ import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
+import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -47,11 +48,12 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelProvider) }
+
+    private lateinit var registrationSharedViewModel: AffiliateRegistrationSharedViewModel
 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
-
-    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
 
     override fun getViewModelType(): Class<AffiliateTermsAndConditionViewModel> {
         return AffiliateTermsAndConditionViewModel::class.java
@@ -66,6 +68,8 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registrationSharedViewModel = viewModelFragmentProvider.get(AffiliateRegistrationSharedViewModel::class.java)
+        channels = registrationSharedViewModel.listOfChannels
         initObserver()
     }
     override fun onCreateView(
@@ -78,9 +82,6 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? AffiliateActivityInterface)?.let {
-            affiliateNavigationInterface = it
-        }
         afterViewCreated()
     }
 
@@ -126,7 +127,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_terms_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface?.handleBackButton(false)
+                activity?.onBackPressed()
             }
         }
 
@@ -135,7 +136,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     private fun initObserver() {
         affiliateTermsAndConditionViewModel.getOnBoardingData().observe(this, { onBoardingData ->
             if(onBoardingData.data?.status == REGISTRATION_SUCCESS){
-                affiliateNavigationInterface?.onRegistrationSuccessful()
+               registrationSharedViewModel.onRegisterationSuccess()
             }else {
                 view?.let {
                     Toaster.build(it, getString(com.tokopedia.affiliate_toko.R.string.affiliate_registeration_error),
@@ -171,10 +172,6 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     private fun setDataToRV(data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?) {
         affiliateAdapter.addMoreData(data)
-    }
-
-    fun setChannels(listOfChannels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
-        channels = listOfChannels
     }
 
     override fun initInject() {

@@ -34,6 +34,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonM
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -54,10 +55,12 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelProvider) }
+
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
 
-    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
+    private lateinit var registrationSharedViewModel: AffiliateRegistrationSharedViewModel
 
     override fun getViewModelType(): Class<AffiliatePortfolioViewModel> {
         return AffiliatePortfolioViewModel::class.java
@@ -72,6 +75,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registrationSharedViewModel = viewModelFragmentProvider.get(AffiliateRegistrationSharedViewModel::class.java)
         initObserver()
     }
     override fun onCreateView(
@@ -84,9 +88,6 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? AffiliateActivityInterface)?.let {
-            affiliateNavigationInterface = it
-        }
         afterViewCreated()
     }
 
@@ -117,7 +118,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         view?.findViewById<HeaderUnify>(R.id.affiliate_portfolio_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface?.handleBackButton(false)
+                activity?.onBackPressed()
             }
         }
     }
@@ -227,7 +228,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                 }
             }
             sendTracker()
-            affiliateNavigationInterface?.navigateToTermsFragment(arrayListOfChannels)
+            registrationSharedViewModel.navigateToTermsFragment(arrayListOfChannels)
         }else {
             view?.let { view ->
                 Toaster.build(view, getString(com.tokopedia.affiliate_toko.R.string.affiliate_please_fill_one_social_media),
