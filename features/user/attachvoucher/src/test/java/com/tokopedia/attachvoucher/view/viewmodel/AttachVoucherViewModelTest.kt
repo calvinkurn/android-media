@@ -229,33 +229,28 @@ class AttachVoucherViewModelTest {
     @Test
     fun `should give false when there is a filter`() {
         //When
-        viewModel.toggleFilter(1)
-        val result = viewModel.hasNoFilter()
+        viewModel.setFilter(1)
 
         //Then
-        assertEquals(1, viewModel.filter.value)
-        assertEquals(false, result)
+        assert(!viewModel.hasNoFilter())
     }
 
     @Test
     fun `should give true when filter is NO_FILTER`() {
         //When
-        viewModel.toggleFilter(NO_FILTER)
-        val result = viewModel.hasNoFilter()
+        viewModel.setFilter(NO_FILTER)
 
         //Then
-        assertEquals(NO_FILTER, viewModel.filter.value)
-        assertEquals(true, result)
+        assert(viewModel.hasNoFilter())
     }
 
     @Test
     fun `should give true when filter is null`() {
         //When
-        val result = viewModel.hasNoFilter()
+        viewModel.setFilter(null)
 
         //Then
-        assertEquals(null, viewModel.filter.value)
-        assertEquals(true, result)
+        assert(viewModel.hasNoFilter())
     }
 
     @Test

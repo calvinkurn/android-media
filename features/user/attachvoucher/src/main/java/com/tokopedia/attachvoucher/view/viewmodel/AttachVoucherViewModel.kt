@@ -33,10 +33,14 @@ class AttachVoucherViewModel @Inject constructor(
     fun toggleFilter(filterType: Int) {
         val currentFilter = _filter.value
         if (currentFilter == filterType) {
-            _filter.value = NO_FILTER
+            setFilter(NO_FILTER)
         } else {
-            _filter.value = filterType
+            setFilter(filterType)
         }
+    }
+
+    fun setFilter(filterType: Int?) {
+        _filter.value = filterType
     }
 
     fun loadVouchers(page: Int) {
@@ -79,7 +83,11 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     fun hasNoFilter(): Boolean {
-        return filter.value == null || filter.value == NO_FILTER
+        return when(filter.value) {
+            null -> true
+            NO_FILTER -> true
+            else -> false
+        }
     }
 
     private fun onSuccessGetVouchers(vouchers: List<VoucherUiModel>) {
