@@ -201,20 +201,6 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         handleGlobalFeedbackResult(requestCode, resultCode, data)
     }
 
-    var a: MenuSettingAdapter? = null
-
-    fun init() {
-        val bool = context?.let {
-            FirebaseRemoteConfigImpl(it).getBoolean(
-                RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER,
-                false
-            )
-        }
-        if (bool == true) {
-            a = MenuSettingAdapter(context, this, true, adapterTypeFactory)
-        }
-    }
-
     private fun handleGlobalFeedbackResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && requestCode == REQ_CODE_GLOBAL_FEEDBACK) {
             showFeedbackToaster(data)
