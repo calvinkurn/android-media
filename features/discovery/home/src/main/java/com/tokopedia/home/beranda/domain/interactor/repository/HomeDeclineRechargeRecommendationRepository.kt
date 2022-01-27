@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.home.beranda.di.module.query.DeclineWATFRecommendation
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.usecase.RequestParams
@@ -31,26 +32,9 @@ class HomeDeclineRechargeRecommendationRepository @Inject constructor(
 
     private var params: RequestParams = RequestParams.create()
 
-    //region query
-    private val query by lazy {
-        val request = "\$request"
-
-        """
-            mutation declineWATFRecommendation(
-              $request:rechargeDeclineAboveTheFoldRecommendationRequest!
-            ){
-              rechargeDeclineAboveTheFoldRecommendation(declineRequest:$request){
-                isError: IsError
-                message: Message
-              }
-            }
-        """.trimIndent()
-    }
-    //endregion
-
     override suspend fun executeOnBackground(): DeclineRechargeRecommendation {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(DeclineWATFRecommendation())
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground().response
     }
