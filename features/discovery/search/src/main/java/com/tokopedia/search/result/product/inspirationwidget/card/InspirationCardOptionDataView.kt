@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.model
+package com.tokopedia.search.result.product.inspirationwidget.card
 
 import com.tokopedia.discovery.common.constants.SearchConstant
 

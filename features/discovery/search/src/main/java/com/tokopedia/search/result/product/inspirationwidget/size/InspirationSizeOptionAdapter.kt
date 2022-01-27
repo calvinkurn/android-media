@@ -1,15 +1,11 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder
+package com.tokopedia.search.result.product.inspirationwidget.size
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
-import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationSizeOptionViewHolder
-import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 
 class InspirationSizeOptionAdapter(
-        private val inspirationSizeOptionListener: InspirationSizeOptionListener,
+    private val inspirationSizeListener: InspirationSizeListener,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
 
     private val itemList = mutableListOf<InspirationSizeOptionDataView>()
@@ -29,7 +25,7 @@ class InspirationSizeOptionAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(InspirationSizeOptionViewHolder.LAYOUT, parent, false)
 
-        return InspirationSizeOptionViewHolder(view, inspirationSizeOptionListener, this)
+        return InspirationSizeOptionViewHolder(view, inspirationSizeListener)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

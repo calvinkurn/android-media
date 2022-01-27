@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.inspirationwidget.size
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -6,9 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductSizeLayoutBinding
-import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.InspirationSizeOptionAdapter
-import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.unifycomponents.toPx
@@ -16,7 +13,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 internal class InspirationSizeViewHolder(
         itemView: View,
-        private val inspirationSizeOptionListener: InspirationSizeOptionListener
+        private val inspirationSizeListener: InspirationSizeListener
 ): AbstractViewHolder<InspirationSizeDataView>(itemView) {
     companion object {
         @JvmField
@@ -51,8 +48,8 @@ internal class InspirationSizeViewHolder(
     }
 
     private fun createAdapter(element: InspirationSizeDataView) {
-        val adapter = InspirationSizeOptionAdapter(inspirationSizeOptionListener)
-        adapter.setItemList(element.data.optionSizeData)
+        val adapter = InspirationSizeOptionAdapter(inspirationSizeListener)
+        adapter.setItemList(element.optionSizeData)
         adapter.setInspirationSizeDataView(element)
 
         inspirationSizeOptionAdapter = adapter

@@ -1,16 +1,12 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder
+package com.tokopedia.search.result.product.inspirationwidget.card
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCardOptionChipViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCardOptionRelatedViewHolder
-import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 
 class InspirationCardOptionAdapter(
-        private val inspirationCardListener: InspirationCardListener,
-        private val spanCount: Int = 1,
+    private val inspirationCardListener: InspirationCardListener,
+    private val spanCount: Int = 1,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val itemList = mutableListOf<InspirationCardOptionDataView>()
