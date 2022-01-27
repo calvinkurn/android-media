@@ -72,7 +72,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         const val VIEW_ERROR_AFTER_CLICK_TERAPKAN_PROMO = "view error after click terapkan promo"
         const val IMPRESSION_LOCK_TO_SHIPPING_PROMO_SECTION = "impression - lock to shipping promo section"
         const val IMPRESSION_LOCK_TO_PAYMENT_PROMO_SECTION = "impression - lock to payment promo section"
-        const val IMPRESSION_ELIGIBLE_PROMO_SECTION = "impression- eligible promo section"
+        const val IMPRESSION_ELIGIBLE_PROMO_SECTION = "impression - eligible promo section"
     }
 
     private fun sendEventByPage(page: Int,
@@ -552,11 +552,12 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
 
         sendEventByPage(
-                page,
-                EVENT_NAME_VIEW,
-                EventAction.VIEW_ERROR_AFTER_CLICK_PAKAI_PROMO,
-                "$promoCode - $errorMessage",
-                additionalData
+                page = page,
+                event = EVENT_NAME_VIEW,
+                eventAction = EventAction.VIEW_ERROR_AFTER_CLICK_PAKAI_PROMO,
+                eventLabel = "$promoCode - $errorMessage",
+                additionalData = additionalData,
+                isPromoBackFunnelImprovement = true
         )
     }
 
@@ -567,11 +568,12 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
 
         sendEventByPage(
-                page,
-                EVENT_NAME_CLICK,
-                EventAction.CLICK_TAB_PROMO_CATEGORY,
-                promoCategoryName,
-                additionalData
+                page = page,
+                event = EVENT_NAME_CLICK,
+                eventAction = EventAction.CLICK_TAB_PROMO_CATEGORY,
+                eventLabel = promoCategoryName,
+                additionalData = additionalData,
+                isPromoBackFunnelImprovement = true
         )
     }
 
@@ -582,11 +584,12 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
 
         sendEventByPage(
-                page,
-                EVENT_NAME_VIEW,
-                EventAction.IMPRESSION_RECOMMENDATION_PROMO_SECTION,
-                "$totalCouponCanApply - $totalPotentialBenefit",
-                additionalData
+                page = page,
+                event = EVENT_NAME_VIEW,
+                eventAction = EventAction.IMPRESSION_RECOMMENDATION_PROMO_SECTION,
+                eventLabel = "$totalCouponCanApply - $totalPotentialBenefit",
+                additionalData = additionalData,
+                isPromoBackFunnelImprovement = true
         )
     }
 
@@ -597,11 +600,12 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
 
         sendEventByPage(
-                page,
-                EVENT_NAME_CLICK,
-                EventAction.CLICK_PILIH_PROMO_RECOMMENDATION,
-                "$promoCode - $isCausingClash",
-                additionalData
+                page = page,
+                event = EVENT_NAME_CLICK,
+                eventAction = EventAction.CLICK_PILIH_PROMO_RECOMMENDATION,
+                eventLabel = "$promoCode - $isCausingClash",
+                additionalData = additionalData,
+                isPromoBackFunnelImprovement = true
         )
     }
 
@@ -612,11 +616,12 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
 
         sendEventByPage(
-                page,
-                EVENT_NAME_CLICK,
-                EventAction.CLICK_LIHAT_DETAIL_INELIGIBLE_COUPON,
-                "$promoCode - $ineligibleMessage",
-                additionalData
+                page = page,
+                event = EVENT_NAME_CLICK,
+                eventAction = EventAction.CLICK_LIHAT_DETAIL_INELIGIBLE_COUPON,
+                eventLabel = "$promoCode - $ineligibleMessage",
+                additionalData = additionalData,
+                isPromoBackFunnelImprovement = true
         )
     }
 
