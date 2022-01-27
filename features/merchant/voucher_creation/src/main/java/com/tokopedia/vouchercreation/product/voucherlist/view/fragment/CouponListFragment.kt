@@ -26,12 +26,15 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.da
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.StopVoucher
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditVoucher
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
+import java.util.*
 
 class CouponListFragment: BaseDaggerFragment() {
 
     private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
         return@lazy MoreMenuBottomSheet.createInstance()
     }
+
+    private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
 
     override fun getScreenName(): String = CouponListFragment::class.java.simpleName
 
@@ -86,6 +89,7 @@ class CouponListFragment: BaseDaggerFragment() {
     }
 
     private fun editVoucher() {
+        onEditCouponMenuSelected(populateDummyCoupon())
         // editVoucher(voucher)
     }
 
@@ -202,5 +206,70 @@ class CouponListFragment: BaseDaggerFragment() {
                 userId = "userId"
             )
         }
+    }
+
+    fun setOnEditCouponMenuSelected(onEditCouponMenuSelected : (Coupon) -> Unit) {
+        this.onEditCouponMenuSelected = onEditCouponMenuSelected
+    }
+
+    private fun populateDummyCoupon(): Coupon {
+        //Stub the coupon preview data for testing purpose
+        val startDate = Calendar.getInstance().apply { set(2022, 0, 28, 22, 30, 0) }
+        val endDate = Calendar.getInstance().apply { set(2022, 0, 30, 22, 0, 0) }
+        val period = CouponInformation.Period(startDate.time, endDate.time)
+
+        val information = CouponInformation(
+            CouponInformation.Target.PUBLIC,
+            "Kupon Kopi Kenangan",
+            "KOPKEN",
+            period
+
+        )
+
+        val setting = CouponSettings(
+            CouponType.FREE_SHIPPING,
+            DiscountType.NOMINAL,
+            MinimumPurchaseType.NOMINAL,
+            10000,
+            100,
+            10000,
+            10,
+            5000,
+            1000000
+        )
+
+        val products =
+            listOf(
+                CouponProduct(
+                    "2147956088",
+                    18000,
+                    5.0F,
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_1.jpg",
+                    19
+                ),
+                CouponProduct(
+                    "15455652",
+                    18000,
+                    4.7F,
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_2.jpg",
+                    1000
+                ),
+                CouponProduct(
+                    "15429644",
+                    18000,
+                    5.0F,
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_3.jpg",
+                    2100
+                ),
+                CouponProduct(
+                    "15409031",
+                    25000,
+                    4.0F,
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_4.jpg",
+                    31000
+                )
+            )
+
+        return Coupon(200, "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_3.jpg", information, setting, products)
     }
 }
