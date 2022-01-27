@@ -55,8 +55,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<Pair<List<TopupBillsPersoFavNumberItem>, Boolean>>>()
-    val favoriteNumberData: LiveData<RechargeNetworkResult<Pair<List<TopupBillsPersoFavNumberItem>, Boolean>>>
+    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
+    val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
         get() = _favoriteNumberData
 
     private val _catalogProductInput = MutableLiveData<Result<List<DenomWidgetModel>>>()
@@ -99,12 +99,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun getFavoriteNumber(categoryIds: List<Int>, shouldRefreshInputNumber: Boolean) {
+    fun getFavoriteNumber(categoryIds: List<Int>) {
         _favoriteNumberData.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
             _favoriteNumberData.postValue(RechargeNetworkResult.Success(
-                favoriteNumber.persoFavoriteNumber.items to shouldRefreshInputNumber))
+                favoriteNumber.persoFavoriteNumber.items))
         }) {
             _favoriteNumberData.postValue(RechargeNetworkResult.Fail(it))
         }
@@ -179,9 +179,6 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             if (denomData.id.equals(selectedGridProduct.denomData.id, false)
                 && selectedGridProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
         }
-        if (selectedProductPositionId == null) {
-            onResetSelectedProduct()
-        }
         return selectedProductPositionId
     }
 
@@ -190,7 +187,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             && selectedGridProduct.denomWidgetEnum == layoutType
             && isEligibleToBuy)
 
-    private fun onResetSelectedProduct(){
+    fun onResetSelectedProduct(){
         selectedGridProduct = SelectedGridProduct()
     }
 

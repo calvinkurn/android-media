@@ -15,6 +15,7 @@ class DigitalMenuDetailUiMapper @Inject constructor() {
     fun mapMenuDetailModel(data: TopupBillsMenuDetail, isBigRecommendation: Boolean = false): MenuDetailModel {
         return MenuDetailModel(
             catalog = data.catalog,
+            userPerso = data.userPerso,
             recommendations = data.recommendations.map {
                 mapTopUpBillsToRecommendation(it, isBigRecommendation)
             },
