@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.data.ProductTagging
+import com.tokopedia.play.data.ProductSection
 import javax.inject.Inject
 
 /**
@@ -14,12 +14,12 @@ import javax.inject.Inject
 @GqlQuery(GetProductTagItemSectionUseCase.QUERY_NAME, GetProductTagItemSectionUseCase.QUERY)
 class GetProductTagItemSectionUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<ProductTagging.Response>(graphqlRepository) {
+) : GraphqlUseCase<ProductSection.Response>(graphqlRepository) {
 
     init {
         setGraphqlQuery(GetProductTagItemSectionUseCaseQuery.GQL_QUERY)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(ProductTagging.Response::class.java) //TODO= change response
+        setTypeClass(ProductSection.Response::class.java)
     }
 
     companion object {
@@ -90,10 +90,8 @@ class GetProductTagItemSectionUseCase @Inject constructor(
             }
         """
 
-        fun createParam(channelId: String): HashMap<String, Any> {
-            return hashMapOf(
-                CHANNEL_ID to channelId
-            )
-        }
+        fun createParam(channelId: String): HashMap<String, Any> = hashMapOf(
+            CHANNEL_ID to channelId
+        )
     }
 }
