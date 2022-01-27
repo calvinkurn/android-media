@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase.create
 
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.common.extension.parseTo
@@ -17,8 +19,7 @@ import javax.inject.Inject
 class CreateCouponFacadeUseCase @Inject constructor(
     private val createCouponProductUseCase: CreateCouponProductUseCase,
     private val initiateVoucherUseCase: InitiateVoucherUseCase,
-    private val getShopBasicDataUseCase: ShopBasicDataUseCase,
-    private val generateImageUseCase: GenerateImageUseCase
+    private val getShopBasicDataUseCase: ShopBasicDataUseCase
 ) {
 
     companion object {
@@ -43,36 +44,35 @@ class CreateCouponFacadeUseCase @Inject constructor(
 
         val shop = shopDeferred.await()
 
-        /*val uploadImageDeferred = scope.async {
-          uploadImage(
-              sourceId,
-              couponInformation,
-              couponSettings,
-              shop,
-              couponProducts.size,
-              firstImageUrl,
-              secondImageUrl,
-              thirdImageUrl
-          )
-      }
+        val uploadImageDeferred = scope.async {
+            uploadImage(
+                sourceId,
+                couponInformation,
+                couponSettings,
+                shop,
+                couponProducts.size,
+                firstImageUrl,
+                secondImageUrl,
+                thirdImageUrl
+            )
+        }
 
-      val imageUrl = uploadImageDeferred.await()
-    val voucher = initiateVoucherDeferred.await()
+        val imageUrl = uploadImageDeferred.await()
+        val voucher = initiateVoucherDeferred.await()
 
-      val createCouponDeferred = scope.async {
-          createCoupon(
-              couponInformation,
-              couponSettings,
-              couponProducts,
-              voucher.token,
-              imageUrl
-          )
-      }
+        val createCouponDeferred = scope.async {
+            createCoupon(
+                couponInformation,
+                couponSettings,
+                couponProducts,
+                voucher.token,
+                imageUrl
+            )
+        }
 
-      val createdCouponId = createCouponDeferred.await()
+        val createdCouponId = createCouponDeferred.await()
 
-      return createdCouponId*/
-        return -1
+        return createdCouponId
     }
 
     private suspend fun createCoupon(
@@ -95,15 +95,15 @@ class CreateCouponFacadeUseCase @Inject constructor(
 
     }
 
-    /*private suspend fun uploadImage(
+    private suspend fun uploadImage(
         sourceId: String,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         shop: ShopBasicDataResult,
-        productCount : Int,
-        firstImageUrl : String,
-        secondImageUrl : String,
-        thirdImageUrl : String
+        productCount: Int,
+        firstImageUrl: String,
+        secondImageUrl: String,
+        thirdImageUrl: String
     ): String {
         val couponVisibility = when (couponInformation.target) {
             CouponInformation.Target.PUBLIC -> "public"
@@ -168,10 +168,12 @@ class CreateCouponFacadeUseCase @Inject constructor(
             GenerateImageParams("audience_target", audienceTarget)
         )
 
-        generateImageUseCase.setParams(sourceId, imageParams)
-
-        return generateImageUseCase.executeOnBackground()
-    }*/
+        val imageGeneratorUseCase =
+            ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+        val params = GenerateImageUseCase.createParam(sourceId, imageParams)
+        imageGeneratorUseCase.params = params
+        return imageGeneratorUseCase.executeOnBackground()
+    }
 
     private suspend fun initiateVoucher(isUpdateMode: Boolean): InitiateVoucherUiModel {
         initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
