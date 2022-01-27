@@ -18,7 +18,6 @@ import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
@@ -110,7 +109,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observeViewModel()
         setupPMShopScoreInterrupt()
         setupScrollToShopSetting()
-        startShopActiveService()
         viewModel.getShopAccountInfo()
     }
 
@@ -349,12 +347,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun setupPMShopScoreInterrupt() {
         activity?.let {
             pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
-        }
-    }
-
-    private fun startShopActiveService() {
-        context?.let {
-            UpdateShopActiveService.startService(it)
         }
     }
 
