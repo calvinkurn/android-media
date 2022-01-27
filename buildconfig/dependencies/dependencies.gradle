@@ -104,6 +104,9 @@ ext {
     feature_lib = [
             travel: ":dynamic-features:travel:df_travel_lib"
     ]
+    feature_lib_pro = [
+            travel: ":dynamic-features-customerapp_pro:travel:df_travel_lib"
+    ]
 
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.13'
