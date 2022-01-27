@@ -78,6 +78,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import okhttp3.internal.toImmutableList
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -264,6 +265,7 @@ open class TopChatViewModel @Inject constructor(
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
+    private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -1006,8 +1008,19 @@ open class TopChatViewModel @Inject constructor(
         loadProductPreview(productIds)
     }
 
+    fun loadPendingProductPreview() {
+        if (pendingLoadProductPreview.isEmpty()) return
+        loadProductPreview(pendingLoadProductPreview.toImmutableList())
+        pendingLoadProductPreview.clear()
+    }
+
     fun loadProductPreview(productIds: List<String>) {
         if (productIds.isEmpty()) return
+        if (!roomMetaData.hasMsgId()) {
+            pendingLoadProductPreview.clear()
+            pendingLoadProductPreview.addAll(productIds)
+            return
+        }
         clearAttachmentPreview()
         launchCatchError(block = {
             showLoadingProductPreview(productIds)

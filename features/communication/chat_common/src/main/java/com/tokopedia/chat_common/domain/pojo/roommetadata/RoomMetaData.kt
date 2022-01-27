@@ -1,5 +1,7 @@
 package com.tokopedia.chat_common.domain.pojo.roommetadata
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+
 class RoomMetaData(
     _msgId: String = "0",
     val sender: User = User(),
@@ -12,6 +14,11 @@ class RoomMetaData(
 
     fun updateMessageId(messageId: String) {
         this.msgId = messageId
+    }
+
+    fun hasMsgId(): Boolean {
+        val msgIdLng = msgId.toLongOrZero()
+        return msgIdLng != 0L
     }
 }
 

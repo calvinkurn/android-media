@@ -684,6 +684,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = messageId)
         }
         reloadSrw()
+        viewModel.loadPendingProductPreview()
     }
 
     private fun onSuccessGetExistingChatFirstTime(
