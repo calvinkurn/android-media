@@ -4,6 +4,7 @@ import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttac
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewRobot
 import org.junit.Test
 
 class PreloadProductAttachmentTest: TopchatRoomTest() {
@@ -53,7 +54,26 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         ProductPreviewResult.isErrorAt(0)
     }
 
-    // TODO: should retry preload product attachment when user click retry
+    @Test
+    fun should_retry_preload_product_attachment_when_user_click_retry() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.setError()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // When
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+                .generatePreAttachPayload(exProductId)
+        ProductPreviewRobot.clickRetryButtonAt(0)
+
+        // Then
+        ProductPreviewResult.isNotErrorAt(0)
+        ProductPreviewResult.isNotLoadingAt(0)
+    }
+
     // TODO: should send text only when attach product preview is loading
     // TODO: should send sticker only when attach product preview is loading
     // TODO: should send text only when attach product preview is error
@@ -62,5 +82,6 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
     // TODO: should hide srw preview when attach product preview is loading
     // TODO: should hide srw preview when attach product preview is error
     // TODO: should show srw preview when user retry attach product preview is success
+    // TODO: should hide close button on loading state
 
 }
