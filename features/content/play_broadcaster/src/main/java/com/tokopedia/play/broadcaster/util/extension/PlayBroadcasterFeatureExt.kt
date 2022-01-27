@@ -114,7 +114,11 @@ internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestLis
             .into(this)
 }
 
+internal fun Long.millisToHours() = TimeUnit.MILLISECONDS.toHours(this)
+
 internal fun Long.millisToMinutes() = TimeUnit.MILLISECONDS.toMinutes(this)
+
+internal fun Long.millisToRemainingMinutes() = TimeUnit.MILLISECONDS.toMinutes(this) % TimeUnit.HOURS.toMinutes(1)
 
 internal fun Long.millisToRemainingSeconds() =
     TimeUnit.MILLISECONDS.toSeconds(this) % TimeUnit.MINUTES.toSeconds(1)

@@ -18,7 +18,7 @@ import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponen
 import com.tokopedia.shop.score.performance.presentation.fragment.ShopPerformancePageFragment
 import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 
-class ShopPerformancePageActivity : BaseSimpleActivity(), HasComponent<ShopPerformanceComponent>,
+open class ShopPerformancePageActivity : BaseSimpleActivity(), HasComponent<ShopPerformanceComponent>,
     ShopScorePerformanceMonitoringListener {
 
     private var pageLoadTimePerformance: PageLoadTimePerformanceInterface? = null

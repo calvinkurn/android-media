@@ -85,6 +85,10 @@ class HomeProductRecomViewHolder(
         //should remove widget
     }
 
+    override fun onShowError(pageName: String, e: Throwable) {
+
+    }
+
     override fun onRecomProductCardImpressed(
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,

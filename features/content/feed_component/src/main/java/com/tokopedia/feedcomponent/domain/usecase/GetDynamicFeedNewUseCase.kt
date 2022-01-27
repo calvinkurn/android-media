@@ -180,6 +180,17 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           star
           price
           priceFmt
+          isDiscount
+          discount
+          discountFmt
+          priceOriginal
+          priceOriginalFmt
+          priceDiscount
+          priceDiscountFmt
+          totalSold
+          isBebasOngkir
+          bebasOngkirStatus
+          bebasOngkirURL
           mods
         }
         hashtagAppLinkFmt
@@ -278,6 +289,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
       }
       ... on FeedXCardProductsHighlight {
         id
+        type
         author {
           id
           type
@@ -359,6 +371,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           mods
         }
         publishedAt
+        deletable
         mods
       }
       ... on FeedXCardPlaceholder {

@@ -30,4 +30,14 @@
 
     <dimen name="play_leaderboard_winner_separator_height">1dp</dimen>
 
+    <dimen name="play_circle_separator_width">4dp</dimen>
+    <dimen name="play_circle_separator_height">4dp</dimen>
+
+    <!-- Product Tag -->
+    <dimen name="play_product_tag_width">120dp</dimen>
+    <dimen name="play_product_tag_image_height">120dp</dimen>
+    <dimen name="play_product_tag_radius">12dp</dimen>
+    <dimen name="play_product_tag_stock_radius">4dp</dimen>
+    <dimen name="play_product_line_discount_radius">3dp</dimen>
+    <dimen name="play_product_tag_text_height_placeholder">16dp</dimen>
 </resources>

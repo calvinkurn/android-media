@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-kapt'
 
@@ -23,6 +24,21 @@ android {
     buildFeatures{
         viewBinding true
     }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+
+    sourceSets {
+        test {
+            java.srcDirs += "$projectDir/src/testCommon/java"
+        }
+        androidTest {
+            java.srcDirs += "$projectDir/src/testCommon/java"
+        }
+    }
 }
 
 
@@ -37,6 +53,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
@@ -77,6 +94,22 @@ dependencies {
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIdlingResource
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.testDependencies.testCore
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

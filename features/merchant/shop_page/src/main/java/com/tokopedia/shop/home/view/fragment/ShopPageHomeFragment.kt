@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -399,6 +400,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                     is Fail -> {
                         val throwable = it.throwable
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                     tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -412,6 +414,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                     errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                             )
                         }
+                        showErrorToast(errorMessage)
                     }
                 }
                 getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -458,11 +461,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun observeShopProductFilterParameterSharedViewModel() {
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
-            if (!shopHomeAdapter.isLoading) {
+            if (!shopHomeAdapter.isLoading && getSelectedFragment() != this) {
                 shopProductFilterParameter = it
                 changeSortData(sortId)
             }
         })
+    }
+
+    private fun getSelectedFragment(): Fragment? {
+        return (parentFragment as? NewShopPageFragment)?.getSelectedFragmentInstance()
     }
 
     override fun onResume() {
@@ -594,6 +601,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
                 is Fail -> {
                     val throwable = it.throwable
+                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -602,10 +610,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
-                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = errorMessage,
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                         )
+                    }
+                    if(shopHomeAdapter.isProductGridListPlaceholderExists()){
+                        showErrorToast(errorMessage)
                     }
                 }
             }
@@ -964,11 +975,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    private fun onErrorAddToCart(
-            exception: Throwable
-    ) {
+    private fun onErrorAddToCart(exception: Throwable) {
         view?.let { view ->
-            val errorMessage = ErrorHandler.getErrorMessage(context, exception)
+            val errorMessage = if (exception is MessageErrorException) {
+                exception.message
+            } else {
+                ErrorHandler.getErrorMessage(context, exception)
+            }
             NetworkErrorHelper.showRedCloseSnackbar(view, errorMessage)
         }
     }
@@ -2678,7 +2691,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ))
         initialProductListData = null
         shopHomeAdapter.refreshSticky()
-        if (!isLoadInitialData)
+        if (!isLoadInitialData && shopHomeAdapter.productListViewModel.isNotEmpty())
             refreshProductList()
     }
 

@@ -38,14 +38,13 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
                         productName="lemari arsip besi",
                         categoryName="Dapur - Peralatan-Makan-Minum - Sumpit",
                         categoryId="969",
-                        catalogId="0",
                         price=9999.toBigInteger(),
                         stock=1, minOrder=1,
                         condition="NEW", sku="", status=1),
                 variantInputModel= VariantInputModel(
                         products= listOf(
-                            ProductVariantInputModel(combination= listOf(0, 0), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
-                            ProductVariantInputModel(combination= listOf(0, 1), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
+                            ProductVariantInputModel(combination= listOf(0, 0), price=100.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
+                            ProductVariantInputModel(combination= listOf(0, 1), price=10000.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
                             ProductVariantInputModel(combination= listOf(1, 0), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
                             ProductVariantInputModel(combination= listOf(1, 1), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false)),
                         selections= listOf(

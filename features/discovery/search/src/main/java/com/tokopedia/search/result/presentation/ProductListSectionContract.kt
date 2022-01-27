@@ -16,9 +16,9 @@ import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
 import java.util.*
@@ -42,7 +42,6 @@ interface ProductListSectionContract {
         fun sendTrackingEventAppsFlyerViewListingSearch(afProdIds: JSONArray?, query: String?, prodIdArray: ArrayList<String?>?, allProdIdArray: ArrayList<String?>? = null)
         fun sendTrackingEventMoEngageSearchAttempt(query: String?, hasProductList: Boolean, category: HashMap<String?, String?>?)
         fun sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel)
-        fun sendImpressionGlobalNav(globalNavDataView: GlobalNavDataView)
         val isAnySortActive: Boolean
         fun clearLastProductItemPositionFromCache()
         fun saveLastProductItemPositionToCache(lastProductItemPositionToCache: Int)
@@ -78,13 +77,14 @@ interface ProductListSectionContract {
         fun stopNetworkRequestPerformanceMonitoring()
         fun startRenderPerformanceMonitoring()
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
-        fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView)
+        fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
+        fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
         fun onQuickFilterSelected(filter: Filter, option: Option)
-        fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>)
+        fun initFilterController(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)
-        fun isQuickFilterSelected(option: Option?): Boolean
+        fun isFilterSelected(option: Option?): Boolean
         fun setProductCount(productCountText: String?)
         val className: String
         fun sendTrackingOpenFilterPage()
@@ -149,6 +149,7 @@ interface ProductListSectionContract {
         fun onApplySortFilter(mapParameter: Map<String, Any>)
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
+        fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType)
@@ -165,5 +166,6 @@ interface ProductListSectionContract {
             savedOptionList: List<SavedOption>,
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
+        fun shopAdsImpressionCount(impressionCount: Int)
     }
 }

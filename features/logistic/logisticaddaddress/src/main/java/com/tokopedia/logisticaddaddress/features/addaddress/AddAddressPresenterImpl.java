@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 /**
@@ -50,6 +51,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     private AddressRepository networkInteractor;
     private UserSessionInterface userSession;
     private RevGeocodeUseCase revGeocodeUseCase;
+    private CompositeSubscription compositeSubscription;
 
     @Inject
     public AddAddressPresenterImpl(UserSessionInterface userSession,
@@ -58,6 +60,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         this.networkInteractor = addressRepository;
         this.userSession = userSession;
         this.revGeocodeUseCase = revGeocodeUseCase;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -68,7 +71,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     @Override
     public void detachView() {
         networkInteractor.unsubscribe();
-        revGeocodeUseCase.unsubscribe();
+        compositeSubscription.clear();
         mView = null;
     }
 
@@ -88,26 +91,32 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     @Override
     public void requestReverseGeoCode(Context context, Destination destination) {
         String keyword = String.format("%s,%s", destination.getLatitude(), destination.getLongitude());
-        revGeocodeUseCase.execute(keyword)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<KeroMapsAutofill>() {
-                    @Override
-                    public void onCompleted() {
+        compositeSubscription.add(
+                revGeocodeUseCase.execute(keyword)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<KeroMapsAutofill>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.showErrorToaster(e.getMessage());
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                if (mView != null) {
+                                    mView.showErrorToaster(e.getMessage());
+                                }
+                            }
 
-                    @Override
-                    public void onNext(KeroMapsAutofill keroMapsAutofill) {
-                        mView.setPinpointAddress(
-                                keroMapsAutofill.getData().getFormattedAddress());
-                    }
-                });
+                            @Override
+                            public void onNext(KeroMapsAutofill keroMapsAutofill) {
+                                if (mView != null) {
+                                    mView.setPinpointAddress(
+                                            keroMapsAutofill.getData().getFormattedAddress());
+                                }
+                            }
+                        })
+        );
     }
 
     private AddressRepository.AddAddressListener getListener(boolean isEditOperation) {

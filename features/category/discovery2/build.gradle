@@ -47,6 +47,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.productDetailCommon)
     api projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
 
     // Libraries Dependency

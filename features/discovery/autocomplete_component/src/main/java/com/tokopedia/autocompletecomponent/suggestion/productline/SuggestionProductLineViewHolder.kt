@@ -116,7 +116,7 @@ class SuggestionProductLineViewHolder(
         item: BaseSuggestionDataView
     ) {
         val highlightAfterKeywordStartIndex = searchQueryStartIndexInKeyword + (item.searchTerm.length)
-        val highlightAfterKeywordEndIndex = item.title.length
+        val highlightAfterKeywordEndIndex = highlightedTitle.length
 
         highlightedTitle.safeSetSpan(
             StyleSpan(Typeface.BOLD),

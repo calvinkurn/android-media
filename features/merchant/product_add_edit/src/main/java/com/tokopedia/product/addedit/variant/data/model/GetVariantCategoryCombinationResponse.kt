@@ -10,9 +10,6 @@ data class GetVariantCategoryCombinationResponse (
 )
 
 data class GetVariantCategoryCombination (
-        @SerializedName("header")
-        @Expose
-        var header: Header = Header(),
         @SerializedName("data")
         @Expose
         var data: Data = Data()

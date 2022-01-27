@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -35,14 +35,16 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
 import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.action.RecyclerViewAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
-import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
@@ -54,9 +56,11 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
+import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -65,13 +69,11 @@ import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
-import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
-import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub.Companion.START_TIME_FORMAT
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
+import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
@@ -130,13 +132,13 @@ abstract class TopchatRoomTest {
     protected lateinit var replyChatGQLUseCase: ReplyChatGQLUseCaseStub
 
     @Inject
-    protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
+    protected lateinit var chatSrwUseCase: GetSmartReplyQuestionUseCaseStub
 
     @Inject
-    protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseStub
+    protected lateinit var chatBackgroundUseCase: GetChatBackgroundUseCaseStub
 
     @Inject
-    protected lateinit var websocket: RxWebSocketUtilStub
+    protected lateinit var websocket: FakeTopchatWebSocket
 
     @Inject
     protected lateinit var addWishListUseCase: AddWishListUseCaseStub
@@ -163,6 +165,18 @@ abstract class TopchatRoomTest {
     protected lateinit var addToCartUseCase: AddToCartUseCaseStub
 
     @Inject
+    protected lateinit var moveChatToTrashUseCase: MutationMoveChatToTrashUseCaseStub
+
+    @Inject
+    protected lateinit var existingChatMapper: TopChatRoomGetExistingChatMapper
+
+    @Inject
+    protected lateinit var unsendReplyUseCase: UnsendReplyUseCaseStub
+
+    @Inject
+    protected lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     @Inject
@@ -170,6 +184,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     lateinit var abTestPlatform: AbTestPlatform
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
@@ -205,6 +222,31 @@ abstract class TopchatRoomTest {
         setupDefaultResponseWhenFirstOpenChatRoom()
         setupDummyImageChatService()
         setupKeyboardIdlingResource()
+        disableUploadImageByService()
+    }
+
+    protected open fun enableUploadImageByService() {
+        remoteConfig.setString(
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "true"
+        )
+    }
+
+    protected open fun disableUploadImageByService() {
+        remoteConfig.setString(
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "false"
+        )
+    }
+
+    protected open fun enableCompressImage() {
+        remoteConfig.setString(
+            RemoteConfigKey.TOPCHAT_COMPRESS, "true"
+        )
+    }
+
+    protected open fun disableCompressImage() {
+        remoteConfig.setString(
+            RemoteConfigKey.TOPCHAT_COMPRESS, "false"
+        )
     }
 
     @After
@@ -213,6 +255,7 @@ abstract class TopchatRoomTest {
         chatComponentStub = null
         keyboardStateIdling = null
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
+        disableUploadImageByService()
     }
 
     protected open fun setupResponse() {
@@ -493,6 +536,14 @@ abstract class TopchatRoomTest {
         onView(withText(msg)).check(matches(isDisplayed()))
     }
 
+    protected fun assertNoSnackbarText(msg: String) {
+        onView(withText(msg)).check(doesNotExist())
+    }
+
+    protected fun assertSnackbarWithSubText(msg: String) {
+        onView(withSubstring(msg)).check(matches(isDisplayed()))
+    }
+
     protected fun assertSrwPreviewContentIsVisible() {
         assertSrwPreviewContentContainerVisibility(isDisplayed())
         assertTemplateChatVisibility(not(isDisplayed()))
@@ -516,7 +567,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertSrwPreviewContentIsError() {
         assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
-        assertTemplateChatVisibility(not(isDisplayed()))
+        assertTemplateChatVisibility(isDisplayed())
     }
 
     protected fun assertSrwPreviewContentIsHidden() {
@@ -932,7 +983,7 @@ fun WebSocketResponse.changeTimeStampTo(
     timeMillis: Long
 ): WebSocketResponse {
     val date = Date(timeMillis)
-    val startTime = SimpleDateFormat(START_TIME_FORMAT).format(date)
+    val startTime = SimpleDateFormat(FakeTopchatWebSocket.START_TIME_FORMAT).format(date)
     val msg = jsonObject?.getAsJsonObject("message")
     msg?.apply {
         addProperty("timestamp", startTime)

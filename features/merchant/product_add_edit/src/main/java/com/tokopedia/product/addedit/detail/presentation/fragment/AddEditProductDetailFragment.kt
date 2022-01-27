@@ -37,6 +37,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_PREPARE_METRICS
@@ -674,19 +675,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitTextView?.hide()
             submitLoadingIndicator?.show()
             validateInput()
-            val isInputValid = viewModel.isInputValid.value
-            isInputValid?.let {
-                if (it) {
-                    val isAdding = viewModel.isAdding
-                    val isDrafting = viewModel.isDrafting
-                    val isFirstMoved = viewModel.isFirstMoved
-                    if (isAdding && isFirstMoved) moveToDescriptionActivity()
-                    else if (isAdding && !isDrafting) submitInput()
-                    else submitInputEdit()
-                }
-            }
-            submitTextView?.show()
-            submitLoadingIndicator?.hide()
+            // validate product name before submit data
+            viewModel.validateProductNameInputFromNetwork(productNameField.getText())
         }
 
         setupDefaultFieldMessage()
@@ -711,6 +701,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToSpecificationText()
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
+        subscribeToProductNameValidationFromNetwork()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -820,6 +811,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.removeObservers(this)
         viewModel.isInputValid.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
+    }
+
+    private fun submitInputData() {
+        val isAdding = viewModel.isAdding
+        val isDrafting = viewModel.isDrafting
+        val isFirstMoved = viewModel.isFirstMoved
+        if (isAdding && isFirstMoved) moveToDescriptionActivity()
+        else if (isAdding && !isDrafting) submitInput()
+        else submitInputEdit()
     }
 
     private fun updateAddNewWholeSalePriceButtonVisibility() {
@@ -1547,6 +1547,32 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         }
         viewModel.getProductPriceRecommendation()
+    }
+
+    private fun subscribeToProductNameValidationFromNetwork() {
+        viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner, Observer {
+            submitTextView?.show()
+            submitLoadingIndicator?.hide()
+            when(it) {
+                is Success -> {
+                    val isError = it.data.isNotBlank()
+                    if (isError) {
+                        productNameField?.requestFocus()
+                        viewModel.productNameMessage = it.data
+                        viewModel.setIsProductNameInputError(true)
+                    } else {
+                        // set live data to null so it cannot commit observing twice when back from previous page
+                        viewModel.setProductNameInputFromNetwork(null)
+                        viewModel.setIsProductNameInputError(false)
+                        submitInputData()
+                    }
+                }
+                is Fail -> {
+                    viewModel.productNameMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    viewModel.setIsProductNameInputError(true)
+                }
+            }
+        })
     }
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {

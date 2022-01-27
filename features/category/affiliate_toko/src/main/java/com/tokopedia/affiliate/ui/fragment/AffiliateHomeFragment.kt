@@ -22,12 +22,14 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker.Companion.IDENTIFIER_HOME
@@ -42,6 +44,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -73,6 +76,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
     private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
+    private var affiliateActitvityInterface : AffiliateActivityInterface? = null
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private lateinit var affiliateHomeViewModel: AffiliateHomeViewModel
@@ -80,9 +84,10 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private var isUserBlackListed = false
 
     companion object {
-        fun getFragmentInstance(affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
+        fun getFragmentInstance(affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface,affiliateActitvity:AffiliateActivityInterface): Fragment {
             return AffiliateHomeFragment().apply {
                 bottomNavBarClickListener = affiliateBottomNavBarClickListener
+                affiliateActitvityInterface = affiliateActitvity
             }
         }
     }
@@ -132,17 +137,14 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                             .addIcon(IconList.ID_BILL){
                                 openHistoryActivity()
                             }
-                            .addIcon(IconList.ID_INFORMATION) {
-                                AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_BETA_INFO).show(childFragmentManager, "")
-                            }
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.label_affiliate)
             setOnBackButtonClickListener {
-                (activity as? AffiliateActivity)?.handleBackButton()
+                (activity as? AffiliateActivity)?.handleBackButton(false)
             }
         }
-
+        if(!CoachMarkPreference.hasShown(requireContext(), COACHMARK_TAG)) affiliateActitvityInterface?.showCoachMarker()
         sendScreenEvent()
         setUserDetails()
     }
@@ -184,7 +186,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             errorAction.text = getString(R.string.affiliate_promote_affiliatw)
             errorSecondaryAction.gone()
             setActionClickListener {
-                bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
+                bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate,true)
             }
         }
     }
@@ -425,7 +427,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             }
             LINK_HISTORY_BUTTON_CLICKED -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
+                    bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate,true)
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
