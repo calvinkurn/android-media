@@ -28,6 +28,7 @@ object CatalogConstant {
     const val ZERO_VALUE = "0"
 
     const val CATALOG_URL = "tokopedia://catalog/"
+    const val CATALOG_SHARE = "share"
 
     const val SOURCE = "catalog"
     const val DEVICE = "android"

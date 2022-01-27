@@ -42,7 +42,11 @@ object CatalogDetailAnalytics {
             if(pageSource.isNotBlank()){
                 put(EventKeys.KEY_PAGE_SOURCE,pageSource)
             }
-            put(EventKeys.KEY_USER_ID,userId)
+            if(userId.isNotBlank()){
+                put(EventKeys.KEY_USER_ID,userId)
+            }else {
+                put(EventKeys.KEY_USER_ID,"0")
+            }
         }.also {
             getTracker().sendGeneralEvent(it)
         }

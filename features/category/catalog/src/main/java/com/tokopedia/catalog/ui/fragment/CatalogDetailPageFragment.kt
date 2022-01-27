@@ -364,7 +364,7 @@ class CatalogDetailPageFragment : Fragment(),
                     if(UserSession(this@CatalogDetailPageFragment.context).userId.isNullOrEmpty()) "0"
                     else UserSession(this@CatalogDetailPageFragment.context).userId,
                     catalogId,
-                    ""
+                    CatalogConstant.CATALOG_SHARE
             )
             setMetaData(
                     "${CatalogConstant.KATALOG} $catalogName",
@@ -453,7 +453,7 @@ class CatalogDetailPageFragment : Fragment(),
         val linkerData = LinkerData()
         linkerData.id = catalogId
         linkerData.name = getString(com.tokopedia.catalog.R.string.catalog_share_link_name,catalogName)
-        linkerData.uri  = CatalogUtil.getShareURI(catalogUrl)
+        linkerData.uri  = CatalogUtil.getShareUrl(catalogId)
         linkerData.description = getString(com.tokopedia.catalog.R.string.catalog_share_link_description)
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
