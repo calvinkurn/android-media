@@ -3,13 +3,11 @@ package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
@@ -19,22 +17,23 @@ import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessUnitDataQuery
-import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessWidgetQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.atfQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.closeChannel
-import com.tokopedia.home.beranda.di.module.query.QueryHome.dynamicChannelQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.homeDataRevampQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.homeIconQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.homeQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.recommendationQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.pendingCashBackQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
-import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.popularKeywordQuery
-import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.dismissSuggestedQuery
-import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.suggestedReviewQuery
+import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
+import com.tokopedia.home.beranda.di.module.query.SuggestedReviewQuery
+import com.tokopedia.home.beranda.di.module.query.DismissSuggestedQuery
+import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
+import com.tokopedia.home.beranda.di.module.query.WalletBalanceQuery
+import com.tokopedia.home.beranda.di.module.query.PendingCashbackQuery
+import com.tokopedia.home.beranda.di.module.query.BusinessWidgetQuery
+import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
+import com.tokopedia.home.beranda.di.module.query.RecommendationQuery
+import com.tokopedia.home.beranda.di.module.query.PopularKeywordGqlQuery
+import com.tokopedia.home.beranda.di.module.query.DynamicChannelQuery
+import com.tokopedia.home.beranda.di.module.query.HomeQuery
+import com.tokopedia.home.beranda.di.module.query.HomeDataRevampQuery
+import com.tokopedia.home.beranda.di.module.query.HomeIconQuery
+import com.tokopedia.home.beranda.di.module.query.HomeSlidesQuery
+import com.tokopedia.home.beranda.di.module.query.AtfQuery
+import com.tokopedia.home.beranda.di.module.query.CloseChannelQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
@@ -143,9 +142,8 @@ class HomeUseCaseModule {
             graphqlRepository: GraphqlRepository,
             homeRecommendationMapper: HomeRecommendationMapper
     ): GetHomeRecommendationUseCase {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_home_feed)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
-        useCase.setGraphqlQuery(query)
+        useCase.setGraphqlQuery(HomeFeedQuery())
         return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
     }
 
@@ -153,7 +151,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideHomeReviewSuggestedUseCase(graphqlRepository: GraphqlRepository): HomeReviewSuggestedRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SuggestedProductReview>(graphqlRepository)
-        useCase.setGraphqlQuery(suggestedReviewQuery)
+        useCase.setGraphqlQuery(SuggestedReviewQuery())
         return HomeReviewSuggestedRepository(useCase)
     }
 
@@ -161,7 +159,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideDismissHomeReviewUseCase(graphqlRepository: GraphqlRepository): DismissHomeReviewUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ProductrevDismissSuggestion>(graphqlRepository)
-        useCase.setGraphqlQuery(dismissSuggestedQuery)
+        useCase.setGraphqlQuery(DismissSuggestedQuery())
         return DismissHomeReviewUseCase(useCase)
     }
 
@@ -169,7 +167,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideHomeTokopointsListDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsListDataUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerListHomeData>(graphqlRepository)
-        useCase.setGraphqlQuery(tokopointsListQuery)
+        useCase.setGraphqlQuery(TokopoinstListQuery())
         return GetHomeTokopointsListDataUseCase(useCase)
     }
 
@@ -189,7 +187,7 @@ class HomeUseCaseModule {
     @Provides
     fun getCoroutineWalletBalanceUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<WalletBalanceResponse>(graphqlRepository)
-        usecase.setGraphqlQuery(walletBalanceQuery)
+        usecase.setGraphqlQuery(WalletBalanceQuery())
         return GetCoroutineWalletBalanceUseCase(usecase, remoteConfig, userSession, localCacheHandler)
     }
 
@@ -197,7 +195,7 @@ class HomeUseCaseModule {
     @Provides
     fun getCoroutinePendingCashbackUseCase(graphqlRepository: GraphqlRepository): GetCoroutinePendingCashbackUseCase {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ResponsePendingCashback>(graphqlRepository)
-        usecase.setGraphqlQuery(pendingCashBackQuery)
+        usecase.setGraphqlQuery(PendingCashbackQuery())
         return GetCoroutinePendingCashbackUseCase(usecase)
     }
 
@@ -205,7 +203,7 @@ class HomeUseCaseModule {
     @Provides
     fun getBusinessWidgetTabUseCase(graphqlRepository: GraphqlRepository): HomeBusinessUnitTabRepository {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
-        usecase.setGraphqlQuery(businessWidgetQuery)
+        usecase.setGraphqlQuery(BusinessWidgetQuery())
         return HomeBusinessUnitTabRepository(usecase)
     }
 
@@ -213,7 +211,7 @@ class HomeUseCaseModule {
     @Provides
     fun getBusinessUnitDataTab(graphqlRepository: GraphqlRepository): HomeBusinessUnitDataRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
-        useCase.setGraphqlQuery(businessUnitDataQuery)
+        useCase.setGraphqlQuery(BusinessUnitDataQuery())
         return HomeBusinessUnitDataRepository(useCase)
     }
 
@@ -221,7 +219,7 @@ class HomeUseCaseModule {
     @Provides
     fun getRecommendationTabUseCase(graphqlRepository: GraphqlRepository): GetRecommendationTabUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedTabGqlResponse>(graphqlRepository)
-        useCase.setGraphqlQuery(recommendationQuery)
+        useCase.setGraphqlQuery(RecommendationQuery())
         return GetRecommendationTabUseCase(useCase)
     }
 
@@ -229,7 +227,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun providePopularKeywordUseCase(graphqlRepository: GraphqlRepository): HomePopularKeywordRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.PopularKeywordQuery>(graphqlRepository)
-        useCase.setGraphqlQuery(popularKeywordQuery)
+        useCase.setGraphqlQuery(PopularKeywordGqlQuery())
         return HomePopularKeywordRepository(useCase)
     }
 
@@ -237,10 +235,9 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetDynamicChannelsUseCase{
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeChannelData>(graphqlRepository)
-        useCase.setGraphqlQuery(dynamicChannelQuery)
+        useCase.setGraphqlQuery(DynamicChannelQuery())
         return GetDynamicChannelsUseCase(useCase, homeDynamicChannelDataMapper)
     }
-
 
     @Provides
     @HomeScope
@@ -252,7 +249,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideGetHomeData(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeDataRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
-        useCase.setGraphqlQuery(homeQuery)
+        useCase.setGraphqlQuery(HomeQuery())
         return HomeDataRepository(useCase)
     }
 
@@ -260,7 +257,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideGetHomeFlagUseCase(graphqlRepository: GraphqlRepository): HomeFlagRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFlagData>(graphqlRepository)
-        useCase.setGraphqlQuery(homeDataRevampQuery)
+        useCase.setGraphqlQuery(HomeDataRevampQuery())
         return HomeFlagRepository(useCase)
     }
 
@@ -268,7 +265,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideGetHomeIconUseCase(graphqlRepository: GraphqlRepository): GetHomeIconUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeIconData>(graphqlRepository)
-        useCase.setGraphqlQuery(homeIconQuery)
+        useCase.setGraphqlQuery(HomeIconQuery())
         return GetHomeIconUseCase(useCase)
     }
 
@@ -276,7 +273,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideGetHomePageBannerUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource): HomePageBannerRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeBannerData>(graphqlRepository)
-        useCase.setGraphqlQuery(homeSlidesQuery)
+        useCase.setGraphqlQuery(HomeSlidesQuery())
         return HomePageBannerRepository(useCase, homeRoomDataSource)
     }
 
@@ -302,7 +299,7 @@ class HomeUseCaseModule {
     @Provides
     fun provideGetHomeAtfUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource): HomeAtfRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(graphqlRepository)
-        useCase.setGraphqlQuery(atfQuery)
+        useCase.setGraphqlQuery(AtfQuery())
         return HomeAtfRepository(useCase, homeRoomDataSource)
     }
 
@@ -310,7 +307,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideCloseChannelUseCase(graphqlRepository: GraphqlRepository): HomeCloseChannelRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<CloseChannelMutation>(graphqlRepository)
-        useCase.setGraphqlQuery(closeChannel)
+        useCase.setGraphqlQuery(CloseChannelQuery())
         return HomeCloseChannelRepository(useCase)
     }
 

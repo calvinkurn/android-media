@@ -3,7 +3,10 @@ package com.tokopedia.search.result.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_SIZE_PERSO
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -841,74 +844,90 @@ data class SearchProductModel(
     )
 
     data class SearchInspirationWidget(
-            @SerializedName("data")
-            @Expose
-            val data: List<InspirationCardData> = listOf()
-    )
+        @SerializedName("data")
+        @Expose
+        val data: List<InspirationWidgetData> = listOf()
+    ) {
+        fun asFilterList(): List<Filter> =
+            data
+                .filter { it.type == TYPE_SIZE_PERSO }
+                .map { it.asFilter() }
+    }
 
-    data class InspirationCardData (
-            @SerializedName("title")
-            @Expose
-            val title: String = "",
+    data class InspirationWidgetData (
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
 
-            @SerializedName("type")
-            @Expose
-            val type: String = "",
+        @SerializedName("type")
+        @Expose
+        val type: String = "",
 
-            @SerializedName("position")
-            @Expose
-            val position: Int = 0,
+        @SerializedName("position")
+        @Expose
+        val position: Int = 0,
 
-            @SerializedName("options")
-            @Expose
-            val inspirationWidgetOptions: List<InspirationCardOption> = listOf(),
+        @SerializedName("options")
+        @Expose
+        val inspirationWidgetOptions: List<InspirationWidgetOption> = listOf(),
 
-            @SerializedName("tracking_option")
-            @Expose
-            val trackingOption: Int = 0,
-    )
+        @SerializedName("tracking_option")
+        @Expose
+        val trackingOption: Int = 0,
+    ) {
+        fun asFilter(): Filter =
+            Filter(
+                options = inspirationWidgetOptions.map { it.asOption() }
+            )
+    }
 
-    data class InspirationCardOption (
-            @SerializedName("text")
-            @Expose
-            val text: String = "",
+    data class InspirationWidgetOption (
+        @SerializedName("text")
+        @Expose
+        val text: String = "",
 
-            @SerializedName("img")
-            @Expose
-            val img: String = "",
+        @SerializedName("img")
+        @Expose
+        val img: String = "",
 
-            @SerializedName("url")
-            @Expose
-            val url: String = "",
+        @SerializedName("url")
+        @Expose
+        val url: String = "",
 
-            @SerializedName("color")
-            @Expose
-            val color: String = "",
+        @SerializedName("color")
+        @Expose
+        val color: String = "",
 
-            @SerializedName("applink")
-            @Expose
-            val applink: String = "",
+        @SerializedName("applink")
+        @Expose
+        val applink: String = "",
 
-            @SerializedName("filters")
-            @Expose
-            val filters: InspirationCardOptionFilter,
+        @SerializedName("filters")
+        @Expose
+        val filters: InspirationWidgetFilter,
 
-            @SerializedName("component_id")
-            @Expose
-            val componentId: String,
-    )
+        @SerializedName("component_id")
+        @Expose
+        val componentId: String,
+    ) {
+        fun asOption() = Option(
+            key = filters.key,
+            value = filters.value,
+            name = filters.name,
+        )
+    }
 
-    data class InspirationCardOptionFilter (
-            @SerializedName("key")
-            @Expose
-            val key: String = "",
+    data class InspirationWidgetFilter (
+        @SerializedName("key")
+        @Expose
+        val key: String = "",
 
-            @SerializedName("name")
-            @Expose
-            val name: String = "",
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
 
-            @SerializedName("value")
-            @Expose
-            val value: String = "",
+        @SerializedName("value")
+        @Expose
+        val value: String = "",
     )
 }

@@ -1,13 +1,9 @@
 package com.tokopedia.search.result.presentation.mapper
 
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.Banner
-import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalNavItem
-import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalSearchNavigation
-import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCardOption
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelated
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
@@ -20,7 +16,6 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelG
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroupVariant
 import com.tokopedia.search.result.domain.model.SearchProductModel.Related
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
-import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationWidget
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.BannerDataView
@@ -29,9 +24,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
@@ -41,10 +34,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.presentation.model.InspirationData
-import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
-import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
-import com.tokopedia.search.result.presentation.model.InspirationSizeOptionFiltersDataView
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 
 class ProductViewModelMapper {
 
@@ -62,7 +52,7 @@ class ProductViewModelMapper {
         val productDataView = ProductDataView()
 
         productDataView.adsModel = searchProductModel.topAdsModel
-        productDataView.globalNavDataView = convertToViewModel(
+        productDataView.globalNavDataView = GlobalNavDataView.create(
             searchProductModel.globalSearchNavigation
         )
         productDataView.cpmModel = searchProductModel.cpmModel
@@ -99,13 +89,10 @@ class ProductViewModelMapper {
             searchProductModel.searchInspirationCarousel,
             dimension90,
         )
-        productDataView.inspirationCardDataView = convertToInspirationCardViewModel(
-            searchProductModel.searchInspirationWidget
-        )
-        productDataView.inspirationSizeDataView = convertToInspirationSizeViewModel(
-                searchProductModel.searchInspirationWidget,
-                keyword,
-                dimension90
+        productDataView.inspirationWidgetDataView = InspirationWidgetVisitable.create(
+            searchProductModel.searchInspirationWidget,
+            keyword,
+            dimension90,
         )
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
@@ -115,42 +102,6 @@ class ProductViewModelMapper {
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
 
         return productDataView
-    }
-
-    private fun convertToViewModel(globalSearchNavigation: GlobalSearchNavigation): GlobalNavDataView? {
-        return if (globalSearchNavigation.data.globalNavItems.isNotEmpty())
-            GlobalNavDataView(
-                    globalSearchNavigation.data.source,
-                    globalSearchNavigation.data.title,
-                    globalSearchNavigation.data.keyword,
-                    globalSearchNavigation.data.navTemplate,
-                    globalSearchNavigation.data.background,
-                    globalSearchNavigation.data.seeAllApplink,
-                    globalSearchNavigation.data.seeAllUrl,
-                    globalSearchNavigation.data.isShowTopAds,
-                    convertToViewModel(globalSearchNavigation.data.globalNavItems)
-            )
-        else null
-    }
-
-    private fun convertToViewModel(globalNavItems: List<GlobalNavItem>): List<GlobalNavDataView.Item> {
-        return globalNavItems.mapIndexed { index, globalNavItem ->
-            val position = index + 1
-
-            GlobalNavDataView.Item(
-                    globalNavItem.categoryName,
-                    globalNavItem.name,
-                    globalNavItem.info,
-                    globalNavItem.imageUrl,
-                    globalNavItem.applink,
-                    globalNavItem.url,
-                    globalNavItem.subtitle,
-                    globalNavItem.strikethrough,
-                    globalNavItem.backgroundUrl,
-                    globalNavItem.logoUrl,
-                    position,
-            )
-        }
     }
 
     private fun convertToRelatedViewModel(
@@ -432,87 +383,6 @@ class ProductViewModelMapper {
             )
         }
     }
-
-    private fun convertToInspirationCardViewModel(
-            searchInspirationWidget: SearchInspirationWidget
-    ): List<InspirationCardDataView> {
-        return searchInspirationWidget.data.filter { it.type != SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
-            InspirationCardDataView(
-                InspirationData(
-                    title = data.title,
-                    type = data.type,
-                    position = data.position,
-                    optionCardData = data.inspirationWidgetOptions.mapToInspirationCardOptionDataView(data.type)
-                )
-            )
-        }
-    }
-
-    private fun convertToInspirationSizeViewModel(
-        searchInspirationWidget: SearchInspirationWidget,
-        keyword: String,
-        dimension90: String
-    ): List<InspirationSizeDataView> {
-        return searchInspirationWidget.data.filter { it.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
-            InspirationSizeDataView(
-                InspirationData(
-                    title = data.title,
-                    type = data.type,
-                    position = data.position,
-                    optionSizeData = data.inspirationWidgetOptions.mapToInspirationSizeOptionDataView(
-                        data.type,
-                        keyword,
-                        dimension90,
-                        data.title,
-                        data.trackingOption
-                    ),
-                )
-            )
-        }
-    }
-
-    private fun List<InspirationCardOption>.mapToInspirationCardOptionDataView(
-            inspirationCardType: String
-    ) = this.map { optionModel ->
-            InspirationCardOptionDataView(
-                    optionModel.text,
-                    optionModel.img,
-                    optionModel.url,
-                    optionModel.color,
-                    optionModel.applink,
-                    inspirationCardType,
-            )
-        }
-
-    private fun List<InspirationCardOption>.mapToInspirationSizeOptionDataView(
-        inspirationCardType: String,
-        keyword: String,
-        dimension90: String,
-        title: String,
-        trackingOption: Int
-    ) = this.map { optionModel ->
-        InspirationSizeOptionDataView(
-            optionModel.text,
-            optionModel.img,
-            optionModel.url,
-            optionModel.color,
-            optionModel.applink,
-            optionModel.filters.toInspirationSizeOptionFiltersDataView(),
-            inspirationCardType,
-            optionModel.componentId,
-            keyword = keyword,
-            dimension90 = dimension90,
-            valueName = title + " - " +optionModel.text,
-            trackingOption = trackingOption
-        )
-    }
-
-    private fun SearchProductModel.InspirationCardOptionFilter.toInspirationSizeOptionFiltersDataView() =
-        InspirationSizeOptionFiltersDataView(
-            this.key,
-            this.name,
-            this.value
-        )
 
     private fun convertToBannerDataView(bannerModel: Banner): BannerDataView {
         return BannerDataView(
