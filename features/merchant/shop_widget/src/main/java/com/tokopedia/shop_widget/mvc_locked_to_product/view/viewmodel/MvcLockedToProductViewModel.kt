@@ -10,6 +10,7 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToP
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductResponse
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.usecase.MvcLockedToProductUseCase
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductMapper
+import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -59,7 +60,7 @@ class MvcLockedToProductViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io, block = {
             val response = getMvcLockToProductResponse(mvcLockedToProductRequestUiModel)
             val uiModel = MvcLockedToProductMapper.mapToMvcLockedToProductProductListUiModel(
-                response.shopPageMVCProductLock
+                response.shopPageMVCProductLock.productList
             )
             _productListData.postValue(Success(uiModel))
             _hasNextPageLiveData.postValue(checkHasNextPage(response.shopPageMVCProductLock.nextPage))
@@ -69,7 +70,7 @@ class MvcLockedToProductViewModel @Inject constructor(
     }
 
     fun isSellerView(shopId: String): Boolean {
-        return shopId == userSession.shopId
+        return MvcLockedToProductUtil.isSellerView(shopId, userSession.shopId)
     }
 
     private suspend fun getMvcLockToProductResponse(
@@ -77,6 +78,7 @@ class MvcLockedToProductViewModel @Inject constructor(
     ): MvcLockedToProductResponse {
         mvcLockedToProductUseCase.setParams(
             MvcLockedToProductRequest(
+                mvcLockedToProductRequestUiModel.shopID,
                 mvcLockedToProductRequestUiModel.promoID,
                 mvcLockedToProductRequestUiModel.page,
                 mvcLockedToProductRequestUiModel.perPage,

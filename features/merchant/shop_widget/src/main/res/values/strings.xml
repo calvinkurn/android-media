@@ -12,5 +12,6 @@
     <string name="mvc_locked_to_product_toolbar_name">mvc locked to product</string>
     <string name="mvc_locked_to_product_voucher_dot">&#160;•&#160;</string>
     <string name="mvc_locked_to_product_bottom_sheet_title">Urutkan</string>
+    <string name="mvc_discovery_sort_section_left_wording">Produk Pilihan</string>
 
 </resources>

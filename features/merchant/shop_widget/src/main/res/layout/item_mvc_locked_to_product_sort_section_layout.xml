@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mvc_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,9 +13,9 @@
         android:id="@+id/text_total_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="heading_4"
         android:layout_gravity="start|center_vertical"
-        tools:text="11 barang" />
+        app:typographyType="heading_4"
+        android:text="@string/mvc_discovery_sort_section_left_wording" />
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/chip_sort"

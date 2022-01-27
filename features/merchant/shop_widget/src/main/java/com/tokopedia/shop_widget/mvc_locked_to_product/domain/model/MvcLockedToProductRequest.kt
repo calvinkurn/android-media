@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName
 data class MvcLockedToProductRequest(
     @SerializedName("promoID")
     @Expose
+    val shopID: String = "",
+    @SerializedName("promoID")
+    @Expose
     val promoID: String = "",
     @SerializedName("page")
     @Expose

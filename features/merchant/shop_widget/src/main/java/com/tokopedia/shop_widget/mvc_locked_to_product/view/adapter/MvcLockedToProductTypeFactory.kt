@@ -9,7 +9,7 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.*
 
 class MvcLockedToProductTypeFactory(
     private val globalErrorViewListener: MvcLockedToProductGlobalErrorViewHolder.Listener,
-    private val sortListener: MvcLockedToProductTotalProductAndSortViewHolder.Listener,
+    private val sortSectionListener: MvcLockedToProductSortSectionViewHolder.Listener,
     private val productCardListener: MvcLockedToProductGridViewHolder.Listener
 ) : BaseAdapterTypeFactory() {
     fun type(uiModel: MvcLockedToProductGridProductUiModel): Int {
@@ -20,8 +20,8 @@ class MvcLockedToProductTypeFactory(
         return MvcLockedToProductVoucherViewHolder.LAYOUT
     }
 
-    fun type(uiModel: MvcLockedToProductTotalProductAndSortUiModel): Int {
-        return MvcLockedToProductTotalProductAndSortViewHolder.LAYOUT
+    fun type(uiModel: MvcLockedToProductSortSectionUiModel): Int {
+        return MvcLockedToProductSortSectionViewHolder.LAYOUT
     }
 
     fun type(uiModel: MvcLockedToProductVoucherSortPlaceholderUiModel): Int {
@@ -41,8 +41,8 @@ class MvcLockedToProductTypeFactory(
             MvcLockedToProductVoucherViewHolder.LAYOUT -> {
                 MvcLockedToProductVoucherViewHolder(view)
             }
-            MvcLockedToProductTotalProductAndSortViewHolder.LAYOUT -> {
-                MvcLockedToProductTotalProductAndSortViewHolder(view, sortListener)
+            MvcLockedToProductSortSectionViewHolder.LAYOUT -> {
+                MvcLockedToProductSortSectionViewHolder(view, sortSectionListener)
             }
             MvcLockedToProductGridViewHolder.LAYOUT -> {
                 MvcLockedToProductGridViewHolder(view, productCardListener)

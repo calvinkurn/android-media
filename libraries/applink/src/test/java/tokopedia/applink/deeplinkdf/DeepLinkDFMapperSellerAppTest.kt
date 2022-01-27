@@ -235,11 +235,11 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check shop mvc locked to product shop id appLink then should return DF_BASE in customerapp`() {
+    fun `check shop mvc locked to product shop id appLink then should return DF_BASE_SELLERAPP in sellerapp`() {
         val mockShopId = "12345"
         val mockVoucherId = "6789"
         val appLink = UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, mockShopId, mockVoucherId)
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
     @Test

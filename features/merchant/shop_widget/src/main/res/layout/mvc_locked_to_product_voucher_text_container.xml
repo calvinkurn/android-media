@@ -44,6 +44,7 @@
         android:id="@+id/image_time_expired"
         android:layout_width="15dp"
         android:layout_height="15dp"
+        app:unify_image_corner_radius="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"

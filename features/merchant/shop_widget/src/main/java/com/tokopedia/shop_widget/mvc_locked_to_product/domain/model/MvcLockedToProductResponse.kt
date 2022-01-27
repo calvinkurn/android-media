@@ -17,7 +17,10 @@ data class MvcLockedToProductResponse(
         var voucher: Voucher = Voucher(),
         @SerializedName("productList")
         @Expose
-        var productList: ProductList = ProductList()
+        var productList: ProductList = ProductList(),
+        @SerializedName("error")
+        @Expose
+        var error: Error = Error()
     ) {
         data class Voucher(
             @SerializedName("shopImage")
@@ -132,6 +135,21 @@ data class MvcLockedToProductResponse(
                 )
             }
         }
+
+        data class Error(
+            @SerializedName("Message")
+            @Expose
+            var message: String = "",
+            @SerializedName("Description")
+            @Expose
+            var description: String = "",
+            @SerializedName("CtaText")
+            @Expose
+            var ctaText: String = "",
+            @SerializedName("CtaLink")
+            @Expose
+            var ctaLink: String = "",
+        )
     }
 
 

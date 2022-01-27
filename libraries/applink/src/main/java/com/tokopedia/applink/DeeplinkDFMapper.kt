@@ -367,7 +367,12 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE, R.string.title_shop_page))
             add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE, R.string.title_shop_widget))
-            add(DFP({ it.startsWithPattern(SHOP_MVC_LOCKED_TO_PRODUCT) }, DF_BASE, R.string.title_shop_widget))
+            add(DFP({
+                val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
+                val cleanExternalAppLinkPattern = SHOP_MVC_LOCKED_TO_PRODUCT.replace(regexPatternToReplace,".*")
+                val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
+                regexMatcherExternalAppLink.matches(it)
+            }, DF_BASE, R.string.title_shop_widget))
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.lastOrNull() == ReviewApplinkConst.PATH_REVIEW)
@@ -662,7 +667,12 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
             add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
-            add(DFP({ it.startsWithPattern(SHOP_MVC_LOCKED_TO_PRODUCT) }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
+            add(DFP({
+                val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
+                val cleanExternalAppLinkPattern = SHOP_MVC_LOCKED_TO_PRODUCT.replace(regexPatternToReplace,".*")
+                val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
+                regexMatcherExternalAppLink.matches(it)
+            }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
             add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
 
             add(DFP({

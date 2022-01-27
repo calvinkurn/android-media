@@ -10,6 +10,7 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.*
 object MvcLockedToProductMapper {
 
     fun mapToMvcLockedToProductRequestUiModel(
+        shopId: String,
         promoId: String,
         page: Int,
         perPage: Int,
@@ -17,6 +18,7 @@ object MvcLockedToProductMapper {
         userAddressLocalData: LocalCacheModel
     ): MvcLockedToProductRequestUiModel {
         return MvcLockedToProductRequestUiModel(
+            shopId,
             promoId,
             page,
             perPage,
@@ -36,18 +38,44 @@ object MvcLockedToProductMapper {
             response.productList.totalProductWording,
             selectedSortData
         )
-        val mvcLockedToProductProductListUiModel =
-            mapToMvcLockedToProductProductListUiModel(response)
+        val mvcLockedToProductProductListUiModel = mapToMvcLockedToProductProductListUiModel(
+            response.productList
+        )
+        val mvcLockedToProductErrorUiModel = mapToMvcLockedToProductErrorUiModel(
+            response.error.message,
+            response.error.description,
+            ctaText = response.error.ctaText,
+            ctaLink = response.error.ctaLink
+        )
         return MvcLockedToProductLayoutUiModel(
             hasNextPage,
             mvcLockedToProductVoucherUiModel,
             mvcLockedToProductTotalProductAndSortUiModel,
-            mvcLockedToProductProductListUiModel
+            mvcLockedToProductProductListUiModel,
+            mvcLockedToProductErrorUiModel
         )
     }
 
-    fun mapToMvcLockedToProductProductListUiModel(response: MvcLockedToProductResponse.ShopPageMVCProductLock): List<MvcLockedToProductGridProductUiModel> {
-        return response.productList.data.map {
+    fun mapToMvcLockedToProductErrorUiModel(
+        errorTitle: String = "",
+        errorDescription: String,
+        globalErrorType: Int = -1,
+        ctaText: String = "",
+        ctaLink: String = ""
+    ): MvcLockedToProductGlobalErrorUiModel {
+        return MvcLockedToProductGlobalErrorUiModel(
+            errorTitle,
+            errorDescription,
+            globalErrorType,
+            ctaText,
+            ctaLink
+        )
+    }
+
+    fun mapToMvcLockedToProductProductListUiModel(
+        productListResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList
+    ): List<MvcLockedToProductGridProductUiModel> {
+        return productListResponse.data.map {
             mapToMvcProductUiModel(it)
         }
     }
@@ -78,17 +106,27 @@ object MvcLockedToProductMapper {
             productImageUrl = productResponse.imageUrl,
             formattedPrice = productResponse.displayPrice,
             slashedPrice = productResponse.originalPrice,
-            discountPercentage = productResponse.discountPercentage,
+            discountPercentage = getProductCardDiscountPercentage(productResponse.discountPercentage),
             freeOngkir = ProductCardModel.FreeOngkir(
                 productResponse.isShowFreeOngkir,
                 productResponse.freeOngkirPromoIcon
             ),
             isOutOfStock = productResponse.isSoldOut,
             ratingCount = productResponse.rating,
-            countSoldRating = productResponse.averageRating.toString(),
+            countSoldRating = getProductCardRating(productResponse.averageRating),
             reviewCount = productResponse.totalReview.toIntOrZero(),
             labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) }
         )
+    }
+
+    private fun getProductCardRating(averageRating: Double): String {
+        return averageRating.toString().takeIf { averageRating != 0.0 }.orEmpty()
+    }
+
+    private fun getProductCardDiscountPercentage(discountPercentage: String): String {
+        return discountPercentage.replace("%", "").let { discount ->
+            discount.takeIf { it != "0" }.orEmpty()
+        }
     }
 
     private fun mapToProductCardLabelGroup(
@@ -106,8 +144,8 @@ object MvcLockedToProductMapper {
         totalProduct: Int,
         totalProductWording: String,
         selectedSortData: MvcLockedToProductSortUiModel
-    ): MvcLockedToProductTotalProductAndSortUiModel {
-        return MvcLockedToProductTotalProductAndSortUiModel(
+    ): MvcLockedToProductSortSectionUiModel {
+        return MvcLockedToProductSortSectionUiModel(
             totalProduct,
             totalProductWording,
             selectedSortData

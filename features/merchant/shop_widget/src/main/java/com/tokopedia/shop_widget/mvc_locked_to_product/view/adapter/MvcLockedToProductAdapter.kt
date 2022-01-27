@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop_widget.customview.OnStickySingleHeaderListener
 import com.tokopedia.shop_widget.customview.StickySingleHeaderView
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductGridViewHolder
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductTotalProductAndSortViewHolder
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductSortSectionViewHolder
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.*
 
 class MvcLockedToProductAdapter(
@@ -20,7 +20,7 @@ class MvcLockedToProductAdapter(
 
     override val stickyHeaderPosition: Int
         get() = visitables.indexOfFirst {
-            it::class.java == MvcLockedToProductTotalProductAndSortUiModel::class.java
+            it::class.java == MvcLockedToProductSortSectionUiModel::class.java
         }
 
     override fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder? {
@@ -30,8 +30,8 @@ class MvcLockedToProductAdapter(
     }
 
     override fun bindSticky(viewHolder: RecyclerView.ViewHolder?) {
-        if (viewHolder is MvcLockedToProductTotalProductAndSortViewHolder) {
-            visitables.filterIsInstance(MvcLockedToProductTotalProductAndSortUiModel::class.java)
+        if (viewHolder is MvcLockedToProductSortSectionViewHolder) {
+            visitables.filterIsInstance(MvcLockedToProductSortSectionUiModel::class.java)
                 .firstOrNull()?.let {
                 viewHolder.bind(it)
             }
@@ -79,7 +79,7 @@ class MvcLockedToProductAdapter(
         submitList(newList)
     }
 
-    fun addTotalProductAndSortData(mvcLockedToProductTotalProductAndSortUiModel: MvcLockedToProductTotalProductAndSortUiModel) {
+    fun addTotalProductAndSortData(mvcLockedToProductTotalProductAndSortUiModel: MvcLockedToProductSortSectionUiModel) {
         val newList = getNewVisitableItems()
         newList.add(mvcLockedToProductTotalProductAndSortUiModel)
         submitList(newList)
@@ -129,16 +129,10 @@ class MvcLockedToProductAdapter(
         submitList(newList)
     }
 
-    fun showGlobalErrorView(errorMessage: String, globalErrorType: Int) {
+    fun showGlobalErrorView(uiModel: MvcLockedToProductGlobalErrorUiModel) {
         val newList = getNewVisitableItems()
         newList.clear()
-        newList.add(
-            MvcLockedToProductGlobalErrorUiModel(
-                "",
-                errorMessage,
-                globalErrorType
-            )
-        )
+        newList.add(uiModel)
         submitList(newList)
     }
 
@@ -152,7 +146,7 @@ class MvcLockedToProductAdapter(
     }
 
     fun updateTotalProductAndSortData(selectedSortData: MvcLockedToProductSortUiModel) {
-        val uiModel = visitables.filterIsInstance<MvcLockedToProductTotalProductAndSortUiModel>()
+        val uiModel = visitables.filterIsInstance<MvcLockedToProductSortSectionUiModel>()
             .firstOrNull()
         uiModel?.let {
             it.selectedSortData = selectedSortData

@@ -28,6 +28,7 @@ class MvcLockedToProductUseCase @Inject constructor(
     fun setParams(request: MvcLockedToProductRequest) {
         setRequestParams(
             mapOf<String, Any>(
+                KEY_SHOP_ID to request.shopID.toIntOrZero(),
                 KEY_PROMO_ID to request.promoID.toIntOrZero(),
                 KEY_PAGE to request.page,
                 KEY_PER_PAGE to request.perPage,
@@ -41,6 +42,7 @@ class MvcLockedToProductUseCase @Inject constructor(
     }
 
     companion object {
+        private const val KEY_SHOP_ID = "shopID"
         private const val KEY_PROMO_ID = "promoID"
         private const val KEY_PAGE = "page"
         private const val KEY_PER_PAGE = "perPage"
@@ -51,8 +53,8 @@ class MvcLockedToProductUseCase @Inject constructor(
         private const val KEY_LONGITUDE = "longitude"
         private const val QUERY_NAME = "ShopPageMvcLockToProductQuery"
         private const val QUERY = """
-            query ShopPageMvcLockToProductQuery(${'$'}promoID: Int64!, ${'$'}page: Int, ${'$'}perPage: Int, ${'$'}sortBy: Int, ${'$'}districtID: String, ${'$'}cityID: String, ${'$'}latitude: String, ${'$'}longitude: String) {
-              shopPageGetMVCLockToProduct(promoID: ${'$'}promoID, page: ${'$'}page, perPage: ${'$'}perPage, sortBy: ${'$'}sortBy, districtID: ${'$'}districtID, cityID: ${'$'}cityID, latitude: ${'$'}latitude, longitude: ${'$'}longitude) {
+            query ShopPageMvcLockToProductQuery(${'$'}shopID: Int64,${'$'}promoID: Int64!, ${'$'}page: Int, ${'$'}perPage: Int, ${'$'}sortBy: Int, ${'$'}districtID: String, ${'$'}cityID: String, ${'$'}latitude: String, ${'$'}longitude: String) {
+              shopPageGetMVCLockToProduct(shopID: ${'$'}shopID, promoID: ${'$'}promoID, page: ${'$'}page, perPage: ${'$'}perPage, sortBy: ${'$'}sortBy, districtID: ${'$'}districtID, cityID: ${'$'}cityID, latitude: ${'$'}latitude, longitude: ${'$'}longitude) {
                 nextPage
                 voucher {
                   shopImage
@@ -93,6 +95,12 @@ class MvcLockedToProductUseCase @Inject constructor(
                     stock
                     productInCart
                   }
+                }
+                error {
+                  Message
+                  Description
+                  CtaText
+                  CtaLink
                 }
               }
             }

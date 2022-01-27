@@ -53,6 +53,20 @@ class MvcLockedToProductViewModelTest {
     }
 
     @Test
+    fun `check whether get userId return mocked value`() {
+        val mockUserId = "12356"
+        every { userSession.userId } returns mockUserId
+        Assert.assertTrue(viewModel.userId == mockUserId)
+    }
+
+    @Test
+    fun `check whether isSellerView return true when match`() {
+        val mockShopId = "1234"
+        every { userSession.shopId } returns mockShopId
+        Assert.assertTrue(viewModel.isSellerView(mockShopId))
+    }
+
+    @Test
     fun `check whether mvcLockToProductLiveData value is success`() {
         val mockRequestUiModel = getMockMvcLockedToProductRequestUiModel()
         val mockResponse = getMockMvcLockedToProductResponse()
@@ -112,7 +126,9 @@ class MvcLockedToProductViewModelTest {
 
     private fun getMockMvcLockedToProductRequestUiModel(): MvcLockedToProductRequestUiModel {
         val mockPromoId = "6578"
+        val shopId = "1234"
         return MvcLockedToProductRequestUiModel(
+            shopId,
             mockPromoId,
             1,
             10,

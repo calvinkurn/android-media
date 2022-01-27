@@ -35,7 +35,7 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.MvcLockedToP
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.MvcLockedToProductTypeFactory
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductGlobalErrorViewHolder
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductGridViewHolder
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductTotalProductAndSortViewHolder
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductSortSectionViewHolder
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.bottomsheet.MvcLockedToProductSortListBottomSheet
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.*
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.viewmodel.MvcLockedToProductViewModel
@@ -49,7 +49,7 @@ import javax.inject.Inject
 open class MvcLockedToProductFragment : BaseDaggerFragment(),
     HasComponent<MvcLockedToProductComponent>,
     MvcLockedToProductGlobalErrorViewHolder.Listener,
-    MvcLockedToProductTotalProductAndSortViewHolder.Listener,
+    MvcLockedToProductSortSectionViewHolder.Listener,
     MvcLockedToProductSortListBottomSheet.Callback,
     MvcLockedToProductGridViewHolder.Listener {
 
@@ -183,34 +183,43 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             resetSwipeLayout()
             when (it) {
                 is Success -> {
-                    setVoucherSectionData(it.data.mvcLockedToProductVoucherUiModel)
-                    setTotalProductAndSortSectionData(it.data.mvcLockedToProductTotalProductAndSortUiModel)
-                    setProductListSectionData(it.data.mvcLockedToListProductGridProductUiModel)
+                    if (it.data.mvcLockedToProductErrorUiModel.errorTitle.isNotEmpty()) {
+                        showErrorView(it.data.mvcLockedToProductErrorUiModel)
+                    } else {
+                        setVoucherSectionData(it.data.mvcLockedToProductVoucherUiModel)
+                        setTotalProductAndSortSectionData(it.data.mvcLockedToProductTotalProductAndSortUiModel)
+                        setProductListSectionData(it.data.mvcLockedToProductListGridProductUiModel)
+                    }
                 }
                 is Fail -> {
-                    showErrorView(it.throwable)
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    val globalErrorType: Int = when (it.throwable) {
+                        is UnknownHostException, is SocketTimeoutException -> {
+                            GlobalError.NO_CONNECTION
+                        }
+                        else -> {
+                            GlobalError.SERVER_ERROR
+                        }
+                    }
+                    val failErrorUiModel = MvcLockedToProductMapper.mapToMvcLockedToProductErrorUiModel(
+                        errorDescription = errorMessage,
+                        globalErrorType = globalErrorType
+                    )
+                    showErrorView(failErrorUiModel)
                 }
             }
         })
     }
 
-    private fun showErrorView(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        val globalErrorType: Int = when (throwable) {
-            is UnknownHostException, is SocketTimeoutException -> {
-                GlobalError.NO_CONNECTION
-            }
-            else -> {
-                GlobalError.SERVER_ERROR
-            }
-        }
-        adapter.showGlobalErrorView(errorMessage, globalErrorType)
+    private fun showErrorView(uiModel: MvcLockedToProductGlobalErrorUiModel) {
+        adapter.showGlobalErrorView(uiModel)
     }
 
     private fun getMvcLockedToProductData(promoId: String) {
         val userAddressLocalData = MvcLockedToProductUtil.getWidgetUserAddressLocalData(context)
         viewModel?.getMvcLockedToProductData(
             MvcLockedToProductRequestUiModel(
+                shopId,
                 promoId,
                 START_PAGE,
                 PER_PAGE,
@@ -246,6 +255,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         val userAddressLocalData = MvcLockedToProductUtil.getWidgetUserAddressLocalData(context)
         viewModel?.getProductListData(
             MvcLockedToProductMapper.mapToMvcLockedToProductRequestUiModel(
+                shopId,
                 promoId,
                 page,
                 PER_PAGE,
@@ -297,7 +307,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun setTotalProductAndSortSectionData(
-        mvcLockedToProductTotalProductAndSortUiModel: MvcLockedToProductTotalProductAndSortUiModel
+        mvcLockedToProductTotalProductAndSortUiModel: MvcLockedToProductSortSectionUiModel
     ) {
         adapter.addTotalProductAndSortData(mvcLockedToProductTotalProductAndSortUiModel)
     }

@@ -16,4 +16,8 @@ object MvcLockedToProductUtil {
     fun getActualPositionFromIndex(indexPosition: Int): Int{
         return indexPosition + VALUE_INT_ONE
     }
+
+    fun isSellerView(shopId: String, userSessionShopId: String): Boolean{
+        return shopId == userSessionShopId
+    }
 }
