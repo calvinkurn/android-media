@@ -58,13 +58,13 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val ZERO: Long = 0
         private const val ROTATION_ANGLE_ZERO = 0f
         private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
-        private const val ROTATION_ANIM_DURATION_IN_MILLIS : Long = 300
+        private const val ROTATION_ANIM_DURATION_IN_MILLIS: Long = 300
 
         fun newInstance(): ProductCouponPreviewFragment {
             return ProductCouponPreviewFragment()
         }
 
-        fun newInstance(coupon: Coupon, mode : Mode): ProductCouponPreviewFragment {
+        fun newInstance(coupon: Coupon, mode: Mode): ProductCouponPreviewFragment {
             val args = Bundle()
             args.putSerializable(BUNDLE_KEY_COUPON, coupon)
             args.putSerializable(BUNDLE_KEY_MODE, mode)
@@ -79,17 +79,17 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
-    lateinit var userSession : UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     private var nullableBinding by autoClearedNullable<FragmentProductCouponPreviewBinding>()
     private val binding: FragmentProductCouponPreviewBinding
         get() = requireNotNull(nullableBinding)
-    
+
     private var onNavigateToCouponInformationPage: () -> Unit = {}
     private var onNavigateToCouponSettingsPage: () -> Unit = {}
     private var onNavigateToProductListPage: () -> Unit = {}
-    private var onUpdateCouponSuccess : ()-> Unit = {}
-    private var onCreateSuccess : ()-> Unit = {}
+    private var onUpdateCouponSuccess: () -> Unit = {}
+    private var onCreateSuccess: () -> Unit = {}
     private var couponSettings: CouponSettings? = null
     private var couponInformation: CouponInformation? = null
     private var couponProducts: List<CouponProduct> = emptyList()
@@ -168,7 +168,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         observeShareMetaDataResult()
         observeUpdateCouponResult()
 
-        if(isUpdateMode()) {
+        if (isUpdateMode()) {
             changeToolbarTitle(getString(R.string.update_coupon_product))
             changeButtonBehavior()
             displayCouponDetail()
@@ -184,12 +184,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding.btnCreateCoupon.setOnClickListener { updateCoupon() }
     }
 
-    private fun isUpdateMode() : Boolean {
+    private fun isUpdateMode(): Boolean {
         return pageMode == Mode.UPDATE
     }
 
     private fun displayCouponDetail() {
-        val coupon : Coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon ?: return
+        val coupon: Coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon ?: return
         this.couponSettings = coupon.settings
         this.couponProducts = coupon.products
         this.couponInformation = coupon.information
@@ -219,7 +219,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     }
 
-    private fun changeToolbarTitle(title : String) {
+    private fun changeToolbarTitle(title: String) {
         binding.header.headerView?.text = title
     }
 
@@ -265,10 +265,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private fun observeUpdateCouponResult() {
         viewModel.updateCouponResult.observe(viewLifecycleOwner, { result ->
             binding.btnCreateCoupon.isLoading = false
-            when(result) {
+            when (result) {
                 is Success -> {
                     onUpdateCouponSuccess()
-                    val text = when(pageMode) {
+                    val text = when (pageMode) {
                         Mode.CREATE -> EMPTY_STRING
                         Mode.UPDATE -> getString(R.string.coupon_updated)
                         Mode.DUPLICATE -> getString(R.string.coupon_duplicated)
@@ -300,19 +300,19 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         this.couponSettings = couponSettings
     }
 
-    fun setCouponProductsData(couponProducts : List<CouponProduct>) {
+    fun setCouponProductsData(couponProducts: List<CouponProduct>) {
         this.couponProducts = couponProducts
     }
 
-    fun setCouponInformationData(couponInformation : CouponInformation) {
-        this.couponInformation =  couponInformation
+    fun setCouponInformationData(couponInformation: CouponInformation) {
+        this.couponInformation = couponInformation
     }
 
-    fun setOnCreateCouponSuccess(onCreateSuccess : ()-> Unit) {
+    fun setOnCreateCouponSuccess(onCreateSuccess: () -> Unit) {
         this.onCreateSuccess = onCreateSuccess
     }
 
-    fun setOnUpdateCouponSuccess(onUpdateCouponSuccess : ()-> Unit) {
+    fun setOnUpdateCouponSuccess(onUpdateCouponSuccess: () -> Unit) {
         this.onUpdateCouponSuccess = onUpdateCouponSuccess
     }
 
@@ -321,7 +321,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
-        couponInformation?.let { coupon ->  refreshCouponInformationSection(coupon) }
+        couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
         refreshProductsSection(couponProducts)
 
@@ -347,11 +347,17 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         val endDate = coupon.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val endHour = coupon.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
 
-        val period = String.format(getString(R.string.placeholder_coupon_period), startDate, startHour, endDate, endHour)
+        val period = String.format(
+            getString(R.string.placeholder_coupon_period),
+            startDate,
+            startHour,
+            endDate,
+            endHour
+        )
         binding.tpgCouponPeriod.text = period
     }
 
-    private fun handleCouponCodeVisibility(couponCode : String, target: CouponInformation.Target) {
+    private fun handleCouponCodeVisibility(couponCode: String, target: CouponInformation.Target) {
         when (target) {
             CouponInformation.Target.PUBLIC -> binding.groupCouponCode.gone()
             CouponInformation.Target.SPECIAL -> binding.groupCouponCode.visible()
@@ -370,7 +376,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding.tpgCouponQouta.text = coupon.quota.splitByThousand()
 
         handleDiscountType(coupon.type)
-        handleDiscountAmount(coupon.type, coupon.discountType, coupon.discountAmount, coupon.discountPercentage)
+        handleDiscountAmount(
+            coupon.type,
+            coupon.discountType,
+            coupon.discountAmount,
+            coupon.discountPercentage
+        )
         handleMaximumDiscount(coupon.type, coupon.discountType, coupon.maxDiscount)
         handleMinimumPurchaseType(coupon.type, coupon.minimumPurchaseType)
         handleMinimumPurchase(coupon.type, coupon.minimumPurchaseType, coupon.minimumPurchase)
@@ -391,7 +402,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
             binding.labelProductCompleteStatus.setLabel(getString(R.string.completed))
 
-            binding.tpgProductCount.text = String.format(getString(R.string.placeholder_registered_product), products.size)
+            binding.tpgProductCount.text =
+                String.format(getString(R.string.placeholder_registered_product), products.size)
         } else {
             binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             binding.labelProductCompleteStatus.setLabel(getString(R.string.incomplete))
@@ -439,7 +451,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding.tpgDiscountAmount.text = formattedDiscountAmount
     }
 
-    private fun handleMaximumDiscount(couponType : CouponType, discountType: DiscountType, maxDiscount: Int) {
+    private fun handleMaximumDiscount(
+        couponType: CouponType,
+        discountType: DiscountType,
+        maxDiscount: Int
+    ) {
         if (couponType == CouponType.CASHBACK && discountType == DiscountType.PERCENTAGE) {
             binding.groupMaxDiscount.visible()
             binding.tpgMaxDiscount.text =
@@ -475,7 +491,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
 
-    private fun handleMinimumPurchase(couponType: CouponType, minimumPurchaseType: MinimumPurchaseType, minimumPurchase: Int) {
+    private fun handleMinimumPurchase(
+        couponType: CouponType,
+        minimumPurchaseType: MinimumPurchaseType,
+        minimumPurchase: Int
+    ) {
         if (minimumPurchase > ZERO) {
             binding.groupMinimumPurchase.visible()
             val text = when {
@@ -492,7 +512,9 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
                     getString(R.string.placeholder_quantity),
                     minimumPurchase.splitByThousand()
                 )
-                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
+                couponType == CouponType.CASHBACK && minimumPurchaseType == MinimumPurchaseType.NOTHING -> getString(
+                    R.string.nothing
+                )
                 else -> EMPTY_STRING
             }
 
@@ -546,7 +568,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding.btnCreateCoupon.loadingText = getString(R.string.please_wait)
 
         viewModel.createCoupon(
-            ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
             couponInformation ?: return,
             couponSettings ?: return,
             couponProducts
@@ -565,7 +586,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         )
     }
 
-    
+
     private fun onRetryCreateCoupon() {
         VoucherCreationTracking.sendCreateVoucherClickTracking(
             step = VoucherCreationStep.REVIEW,
@@ -596,8 +617,13 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, VoucherUrl.HELP_URL)
     }
 
-    private fun showBroadCastVoucherBottomSheet(couponInformation: CouponInformation, freeBroadcastQuota : Int, shopName : String) {
-        val bottomSheet = BroadcastCouponBottomSheet.newInstance(couponInformation, freeBroadcastQuota)
+    private fun showBroadCastVoucherBottomSheet(
+        couponInformation: CouponInformation,
+        freeBroadcastQuota: Int,
+        shopName: String
+    ) {
+        val bottomSheet =
+            BroadcastCouponBottomSheet.newInstance(couponInformation, freeBroadcastQuota)
         bottomSheet.setOnBroadCastClickListener {
             VoucherCreationTracking.sendBroadCastChatClickTracking(
                 category = VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.PAGE,
@@ -605,7 +631,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             )
             SharingUtil.shareToBroadCastChat(requireContext(), couponId)
         }
-        bottomSheet.setOnShareToSocialMediaClickListener { displayShareBottomSheet(shopName, couponInformation) }
+        bottomSheet.setOnShareToSocialMediaClickListener {
+            displayShareBottomSheet(
+                shopName,
+                couponInformation
+            )
+        }
         bottomSheet.setCloseClickListener {
             VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.REVIEW,
@@ -619,17 +650,21 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun showBroadCastVoucherBottomSheetWithoutShareToSocialMediaCapability() {
-        val modifiedCouponInformation = couponInformation?.copy(target = CouponInformation.Target.SPECIAL)
+        val modifiedCouponInformation =
+            couponInformation?.copy(target = CouponInformation.Target.SPECIAL)
         showBroadCastVoucherBottomSheet(modifiedCouponInformation ?: return, Int.ZERO, EMPTY_STRING)
     }
 
     private fun displayTermAndConditionBottomSheet() {
-        val bottomSheet = TermAndConditionBottomSheet.newInstance(requireActivity(), getString(R.string.coupon_tnc))
+        val bottomSheet = TermAndConditionBottomSheet.newInstance(
+            requireActivity(),
+            getString(R.string.coupon_tnc)
+        )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun displayCouponPreviewBottomSheet() {
-        val imageUrls = viewModel.getMostSoldProductImageUrls(couponProducts)
+        val imageUrls = viewModel.findMostSoldProductImageUrls(couponProducts)
         val bottomSheet = CouponPreviewBottomSheet.newInstance(
             couponInformation ?: return,
             couponSettings ?: return,
@@ -639,9 +674,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun displayShareBottomSheet(shopName : String, couponInformation: CouponInformation) {
+    private fun displayShareBottomSheet(shopName: String, couponInformation: CouponInformation) {
         //TODO implement share component
-        val startDate = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT_DAY_MONTH)
+        val startDate =
+            couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT_DAY_MONTH)
         val endDate = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT_DAY_MONTH)
 
         val template = getString(R.string.placeholder_share_coupon_product_wording)
@@ -650,7 +686,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     }
 
-    private fun showToaster(text : String) {
+    private fun showToaster(text: String) {
         if (text.isEmpty()) return
         Toaster.build(binding.root, text).show()
     }

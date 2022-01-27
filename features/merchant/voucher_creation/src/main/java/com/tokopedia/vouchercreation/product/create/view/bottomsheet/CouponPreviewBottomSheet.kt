@@ -21,6 +21,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
 import com.tokopedia.vouchercreation.databinding.BottomsheetCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
@@ -32,7 +33,6 @@ import javax.inject.Inject
 class CouponPreviewBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val EMPTY_STRING = ""
         private const val FIRST_IMAGE_URL = 0
         private const val SECOND_IMAGE_URL = 1
         private const val THIRD_IMAGE_URL = 2
@@ -202,14 +202,6 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
             Glide.with(binding.imgCoupon.context).asBitmap().load(image).into(binding.imgCoupon)
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    private fun ArrayList<String>.getIndexAtOrEmpty(index : Int) : String {
-        return try {
-            this[index]
-        } catch(e: Exception) {
-            EMPTY_STRING
         }
     }
 

@@ -9,6 +9,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
@@ -28,6 +29,10 @@ class ProductCouponPreviewViewModel @Inject constructor(
 
     companion object {
         private const val NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE = 3
+        private const val IMAGE_TEMPLATE_SOURCE_ID = "ZmygOT"
+        private const val FIRST_IMAGE_URL = 0
+        private const val SECOND_IMAGE_URL = 1
+        private const val THIRD_IMAGE_URL = 2
     }
 
     private val _areInputValid = MutableLiveData<Boolean>()
@@ -69,20 +74,23 @@ class ProductCouponPreviewViewModel @Inject constructor(
 
 
     fun createCoupon(
-        sourceId: String,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>
     ) {
         launchCatchError(
             block = {
+                val mostSoldProductsImageUrls = getMostSoldProductImageUrls(couponProducts)
                 val result = withContext(dispatchers.io) {
                     createCouponUseCase.execute(
                         this,
-                        sourceId,
+                        IMAGE_TEMPLATE_SOURCE_ID,
                         couponInformation,
                         couponSettings,
-                        couponProducts
+                        couponProducts,
+                        mostSoldProductsImageUrls.first,
+                        mostSoldProductsImageUrls.second,
+                        mostSoldProductsImageUrls.third
                     )
                 }
                 _createCoupon.setValue(Success(result))
@@ -132,10 +140,18 @@ class ProductCouponPreviewViewModel @Inject constructor(
         )
     }
 
-    fun getMostSoldProductImageUrls(couponProducts: List<CouponProduct>): ArrayList<String> {
-       val mostSoldProductsImageUrls = couponProducts.sortedByDescending { it.soldCount }
-           .take(NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE)
-           .map { it.imageUrl }
+    private fun getMostSoldProductImageUrls(couponProducts: List<CouponProduct>): Triple<String, String, String> {
+        val imageUrls = findMostSoldProductImageUrls(couponProducts)
+        val firstImageUrl = imageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL)
+        val secondImageUrl = imageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL)
+        val thirdImageUrl = imageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL)
+        return Triple(firstImageUrl, secondImageUrl, thirdImageUrl)
+    }
+
+    fun findMostSoldProductImageUrls(couponProducts: List<CouponProduct>): ArrayList<String> {
+        val mostSoldProductsImageUrls = couponProducts.sortedByDescending { it.soldCount }
+            .take(NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE)
+            .map { it.imageUrl }
 
         val imageUrls = arrayListOf<String>()
 

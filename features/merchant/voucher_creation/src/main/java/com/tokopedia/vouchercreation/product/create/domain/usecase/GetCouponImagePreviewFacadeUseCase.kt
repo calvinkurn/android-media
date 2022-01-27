@@ -138,10 +138,6 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         )
     }
 
-    private fun isWholeNumber(number : Double) : Boolean {
-        return kotlin.math.ceil(number / 3) == kotlin.math.floor(number / 3)
-    }
-
     private fun isInteger(number : Float) : Boolean {
         return number % 1 == 0.0f
     }
