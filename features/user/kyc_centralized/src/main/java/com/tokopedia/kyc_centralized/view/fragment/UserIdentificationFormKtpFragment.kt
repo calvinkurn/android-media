@@ -6,6 +6,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
@@ -36,6 +38,12 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                     .updateToolbarTitle(getString(R.string.title_kyc_info))
+        }
+
+        if (isKycSelfie) {
+            layoutSecurity?.hide()
+        } else {
+            layoutSecurity?.show()
         }
     }
 
@@ -74,11 +82,12 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
     }
 
     companion object {
-        fun createInstance(): Fragment {
-            val fragment: Fragment = UserIdentificationFormKtpFragment()
-            val args = Bundle()
-            fragment.arguments = args
-            return fragment
+        fun createInstance(type: String): Fragment {
+            return UserIdentificationFormKtpFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, type)
+                }
+            }
         }
     }
 

@@ -87,7 +87,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
             notFoundList
         } else {
             if (fragmentList.isEmpty()) {
-                fragmentList.add(UserIdentificationFormKtpFragment.createInstance())
+                fragmentList.add(UserIdentificationFormKtpFragment.createInstance(kycType))
                 fragmentList.add(UserIdentificationFormFaceFragment.createInstance(kycType))
                 fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId))
             }
@@ -103,7 +103,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         if (listFragment.size >= currentPosition && actualPosition >= 0) {
             val fragment = when (listFragment[actualPosition]) {
                 is UserIdentificationFormKtpFragment -> {
-                    UserIdentificationFormKtpFragment.createInstance()
+                    UserIdentificationFormKtpFragment.createInstance(kycType)
                 }
                 is UserIdentificationFormFaceFragment -> {
                     UserIdentificationFormFaceFragment.createInstance(kycType)

@@ -45,8 +45,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected var subtitle: TextView? = null
     protected var bulletTextLayout: LinearLayout? = null
     protected var button: UnifyButton? = null
-    protected var correctImage: ImageView? = null
-    protected var wrongImage: ImageView? = null
+    protected var layoutSecurity: LinearLayout? = null
     protected var analytics: UserIdentificationCommonAnalytics? = null
     protected var projectId = 0
     protected var kycType = ""
@@ -99,9 +98,8 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         title = view.findViewById(R.id.title)
         subtitle = view.findViewById(R.id.subtitle)
         button = view.findViewById(R.id.button)
-        correctImage = view.findViewById(R.id.image_selfie_correct)
-        wrongImage = view.findViewById(R.id.image_selfie_wrong)
         bulletTextLayout = view.findViewById(R.id.layout_info_bullet)
+        layoutSecurity = view.findViewById(R.id.security_layout)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

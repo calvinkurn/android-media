@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
@@ -95,7 +96,7 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
             goToKycSelfie()
         }
         setExampleImages()
-        onboardingImage?.visibility = View.GONE
+        layoutSecurity?.hide()
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                     .updateToolbarTitle(getString(R.string.title_kyc_form_selfie))
@@ -114,6 +115,7 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
             analytics?.eventClickNextSelfiePage()
             goToKycLiveness()
         }
+        layoutSecurity?.show()
 
         setLottieAnimation()
     }
@@ -128,10 +130,10 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     }
 
     private fun setExampleImages() {
-        correctImage?.visibility = View.VISIBLE
-        wrongImage?.visibility = View.VISIBLE
-        correctImage?.loadImage(KycUrl.SELFIE_OK)
-        wrongImage?.loadImage(KycUrl.SELFIE_FAIL)
+        onboardingImage?.apply {
+            loadImage(KycUrl.SCAN_SELFIE)
+            show()
+        }
     }
 
     private fun goToKycSelfie() {

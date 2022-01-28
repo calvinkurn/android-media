@@ -19,26 +19,6 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_lvl4">
 
-        <ImageView
-            android:id="@+id/image_selfie_correct"
-            android:layout_width="@dimen/layout_lvl9"
-            android:layout_height="@dimen/layout_lvl9"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/image_selfie_wrong"
-            app:layout_constraintBottom_toTopOf="@id/vertical_guide"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:id="@+id/image_selfie_wrong"
-            android:layout_width="@dimen/layout_lvl9"
-            android:layout_height="@dimen/layout_lvl9"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/image_selfie_correct"
-            app:layout_constraintBottom_toTopOf="@id/vertical_guide"
-            android:visibility="gone"/>
-
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/form_onboarding_image"
             app:layout_constraintTop_toTopOf="parent"
@@ -96,29 +76,35 @@
             app:layout_constraintLeft_toLeftOf="@id/subtitle"
             app:layout_constraintRight_toRightOf="@id/subtitle"/>
 
-        <ImageView
-            android:id="@+id/security_shield"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/security_textview"
-            app:layout_constraintBottom_toBottomOf="@id/security_textview"
-            app:layout_constraintRight_toLeftOf="@id/security_textview"
-            app:srcCompat="@drawable/ic_shield" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/security_textview"
+        <LinearLayout
+            android:id="@+id/security_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/layout_info_bullet"
-            android:paddingLeft="@dimen/spacing_lvl3"
-            android:paddingStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl5"
-            android:layout_marginBottom="@dimen/kyc_centralized_17dp"
-            android:drawablePadding="@dimen/spacing_lvl3"
-            android:text="@string/kyc_data_security" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+                <ImageView
+                    android:id="@+id/security_shield"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_shield" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/security_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_3"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_info_bullet"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:drawablePadding="@dimen/spacing_lvl3"
+                    android:text="@string/kyc_data_security" />
+        </LinearLayout>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button"
@@ -126,7 +112,7 @@
             android:layout_height="@dimen/layout_lvl6"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/security_textview"
+            app:layout_constraintTop_toBottomOf="@id/security_layout"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             tools:text="Ambil Foto KTP" />
