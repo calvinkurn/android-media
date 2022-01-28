@@ -751,7 +751,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels,
-                                             CourierItemData recommendedCourier, int position) {
+                                             CourierItemData recommendedCourier, int position, boolean isShowCourierChangeCard) {
         for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
             shippingCourierUiModel.setSelected(false);
         }
@@ -768,6 +768,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
                 cartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierUiModels);
             }
+            cartItemModel.setShowCourierChangeCard(isShowCourierChangeCard);
         }
     }
 

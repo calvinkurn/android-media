@@ -22,7 +22,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: LogisticPromoUiModel?, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
-        this.mData = shippingDurationUiModels.toMutableList()
+        this.mData = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }.toMutableList()
         if (preOrderModel?.display == true)  {
             preOrderModel.let { this.mData.add(0, it) }
             promoUiModel?.let { this.mData.add(1, it) }

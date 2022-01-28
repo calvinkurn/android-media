@@ -283,9 +283,14 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
         if (shippingDurationBottomsheetListener != null) {
             try {
+                val courierData = if (serviceData.selectedShipperProductId > 0) presenter!!.getCourierItemDataById(
+                    serviceData.selectedShipperProductId,
+                    shippingCourierUiModelList
+                ) else presenter!!.getCourierItemData(shippingCourierUiModelList)
                 shippingDurationBottomsheetListener?.onShippingDurationChoosen(
-                        shippingCourierUiModelList, presenter!!.getCourierItemData(shippingCourierUiModelList),
-                        mRecipientAddress, cartPosition, selectedServiceId, serviceData,
+                    shippingCourierUiModelList,
+                    courierData,
+                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
                         flagNeedToSetPinpoint, isDurationClick = true, isClearPromo = true)
                 bottomSheet?.dismiss()
             } catch (e: Exception) {

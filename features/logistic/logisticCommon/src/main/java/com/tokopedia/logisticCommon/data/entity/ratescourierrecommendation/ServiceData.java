@@ -55,6 +55,9 @@ public class ServiceData implements Parcelable {
     @SerializedName("ui_rates_hidden")
     @Expose
     private boolean uiRatesHidden;
+    @SerializedName("selected_shipper_product_id")
+    @Expose
+    private int selectedShipperProductId;
 
     public ServiceData() {
     }
@@ -69,6 +72,7 @@ public class ServiceData implements Parcelable {
         error = in.readParcelable(ErrorServiceData.class.getClassLoader());
         products = in.createTypedArrayList(ProductData.CREATOR);
         uiRatesHidden = in.readByte() != 0;
+        selectedShipperProductId = in.readInt();
     }
 
     @Override
@@ -80,7 +84,6 @@ public class ServiceData implements Parcelable {
         dest.writeParcelable(rangePrice, flags);
         dest.writeParcelable(texts, flags);
         dest.writeParcelable(error, flags);
-        dest.writeByte((byte) (uiRatesHidden ? 1 : 0));
         dest.writeTypedList(products);
     }
 
@@ -203,5 +206,13 @@ public class ServiceData implements Parcelable {
 
     public void setUiRatesHidden(boolean uiRatesHidden) {
         this.uiRatesHidden = uiRatesHidden;
+    }
+
+    public int getSelectedShipperProductId() {
+        return selectedShipperProductId;
+    }
+
+    public void setSelectedShipperProductId(int selectedShipperProductId) {
+        this.selectedShipperProductId = selectedShipperProductId;
     }
 }

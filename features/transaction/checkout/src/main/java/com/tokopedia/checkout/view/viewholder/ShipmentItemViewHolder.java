@@ -822,8 +822,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.isDisableChangeCourier()) {
             // Is single shipping only
             renderSingleShippingCourier(shipmentCartItemModel, selectedCourierItemData);
-        } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-            // Is free ongkir shipping
+        } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null || !shipmentCartItemModel.isShowCourierChangeCard()) {
+            // Is free ongkir shipping OR normal shipping but not show `pilih kurir` card
             renderFreeShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
             // Is normal shipping
