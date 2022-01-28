@@ -42,7 +42,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
-import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
+import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
@@ -870,7 +870,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             onClearSelectedMCCM()
         }
 
-        viewModel.selectedGridProduct = SelectedGridProduct(denomGrid, layoutType, position)
+        viewModel.selectedGridProduct = SelectedProduct(denomGrid, layoutType, position)
 
         if (isShowBuyWidget && viewModel.isEligibleToBuy) {
             onShowBuyWidget(denomGrid)

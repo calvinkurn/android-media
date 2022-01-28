@@ -15,7 +15,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.digital_product_detail.data.model.data.SelectedFullProduct
+import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -42,7 +42,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
 
     var isEligibleToBuy = false
 
-    var selectedFullProduct = SelectedFullProduct()
+    var selectedFullProduct = SelectedProduct()
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -207,7 +207,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             && isEligibleToBuy)
 
     fun onResetSelectedProduct(){
-        selectedFullProduct = SelectedFullProduct()
+        selectedFullProduct = SelectedProduct()
     }
 
     companion object {

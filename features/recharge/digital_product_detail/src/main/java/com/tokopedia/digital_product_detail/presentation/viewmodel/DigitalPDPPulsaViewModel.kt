@@ -13,7 +13,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
+import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -40,7 +40,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     var isEligibleToBuy = false
 
-    var selectedGridProduct = SelectedGridProduct()
+    var selectedGridProduct = SelectedProduct()
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -188,7 +188,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             && isEligibleToBuy)
 
     fun onResetSelectedProduct(){
-        selectedGridProduct = SelectedGridProduct()
+        selectedGridProduct = SelectedProduct()
     }
 
     companion object {

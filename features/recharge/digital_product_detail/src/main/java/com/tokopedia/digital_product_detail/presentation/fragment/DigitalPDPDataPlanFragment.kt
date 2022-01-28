@@ -21,11 +21,9 @@ import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
-import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
-import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
@@ -42,7 +40,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
-import com.tokopedia.digital_product_detail.data.model.data.SelectedFullProduct
+import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
@@ -935,7 +933,7 @@ class DigitalPDPDataPlanFragment :
             onClearSelectedMCCM()
         }
 
-        viewModel.selectedFullProduct = SelectedFullProduct(denomFull, layoutType, position)
+        viewModel.selectedFullProduct = SelectedProduct(denomFull, layoutType, position)
 
         if (isShowBuyWidget && viewModel.isEligibleToBuy) {
             onShowBuyWidget(denomFull)
