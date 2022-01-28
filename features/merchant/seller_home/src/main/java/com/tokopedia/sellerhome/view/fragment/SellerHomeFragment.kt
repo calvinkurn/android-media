@@ -1509,7 +1509,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     } else {
                         val copiedWidget = widget.copyWidget()
                         copiedWidget.data = widgetData
-                        copiedWidget.isLoading = widget.data?.isFromCache ?: false
+                        copiedWidget.isLoading = widget.data?.isFromCache.orFalse()
 
                         handleShopShareMilestoneWidget(copiedWidget)
 

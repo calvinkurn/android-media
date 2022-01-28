@@ -15,6 +15,7 @@ import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
@@ -285,7 +286,8 @@ class MultiLineGraphViewHolder(
                 tvShcMultiLineLastUpdated.text = Utils.LastUpdated
                     .getCopy(root.context, lastUpdated)
             }
-            icShcRefreshMultiLineGraph.isVisible = element.isFromCache
+            val isFromCache = element.data?.isFromCache.orFalse()
+            icShcRefreshMultiLineGraph.isVisible = isFromCache
             icShcRefreshMultiLineGraph.setOnClickListener {
                 listener.onReloadWidget(element)
             }
