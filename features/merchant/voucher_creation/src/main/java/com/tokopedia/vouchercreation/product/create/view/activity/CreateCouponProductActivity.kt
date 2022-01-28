@@ -133,7 +133,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
     private fun onCreateCouponSuccess(coupon: Coupon) {
         replace(couponListFragment)
         showBroadCastVoucherBottomSheet(coupon)
-        //showBroadCastVoucherBottomSheet()
     }
 
     private fun onUpdateCouponSuccess() {

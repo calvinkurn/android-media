@@ -14,8 +14,19 @@ import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.model.MoreMenuItemEventAction
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditQuotaCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditPeriodCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ViewDetailCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.BroadCastChat
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DownloadCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.CancelCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ShareCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DuplicateCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.StopCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditCoupon
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
 import java.util.*
@@ -26,6 +37,7 @@ class CouponListFragment: BaseDaggerFragment() {
         return@lazy MoreMenuBottomSheet.createInstance()
     }
 
+    private var onRedirectToCouponPreview : (Coupon, ProductCouponPreviewFragment.Mode) -> Unit = { _, _ -> }
     companion object {
         fun newInstance(
             onCreateCouponMenuSelected: () -> Unit,
@@ -55,6 +67,7 @@ class CouponListFragment: BaseDaggerFragment() {
             .build()
             .inject(this)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,18 +92,22 @@ class CouponListFragment: BaseDaggerFragment() {
         }
     }
 
+    fun setOnRedirectToCouponPreview(onRedirectToCouponPreview : (Coupon, ProductCouponPreviewFragment.Mode) -> Unit) {
+        this.onRedirectToCouponPreview = onRedirectToCouponPreview
+    }
+
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: String) {
         when (menu) {
-            is EditQuotaVoucher -> editQuotaVoucher()
-            is ViewDetailVoucher -> viewDetailVoucher()
-            is EditVoucher -> editVoucher()
+            is EditQuotaCoupon -> editQuotaVoucher()
+            is ViewDetailCoupon -> viewDetailVoucher()
+            is EditCoupon -> editVoucher()
             is BroadCastChat -> broadCastChat(123)
-            is ShareVoucher -> shareVoucher()
-            is EditPeriodVoucher -> editPeriod()
-            is DownloadVoucher -> downloadVoucher()
-            is CancelVoucher -> cancelVoucher()
-            is StopVoucher -> stopVoucher()
-            is DuplicateVoucher -> duplicateVoucher()
+            is ShareCoupon -> shareVoucher()
+            is EditPeriodCoupon -> editPeriod()
+            is DownloadCoupon -> downloadVoucher()
+            is CancelCoupon -> cancelVoucher()
+            is StopCoupon -> stopVoucher()
+            is DuplicateCoupon -> duplicateVoucher()
             else -> { /* do nothing */ }
         }
     }
