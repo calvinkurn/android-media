@@ -205,7 +205,7 @@ class ServerLoggerFragment : BaseListFragment<Visitable<*>, ServerLoggerAdapterT
     }
 
     private fun observeBaseServerLogger() {
-        observe(viewModel.serverLoggerPagination) {
+        observe(viewModel.baseServerLogger) {
             setLoading(false)
             when (it) {
                 is Success -> {

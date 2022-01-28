@@ -26,9 +26,9 @@ class ServerLoggerViewModel @Inject constructor(
     private val serverLoggerMapper: ServerLoggerMapper
 ) : ViewModel() {
 
-    private val _serverLoggerPagination = MutableLiveData<Result<List<BaseServerLoggerUiModel>>>()
-    val serverLoggerPagination: LiveData<Result<List<BaseServerLoggerUiModel>>>
-        get() = _serverLoggerPagination
+    private val _baseServerLogger = MutableLiveData<Result<List<BaseServerLoggerUiModel>>>()
+    val baseServerLogger: LiveData<Result<List<BaseServerLoggerUiModel>>>
+        get() = _baseServerLogger
 
     private val _serverLoggerUiList = MutableLiveData<Result<List<ItemServerLoggerUiModel>>>()
     val itemServerLoggerUiList: LiveData<Result<List<ItemServerLoggerUiModel>>>
@@ -63,7 +63,7 @@ class ServerLoggerViewModel @Inject constructor(
                 add(serverLoggerMapper.mapToPriorityList(priority))
                 addAll(serverLoggerList)
             }
-            _serverLoggerPagination.value = Success(baseServerLoggerList)
+            _baseServerLogger.value = Success(baseServerLoggerList)
         }, onError = {
             _messageEvent.emit(it.localizedMessage.orEmpty())
         })
