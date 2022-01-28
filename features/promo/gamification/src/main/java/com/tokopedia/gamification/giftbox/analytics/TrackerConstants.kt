@@ -14,6 +14,7 @@ object GiftBoxTrackerConstants {
     const val ITEMS = "items"
     const val SCREEN_NAME = "screenName"
     const val DAILY_GIFT_BOX = "daily-gift-box"
+    const val SHOP_ID = "shopId"
 }
 
 object GiftBoxEvent {
