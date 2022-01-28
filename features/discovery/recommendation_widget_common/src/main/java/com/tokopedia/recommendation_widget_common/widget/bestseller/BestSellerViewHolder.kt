@@ -2,11 +2,9 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.os.Bundle
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -79,7 +77,18 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     }
 
     private fun initHeader(element: BestSellerDataModel){
-        setHeaderComponent(element)
+        binding?.bestSellerTitle?.shouldShowWithAction(element.title.isNotBlank()){
+            binding?.bestSellerTitle?.text = element.title
+        }
+        binding?.bestSellerSubtitle?.shouldShowWithAction(element.subtitle.isNotBlank()){
+            binding?.bestSellerSubtitle?.text = element.subtitle
+            anchorSeeMoreButtonTo(R.id.best_seller_subtitle)
+        }
+        binding?.bestSellerSeeMore?.shouldShowWithAction(element.seeMoreAppLink.isNotBlank()){
+            binding?.bestSellerSeeMore?.setOnClickListener {
+                listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
+            }
+        }
         binding?.containerBestSellerWidget?.show()
         itemView.show()
     }
@@ -100,16 +109,16 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
             }
             if (binding?.bestSellerRecommendationRecyclerView?.itemDecorationCount == 0) {
                 binding?.bestSellerRecommendationRecyclerView?.addItemDecoration(
-                        CommonMarginStartDecoration(
-                                marginStart = 12f.toDpInt()
-                        )
+                    CommonMarginStartDecoration(
+                        marginStart = 12f.toDpInt()
+                    )
                 )
             }
             if (binding?.bestSellerRecommendationRecyclerView?.itemDecorationCount == 0) {
                 binding?.bestSellerRecommendationRecyclerView?.addItemDecoration(
-                        CommonMarginStartDecoration(
-                                marginStart = 8f.toDpInt()
-                        )
+                    CommonMarginStartDecoration(
+                        marginStart = 8f.toDpInt()
+                    )
                 )
             }
             val recommendationCarouselList: MutableList<Visitable<RecommendationCarouselTypeFactory>> = element.recommendationItemList.withIndex().map {
@@ -122,36 +131,25 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
             binding?.bestSellerRecommendationRecyclerView?.layoutParams?.height = element.height
             binding?.bestSellerRecommendationRecyclerView?.layoutManager?.scrollToPosition(0)
         }
-        if(element.filterChip.isEmpty()) {
-            val layoutParams = binding?.bestSellerContainer?.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO)
-            binding?.bestSellerContainer?.layoutParams = layoutParams
-            binding?.bestSellerContainer?.translationY = itemView.context.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
-            binding?.bestSellerContainer?.setPadding(MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO, paddingBottomSellerContainer)
-        }
-        else {
-            val layoutParams = binding?.bestSellerContainer?.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(
-                MARGIN_ZERO,
-                marginTopSellerContainer,
-                MARGIN_ZERO,
-                MARGIN_ZERO
-            )
-            binding?.bestSellerContainer?.layoutParams = layoutParams
-            binding?.bestSellerContainer?.translationY = TRANSLATION_DEFAULT
-            binding?.bestSellerContainer?.setPadding(PADDING_ZERO, PADDING_ZERO, PADDING_ZERO, paddingStartSellerContainer)
-        }
+    }
+
+    private fun anchorSeeMoreButtonTo(anchorRef: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding?.containerBestSellerWidget)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(binding?.containerBestSellerWidget)
     }
 
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
         bestSellerDataModel?.let {
             annotationChipAdapter.submitList(
-                    it.filterChip.map {filter ->
-                        filter.copy(
-                                isActivated = annotationChip.title == filter.title
-                                        && !annotationChip.isActivated
-                        )
-                    }
+                it.filterChip.map {filter ->
+                    filter.copy(
+                        isActivated = annotationChip.title == filter.title
+                                && !annotationChip.isActivated
+                    )
+                }
             )
             listener.onBestSellerFilterClick(annotationChip.copy(isActivated = !annotationChip.isActivated), it, adapterPosition, position)
             binding?.bestSellerLoadingRecommendation?.root?.show()
@@ -166,11 +164,11 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
         if (item.isTopAds) TopAdsUrlHitter(view.context).hitClickUrl(
-                CLASS_NAME,
-                item.clickUrl,
-                item.productId.toString(),
-                item.name,
-                item.imageUrl
+            CLASS_NAME,
+            item.clickUrl,
+            item.productId.toString(),
+            item.name,
+            item.imageUrl
         )
         bestSellerDataModel?.let { listener.onBestSellerClick(it, item, adapterPosition) }
     }
@@ -189,12 +187,6 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     companion object{
         val LAYOUT = R.layout.best_seller_view_holder
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder"
-        var paddingStartSellerContainer = 11f.toDpInt()
-        var paddingBottomSellerContainer = 5f.toDpInt()
-        var marginTopSellerContainer = 8f.toDpInt()
-        const val TRANSLATION_DEFAULT = 0f
-        const val MARGIN_ZERO = 0
-        const val PADDING_ZERO = 0
     }
 
     private fun setChannelDivider(element: BestSellerDataModel) {
@@ -203,18 +195,5 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
             dividerTop = binding?.homeComponentDividerHeader,
             dividerBottom = binding?.homeComponentDividerFooter
         )
-    }
-
-    private fun setHeaderComponent(element: BestSellerDataModel) {
-        element.channelModel?.let {
-            binding?.dynamicChannelHeader?.setChannel(it, object : HeaderListener {
-                override fun onSeeAllClick(link: String) {
-                    listener.onBestSellerSeeMoreTextClick(element, element.channelModel.channelHeader.applink, adapterPosition)
-                }
-
-                override fun onChannelExpired(channelModel: ChannelModel) {
-                }
-            })
-        }
     }
 }

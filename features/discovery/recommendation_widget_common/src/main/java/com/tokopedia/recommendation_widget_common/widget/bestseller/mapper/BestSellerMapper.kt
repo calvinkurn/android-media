@@ -1,8 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.bestseller.mapper
 
 import android.content.Context
-import com.tokopedia.home_component.model.ChannelHeader
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -16,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
  * Created by Lukas on 05/11/20.
  */
 class BestSellerMapper (
-        private val context: Context
+    private val context: Context
 ){
     suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget): BestSellerDataModel{
         val productList = mappingProductCards(recommendationWidget.recommendationItemList)
@@ -28,16 +26,7 @@ class BestSellerMapper (
             productCardModelList = productList,
             recommendationItemList = recommendationWidget.recommendationItemList,
             filterChip = recommendationWidget.recommendationFilterChips,
-            seeMoreAppLink = recommendationWidget.seeMoreAppLink,
-            channelModel = ChannelModel(
-                id = "",
-                groupId = "",
-                channelHeader = ChannelHeader(
-                    name = recommendationWidget.title,
-                    subtitle = recommendationWidget.subtitle,
-                    applink = recommendationWidget.seeMoreAppLink
-                )
-            )
+            seeMoreAppLink = recommendationWidget.seeMoreAppLink
         )
     }
 
@@ -49,9 +38,9 @@ class BestSellerMapper (
 
     suspend fun getMaxHeightProductCards(productCardModels: List<ProductCardModel>): Int{
         return productCardModels.getMaxHeightForGridView(
-                context = context,
-                coroutineDispatcher = Dispatchers.IO,
-                productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
+            context = context,
+            coroutineDispatcher = Dispatchers.IO,
+            productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
         )
     }
 }
