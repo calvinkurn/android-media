@@ -28,14 +28,14 @@
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             android:layout_width="@dimen/kyc_centralized_218dp"
-            android:layout_height="@dimen/kyc_centralized_144dp"/>
+            android:layout_height="@dimen/kyc_centralized_218dp"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/vertical_guide"
             android:layout_width="@dimen/kyc_centralized_0dp"
             android:layout_height="@dimen/kyc_centralized_0dp"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="@dimen/kyc_centralized_144dp" />
+            app:layout_constraintGuide_begin="@dimen/kyc_centralized_218dp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"

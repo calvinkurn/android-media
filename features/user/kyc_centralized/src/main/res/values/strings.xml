@@ -53,8 +53,8 @@
     <string name="face_subtitle_body_2">Pastikan wajahmu terkena pencahayaan yang cukup dan terlihat jelas.</string>
     <string name="face_button">Mulai Verifikasi Wajah"</string>
 
-    <string name="face_title_kyc">Foto Diri Bersama KTP</string>
-    <string name="face_subtitle_kyc">Tunjukkan bagian depan KTP dengan posisi di bawah dagu tanpa menutupi wajah.</string>
+    <string name="face_title_kyc">Foto wajah dan kartu identitas</string>
+    <string name="face_subtitle_kyc">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
     <string name="face_button_kyc">Ambil Foto Diri Bersama KTP</string>
 
     <string name="camera_ktp_title">Verifikasi Data Diri</string>
