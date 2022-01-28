@@ -710,7 +710,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if (url.endsWith(".pdf")) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "application/pdf");
+            intent.setDataAndType(Uri.parse(uri.toString().replace(GOOGLE_DOCS_PDF_URL, ""))
+                    , "application/pdf");
             try {
                 getContext().startActivity(intent);
             } catch (Exception e) {
@@ -814,7 +815,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private void loadGoogleDocsUrl(Uri uri) {
-        String googleDocsUrl = GOOGLE_DOCS_PDF_URL + uri.toString();
+        String googleDocsUrl = "";
+        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
+            googleDocsUrl = uri.toString();
+        } else {
+            googleDocsUrl = GOOGLE_DOCS_PDF_URL + uri.toString();
+        }
         if (uri.getHost().contains(TOKOPEDIA_STRING)) {
             webView.loadAuthUrl(googleDocsUrl, userSession);
         } else {
