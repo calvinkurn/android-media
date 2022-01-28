@@ -61,6 +61,8 @@ object ConstantTransactionAnalytics {
         const val CART = "Cart"
         const val CLICK_WISHLIST = "clickWishlist"
         const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
+        const val CLICK_PP = "clickPP"
+        const val VIEW_PP_IRIS = "viewPPIris"
     }
 
     object EventCategory {
@@ -383,6 +385,10 @@ object ConstantTransactionAnalytics {
         // Cart Bundling
         const val CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE = "click lihat barang serupa for Unavailable Bundle Package"
         const val CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD = "click ubah in product bundling package product card"
+
+        // Cart Bo Affordability
+        const val CLICK_ARROW_IN_BO_TICKER_TO_REACH_SHOP_PAGE = "click arrow in BO Ticker to reach shop page"
+        const val VIEW_BO_TICKER_WORDING = "view BO Ticker wording"
     }
 
     object EventLabel {

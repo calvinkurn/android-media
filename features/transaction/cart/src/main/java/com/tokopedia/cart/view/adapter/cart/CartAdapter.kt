@@ -104,6 +104,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         if ((data.isPartialSelected || data.isAllSelected)) {
                             for (cartItemHolderData in data.productUiModelList) {
                                 if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
+                                    cartItemHolderData.shopBoMetadata = data.boMetadata
+                                    cartItemHolderData.shopBoAffordabilityData = data.boAffordability
                                     cartItemDataList.add(cartItemHolderData)
                                 }
                             }
@@ -140,7 +142,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 when (data) {
                     is CartShopHolderData -> {
                         val cartItemHolderDataList = data.productUiModelList
-                        cartItemDataList.addAll(cartItemHolderDataList)
+                        for (cartItemHolderData in cartItemHolderDataList) {
+                            cartItemHolderData.shopBoMetadata = data.boMetadata
+                            cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                            cartItemDataList.add(cartItemHolderData)
+                        }
                     }
                     hasReachAllShopItems(data) -> break@loop
                 }
@@ -160,7 +166,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 when (data) {
                     is CartShopHolderData -> {
                         if (!data.isError) {
-                            cartItemDataList.addAll(data.productUiModelList)
+                            val cartItemHolderDataList = data.productUiModelList
+                            for (cartItemHolderData in cartItemHolderDataList) {
+                                cartItemHolderData.shopBoMetadata = data.boMetadata
+                                cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                                cartItemDataList.add(cartItemHolderData)
+                            }
                         }
                     }
                     hasReachAllShopItems(data) -> break@loop

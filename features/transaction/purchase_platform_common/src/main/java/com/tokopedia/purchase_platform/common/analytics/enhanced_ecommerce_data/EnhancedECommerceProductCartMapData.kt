@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data
 
-import java.util.*
-
 /**
  * @author anggaprasetiyo on 05/06/18.
  */
@@ -190,6 +188,10 @@ class EnhancedECommerceProductCartMapData {
         else Product[KEY_DIMENSION118] = bundleId
     }
 
+    fun setBoAffordability(tickerText: String, boType: Int) {
+        Product[KEY_BO_AFFORDABILITY] = "${tickerText}_${boType}"
+    }
+
     companion object {
         private const val KEY_NAME = "name"
         private const val KEY_ID = "id"
@@ -235,6 +237,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_PAGE_SOURCE = "dimension90"
         private const val KEY_DIMENSION117 = "dimension117"
         private const val KEY_DIMENSION118 = "dimension118"
+        private const val KEY_BO_AFFORDABILITY = "dimension119"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"

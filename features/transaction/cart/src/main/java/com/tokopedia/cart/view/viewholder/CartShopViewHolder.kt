@@ -443,6 +443,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         layoutBoAffordability.setOnClickListener {
                             actionListener.onCartBoAffordabilityClicked(cartShopHolderData.shopId, true)
                         }
+                        actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
                     }
                     CartShopBoAffordabilityState.SUCCESS_AFFORD -> {
                         largeLoaderBoAffordability.gone()
@@ -452,6 +453,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         textBoAffordability.show()
                         layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutBoAffordability.setOnClickListener(null)
+                        actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
                     }
                     CartShopBoAffordabilityState.FAILED -> {
                         largeLoaderBoAffordability.gone()

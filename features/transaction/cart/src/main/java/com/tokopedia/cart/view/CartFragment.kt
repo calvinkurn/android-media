@@ -1669,6 +1669,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else {
             routeToShopProductPage(shopId)
         }
+        cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage()
     }
 
     override fun onCartBoAffordabilityRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData) {
@@ -1676,6 +1677,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartShopHolderData.isNeedToRefreshWeight = true
         onNeedToUpdateViewItem(index)
         dPresenter.checkBoAffordability(cartShopHolderData)
+    }
+
+    override fun onViewCartBoAffordabilityTicker(cartShopHolderData: CartShopHolderData) {
+        cartPageAnalytics.eventViewBoTickerWording()
     }
 
     override fun onCartDataEnableToCheckout() {

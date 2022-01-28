@@ -59,7 +59,8 @@ class CartShopBoAffordabilityData(
         var enable: Boolean = true,
         var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.LOADING,
         var tickerText: String = "",
-        var errorText: String = ""
+        var errorText: String = "",
+        // trakcer
 )
 
 enum class CartShopBoAffordabilityState {
