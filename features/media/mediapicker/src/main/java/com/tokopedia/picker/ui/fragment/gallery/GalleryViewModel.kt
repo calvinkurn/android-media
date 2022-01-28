@@ -21,18 +21,9 @@ class GalleryViewModel @Inject constructor(
     private var _mediaFiles = MediatorLiveData<List<MediaUiModel>>()
     val mediaFiles: LiveData<List<MediaUiModel>> get() = _mediaFiles
 
-    private var _isMediaNotEmpty = MediatorLiveData<Boolean>()
-    val isMediaNotEmpty: LiveData<Boolean> get() = _isMediaNotEmpty
-
     val uiEvent = EventBusFactory
         .subscriber(viewModelScope)
         .flowOn(dispatchers.computation)
-
-    init {
-        _isMediaNotEmpty.addSource(_mediaFiles) {
-            _isMediaNotEmpty.value = it.isNotEmpty()
-        }
-    }
 
     fun fetch(bucketId: Long, param: PickerParam) {
         viewModelScope.launch(dispatchers.io) {
