@@ -41,7 +41,6 @@ public interface CMConstant {
     interface NotificationType {
         String GENERAL = "General";
         String GRID_NOTIFICATION = "Grid";
-        String BIG_IMAGE_BANNER = "Banner";
         String BIG_IMAGE = "Image";
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";

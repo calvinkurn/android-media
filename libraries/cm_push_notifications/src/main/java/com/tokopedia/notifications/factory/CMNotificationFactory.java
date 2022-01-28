@@ -11,7 +11,6 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
-import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.model.BaseNotificationModel;
@@ -51,11 +50,9 @@ public class CMNotificationFactory {
                 case CMConstant.NotificationType.GENERAL:
                 case CMConstant.NotificationType.BIG_IMAGE:
                 case CMConstant.NotificationType.ACTION_BUTTONS: {
-                    if (baseNotificationModel.isBigImage() && baseNotificationModel.getMedia() != null)
-                        return new BannerNotification(context.getApplicationContext(), baseNotificationModel);
-                    else
                         return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
                 }
+
                 case CMConstant.NotificationType.PERSISTENT:
                     CMEvents.postGAEvent(PersistentEvent.EVENT_VIEW_NOTIFICATION, PersistentEvent.EVENT_CATEGORY,
                             PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, PersistentEvent.EVENT_LABEL);
@@ -72,9 +69,6 @@ public class CMNotificationFactory {
 
                 case CMConstant.NotificationType.PRODUCT_NOTIIFICATION:
                     return new ProductNotification(context.getApplicationContext(), baseNotificationModel);
-
-                case CMConstant.NotificationType.BIG_IMAGE_BANNER:
-                    return new BannerNotification(context.getApplicationContext(), baseNotificationModel);
 
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:
                     cancelNotification(context, baseNotificationModel.getNotificationId());
