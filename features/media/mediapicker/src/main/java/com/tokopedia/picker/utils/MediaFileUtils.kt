@@ -1,6 +1,7 @@
 package com.tokopedia.picker.utils
 
 import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
 object MediaFileUtils {
@@ -10,7 +11,7 @@ object MediaFileUtils {
         val currentTimeInMillis = System.currentTimeMillis()
 
         val internalAppCacheDir = FileUtil
-            .getTokopediaInternalDirectory("picker/")
+            .getTokopediaInternalDirectory(ImageProcessingUtil.DEFAULT_DIRECTORY)
             .absolutePath
 
         return File(
