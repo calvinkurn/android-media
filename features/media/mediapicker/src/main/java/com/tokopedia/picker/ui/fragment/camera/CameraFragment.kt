@@ -204,8 +204,6 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     private fun initObservable() {
-        lifecycle.addObserver(viewModel)
-
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEvent.collect {
                 if (it is EventState.SelectionChanged) return@collect

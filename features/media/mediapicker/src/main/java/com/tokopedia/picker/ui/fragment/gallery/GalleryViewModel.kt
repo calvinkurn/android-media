@@ -1,6 +1,9 @@
 package com.tokopedia.picker.ui.fragment.gallery
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.picker.data.mapper.toUiModel
 import com.tokopedia.picker.data.repository.MediaRepository
@@ -16,7 +19,7 @@ import javax.inject.Inject
 class GalleryViewModel @Inject constructor(
     private val repository: MediaRepository,
     private val dispatchers: CoroutineDispatchers
-) : ViewModel(), LifecycleObserver {
+) : ViewModel() {
 
     private var _mediaFiles = MediatorLiveData<List<MediaUiModel>>()
     val mediaFiles: LiveData<List<MediaUiModel>> get() = _mediaFiles

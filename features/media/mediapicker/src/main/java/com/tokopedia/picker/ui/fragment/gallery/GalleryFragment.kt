@@ -113,8 +113,6 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
     }
 
     private fun initObservable() {
-        lifecycle.addObserver(viewModel)
-
         viewModel.mediaFiles.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 adapter.setData(it)

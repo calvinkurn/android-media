@@ -27,11 +27,11 @@ import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.utils.*
 import com.tokopedia.picker.utils.delegates.permissionGranted
+import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 
 /**
  * main applink:
@@ -194,8 +194,6 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun initObservable() {
-        lifecycle.addObserver(viewModel)
-
         lifecycleScope.launchWhenResumed {
             viewModel.uiEvent.collect {
                 when (it) {

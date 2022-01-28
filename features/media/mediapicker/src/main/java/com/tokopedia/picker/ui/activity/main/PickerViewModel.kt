@@ -1,6 +1,5 @@
 package com.tokopedia.picker.ui.activity.main
 
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -10,7 +9,7 @@ import javax.inject.Inject
 
 class PickerViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
-): ViewModel(), LifecycleObserver {
+): ViewModel() {
 
     val uiEvent = EventBusFactory
         .subscriber(viewModelScope)
