@@ -1,5 +1,6 @@
 package com.tokopedia.logisticorder.domain.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetLogisticTrackingResponse(
@@ -20,7 +21,9 @@ data class TrackingData(
         @SerializedName("page")
         val page: Page = Page(),
         @SerializedName("tipping")
-        val tipping: Tipping = Tipping()
+        val tipping: Tipping = Tipping(),
+        @SerializedName("last_driver")
+        val lastDriver: LastDriver = LastDriver()
 )
 
 data class TrackOrder(
@@ -40,6 +43,7 @@ data class TrackOrder(
         val receiverName: String = "",
         @SerializedName("shipping_ref_num")
         val shippingRefNum: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("invalid")
         val invalid: Int = -1
 )
@@ -157,7 +161,20 @@ data class Tipping(
         @SerializedName("status_subtitle")
         val statusSubtitle: String = "",
         @SerializedName("last_driver")
-        val lastDriver: LastDriver = LastDriver()
+        val tippingLastDriver: TippingLastDriver = TippingLastDriver()
+)
+
+data class TippingLastDriver(
+        @SerializedName("photo")
+        val photo: String = "",
+        @SerializedName("name")
+        val name: String = "",
+        @SerializedName("phone")
+        val phone: String = "",
+        @SerializedName("license_number")
+        val licenseNumber: String = "",
+        @SerializedName("is_changed")
+        val isChanged: Boolean = false
 )
 
 data class LastDriver(
