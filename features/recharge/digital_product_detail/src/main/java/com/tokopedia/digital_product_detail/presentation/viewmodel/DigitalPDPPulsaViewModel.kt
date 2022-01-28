@@ -89,7 +89,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeCatalogInput(menuId: Int, operator: String, clientNumber: String){
+    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
         _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
         launchCatchError(block = {
             val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)

@@ -113,7 +113,6 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
         denomType: DenomWidgetEnum,
         selectedProduct: Int? = null
     ) {
-        val adapterDenomFull = DenomFullAdapter()
         with(widgetRechargeMCCMFlashSaleFullWidget){
             rvMccmFull.run {
                 show()
