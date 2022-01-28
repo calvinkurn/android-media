@@ -45,15 +45,16 @@ class RegisterFingerprintActivity: BaseActivity() {
     }
 
     private fun initObserver() {
-        viewModel.registerResultEvent.observe(this) {
-            if (it) {
-                setResult(Activity.RESULT_OK)
-            } else {
-                val data = Intent().apply {
-                    putExtra(RESULT_INTENT_REGISTER_BIOM, "error register fingerprint")
-                }
-                setResult(Activity.RESULT_CANCELED, data)
+        viewModel.navigateSuccessRegister.observe(this) {
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
+
+        viewModel.errorMessageRegister.observe(this) {
+            val data = Intent().apply {
+                putExtra(RESULT_INTENT_REGISTER_BIOM, it)
             }
+            setResult(Activity.RESULT_CANCELED, data)
             finish()
         }
     }
@@ -121,7 +122,6 @@ class RegisterFingerprintActivity: BaseActivity() {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
-
 
     companion object {
         const val RESULT_INTENT_REGISTER_BIOM = "resultBiometricRegister"

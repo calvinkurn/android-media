@@ -46,11 +46,11 @@ class SettingFingerprintViewModel @Inject constructor(val dispatcher: CoroutineD
     val removeFingerprintResult: LiveData<Result<RemoveFingerprintData>>
         get() = mutableRemoveFingerprintResult
 
-    private val mutableRegisterResultEvent = SingleLiveEvent<Boolean>()
-    val registerResultEvent: LiveData<Boolean> = mutableRegisterResultEvent
+    private val mutableNavigateSuccessRegister = SingleLiveEvent<Unit>()
+    val navigateSuccessRegister: LiveData<Unit> = mutableNavigateSuccessRegister
 
-    private val mutableRegisterErrorEvent = SingleLiveEvent<String>()
-    val registerErrorEvent: LiveData<String> = mutableRegisterErrorEvent
+    private val mutableErrorMessageRegister = SingleLiveEvent<String>()
+    val errorMessageRegister: LiveData<String> = mutableErrorMessageRegister
 
     fun getFingerprintStatus() {
         launchCatchError(block = {
@@ -83,13 +83,13 @@ class SettingFingerprintViewModel @Inject constructor(val dispatcher: CoroutineD
                         onSuccessRegisterFP(result)
                     }
                 } else {
-                    mutableRegisterResultEvent.value = false
-                    mutableRegisterErrorEvent.value = "Terjadi Kesalahan, Silahkan coba lagi"
+                    mutableNavigateSuccessRegister.value = Unit
+                    mutableErrorMessageRegister.value = "Terjadi Kesalahan, Silahkan coba lagi"
                 }
             }
         }, onError = {
-            mutableRegisterResultEvent.value = false
-            mutableRegisterErrorEvent.value = it.message
+            mutableNavigateSuccessRegister.value = Unit
+            mutableErrorMessageRegister.value = it.message
         })
     }
 
@@ -110,13 +110,11 @@ class SettingFingerprintViewModel @Inject constructor(val dispatcher: CoroutineD
     private fun onSuccessRegisterFP(registerFingerprintPojo: RegisterFingerprintPojo) {
         val response = registerFingerprintPojo.data
         if (response.errorMessage.isBlank() && response.success) {
-            mutableRegisterResultEvent.value = true
+            mutableNavigateSuccessRegister.value = Unit
         } else if (response.errorMessage.isNotBlank()) {
-            mutableRegisterResultEvent.value = false
-            mutableRegisterErrorEvent.value = response.errorMessage
+            mutableErrorMessageRegister.value = response.errorMessage
         } else {
-            mutableRegisterResultEvent.value = false
-            mutableRegisterErrorEvent.value = response.errorMessage
+            mutableErrorMessageRegister.value = response.errorMessage
         }
     }
 
