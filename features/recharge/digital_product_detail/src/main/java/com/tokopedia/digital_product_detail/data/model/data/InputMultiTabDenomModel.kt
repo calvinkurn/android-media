@@ -5,5 +5,5 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 data class InputMultiTabDenomModel(
     val denomFull: DenomWidgetModel = DenomWidgetModel(),
     val denomMCCMFull: DenomWidgetModel = DenomWidgetModel(),
-    val catalogMultiTab: DigitalCatalogProductInputMultiTab = DigitalCatalogProductInputMultiTab()
+    val filterTagComponents: List<TelcoFilterTagComponent> = mutableListOf()
 )
