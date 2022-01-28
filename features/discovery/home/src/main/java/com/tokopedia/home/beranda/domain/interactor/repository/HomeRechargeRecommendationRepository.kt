@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.home.beranda.di.module.query.RechargeRecommendationQuery
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.network.exception.MessageErrorException
@@ -31,35 +32,9 @@ class HomeRechargeRecommendationRepository @Inject constructor(
 
     private var params: RequestParams = RequestParams.create()
 
-    //region query
-    private val query by lazy {
-        val type = "\$type"
-
-        """
-            query rechargeRecommendation($type: Int!) {
-              rechargeRecommendation(recommendationType: $type) {
-                #LIST OF RECOMMENDATION
-                UUID # recharge_watf_userID, used as recommendation hash_key
-                recommendations: Recommendations {
-                  contentID: ContentID
-                  mainText: MainText
-                  subText: SubText
-                  applink: AppLink
-                  link: Link
-                  iconURL: IconURL
-                  title: Title
-                  backgroundColor: BackgroundColor
-                  buttonText: ButtonText
-                }
-              }
-            }
-        """.trimIndent()
-    }
-    //endregion
-
     override suspend fun executeOnBackground(): RechargeRecommendation {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(RechargeRecommendationQuery())
         graphqlUseCase.setRequestParams(params.parameters)
         val response = graphqlUseCase.executeOnBackground().response
 
