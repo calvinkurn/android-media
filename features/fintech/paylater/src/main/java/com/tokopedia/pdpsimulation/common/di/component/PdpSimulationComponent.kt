@@ -1,6 +1,7 @@
 package com.tokopedia.pdpsimulation.common.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.ActivationCheckoutFragment
 import com.tokopedia.pdpsimulation.common.di.module.PdpSimulationModule
 import com.tokopedia.pdpsimulation.common.di.module.ViewModelModule
 import com.tokopedia.pdpsimulation.common.di.scope.PdpSimulationScope
@@ -18,6 +19,7 @@ import dagger.Component
 interface PdpSimulationComponent {
 
     fun inject(pdpSimulationFragment: PdpSimulationFragment)
+    fun inject(activationCheckoutFragment: ActivationCheckoutFragment)
     fun inject(pdpSimulationActivity: PdpSimulationActivity) {
 
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation.activateCheckout.model
+package com.tokopedia.pdpsimulation.activateCheckout.domain.model
 
 import com.google.gson.annotations.SerializedName
 

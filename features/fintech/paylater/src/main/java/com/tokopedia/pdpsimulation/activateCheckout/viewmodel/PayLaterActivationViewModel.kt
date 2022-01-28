@@ -1,0 +1,51 @@
+package com.tokopedia.pdpsimulation.activateCheckout.viewmodel
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
+import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
+import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Inject
+
+class PayLaterActivationViewModel @Inject constructor(
+    private val paylaterActivationUseCase: PaylaterActivationUseCase,
+    @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
+) :
+    BaseViewModel(dispatcher) {
+
+    private val _payLaterActivationDetailLiveData =
+        MutableLiveData<Result<PaylaterGetOptimizedModel>>()
+    val payLaterActivationDetailLiveData: LiveData<Result<PaylaterGetOptimizedModel>> =
+        _payLaterActivationDetailLiveData
+
+
+
+    fun getOptimizedCheckoutDetail(productId: String, price: Double, gatewayId: Int) {
+        paylaterActivationUseCase.getPayLaterActivationDetail(
+            ::onSuccessActivationData,
+            ::onFailActivationData,
+            price,
+            productId,
+            gatewayId
+        )
+    }
+
+    private fun onSuccessActivationData(paylaterGetOptimizedModel: PaylaterGetOptimizedModel) {
+        paylaterGetOptimizedModel.let {
+            _payLaterActivationDetailLiveData.value = Success(it)
+        }
+
+    }
+
+    fun onFailActivationData(throwable: Throwable) {
+        _payLaterActivationDetailLiveData.value = Fail(throwable)
+    }
+
+
+}
