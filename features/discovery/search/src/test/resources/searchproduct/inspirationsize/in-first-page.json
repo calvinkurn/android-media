@@ -1104,125 +1104,6 @@
     "process_time": 34.087486,
     "data": [
       {
-        "title": "Unknown type should not be shown",
-        "type": "unknown_random_type",
-        "position": 4,
-        "options": [
-          {
-            "text": "Kemeja Pria",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?q=baju&sc=3579&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?q=baju&sc=3579&source=search&st=product"
-          },
-          {
-            "text": "Kaos Pria",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?q=baju&sc=1808&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?q=baju&sc=1808&source=search&st=product"
-          }
-        ]
-      },
-      {
-        "title": "Coba produk dengan kategori ini :",
-        "type": "unknown_random_type",
-        "position": 8,
-        "options": [
-          {
-            "text": "Kemeja Pria",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?q=baju&sc=3579&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?q=baju&sc=3579&source=search&st=product"
-          },
-          {
-            "text": "Kaos Pria",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?q=baju&sc=1808&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?q=baju&sc=1808&source=search&st=product"
-          }
-        ]
-      },
-      {
-        "title": "Coba filter dengan Cara Penutupan:",
-        "type": "unknown_random_type",
-        "position": 16,
-        "options": [
-          {
-            "text": "kancing biasa",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?annotation_id=1&q=baju&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?annotation_id=1&q=baju&source=search&st=product"
-          },
-          {
-            "text": "tanpa kancing",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?annotation_id=4&q=baju&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?annotation_id=4&q=baju&source=search&st=product"
-          }
-        ]
-      },
-      {
-        "title": "",
-        "type": "unknown_random_type",
-        "position": 18,
-        "options": [
-          {
-            "text": "Print",
-            "img": "https://ecs7.tokopedia.net/img/autocomplete/localserviceprinting.png",
-            "url": "https://www.tokopedia.com/jasa/print",
-            "color": "",
-            "applink": "tokopedia://discovery/print"
-          }
-        ]
-      },
-      {
-        "title": "Coba tambahin kata kunci di pencarianmu:",
-        "type": "unknown_random_type",
-        "position": 20,
-        "options": [
-          {
-            "text": "gamis wanita terbaru",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?q=baju+gamis+wanita+terbaru&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?q=baju+gamis+wanita+terbaru&source=search&st=product"
-          },
-          {
-            "text": "koko pria",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?q=baju+koko+pria&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?q=baju+koko+pria&source=search&st=product"
-          },
-          {
-            "text": "anak perempuan",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?q=baju+anak+perempuan&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?q=baju+anak+perempuan&source=search&st=product"
-          },
-          {
-            "text": "tidur wanita",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?q=baju+tidur+wanita&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?q=baju+tidur+wanita&source=search&st=product"
-          },
-          {
-            "text": "apd",
-            "img": "",
-            "url": "https://www.tokopedia.com/search?q=baju+apd&source=search&st=product",
-            "color": "",
-            "applink": "tokopedia://search?q=baju+apd&source=search&st=product"
-          }
-        ]
-      },
-      {
         "title": "Tampilkan Atasan Wanita dengan ukuran:",
         "type": "size_perso",
         "position": 0,
@@ -1301,9 +1182,9 @@
         "tracking_option": "3"
       },
       {
-        "title": "Tampilkan Atasan Wanita dengan ukuran:",
+        "title": "Size perso position 14",
         "type": "size_perso",
-        "position": 20,
+        "position": 14,
         "options": [
           {
             "text": "S",
