@@ -34,6 +34,9 @@ object PickerUiConfig {
         }
     }
 
+    fun isSingleSelectionType()
+        = paramType == PickerSelectionType.SINGLE
+
     /**
      * queryPage is to specify the desired page type.
      * mediapicker has options to set for:

@@ -25,13 +25,13 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.component.NavToolbarComponent
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
-import com.tokopedia.picker.utils.EventState
-import com.tokopedia.picker.utils.addOnTabSelected
+import com.tokopedia.picker.utils.*
 import com.tokopedia.picker.utils.delegates.permissionGranted
-import com.tokopedia.picker.utils.dimensionPixelOffsetOf
+import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
+import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 
 /**
  * main applink:
@@ -122,6 +122,7 @@ open class PickerActivity : BaseActivity()
 
     override fun onDestroy() {
         super.onDestroy()
+        EventBusFactory.reset()
         PickerUiConfig.pickerParam = null
     }
 
@@ -147,7 +148,9 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        medias.distinct().forEach {
+        println("MEDIAPICKER -> file count : ${medias.size}")
+
+        medias.forEach {
             println("MEDIAPICKER -> ${it.path}")
         }
     }
@@ -170,6 +173,8 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
+        cleanUpInternalStorageIfNeeded(this, ImageProcessingUtil.DEFAULT_DIRECTORY)
+
         savedInstanceState?.let {
             // restore the last media selection to the drawer
             it.getParcelableArrayList<MediaUiModel>(LAST_MEDIA_SELECTION)?.let { elements ->
@@ -198,22 +203,34 @@ open class PickerActivity : BaseActivity()
                         medias.clear()
                         medias.addAll(it.data)
                     }
-                    is EventState.CameraCaptured -> {
-                        it.data?.let { media -> medias.add(media) }
-                        navToolbar.showContinueButton()
-                    }
-                    is EventState.SelectionAdded -> {
-                        medias.add(it.data)
-                    }
                     is EventState.SelectionRemoved -> {
-                        medias.remove(it.media)
+                        if (medias.contains(it.media)) {
+                            medias.remove(it.media)
+                        }
+                    }
+                    /*
+                    * the else statement covering the data from
+                    * [CameraCaptured] and [SelectionAdded] state event
+                    * */
+                    else -> {
+                        if (it is BaseEventState) {
+                            if (PickerUiConfig.isSingleSelectionType()) {
+                                medias.clear()
+                            }
+
+                            it.data?.let { media ->
+                                if (!medias.contains(media)) {
+                                    medias.add(media)
+                                }
+                            }
+                        }
                     }
                 }
-            }
 
-            navToolbar.showContinueButtonWithCondition(
-                medias.isNotEmpty()
-            )
+                navToolbar.showContinueButtonWithCondition(
+                    medias.isNotEmpty()
+                )
+            }
         }
     }
 

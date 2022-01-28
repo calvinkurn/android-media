@@ -29,6 +29,7 @@ import com.tokopedia.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.picker.ui.fragment.camera.component.CameraControllerComponent
 import com.tokopedia.picker.ui.fragment.camera.component.CameraPreviewComponent
 import com.tokopedia.picker.ui.uimodel.MediaUiModel.Companion.captureToMediaUiModel
+import com.tokopedia.picker.utils.BaseEventState
 import com.tokopedia.picker.utils.EventState
 import com.tokopedia.picker.utils.exceptionHandler
 import com.tokopedia.picker.utils.generateFile
@@ -146,11 +147,7 @@ open class CameraFragment : BaseDaggerFragment()
                 preview.onStartTakePicture()
             } else {
                 preview.onStartTakeVideo()
-                controller.onVideoDurationChanged {
-                    Handler(Looper.getMainLooper()).post {
-                        controller.setVideoDurationLabel(it)
-                    }
-                }
+                controller.onVideoDurationChanged()
             }
         }
     }
@@ -195,8 +192,9 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onVideoTaken(result: VideoResult) {
-//        val extractDuration = result.maxDuration
-//        onRenderThumbnailCameraCaptured(result.file)
+        val extractDuration = result.maxDuration
+        println("MEDIAPICKER (Vid) -> $extractDuration")
+        onRenderThumbnailCameraCaptured(result.file)
     }
 
     override fun onPictureTaken(result: PictureResult) {
@@ -206,16 +204,18 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     private fun initObservable() {
+        lifecycle.addObserver(viewModel)
+
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEvent.collect {
-                if (it is EventState.SelectionChanged) {
-                    if (it.data.isNotEmpty()) {
-                        val lastItem = File(it.data.last().path)
-                        controller.setThumbnailPreview(lastItem)
-                    } else {
-                        controller.removeThumbnailPreview()
+                if (it is EventState.SelectionChanged) return@collect
+
+                if (it is BaseEventState) {
+                    it.data?.let { media ->
+                        val file = File(media.path)
+                        controller.setThumbnailPreview(file)
                     }
-                } else if (it is EventState.SelectionRemoved) {
+                } else {
                     controller.removeThumbnailPreview()
                 }
             }
@@ -235,8 +235,9 @@ open class CameraFragment : BaseDaggerFragment()
     private fun onRenderThumbnailCameraCaptured(file: File?) {
         if (file == null) return
 
-        controller.setThumbnailPreview(file)
-        viewModel.send(file.captureToMediaUiModel())
+        viewModel.send(EventState.CameraCaptured(
+            file.captureToMediaUiModel()
+        ))
     }
 
     private fun showShutterEffect(action: () -> Unit) {

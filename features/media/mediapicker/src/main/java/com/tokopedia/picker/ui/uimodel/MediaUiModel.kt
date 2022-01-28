@@ -27,6 +27,8 @@ data class MediaUiModel(
         return extractDuration >= VIDEO_DURATION_MINIMUM
     }
 
+    fun isMediaFromCameraCaptured() = isFromCamera
+
     companion object {
         const val VIDEO_DURATION_MINIMUM = 3000
 

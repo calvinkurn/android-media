@@ -1,5 +1,7 @@
 package com.tokopedia.picker.ui.fragment.camera.component
 
+import android.os.CountDownTimer
+import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -58,8 +60,7 @@ class CameraControllerComponent(
     private val btnFlash = findViewById<ImageView>(R.id.btn_flash)
     private val btnFlip = findViewById<ImageView>(R.id.btn_flip)
 
-    private var videoDurationTimer: Timer? = null
-    private var videoDurationInMillis = 0L
+    private var videoDurationTimer: CountDownTimer? = null
 
     init {
         setMaxDuration()
@@ -104,8 +105,7 @@ class CameraControllerComponent(
     }
 
     override fun release() {
-        videoDurationTimer?.cancel()
-        videoDurationTimer = null
+        resetVideoDuration()
 
         if (param.isIncludeVideo) {
             lstCameraMode.viewTreeObserver.removeOnScrollChangedListener(this)
@@ -161,33 +161,34 @@ class CameraControllerComponent(
         if (param.isIncludeVideo) scrollToVideoMode()
 
         resetVideoDuration()
-        videoDurationTimer?.cancel()
         btnTakeCamera.animStopRecording()
         videoDurationContainer.hide()
         cameraControl.show()
         lstCameraMode.show()
     }
 
-    fun setVideoDurationLabel(duration: String) {
-        txtCountDown.text = duration
-    }
+    fun onVideoDurationChanged() {
+        resetVideoDuration()
 
-    fun onVideoDurationChanged(durationLabel: (String) -> Unit) {
-        videoDurationTimer = null
+        val maxDuration = param.maxVideoDuration.toLong()
 
-        videoDurationTimer = Timer()
-        videoDurationInMillis = 0L
-
-        videoDurationTimer?.schedule(object : TimerTask() {
-            override fun run() {
-                if (videoDurationInMillis.toInt() == param.maxVideoDuration) {
-                    videoDurationTimer?.cancel()
-                    return
+        videoDurationTimer = object : CountDownTimer(
+            param.maxVideoDuration.toLong(),
+            COUNTDOWN_INTERVAL
+        ) {
+            override fun onTick(millisUntilFinished: Long) {
+                Handler(context.mainLooper).post {
+                    val duration = (maxDuration - millisUntilFinished) / 1000
+                    txtCountDown.text = duration.toVideoDurationFormat()
                 }
-                durationLabel(videoDurationInMillis.toVideoDurationFormat())
-                videoDurationInMillis += COUNTDOWN_INTERVAL
             }
-        }, COUNTDOWN_PERIOD, COUNTDOWN_INTERVAL)
+
+            override fun onFinish() {
+                stopRecording()
+            }
+        }
+
+        videoDurationTimer?.start()
     }
 
     fun isFlashSupported(value: Boolean) {
@@ -233,7 +234,10 @@ class CameraControllerComponent(
     }
 
     private fun resetVideoDuration() {
-        txtCountDown.text = DEFAULT_DURATION_LABEL
+        try {
+            videoDurationTimer?.cancel()
+            videoDurationTimer = null
+        } catch (t: Throwable) {}
     }
 
     private fun isPhotoMode() = getActiveCameraMode() == PHOTO_MODE

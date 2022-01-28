@@ -4,11 +4,23 @@ import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
+interface BaseEventState {
+    val data: MediaUiModel?
+}
+
 sealed class EventState {
     object Idle: EventState()
-    class CameraCaptured(val data: MediaUiModel?): EventState()
-    class SelectionAdded(val data: MediaUiModel): EventState()
+
+    class CameraCaptured(
+        override val data: MediaUiModel?
+    ) : EventState(), BaseEventState
+
+    class SelectionAdded(
+        override val data: MediaUiModel?
+    ) : EventState(), BaseEventState
+
     class SelectionChanged(val data: List<MediaUiModel>): EventState()
+
     class SelectionRemoved(val media: MediaUiModel): EventState()
 }
 
@@ -30,6 +42,10 @@ object EventBusFactory {
         ).onCompletion {
             emit(EventState.Idle)
         }
+    }
+
+    fun reset() {
+        state.resetReplayCache()
     }
 
 }

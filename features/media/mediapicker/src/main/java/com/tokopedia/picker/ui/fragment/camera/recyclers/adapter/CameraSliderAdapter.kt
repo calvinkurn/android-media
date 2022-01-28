@@ -1,6 +1,5 @@
 package com.tokopedia.picker.ui.fragment.camera.recyclers.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,12 +34,6 @@ class CameraSliderAdapter(
 
         fun bind(element: CameraSelectionMode) {
             binding?.btnMode?.text = itemView.context.getString(element.name)
-
-            if (element.isSelected) {
-                binding?.btnMode?.setBackgroundColor(Color.CYAN)
-            } else {
-                binding?.btnMode?.setBackgroundColor(Color.TRANSPARENT)
-            }
 
             itemView.setOnClickListener {
                 listener.onCameraSliderItemClicked(it)

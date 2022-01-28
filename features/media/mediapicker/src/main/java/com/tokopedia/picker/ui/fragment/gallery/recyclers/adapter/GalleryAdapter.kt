@@ -26,7 +26,7 @@ class GalleryAdapter(
     private val shouldSelectListener: OnMediaClickListener
 ) : RecyclerView.Adapter<GalleryAdapter.GalleryPickerViewHolder>() {
 
-    private val selectedMedias: MutableList<MediaUiModel> = mutableListOf()
+    val selectedMedias: MutableList<MediaUiModel> = mutableListOf()
 
     private val listDiffer by lazy {
         AsyncListDiffer<MediaUiModel>(this, MediaDiffUtil())
