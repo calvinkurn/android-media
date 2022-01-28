@@ -3,7 +3,7 @@
     android:id="@+id/cv_educational_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="gone"
+    android:visibility="visible"
     android:layout_margin="16dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
@@ -13,17 +13,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="11dp"
         android:background="@color/tokopedianow_cardview_background_dms_color">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_two_hours"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="11dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tp_two_hours"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,11 +29,13 @@
             android:id="@+id/tp_two_hours"
             android:layout_width="36dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="2"
             android:text="@string/tokopedianow_home_educational_information_two_hours"
             app:layout_constraintBottom_toBottomOf="@+id/iu_two_hours"
-            app:layout_constraintEnd_toStartOf="@+id/iu_stock_available"
+            app:layout_constraintEnd_toStartOf="@+id/guideline1"
             app:layout_constraintStart_toEndOf="@+id/iu_two_hours"
             app:layout_constraintTop_toTopOf="@+id/iu_two_hours"
             app:typographyType="heading_6" />
@@ -45,20 +44,21 @@
             android:id="@+id/iu_stock_available"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tp_two_hours"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tp_stock_available"
-            app:layout_constraintStart_toEndOf="@+id/tp_two_hours"
-            app:layout_constraintTop_toTopOf="@+id/tp_two_hours" />
+            app:layout_constraintStart_toStartOf="@+id/guideline1"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_stock_available"
             android:layout_width="70dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
             android:gravity="center_vertical"
             android:text="@string/tokopedianow_home_educational_information_stock_available"
             app:layout_constraintBottom_toBottomOf="@+id/iu_stock_available"
-            app:layout_constraintEnd_toStartOf="@+id/iu_guaranteed_quality"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toEndOf="@+id/iu_stock_available"
             app:layout_constraintTop_toTopOf="@+id/iu_stock_available"
             app:typographyType="heading_6" />
@@ -69,7 +69,7 @@
             android:layout_height="40dp"
             app:layout_constraintBottom_toBottomOf="@+id/tp_stock_available"
             app:layout_constraintEnd_toStartOf="@+id/tp_guaranteed_quality"
-            app:layout_constraintStart_toEndOf="@+id/tp_stock_available"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="@+id/tp_stock_available" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -77,10 +77,13 @@
             android:layout_width="55dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="2"
             android:text="@string/tokopedianow_home_educational_information_guaranteed_quality"
             app:layout_constraintBottom_toBottomOf="@+id/iu_guaranteed_quality"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toEndOf="@+id/iu_guaranteed_quality"
             app:layout_constraintTop_toTopOf="@+id/iu_guaranteed_quality"
             app:typographyType="heading_6" />
@@ -89,14 +92,12 @@
             android:id="@+id/la_chevron"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:paddingTop="20dp"
             android:scaleX="1.2"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/guideline3"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlSymmetry" />
 
@@ -110,17 +111,31 @@
             android:background="@color/Unify_Static_White"
             app:srcCompat="@drawable/iconunify_chevron_down"
             app:shapeAppearanceOverlay="@style/circleImageDisplay"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline3"
             app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.3" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.87" />
+            app:layout_constraintGuide_percent="0.6" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.90" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
