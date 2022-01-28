@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:card_background_color="@color/Unify_T100"
-    app:card_type="shadow_disabled"
+    app:card_type="border_disabled"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 

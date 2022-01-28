@@ -43,6 +43,8 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.R
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
@@ -866,7 +868,7 @@ class DigitalPDPDataPlanFragment :
             userSession.userId
         )
         fragmentManager?.let {
-            // TODO: show different Bottom Sheet maybe?
+            SummaryTelcoBottomSheet(getString(R.string.summary_transaction), denom).show(it, "")
         }
     }
 
@@ -971,7 +973,9 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onChevronDenomClicked(denomFull: DenomData, position: Int) {
-        // TODO("Not yet implemented")
+        fragmentManager?.let {
+            ProductDescBottomSheet(denomFull, this).show(it, "")
+        }
     }
 
     override fun onRequestPermissionsResult(

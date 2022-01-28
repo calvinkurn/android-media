@@ -46,7 +46,7 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
-import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
@@ -929,7 +929,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             userSession.userId
         )
         fragmentManager?.let {
-            SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
+            SummaryTelcoBottomSheet(getString(R.string.summary_transaction), denom).show(it, "")
         }
     }
 

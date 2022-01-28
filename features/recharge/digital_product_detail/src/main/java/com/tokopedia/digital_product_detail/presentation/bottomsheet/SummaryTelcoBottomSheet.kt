@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class SummaryPulsaBottomsheet(private val title:String, private val denom: DenomData): BottomSheetUnify() {
+class SummaryTelcoBottomSheet(private val title:String, private val denom: DenomData): BottomSheetUnify() {
 
     init {
         isFullpage = false
@@ -36,17 +36,18 @@ class SummaryPulsaBottomsheet(private val title:String, private val denom: Denom
         bottomSheetBehaviorKnob(view, true)
     }
 
-    private fun initView(){
+    private fun initView() {
         binding = BottomSheetSummaryPulsaBinding.inflate(LayoutInflater.from(context))
         binding?.run{
             tgTotalPay.text = denom.price
-            tgTotalPrice.text = if (!denom.slashPrice.isNullOrEmpty()) denom.slashPrice else denom.price
+            tgTotalPrice.text = if (!denom.slashPrice.isNullOrEmpty())
+                denom.slashPrice else denom.price
 
-            if (denom.pricePlain.isMoreThanZero() &&
-                denom.slashPricePlain.isMoreThanZero()){
+            if (denom.pricePlain.isMoreThanZero() && denom.slashPricePlain.isMoreThanZero()) {
                 tgTotalDiscount.show()
                 tgTotalDiscountTitle.show()
-                tgTotalDiscount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat((denom.pricePlain.toLong() - denom.slashPricePlain.toLong()), false)
+                tgTotalDiscount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    (denom.pricePlain.toLong() - denom.slashPricePlain.toLong()), false)
             }
         }
 

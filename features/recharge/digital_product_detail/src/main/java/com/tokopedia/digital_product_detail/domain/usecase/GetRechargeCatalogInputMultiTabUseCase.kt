@@ -83,6 +83,7 @@ class GetRechargeCatalogInputMultiTabUseCase @Inject constructor(
                       detail_compact
                       category_id
                       operator_id
+                      product_descriptions
                       promo {
                         id
                         bonus_text
