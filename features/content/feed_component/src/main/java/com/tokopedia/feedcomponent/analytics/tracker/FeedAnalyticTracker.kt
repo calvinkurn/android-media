@@ -811,7 +811,7 @@ class FeedAnalyticTracker
                         FORMAT_THREE_PARAM,
                         "impression",
                         "video",
-                        getPostType(type, isFollowed)
+                        getPostType(type, isFollowed, TYPE_VIDEO)
                 )
                 mediaType = TYPE_VIDEO
             }
@@ -820,18 +820,19 @@ class FeedAnalyticTracker
                         FORMAT_THREE_PARAM,
                         "impression",
                         "video",
-                        getPostType(type, isFollowed)
+                        getPostType(type, isFollowed, TYPE_LONG_VIDEO)
                )
                 mediaType = TYPE_LONG_VIDEO
             }
             else -> {
+                mediaType = TYPE_IMAGE
                 eventAction = String.format(
                         FORMAT_THREE_PARAM,
                         "impression",
                         "image",
                         getPostType(type, isFollowed, mediaType)
                 )
-                mediaType = TYPE_IMAGE
+
             }
         }
         trackEnhancedEcommerceEventNew(
@@ -1110,7 +1111,7 @@ class FeedAnalyticTracker
                 ),
             DataLayer.mapOf(
                 Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
-                "impressions", getProductItemSGC(products, type, isFollowed))
+                "impressions", getProductItemSGC(products, type, isFollowed, mediaType))
         )
 
     }
@@ -1159,12 +1160,7 @@ class FeedAnalyticTracker
         shopId: String,
         mediaType: String
     ) {
-        val finalLabel = if (mediaType == TYPE_LONG_VIDEO)
-            String.format(
-                    FORMAT_TWO_PARAM,
-                    activityId,
-                    shopId)
-        else
+        val finalLabel =
             String.format(
                     FORMAT_THREE_PARAM,
                     activityId,
@@ -1278,10 +1274,10 @@ class FeedAnalyticTracker
         }
         return list
     }
-    private fun getProductItemSGC(feedXProduct: List<FeedXProduct>, type: String, isFollowed: Boolean): List<Map<String, Any>> {
+    private fun getProductItemSGC(feedXProduct: List<FeedXProduct>, type: String, isFollowed: Boolean, mediaType: String): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
         for (i in feedXProduct) {
-            val map = createItemMapSGC(i, (feedXProduct.indexOf(i)+1).toString(),type, isFollowed)
+            val map = createItemMapSGC(i, (feedXProduct.indexOf(i)+1).toString(),type, isFollowed, mediaType)
             list.add(map)
         }
         return list

@@ -1189,9 +1189,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         tagProducts))
                             tagProducts.add(globalCardProductList[it.tagIndex])
                     }
+                    var finalId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id
+
                     if (media.isNotEmpty()) {
                         imagePostListener.userCarouselImpression(
-                                feedXCard.playChannelID,
+                                finalId,
                                 media[0],
                                 0,
                                 feedXCard.typename,

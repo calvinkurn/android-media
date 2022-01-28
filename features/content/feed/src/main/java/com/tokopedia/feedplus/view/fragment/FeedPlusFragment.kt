@@ -1733,10 +1733,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, mediaType: String, shopId: String, playChannelId: String, isClickIcon: Boolean) {
+        val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString()
         if (isClickIcon)
-        feedAnalytics.eventClickOpenComment(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString(), type, isFollowed, authorType, mediaType)
-        else if ((type == TYPE_FEED_X_CARD_PLAY || type == TYPE_FEED_X_CARD_POST) && !isClickIcon)
-        feedAnalytics.eventClickLihatSemuaComment(playChannelId, type, isFollowed, authorType, mediaType)
+        feedAnalytics.eventClickOpenComment(finalId, type, isFollowed, authorType, mediaType)
+        else if ((type == TYPE_FEED_X_CARD_PLAY || type == TYPE_FEED_X_CARD_POST) && !isClickIcon) {
+            feedAnalytics.eventClickLihatSemuaComment(finalId, type, isFollowed, authorType, mediaType)
+        }
 
         gotToKolComment(positionInFeed, id, authorType, mediaType == MediaType.VIDEO, isFollowed, type)
     }
