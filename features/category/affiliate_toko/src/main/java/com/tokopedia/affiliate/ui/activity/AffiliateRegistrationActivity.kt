@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.liveDataUtil.EventObserver
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
@@ -56,18 +57,19 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
     }
 
     private fun initFragment() {
-        supportFragmentManager.beginTransaction().add(R.id.parent_view,AffiliateLoginFragment.getFragmentInstance(),"AffiliateLoginFrament").commit()
+        supportFragmentManager.beginTransaction().add(R.id.parent_view,AffiliateLoginFragment.getFragmentInstance(),AffiliateLoginFragment.TAG).commit()
     }
 
 
     private fun initObserver() {
-        affiliateRegistrationSharedViewModel.getUserAction().observe(this,{
+        affiliateRegistrationSharedViewModel.getUserAction().observe(this,
+            EventObserver {
             when(it){
                 AffiliateRegistrationSharedViewModel.UserAction.NaigateToPortFolio -> {
-                    openFragment(AffiliatePortfolioFragment.getFragmentInstance(),"AffiliatePortfolioFragment")
+                    openFragment(AffiliatePortfolioFragment.getFragmentInstance(),AffiliatePortfolioFragment.TAG)
                 }
                 AffiliateRegistrationSharedViewModel.UserAction.NaigateToTermsAndFragment -> {
-                    openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(),"AffiliateTermsAndConditionFragment")
+                    openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(),AffiliateTermsAndConditionFragment.TAG)
                 }
                 AffiliateRegistrationSharedViewModel.UserAction.RegistrationSucces -> {
                     showSplashScreen()

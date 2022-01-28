@@ -156,6 +156,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             .build()
 
     companion object {
+        const val TAG = "AffiliatePortfolioFragment"
         fun getFragmentInstance(): Fragment {
             return AffiliatePortfolioFragment()
         }

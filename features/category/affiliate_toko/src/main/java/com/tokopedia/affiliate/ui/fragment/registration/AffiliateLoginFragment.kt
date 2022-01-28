@@ -18,6 +18,7 @@ import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.liveDataUtil.EventObserver
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate_toko.R
@@ -47,6 +48,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
     private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelProvider) }
 
     companion object {
+        const val TAG = "AffiliateLoginFrament"
         fun getFragmentInstance(): Fragment {
             return AffiliateLoginFragment()
         }
@@ -190,7 +192,8 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        affiliateLoginSharedViewModel.getUserAction().observe(viewLifecycleOwner,{
+        affiliateLoginSharedViewModel.getUserAction().observe(viewLifecycleOwner,
+            EventObserver {
             when(it){
                 AffiliateRegistrationSharedViewModel.UserAction.RegisteredAction -> {
                     onUserRegistered()

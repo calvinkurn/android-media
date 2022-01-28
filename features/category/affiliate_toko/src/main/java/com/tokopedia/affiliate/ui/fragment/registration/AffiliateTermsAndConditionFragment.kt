@@ -184,6 +184,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             .build()
 
     companion object {
+        const val TAG = "AffiliateTermsAndConditionFragment"
         const val REGISTRATION_SUCCESS = 1
         fun getFragmentInstance(): AffiliateTermsAndConditionFragment {
             return AffiliateTermsAndConditionFragment()
