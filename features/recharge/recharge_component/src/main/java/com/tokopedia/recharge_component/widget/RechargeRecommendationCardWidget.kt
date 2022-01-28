@@ -23,6 +23,7 @@ class RechargeRecommendationCardWidget @JvmOverloads constructor(@NotNull contex
     fun renderRecommendationLayout(recommendationListener: RechargeRecommendationCardListener, titleRecommendation:String, listRecommendation: List<RecommendationCardWidgetModel>){
             val adapterRecommendation = RecommendationCardWidgetAdapter(recommendationListener)
             with(rechargeRecommendationViewBinding) {
+                root.show()
                 shimmeringRecommendation.root.hide()
                 if (!listRecommendation.isNullOrEmpty()) {
                 tgRechargeRecommendationCardTitle.show()
