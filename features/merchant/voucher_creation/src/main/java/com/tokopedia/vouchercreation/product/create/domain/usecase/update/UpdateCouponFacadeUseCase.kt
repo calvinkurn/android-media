@@ -32,6 +32,7 @@ class UpdateCouponFacadeUseCase @Inject constructor(
     suspend fun execute(
         scope: CoroutineScope,
         sourceId: String,
+        couponId: Long,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
@@ -81,6 +82,7 @@ class UpdateCouponFacadeUseCase @Inject constructor(
 
         val updateCouponDeferred = scope.async {
             updateCoupon(
+                couponId,
                 couponInformation,
                 couponSettings,
                 couponProducts,
@@ -96,6 +98,7 @@ class UpdateCouponFacadeUseCase @Inject constructor(
 
 
     private suspend fun updateCoupon(
+        couponId : Long,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
@@ -105,6 +108,7 @@ class UpdateCouponFacadeUseCase @Inject constructor(
         imagePortrait:String
     ): Boolean {
         val params = updateCouponUseCase.createRequestParam(
+            couponId,
             couponInformation,
             couponSettings,
             couponProducts,

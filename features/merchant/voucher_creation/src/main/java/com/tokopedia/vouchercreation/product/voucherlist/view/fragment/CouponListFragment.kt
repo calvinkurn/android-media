@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -15,16 +16,7 @@ import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.model.MoreMenuItemEventAction
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditQuotaVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditPeriodVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ViewDetailVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.BroadCastChat
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DownloadVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.CancelVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.ShareVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DuplicateVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.StopVoucher
-import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditVoucher
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
 import java.util.*
 
@@ -34,7 +26,26 @@ class CouponListFragment: BaseDaggerFragment() {
         return@lazy MoreMenuBottomSheet.createInstance()
     }
 
+    companion object {
+        fun newInstance(
+            onCreateCouponMenuSelected: () -> Unit,
+            onEditCouponMenuSelected: (Coupon) -> Unit,
+            onDuplicateCouponMenuSelected: (Coupon) -> Unit
+        ): CouponListFragment {
+            val args = Bundle()
+            val fragment = CouponListFragment().apply {
+                arguments = args
+                this.onCreateCouponMenuSelected = onCreateCouponMenuSelected
+                this.onEditCouponMenuSelected = onEditCouponMenuSelected
+                this.onDuplicateCouponMenuSelected = onDuplicateCouponMenuSelected
+            }
+            return fragment
+        }
+    }
+
+    private var onCreateCouponMenuSelected : () -> Unit = {}
     private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
+    private var onDuplicateCouponMenuSelected : (Coupon) -> Unit = {}
 
     override fun getScreenName(): String = CouponListFragment::class.java.simpleName
 
@@ -54,6 +65,13 @@ class CouponListFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val chip = view.findViewById<SortFilter>(R.id.sf_voucher_list)
+        chip.setOnClickListener {
+
+        }
+        chip.parentListener = {
+            onCreateCouponMenuSelected()
+        }
         moreBottomSheet?.show(childFragmentManager)
         moreBottomSheet?.setOnItemClickListener(VoucherStatusConst.NOT_STARTED) { menu ->
             moreBottomSheet?.dismiss()
@@ -174,6 +192,7 @@ class CouponListFragment: BaseDaggerFragment() {
             ),
             isActiveVoucher = false
         )
+        onDuplicateCouponMenuSelected(populateDummyCoupon())
         // duplicateVoucher(voucher)
     }
 
@@ -208,10 +227,6 @@ class CouponListFragment: BaseDaggerFragment() {
         }
     }
 
-    fun setOnEditCouponMenuSelected(onEditCouponMenuSelected : (Coupon) -> Unit) {
-        this.onEditCouponMenuSelected = onEditCouponMenuSelected
-    }
-
     private fun populateDummyCoupon(): Coupon {
         //Stub the coupon preview data for testing purpose
         val startDate = Calendar.getInstance().apply { set(2022, 0, 28, 22, 30, 0) }
@@ -220,8 +235,8 @@ class CouponListFragment: BaseDaggerFragment() {
 
         val information = CouponInformation(
             CouponInformation.Target.PUBLIC,
-            "Kupon Kopi Kenangan",
-            "KOPKEN",
+            "Kupon Kopi Soe",
+            "KOPSOE",
             period
 
         )
@@ -270,6 +285,6 @@ class CouponListFragment: BaseDaggerFragment() {
                 )
             )
 
-        return Coupon(200, "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_3.jpg", information, setting, products)
+        return Coupon(9094, "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_3.jpg", information, setting, products)
     }
 }

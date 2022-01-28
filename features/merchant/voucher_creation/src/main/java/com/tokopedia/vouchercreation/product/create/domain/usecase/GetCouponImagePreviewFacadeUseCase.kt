@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
+import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.data.source.ImageGeneratorRemoteDataSource
@@ -18,7 +19,6 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 ) {
 
     companion object {
-        private const val SOURCE_ID = "ZmygOT"
         private const val EMPTY_STRING = ""
         private const val THOUSAND  = 1_000f
         private const val MILLION = 1_000_000f
@@ -117,7 +117,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         val audienceTarget = "all-users"
 
         return remoteDataSource.previewImage(
-            SOURCE_ID,
+            ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
             formattedImageRatio,
             couponVisibility,
             benefitType,

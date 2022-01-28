@@ -54,6 +54,7 @@ class UpdateCouponUseCase @Inject constructor(private val gqlRepository: Graphql
     }
 
     fun createRequestParam(
+        couponId : Long,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
@@ -81,6 +82,7 @@ class UpdateCouponUseCase @Inject constructor(private val gqlRepository: Graphql
         }
 
         val params = UpdateCouponRequestParams(
+            voucherId = couponId,
             benefitIdr = couponSettings.discountAmount,
             benefitMax = couponSettings.maxDiscount,
             benefitPercent = couponSettings.discountPercentage,

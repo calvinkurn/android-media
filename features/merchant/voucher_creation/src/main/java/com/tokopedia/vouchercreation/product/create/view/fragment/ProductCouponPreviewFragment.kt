@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -48,7 +47,7 @@ import java.util.*
 import javax.inject.Inject
 
 
-class ProductCouponPreviewFragment : BaseDaggerFragment() {
+class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_COUPON = "coupon"
@@ -60,16 +59,28 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
         private const val ROTATION_ANIM_DURATION_IN_MILLIS: Long = 300
 
-        fun newInstance(): ProductCouponPreviewFragment {
-            return ProductCouponPreviewFragment()
-        }
-
-        fun newInstance(coupon: Coupon, mode: Mode): ProductCouponPreviewFragment {
+        fun newInstance(
+            onNavigateToCouponInformationPage: () -> Unit,
+            onNavigateToCouponSettingsPage: () -> Unit,
+            onNavigateToProductListPage: () -> Unit,
+            onCreateCouponSuccess: () -> Unit,
+            onUpdateCouponSuccess: () -> Unit,
+            coupon: Coupon?,
+            mode: Mode
+        ): ProductCouponPreviewFragment {
             val args = Bundle()
             args.putSerializable(BUNDLE_KEY_COUPON, coupon)
             args.putSerializable(BUNDLE_KEY_MODE, mode)
-            val fragment = ProductCouponPreviewFragment()
-            fragment.arguments = args
+
+            val fragment = ProductCouponPreviewFragment().apply {
+                arguments = args
+                this.onNavigateToCouponInformationPage = onNavigateToCouponInformationPage
+                this.onNavigateToCouponSettingsPage = onNavigateToCouponSettingsPage
+                this.onNavigateToProductListPage = onNavigateToProductListPage
+                this.onCreateCouponSuccess = onCreateCouponSuccess
+                this.onUpdateCouponSuccess = onUpdateCouponSuccess
+            }
+
             return fragment
         }
 
@@ -89,14 +100,14 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private var onNavigateToCouponSettingsPage: () -> Unit = {}
     private var onNavigateToProductListPage: () -> Unit = {}
     private var onUpdateCouponSuccess: () -> Unit = {}
-    private var onCreateSuccess: () -> Unit = {}
+    private var onCreateCouponSuccess: () -> Unit = {}
     private var couponSettings: CouponSettings? = null
     private var couponInformation: CouponInformation? = null
     private var couponProducts: List<CouponProduct> = emptyList()
     private var isCardExpanded = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductCouponPreviewViewModel::class.java) }
-    private var couponId = -1
+    private var couponId : Long = -1
     private val createCouponErrorNotice by lazy {
         CreateProductCouponFailedDialog(requireActivity(), ::onRetryCreateCoupon, ::onRequestHelp)
     }
@@ -168,6 +179,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         observeShareMetaDataResult()
         observeUpdateCouponResult()
 
+        val mode = arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode ?: Mode.CREATE
         if (isUpdateMode()) {
             changeToolbarTitle(getString(R.string.update_coupon_product))
             changeButtonBehavior()
@@ -181,7 +193,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     private fun changeButtonBehavior() {
         binding.btnCreateCoupon.text = getString(R.string.save_changes)
-        binding.btnCreateCoupon.setOnClickListener { updateCoupon() }
+        binding.btnCreateCoupon.setOnClickListener {
+            val coupon: Coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon ?: return@setOnClickListener
+            this.couponId = coupon.id
+            updateCoupon(coupon.id)
+        }
     }
 
     private fun isUpdateMode(): Boolean {
@@ -235,8 +251,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         viewModel.createCoupon.observe(viewLifecycleOwner, { result ->
             binding.btnCreateCoupon.isLoading = false
             if (result is Success) {
-                this.couponId = result.data
-                onCreateSuccess()
+                this.couponId = result.data.toLong()
+                onCreateCouponSuccess()
                 viewModel.getShareMetaData()
             } else {
                 createCouponErrorNotice.show()
@@ -284,18 +300,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
 
-    fun setOnNavigateToCouponInformationPageListener(onNavigateToCouponInformationPage: () -> Unit) {
-        this.onNavigateToCouponInformationPage = onNavigateToCouponInformationPage
-    }
-
-    fun setOnNavigateToCouponSettingsPageListener(onNavigateToCouponSettingsPage: () -> Unit) {
-        this.onNavigateToCouponSettingsPage = onNavigateToCouponSettingsPage
-    }
-
-    fun setOnNavigateToProductListPageListener(onNavigateToProductListPage: () -> Unit) {
-        this.onNavigateToProductListPage = onNavigateToProductListPage
-    }
-
     fun setCouponSettingsData(couponSettings: CouponSettings) {
         this.couponSettings = couponSettings
     }
@@ -306,14 +310,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     fun setCouponInformationData(couponInformation: CouponInformation) {
         this.couponInformation = couponInformation
-    }
-
-    fun setOnCreateCouponSuccess(onCreateSuccess: () -> Unit) {
-        this.onCreateSuccess = onCreateSuccess
-    }
-
-    fun setOnUpdateCouponSuccess(onUpdateCouponSuccess: () -> Unit) {
-        this.onUpdateCouponSuccess = onUpdateCouponSuccess
     }
 
     fun getCouponInformationData() = this.couponInformation
@@ -574,12 +570,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun updateCoupon() {
+    private fun updateCoupon(couponId : Long) {
         binding.btnCreateCoupon.isLoading = true
         binding.btnCreateCoupon.loadingText = getString(R.string.please_wait)
 
         viewModel.updateCoupon(
-            ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL,
+            couponId,
             couponInformation ?: return,
             couponSettings ?: return,
             couponProducts
@@ -604,7 +600,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             userId = userSession.userId
         )
         updateCouponErrorNotice.dismiss()
-        updateCoupon()
+        updateCoupon(couponId)
     }
 
     private fun onRequestHelp() {
@@ -629,7 +625,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
                 category = VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.PAGE,
                 shopId = userSession.shopId
             )
-            SharingUtil.shareToBroadCastChat(requireContext(), couponId)
+            SharingUtil.shareToBroadCastChat(requireContext(), couponId.toInt())
         }
         bottomSheet.setOnShareToSocialMediaClickListener {
             displayShareBottomSheet(
