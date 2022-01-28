@@ -2,5 +2,8 @@
 <resources>
     <dimen name="topads_dimen_66dp">66dp</dimen>
     <dimen name="topads_dimen_1dp">1dp</dimen>
+    <dimen name="topads_dimen_32dp">32dp</dimen>
+    <dimen name="topads_dimen_48dp">48dp</dimen>
+    <dimen name="topads_dimen_56dp">56dp</dimen>
     <dimen name="topads_dimen_60dp">60dp</dimen>
 </resources>

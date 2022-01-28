@@ -31,8 +31,8 @@
 
     <ImageView
         android:id="@+id/iconAutomaticAds"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/topads_dimen_32dp"
+        android:layout_height="@dimen/topads_dimen_32dp"
         android:contentDescription="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
