@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.setup.product.view.PlayBroProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.PlayBroEtalaseListBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.PlayBroProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
@@ -74,4 +75,9 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroEtalaseListBottomSheet::class)
     abstract fun getPlayBroEtalaseAndCampaignListBottomSheet(fragment: PlayBroEtalaseListBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroProductChooserBottomSheet::class)
+    abstract fun getPlayBroProductChooserBottomSheet(fragment: PlayBroProductChooserBottomSheet): Fragment
 }

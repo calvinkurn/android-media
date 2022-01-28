@@ -27,7 +27,7 @@ import javax.inject.Inject
  */
 class PlayBroEtalaseListBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val dialogCustomizer: PlayBroadcastDialogCustomizer
+    private val dialogCustomizer: PlayBroadcastDialogCustomizer,
 ) : BottomSheetUnify() {
 
     private lateinit var viewModel: PlayBroProductSetupViewModel
