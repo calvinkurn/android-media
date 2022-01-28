@@ -116,6 +116,7 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
+import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.addFilterOrigin
@@ -137,7 +138,8 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import org.json.JSONArray
 import timber.log.Timber
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -379,6 +381,7 @@ class ProductListFragment: BaseDaggerFragment(),
             bannerListener = this,
             lastFilterListener = this,
             inspirationSizeListener = inspirationWidgetListenerDelegate,
+            violationListener = ViolationListenerDelegate(activity)
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)

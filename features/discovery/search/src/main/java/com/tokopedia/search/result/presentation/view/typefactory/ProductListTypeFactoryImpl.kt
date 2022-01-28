@@ -70,6 +70,9 @@ import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSiz
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
+import com.tokopedia.search.result.product.violation.ViolationDataView
+import com.tokopedia.search.result.product.violation.ViolationListener
+import com.tokopedia.search.result.product.violation.ViolationViewHolder
 
 @Suppress("LongParameterList")
 class ProductListTypeFactoryImpl(
@@ -90,6 +93,7 @@ class ProductListTypeFactoryImpl(
     private val bannerListener: BannerListener,
     private val lastFilterListener: LastFilterListener,
     private val inspirationSizeListener: InspirationSizeListener,
+    private val violationListener: ViolationListener,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -199,6 +203,10 @@ class ProductListTypeFactoryImpl(
     override fun type(sizeDataView: InspirationSizeDataView): Int {
         return InspirationSizeViewHolder.LAYOUT
     }
+
+    override fun type(violationView: ViolationDataView): Int =
+        ViolationViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -239,6 +247,7 @@ class ProductListTypeFactoryImpl(
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
             LastFilterViewHolder.LAYOUT -> LastFilterViewHolder(view, lastFilterListener)
             InspirationSizeViewHolder.LAYOUT -> InspirationSizeViewHolder(view, inspirationSizeListener)
+            ViolationViewHolder.LAYOUT -> ViolationViewHolder(view, violationListener)
 
             else -> super.createViewHolder(view, type)
         }
