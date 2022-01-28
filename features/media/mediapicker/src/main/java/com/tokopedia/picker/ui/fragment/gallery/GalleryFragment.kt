@@ -12,7 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerSelectionType
 import com.tokopedia.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
@@ -114,11 +116,12 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
         lifecycle.addObserver(viewModel)
 
         viewModel.mediaFiles.observe(viewLifecycleOwner) {
-            adapter.setData(it)
-        }
-
-        viewModel.isMediaNotEmpty.observe(viewLifecycleOwner) {
-
+            if (it.isNotEmpty()) {
+                adapter.setData(it)
+                hasMediaList()
+            } else {
+                hasNotMediaList()
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
@@ -143,23 +146,36 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
     }
 
     private fun initView() {
-        setupSelectionDrawerWidget()
-        setupWidgetAlbumSelector()
         setupRecyclerView()
 
         viewModel.fetch(RECENT_ALBUM_ID, param)
     }
 
-    private fun setupSelectionDrawerWidget() {
+    private fun hasMediaList() {
+        setupWidgetAlbumSelector(true)
+        setupSelectionDrawerWidget(true)
+        binding?.emptyState?.root?.hide()
+    }
+
+    private fun hasNotMediaList() {
+        setupWidgetAlbumSelector(false)
+        setupSelectionDrawerWidget(false)
+        binding?.emptyState?.root?.show()
+    }
+
+    private fun setupSelectionDrawerWidget(isShown: Boolean) {
         val isMultipleSelectionType = PickerUiConfig.paramType == PickerSelectionType.MULTIPLE
 
         if (isMultipleSelectionType) {
             binding?.bottomNavDrawer?.setMaxAdapterSize(param.limit)
-            binding?.bottomNavDrawer?.show()
+            binding?.bottomNavDrawer?.isAbleToReorder(false)
+            binding?.bottomNavDrawer?.showWithCondition(isShown)
         }
     }
 
-    private fun setupWidgetAlbumSelector() {
+    private fun setupWidgetAlbumSelector(isShown: Boolean) {
+        binding?.albumSelector?.root?.showWithCondition(isShown)
+
         binding?.albumSelector?.container?.setOnClickListener {
             startActivityForResult(Intent(
                 requireContext(),
@@ -222,17 +238,16 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
                 ).show()
                 return false
             }
-
-            if (!isSelected) {
-                viewModel.send(EventState.SelectionAdded(media))
-            } else {
-                viewModel.send(EventState.SelectionRemoved(media))
-            }
-
         } else if (PickerUiConfig.paramType == PickerSelectionType.SINGLE) {
-            if (mediaSelectionDrawer.isNotEmpty()) {
+            if (mediaSelectionDrawer.isNotEmpty() || adapter.selectedMedias.isNotEmpty()) {
                 adapter.removeAllSelectedSingleClick()
             }
+        }
+
+        if (!isSelected) {
+            viewModel.send(EventState.SelectionAdded(media))
+        } else {
+            viewModel.send(EventState.SelectionRemoved(media))
         }
 
         return true
@@ -249,7 +264,6 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
     override fun getScreenName() = "Camera"
 
     companion object {
-        private const val KEY_SELECTED_MEDIA = "selected_media.key"
         private const val RC_ALBUM_SELECTOR = 123
         private const val LIST_SPAN_COUNT = 3
     }

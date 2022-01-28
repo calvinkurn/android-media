@@ -10,6 +10,10 @@
     android:orientation="vertical">
 
     <include
+        android:id="@+id/empty_state"
+        layout="@layout/view_item_gallery_empty_state"/>
+
+    <include
         android:id="@+id/album_selector"
         layout="@layout/widget_album_selector" />
 
