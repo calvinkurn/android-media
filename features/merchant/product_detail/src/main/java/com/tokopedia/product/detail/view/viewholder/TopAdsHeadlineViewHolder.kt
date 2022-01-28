@@ -85,13 +85,6 @@ class TopAdsHeadlineViewHolder(
                 fetchTopadsHeadlineAds(topadsHeadlineUiModel?.topadsHeadLinePage ?: 0)
             }
         }
-//        topadsHeadlineView.setTopAdsProductItemListsner(object : TopAdsItemImpressionListener(){
-//            override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData){
-//                if (element != null) {
-//                    listener.onImpressComponent(getComponentTrackData(element))
-//                }
-//            }
-//        })
     }
 
     private fun showHeadlineView(cpmModel: CpmModel) {
