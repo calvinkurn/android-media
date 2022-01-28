@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -134,7 +135,11 @@ class DenomFullViewHolder(
             }
 
             root.setOnClickListener {
-                denomFullListener.onDenomFullClicked(denomFull, position)
+                denomFullListener.onDenomFullClicked(denomFull, denomType, position, "",true)
+            }
+
+            root.addOnImpressionListener(denomFull) {
+                denomFullListener.onDenomFullImpression(denomFull, denomType, position)
             }
         }
     }

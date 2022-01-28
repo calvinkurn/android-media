@@ -31,8 +31,18 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_SPACE_HEIGHT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
-import com.tokopedia.digital_product_detail.data.model.data.SelectedGridProduct
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
+import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
@@ -63,7 +73,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import java.util.regex.Pattern
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -273,7 +282,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
-        viewModel.getRechargeCatalogInput(menuId, selectedOperatorKey,
+        viewModel.getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey,
             binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
     }
 
@@ -861,7 +870,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             onClearSelectedMCCM()
         }
 
-        viewModel.selectedGridProduct = SelectedGridProduct(denomGrid, layoutType, position)
+        viewModel.selectedGridProduct = SelectedProduct(denomGrid, layoutType, position)
 
         if (isShowBuyWidget && viewModel.isEligibleToBuy) {
             onShowBuyWidget(denomGrid)
@@ -1003,22 +1012,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
             it.arguments = bundle
         }
-
-        const val INPUT_ACTION_TRACKING_DELAY = 1000L
-
-        const val MINIMUM_OPERATOR_PREFIX = 4
-        const val MINIMUM_VALID_NUMBER_LENGTH = 10
-        const val MAXIMUM_VALID_NUMBER_LENGTH = 14
-        const val DEFAULT_ICON_RES = 0
-
-        const val DEFAULT_SPACE_HEIGHT = 81
-
-        const val PREFERENCES_NAME = "pdp_pulsa_preferences"
-        const val FAVNUM_PERMISSION_CHECKER_IS_DENIED = "favnum_permission_checker_is_denied"
-
-        const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
-
-        private const val REQUEST_CODE_LOGIN = 1010
 
     }
 }

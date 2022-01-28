@@ -1,12 +1,8 @@
 package com.tokopedia.digital_product_detail.presentation.activity
 
 import android.app.Activity
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -23,9 +19,6 @@ import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPPuls
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil.DEFAULT_MENU_ID_TELCO
 import com.tokopedia.digital_product_detail.presentation.utils.setupOrderListIcon
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.toBitmap
 import java.lang.ref.WeakReference
 
 /**

@@ -1,23 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_NN950"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recharge_pdp_paket_data_page_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <com.tokopedia.recharge_component.widget.DenomGridWidget
-            android:id="@+id/widget_denom_grid"
+        <View
+            android:id="@+id/recharge_pdp_paket_data_action_bar_spacer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-                />
+            android:layout_height="?attr/actionBarSize"/>
+
+        <include layout="@layout/view_background_banner"
+            app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_action_bar_spacer"/>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/recharge_pdp_paket_data_main_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/recharge_pdp_paket_data_action_bar_spacer">
+
+                <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/recharge_pdp_paket_data_appbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:orientation="vertical"
+                    app:elevation="0dp">
+
+                        <View
+                            android:id="@+id/recharge_pdp_paket_data_banner_spacer"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/banner_space"
+                            app:layout_scrollFlags="scroll"/>
+
+                        <View
+                            android:id="@+id/recharge_pdp_paket_data_dynamic_banner_spacer"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_below="@+id/recharge_pdp_paket_data_banner_spacer"
+                            app:layout_scrollFlags="scroll" />
+
+                        <com.tokopedia.unifycomponents.ticker.Ticker
+                            android:id="@+id/recharge_pdp_paket_data_ticker"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/recharge_pdp_paket_data_dynamic_banner_spacer"
+                            android:layout_marginStart="@dimen/spacing_lvl4"
+                            android:layout_marginEnd="@dimen/spacing_lvl4"
+                            android:visibility="gone"
+                            app:closeButtonVisibility="visible"
+                            app:enableAutoSlide="true"
+                            app:layout_scrollFlags="scroll"
+                            app:tickerShapeType="loose"
+                            tools:visibility="gone"/>
+
+                        <com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
+                            android:id="@+id/recharge_pdp_paket_data_client_number_widget"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/recharge_pdp_paket_data_ticker"
+                            android:layout_marginStart="@dimen/spacing_lvl4"
+                            android:layout_marginEnd="@dimen/spacing_lvl4"/>
+
+                </com.google.android.material.appbar.AppBarLayout>
+
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:descendantFocusability="beforeDescendants"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingBottom="@dimen/layout_lvl7">
+
+                                <com.tokopedia.recharge_component.widget.RechargeEmptyStateWidget
+                                    android:id="@+id/recharge_pdp_paket_data_empty_state_widget"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone"
+                                    android:layout_marginStart="@dimen/empty_state_margin"
+                                    android:layout_marginEnd="@dimen/empty_state_margin"
+                                    android:layout_marginTop="@dimen/spacing_lvl4"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                                <com.tokopedia.recharge_component.widget.RechargeRecommendationCardWidget
+                                    android:id="@+id/recharge_pdp_paket_data_recommendation_widget"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                                <com.tokopedia.recharge_component.widget.MCCMFlashSaleFullWidget
+                                    android:id="@+id/recharge_pdp_paket_data_promo_widget"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_recommendation_widget"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                                <com.tokopedia.recharge_component.widget.DenomFullWidget
+                                    android:id="@+id/recharge_pdp_paket_data_denom_full_widget"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_promo_widget"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.core.widget.NestedScrollView>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.tokopedia.recharge_component.widget.RechargeBuyWidget
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/widget_buy_widget"
+            android:id="@+id/recharge_pdp_paket_data_buy_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-                />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_alignParentBottom="true"
+            />
+</RelativeLayout>
