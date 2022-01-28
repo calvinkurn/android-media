@@ -7,7 +7,9 @@ import com.tokopedia.vouchercreation.common.di.module.NetworkModule
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationModule
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationViewModelModule
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
-import com.tokopedia.vouchercreation.product.create.view.bottomsheet.CouponPreviewBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCouponBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.CouponImagePreviewBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.voucherlist.view.fragment.CouponListFragment
@@ -56,5 +58,7 @@ interface VoucherCreationComponent {
     fun inject(couponSettingFragment: CouponSettingFragment)
     fun inject(createCouponDetailFragment: CreateCouponDetailFragment)
     fun inject(couponListFragment: CouponListFragment)
-    fun inject(couponPreviewBottomSheet: CouponPreviewBottomSheet)
+    fun inject(couponImagePreviewBottomSheet: CouponImagePreviewBottomSheet)
+    fun inject(broadcastCouponBottomSheet: BroadcastCouponBottomSheet)
+    fun inject(createCouponProductActivity: CreateCouponProductActivity)
 }

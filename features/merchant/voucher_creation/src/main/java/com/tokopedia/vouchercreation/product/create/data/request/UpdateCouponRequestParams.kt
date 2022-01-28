@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 class UpdateCouponRequestParams(
     @SerializedName("voucher_id")
     @Expose
-    val voucherId: Int = 0,
+    val voucherId: Long = 0,
     @SerializedName("benefit_idr")
     @Expose
     val benefitIdr: Int = 0,

@@ -9,11 +9,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
-import com.tokopedia.vouchercreation.product.create.domain.entity.ShareMetadata
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetShareMetadataFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import kotlinx.coroutines.withContext
@@ -22,7 +21,6 @@ import javax.inject.Inject
 class ProductCouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val createCouponUseCase: CreateCouponFacadeUseCase,
-    private val getShareMetadataUseCase: GetShareMetadataFacadeUseCase,
     private val updateCouponUseCase: UpdateCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
@@ -37,9 +35,6 @@ class ProductCouponPreviewViewModel @Inject constructor(
     private val _createCoupon = SingleLiveEvent<Result<Int>>()
     val createCoupon: LiveData<Result<Int>>
         get() = _createCoupon
-
-    private val _shareMetadata = MutableLiveData<Result<ShareMetadata>>()
-    val shareMetadata: LiveData<Result<ShareMetadata>> = _shareMetadata
 
     private val _updateCouponResult = MutableLiveData<Result<Boolean>>()
     val updateCouponResult: LiveData<Result<Boolean>> = _updateCouponResult
@@ -69,7 +64,6 @@ class ProductCouponPreviewViewModel @Inject constructor(
 
 
     fun createCoupon(
-        sourceId: String,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>
@@ -79,7 +73,7 @@ class ProductCouponPreviewViewModel @Inject constructor(
                 val result = withContext(dispatchers.io) {
                     createCouponUseCase.execute(
                         this,
-                        sourceId,
+                        ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
                         couponInformation,
                         couponSettings,
                         couponProducts
@@ -93,22 +87,8 @@ class ProductCouponPreviewViewModel @Inject constructor(
         )
     }
 
-    fun getShareMetaData() {
-        launchCatchError(
-            block = {
-                val result = withContext(dispatchers.io) {
-                    getShareMetadataUseCase.execute(this)
-                }
-                _shareMetadata.value = Success(result)
-            },
-            onError = {
-                _shareMetadata.setValue(Fail(it))
-            }
-        )
-    }
-
     fun updateCoupon(
-        sourceId: String,
+        couponId : Long,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>
@@ -118,7 +98,8 @@ class ProductCouponPreviewViewModel @Inject constructor(
                 val result = withContext(dispatchers.io) {
                     updateCouponUseCase.execute(
                         this,
-                        sourceId,
+                        ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
+                        couponId,
                         couponInformation,
                         couponSettings,
                         couponProducts
@@ -132,10 +113,12 @@ class ProductCouponPreviewViewModel @Inject constructor(
         )
     }
 
-    fun getMostSoldProductImageUrls(couponProducts: List<CouponProduct>): ArrayList<String> {
-       val mostSoldProductsImageUrls = couponProducts.sortedByDescending { it.soldCount }
-           .take(NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE)
-           .map { it.imageUrl }
+
+
+    fun findMostSoldProductImageUrls(couponProducts: List<CouponProduct>): ArrayList<String> {
+        val mostSoldProductsImageUrls = couponProducts.sortedByDescending { it.soldCount }
+            .take(NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE)
+            .map { it.imageUrl }
 
         val imageUrls = arrayListOf<String>()
 

@@ -10,6 +10,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -31,6 +33,7 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.da
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.DuplicateCoupon
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.StopCoupon
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditCoupon
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
 import java.util.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
@@ -53,6 +56,26 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private var onRedirectToCouponPreview : (Coupon, ProductCouponPreviewFragment.Mode) -> Unit = { _, _ -> }
+    companion object {
+        fun newInstance(
+            onCreateCouponMenuSelected: () -> Unit,
+            onEditCouponMenuSelected: (Coupon) -> Unit,
+            onDuplicateCouponMenuSelected: (Coupon) -> Unit
+        ): CouponListFragment {
+            val args = Bundle()
+            val fragment = CouponListFragment().apply {
+                arguments = args
+                this.onCreateCouponMenuSelected = onCreateCouponMenuSelected
+                this.onEditCouponMenuSelected = onEditCouponMenuSelected
+                this.onDuplicateCouponMenuSelected = onDuplicateCouponMenuSelected
+            }
+            return fragment
+        }
+    }
+
+    private var onCreateCouponMenuSelected : () -> Unit = {}
+    private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
+    private var onDuplicateCouponMenuSelected : (Coupon) -> Unit = {}
 
     override fun getScreenName(): String = CouponListFragment::class.java.simpleName
 
@@ -73,6 +96,13 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val chip = view.findViewById<SortFilter>(R.id.sf_voucher_list)
+        chip.setOnClickListener {
+
+        }
+        chip.parentListener = {
+            onCreateCouponMenuSelected()
+        }
         viewModel.voucherList.observe(viewLifecycleOwner) {
             if (it is Success) {
                 renderList(it.data, false)
@@ -152,7 +182,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun editVoucher() {
-        onRedirectToCouponPreview(populateDummyCoupon(), ProductCouponPreviewFragment.Mode.UPDATE)
+        onEditCouponMenuSelected(populateDummyCoupon())
+        // editVoucher(voucher)
     }
 
     private fun viewDetailVoucher() {
@@ -236,7 +267,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             ),
             isActiveVoucher = false
         )
-        onRedirectToCouponPreview(populateDummyCoupon(), ProductCouponPreviewFragment.Mode.DUPLICATE)
+        onDuplicateCouponMenuSelected(populateDummyCoupon())
+        // duplicateVoucher(voucher)
     }
 
     private fun hitMoreMenuItemEventTracker(moreMenuItemEventAction: MoreMenuItemEventAction, @VoucherStatusConst status: Int? = null, isActiveVoucher: Boolean) {
@@ -278,8 +310,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
         val information = CouponInformation(
             CouponInformation.Target.PUBLIC,
-            "Kupon Kopi Kenangan",
-            "KOPKEN",
+            "Kupon Kopi Soe",
+            "KOPSOE",
             period
 
         )
@@ -302,32 +334,32 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
                     "2147956088",
                     18000,
                     5.0F,
-                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_1.jpg",
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
                     19
                 ),
                 CouponProduct(
                     "15455652",
                     18000,
                     4.7F,
-                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_2.jpg",
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
                     1000
                 ),
                 CouponProduct(
                     "15429644",
                     18000,
                     5.0F,
-                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_3.jpg",
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
                     2100
                 ),
                 CouponProduct(
                     "15409031",
                     25000,
                     4.0F,
-                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_4.jpg",
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
                     31000
                 )
             )
 
-        return Coupon(200, "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_3.jpg", information, setting, products)
+        return Coupon(9094, information, setting, products)
     }
 }

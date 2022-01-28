@@ -15,7 +15,7 @@ class ImageGeneratorRemoteDataSource @Inject constructor(
         voucherBenefitType: String,
         voucherCashbackType: String,
         voucherCashbackPercentage: Int,
-        voucherNominalAmount: Int,
+        voucherNominalAmount: Number,
         voucherNominalSymbol: String,
         shopLogo: String,
         shopName: String,
