@@ -8,22 +8,22 @@ import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 
 interface ProductListTypeFactory {
     fun type(productItem: ProductItemDataView): Int
@@ -36,7 +36,7 @@ interface ProductListTypeFactory {
     fun type(recommendationItemDataView: RecommendationItemDataView): Int
     fun type(bannedProductsEmptySearchDataView: BannedProductsEmptySearchDataView): Int
     fun type(bannedProductsTickerDataView: BannedProductsTickerDataView): Int
-    fun type(emptySearchProductDataView: EmptySearchProductDataView): Int
+    fun type(emptySearchProductDataView: EmptyStateDataView): Int
     fun type(broadMatchDataView: BroadMatchDataView): Int
     fun type(inspirationCardDataView: InspirationCardDataView): Int
     fun type(searchProductTitleDataView: SearchProductTitleDataView): Int

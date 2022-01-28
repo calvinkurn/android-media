@@ -15,10 +15,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
 import java.util.*
@@ -31,7 +29,6 @@ interface ProductListSectionContract {
         fun showNetworkError(startRow: Int, throwable: Throwable?)
         val filterParamString: String
         val queryKey: String
-        fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
         fun backToTop()
