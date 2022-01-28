@@ -209,9 +209,13 @@ public class TkpdWebView extends WebView {
     }
 
     @Override
-    public void loadUrl(@NonNull String url, @NonNull Map<String, String> additionalHttpHeaders) {
+    public void loadUrl(@NonNull String url, Map<String, String> additionalHttpHeaders) {
         if (WebViewHelper.isUrlValid(url)) {
-            super.loadUrl(url, additionalHttpHeaders);
+            if (additionalHttpHeaders!= null) {
+                super.loadUrl(url, additionalHttpHeaders);
+            } else {
+                super.loadUrl(url);
+            }
         } else {
             if (!GlobalConfig.DEBUG)
                 FirebaseCrashlytics.getInstance().log(

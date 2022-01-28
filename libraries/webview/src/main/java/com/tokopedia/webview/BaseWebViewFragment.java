@@ -3,6 +3,7 @@ package com.tokopedia.webview;
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
 import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
+import static com.tokopedia.webview.ConstantKt.GOOGLE_DOCS_PDF_URL;
 import static com.tokopedia.webview.ConstantKt.JS_STAGING_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
@@ -351,10 +352,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGIN) {
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 webView.loadAuthUrl(getUrl(), userSession);
-            }else {
-                if(getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
+            } else {
+                if (getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
                     ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
             }
         } else if (requestCode == LOGIN_GPLUS) {
@@ -665,7 +666,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
             globalError.setVisibility(View.VISIBLE);
-            if (swipeRefreshLayout!= null) {
+            if (swipeRefreshLayout != null) {
                 swipeRefreshLayout.setVisibility(View.GONE);
             }
         }
@@ -705,6 +706,18 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             headerText = uri.getQueryParameter(CUST_HEADER);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        if (url.endsWith(".pdf")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/pdf");
+            try {
+                getContext().startActivity(intent);
+            } catch (Exception e) {
+                //user does not have a pdf viewer installed
+                loadGoogleDocsUrl(uri);
+            }
+            return true;
         }
 
         if (url.contains(HCI_CAMERA_KTP)) {
@@ -800,19 +813,28 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return hasMoveToNativePage;
     }
 
+    private void loadGoogleDocsUrl(Uri uri) {
+        String googleDocsUrl = GOOGLE_DOCS_PDF_URL + uri.toString();
+        if (uri.getHost().contains(TOKOPEDIA_STRING)) {
+            webView.loadAuthUrl(googleDocsUrl, userSession);
+        } else {
+            webView.loadUrl(getUrl());
+        }
+    }
+
     private void gotoAlaCarteKyc(Uri uri) {
         String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
         String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
         String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
-        Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }
 
-    private boolean isFDLHostEnabled(Uri uri){
-        if(remoteConfig != null){
+    private boolean isFDLHostEnabled(Uri uri) {
+        if (remoteConfig != null) {
             return remoteConfig.getBoolean(ENABLE_FDL_HOST_WEBVIEW, true)
                     && FDL_HOST.equalsIgnoreCase(uri.getHost());
-        }else{
+        } else {
             return FDL_HOST.equalsIgnoreCase(uri.getHost());
         }
     }
@@ -837,7 +859,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private void routeToNativeBrowser(String browserUrl){
+    private void routeToNativeBrowser(String browserUrl) {
         RouteManager.route(getContext(), ApplinkConst.BROWSER + "?url=" + browserUrl);
     }
 
@@ -933,10 +955,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (activity instanceof BaseSimpleWebViewActivity) {
             ((BaseSimpleWebViewActivity) activity).setWebViewTitle("");
         }
-        if (swipeRefreshLayout!= null) {
+        if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
-        if (globalError!= null) {
+        if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
         webView.reload();
