@@ -110,13 +110,6 @@ class FeaturedShopViewHolder(
     }
 
     private fun setHeaderComponent(element: FeaturedShopDataModel) {
-        var textColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
-        if (element.channelModel.channelBanner.textColor.isNotEmpty()) {
-            try {
-                textColor = Color.parseColor(element.channelModel.channelBanner.textColor)
-            } catch (e: IllegalArgumentException) {
-            }
-        }
         if(getGradientBackgroundViewAllWhite(element.channelModel.channelBanner.gradientColor, itemView.context)) {
             binding?.featuredShopBackground?.invisible()
         } else {
