@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
-import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
@@ -10,7 +9,6 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductsInEtalaseUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.text.SimpleDateFormat
 import java.util.*

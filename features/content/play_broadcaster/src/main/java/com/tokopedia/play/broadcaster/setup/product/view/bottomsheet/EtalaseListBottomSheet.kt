@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
+import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
@@ -83,48 +84,45 @@ class EtalaseListBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderBottomSheetTitle(state.campaignList)
+                renderBottomSheetTitle(state.campaignAndEtalase)
                 renderEtalaseList(
-                    prevState?.campaignList,
-                    state.campaignList,
-                    prevState?.etalaseList,
-                    state.etalaseList,
+                    prevState?.campaignAndEtalase,
+                    state.campaignAndEtalase,
                 )
             }
         }
     }
 
     private fun renderBottomSheetTitle(
-        campaignList: List<CampaignUiModel>,
+        model: CampaignAndEtalaseUiModel,
     ) {
-        val title = buildString {
-            if (campaignList.isNotEmpty()) {
-                append(getString(R.string.play_bro_campaign))
-                append(" & ")
-            }
-            append(getString(R.string.play_bro_etalase))
+        val title = if (model.campaignList.isNotEmpty() && model.etalaseList.isNotEmpty()) {
+            getString(R.string.play_bro_campaign_and_etalase)
+        } else if (model.campaignList.isNotEmpty()) {
+            getString(R.string.play_bro_campaign)
+        } else {
+            getString(R.string.play_bro_etalase)
         }
         setTitle(title)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun renderEtalaseList(
-        prevCampaignList: List<CampaignUiModel>?,
-        campaignList: List<CampaignUiModel>,
-        prevEtalaseList: List<EtalaseUiModel>?,
-        etalaseList: List<EtalaseUiModel>,
+        prevModel: CampaignAndEtalaseUiModel?,
+        model: CampaignAndEtalaseUiModel,
     ) {
-        if (prevCampaignList == campaignList && prevEtalaseList == etalaseList) return
+        if (prevModel?.campaignList == model.campaignList &&
+            prevModel.etalaseList == model.etalaseList) return
 
         val combinedEtalaseList = buildList {
-            if (campaignList.isNotEmpty()) {
+            if (model.campaignList.isNotEmpty()) {
                 add(EtalaseListModel.Header(getString(R.string.play_bro_campaign)))
-                addAll(campaignList.map(EtalaseListModel::Campaign))
+                addAll(model.campaignList.map(EtalaseListModel::Campaign))
             }
 
-            if (etalaseList.isNotEmpty()) {
+            if (model.etalaseList.isNotEmpty()) {
                 add(EtalaseListModel.Header(getString(R.string.play_bro_etalase)))
-                addAll(etalaseList.map(EtalaseListModel::Etalase))
+                addAll(model.etalaseList.map(EtalaseListModel::Etalase))
             }
         }
 
