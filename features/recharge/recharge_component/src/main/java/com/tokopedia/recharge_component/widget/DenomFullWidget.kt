@@ -30,6 +30,7 @@ class DenomFullWidget @JvmOverloads constructor(
         if (!denomData.listDenomData.isNullOrEmpty()) {
             val adapterDenomFull = DenomFullAdapter()
             with(rechargeDenomFullWidgetBinding) {
+                root.show()
                 denomFullShimmering.root.hide()
                 tgDenomFullWidgetTitle.run {
                     show()

@@ -28,6 +28,7 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
     ){
         if (!denomData.listDenomData.isNullOrEmpty()) {
             with(rechargeDenomGridViewBinding) {
+                root.show()
                 denomGridShimmering.root.hide()
                 tgDenomGridWidgetTitle.run {
                     show()
