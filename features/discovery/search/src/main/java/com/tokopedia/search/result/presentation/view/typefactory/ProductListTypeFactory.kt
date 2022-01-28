@@ -24,6 +24,7 @@ import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
+import com.tokopedia.search.result.product.violation.ViolationDataView
 
 interface ProductListTypeFactory {
     fun type(productItem: ProductItemDataView): Int
@@ -48,6 +49,7 @@ interface ProductListTypeFactory {
     fun type(bannerDataView: BannerDataView): Int
     fun type(lastFilterDataView: LastFilterDataView): Int
     fun type(sizeDataView: InspirationSizeDataView): Int
+    fun type(violationView: ViolationDataView) : Int
     var recyclerViewItem: Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

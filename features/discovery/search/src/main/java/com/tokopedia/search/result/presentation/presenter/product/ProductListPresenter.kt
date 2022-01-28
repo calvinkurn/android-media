@@ -76,7 +76,6 @@ import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
-import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
@@ -84,6 +83,7 @@ import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
@@ -113,11 +113,9 @@ import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.*
+import java.util.HashSet
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.math.max
 
 @Suppress("LongParameterList")
@@ -815,6 +813,8 @@ class ProductListPresenter @Inject constructor(
         } else {
             if (!productDataView.errorMessage.isNullOrEmpty()) {
                 getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
+            } else if(productDataView.violation != null) {
+                getViewToHandleViolation(productDataView)
             } else {
                 getViewToShowEmptySearch(productDataView)
 
@@ -881,6 +881,31 @@ class ProductListPresenter @Inject constructor(
 
             add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
         }
+
+
+    private fun getViewToHandleViolation(
+        productDataView: ProductDataView,
+    ) {
+        val violationProductsVisitableList =
+            createViolationVisitableList(productDataView)
+
+        view.removeLoading()
+        view.addProductList(violationProductsVisitableList)
+    }
+
+    private fun createViolationVisitableList(
+        productDataView: ProductDataView,
+    ) : List<Visitable<*>> {
+        val violation = productDataView.violation ?: return emptyList()
+        return mutableListOf<Visitable<*>>().apply {
+            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
+                add(globalNavDataView)
+            }
+
+            add(violation)
+            add(SeparatorDataView())
+        }
+    }
 
     private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
         val globalNavDataView = getGlobalNavViewModel(productDataView)
