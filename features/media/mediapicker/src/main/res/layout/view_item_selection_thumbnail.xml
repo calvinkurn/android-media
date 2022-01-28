@@ -60,5 +60,6 @@
         android:background="@drawable/picker_circle_grey"
         app:srcCompat="@drawable/ic_close_white"
         android:padding="2dp"/>
+
 </FrameLayout>
 

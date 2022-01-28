@@ -9,6 +9,8 @@
     android:padding="@dimen/unify_space_16"
     android:background="@color/Unify_N0"
     android:foreground="?selectableItemBackground"
+    android:visibility="gone"
+    tools:visibility="visible"
     tools:ignore="UnusedAttribute">
 
     <com.tokopedia.unifyprinciples.Typography
