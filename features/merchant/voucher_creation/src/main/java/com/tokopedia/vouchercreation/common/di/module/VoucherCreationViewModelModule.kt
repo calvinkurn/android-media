@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.*
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponPreviewViewModel
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponSettingViewModel
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CreateCouponDetailViewModel
@@ -101,11 +100,6 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(CreateCouponDetailViewModel::class)
     internal abstract fun provideCreateCouponDetailViewModel(createCouponDetailViewModel: CreateCouponDetailViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(CouponPreviewViewModel::class)
-    internal abstract fun provideCouponPreviewViewModel(couponPreviewViewModel: CouponPreviewViewModel): ViewModel
 
     @Binds
     @IntoMap
