@@ -22,7 +22,7 @@ class DigitalDenomMapper @Inject constructor() {
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
             getDenomFullMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
                 dataCollectionMCCM, true),
-            inputMultiTab
+            inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList()
         )
     }
 
