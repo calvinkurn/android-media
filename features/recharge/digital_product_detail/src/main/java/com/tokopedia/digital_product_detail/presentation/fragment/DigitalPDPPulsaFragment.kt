@@ -282,7 +282,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
-        viewModel.getRechargeCatalogInput(menuId, selectedOperatorKey,
+        viewModel.getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey,
             binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
     }
 
