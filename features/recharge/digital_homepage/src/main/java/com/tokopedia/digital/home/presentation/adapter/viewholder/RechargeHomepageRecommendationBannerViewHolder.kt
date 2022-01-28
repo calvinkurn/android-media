@@ -17,6 +17,8 @@ class RechargeHomepageRecommendationBannerViewHolder(
 ) : AbstractViewHolder<RechargeHomepageRecommendationBannerModel>(binding.root) {
 
     override fun bind(element: RechargeHomepageRecommendationBannerModel) {
+        listener.loadRechargeSectionData(element.visitableId())
+
         renderTitle(element)
         renderSeeAllButton(element)
         renderRecommendationBannerItems(element)
