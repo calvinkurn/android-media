@@ -22,15 +22,15 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
-import com.tokopedia.vouchercreation.databinding.BottomsheetCouponPreviewBinding
+import com.tokopedia.vouchercreation.databinding.BottomsheetCouponImagePreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponPreviewViewModel
+import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponImagePreviewViewModel
 import javax.inject.Inject
 
 
-class CouponPreviewBottomSheet : BottomSheetUnify() {
+class CouponImagePreviewBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val FIRST_IMAGE_URL = 0
@@ -50,13 +50,13 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
             couponSettings: CouponSettings,
             productCount: Int,
             productImageUrls: ArrayList<String>
-        ): CouponPreviewBottomSheet {
+        ): CouponImagePreviewBottomSheet {
             val args = Bundle()
             args.putSerializable(BUNDLE_KEY_COUPON_INFORMATION, couponInformation)
             args.putSerializable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
             args.putInt(BUNDLE_KEY_PRODUCT_COUNT, productCount)
             args.putStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL, productImageUrls)
-            val fragment = CouponPreviewBottomSheet()
+            val fragment = CouponImagePreviewBottomSheet()
             fragment.arguments = args
             return fragment
         }
@@ -65,12 +65,12 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var nullableBinding: BottomsheetCouponPreviewBinding? = null
-    private val binding: BottomsheetCouponPreviewBinding
+    private var nullableBinding: BottomsheetCouponImagePreviewBinding? = null
+    private val binding: BottomsheetCouponImagePreviewBinding
         get() = requireNotNull(nullableBinding)
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(CouponPreviewViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(CouponImagePreviewViewModel::class.java) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -85,7 +85,7 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        nullableBinding = BottomsheetCouponPreviewBinding.inflate(inflater, container, false)
+        nullableBinding = BottomsheetCouponImagePreviewBinding.inflate(inflater, container, false)
         setTitle(getString(R.string.coupon_preview))
         setChild(binding.root)
         clearContentPadding = true

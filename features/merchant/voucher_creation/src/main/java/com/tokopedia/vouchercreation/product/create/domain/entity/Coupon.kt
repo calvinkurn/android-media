@@ -4,7 +4,6 @@ import java.io.Serializable
 
 data class Coupon(
     val id: Long,
-    val imageSquareUrl: String,
     val information: CouponInformation,
     val settings: CouponSettings,
     val products: List<CouponProduct>

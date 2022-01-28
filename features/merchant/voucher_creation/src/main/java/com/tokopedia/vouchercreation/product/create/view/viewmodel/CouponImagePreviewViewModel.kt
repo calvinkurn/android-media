@@ -15,7 +15,7 @@ import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponImag
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class CouponPreviewViewModel @Inject constructor(
+class CouponImagePreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {

@@ -3,17 +3,30 @@ package com.tokopedia.vouchercreation.product.create.view.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCouponBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.voucherlist.view.fragment.CouponListFragment
+import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import java.util.*
+import javax.inject.Inject
 
 class CreateCouponProductActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val couponPreviewFragment = ProductCouponPreviewFragment.newInstance(
         ::navigateToCouponInformationPage,
@@ -45,10 +58,18 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupDependencyInjection()
         setContentView(R.layout.activity_mvc_create_coupon)
         replace(couponPreviewFragment)
         setupViews()
         println(productId)
+    }
+
+    private fun setupDependencyInjection() {
+        DaggerVoucherCreationComponent.builder()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     private fun getProductIdDataFromApplink(): String? {
@@ -109,9 +130,10 @@ class CreateCouponProductActivity : AppCompatActivity() {
         replaceAndAddToBackstack(fragment, TAG_FRAGMENT_COUPON_PREVIEW)
     }
 
-    private fun onCreateCouponSuccess() {
+    private fun onCreateCouponSuccess(coupon: Coupon) {
         replace(couponListFragment)
-        showToaster("Berhasil dibuat")
+        showBroadCastVoucherBottomSheet(coupon)
+        //showBroadCastVoucherBottomSheet()
     }
 
     private fun onUpdateCouponSuccess() {
@@ -183,7 +205,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
 
-
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
         val couponInformationData = couponPreviewFragment.getCouponInformationData()
         val couponInfoFragment = CreateCouponDetailFragment(couponInformationData)
@@ -213,8 +234,16 @@ class CreateCouponProductActivity : AppCompatActivity() {
         supportFragmentManager.popBackStack()
     }
 
-    private fun showToaster(text: String) {
-        if (text.isEmpty()) return
-        Toaster.build(findViewById(R.id.parent_view), text).show()
+    private fun showBroadCastVoucherBottomSheet(coupon: Coupon) {
+        val bottomSheet = BroadcastCouponBottomSheet.newInstance(coupon.id, coupon.information)
+        bottomSheet.setCloseClickListener {
+            VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                userId = userSession.userId
+            )
+            bottomSheet.dismiss()
+        }
+        bottomSheet.show(supportFragmentManager)
     }
 }

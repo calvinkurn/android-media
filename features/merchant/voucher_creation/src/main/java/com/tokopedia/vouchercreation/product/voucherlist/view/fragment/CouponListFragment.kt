@@ -285,6 +285,6 @@ class CouponListFragment: BaseDaggerFragment() {
                 )
             )
 
-        return Coupon(9094, "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e_3.jpg", information, setting, products)
+        return Coupon(9094, information, setting, products)
     }
 }
