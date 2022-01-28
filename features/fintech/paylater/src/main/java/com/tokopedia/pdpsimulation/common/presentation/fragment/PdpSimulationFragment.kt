@@ -135,19 +135,19 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        payLaterViewModel.productDetailLiveData.observe(viewLifecycleOwner, {
+        payLaterViewModel.productDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> productDetailSuccess(it.data)
                 is Fail -> productDetailFail()
             }
-        })
+        }
 
-        payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner, {
+        payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> setSimulationView(it.data)
                 is Fail -> Toast.makeText(context, "failed", Toast.LENGTH_LONG).show()
             }
-        })
+        }
     }
 
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
