@@ -391,7 +391,7 @@
 
     <!-- HEADLINE -->
     <string name="topads_dash_headline_title">Iklan Toko</string>
-    <string name="topads_dash_headline_empty_title">Oops, pencarianOkHttpmu dengan filter “%s” nggak ditemukan.Coba lagi ya.</string>
+    <string name="topads_dash_headline_empty_title">Oops, pencarianmu dengan filter “%s” nggak ditemukan.Coba lagi ya.</string>
     <string name="topads_dash_headline_delete_toast">Iklan Toko berhasil dihapus</string>
     <string name="topads_dash_headline_delete_toast_multiple">[%d] Iklan Toko berhasil dihapus</string>
     <string name="topads_dash_headline_bulk_delete_title">Yakin hapus [%d] Iklan Toko?</string>
