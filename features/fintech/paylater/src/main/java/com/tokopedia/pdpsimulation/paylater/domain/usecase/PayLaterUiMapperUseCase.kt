@@ -60,8 +60,12 @@ class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<Simulatio
     private fun mapTenureToUi(payLaterGetSimulation: PayLaterGetSimulation?): ArrayList<SimulationUiModel> {
         val uiList = arrayListOf<SimulationUiModel>()
         payLaterGetSimulation?.let {
+            var isTenureFound = false
             it.productList?.forEach { data ->
                 val getPayLaterList = mapSimulationToUi(data.detail)
+                if (defaultTenure == data.tenure)
+                    isTenureFound = true
+
                 val simulationUiModel = SimulationUiModel(
                     tenure = data.tenure,
                     text = data.text,
@@ -71,6 +75,9 @@ class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<Simulatio
                 )
                 uiList.add(simulationUiModel)
             }
+            // if no matching tenure set last as selected
+            if (uiList.isNotEmpty() && isTenureFound.not())
+                uiList[uiList.size-1].isSelected = true
         }
         return uiList
     }

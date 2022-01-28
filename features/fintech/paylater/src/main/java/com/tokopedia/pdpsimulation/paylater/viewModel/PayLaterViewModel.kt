@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.pdpsimulation.paylater.domain.model.*
+import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
+import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.ProductDetailUseCase
@@ -31,6 +34,7 @@ class PayLaterViewModel @Inject constructor(
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
 
     var defaultTenure = 0
+    var defaultSelectedSimulation: Int = 0
     var tenureMap: Map<Int?, Int?> = mapOf()
 
     private var idlingResourceProvider =
@@ -76,13 +80,16 @@ class PayLaterViewModel @Inject constructor(
         idlingResourceProvider?.decrement()
         mapperUseCase.mapResponseToUi({ data ->
             if (data.isNotEmpty()) {
-                tenureMap = data.mapIndexed { index, simulationUiModel ->  simulationUiModel.tenure to index }.toMap()
+                tenureMap =
+                    data.mapIndexed { index, simulationUiModel -> simulationUiModel.tenure to index }
+                        .toMap()
+                // set selection
+                defaultSelectedSimulation = tenureMap[defaultTenure] ?: data.size - 1
                 _payLaterOptionsDetailLiveData.value = Success(data)
             }
-        }, {
-            _payLaterOptionsDetailLiveData.value = Fail(it)
-
-        }, paylaterGetSimulation, defaultTenure)
+        }, { _payLaterOptionsDetailLiveData.value = Fail(it) },
+            paylaterGetSimulation, defaultTenure
+        )
     }
 
     override fun onCleared() {

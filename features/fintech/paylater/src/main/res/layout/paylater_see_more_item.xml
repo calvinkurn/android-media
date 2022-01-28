@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginStart="@dimen/unify_space_16"
     android:layout_marginEnd="@dimen/unify_space_16"
     android:paddingBottom="@dimen/unify_space_12">
@@ -11,7 +12,7 @@
         android:id="@+id/seeMoreButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lihat 3 Lainnya"
+        tools:text="Lihat 3 Lainnya"
         app:unifyButtonSize="medium"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"

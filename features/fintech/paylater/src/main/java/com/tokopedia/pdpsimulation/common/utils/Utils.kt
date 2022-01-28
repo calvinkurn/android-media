@@ -26,24 +26,18 @@ object Utils {
                             context,
                             detail.cta.android_url
                         )
-                    } catch (e: Exception) {
-                        RouteManager.route(
-                            context,
-                            ApplinkConstInternalGlobal.WEBVIEW,
-                            detail.cta.web_url
-                        )
-                    }
+                    } catch (e: Exception) { }
             }
             2 -> {
-                if (!detail.cta.web_url.isNullOrEmpty() && detail.cta.bottomSheet != null && detail.cta.bottomSheet.isShow == true) {
+                if (!detail.cta.android_url.isNullOrEmpty() && detail.cta.bottomSheet != null && detail.cta.bottomSheet.isShow == true) {
                     val bundle = getGoPayBundle(detail.cta)
                     openGoPay(bundle)
                 }
-                else if (!detail.cta.web_url.isNullOrEmpty())
+                else if (!detail.cta.android_url.isNullOrEmpty())
                     RouteManager.route(
                         context,
                         ApplinkConstInternalGlobal.WEBVIEW,
-                        detail.cta.web_url
+                        detail.cta.android_url
                     )
             }
             3,4 -> {

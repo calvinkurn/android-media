@@ -2,75 +2,17 @@
 
     <!--Content Switcher Headings -->
     <string name="pdp_simulation_header_title">PayLater &amp; Cicilan</string>
-    <string name="pay_later_content_switcher_heading">PayLater</string>
-    <string name="pay_later_credit_content_switcher_heading">Kartu Credit</string>
-
-    <!-- Fragment titles -->
-    <string name="pdp_simulation_tab_title">Simulasi</string>
-    <string name="pdp_simulation_credit_card_tnc_title">Syarat &amp; Ketentuan</string>
-
-    <!-- Register Widget -->
-    <string name="pay_later_register">Daftar PayLater</string>
-    <string name="pay_later_widget_more_choices_description">Makin banyak pilihan, makin bebas belanja.</string>
-    <string name="credit_card_widget_title">Mau buat kartu kredit?</string>
 
     <!-- PayLater Simulation Page -->
-    <string name="pay_later_simulation_header_title">Simulasi pembayaran</string>
-    <string name="pay_later_simulation_ticker_text">Sudah termasuk biaya layanan. Belum termasuk biaya asuransi &amp; ongkir. Harga final dapat dilihat di halaman Pembayaran.</string>
     <string name="pay_later_simulation_supervised_text">Semua mitra penyedia terdaftar dan diawasi oleh</string>
 
-    <!-- Credit Card Simulation Page -->
-    <string name="credit_card_simulation_empty_view_title">Yaah, harga tidak sesuai ketentuan kartu kredit</string>
-    <string name="credit_card_simulation_empty_view_description">Untuk menggunakan kartu kredit, min. total transaksi adalah Rp500.000.</string>
-    <string name="credit_card_simulation_installment_sub_header">Durasi cicilan</string>
-    <string name="credit_card_simulation_card_header">Cicilan %1$s bulan</string>
-    <string name="credit_card_simulation_available_banks"><![CDATA[Berlaku kartu kredit dari: <b>%1$d bank</b>]]></string>
-    <string name="credit_card_simulation_see_all_banks">Lihat Semua (%1$d)</string>
-    <string name="credit_card_simulation_offer">Bunga 0% berlaku di semua cicilan</string>
-    <string name="credit_card_not_applicable_ticker_text"><![CDATA[Tenang, kamu bisa coba pakai payLater. Ada  bunga 0% juga! <a href=\'https://google.com\'>Lihat Simulasi PayLater</a>]]></string>
-    <string name="credit_card_tnc_more_info_text">Info Selengkapnya</string>
-    <string name="credit_card_best_offer_text">Penawaran Terbaik</string>
-    <string name="credit_card_offer_label">PROMO</string>
-    <string name="credit_card_bank_sub_header">Lihat pilihan kartu</string>
-
-
-    <!-- PayLater Products Detail Page -->
-    <string name="kredivo">Kredivo</string>
-    <string name="pay_later_see_how_to_use">Lihat Cara Gunakan</string>
-    <string name="pay_later_faq_see_more">Lihat Lebih Banyak</string>
-    <string name="pay_later_action_find_more">Cari Tahu Lebih Lanjut</string>
-    <string name="monthText">bulan</string>
-
     <!-- BottomSheet title-->
-    <string name="pay_later_find_out_more_heading">Hal yang sering ditanyakan</string>
-    <string name="pay_later_how_to_register">Cara daftar</string>
     <string name="pay_later_how_to_use">Cara menggunakan</string>
 
-    <!-- Verification Bottom Sheet Description -->
-
-    <!-- PayLater Signup Bottom Sheet -->
-    <string name="pay_later_default_subtitle">Daftar sekarang</string>
-
-    <!-- Credit Card Signup Bottom Sheet -->
-    <string name="credit_card_view_all_cards">Lihat Semua Kartu</string>
-    <string name="credit_card_view_more">Lihat Selengkapnya</string>
     <!-- Application Status -->
-    <string name="pay_later_gateway_processing">Diproses</string>
-    <string name="pay_later_rejected_gateway">Belum Disetujui</string>
-    <string name="pay_later_partner_see_more">Selengkapnya</string>
-    <string name="pay_later_partner_why_gateway">Kenapa</string>
-    <string name="pay_later_installment_text">Cicilan</string>
-    <string name="pay_later_installment_used">Pakai cicilan yang mana, nih?</string>
-    <string name="pay_later_duration_to_payoff">Mau dicicil berapa lama?</string>
+    <string name="pay_later_action_find_more">Cari Tahu Lebih Lanjut</string>
+
     <string name="pay_later_something_went_wrong">Ada yang salah</string>
-    <string name="pay_later_payment_simulation">Simulasi pembayaran</string>
-    <string name="pay_later_service_fee_selected_partner">Biaya Layanan</string>
-    <string name="pay_later_one_month">30 Hari</string>
-    <string name="pay_later_partner_interest">Bunga</string>
-    <string name="pay_later_shippingcost_and_insurance_text"><![CDATA[*Belum termasuk biaya asuransi & ongkir]]></string>
-    <string name="pay_later_supervised_by">Semua mitra penyedia terdaftar dan diawasi oleh</string>
-    <string name="pay_later_its_not_final_price">Ini belum harga final, ya</string>
-    <string name="pay_later_cost_not_included">Simulasi pembayaran belum termasuk biaya saat pengiriman seperti Proteksi dan ongkir.</string>
     <string name="pay_later_connect_gopay">Sambungin Gojek dulu, ya</string>
     <string name="paylater_to_use_gopay">Buat pakai GoPayLater Cicil, kamu perlu sambungin akun Gojek ke Tokopedia dulu. Cuma sebentar, kok!</string>
     <string name="paylater_gopay_connect_account">Sambungin Akun</string>
