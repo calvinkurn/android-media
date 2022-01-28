@@ -762,20 +762,20 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
 
     override fun fintechRedirection(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
-        if(fintechRedirectionWidgetDataClass.cta == 2) {
-            fintechRedirectionWidgetDataClass.redirectionUrl?.let { openWebViewUrl(it) }
-        }
-        else
-        {
-            val applink = fintechRedirectionWidgetDataClass.redirectionUrl+
-                    "?productID=${this.productId}"+
-                    "&tenure=${fintechRedirectionWidgetDataClass.tenure}"+
-                    "&productURL=${fintechRedirectionWidgetDataClass.productUrl}"
+        fintechRedirectionWidgetDataClass.redirectionUrl?.let {
+            val applink = fintechRedirectionWidgetDataClass.redirectionUrl +
+                    "?productID=${this.productId}" +
+                    "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
+                    "&productURL=${fintechRedirectionWidgetDataClass.productUrl}" +
+                    "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}"
 
-            val intent = RouteManager.getIntent(requireContext(), applink)
-            startActivity(intent)
+            if (fintechRedirectionWidgetDataClass.cta == 2) {
+                openWebViewUrl(it)
+            } else {
+                val intent = RouteManager.getIntent(requireContext(), applink)
+                startActivity(intent)
+            }
         }
-
     }
 
     /**

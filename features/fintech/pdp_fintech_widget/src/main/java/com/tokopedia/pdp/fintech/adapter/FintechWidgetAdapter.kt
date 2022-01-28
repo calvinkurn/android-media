@@ -151,9 +151,11 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
             chipsData[adapterPosition].cta?.androidUrl?.let { url ->
                 chipsData[adapterPosition].cta?.type?.let { ctaType ->
                     chipsData[adapterPosition].tenure?.let{tenure ->
+                        chipsData[adapterPosition].gatewayId?.let {gatewayID ->
                             widgetClickListner.clickedWidget(
-                                ctaType, url, tenure
+                                ctaType, url, tenure,gatewayID
                             )
+                        }
 
                     }
 
