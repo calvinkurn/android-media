@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.home.beranda.di.module.query.CloseWidgetQuery
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.usecase.RequestParams
@@ -30,21 +31,9 @@ class HomeDeclineSalamWIdgetRepository @Inject constructor(
 
     private var params: RequestParams = RequestParams.create()
 
-    //region query
-    private val query by lazy {
-        val params = "\$params"
-
-        """mutation CloseWidget($params: SalamCloseWidgetInput!){
-            salamCloseWidget(params: $params){
-                ID
-             }
-        } 
-        """.trimIndent()
-    }
-
     override suspend fun executeOnBackground(): SalamWidget {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(CloseWidgetQuery())
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }

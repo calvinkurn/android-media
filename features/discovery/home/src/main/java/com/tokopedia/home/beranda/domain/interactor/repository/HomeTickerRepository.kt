@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home.beranda.di.module.query.QueryHome
+import com.tokopedia.home.beranda.di.module.query.HomeTickerQuery
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.HomeIconData
 import com.tokopedia.home.beranda.domain.model.HomeTickerData
@@ -30,7 +30,7 @@ class HomeTickerRepository @Inject constructor(
     }
 
     private fun buildRequest(locationParams: String): GraphqlRequest {
-        return GraphqlRequest(QueryHome.homeTickerQuery, HomeTickerData::class.java, mapOf(PARAM_LOCATION to locationParams))
+        return GraphqlRequest(HomeTickerQuery(), HomeTickerData::class.java, mapOf(PARAM_LOCATION to locationParams))
     }
 
 

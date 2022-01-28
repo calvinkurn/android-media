@@ -1,10 +1,9 @@
 package com.tokopedia.search.analytics
 
-import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.Iris
@@ -37,13 +36,9 @@ object SearchTracking {
     private const val ECOMMERCE = "ecommerce"
     private const val EVENT_CATEGORY_EMPTY_SEARCH = "empty search"
     private const val EVENT_CATEGORY_SEARCH_RESULT = "search result"
-    private const val PROMO_CLICK = "promoClick"
     private const val PROMOTIONS = "promotions"
     const val EVENT_CLICK_SEARCH_RESULT = "clickSearchResult"
     private const val EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru"
-    private const val PROMO_VIEW = "promoView"
-    private const val EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget"
-    private const val EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product"
     private const val CAROUSEL_UNIFICATION_LIST_NAME = " /search - carousel %s - component:%s"
     private const val BROADMATCH_LIST_NAME = "/search - broad match - %s - component:%s"
 
@@ -288,52 +283,6 @@ object SearchTracking {
                 EVENT_CATEGORY_SEARCH_RESULT,
                 SearchEventTracking.Action.CLICK_CHANGE_KEYWORD,
                 keyword
-        )
-    }
-
-    @JvmStatic
-    fun eventUserClickSeeAllGlobalNavWidget(keyword: String,
-                                            productName: String,
-                                            applink: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENT_CATEGORY_SEARCH_RESULT,
-                EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET,
-                generateEventLabelGlobalNav(keyword, productName, applink)
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickGlobalNavWidgetItem(item: Any?,
-                                           keyword: String,
-                                           productName: String,
-                                           applink: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_CLICK,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK,
-                        SearchTrackingConstant.EVENT_LABEL, generateEventLabelGlobalNav(keyword, productName, applink),
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(item))))
-        )
-    }
-
-    private fun generateEventLabelGlobalNav(keyword: String, productName: String, applink: String): String {
-        return String.format(Locale.getDefault(),"keyword: %s - product: %s - applink: %s", keyword, productName, applink)
-    }
-
-    @JvmStatic
-    fun trackEventImpressionGlobalNavWidgetItem(trackingQueue: TrackingQueue,
-                                                list: ArrayList<Any>,
-                                                keyword: String?) {
-        trackingQueue.putEETracking(
-                DataLayer.mapOf(
-                        SearchTrackingConstant.EVENT, PROMO_VIEW,
-                        SearchTrackingConstant.EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT,
-                        SearchTrackingConstant.EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, list))
-                ) as HashMap<String, Any>
         )
     }
 
@@ -805,16 +754,6 @@ object SearchTracking {
             BROADMATCH_LIST_NAME,
             organicStatus,
             componentId
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickInspirationCardOption(label: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_INSPIRATION_CARD,
-                label
         )
     }
 
