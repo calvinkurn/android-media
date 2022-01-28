@@ -3,9 +3,9 @@ package com.tokopedia.play.broadcaster.di
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
-import com.tokopedia.play.broadcaster.setup.product.view.PlayBroProductSetupFragment
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.PlayBroEtalaseListBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.PlayBroProductChooserBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
@@ -68,16 +68,16 @@ abstract class PlayBroadcastFragmentModule {
      */
     @Binds
     @IntoMap
-    @FragmentKey(PlayBroProductSetupFragment::class)
-    abstract fun getPlayBroProductSetupFragment(fragment: PlayBroProductSetupFragment): Fragment
+    @FragmentKey(ProductSetupFragment::class)
+    abstract fun getPlayBroProductSetupFragment(fragment: ProductSetupFragment): Fragment
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayBroEtalaseListBottomSheet::class)
-    abstract fun getPlayBroEtalaseAndCampaignListBottomSheet(fragment: PlayBroEtalaseListBottomSheet): Fragment
+    @FragmentKey(EtalaseListBottomSheet::class)
+    abstract fun getPlayBroEtalaseAndCampaignListBottomSheet(fragment: EtalaseListBottomSheet): Fragment
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayBroProductChooserBottomSheet::class)
-    abstract fun getPlayBroProductChooserBottomSheet(fragment: PlayBroProductChooserBottomSheet): Fragment
+    @FragmentKey(ProductChooserBottomSheet::class)
+    abstract fun getPlayBroProductChooserBottomSheet(fragment: ProductChooserBottomSheet): Fragment
 }

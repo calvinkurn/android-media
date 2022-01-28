@@ -5,21 +5,21 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
-import com.tokopedia.play.broadcaster.setup.product.view.viewholder.PlayBroEtalaseListViewHolder
+import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
 
 /**
  * Created by kenny.hadisaputra on 27/01/22
  */
-internal class PlayBroEtalaseListAdapterDelegate private constructor() {
+internal class EtalaseListAdapterDelegate private constructor() {
 
     internal class Header : TypedAdapterDelegate<
             EtalaseListModel.Header,
             EtalaseListModel,
-            PlayBroEtalaseListViewHolder.Header>(R.layout.view_empty) {
+            EtalaseListViewHolder.Header>(R.layout.view_empty) {
 
         override fun onBindViewHolder(
             item: EtalaseListModel.Header,
-            holder: PlayBroEtalaseListViewHolder.Header
+            holder: EtalaseListViewHolder.Header
         ) {
             holder.bind(item)
         }
@@ -27,19 +27,19 @@ internal class PlayBroEtalaseListAdapterDelegate private constructor() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): PlayBroEtalaseListViewHolder.Header {
-            return PlayBroEtalaseListViewHolder.Header.create(parent)
+        ): EtalaseListViewHolder.Header {
+            return EtalaseListViewHolder.Header.create(parent)
         }
     }
 
     internal class Campaign : TypedAdapterDelegate<
             EtalaseListModel.Campaign,
             EtalaseListModel,
-            PlayBroEtalaseListViewHolder.Body>(R.layout.view_empty) {
+            EtalaseListViewHolder.Body>(R.layout.view_empty) {
 
         override fun onBindViewHolder(
             item: EtalaseListModel.Campaign,
-            holder: PlayBroEtalaseListViewHolder.Body
+            holder: EtalaseListViewHolder.Body
         ) {
             holder.bind(item)
         }
@@ -47,19 +47,19 @@ internal class PlayBroEtalaseListAdapterDelegate private constructor() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): PlayBroEtalaseListViewHolder.Body {
-            return PlayBroEtalaseListViewHolder.Body.create(parent)
+        ): EtalaseListViewHolder.Body {
+            return EtalaseListViewHolder.Body.create(parent)
         }
     }
 
     internal class Etalase : TypedAdapterDelegate<
             EtalaseListModel.Etalase,
             EtalaseListModel,
-            PlayBroEtalaseListViewHolder.Body>(R.layout.view_empty) {
+            EtalaseListViewHolder.Body>(R.layout.view_empty) {
 
         override fun onBindViewHolder(
             item: EtalaseListModel.Etalase,
-            holder: PlayBroEtalaseListViewHolder.Body
+            holder: EtalaseListViewHolder.Body
         ) {
             holder.bind(item)
         }
@@ -67,8 +67,8 @@ internal class PlayBroEtalaseListAdapterDelegate private constructor() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): PlayBroEtalaseListViewHolder.Body {
-            return PlayBroEtalaseListViewHolder.Body.create(parent)
+        ): EtalaseListViewHolder.Body {
+            return EtalaseListViewHolder.Body.create(parent)
         }
     }
 }

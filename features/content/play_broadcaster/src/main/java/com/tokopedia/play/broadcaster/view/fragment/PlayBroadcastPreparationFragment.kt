@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
-import com.tokopedia.play.broadcaster.setup.product.view.PlayBroProductSetupFragment
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
@@ -184,7 +184,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onClickSetProduct() {
         childFragmentManager.beginTransaction()
-            .add(PlayBroProductSetupFragment::class.java, null, null)
+            .add(ProductSetupFragment::class.java, null, null)
             .commit()
     }
 

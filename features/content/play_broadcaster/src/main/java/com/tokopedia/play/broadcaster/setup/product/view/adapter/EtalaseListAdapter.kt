@@ -6,13 +6,13 @@ import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 /**
  * Created by kenny.hadisaputra on 27/01/22
  */
-internal class PlayBroEtalaseListAdapter : BaseDiffUtilAdapter<EtalaseListModel>() {
+internal class EtalaseListAdapter : BaseDiffUtilAdapter<EtalaseListModel>() {
 
     init {
         delegatesManager
-            .addDelegate(PlayBroEtalaseListAdapterDelegate.Header())
-            .addDelegate(PlayBroEtalaseListAdapterDelegate.Campaign())
-            .addDelegate(PlayBroEtalaseListAdapterDelegate.Etalase())
+            .addDelegate(EtalaseListAdapterDelegate.Header())
+            .addDelegate(EtalaseListAdapterDelegate.Campaign())
+            .addDelegate(EtalaseListAdapterDelegate.Etalase())
     }
 
     override fun areItemsTheSame(

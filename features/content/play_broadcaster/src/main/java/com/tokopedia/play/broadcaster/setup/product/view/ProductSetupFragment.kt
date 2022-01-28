@@ -2,14 +2,13 @@ package com.tokopedia.play.broadcaster.setup.product.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.PlayBroEtalaseListBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.PlayBroProductChooserBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
-class PlayBroProductSetupFragment @Inject constructor() : Fragment() {
+class ProductSetupFragment @Inject constructor() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +18,7 @@ class PlayBroProductSetupFragment @Inject constructor() : Fragment() {
 //            requireActivity().classLoader,
 //        ).show(childFragmentManager)
 
-        PlayBroProductChooserBottomSheet.getFragment(
+        ProductChooserBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader,
         ).show(childFragmentManager)

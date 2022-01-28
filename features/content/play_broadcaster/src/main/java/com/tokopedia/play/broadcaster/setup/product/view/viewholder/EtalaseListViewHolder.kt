@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.ItemPlayBroEtalaseListBodyBinding
-import com.tokopedia.play.broadcaster.databinding.ItemPlayBroEtalaseListHeaderBinding
+import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListBodyBinding
+import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListHeaderBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play_common.view.loadImage
@@ -15,10 +15,10 @@ import com.tokopedia.unifycomponents.Label
 /**
  * Created by kenny.hadisaputra on 27/01/22
  */
-internal class PlayBroEtalaseListViewHolder private constructor() {
+internal class EtalaseListViewHolder private constructor() {
 
     internal class Header(
-        private val binding: ItemPlayBroEtalaseListHeaderBinding,
+        private val binding: ItemEtalaseListHeaderBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: EtalaseListModel.Header) {
@@ -28,7 +28,7 @@ internal class PlayBroEtalaseListViewHolder private constructor() {
         companion object {
             fun create(parent: ViewGroup): Header {
                 return Header(
-                    ItemPlayBroEtalaseListHeaderBinding
+                    ItemEtalaseListHeaderBinding
                         .inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
@@ -36,7 +36,7 @@ internal class PlayBroEtalaseListViewHolder private constructor() {
     }
 
     internal class Body(
-        private val binding: ItemPlayBroEtalaseListBodyBinding,
+        private val binding: ItemEtalaseListBodyBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: EtalaseListModel.Campaign) {
@@ -89,7 +89,7 @@ internal class PlayBroEtalaseListViewHolder private constructor() {
         companion object {
             fun create(parent: ViewGroup): Body {
                 return Body(
-                    ItemPlayBroEtalaseListBodyBinding
+                    ItemEtalaseListBodyBinding
                         .inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }

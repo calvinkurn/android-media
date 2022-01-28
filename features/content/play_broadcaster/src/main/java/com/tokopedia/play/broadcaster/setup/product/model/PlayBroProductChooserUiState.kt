@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.setup.product.model
 
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -9,6 +10,7 @@ import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 data class PlayBroProductChooserUiState(
     val campaignList: List<CampaignUiModel>,
     val etalaseList: List<EtalaseUiModel>,
+    val selectedProductList: List<ProductUiModel>,
 ) {
 
     companion object {
@@ -16,6 +18,7 @@ data class PlayBroProductChooserUiState(
             get() = PlayBroProductChooserUiState(
                 campaignList = emptyList(),
                 etalaseList = emptyList(),
+                selectedProductList = emptyList(),
             )
     }
 }

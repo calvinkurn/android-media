@@ -8,11 +8,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
-import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
+import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
+import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play_common.util.extension.withCache
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -20,16 +25,18 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
-class PlayBroProductChooserBottomSheet @Inject constructor(
+class EtalaseListBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
 ) : BottomSheetUnify() {
 
     private lateinit var viewModel: PlayBroProductSetupViewModel
 
-    private var _binding: BottomSheetPlayBroProductChooserBinding? = null
-    private val binding: BottomSheetPlayBroProductChooserBinding
+    private var _binding: BottomSheetPlayBroEtalaseListBinding? = null
+    private val binding: BottomSheetPlayBroEtalaseListBinding
         get() = _binding!!
+
+    private val etalaseListView by viewComponent { EtalaseListViewComponent(binding.rvEtalase) }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -61,7 +68,7 @@ class PlayBroProductChooserBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetPlayBroProductChooserBinding.inflate(
+        _binding = BottomSheetPlayBroEtalaseListBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         setChild(binding.root)
@@ -76,25 +83,69 @@ class PlayBroProductChooserBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderBottomSheetTitle(state.campaignList)
+                renderEtalaseList(
+                    prevState?.campaignList,
+                    state.campaignList,
+                    prevState?.etalaseList,
+                    state.etalaseList,
+                )
             }
         }
     }
 
+    private fun renderBottomSheetTitle(
+        campaignList: List<CampaignUiModel>,
+    ) {
+        val title = buildString {
+            if (campaignList.isNotEmpty()) {
+                append(getString(R.string.play_bro_campaign))
+                append(" & ")
+            }
+            append(getString(R.string.play_bro_etalase))
+        }
+        setTitle(title)
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun renderEtalaseList(
+        prevCampaignList: List<CampaignUiModel>?,
+        campaignList: List<CampaignUiModel>,
+        prevEtalaseList: List<EtalaseUiModel>?,
+        etalaseList: List<EtalaseUiModel>,
+    ) {
+        if (prevCampaignList == campaignList && prevEtalaseList == etalaseList) return
+
+        val combinedEtalaseList = buildList {
+            if (campaignList.isNotEmpty()) {
+                add(EtalaseListModel.Header(getString(R.string.play_bro_campaign)))
+                addAll(campaignList.map(EtalaseListModel::Campaign))
+            }
+
+            if (etalaseList.isNotEmpty()) {
+                add(EtalaseListModel.Header(getString(R.string.play_bro_etalase)))
+                addAll(etalaseList.map(EtalaseListModel::Etalase))
+            }
+        }
+
+        etalaseListView.setEtalaseList(combinedEtalaseList)
+    }
+
     companion object {
-        private const val TAG = "PlayBroProductChooserBottomSheet"
+        private const val TAG = "PlayBroEtalaseAndCampaignListBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): PlayBroProductChooserBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayBroProductChooserBottomSheet
+        ): EtalaseListBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? EtalaseListBottomSheet
             return if (oldInstance != null) oldInstance
             else {
                 val fragmentFactory = fragmentManager.fragmentFactory
                 fragmentFactory.instantiate(
                     classLoader,
-                    PlayBroProductChooserBottomSheet::class.java.name
-                ) as PlayBroProductChooserBottomSheet
+                    EtalaseListBottomSheet::class.java.name
+                ) as EtalaseListBottomSheet
             }
         }
     }

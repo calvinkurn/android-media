@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserA
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -26,7 +27,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
-    private val _selectedProductList = MutableStateFlow(emptyList<String>())
+    private val _selectedProductList = MutableStateFlow(emptyList<ProductUiModel>())
 
     val uiState = combine(
         _campaignList,
@@ -36,6 +37,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
         PlayBroProductChooserUiState(
             campaignList = campaignList,
             etalaseList = etalaseList,
+            selectedProductList = selectedProductList,
         )
     }.stateIn(
         viewModelScope,
@@ -44,12 +46,21 @@ class PlayBroProductSetupViewModel @Inject constructor(
     )
 
     init {
-        getCampaignList()
-        getEtalaseList()
+//        getCampaignList()
+//        getEtalaseList()
+        getProductsInEtalase("0")
     }
 
     fun submitAction(action: PlayBroProductChooserAction) {
 
+    }
+
+    private fun getProductsInEtalase(etalaseId: String) {
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            _selectedProductList.value = repo.getProductsInEtalase(etalaseId, 0, "")
+        }) {
+            println(it)
+        }
     }
 
     private fun getEtalaseList() {
