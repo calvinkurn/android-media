@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icShcRefreshLastUpdated"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/bg_shc_shadow_circle"
+        android:padding="6dp"
+        app:icon_name="RELOAD" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcLastUpdated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Update terakhir hari ini, 15:00 WIB" />
+</LinearLayout>

@@ -27,7 +27,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.XYAxisUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.MultiLineGraphTooltipView
 import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
-import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -189,7 +188,7 @@ class MultiLineGraphViewHolder(
 
     private fun setOnLoadingState() {
         binding.shcMlgSuccessState.gone()
-        binding.icShcRefreshMultiLineGraph.gone()
+        binding.luvShcLineGraph.setRefreshButtonVisibility(false)
         errorStateBinding.commonWidgetErrorState.gone()
         loadingStateBinding.shcMlgLoadingState.visible()
     }
@@ -198,7 +197,7 @@ class MultiLineGraphViewHolder(
         setupTitle(element.title)
         loadingStateBinding.shcMlgLoadingState.gone()
         binding.shcMlgSuccessState.visible()
-        binding.icShcRefreshMultiLineGraph.gone()
+        binding.luvShcLineGraph.setRefreshButtonVisibility(false)
         getWidgetComponents().forEach {
             it.gone()
         }
@@ -280,16 +279,15 @@ class MultiLineGraphViewHolder(
     }
 
     private fun setupLastUpdated(element: MultiLineGraphWidgetUiModel) {
-        with(binding) {
-            element.data?.lastUpdated?.let { lastUpdated ->
-                tvShcMultiLineLastUpdated.isVisible = true
-                tvShcMultiLineLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated)
-            }
+        element.data?.lastUpdated?.let { lastUpdated ->
             val isFromCache = element.data?.isFromCache.orFalse()
-            icShcRefreshMultiLineGraph.isVisible = isFromCache
-            icShcRefreshMultiLineGraph.setOnClickListener {
-                listener.onReloadWidget(element)
+
+            binding.luvShcLineGraph.run {
+                setLastUpdated(lastUpdated)
+                setRefreshButtonVisibility(isFromCache)
+                setReloadButtonClickListener {
+                    listener.onReloadWidget(element)
+                }
             }
         }
     }
