@@ -302,7 +302,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun initializeFragmentUiModel() {
-        viewModel.initFragmentUiModel(arguments?.getInt(ARGS_PAGE_SOURCE, 0) ?: 0)
+        val defaultErrorMessage = context?.resources?.getString(R.string.label_error_global_promo_checkout) ?: ""
+        viewModel.initFragmentUiModel(arguments?.getInt(ARGS_PAGE_SOURCE, 0) ?: 0, defaultErrorMessage)
     }
 
     private fun initializeClickListener() {

@@ -8,12 +8,13 @@ import javax.inject.Inject
 
 class PromoCheckoutUiModelMapper @Inject constructor() {
 
-    fun mapFragmentUiModel(valuePageSource: Int): FragmentUiModel {
+    fun mapFragmentUiModel(valuePageSource: Int, defaultErrorMessage: String): FragmentUiModel {
         return FragmentUiModel(
                 uiData = FragmentUiModel.UiData().apply {
                     pageSource = valuePageSource
                     totalBenefit = 0
                     usedPromoCount = 0
+                    this.defaultErrorMessage = defaultErrorMessage
                 },
                 uiState = FragmentUiModel.UiState().apply {
                     isLoading = true

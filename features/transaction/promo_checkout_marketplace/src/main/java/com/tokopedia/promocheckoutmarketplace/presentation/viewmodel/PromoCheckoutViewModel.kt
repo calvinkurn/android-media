@@ -601,11 +601,15 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun sendAnalyticsOnErrorApplyPromo(throwable: Throwable, promoCodeList: ArrayList<String>) {
-        promoCodeList.forEach { promoCode ->
-            analytics.eventViewErrorAfterClickPakaiPromo(getPageSource(), promoCode, throwable.message
-                    ?: "")
+        var errorMessage = throwable.message
+        if (errorMessage.isNullOrBlank()) {
+            errorMessage = fragmentUiModel.value?.uiData?.defaultErrorMessage ?: ""
         }
-
+        promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && promoCodeList.contains(it.uiData.promoCode)) {
+                analytics.eventViewErrorAfterClickPakaiPromo(getPageSource(), it.uiData.promoId, errorMessage)
+            }
+        }
     }
 
     private fun onSuccessValidateUse(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,

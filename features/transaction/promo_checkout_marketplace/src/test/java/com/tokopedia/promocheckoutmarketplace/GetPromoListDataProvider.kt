@@ -264,7 +264,7 @@ object GetPromoListDataProvider {
     }
 
     fun provideFragmentData(): FragmentUiModel {
-        return uiModelmapper.mapFragmentUiModel(PAGE_CART)
+        return uiModelmapper.mapFragmentUiModel(PAGE_CART, "Error message")
     }
 
 }

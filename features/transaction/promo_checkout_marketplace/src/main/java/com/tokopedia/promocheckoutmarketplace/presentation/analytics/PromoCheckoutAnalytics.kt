@@ -73,6 +73,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         const val IMPRESSION_LOCK_TO_SHIPPING_PROMO_SECTION = "impression - lock to shipping promo section"
         const val IMPRESSION_LOCK_TO_PAYMENT_PROMO_SECTION = "impression - lock to payment promo section"
         const val IMPRESSION_ELIGIBLE_PROMO_SECTION = "impression - eligible promo section"
+        const val IMPRESSION_HIGHLIGHTED_PROMO_SESSION  = "impression - highlighted promo section"
     }
 
     private fun sendEventByPage(page: Int,
@@ -519,7 +520,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         }
         sendEventEnhancedEcommerceByPage(
                 page = page,
-                eventAction = EventAction.VIEW_ERROR_AFTER_CLICK_TERAPKAN_PROMO,
+                eventAction = EventAction.IMPRESSION_HIGHLIGHTED_PROMO_SESSION,
                 eventLabel = "${promoItem.uiData.promoCode} - ${promoItem.uiData.benefitAmount}",
                 bundle = bundle
         )
@@ -546,7 +547,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
     }
 
     // 9. TrackerId 25075
-    fun eventViewErrorAfterClickPakaiPromo(page: Int, promoCode: String, errorMessage: String) {
+    fun eventViewErrorAfterClickPakaiPromo(page: Int, promoId: String, errorMessage: String) {
         val additionalData = HashMap<String, Any>()
         additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
         additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -555,7 +556,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
                 page = page,
                 event = EVENT_NAME_VIEW,
                 eventAction = EventAction.VIEW_ERROR_AFTER_CLICK_PAKAI_PROMO,
-                eventLabel = "$promoCode - $errorMessage",
+                eventLabel = "$promoId - $errorMessage",
                 additionalData = additionalData,
                 isPromoBackFunnelImprovement = true
         )
