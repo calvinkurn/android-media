@@ -11,9 +11,20 @@ import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.TOP_ADS_HEADLINES_IMPRESSION
+import com.tokopedia.product.detail.common.ProductTrackingConstant.TopAdsHeadlines.KEY_CREATIVE_NAME
+import com.tokopedia.product.detail.common.ProductTrackingConstant.TopAdsHeadlines.KEY_CREATIVE_SLOT
+import com.tokopedia.product.detail.common.ProductTrackingConstant.TopAdsHeadlines.KEY_ITEM_ID
+import com.tokopedia.product.detail.common.ProductTrackingConstant.TopAdsHeadlines.KEY_ITEM_NAME
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CATEGORY_ID
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PRODUCT_ID
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PROMOTIONS
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.PROMO_VIEW
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.detail.data.util.TrackingUtil.sendTrackingBundle
 import com.tokopedia.product.util.processor.Product
@@ -29,11 +40,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
-import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 
 
 object DynamicProductDetailTracking {
@@ -72,7 +78,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_CATEGORY_IMAGE,
                     String.format(ProductTrackingConstant.Label.EVENT_LABEL_CLICK_IMAGE_CATEGORY_CAROUSEL, categoryId, categoryName))
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_CATEGORY_IMAGE)
@@ -84,7 +90,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_SEE_ALL_CATEGORY_CAROUSEL,
                     "")
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_CATEGORY_CAROUSEL)
@@ -98,7 +104,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_VARIANT_QUANTITY_EDITOR,
                     label)
 
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
 
@@ -112,7 +118,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_SHIPMENT_ERROR_COMPONENT,
                     String.format(ProductTrackingConstant.Label.EVENT_LABEL_CLICK_SHIPMENT_ERROR, title))
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
@@ -129,7 +135,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_SEE_OTHER_COURIER,
                     String.format(ProductTrackingConstant.Label.EVENT_LABEL_CLICK_SHIPMENT, title, labelShipping, isCod))
 
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
@@ -353,7 +359,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER, shopId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, shopType,
                     ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
-                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, BUSINESS_UNIT_PDP,
                     ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
                     ProductTrackingConstant.Tracking.KEY_COMPONENT, "",
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
@@ -424,7 +430,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT,
                     variantLevel + variantTitle + variantValue + variantId)
 
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, generateComponentTrackModel(variantUiData, variantPosition), ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT)
@@ -1044,7 +1050,7 @@ object DynamicProductDetailTracking {
                     ""
             )
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
@@ -1130,11 +1136,11 @@ object DynamicProductDetailTracking {
             val itemBundle = Bundle().apply {
                 putString(ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Tracking.SELECT_CONTENT)
                 putString(ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.Action.CLICK_MODULAR_COMPONENT)
-                putString(ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
+                putString(ProductTrackingConstant.Tracking.KEY_CATEGORY, BUSINESS_UNIT_PDP)
                 putString(ProductTrackingConstant.Tracking.KEY_LABEL, String.format(ProductTrackingConstant.Label.EVENT_LABEL_CLICK_BEST_SELLER, productInfo?.bestSellerContent?.get(productInfo.basic.productID)?.linkText, productInfo?.basic?.category?.id, categoryName))
                 putString(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE)
                 putString(ProductTrackingConstant.Tracking.KEY_COMPONENT, String.format(ProductTrackingConstant.Label.EVENT_COMPONENT_CLICK_BEST_SELLER, componentTrackDataModel.componentType, componentTrackDataModel.componentName, ProductTrackingConstant.Action.CLICK_MODULAR_COMPONENT, componentTrackDataModel.adapterPosition))
-                putString(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
+                putString(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, BUSINESS_UNIT_PDP)
 
                 //promotion
                 val bundlePromotion = Bundle().apply {
@@ -1389,7 +1395,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_ACTION, "impression - modular component",
                     ProductTrackingConstant.Tracking.KEY_LABEL, "",
                     ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE,
-                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, BUSINESS_UNIT_PDP,
                     ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
                     "categoryId", "productId : $productId",
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
@@ -1423,23 +1429,23 @@ object DynamicProductDetailTracking {
             val elementName = if (componentName.isNotEmpty()) componentName else componentTrackDataModel.componentName
 
             val mapEvent = DataLayer.mapOf(
-                ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
+                ProductTrackingConstant.Tracking.KEY_EVENT, PROMO_VIEW,
                 ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Tracking.KEY_ACTION, "impression - modular component",
+                ProductTrackingConstant.Tracking.KEY_ACTION, TOP_ADS_HEADLINES_IMPRESSION,
                 ProductTrackingConstant.Tracking.KEY_LABEL, "",
                 ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE,
-                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, BUSINESS_UNIT_PDP,
                 ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
-                "categoryId", "productId : $productId",
+                KEY_CATEGORY_ID, "$KEY_PRODUCT_ID : $productId",
                 ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                        "promotions", DataLayer.listOf(
+                    PROMO_VIEW, DataLayer.mapOf(
+                        KEY_PROMOTIONS, DataLayer.listOf(
                             DataLayer.mapOf(
-                                "creative_name",
+                                KEY_CREATIVE_NAME,
                                 "layout:${productInfo?.layoutName};comp:${elementName};temp:${componentTrackDataModel.componentType};",
-                                "creative_slot", componentTrackDataModel.adapterPosition,
-                                "item_id", "",
-                                "item_name", "product detail page - $productId"
+                                KEY_CREATIVE_SLOT, componentTrackDataModel.adapterPosition,
+                                KEY_ITEM_ID, "",
+                                KEY_ITEM_NAME, "$BUSINESS_UNIT_PDP - $productId"
                             )
                         )
                     )))
@@ -1573,7 +1579,7 @@ object DynamicProductDetailTracking {
                             "product page",
                             "view product page",
                             label,
-                            ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                            BUSINESS_UNIT_PDP,
                             null,
                             productInfo?.isProductVariant().toString(),
                             productInfo?.data?.campaign?.campaignID,
@@ -1723,7 +1729,7 @@ object DynamicProductDetailTracking {
                 ProductTrackingConstant.Tracking.KEY_ACTION, "view - pdp oneliner component",
                 ProductTrackingConstant.Tracking.KEY_LABEL, "",
                 ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE,
-                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, BUSINESS_UNIT_PDP,
                 ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
                 ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                     "promoView", DataLayer.mapOf(
@@ -1994,7 +2000,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.ImpulsiveBanner.IMPRESSION_BANNER,
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Tracking.KEY_LABEL, "",
-                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, BUSINESS_UNIT_PDP,
                     ProductTrackingConstant.Tracking.KEY_COMPONENT, ProductTrackingConstant.ImpulsiveBanner.EVENT_COMPONENT_IMPRESSION_BANNER.format(widget.pageName, templateNameType, ProductTrackingConstant.ImpulsiveBanner.IMPRESSION_BANNER, 1),
                     ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, ProductTrackingConstant.ImpulsiveBanner.EVENT_LAYOUT_IMPRESSION_BANNER.format(basicData.generalLayoutName, basicData.categoryName, basicData.categoryId),
@@ -2022,7 +2028,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.ImpulsiveBanner.CLICK_BANNER,
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Tracking.KEY_LABEL, "",
-                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, BUSINESS_UNIT_PDP,
                     ProductTrackingConstant.Tracking.KEY_COMPONENT, ProductTrackingConstant.ImpulsiveBanner.EVENT_COMPONENT_IMPRESSION_BANNER.format(widget.pageName, templateNameType, ProductTrackingConstant.ImpulsiveBanner.CLICK_BANNER, 1),
                     ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, ProductTrackingConstant.ImpulsiveBanner.EVENT_LAYOUT_IMPRESSION_BANNER.format(basicData.generalLayoutName, basicData.categoryName, basicData.categoryId),
@@ -2052,7 +2058,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.VIEW_SHIPMENT_ERROR_BOTTOM_SHEET,
                     String.format(ProductTrackingConstant.Label.VIEW_LABEL_CLICK_SHIPMENT_ERROR_BOTTOM_SHEET, bottomSheetTitle))
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
@@ -2073,7 +2079,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP,
                     eventAction,
                     String.format(ProductTrackingConstant.Label.VIEW_LABEL_CLICK_SHIPMENT_ERROR_BOTTOM_SHEET, bottomSheetTitle))
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
@@ -2114,7 +2120,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
             mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:$layout;catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
             mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:$comp;temp:$temp;elem:${action};cpos:$cpos;"
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
 
@@ -2152,7 +2158,7 @@ object DynamicProductDetailTracking {
                     bundleId
                 )
             )
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, action)
         }
@@ -2174,7 +2180,7 @@ object DynamicProductDetailTracking {
                     bundleType.toLowerCase(Locale.ROOT)
                 )
             )
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, action)
         }

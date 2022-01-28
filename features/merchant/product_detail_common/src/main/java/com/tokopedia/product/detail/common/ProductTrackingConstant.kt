@@ -139,6 +139,7 @@ object ProductTrackingConstant {
         const val TOPADS_CLICK = "click - product recommendation"
         const val TOPADS_ATC_CLICK = "click add to cart on product card after atc"
         const val TOPADS_IMPRESSION = "impression - product recommendation"
+        const val TOP_ADS_HEADLINES_IMPRESSION = "impression - modular component"
         const val CLICK_VARIANT = "click - variant"
         const val CLICK_PRODUCT_PICTURE = "click - product picture"
         const val CLICK_PRODUCT_IMAGE = "click - product image"
@@ -327,5 +328,11 @@ object ProductTrackingConstant {
         // example /tokonow - recomproduct - pdp_1 - rekomendasi untuk anda - {recommendation type}
         const val PARAM_ATC_DIMENS_40 = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s"
         const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" //page source like PDP, recommendationType
+    }
+    object TopAdsHeadlines{
+        const val KEY_CREATIVE_NAME = "creative_name"
+        const val KEY_CREATIVE_SLOT = "creative_slot"
+        const val KEY_ITEM_ID = "item_id"
+        const val KEY_ITEM_NAME = "item_name"
     }
 }
