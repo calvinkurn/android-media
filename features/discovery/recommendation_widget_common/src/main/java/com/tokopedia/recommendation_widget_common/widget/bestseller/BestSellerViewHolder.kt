@@ -124,22 +124,22 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
         }
         if(element.filterChip.isEmpty()) {
             val layoutParams = binding?.bestSellerContainer?.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, 0, 0, 0)
+            layoutParams.setMargins(MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO)
             binding?.bestSellerContainer?.layoutParams = layoutParams
             binding?.bestSellerContainer?.translationY = itemView.context.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
-            binding?.bestSellerContainer?.setPadding(0, 0, 0, 5f.toDpInt())
+            binding?.bestSellerContainer?.setPadding(MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO, paddingBottomSellerContainer)
         }
         else {
             val layoutParams = binding?.bestSellerContainer?.layoutParams as ConstraintLayout.LayoutParams
             layoutParams.setMargins(
-                0,
-                8f.toDpInt(),
-                0,
-                0
+                MARGIN_ZERO,
+                marginTopSellerContainer,
+                MARGIN_ZERO,
+                MARGIN_ZERO
             )
             binding?.bestSellerContainer?.layoutParams = layoutParams
-            binding?.bestSellerContainer?.translationY = 0f
-            binding?.bestSellerContainer?.setPadding(0, 0, 0, 11f.toDpInt())
+            binding?.bestSellerContainer?.translationY = TRANSLATION_DEFAULT
+            binding?.bestSellerContainer?.setPadding(PADDING_ZERO, PADDING_ZERO, PADDING_ZERO, paddingStartSellerContainer)
         }
     }
 
@@ -189,6 +189,12 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     companion object{
         val LAYOUT = R.layout.best_seller_view_holder
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder"
+        var paddingStartSellerContainer = 11f.toDpInt()
+        var paddingBottomSellerContainer = 5f.toDpInt()
+        var marginTopSellerContainer = 8f.toDpInt()
+        const val TRANSLATION_DEFAULT = 0f
+        const val MARGIN_ZERO = 0
+        const val PADDING_ZERO = 0
     }
 
     private fun setChannelDivider(element: BestSellerDataModel) {
