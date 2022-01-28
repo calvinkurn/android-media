@@ -112,8 +112,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
         _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
         launchCatchError(block = {
-            val denomGrid = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber, _filterData)
-            _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomGrid))
+            val denomFull = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber, _filterData)
+            _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
         }){
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
         }
