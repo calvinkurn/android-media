@@ -3,7 +3,7 @@
     "data": {
       "kycProjectInfo": {
         "IsAllowToRegister": true,
-        "IsSelfie": true,
+        "IsSelfie": false,
         "Message": "",
         "Reason": [],
         "Status": 3,
