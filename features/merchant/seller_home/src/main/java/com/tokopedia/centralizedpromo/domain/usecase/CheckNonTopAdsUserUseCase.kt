@@ -44,6 +44,8 @@ class CheckNonTopAdsUserUseCase @Inject constructor(
     suspend fun execute(shopId: String): Boolean {
         setRequestParams(createRequestParams(shopId).parameters)
         val response = executeOnBackground().topAdsGetShopInfoV21
-        return response?.nonTopAdsUserData?.ads?.any { it?.isUsed == true } == false
+        val ads = response?.nonTopAdsUserData?.ads
+        if (ads?.isNullOrEmpty() == true) return false
+        return !ads.any { it?.isUsed == true }
     }
 }
