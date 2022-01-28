@@ -19,7 +19,7 @@
     <string name="promo_label_coupon_not_eligible">Kupon Tidak Bisa Digunakan</string>
     <string name="promo_checkout_label_error_empty_voucher_code">Kode Voucher Harus Diisi</string>
     <string name="promostacking_checkout_label_error_empty_voucher_code">Kode promo harus diisi</string>
-    <string name="promo_label_html_tnc_promo"><![CDATA[<html><head><style>li{ font-size: 10pt; color: %1$s; }</style></head><body>%2$s</body></html>]]></string>
+    <string name="promo_label_html_tnc_promo"><![CDATA[<html><head><style>li{ font-size: 10pt; }</style></head><body>%1$s</body></html>]]></string>
     <string name="promo_popup_ok">OK</string>
     <string name="promo_popoup_batal">Batal</string>
     <string name="promo_popup_button_positive_one">Lengkapi Profil</string>

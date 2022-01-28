@@ -47,6 +47,9 @@ class LogisticTestInterceptor : BaseOccInterceptor() {
         if (requestString.contains(SET_CHOSEN_ADDRESS_QUERY)) {
             return mockResponse(copy, getJsonFromResource(SET_CHOSEN_ADDRESS_DEFAULT_RESPONSE_PATH))
         }
+        if (requestString.contains(IS_ELIGIBLE_FOR_ADDRESS_FEATURE_QUERY)) {
+            return mockResponse(copy, getJsonFromResource(IS_ELIGIBLE_FOR_ADDRESS_FEATURE_DEFAULT_RESPONSE_PATH))
+        }
         return chain.proceed(chain.request())
     }
 
@@ -64,6 +67,7 @@ const val RATES_QUERY = "ratesV3"
 const val GET_ADDRESS_LIST_QUERY = "keroAddressCorner"
 const val GET_SHIPPING_DURATION_QUERY = "ongkir_shipper_service"
 const val SET_CHOSEN_ADDRESS_QUERY = "keroAddrSetStateChosenAddress"
+const val IS_ELIGIBLE_FOR_ADDRESS_FEATURE_QUERY = "KeroAddrIsEligibleForAddressFeature"
 
 const val RATES_DEFAULT_RESPONSE_PATH = "logistic/rates_default_response.json"
 const val RATES_WITH_INSURANCE_RESPONSE_PATH = "logistic/rates_with_insurance_response.json"
@@ -80,3 +84,5 @@ const val GET_ADDRESS_LIST_DEFAULT_RESPONSE_PATH = "logistic/get_address_list_de
 const val GET_SHIPPING_DURATION_DEFAULT_RESPONSE_PATH = "logistic/get_shipping_duration_list_default_response.json"
 
 const val SET_CHOSEN_ADDRESS_DEFAULT_RESPONSE_PATH = "logistic/set_chosen_address_response.json"
+
+const val IS_ELIGIBLE_FOR_ADDRESS_FEATURE_DEFAULT_RESPONSE_PATH = "logistic/is_eligible_address_feature.json"
