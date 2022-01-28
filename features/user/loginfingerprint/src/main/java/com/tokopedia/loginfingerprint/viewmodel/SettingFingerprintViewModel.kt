@@ -22,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SettingFingerprintViewModel @Inject constructor(val dispatcher: CoroutineDispatchers,
@@ -46,8 +45,8 @@ class SettingFingerprintViewModel @Inject constructor(val dispatcher: CoroutineD
     val removeFingerprintResult: LiveData<Result<RemoveFingerprintData>>
         get() = mutableRemoveFingerprintResult
 
-    private val mutableNavigateSuccessRegister = SingleLiveEvent<Unit>()
-    val navigateSuccessRegister: LiveData<Unit> = mutableNavigateSuccessRegister
+    private val mutableNavigateSuccessRegister = SingleLiveEvent<Void>()
+    val navigateSuccessRegister: LiveData<Void> = mutableNavigateSuccessRegister
 
     private val mutableErrorMessageRegister = SingleLiveEvent<String>()
     val errorMessageRegister: LiveData<String> = mutableErrorMessageRegister
@@ -79,16 +78,12 @@ class SettingFingerprintViewModel @Inject constructor(val dispatcher: CoroutineD
                         BiometricConstant.PARAM_BIOMETRIC_ID to fingerprintPreference.getOrCreateUniqueId()
                     )
                     val result = registerFingerprintUseCase(params)
-                    withContext(dispatcher.main) {
-                        onSuccessRegisterFP(result)
-                    }
+                    onSuccessRegisterFP(result)
                 } else {
-                    mutableNavigateSuccessRegister.value = Unit
                     mutableErrorMessageRegister.value = "Terjadi Kesalahan, Silahkan coba lagi"
                 }
             }
         }, onError = {
-            mutableNavigateSuccessRegister.value = Unit
             mutableErrorMessageRegister.value = it.message
         })
     }
@@ -110,7 +105,7 @@ class SettingFingerprintViewModel @Inject constructor(val dispatcher: CoroutineD
     private fun onSuccessRegisterFP(registerFingerprintPojo: RegisterFingerprintPojo) {
         val response = registerFingerprintPojo.data
         if (response.errorMessage.isBlank() && response.success) {
-            mutableNavigateSuccessRegister.value = Unit
+            mutableNavigateSuccessRegister.call()
         } else if (response.errorMessage.isNotBlank()) {
             mutableErrorMessageRegister.value = response.errorMessage
         } else {
