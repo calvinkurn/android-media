@@ -21,6 +21,7 @@ import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -44,6 +45,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private lateinit var baseView: View
     private lateinit var loader: LoaderUnify
+    private lateinit var titleTextView: Typography
     private lateinit var fintechWidgetAdapter: FintechWidgetAdapter
     private lateinit var instanceProductUpdateListner: ProductUpdateListner
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
@@ -76,6 +78,10 @@ class PdpFintechWidget @JvmOverloads constructor(
                 is Success -> {
                     setPriceToChipMap(it.data)
                     loader.visibility = View.GONE
+                     it.data.baseWidgetResponse?.baseData?.let { baseChipResponse->
+                         if(baseChipResponse.list.size>0)
+                            titleTextView.text = baseChipResponse.list[0].title
+                    }
                     getChipDataAndUpdate(idToPriceMap[productID])
                 }
                 is Fail -> {
@@ -124,6 +130,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun initView() {
         baseView = inflate(context, R.layout.pdp_fintech_widget_layout, this)
         loader = baseView.findViewById(R.id.widgetShimmer)
+        titleTextView = baseView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.quickText)
     }
 
 

@@ -20,7 +20,6 @@
         android:layout_marginStart="@dimen/pdp_fintech_16_dp"
         android:layout_marginTop="@dimen/pdp_fintech_14_dp"
         android:layout_marginEnd="@dimen/pdp_fintech_16_dp"
-        android:text="@string/pdp_fintech_quick_buy_with_paylater"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_14"
         android:textStyle="normal"
