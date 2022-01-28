@@ -87,6 +87,9 @@ data class RechargeCatalogDataCollection(
     @SerializedName("name")
     @Expose
     val name: String = "",
+    @SerializedName("cluster_type")
+    @Expose
+    val clusterType: String = "",
     @SerializedName("products")
     @Expose
     val products: List<RechargeProduct> = listOf()

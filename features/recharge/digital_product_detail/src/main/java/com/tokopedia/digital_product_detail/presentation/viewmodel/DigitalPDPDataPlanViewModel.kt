@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
-import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPPaketDataRepository
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
@@ -29,7 +29,7 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 class DigitalPDPDataPlanViewModel @Inject constructor(
-    val repo: DigitalPDPPaketDataRepository,
+    val repo: DigitalPDPTelcoRepository,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -84,6 +84,21 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         _filterData.add(valueItem)
     }
 
+    fun updateFilter(paramName: String, listKey: ArrayList<String>){
+        removeFilter(paramName)
+        addFilter(paramName, listKey)
+    }
+
+    fun removeFilter(paramName: String) {
+        val iterator = _filterData.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+            if (item.containsValue(paramName)) {
+                iterator.remove()
+            }
+        }
+    }
+
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         _menuDetailData.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.io, block = {
@@ -97,8 +112,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
         _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
         launchCatchError(block = {
-            val denomFull = repo.getProductInputMultiTabDenom(menuId, operator, clientNumber, _filterData)
-            _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
+            val denomGrid = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber, _filterData)
+            _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomGrid))
         }){
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
         }
@@ -193,16 +208,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
 
     fun onResetSelectedProduct(){
         selectedFullProduct = SelectedFullProduct()
-    }
-
-    private fun removeFilter(paramName: String) {
-        val iterator = _filterData.iterator()
-        while (iterator.hasNext()) {
-            val item = iterator.next()
-            if (item.containsValue(paramName)) {
-                iterator.remove()
-            }
-        }
     }
 
     companion object {
