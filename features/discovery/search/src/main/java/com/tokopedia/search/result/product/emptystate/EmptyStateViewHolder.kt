@@ -183,6 +183,6 @@ class EmptyStateViewHolder(
     }
 
     private fun getString(@StringRes stringRes: Int, vararg value: String): String {
-        return itemView.context.getString(stringRes, value)
+        return itemView.context.getString(stringRes, *value)
     }
 }
