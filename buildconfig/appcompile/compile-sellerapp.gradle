@@ -25,6 +25,7 @@ includeIfEnabled("features:content:play_broadcaster")
 includeIfEnabled("features:content:play_widget")
 
 includeIfEnabled("features:discovery:discovery_common")
+includeIfEnabled("features:discovery:home_component")
 includeIfEnabled("features:discovery:category_common")
 includeIfEnabled("features:discovery:productcard")
 includeIfEnabled("features:discovery:carousel_productcard")
