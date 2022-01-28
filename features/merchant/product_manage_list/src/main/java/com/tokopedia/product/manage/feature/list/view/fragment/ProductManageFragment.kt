@@ -2674,7 +2674,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private fun renderProductCount() {
         val productCount = if (filterTab?.isFilterActive() == true) {
             filterTab?.getProductCount()
-            filterTab?.getProductCount()
         } else {
             viewModel.getTotalProductCount()
         }
