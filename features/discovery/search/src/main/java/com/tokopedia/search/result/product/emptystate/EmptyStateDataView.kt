@@ -11,11 +11,6 @@ class EmptyStateDataView(
     val pageTitle: String = "",
 ) : Visitable<ProductListTypeFactory?> {
 
-    class LocalSearch(
-        val applink: String = "",
-        val pageTitle: String = "",
-    )
-
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
@@ -35,4 +30,9 @@ class EmptyStateDataView(
             )
         }
     }
+
+    class LocalSearch(
+        val applink: String = "",
+        val pageTitle: String = "",
+    )
 }
