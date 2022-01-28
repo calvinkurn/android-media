@@ -95,6 +95,10 @@ open class BuyerOrderDetailTypeFactory(
         return DriverTippingInfoViewHolder.LAYOUT
     }
 
+    fun type(addonsUiModel: AddonsUiModel): Int {
+        return AddonsViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
@@ -116,6 +120,7 @@ open class BuyerOrderDetailTypeFactory(
             DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
             PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, buyerOrderDetailBindRecomWidgetListener)
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
+            AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

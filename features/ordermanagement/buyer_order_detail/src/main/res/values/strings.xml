@@ -59,4 +59,11 @@
     <string name="order_extension_message_error_connection">Oops, koneksi internetmu terganggu. Silakan cek koneksi internet dan coba lagi, ya.</string>
     <string name="buyer_order_extension_label">Buyer Order Extension</string>
 
+    <!--Addons -->
+    <string name="order_addons_from_label">Dari</string>
+    <string name="order_addons_to_label">Ke</string>
+    <string name="order_addons_to_value">: %s</string>
+    <string name="order_addons_from_value">: %s</string>
+    <string name="order_addons_total_price_label">Total Harga Pelengkap</string>
+
 </resources>
