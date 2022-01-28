@@ -18,6 +18,7 @@ data class VoucherUiModel(
         val typeFormatted: String,
         val image: String,
         val imageSquare: String,
+        val discountType : Int,
         @VoucherStatusConst val status: Int,
         val discountTypeFormatted: String,
         val discountAmt: Int,

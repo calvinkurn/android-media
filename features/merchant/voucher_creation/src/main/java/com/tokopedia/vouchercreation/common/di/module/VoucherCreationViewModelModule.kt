@@ -106,4 +106,9 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(BroadcastCouponViewModel::class)
     internal abstract fun provideBroadcastCouponViewModel(broadcastCouponViewModel: BroadcastCouponViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CouponDetailViewModel::class)
+    internal abstract fun provideCouponDetailViewModel(couponDetailViewModel: CouponDetailViewModel): ViewModel
 }

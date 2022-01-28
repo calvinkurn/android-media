@@ -37,12 +37,12 @@ class CouponListFragment: BaseDaggerFragment() {
         return@lazy MoreMenuBottomSheet.createInstance()
     }
 
-    private var onRedirectToCouponPreview : (Coupon, ProductCouponPreviewFragment.Mode) -> Unit = { _, _ -> }
     companion object {
         fun newInstance(
             onCreateCouponMenuSelected: () -> Unit,
             onEditCouponMenuSelected: (Coupon) -> Unit,
-            onDuplicateCouponMenuSelected: (Coupon) -> Unit
+            onDuplicateCouponMenuSelected: (Coupon) -> Unit,
+            onViewCouponDetailMenuSelected : (Long) -> Unit = {}
         ): CouponListFragment {
             val args = Bundle()
             val fragment = CouponListFragment().apply {
@@ -50,6 +50,7 @@ class CouponListFragment: BaseDaggerFragment() {
                 this.onCreateCouponMenuSelected = onCreateCouponMenuSelected
                 this.onEditCouponMenuSelected = onEditCouponMenuSelected
                 this.onDuplicateCouponMenuSelected = onDuplicateCouponMenuSelected
+                this.onViewCouponDetailMenuSelected = onViewCouponDetailMenuSelected
             }
             return fragment
         }
@@ -58,6 +59,7 @@ class CouponListFragment: BaseDaggerFragment() {
     private var onCreateCouponMenuSelected : () -> Unit = {}
     private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
     private var onDuplicateCouponMenuSelected : (Coupon) -> Unit = {}
+    private var onViewCouponDetailMenuSelected : (Long) -> Unit = {}
 
     override fun getScreenName(): String = CouponListFragment::class.java.simpleName
 
@@ -92,9 +94,6 @@ class CouponListFragment: BaseDaggerFragment() {
         }
     }
 
-    fun setOnRedirectToCouponPreview(onRedirectToCouponPreview : (Coupon, ProductCouponPreviewFragment.Mode) -> Unit) {
-        this.onRedirectToCouponPreview = onRedirectToCouponPreview
-    }
 
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: String) {
         when (menu) {
@@ -137,6 +136,7 @@ class CouponListFragment: BaseDaggerFragment() {
             ),
             isActiveVoucher = false
         )
+        onViewCouponDetailMenuSelected(populateDummyCoupon().id)
         // viewVoucherDetail(voucher.id)
     }
 

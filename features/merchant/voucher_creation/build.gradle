@@ -69,6 +69,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.mockitorCore
@@ -99,3 +100,4 @@ apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
 apply from: '../../../compile-instrument-test.gradle'
+apply plugin: 'kotlin-android'

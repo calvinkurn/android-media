@@ -15,6 +15,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformat
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCouponBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.fragment.CouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
@@ -42,7 +43,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
     private val couponListFragment = CouponListFragment.newInstance(
         ::navigateToCreateCouponPage,
         ::navigateToEditCouponPage,
-        ::navigateToDuplicateCouponPage
+        ::navigateToDuplicateCouponPage,
+        ::navigateToCouponDetail
     )
 
     private var couponSettings : CouponSettings? = null
@@ -60,7 +62,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
         setContentView(R.layout.activity_mvc_create_coupon)
-        replace(couponPreviewFragment)
+        replace(couponListFragment)
         setupViews()
         println(productId)
     }
@@ -127,6 +129,11 @@ class CreateCouponProductActivity : AppCompatActivity() {
             coupon,
             ProductCouponPreviewFragment.Mode.DUPLICATE
         )
+        replaceAndAddToBackstack(fragment, TAG_FRAGMENT_COUPON_PREVIEW)
+    }
+
+    private fun navigateToCouponDetail(couponId : Long) {
+        val fragment = CouponDetailFragment.newInstance(couponId)
         replaceAndAddToBackstack(fragment, TAG_FRAGMENT_COUPON_PREVIEW)
     }
 
