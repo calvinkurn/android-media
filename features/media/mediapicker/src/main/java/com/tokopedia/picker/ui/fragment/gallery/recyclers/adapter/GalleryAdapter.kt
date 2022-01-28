@@ -139,7 +139,7 @@ class GalleryAdapter(
             binding?.bgVideoShadow?.showWithCondition(element.isVideo())
 
             if (element.isVideo()) {
-                val duration = extractVideoDuration(context, element.id)
+                val duration = extractVideoDuration(context, element.path)
                 binding?.viewLabel?.text = duration.toVideoDurationFormat()
                 binding?.viewLabel?.show()
             } else {

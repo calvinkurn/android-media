@@ -20,19 +20,17 @@ data class MediaUiModel(
 
     fun isVideo() = isVideoFormat(path)
 
-    fun isVideoDurationMinimumValid(context: Context): Boolean {
+    fun isVideoDurationValid(context: Context): Boolean {
         if (!isVideo()) return false
 
-        val extractDuration = extractVideoDuration(context, id)?: 0
+        val extractDuration = extractVideoDuration(context, path)?: 0
         return extractDuration >= VIDEO_DURATION_MINIMUM
     }
-
-    fun isMediaFromCameraCaptured() = isFromCamera
 
     companion object {
         const val VIDEO_DURATION_MINIMUM = 3000
 
-        fun File.captureToMediaUiModel() = MediaUiModel(
+        fun File.toUiModel() = MediaUiModel(
             id = System.currentTimeMillis(),
             name = name,
             path = path,

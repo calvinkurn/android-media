@@ -228,7 +228,7 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
                 return false
             }
 
-            if (media.isVideo() && !media.isVideoDurationMinimumValid(requireContext()) && !isSelected) {
+            if (media.isVideo() && !media.isVideoDurationValid(requireContext()) && !isSelected) {
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.picker_video_duration_min_limit),

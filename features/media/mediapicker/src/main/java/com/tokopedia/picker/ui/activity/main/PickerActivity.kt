@@ -211,7 +211,7 @@ open class PickerActivity : BaseActivity()
                     * [CameraCaptured] and [SelectionAdded] state event
                     * */
                     else -> {
-                        if (it is BaseEventState) {
+                        if (it is AddMediaEvent) {
                             if (PickerUiConfig.isSingleSelectionType()) {
                                 medias.clear()
                             }

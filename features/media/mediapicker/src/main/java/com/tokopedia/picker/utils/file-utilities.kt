@@ -85,9 +85,10 @@ fun extractVideoDuration(context: Context?, uri: Uri): Long? {
     }
 }
 
-fun extractVideoDuration(context: Context?, mediaId: Long): Long? {
-    val uri = Uri.withAppendedPath(getContentUri("external"), "" + mediaId)
-    return extractVideoDuration(context, uri)
+fun extractVideoDuration(context: Context?, filePath: String): Long? {
+    val file = File(filePath)
+
+    return extractVideoDuration(context, Uri.fromFile(file))
 }
 
 fun Long?.toVideoDurationFormat(): String {

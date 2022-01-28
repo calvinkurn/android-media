@@ -28,8 +28,9 @@ import com.tokopedia.picker.ui.activity.main.PickerActivity
 import com.tokopedia.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.picker.ui.fragment.camera.component.CameraControllerComponent
 import com.tokopedia.picker.ui.fragment.camera.component.CameraPreviewComponent
-import com.tokopedia.picker.ui.uimodel.MediaUiModel.Companion.captureToMediaUiModel
-import com.tokopedia.picker.utils.BaseEventState
+import com.tokopedia.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.picker.ui.uimodel.MediaUiModel.Companion.toUiModel
+import com.tokopedia.picker.utils.AddMediaEvent
 import com.tokopedia.picker.utils.EventState
 import com.tokopedia.picker.utils.exceptionHandler
 import com.tokopedia.picker.utils.generateFile
@@ -192,27 +193,58 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onVideoTaken(result: VideoResult) {
-        val extractDuration = result.maxDuration
-        println("MEDIAPICKER (Vid) -> $extractDuration")
-        onRenderThumbnailCameraCaptured(result.file)
+        val fileToModel = result.file.toUiModel()
+
+        if (!fileToModel.isVideoDurationValid(requireContext())) {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.picker_video_duration_min_limit),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            // delete unused video file
+            if (result.file.exists()) {
+                result.file.delete()
+            }
+
+            return
+        }
+
+        onShowMediaThumbnail(fileToModel)
     }
 
     override fun onPictureTaken(result: PictureResult) {
         generateFile(preview.pictureSize(), result.data) {
-            onRenderThumbnailCameraCaptured(it)
+            if (it == null) return@generateFile
+            val fileToModel = it.toUiModel()
+
+            onShowMediaThumbnail(fileToModel)
         }
     }
 
     private fun initObservable() {
+        val currentMediaList = mutableListOf<MediaUiModel>()
+
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEvent.collect {
                 if (it is EventState.SelectionChanged) return@collect
 
-                if (it is BaseEventState) {
-                    it.data?.let { media ->
-                        val file = File(media.path)
-                        controller.setThumbnailPreview(file)
+                if (it is EventState.SelectionRemoved) {
+                    if (currentMediaList.contains(it.media)) {
+                        currentMediaList.remove(it.media)
                     }
+                } else if (it is AddMediaEvent) {
+                    it.data?.let { media ->
+                        if (!currentMediaList.contains(media)) {
+                            currentMediaList.add(media)
+                        }
+                    }
+                }
+
+                // update the thumbnail
+                if (currentMediaList.isNotEmpty()) {
+                    val file = File(currentMediaList.last().path)
+                    controller.setThumbnailPreview(file)
                 } else {
                     controller.removeThumbnailPreview()
                 }
@@ -230,21 +262,21 @@ open class CameraFragment : BaseDaggerFragment()
         listener?.tabVisibility(true)
     }
 
-    private fun onRenderThumbnailCameraCaptured(file: File?) {
-        if (file == null) return
+    private fun onShowMediaThumbnail(element: MediaUiModel?) {
+        if (element == null) return
 
-        viewModel.send(EventState.CameraCaptured(
-            file.captureToMediaUiModel()
-        ))
+        viewModel.send(EventState.CameraCaptured(element))
     }
 
     private fun showShutterEffect(action: () -> Unit) {
         binding?.containerBlink?.show()
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding?.containerBlink?.hide()
-            action()
-        }, OVERLAY_SHUTTER_DELAY)
+        Looper.myLooper()?.let {
+            Handler(it).postDelayed({
+                binding?.containerBlink?.hide()
+                action()
+            }, OVERLAY_SHUTTER_DELAY)
+        }
     }
 
     private fun gestureDetector() = GestureDetector(requireContext(), FlingGestureWrapper(
@@ -267,7 +299,7 @@ open class CameraFragment : BaseDaggerFragment()
     override fun getScreenName() = "Camera"
 
     companion object {
-        private const val OVERLAY_SHUTTER_DELAY = 200L
+        private const val OVERLAY_SHUTTER_DELAY = 100L
     }
 
 }

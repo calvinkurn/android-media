@@ -4,7 +4,7 @@ import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
-interface BaseEventState {
+interface AddMediaEvent {
     val data: MediaUiModel?
 }
 
@@ -13,11 +13,11 @@ sealed class EventState {
 
     class CameraCaptured(
         override val data: MediaUiModel?
-    ) : EventState(), BaseEventState
+    ) : EventState(), AddMediaEvent
 
     class SelectionAdded(
         override val data: MediaUiModel?
-    ) : EventState(), BaseEventState
+    ) : EventState(), AddMediaEvent
 
     class SelectionChanged(val data: List<MediaUiModel>): EventState()
 
