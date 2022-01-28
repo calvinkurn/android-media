@@ -13,6 +13,7 @@ import static com.tokopedia.webview.ConstantKt.KEY_URL;
 import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
+import static com.tokopedia.webview.ext.UrlEncoderExtKt.decode;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 
 import android.annotation.TargetApi;
@@ -187,7 +188,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private String getUrlFromArguments(Bundle args) {
         String defaultUrl = TokopediaUrl.Companion.getInstance().getWEB();
-        String url = UrlEncoderExtKt.decode(args.getString(KEY_URL, defaultUrl));
+        String url = decode(args.getString(KEY_URL, defaultUrl));
 
         if (!url.startsWith("http")) {
             return defaultUrl;
@@ -710,15 +711,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if (url.endsWith(".pdf")) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse(uri.toString().replace(GOOGLE_DOCS_PDF_URL, ""))
+            intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
                     , "application/pdf");
             try {
                 getContext().startActivity(intent);
+                return true;
             } catch (Exception e) {
                 //user does not have a pdf viewer installed
-                loadGoogleDocsUrl(uri);
+                return loadGoogleDocsUrl(uri);
             }
-            return true;
         }
 
         if (url.contains(HCI_CAMERA_KTP)) {
@@ -814,17 +815,27 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return hasMoveToNativePage;
     }
 
-    private void loadGoogleDocsUrl(Uri uri) {
+    /**
+     * return true of webview success load.
+     */
+    private boolean loadGoogleDocsUrl(Uri uri) {
         String googleDocsUrl;
         if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
             googleDocsUrl = uri.toString();
         } else {
             googleDocsUrl = GOOGLE_DOCS_PDF_URL + uri.toString();
         }
-        if (uri.getHost().contains(TOKOPEDIA_STRING)) {
-            webView.loadAuthUrl(googleDocsUrl, userSession);
+        if (webView != null) {
+            if (uri.getHost().contains(TOKOPEDIA_STRING)) {
+                webView.loadAuthUrl(googleDocsUrl, userSession);
+            } else {
+                webView.loadUrl(googleDocsUrl);
+            }
+            return true;
         } else {
-            webView.loadUrl(getUrl());
+            // change first url directly
+            url = googleDocsUrl;
+            return false;
         }
     }
 
