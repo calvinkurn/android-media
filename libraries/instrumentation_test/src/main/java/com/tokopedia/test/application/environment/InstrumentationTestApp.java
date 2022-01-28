@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.instrumentation.test.BuildConfig;
 import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
@@ -60,6 +61,7 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import timber.log.Timber;
 
 public class InstrumentationTestApp extends CoreNetworkApplication
         implements AbstractionRouter,
@@ -99,6 +101,10 @@ public class InstrumentationTestApp extends CoreNetworkApplication
                 .Companion.getManager()
                 .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
                 .initialize(this, R.raw.dummy_description);
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {

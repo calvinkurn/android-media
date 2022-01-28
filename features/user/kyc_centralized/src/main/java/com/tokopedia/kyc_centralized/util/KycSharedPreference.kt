@@ -5,21 +5,21 @@ import javax.inject.Inject
 
 class KycSharedPreference @Inject constructor(
     private val sharedPreferences: SharedPreferences
-) {
+): KycSharedPreferenceInterface {
 
-    fun saveByteArrayCache(key: String, data: ByteArray) {
+    override fun saveByteArrayCache(key: String, data: ByteArray) {
         val cacheString = data.toPreservedString
         sharedPreferences.edit()
             .putString(key, cacheString)
             .apply()
     }
 
-    fun getByteArrayCache(key: String): ByteArray? {
+    override fun getByteArrayCache(key: String): ByteArray? {
         val cacheString = sharedPreferences.getString(key, "")
         return cacheString?.toPreservedByteArray
     }
 
-    fun removeCache(key: String) {
+    override fun removeCache(key: String) {
         sharedPreferences.edit().remove(key).apply()
     }
 
@@ -32,4 +32,10 @@ class KycSharedPreference @Inject constructor(
         get() {
             return String(this, Charsets.ISO_8859_1)
         }
+}
+
+interface KycSharedPreferenceInterface {
+    fun saveByteArrayCache(key: String, data: ByteArray)
+    fun getByteArrayCache(key: String): ByteArray?
+    fun removeCache(key: String)
 }

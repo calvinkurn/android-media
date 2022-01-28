@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
+import com.tokopedia.kyc_centralized.util.CipherProviderImpl
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
@@ -43,7 +44,7 @@ class KycUploadViewModelTest {
     fun before() {
         MockKAnnotations.init(this)
         viewModel = spyk(KycUploadViewModel(
-            useCase, CoroutineTestDispatchersProvider, sharedPreference))
+            useCase, CoroutineTestDispatchersProvider, sharedPreference, CipherProviderImpl()))
     }
 
     private fun provideEveryUseCase(kycData: KycData) {

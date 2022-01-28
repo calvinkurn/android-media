@@ -1,0 +1,46 @@
+package com.tokopedia.kyc_centralized.di
+
+import com.tokopedia.kyc_centralized.data.model.response.KycData
+import com.tokopedia.kyc_centralized.data.model.response.KycResponse
+import com.tokopedia.kyc_centralized.data.network.KycUploadApi
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+
+class FakeKycUploadApi(private val case: Case = Case.Success) : KycUploadApi {
+
+    override suspend fun uploadImages(
+        projectId: RequestBody,
+        params: RequestBody,
+        ktpImage: MultipartBody.Part,
+        faceImage: MultipartBody.Part
+    ): KycResponse {
+        return when (case) {
+            Case.Success -> KycResponse(
+                data = KycData(
+                    isSuccessRegister = true,
+                )
+            )
+            is Case.Retake -> KycResponse(
+                data = KycData(
+                    isSuccessRegister = false,
+                    listRetake = case.code
+                )
+            )
+        }
+    }
+
+    override suspend fun uploadImagesAlaCarte(
+        projectId: RequestBody,
+        params: RequestBody,
+        ktpImage: MultipartBody.Part,
+        faceImage: MultipartBody.Part
+    ): KycResponse {
+        TODO("Not yet implemented")
+    }
+
+    sealed class Case {
+        object Success : Case()
+        data class Retake(val code: ArrayList<Int>) : Case()
+    }
+}
+

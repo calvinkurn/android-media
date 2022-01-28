@@ -14,6 +14,7 @@ class KycSharedPreferenceTest {
 
     private val ctx = ApplicationProvider.getApplicationContext<Context>()
     private val pref = ctx.getSharedPreferences("kyc_centralized", Context.MODE_PRIVATE)
+    private val cipherProvider = CipherProviderImpl()
     lateinit var sut: KycSharedPreference
 
     @Before
@@ -23,7 +24,7 @@ class KycSharedPreferenceTest {
 
     @Test
     fun whenSavingByteArray_ThenShouldReturnTheSameByteArray() {
-        val iv = generateIv()
+        val iv = cipherProvider.initAesEncrypt().iv
         sut.saveByteArrayCache(KYC_IV_KTP_CACHE, iv)
 
         val actual = sut.getByteArrayCache(KYC_IV_KTP_CACHE)
@@ -38,8 +39,18 @@ class KycSharedPreferenceTest {
         assertEquals(actual?.size, 0)
     }
 
-    private fun generateIv(): ByteArray {
-        val aes = ImageEncryptionUtil.initAesEncrypt()
-        return aes.iv
+    @Test
+    fun whenSavedAndRetrievedArray_ShouldReturnTheSameCipher() {
+        val firstCipher = cipherProvider.initAesEncrypt()
+
+        sut.saveByteArrayCache(KYC_IV_KTP_CACHE, firstCipher.iv)
+        Thread.sleep(1_000)
+        val savedIv = sut.getByteArrayCache(KYC_IV_KTP_CACHE)
+        val actual = cipherProvider.initAesDecrypt(savedIv)
+
+        // different object for both cipher and IV
+        // same iv value
+        assertEquals(firstCipher.iv, actual.iv)
     }
+
 }
