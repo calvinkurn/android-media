@@ -572,6 +572,37 @@
                 app:typographyWeight="bold"
                 tools:ignore="RtlSymmetry" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_installment_detail_wrap"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:paddingEnd="4dp"
+                android:textColor="@color/Unify_N700_96"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/tv_installment_type"
+                app:layout_constraintTop_toBottomOf="@+id/tv_installment_detail"
+                app:layout_constraintEnd_toStartOf="@+id/btn_change_installment_wrap"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintHorizontal_bias="0"
+                app:typographyType="body_3"
+                app:layout_constraintWidth_default="wrap"
+                app:typographyWeight="bold"
+                tools:ignore="RtlSymmetry" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/btn_change_installment_wrap"
+                android:layout_width="16dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                app:icon_name="CHEVRON_DOWN"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_installment_detail_wrap"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_installment_detail_wrap"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintTop_toTopOf="@+id/tv_installment_detail_wrap" />
+
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_change_installment"
                 android:layout_width="@dimen/layout_lvl2"
@@ -594,8 +625,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/tv_installment_error_action"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="@+id/tv_installment_detail"
-                app:layout_constraintTop_toBottomOf="@+id/tv_installment_detail"
+                app:layout_constraintStart_toStartOf="@+id/tv_installment_type"
+                app:layout_constraintTop_toBottomOf="@+id/tv_installment_detail_wrap"
                 app:layout_constraintWidth_default="wrap"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
