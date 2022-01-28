@@ -815,7 +815,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private void loadGoogleDocsUrl(Uri uri) {
-        String googleDocsUrl = "";
+        String googleDocsUrl;
         if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
             googleDocsUrl = uri.toString();
         } else {
