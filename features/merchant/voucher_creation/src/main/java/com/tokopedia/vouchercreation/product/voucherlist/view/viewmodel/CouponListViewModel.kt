@@ -21,7 +21,7 @@ class CouponListViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     private val _couponList = MutableLiveData<Result<List<VoucherUiModel>>>()
-    val voucherList: LiveData<Result<List<VoucherUiModel>>>
+    val couponList: LiveData<Result<List<VoucherUiModel>>>
         get() = _couponList
 
     fun getVoucherList() {

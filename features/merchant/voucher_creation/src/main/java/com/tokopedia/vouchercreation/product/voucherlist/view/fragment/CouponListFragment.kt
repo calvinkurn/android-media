@@ -10,7 +10,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
@@ -35,10 +34,10 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.da
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditCoupon
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
-import java.util.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
 import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
+import java.util.*
 import javax.inject.Inject
 
 class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiModel>() {
@@ -103,7 +102,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         chip.parentListener = {
             onCreateCouponMenuSelected()
         }
-        viewModel.voucherList.observe(viewLifecycleOwner) {
+        viewModel.couponList.observe(viewLifecycleOwner) {
             if (it is Success) {
                 renderList(it.data, false)
             }
