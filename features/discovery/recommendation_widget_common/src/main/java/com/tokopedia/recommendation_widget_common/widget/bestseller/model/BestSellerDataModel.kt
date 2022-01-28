@@ -1,7 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.bestseller.model
 
 import android.os.Bundle
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -23,8 +22,7 @@ data class BestSellerDataModel(
         val productCardModelList: List<ProductCardModel> = listOf(),
         val height: Int = 0,
         var chipsPosition: Int = 1,
-        var dividerType: Int = 0,
-        val channelModel: ChannelModel ?= ChannelModel(id = "", groupId = "")
+        var dividerType: Int = 0
 ) : RecommendationVisitable{
     override fun visitableId(): String? {
         return id
