@@ -5,6 +5,7 @@ import com.tokopedia.url.TokopediaUrl
 const val PARAM_PRODUCT_TENURE = "tenure"
 const val PARAM_PRODUCT_URL = "productURL"
 const val PARAM_PRODUCT_ID = "productID"
+const val PARAM_GATEWAY_ID = "gatewayID"
 
 val INTERNAL_URL = "${TokopediaUrl.getInstance().WEB}kartu-kredit/"
 

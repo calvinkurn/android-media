@@ -42,7 +42,7 @@ class PaylaterActivationUseCase @Inject constructor(graphqlRepository: GraphqlRe
             "request" to mutableMapOf(
                 PARAM_PRODUCT_PRICE to amount,
                 PARAM_PRODUCT_ID to productId,
-                PARAM_GATEWAY_ID to gateway_id
+                PARAM_REQUEST_GATEWAY_ID to gateway_id
 
             )
         )
@@ -51,7 +51,7 @@ class PaylaterActivationUseCase @Inject constructor(graphqlRepository: GraphqlRe
     companion object{
         const val PARAM_PRODUCT_PRICE = "product_price"
         const val PARAM_PRODUCT_ID = "product_id"
-        const val PARAM_GATEWAY_ID = "gateway_id"
+        const val PARAM_REQUEST_GATEWAY_ID = "gateway_id"
 
     }
 
