@@ -362,7 +362,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun openSortBottomSheet() {
-        val bottomSheet = MvcLockedToProductSortListBottomSheet.createInstance(shopId)
+        val bottomSheet = MvcLockedToProductSortListBottomSheet.createInstance()
         bottomSheet.show(
             childFragmentManager,
             selectedSortData,

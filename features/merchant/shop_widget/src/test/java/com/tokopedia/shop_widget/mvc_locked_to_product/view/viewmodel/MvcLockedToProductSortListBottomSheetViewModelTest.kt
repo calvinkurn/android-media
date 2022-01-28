@@ -39,12 +39,11 @@ class MvcLockedToProductSortListBottomSheetViewModelTest {
     @Test
     fun `check whether sortListLiveData value is success`() {
         val mockSelectedSort = getMockSelectedSortUiModel()
-        val mockShopId = "1234"
         val mockResponse = getMvcLockedToProductSortListResponse()
         coEvery {
             mvcLockedToProductGetSortListUseCase.executeOnBackground()
         } returns mockResponse
-        viewModel.getSortListData(mockSelectedSort, mockShopId)
+        viewModel.getSortListData(mockSelectedSort)
         val sortListLiveDataValue = viewModel.sortListLiveData.value
         assert(sortListLiveDataValue is Success)
         val sortListLiveDataValueTotalSort = (sortListLiveDataValue as Success).data.size
@@ -55,11 +54,10 @@ class MvcLockedToProductSortListBottomSheetViewModelTest {
     @Test
     fun `check whether sortListLiveData value is fail if exception thrown`() {
         val mockSelectedSort = getMockSelectedSortUiModel()
-        val mockShopId = "1234"
         coEvery {
             mvcLockedToProductGetSortListUseCase.executeOnBackground()
         } throws Throwable()
-        viewModel.getSortListData(mockSelectedSort, mockShopId)
+        viewModel.getSortListData(mockSelectedSort)
         val sortListLiveDataValue = viewModel.sortListLiveData.value
         assert(sortListLiveDataValue is Fail)
     }

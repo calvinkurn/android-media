@@ -29,12 +29,7 @@ class MvcLockedToProductSortListBottomSheet : BottomSheetUnify(),
 
     companion object {
         private val TAG = MvcLockedToProductSortListBottomSheet::class.java.simpleName
-        private const val KEY_SHOP_ID = "shop_id"
-        fun createInstance(shopId: String) = MvcLockedToProductSortListBottomSheet().apply {
-            arguments = Bundle().apply {
-                putString(KEY_SHOP_ID, shopId)
-            }
-        }
+        fun createInstance() = MvcLockedToProductSortListBottomSheet()
     }
 
     interface Callback {
@@ -45,7 +40,6 @@ class MvcLockedToProductSortListBottomSheet : BottomSheetUnify(),
     private var selectedSortData: MvcLockedToProductSortUiModel? = null
     private var viewBinding by autoClearedNullable<MvcLockedToProductSortListBottomsheetBinding>()
     private var callback: Callback? = null
-    private var shopId: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -87,17 +81,10 @@ class MvcLockedToProductSortListBottomSheet : BottomSheetUnify(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getArgumentsData()
         configSubmitButton()
         initRecyclerView()
         getSortListData()
         observeSortListData()
-    }
-
-    private fun getArgumentsData() {
-        arguments?.let {
-            shopId = it.getString(KEY_SHOP_ID, "")
-        }
     }
 
     fun show(
@@ -151,7 +138,7 @@ class MvcLockedToProductSortListBottomSheet : BottomSheetUnify(),
 
     private fun getSortListData() {
         selectedSortData?.let {
-            viewModel?.getSortListData(it, shopId)
+            viewModel?.getSortListData(it)
         }
     }
 

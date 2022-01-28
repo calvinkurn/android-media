@@ -22,9 +22,9 @@ class MvcLockedToProductSortListBottomSheetViewModel @Inject constructor(
         get() = _sortListLiveData
     private val _sortListLiveData = MutableLiveData<Result<List<MvcLockedToProductSortUiModel>>>()
 
-    fun getSortListData(selectedSortData: MvcLockedToProductSortUiModel, shopId: String) {
+    fun getSortListData(selectedSortData: MvcLockedToProductSortUiModel) {
         launchCatchError(dispatcherProvider.io, block = {
-            mvcLockedToProductGetSortListUseCase.setParams(shopId)
+            mvcLockedToProductGetSortListUseCase.setParams()
             val response = mvcLockedToProductGetSortListUseCase.executeOnBackground()
             val uiModel = MvcLockedToProductBottomSheetMapper.mapToSortListUiModel(
                 response,

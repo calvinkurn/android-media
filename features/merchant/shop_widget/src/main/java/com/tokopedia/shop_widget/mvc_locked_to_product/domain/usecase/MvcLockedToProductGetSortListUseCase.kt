@@ -23,17 +23,16 @@ class MvcLockedToProductGetSortListUseCase @Inject constructor(
         setTypeClass(MvcLockedToProductSortListResponse::class.java)
     }
 
-    fun setParams(shopId: String) {
+    fun setParams() {
         setRequestParams(
-            mapOf(KEY_PARAMS to generateParamsValue(shopId))
+            mapOf(KEY_PARAMS to generateParamsValue())
         )
     }
 
-    private fun generateParamsValue(shopId: String): String {
+    private fun generateParamsValue(): String {
         val paramValueList = mutableListOf<String>()
         addParamValue(paramValueList, PARAM_SOURCE_KEY, PARAM_SOURCE_VALUE)
         addParamValue(paramValueList, PARAM_DEVICE_KEY, PARAM_DEVICE_VALUE)
-        addParamValue(paramValueList, PARAM_SHOP_ID_KEY, shopId)
         return paramValueList.joinToString(separator = PARAM_DELIMITER)
     }
 
@@ -49,10 +48,9 @@ class MvcLockedToProductGetSortListUseCase @Inject constructor(
         private const val KEY_PARAMS = "params"
         private const val QUERY_NAME = "MvcSortList"
         private const val PARAM_SOURCE_KEY = "source"
-        private const val PARAM_SOURCE_VALUE = "search_product"
+        private const val PARAM_SOURCE_VALUE = "mvc_page"
         private const val PARAM_DEVICE_KEY = "device"
         private const val PARAM_DEVICE_VALUE = "android"
-        private const val PARAM_SHOP_ID_KEY = "shop_id"
         private const val PARAM_DELIMITER = "&"
         private const val GQL_QUERY = """
             query MvcSortList(${'$'}params: String!) {
