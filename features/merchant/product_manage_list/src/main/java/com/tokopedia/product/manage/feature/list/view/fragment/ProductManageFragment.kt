@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.fragment
 import android.accounts.NetworkErrorException
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
@@ -814,6 +815,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         return searchKeyword.isEmpty() && selectedFilters?.selectedFilterCount.orZero() == 0 && filterTab?.isFilterActive() == false
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupInterceptor() {
         interceptor?.setOnTouchListener { v, event ->
             searchBar?.clearFocus()
