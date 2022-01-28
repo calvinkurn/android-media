@@ -762,18 +762,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
 
     override fun fintechRedirection(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
-
-
-
-
-
         if(fintechRedirectionWidgetDataClass.cta == 2) {
             fintechRedirectionWidgetDataClass.redirectionUrl?.let { openWebViewUrl(it) }
         }
         else
         {
-            if(fintechRedirectionWidgetDataClass.tenure == 0)
-                fintechRedirectionWidgetDataClass.tenure =1
             val applink = fintechRedirectionWidgetDataClass.redirectionUrl+
                     "?productID=${this.productId}"+
                     "&tenure=${fintechRedirectionWidgetDataClass.tenure}"+
