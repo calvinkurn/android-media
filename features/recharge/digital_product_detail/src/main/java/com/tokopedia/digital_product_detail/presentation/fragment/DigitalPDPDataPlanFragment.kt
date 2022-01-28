@@ -40,9 +40,12 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.AllFilterPDPBottomsheet
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
@@ -65,6 +68,7 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget.InputNumberActionType
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -246,6 +250,7 @@ class DigitalPDPDataPlanFragment :
                     val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
                     val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
 
+                    onSuccessSortFilter(denomData.data.filterTagComponents)
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
                     onSuccessMCCM(denomData.data.denomMCCMFull, selectedPositionMCCM)
 
@@ -381,6 +386,30 @@ class DigitalPDPDataPlanFragment :
     private fun onFailedGetPrefixOperator(throwable: Throwable) {
         showEmptyState()
         showErrorToaster(throwable)
+    }
+
+    private fun onSuccessSortFilter(filterTagComponents: List<TelcoFilterTagComponent>){
+        binding?.let {
+            if (!filterTagComponents.isNullOrEmpty()){
+                it.sortFilterPaketData.run {
+                    show()
+                    val filterItems = arrayListOf<SortFilterItem>()
+                    filterTagComponents.first().filterTagDataCollections.forEach {
+                        val item = SortFilterItem(it.value)
+                        filterItems.add(item)
+                    }
+                    addItem(filterItems)
+                    sortFilterPrefix.setOnClickListener {
+                        fragmentManager?.let {
+                            FilterPDPBottomsheet(getString(R.string.bottom_sheet_filter_title),
+                                getString(R.string.bottom_sheet_filter_reset),
+                                filterTagComponents)
+                                .show(it, "")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun onSuccessDenomFull(denomData: DenomWidgetModel, selectedPosition: Int?) {

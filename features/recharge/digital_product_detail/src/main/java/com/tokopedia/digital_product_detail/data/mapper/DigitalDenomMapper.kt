@@ -20,8 +20,8 @@ class DigitalDenomMapper @Inject constructor() {
 
         return InputMultiTabDenomModel(
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
-            getDenomFullMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
-                dataCollectionMCCM, true),
+            getDenomFullMapper(mappingMCCMTitle("MCCM_HALO"),
+                dataCollectionProduct, true),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList()
         )
     }
@@ -34,7 +34,7 @@ class DigitalDenomMapper @Inject constructor() {
         return DenomMCCMModel(
             getDenomGridMapper(productsDenom?.text, dataCollectionProduct),
             getDenomGridMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
-                dataCollectionMCCM, true)
+                dataCollectionProduct, true)
         )
     }
 
