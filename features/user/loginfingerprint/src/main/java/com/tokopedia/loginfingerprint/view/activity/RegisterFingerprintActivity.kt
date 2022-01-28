@@ -5,21 +5,17 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginfingerprint.R
-import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.di.DaggerLoginFingerprintComponent
 import com.tokopedia.loginfingerprint.di.LoginFingerprintSettingModule
 import com.tokopedia.loginfingerprint.view.fragment.SettingFingerprintFragment
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.SettingFingerprintViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -48,40 +44,26 @@ class RegisterFingerprintActivity: BaseActivity() {
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
-    fun initObserver() {
-        viewModel.registerFingerprintResult.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessRegisterFingerprint(it.data)
-                is Fail -> {
-                    onErrorRegisterFingerprint(throwable = it.throwable)
+    private fun initObserver() {
+        viewModel.registerResultEvent.observe(this) {
+            if (it) {
+                setResult(Activity.RESULT_OK)
+            } else {
+                val data = Intent().apply {
+                    putExtra(RESULT_INTENT_REGISTER_BIOM, "error register fingerprint")
                 }
+                setResult(Activity.RESULT_CANCELED, data)
             }
-        })
-    }
-
-    fun onSuccessRegisterFingerprint(data: RegisterFingerprintResult) {
-        if (data.success) {
-            setResult(Activity.RESULT_OK)
             finish()
-        } else {
-            onErrorRegisterFingerprint(Throwable(message = getString(R.string.error_failed_register_fingerprint)))
         }
     }
 
-    fun onErrorRegisterFingerprint(throwable: Throwable) {
-        val data = Intent().apply {
-            putExtra(RESULT_INTENT_REGISTER_BIOM, "error register fingerprint")
-        }
-        setResult(Activity.RESULT_CANCELED, data)
-        finish()
-    }
-
-    fun finishWithCanceled() {
+    private fun finishWithCanceled() {
         setResult(Activity.RESULT_CANCELED)
         finish()
     }
 
-    fun initComponents() {
+    private fun initComponents() {
         DaggerLoginFingerprintComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .loginFingerprintSettingModule(LoginFingerprintSettingModule(this))
@@ -93,9 +75,7 @@ class RegisterFingerprintActivity: BaseActivity() {
         BiometricPromptHelper.showBiometricPromptActivity(this,
             {
                 onSuccessAuthentication()
-            }, {
-                onFailedAuthentication()
-            }, { err, msg ->
+            }, {}, { err, msg ->
                 onErrorAuthentication(err, msg)
             }
         )
@@ -103,7 +83,7 @@ class RegisterFingerprintActivity: BaseActivity() {
 
     private fun onErrorAuthentication(errCode: Int, errString: String) {
         val data = Intent().apply {
-            putExtra(RESULT_INTENT_REGISTER_BIOM, errString)
+            putExtra(RESULT_INTENT_REGISTER_BIOM, "$errCode - $errString")
         }
         setResult(Activity.RESULT_CANCELED, data)
         finish()
@@ -111,10 +91,6 @@ class RegisterFingerprintActivity: BaseActivity() {
 
     private fun onSuccessAuthentication() {
         goToVerification()
-    }
-
-    private fun onFailedAuthentication() {
-
     }
 
     private fun goToVerification() {
@@ -135,7 +111,11 @@ class RegisterFingerprintActivity: BaseActivity() {
             if(resultCode == Activity.RESULT_OK && data != null) {
                 viewModel.registerFingerprint()
             } else if(resultCode == Activity.RESULT_CANCELED) {
-                onErrorRegisterFingerprint(Throwable(getString(R.string.error_failed_register_fingerprint)))
+                val mData = Intent().apply {
+                    putExtra(RESULT_INTENT_REGISTER_BIOM, "otp failed")
+                }
+                setResult(Activity.RESULT_CANCELED, mData)
+                finish()
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
