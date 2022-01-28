@@ -131,6 +131,9 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
 
     private fun setExampleImages() {
         onboardingImage?.apply {
+            val paddingDp = 16
+            val scale = resources.displayMetrics.density
+            setPadding(0, (paddingDp * scale + 0.5f).toInt(), 0, 0)
             loadImage(KycUrl.SCAN_SELFIE)
             show()
         }
