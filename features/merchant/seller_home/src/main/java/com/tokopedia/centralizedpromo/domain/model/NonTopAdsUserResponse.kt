@@ -12,10 +12,7 @@ data class NonTopAdsUserResponse(
     data class TopAdsGetShopInfoV21(
         @SerializedName("data")
         @Expose
-        val nonTopAdsUserData: NonTopAdsUserData? = null,
-        @SerializedName("errors")
-        @Expose
-        val errors: List<Any?>? = null
+        val nonTopAdsUserData: NonTopAdsUserData? = null
     ) {
         data class NonTopAdsUserData(
             @SerializedName("ads")

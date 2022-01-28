@@ -9,25 +9,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-val GET_WHITELISTED_USERS_SELLER_HOME: String =
-    """query topAdsGetShopWhitelistedFeature(${'$'}shopID: String!){
-  topAdsGetShopWhitelistedFeature(shopID: ${'$'}shopID){
-      data {
-        featureID
-        featureName
-      }
-      errors {
-         code
-         detail
-         title
-      }
-  }
-}
-""".trimIndent()
-
-private const val KEY_SHOP_ID = "shopID"
-private const val ON_BOARDING = "onboarding"
-
 class SellerHomeGetWhiteListedUserUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
     val userSession: UserSessionInterface
@@ -56,4 +37,26 @@ class SellerHomeGetWhiteListedUserUseCase @Inject constructor(
             putString(KEY_SHOP_ID, userSession.shopId)
         }
     }
+
+    companion object {
+        val GET_WHITELISTED_USERS_SELLER_HOME: String =
+            """query topAdsGetShopWhitelistedFeature(${'$'}shopID: String!){
+  topAdsGetShopWhitelistedFeature(shopID: ${'$'}shopID){
+      data {
+        featureID
+        featureName
+      }
+      errors {
+         code
+         detail
+         title
+      }
+  }
+}
+""".trimIndent()
+
+        private const val KEY_SHOP_ID = "shopID"
+        private const val ON_BOARDING = "onboarding"
+    }
+
 }
