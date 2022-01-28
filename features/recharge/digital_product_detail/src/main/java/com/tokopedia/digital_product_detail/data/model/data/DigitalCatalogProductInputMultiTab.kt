@@ -145,7 +145,10 @@ data class RechargeAttributesProduct(
     val categoryId: String = "",
     @SerializedName("operator_id")
     @Expose
-    val operatorId: String = ""
+    val operatorId: String = "",
+    @SerializedName("product_descriptions")
+    @Expose
+    val productDescriptions: List<String> = listOf()
 )
 
 

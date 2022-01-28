@@ -123,7 +123,8 @@ class DigitalDenomMapper @Inject constructor() {
                 isShowChevron = true,
                 quotaInfo = "30 GB", //todo add from gql
                 expiredDays = "30 Days", // todo add from gql
-                discountLabel = if (isMCCM) "10%" else "", // todo add from gql
+                discountLabel = if (isMCCM) "10%" else "", // todo add from gql,
+                productDescriptions = it.attributes.productDescriptions
             )
         }
     }

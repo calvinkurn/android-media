@@ -120,6 +120,8 @@
             android:id="@+id/recharge_pdp_paket_data_buy_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_alignParentBottom="true"
             />
 </RelativeLayout>

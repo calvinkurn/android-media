@@ -26,7 +26,7 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                 text = denom.price
                 if (denom.slashPrice.isNullOrEmpty()){
                     setMargin(
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                             .toInt(),
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                             .toInt(),
@@ -37,7 +37,7 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                     )
                 } else {
                     setMargin(
-                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                             .toInt(),
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                             .toInt(),
