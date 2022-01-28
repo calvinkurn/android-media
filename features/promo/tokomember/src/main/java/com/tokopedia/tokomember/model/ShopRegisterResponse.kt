@@ -1,6 +1,9 @@
 package com.tokopedia.tokomember.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
 data class ShopRegisterResponse(
 
@@ -8,35 +11,37 @@ data class ShopRegisterResponse(
 	val data: Data? = null
 )
 
-data class BottomSheetContentItem(
+@Parcelize
+data class BottomSheetContentItem (
 
 	@SerializedName("cta")
-	val cta: CtaShopRegister? = null,
+	val cta: CtaShopRegister? = CtaShopRegister() ,
 
 	@SerializedName("imageURL")
-	val imageURL: String? = null,
+	val imageURL: String? = "",
 
 	@SerializedName("description")
-	val description: String? = null,
+	val description: String? = "",
 
 	@SerializedName("title")
-	val title: String? = null
-)
+	val title: String? = ""
+) : Parcelable
 
+@Parcelize
 data class CtaShopRegister(
 
 	@SerializedName("appLink")
-	val appLink: String? = null,
+	val appLink: String? = "",
 
 	@SerializedName("isShown")
-	val isShown: Boolean? = null,
+	val isShown: Boolean? = false,
 
 	@SerializedName("text")
-	val text: String? = null,
+	val text: String? = "",
 
 	@SerializedName("url")
-	val url: String? = null
-)
+	val url: String? = ""
+) : Parcelable
 
 data class Data(
 
@@ -44,6 +49,7 @@ data class Data(
 	val membershipGetShopRegistrationWidget: MembershipGetShopRegistrationWidget? = null
 )
 
+@Parcelize
 data class MembershipGetShopRegistrationWidget(
 
 	@SerializedName("resultStatus")
@@ -60,8 +66,9 @@ data class MembershipGetShopRegistrationWidget(
 
 	@SerializedName("bottomSheetContent")
 	val bottomSheetContent: List<BottomSheetContentItem?>? = null
-)
+) : Parcelable
 
+@Parcelize
 data class WidgetContentItem(
 
 	@SerializedName("appLink")
@@ -87,8 +94,9 @@ data class WidgetContentItem(
 
 	@SerializedName("url")
 	val url: String? = null
-)
+) : Parcelable
 
+@Parcelize
 data class ResultStatusShopRegister(
 
 	@SerializedName("reason")
@@ -99,5 +107,5 @@ data class ResultStatusShopRegister(
 
 	@SerializedName("message")
 	val message: List<String?>? = null
-)
+) : Parcelable
 

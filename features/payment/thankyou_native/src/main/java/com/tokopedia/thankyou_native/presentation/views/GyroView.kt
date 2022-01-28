@@ -13,7 +13,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
-import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper.TYPE_TOKOMEMBER
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
@@ -21,12 +20,14 @@ import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommenda
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroTokomemberItem
+import com.tokopedia.tokomember.model.BottomSheetContentItem
 
 
 const val KEY_NEED_LOGIN = "need_login"
 
 class GyroView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0 ,
+        var listener: RegisterMemberShipListener? = null)
     : FrameLayout(context, attrs, defStyleAttr), GyroAdapterListener {
 
 
@@ -100,6 +101,7 @@ class GyroView @JvmOverloads constructor(
                         gyroRecommendationItem,
                         thanksPageData, position + 1
                     )
+                    listener?.registerMembership(gyroRecommendationItem.listOfBottomSheetContent,gyroRecommendationItem.membershipCardId)
                 }
                 is GyroRecommendationListItem -> {
                     analytics.onGyroRecommendationListClick(
@@ -122,4 +124,8 @@ class GyroView @JvmOverloads constructor(
         }
         context.startActivity(intent)
     }
+}
+
+interface RegisterMemberShipListener {
+    fun registerMembership(bundle: BottomSheetContentItem, memberShipCardId:String)
 }

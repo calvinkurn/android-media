@@ -34,6 +34,11 @@ class TokomemberUsecase @Inject constructor(private val tokomemberRepository: To
     override suspend fun executeOnBackground(): ShopRegisterResponse {
         return tokomemberRepository.getTokomemberData(shopId, amount)
     }
+
+    fun setGqlParams(queryParamTokomember: Pair<Int, Float>) {
+       this.shopId = queryParamTokomember.first
+        this.amount = queryParamTokomember.second
+    }
 }
 
 object TokomemberShopParams{

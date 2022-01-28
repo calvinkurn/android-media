@@ -30,7 +30,6 @@ class ThanksPageDataViewModel @Inject constructor(
     private val getDefaultAddressUseCase: GetDefaultAddressUseCase,
     private val thankYouTopAdsViewModelUseCase: ThankYouTopAdsViewModelUseCase,
     private val membershipRegisterUseCase: MembershipRegisterUseCase,
-    private val tokomemberUsecase: TokomemberUsecase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
@@ -39,8 +38,6 @@ class ThanksPageDataViewModel @Inject constructor(
     val topTickerLiveData = MutableLiveData<Result<List<TickerData>>>()
     val defaultAddressLiveData = MutableLiveData<Result<GetDefaultChosenAddressResponse>>()
     val membershipRegisterData = MutableLiveData<Result<MembershipRegister>>()
-    val tokomemberShopData = MutableLiveData<Result<MembershipGetShopRegistrationWidget>>()
-
 
     val topAdsDataLiveData = MutableLiveData<TopAdsRequestParams>()
 
@@ -59,6 +56,7 @@ class ThanksPageDataViewModel @Inject constructor(
 
     fun getFeatureEngine(thanksPageData: ThanksPageData) {
         gyroEngineRequestUseCase.cancelJobs()
+        var queryParamTokomember : Pair<Int,Float> ? = null
         gyroEngineRequestUseCase.getFeatureEngineData(
             thanksPageData
         ) {
@@ -70,12 +68,11 @@ class ThanksPageDataViewModel @Inject constructor(
                     if (topAdsRequestParams != null) {
                         loadTopAdsViewModelData(topAdsRequestParams, thanksPageData)
                     }
-                    if (isTokomemberWidgetShow(it.engineData)){
-                        val queryParam : Pair<Int,Float> =
+                    if (isTokomemberWidgetShow(it.engineData)) {
+                        queryParamTokomember  =
                             getTokomemberRequestParams(thanksPageData)
-                        getTokomemberData(queryParam.first, queryParam.second)
                     }
-                    postGyroRecommendation(it.engineData)
+                    postGyroRecommendation(it.engineData , queryParamTokomember)
                 }
             }
         }
@@ -106,9 +103,12 @@ class ThanksPageDataViewModel @Inject constructor(
         return FeatureRecommendationMapper.getTokomemberRequestParams(engineData)
     }
 
-    private fun postGyroRecommendation(engineData: FeatureEngineData?) {
+    private fun postGyroRecommendation(
+        engineData: FeatureEngineData?,
+        queryParamTokomember: Pair<Int, Float>?
+    ) {
         gyroEngineMapperUseCase.cancelJobs()
-        gyroEngineMapperUseCase.getFeatureListData(engineData, {
+        gyroEngineMapperUseCase.getFeatureListData(engineData,queryParamTokomember, {
             gyroRecommendationLiveData.postValue(it)
         }, { it.printStackTrace() })
     }
@@ -142,16 +142,6 @@ class ThanksPageDataViewModel @Inject constructor(
         })
     }
 
-    fun getTokomemberData(shopId:Int, amount:Float) {
-        tokomemberUsecase.getTokomemberData(shopId,amount,{
-            it?.let {
-                tokomemberShopData.postValue(Success(it))
-            }
-        },{
-            tokomemberShopData.postValue(Fail(it))
-        })
-    }
-
     fun registerTokomember(membershipCardID:String) {
         membershipRegisterUseCase.registerMembership(membershipCardID ,{
             it?.let {
@@ -169,7 +159,6 @@ class ThanksPageDataViewModel @Inject constructor(
         thankYouTopAdsViewModelUseCase.cancelJobs()
         thanksPageMapperUseCase.cancelJobs()
         gyroEngineMapperUseCase.cancelJobs()
-        tokomemberUsecase.cancelJobs()
         membershipRegisterUseCase.cancelJobs()
         super.onCleared()
     }

@@ -19,7 +19,7 @@ open class DefaultTmTrackerImpl:TokomemberTrackerImpl {
                         map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_TM_BS_CLOSE_CTA
                     }
                 }
-                map[Tracker.Constants.EVENT_LABEL] = "$shopId $paymentId"
+                map[Tracker.Constants.EVENT_LABEL] = "$shopId - $paymentId"
             }
         }
         Tracker.fillCommonItems(map, userId, Tracker.Constants.TOKOPOINT_BUSINESSUNIT)
@@ -43,7 +43,7 @@ open class DefaultTmTrackerImpl:TokomemberTrackerImpl {
                 map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_TM_BS_CLOSE
             }
         }
-        map[Tracker.Constants.EVENT_LABEL] = "$shopId $paymentId"
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $paymentId"
         Tracker.fillCommonItems(map, userId, Tracker.Constants.TOKOPOINT_BUSINESSUNIT)
         Tracker.getTracker().sendGeneralEvent(map)
     }
@@ -65,7 +65,7 @@ open class DefaultTmTrackerImpl:TokomemberTrackerImpl {
                 map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_TM_BS_CLOSE
             }
         }
-        map[Tracker.Constants.EVENT_LABEL] = "$shopId $paymentId"
+        map[Tracker.Constants.EVENT_LABEL] = "$shopId - $paymentId"
 
         Tracker.fillCommonItems(map, userId, Tracker.Constants.TOKOPOINT_BUSINESSUNIT)
         Tracker.getTracker().sendGeneralEvent(map)

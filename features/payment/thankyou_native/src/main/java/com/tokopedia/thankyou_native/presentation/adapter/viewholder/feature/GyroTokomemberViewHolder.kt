@@ -25,18 +25,17 @@ class GyroTokomemberViewHolder(val view: View, val listener: GyroAdapterListener
             itemView.tag = element
             ivFeatureItem.scaleType = ImageView.ScaleType.CENTER_INSIDE
 
-            image?.let {
+            imageURL?.let {
                 ivFeatureItem.visible()
-                ivFeatureItem.setImageUrl(image)
+                ivFeatureItem.setImageUrl(imageURL)
             } ?: run { ivFeatureItem.gone() }
 
             tvFeatureItemTitle.text = title ?: ""
             tvFeatureItemDescription.text = description ?: ""
 
             view.setOnClickListener {
-                listener.onItemClicked(element, adapterPosition)
                 if (element.isOpenBottomSheet) {
-                    itemView.context.startActivity(TokomemberActivity.getIntent(itemView.context))
+                    listener.onItemClicked(element, adapterPosition)
                 } else {
                     if (!urlApp.isNullOrBlank()) {
                         listener.openAppLink(urlApp)

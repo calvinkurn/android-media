@@ -4,7 +4,6 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.tokomember.model.MembershipRegisterResponse
 import com.tokopedia.tokomember.model.ShopRegisterResponse
 import com.tokopedia.tokomember.usecase.MembershipRegisterParams

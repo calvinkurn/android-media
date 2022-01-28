@@ -4,10 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 
@@ -22,10 +21,11 @@ class TokomemberActivity : BaseActivity() {
         const val REDIRECTION_LINK = "redirectionLink"
         const val DATA_HASH_CODE = "dataHash"
 
-        fun getIntent(context: Context, redirectionLink: String = "",hashCode:Int = 0): Intent {
+        fun getIntent(context: Context, redirectionLink: String = "",hashCode:Int = 0 , bundle: Bundle= Bundle()): Intent {
             val intent = Intent(context, TokomemberActivity::class.java)
             intent.putExtra(REDIRECTION_LINK, redirectionLink)
             intent.putExtra(DATA_HASH_CODE,hashCode)
+            intent.putExtra("key_membership",bundle)
             return intent
         }
     }
@@ -35,13 +35,7 @@ class TokomemberActivity : BaseActivity() {
         userSession = UserSession(this)
         handleDimming()
         appLink = intent.extras?.getString(REDIRECTION_LINK, "") ?: ""
-
-        if (userSession.isLoggedIn) {
-            showTmBottomSheetDetail()
-        } else {
-            val loginIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-            startActivityForResult(loginIntent, REQUEST_CODE_LOGIN)
-        }
+        showTmBottomSheetDetail()
     }
 
     private fun handleDimming() {
@@ -53,17 +47,7 @@ class TokomemberActivity : BaseActivity() {
     }
 
     private fun showTmBottomSheetDetail() {
-        val bottomSheet = TokomemberBottomSheetView()
-
-        //TODO title
-        bottomSheet.setTitle("")
-
-        //TODO use empty state with bottomsheet
-
-        if (!appLink.isNullOrEmpty()) {
-            //TODO click listener
-        }
-        bottomSheet.show(supportFragmentManager, "BottomSheet Tag")
+        val bottomSheet = TokomemberBottomSheetView.newInstance(intent?.extras?:Bundle())
         bottomSheet.setShowListener {
             val titleMargin = dpToPx(16).toInt()
             bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
@@ -74,6 +58,7 @@ class TokomemberActivity : BaseActivity() {
                 finish()
             }
         }
+        bottomSheet.show(supportFragmentManager, "BottomSheet Tag")
     }
 
     override fun onResume() {
@@ -94,18 +79,5 @@ class TokomemberActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         isOnResume = false
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_LOGIN -> {
-                if (userSession.isLoggedIn) {
-                    showTmBottomSheetDetail()
-                } else {
-                    finish()
-                }
-            }
-        }
     }
 }

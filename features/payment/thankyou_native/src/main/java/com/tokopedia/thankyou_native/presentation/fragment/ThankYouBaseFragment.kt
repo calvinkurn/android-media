@@ -11,6 +11,7 @@ import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -38,11 +39,14 @@ import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.presentation.views.GyroView
+import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
+import com.tokopedia.tokomember.TokomemberActivity
+import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -53,7 +57,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
-abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
+abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener ,
+    RegisterMemberShipListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -95,6 +100,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private var membershipBottomSheetData: BottomSheetContentItem? = null
 
     override fun initInjector() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
@@ -265,6 +272,22 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             addDataToTopAdsView(it)
         }
 
+        thanksPageDataViewModel.membershipRegisterData.observe(viewLifecycleOwner){
+            when(it) {
+                is Success -> {
+                    view?.context?.apply {
+                        val bundle = Bundle()
+                        bundle.putParcelable("key_membership",bundle)
+                        startActivity(TokomemberActivity.getIntent(this,bundle = bundle))
+                    }
+                }
+                is Fail -> {
+                    Toaster.build(requireView(), "Error message", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
+            }
+
+        }
+
     }
 
     private fun updateLocalizingAddressData(data: GetDefaultChosenAddressResponse) {
@@ -323,6 +346,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         if (::thanksPageData.isInitialized) {
             if (!gyroRecommendation.gyroVisitable.isNullOrEmpty()) {
                 getFeatureListingContainer()?.visible()
+                getFeatureListingContainer()?.listener = this
                 getFeatureListingContainer()?.addData(gyroRecommendation, thanksPageData,
                     gyroRecommendationAnalytics.get())
             } else {
@@ -545,6 +569,11 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             cpmModel.data?.get(0)?.cpm?.position == 1,
             topadsHeadlineView
         )
+    }
+
+    override fun registerMembership(membershipBottomSheetData: BottomSheetContentItem, memberShipCardId:String) {
+        this.membershipBottomSheetData = membershipBottomSheetData
+        thanksPageDataViewModel.registerTokomember(memberShipCardId)
     }
 
     companion object {

@@ -3,11 +3,15 @@ package com.tokopedia.thankyou_native.presentation.adapter.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
+import com.tokopedia.tokomember.model.BottomSheetContentItem
+import com.tokopedia.tokomember.model.WidgetContentItem
 
 data class GyroRecommendation(
         var title : String,
         var description: String,
-        var gyroVisitable : ArrayList<Visitable<*>>
+        var gyroVisitable : ArrayList<Visitable<*>>,
+        var gyroTokomemberBottomSheet : BottomSheetContentItem = BottomSheetContentItem(),
+        var gyroMembershipSuccessWidget : GyroTokomemberItem = GyroTokomemberItem()
 )
 
 open class GyroModel {

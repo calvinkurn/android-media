@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokomember.di.DaggerTokomemberComponent
+import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
@@ -16,9 +18,10 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
     private var textTitle: Typography? = null
     private var textDesc: Typography? = null
     private var button: UnifyButton? = null
+    private var bottomSheetData: BottomSheetContentItem? = null
 
-    companion object{
-        fun newInstance(bundle: Bundle):TokomemberBottomSheetView{
+    companion object {
+        fun newInstance(bundle: Bundle): TokomemberBottomSheetView {
             val rbs = TokomemberBottomSheetView()
             rbs.arguments = bundle
             return rbs
@@ -35,19 +38,20 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
     }
 
 
-    private fun init(){
+    private fun init() {
         val view = View.inflate(context, R.layout.activity_tokomember, null)
         textTitle = view.findViewById(R.id.tvTitle)
         textDesc = view.findViewById(R.id.tvSubtitle)
         button = view?.findViewById(R.id.tokoButton)
         setUpBottomSheet()
+        setBottomSheet()
         setChild(view)
 
         DaggerTokomemberComponent.builder()
             .build().inject(this)
     }
 
-    private fun setUpBottomSheet(){
+    private fun setUpBottomSheet() {
         this.apply {
             isDragable = true
             isHideable = true
@@ -58,22 +62,15 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
         }
     }
 
-    private fun handleError(error: Throwable?) {
+    private fun setBottomSheet() {
+        bottomSheetData = arguments?.getParcelable("key_membership")
 
-    }
+        textTitle?.text = bottomSheetData?.title
+        textDesc?.text = bottomSheetData?.description
+        button?.text = bottomSheetData?.cta?.text
 
-    private fun handleLoading(b: Boolean) {
-
-    }
-
-    private fun handleSuccess(data: Any?) {
-
-    }
-
-    private fun setBottomSheet(){
-  /*      setTitle(bottomSheetModel.bottomSheetTitle?:"")
-        textTitle?.text = bottomSheetModel.contentTitle
-        textDesc?.text = bottomSheetModel.contentDescription
-        button?.text = bottomSheetModel.buttonText*/
+        button?.setOnClickListener {
+            RouteManager.route(context, bottomSheetData?.cta?.appLink)
+        }
     }
 }
