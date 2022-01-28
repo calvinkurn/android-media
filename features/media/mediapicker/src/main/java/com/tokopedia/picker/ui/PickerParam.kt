@@ -20,6 +20,8 @@ data class PickerParam(
 
     fun isCommonPageType() = pageType == PickerPageType.COMMON
 
+    fun ratioIsSquare() = cameraRatio == CameraRatio.Square
+
 }
 
 sealed class CameraRatio {

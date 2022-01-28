@@ -1,6 +1,9 @@
 package com.tokopedia.picker.ui.fragment.camera.component
 
 import android.view.ViewGroup
+import android.widget.Space
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.LifecycleOwner
 import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.controls.Audio
@@ -9,8 +12,12 @@ import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
+import com.otaliastudios.cameraview.size.AspectRatio
 import com.otaliastudios.cameraview.size.Size
+import com.otaliastudios.cameraview.size.SizeSelectors
 import com.tokopedia.common.component.UiComponent
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
 import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.utils.MediaFileUtils
@@ -22,7 +29,16 @@ class CameraPreviewComponent(
     parent: ViewGroup,
 ) : UiComponent(parent, R.id.uc_camera_preview) {
 
-    private val cameraView = findViewById<CameraView>(R.id.cameraView)
+    private val spaceToolBar = findViewById<Space>(R.id.space_toolbar)
+
+    private val cameraView = findViewById<CameraView>(R.id.cameraView).apply {
+        if (!param.ratioIsSquare()) {
+            fullScreenCameraView()
+        } else {
+            squareRatioCameraView()
+            squareRatioOfCameraSize()
+        }
+    }
 
     fun setupView(owner: LifecycleOwner) {
         cameraView.clearCameraListeners()
@@ -96,6 +112,40 @@ class CameraPreviewComponent(
         ?.supportedFlash
         ?.contains(Flash.TORCH) == true
 
+    private fun fullScreenCameraView() {
+        spaceToolBar.hide()
+
+        val parent = componentView() as ConstraintLayout
+
+        ConstraintSet().apply {
+            clone(parent)
+            connect(
+                R.id.cameraView,
+                ConstraintSet.BOTTOM,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.BOTTOM,
+                0
+            )
+        }.applyTo(parent)
+    }
+
+    private fun squareRatioCameraView() {
+        spaceToolBar.show()
+
+        val parent = componentView() as ConstraintLayout
+
+        ConstraintSet().apply {
+            clone(parent)
+            setDimensionRatio(R.id.cameraView, CONSTRAINT_SQUARE_RATIO)
+        }.applyTo(parent)
+    }
+
+    private fun CameraView.squareRatioOfCameraSize() {
+        val sizeSelector = SizeSelectors.aspectRatio(AspectRatio.of(1, 1), 0f)
+        this.setPictureSize(sizeSelector)
+        this.setVideoSize(sizeSelector)
+    }
+
     private fun cameraViewListener() = object : CameraListener() {
         override fun onCameraOpened(options: CameraOptions) {
             super.onCameraOpened(options)
@@ -150,6 +200,10 @@ class CameraPreviewComponent(
         fun onVideoRecordingEnd()
         fun onVideoTaken(result: VideoResult)
         fun onPictureTaken(result: PictureResult)
+    }
+
+    companion object {
+        private const val CONSTRAINT_SQUARE_RATIO = "1:1"
     }
 
 }
