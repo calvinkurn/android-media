@@ -104,14 +104,14 @@ class PdpFintechWidget @JvmOverloads constructor(
         val recyclerView = baseView.findViewById<RecyclerView>(R.id.recycler_items)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
-            override fun clickedWidget(cta: Int, url: String, tenure: Int, gatewayID: Int) {
+            override fun clickedWidget(cta: Int, url: String, tenure: Int, gatewayBrand: String) {
                 instanceProductUpdateListner.fintechRedirection(
                     FintechRedirectionWidgetDataClass(
                        cta =  cta,
                        redirectionUrl =  url,
                        tenure= tenure,
                        productUrl =  idToProductUrl[productID],
-                       gatewayCode =  gatewayID
+                       gatewayCode =  gatewayBrand
                     )
                 )
             }

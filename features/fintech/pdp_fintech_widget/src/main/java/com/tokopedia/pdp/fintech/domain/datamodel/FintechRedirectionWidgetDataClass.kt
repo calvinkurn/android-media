@@ -5,5 +5,5 @@ data class FintechRedirectionWidgetDataClass(
     var redirectionUrl: String? = null,
     var tenure:Int = 1,
     var productUrl:String? = null,
-    var gatewayCode:Int = 0
+    var gatewayCode:String? = null
 )
