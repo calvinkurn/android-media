@@ -48,4 +48,10 @@ class CreateCouponTargetAdapter(
         this.items = items.toMutableList()
         notifyDataSetChanged()
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun addData(items: List<CouponTargetUiModel>) {
+        this.items.addAll(items)
+        notifyDataSetChanged()
+    }
 }

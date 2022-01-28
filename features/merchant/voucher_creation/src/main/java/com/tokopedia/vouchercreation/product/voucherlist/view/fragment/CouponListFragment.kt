@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
+import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
@@ -28,8 +31,11 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.da
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditCoupon
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
 import java.util.*
+import com.tokopedia.vouchercreation.product.create.view.adapter.CreateCouponTargetAdapter
+import com.tokopedia.vouchercreation.product.create.view.uimodel.CouponTargetEnum
+import com.tokopedia.vouchercreation.product.create.view.uimodel.CouponTargetUiModel
 
-class CouponListFragment: BaseDaggerFragment() {
+class CouponListFragment: BaseSimpleListFragment<CreateCouponTargetAdapter, CouponTargetUiModel>() {
 
     private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
         return@lazy MoreMenuBottomSheet.createInstance()
@@ -51,7 +57,50 @@ class CouponListFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
+        return inflater.inflate(R.layout.fragment_mvc_coupon_list, container, false)
+    }
+
+    override fun createAdapter() = CreateCouponTargetAdapter {}
+
+    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.rvVoucherList)
+
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout = view.findViewById(R.id.swipeMvcList)
+
+    override fun addElementToAdapter(list: List<CouponTargetUiModel>) {
+        adapter?.addData(list)
+    }
+
+    override fun loadData(page: Int) {
+        val list = List(10) {
+            CouponTargetUiModel(
+                R.drawable.ic_im_umum,
+                R.string.mvc_create_target_public,
+                R.string.mvc_create_coupon_target_public_desc,
+                CouponTargetEnum.PUBLIC,
+                selected = false
+            )
+        }
+        renderList(list, page < 10)
+    }
+
+    override fun clearAdapterData() {
+
+    }
+
+    override fun onShowLoading() {
+
+    }
+
+    override fun onHideLoading() {
+
+    }
+
+    override fun onDataEmpty() {
+
+    }
+
+    override fun onGetListError(message: String) {
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
