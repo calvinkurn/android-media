@@ -40,7 +40,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
-import com.tokopedia.digital_product_detail.data.model.data.SelectedFullProduct
+import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
@@ -935,7 +935,7 @@ class DigitalPDPDataPlanFragment :
             onClearSelectedMCCM()
         }
 
-        viewModel.selectedFullProduct = SelectedFullProduct(denomFull, layoutType, position)
+        viewModel.selectedFullProduct = SelectedProduct(denomFull, layoutType, position)
 
         if (isShowBuyWidget && viewModel.isEligibleToBuy) {
             onShowBuyWidget(denomFull)

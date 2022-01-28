@@ -31,8 +31,8 @@ class DenomFullWidget @JvmOverloads constructor(
         selectedProductPosition: Int? = null
     ) {
         if (!denomData.listDenomData.isNullOrEmpty()) {
-            val adapterDenomFull = DenomFullAdapter()
             with(rechargeDenomFullWidgetBinding) {
+                root.show()
                 denomFullShimmering.root.hide()
                 tgDenomFullWidgetTitle.run {
                     show()
