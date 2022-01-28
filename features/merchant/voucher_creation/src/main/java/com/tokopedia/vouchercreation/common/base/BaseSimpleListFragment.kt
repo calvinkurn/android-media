@@ -114,17 +114,17 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         }
     }
 
-    private fun showLoading() {
-        onShowLoading()
+    private fun updateScrollListenerState(hasNextPage: Boolean) {
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
     }
 
     private fun showSwipeLoading() {
         swipeToRefresh?.isRefreshing = true
     }
 
-    private fun updateScrollListenerState(hasNextPage: Boolean) {
-        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
+    private fun showLoading() {
+        onShowLoading()
     }
 
     private fun hideLoading() {
@@ -142,7 +142,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     }
 
     fun renderList(list: List<F>, hasNextPage: Boolean) {
-        onHideLoading()
+        hideLoading()
         addElementToAdapter(list)
 
         // update the load more state (paging/can loadmore)
@@ -164,10 +164,9 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     }
 
     fun showGetListError(throwable: Throwable) {
-        onHideLoading()
+        hideLoading()
         updateStateScrollListener()
 
-        // Note: add element should be the last in line.
         if (adapter?.itemCount.orZero().isMoreThanZero()) {
             onGetListErrorWithExistingData(throwable)
         } else {
