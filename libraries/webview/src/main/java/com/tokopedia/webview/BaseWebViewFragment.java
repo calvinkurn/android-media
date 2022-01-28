@@ -821,9 +821,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private boolean loadGoogleDocsUrl(Uri uri) {
         String googleDocsUrl;
         if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
-            googleDocsUrl = uri.toString();
+            googleDocsUrl = decode(uri.toString());
         } else {
-            googleDocsUrl = GOOGLE_DOCS_PDF_URL + uri.toString();
+            googleDocsUrl = GOOGLE_DOCS_PDF_URL + decode(uri.toString());
         }
         if (webView != null) {
             if (uri.getHost().contains(TOKOPEDIA_STRING)) {
