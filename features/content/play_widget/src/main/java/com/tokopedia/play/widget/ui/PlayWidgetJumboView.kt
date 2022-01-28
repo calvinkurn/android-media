@@ -34,7 +34,6 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
     override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
         mWidgetInternalListener = listener
     }
-    private val itemContainer: FrameLayout
 
     private val recyclerViewItem: RecyclerView
 
@@ -102,8 +101,6 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_jumbo, this)
-
-        itemContainer = view.findViewById(R.id.play_widget_container)
 
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
 

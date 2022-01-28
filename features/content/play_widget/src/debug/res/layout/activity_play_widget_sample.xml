@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/play_tu_sample"
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/play_vp_sample"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

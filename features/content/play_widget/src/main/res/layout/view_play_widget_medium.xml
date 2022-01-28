@@ -34,7 +34,8 @@
             app:typographyType="heading_3"
             app:typographyWeight="bold"
             tools:text="Tonton keseruannya"
-            tools:visibility="gone" />
+            tools:visibility="gone"
+            />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/play_widget_medium_action"
@@ -49,7 +50,9 @@
             app:layout_constraintBottom_toBottomOf="@+id/play_widget_medium_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/play_widget_medium_title"
-            tools:visibility="gone" />
+            tools:visibility="gone"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

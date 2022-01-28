@@ -38,8 +38,6 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
         mWidgetInternalListener = listener
     }
 
-    private val itemContainer: FrameLayout
-
     private val recyclerViewItem: RecyclerView
 
     private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
@@ -108,8 +106,6 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_large, this)
-
-        itemContainer = view.findViewById(R.id.play_widget_container)
 
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
 

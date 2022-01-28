@@ -1,10 +1,10 @@
-package com.tokopedia.play.widget.sample
+package com.tokopedia.play.widget.sample.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.sample.PlayWidgetViewAdapterDelegate
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 07/10/20

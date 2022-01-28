@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ui.PlayerView
@@ -25,7 +24,6 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 
 /**
  * @author by astidhiyaa on 11/01/22
@@ -49,13 +47,10 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
     private val tvOnlyLive: TextView
     private val tvPromoDetail: TextView
     private val llPromoDetail: ViewGroup
-    private val tvStartTime
-    : TextView
+    private val tvStartTime: TextView
     private val tvTitle: TextView
     private val tvAuthor: TextView
     private val tvTotalView: TextView
-    private val llLoadingContainer: LinearLayout
-    private val loaderLoading: LoaderUnify
     private val ivGiveaway: ImageView
 
     private var mPlayer: PlayVideoPlayer? = null
@@ -80,8 +75,6 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
         tvTotalView = view.findViewById(R.id.viewer)
-        llLoadingContainer = view.findViewById(R.id.ll_loading_container)
-        loaderLoading = view.findViewById(R.id.loader_loading)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
 
         compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
@@ -104,7 +97,6 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
         thumbnail.setImageUrl(model.video.coverUrl)
 
         when (model.channelType) {
-            PlayWidgetChannelType.Deleting -> setDeletingModel(model)
             PlayWidgetChannelType.Upcoming -> setUpcomingModel()
             else -> setActiveModel(model)
         }
@@ -140,22 +132,12 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
         liveBadge.showWithCondition(isLiveBadgeShown)
         reminderBadge.gone()
         totalViewBadge.showWithCondition(model.totalView.isVisible)
-        llLoadingContainer.gone()
     }
 
     private fun setUpcomingModel() {
         liveBadge.gone()
         reminderBadge.visible()
         totalViewBadge.gone()
-        llLoadingContainer.gone()
-    }
-
-    private fun setDeletingModel(model: PlayWidgetChannelUiModel) {
-        val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
-        liveBadge.showWithCondition(isLiveBadgeShown)
-        reminderBadge.gone()
-        totalViewBadge.showWithCondition(model.totalView.isVisible)
-        llLoadingContainer.visible()
     }
 
     private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
@@ -210,11 +192,6 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
     override fun isPlayable(): Boolean {
         return mModel.channelType == PlayWidgetChannelType.Live ||
                 mModel.channelType == PlayWidgetChannelType.Vod
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        loaderLoading.visibility = loaderLoading.visibility
     }
 
     override fun onDetachedFromWindow() {

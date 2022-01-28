@@ -2,7 +2,8 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient
-        android:startColor="@color/play_widget_dms_overlay_gradient_80"
+        android:startColor="@color/play_widget_dms_overlay_gradient_24"
+        android:centerColor="@color/play_widget_dms_overlay_gradient_16"
         android:endColor="@color/play_widget_dms_transparent"
         android:angle="-90"/>
 </shape>

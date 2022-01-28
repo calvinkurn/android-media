@@ -1,45 +1,55 @@
 package com.tokopedia.play.widget.sample
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.sample.adapter.PlayWidgetSampleAdapter
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 
 /**
- * Created by jegul on 07/10/20
+ * Created by meyta.taliti on 27/01/22.
  */
-class PlayWidgetSampleActivity : BaseSimpleActivity() {
+class PlayWidgetSampleFragment : TkpdBaseV4Fragment() {
 
-    private val rvWidgetSample by lazy { findViewById<RecyclerView>(R.id.rv_widget_sample) }
+    private val rvWidgetSample by lazy { view?.findViewById<RecyclerView>(R.id.rv_widget_sample) }
 
     private lateinit var adapter: PlayWidgetSampleAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_play_widget_sample)
-        setupView()
+    override fun getScreenName(): String {
+        return "PlayWidgetSampleFragment"
     }
 
-    override fun getNewFragment(): Fragment? {
-        return null
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_play_widget_sample, container, false)
     }
 
-    private fun setupView() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView(view)
+    }
+
+    private fun setupView(view: View) {
         val sampleData = getSampleData()
         val coordinatorMap = List(sampleData.size) {
             PlayWidgetCoordinator(this).apply {
-                setAnalyticListener(PlayWidgetSampleAnalytic(this@PlayWidgetSampleActivity))
+                setAnalyticListener(PlayWidgetSampleAnalytic(requireContext()))
             }
         }.associateWith { null }
 
         adapter = PlayWidgetSampleAdapter(coordinatorMap)
 
-        rvWidgetSample.adapter = adapter
+        rvWidgetSample?.adapter = adapter
         adapter.setItemsAndAnimateChanges(getSampleData())
     }
 
@@ -48,21 +58,11 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
             PlayWidgetState(
                 model = PlayWidgetUiMock.getSamplePlayWidget(),
                 widgetType = PlayWidgetType.Small,
-                isLoading = true,
+                isLoading = false,
             ),
             PlayWidgetState(
                 model = PlayWidgetUiMock.getSamplePlayWidget(),
                 widgetType = PlayWidgetType.Medium,
-                isLoading = false
-            ),
-            PlayWidgetState(
-                model = PlayWidgetUiMock.getSamplePlayWidget(),
-                widgetType = PlayWidgetType.Large,
-                isLoading = false
-            ),
-            PlayWidgetState(
-                model = PlayWidgetUiMock.getSamplePlayWidget(),
-                widgetType = PlayWidgetType.Jumbo,
                 isLoading = false
             )
         )

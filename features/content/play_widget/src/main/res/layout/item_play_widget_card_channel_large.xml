@@ -2,4 +2,5 @@
 <com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelLargeView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/play_widget_card_large"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/play_widget_card_large_height" />
+    android:layout_height="wrap_content"
+    />
