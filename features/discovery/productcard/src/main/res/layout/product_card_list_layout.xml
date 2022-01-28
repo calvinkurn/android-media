@@ -35,6 +35,17 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
+        <View
+            android:id="@+id/outOfStockOverlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/Unify_N700_44"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/imageProduct"
+            app:layout_constraintBottom_toBottomOf="@+id/imageProduct"
+            app:layout_constraintStart_toStartOf="@+id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@+id/imageProduct"/>
+
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelProductStatus"
             android:layout_width="wrap_content"

@@ -243,6 +243,7 @@
 -keepnames class com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
 -keepnames class com.tokopedia.cart.view.CartFragment
 -keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
+-keepnames class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
 
 # Hansel proguard rules
 -dontwarn io.hansel.**

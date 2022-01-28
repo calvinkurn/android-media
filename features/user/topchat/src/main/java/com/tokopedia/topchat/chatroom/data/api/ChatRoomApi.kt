@@ -20,6 +20,6 @@ interface ChatRoomApi {
     fun reply(@FieldMap requestParams: HashMap<String, Any>): Observable<Response<DataResponse<ReplyChatItemPojo>>>
 
     @GET(ChatUrl.GET_TEMPLATE)
-    fun getTemplate(@QueryMap parameters: HashMap<String, Any>): Observable<Response<DataResponse<TemplateData>>>
+    suspend fun getTemplateSuspend(@QueryMap parameters: HashMap<String, Any>): Response<DataResponse<TemplateData>>
 
 }

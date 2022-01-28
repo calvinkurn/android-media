@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -11,6 +12,13 @@ import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
@@ -18,15 +26,11 @@ import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
-import com.tokopedia.play_common.sse.PlayChannelSSE
-import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
-import com.tokopedia.play.data.ssemapper.PlaySSEMapper
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.UpcomingChannelUpdateActive
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -34,6 +38,8 @@ import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.setValue
+import com.tokopedia.play.util.share.PlayShareExperience
+import com.tokopedia.play.util.share.PlayShareExperienceData
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.*
@@ -59,15 +65,14 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
-import com.tokopedia.play_common.sse.model.SSEAction
-import com.tokopedia.play_common.sse.model.SSECloseReason
-import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -98,11 +103,12 @@ class PlayViewModel @Inject constructor(
         private val remoteConfig: RemoteConfig,
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
-        private val playChannelWebSocket: PlayChannelWebSocket,
+        private val playChannelWebSocket: PlayWebSocket,
         private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
         private val timerFactory: TimerFactory,
-        private val castPlayerHelper: CastPlayerHelper
+        private val castPlayerHelper: CastPlayerHelper,
+        private val playShareExperience: PlayShareExperience,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -249,6 +255,13 @@ class PlayViewModel @Inject constructor(
         )
     }.flowOn(dispatchers.computation)
 
+    private val _kebabMenuUiState = _bottomInsets.map {
+        PlayKebabMenuUiState(
+            shouldShow = !isFreezeOrBanned && !it.isKeyboardShown
+        )
+    }.flowOn(dispatchers.computation)
+
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -265,8 +278,9 @@ class PlayViewModel @Inject constructor(
         _shareUiState.distinctUntilChanged(),
         _rtnUiState.distinctUntilChanged(),
         _titleUiState.distinctUntilChanged(),
-        _viewAllProductUiState.distinctUntilChanged()
-    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct ->
+        _viewAllProductUiState.distinctUntilChanged(),
+        _kebabMenuUiState.distinctUntilChanged()
+    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct, kebabMenu ->
         PlayViewerNewUiState(
             interactiveView = interactive,
             partner = partner,
@@ -278,6 +292,7 @@ class PlayViewModel @Inject constructor(
             rtn = rtn,
             title = title,
             viewAllProduct = viewAllProduct,
+            kebabMenu = kebabMenu
         )
     }.flowOn(dispatchers.computation)
 
@@ -637,6 +652,98 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
+    fun onShowKebabMenuSheet(estimatedSheetHeight: Int) {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.KebabMenuSheet] =
+            BottomInsetsState.Shown(
+                estimatedInsetsHeight = estimatedSheetHeight,
+                isPreviousStateSame = insetsMap[BottomInsetsType.KebabMenuSheet]?.isShown == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun hideKebabMenuSheet() {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.KebabMenuSheet] =
+            BottomInsetsState.Hidden(
+                isPreviousStateSame = insetsMap[BottomInsetsType.KebabMenuSheet]?.isHidden == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun showCouponSheet(estimatedHeight: Int) {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.CouponSheet] =
+            BottomInsetsState.Shown(
+                estimatedInsetsHeight = estimatedHeight,
+                isPreviousStateSame = insetsMap[BottomInsetsType.CouponSheet]?.isShown == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun hideCouponSheet() {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.CouponSheet] =
+            BottomInsetsState.Hidden(
+                isPreviousStateSame = insetsMap[BottomInsetsType.CouponSheet]?.isHidden == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun onShowUserReportSheet(estimatedSheetHeight: Int) {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.UserReportSheet] =
+            BottomInsetsState.Shown(
+                estimatedInsetsHeight = estimatedSheetHeight,
+                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSheet]?.isShown == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun hideUserReportSheet() {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.UserReportSheet] =
+            BottomInsetsState.Hidden(
+                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSheet]?.isHidden == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int) {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.UserReportSubmissionSheet] =
+            BottomInsetsState.Shown(
+                estimatedInsetsHeight = estimatedSheetHeight,
+                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSubmissionSheet]?.isShown == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun hideUserReportSubmissionSheet() {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.UserReportSubmissionSheet] =
+            BottomInsetsState.Hidden(
+                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSubmissionSheet]?.isHidden == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
     fun hideInsets(isKeyboardHandled: Boolean) {
         val defaultBottomInsets = getDefaultBottomInsetsMapState()
         _observableBottomInsetsState.value = if (isKeyboardHandled) {
@@ -663,11 +770,19 @@ class PlayViewModel @Inject constructor(
         val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: true
         val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
         val defaultLeaderboardSheetState = currentBottomInsetsMap?.get(BottomInsetsType.LeaderboardSheet)?.isHidden ?: true
+        val defaultCouponSheetState = currentBottomInsetsMap?.get(BottomInsetsType.CouponSheet)?.isHidden ?: true
+        val defaultKebabMenuSheet = currentBottomInsetsMap?.get(BottomInsetsType.KebabMenuSheet)?.isHidden ?: true
+        val defautUserReportListSheet = currentBottomInsetsMap?.get(BottomInsetsType.UserReportSheet)?.isHidden ?: true
+        val defaultUserReportSubmissionSHeet = currentBottomInsetsMap?.get(BottomInsetsType.UserReportSubmissionSheet)?.isHidden ?: true
         return mapOf(
                 BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
                 BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
                 BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState),
                 BottomInsetsType.LeaderboardSheet to BottomInsetsState.Hidden(defaultLeaderboardSheetState),
+                BottomInsetsType.CouponSheet to BottomInsetsState.Hidden(defaultCouponSheetState),
+                BottomInsetsType.KebabMenuSheet to BottomInsetsState.Hidden(defaultKebabMenuSheet),
+                BottomInsetsType.UserReportSheet to BottomInsetsState.Hidden(defautUserReportListSheet),
+                BottomInsetsType.UserReportSubmissionSheet to BottomInsetsState.Hidden(defaultUserReportSubmissionSHeet)
         )
     }
     //endregion
@@ -680,6 +795,8 @@ class PlayViewModel @Inject constructor(
     fun getVideoDuration(): Long {
         return playVideoPlayer.getVideoDuration()
     }
+
+    fun getVideoTimestamp(): Long = playVideoPlayer.getCurrentPosition()
 
     fun requestWatchInPiP() {
         _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.WatchInPiP))
@@ -719,8 +836,14 @@ class PlayViewModel @Inject constructor(
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
-            ClickShareAction -> handleClickShare()
             RefreshLeaderboard -> handleRefreshLeaderboard()
+            CopyLinkAction -> handleCopyLink()
+            ClickShareAction -> handleClickShareIcon()
+            ShowShareExperienceAction -> handleOpenSharingOption(false)
+            ScreenshotTakenAction -> handleOpenSharingOption(true)
+            CloseSharingOptionAction -> handleCloseSharingOption()
+            is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
+            is SharePermissionAction -> handleSharePermission(action.label)
         }
     }
 
@@ -920,6 +1043,10 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.ProductSheet -> onHideProductSheet()
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
+            BottomInsetsType.KebabMenuSheet -> hideKebabMenuSheet()
+            BottomInsetsType.UserReportSheet -> hideUserReportSheet()
+            BottomInsetsType.UserReportSubmissionSheet -> hideUserReportSubmissionSheet()
+            BottomInsetsType.CouponSheet -> hideCouponSheet()
         }
         return shownBottomSheets.isNotEmpty()
     }
@@ -945,7 +1072,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun connectWebSocket(channelId: String, socketCredential: SocketCredential) {
-        playChannelWebSocket.connectSocket(channelId, socketCredential.gcToken)
+        playChannelWebSocket.connect(channelId, socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_VIEWER)
     }
 
     private fun stopWebSocket() {
@@ -1795,20 +1922,18 @@ class PlayViewModel @Inject constructor(
         else handleClickLikeNonLive(isFromLogin, newStatusHandler)
     }
 
-    private fun handleClickShare() {
+    private suspend fun copyLink() {
         val shareInfo = _channelDetail.value.shareInfo
 
-        viewModelScope.launch {
-            _uiEvent.emit(
-                CopyToClipboardEvent(shareInfo.content)
-            )
+        _uiEvent.emit(
+            CopyToClipboardEvent(shareInfo.content)
+        )
 
-            _uiEvent.emit(
-                ShowInfoEvent(
-                    UiString.Resource(R.string.play_link_copied)
-                )
+        _uiEvent.emit(
+            ShowInfoEvent(
+                UiString.Resource(R.string.play_link_copied)
             )
-        }
+        )
     }
 
     private fun handleRefreshLeaderboard() {
@@ -1818,6 +1943,87 @@ class PlayViewModel @Inject constructor(
         }
 
         checkLeaderboard(channelId)
+    }
+
+    private fun handleCopyLink() {
+        viewModelScope.launch { copyLink() }
+    }
+
+    private fun handleClickShareIcon() {
+        viewModelScope.launch {
+            playAnalytic.clickShareButton(channelId, partnerId, channelType.value)
+
+            _uiEvent.emit(
+                SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
+            )
+        }
+    }
+
+    private fun handleOpenSharingOption(isScreenshot: Boolean) {
+        viewModelScope.launch {
+            if(isScreenshot)
+                playAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType.value)
+
+            if(playShareExperience.isCustomSharingAllow()) {
+                playAnalytic.impressShareBottomSheet(channelId, partnerId, channelType.value)
+
+                _uiEvent.emit(OpenSharingOptionEvent(
+                    title = _channelDetail.value.channelInfo.title,
+                    coverUrl = _channelDetail.value.channelInfo.coverUrl,
+                    userId = userId,
+                    channelId = channelId
+                ))
+            }
+            else if(!isScreenshot) {
+                copyLink()
+            }
+        }
+    }
+
+    private fun handleCloseSharingOption() {
+        playAnalytic.closeShareBottomSheet(channelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet())
+    }
+
+    private fun handleSharingOption(shareModel: ShareModel) {
+        viewModelScope.launch {
+            playAnalytic.clickSharingOption(channelId, partnerId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
+
+            val playShareExperienceData = getPlayShareExperienceData()
+
+            playShareExperience
+                .setShareModel(shareModel)
+                .setData(playShareExperienceData)
+                .createUrl(object: PlayShareExperience.Listener {
+                    override fun onUrlCreated(
+                        linkerShareData: LinkerShareResult?,
+                        shareModel: ShareModel,
+                        shareString: String
+                    ) {
+                        viewModelScope.launch {
+                            _uiEvent.emit(CloseShareExperienceBottomSheet)
+                            _uiEvent.emit(
+                                OpenSelectedSharingOptionEvent(
+                                    linkerShareData,
+                                    shareModel,
+                                    shareString
+                                )
+                            )
+                        }
+                    }
+
+                    override fun onError(e: Exception) {
+                        viewModelScope.launch {
+                            _uiEvent.emit(CloseShareExperienceBottomSheet)
+                            _uiEvent.emit(ErrorGenerateShareLink)
+                        }
+                    }
+                }
+            )
+        }
+    }
+
+    private fun handleSharePermission(label: String) {
+        playAnalytic.clickSharePermission(channelId, partnerId, channelType.value, label)
     }
 
     /**
@@ -1861,6 +2067,23 @@ class PlayViewModel @Inject constructor(
         _observableCastState.value = model
     }
 
+    private fun getPlayShareExperienceData(): PlayShareExperienceData {
+        val (channelInfo, shareInfo) = _channelDetail.let {
+            return@let Pair(it.value.channelInfo, it.value.shareInfo)
+        }
+
+        return PlayShareExperienceData(
+            id = channelId,
+            title = channelInfo.title,
+            partnerName = _partnerInfo.value.name,
+            coverUrl = channelInfo.coverUrl,
+            redirectUrl = shareInfo.redirectUrl,
+            textDescription = shareInfo.textDescription,
+            metaTitle = shareInfo.metaTitle,
+            metaDescription = shareInfo.metaDescription,
+        )
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
@@ -1877,5 +2100,7 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
+
+        private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
     }
 }

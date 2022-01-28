@@ -76,6 +76,7 @@
         <item name="android:windowActionModeOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowBackground">@color/Unify_Background</item>
     </style>
 
     <style name="Base.Toolbar.Theme" parent="Theme.AppCompat.DayNight.NoActionBar">

@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
             android:layout_marginEnd="@dimen/unify_space_12"
-            android:text="@string/recharge_order_detail_mybills_detail"
+            android:text="@string/recharge_order_detail_help_center_detail"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/tg_recharge_order_detail_help_button_title"

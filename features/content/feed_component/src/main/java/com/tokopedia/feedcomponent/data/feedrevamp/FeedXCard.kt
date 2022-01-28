@@ -76,6 +76,8 @@ data class FeedXCard(
     @SerializedName("hashtagWebLinkFmt")
     var hashtagWebLinkFmt: String = "",
     val impressHolder: ImpressHolder = ImpressHolder(),
+    //Active carousel index
+    var lastCarouselIndex : Int = 0,
     //Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",
@@ -91,13 +93,16 @@ data class FeedXCard(
     @SerializedName("mediaRatio")
     var mediaRatio: FeedXMediaRatio = FeedXMediaRatio(),
     @SerializedName("views")
-    var views: FeedXViews = FeedXViews()
+    var views: FeedXViews = FeedXViews(),
+
+
 
 ) : ImpressHolder() {
     fun copyPostData(): FeedXCard {
         return FeedXCard(
             typename = typename,
             id = id,
+            type= type,
             playChannelID = playChannelID,
             mediaRatio = mediaRatio,
             author = author,

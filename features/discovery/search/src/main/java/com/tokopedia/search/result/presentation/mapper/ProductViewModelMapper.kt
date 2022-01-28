@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.mapper
 
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -40,10 +41,14 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import java.util.*
+import com.tokopedia.search.result.presentation.model.InspirationData
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeOptionFiltersDataView
 
 class ProductViewModelMapper {
 
+    @Suppress("LongParameterList")
     fun convertToProductViewModel(
         lastProductItemPosition: Int,
         searchProductModel: SearchProductModel,
@@ -65,6 +70,7 @@ class ProductViewModelMapper {
             searchProductData.related,
             isLocalSearch,
             dimension90,
+            keyword,
         )
         productDataView.productList = convertToProductItemDataViewList(
             lastProductItemPosition,
@@ -72,7 +78,6 @@ class ProductViewModelMapper {
             pageTitle,
             dimension90,
         )
-        productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
             keyword,
@@ -96,6 +101,11 @@ class ProductViewModelMapper {
         )
         productDataView.inspirationCardDataView = convertToInspirationCardViewModel(
             searchProductModel.searchInspirationWidget
+        )
+        productDataView.inspirationSizeDataView = convertToInspirationSizeViewModel(
+                searchProductModel.searchInspirationWidget,
+                keyword,
+                dimension90
         )
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
@@ -143,65 +153,88 @@ class ProductViewModelMapper {
         }
     }
 
-    private fun convertToRelatedViewModel(related: Related, isLocalSearch: Boolean, dimension90: String): RelatedDataView {
-        val broadMatchDataViewList: MutableList<BroadMatchDataView> = ArrayList()
-        for (otherRelated in related.otherRelatedList) {
-            broadMatchDataViewList.add(convertToBroadMatchViewModel(otherRelated, isLocalSearch, dimension90))
-        }
-        return RelatedDataView(
-                related.relatedKeyword,
-                related.position,
-                broadMatchDataViewList
+    private fun convertToRelatedViewModel(
+        related: Related,
+        isLocalSearch: Boolean,
+        dimension90: String,
+        actualKeyword: String,
+    ): RelatedDataView =
+        RelatedDataView(
+            related.relatedKeyword,
+            related.position,
+            related.otherRelatedList.map {
+                convertToBroadMatchViewModel(
+                    it,
+                    isLocalSearch,
+                    dimension90,
+                    related.trackingOption,
+                    actualKeyword,
+                )
+            }
         )
-    }
 
-    private fun convertToBroadMatchViewModel(otherRelated: OtherRelated, isLocalSearch: Boolean, dimension90: String): BroadMatchDataView {
+    private fun convertToBroadMatchViewModel(
+        otherRelated: OtherRelated,
+        isLocalSearch: Boolean,
+        dimension90: String,
+        trackingOption: Int,
+        actualKeyword: String,
+    ): BroadMatchDataView {
         val broadMatchItemDataViewList = otherRelated.productList.mapIndexed { index, otherRelatedProduct ->
             val position = index + 1
-            convertToBroadMatchItemViewModel(otherRelatedProduct, position, otherRelated.keyword, dimension90)
+            convertToBroadMatchItemViewModel(
+                otherRelatedProduct,
+                position,
+                otherRelated.keyword,
+                dimension90,
+            )
         }
 
         return BroadMatchDataView(
-                otherRelated.keyword,
-                otherRelated.url,
-                otherRelated.applink,
-                isLocalSearch,
-                broadMatchItemDataViewList,
-                dimension90,
-                BroadMatch,
+            keyword = otherRelated.keyword,
+            url = otherRelated.url,
+            applink = otherRelated.applink,
+            isAppendTitleInTokopedia = isLocalSearch,
+            broadMatchItemDataViewList = broadMatchItemDataViewList,
+            dimension90 = dimension90,
+            carouselOptionType = BroadMatch,
+            componentId = otherRelated.componentId,
+            trackingOption = trackingOption,
+            actualKeyword = actualKeyword,
         )
     }
 
     private fun convertToBroadMatchItemViewModel(
-            otherRelatedProduct: OtherRelatedProduct,
-            position: Int,
-            alternativeKeyword: String,
-            dimension90: String,
+        otherRelatedProduct: OtherRelatedProduct,
+        position: Int,
+        alternativeKeyword: String,
+        dimension90: String,
     ): BroadMatchItemDataView {
         val isOrganicAds = otherRelatedProduct.isOrganicAds()
 
         return BroadMatchItemDataView(
-                id = otherRelatedProduct.id,
-                name = otherRelatedProduct.name,
-                price = otherRelatedProduct.price,
-                imageUrl = otherRelatedProduct.imageUrl,
-                url = otherRelatedProduct.url,
-                applink = otherRelatedProduct.applink,
-                priceString = otherRelatedProduct.priceString,
-                shopLocation = otherRelatedProduct.shop.city,
-                badgeItemDataViewList = otherRelatedProduct.badgeList.mapToBadgeItemDataViewList(),
-                freeOngkirDataView = otherRelatedProduct.freeOngkir.mapToFreeOngkirDataView(),
-                isWishlisted = otherRelatedProduct.isWishlisted,
-                position = position,
-                alternativeKeyword = alternativeKeyword,
-                isOrganicAds = isOrganicAds,
-                topAdsViewUrl = otherRelatedProduct.ads.productViewUrl,
-                topAdsClickUrl = otherRelatedProduct.ads.productClickUrl,
-                topAdsWishlistUrl = otherRelatedProduct.ads.productWishlistUrl,
-                ratingAverage = otherRelatedProduct.ratingAverage,
-                labelGroupDataList = otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
-                carouselProductType = BroadMatchProduct(),
-                dimension90 = dimension90,
+            id = otherRelatedProduct.id,
+            name = otherRelatedProduct.name,
+            price = otherRelatedProduct.price,
+            imageUrl = otherRelatedProduct.imageUrl,
+            url = otherRelatedProduct.url,
+            applink = otherRelatedProduct.applink,
+            priceString = otherRelatedProduct.priceString,
+            shopLocation = otherRelatedProduct.shop.city,
+            badgeItemDataViewList = otherRelatedProduct.badgeList.mapToBadgeItemDataViewList(),
+            freeOngkirDataView = otherRelatedProduct.freeOngkir.mapToFreeOngkirDataView(),
+            isWishlisted = otherRelatedProduct.isWishlisted,
+            position = position,
+            alternativeKeyword = alternativeKeyword,
+            isOrganicAds = isOrganicAds,
+            topAdsViewUrl = otherRelatedProduct.ads.productViewUrl,
+            topAdsClickUrl = otherRelatedProduct.ads.productClickUrl,
+            topAdsWishlistUrl = otherRelatedProduct.ads.productWishlistUrl,
+            ratingAverage = otherRelatedProduct.ratingAverage,
+            labelGroupDataList = otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
+            carouselProductType = BroadMatchProduct(),
+            dimension90 = dimension90,
+            componentId = otherRelatedProduct.componentId,
         )
     }
 
@@ -403,12 +436,37 @@ class ProductViewModelMapper {
     private fun convertToInspirationCardViewModel(
             searchInspirationWidget: SearchInspirationWidget
     ): List<InspirationCardDataView> {
-        return searchInspirationWidget.data.map { data ->
+        return searchInspirationWidget.data.filter { it.type != SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
             InspirationCardDataView(
-                    data.title,
-                    data.type,
-                    data.position,
-                    data.inspiratioWidgetOptions.mapToInspirationCardOptionDataView(data.type)
+                InspirationData(
+                    title = data.title,
+                    type = data.type,
+                    position = data.position,
+                    optionCardData = data.inspirationWidgetOptions.mapToInspirationCardOptionDataView(data.type)
+                )
+            )
+        }
+    }
+
+    private fun convertToInspirationSizeViewModel(
+        searchInspirationWidget: SearchInspirationWidget,
+        keyword: String,
+        dimension90: String
+    ): List<InspirationSizeDataView> {
+        return searchInspirationWidget.data.filter { it.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
+            InspirationSizeDataView(
+                InspirationData(
+                    title = data.title,
+                    type = data.type,
+                    position = data.position,
+                    optionSizeData = data.inspirationWidgetOptions.mapToInspirationSizeOptionDataView(
+                        data.type,
+                        keyword,
+                        dimension90,
+                        data.title,
+                        data.trackingOption
+                    ),
+                )
             )
         }
     }
@@ -425,6 +483,36 @@ class ProductViewModelMapper {
                     inspirationCardType,
             )
         }
+
+    private fun List<InspirationCardOption>.mapToInspirationSizeOptionDataView(
+        inspirationCardType: String,
+        keyword: String,
+        dimension90: String,
+        title: String,
+        trackingOption: Int
+    ) = this.map { optionModel ->
+        InspirationSizeOptionDataView(
+            optionModel.text,
+            optionModel.img,
+            optionModel.url,
+            optionModel.color,
+            optionModel.applink,
+            optionModel.filters.toInspirationSizeOptionFiltersDataView(),
+            inspirationCardType,
+            optionModel.componentId,
+            keyword = keyword,
+            dimension90 = dimension90,
+            valueName = title + " - " +optionModel.text,
+            trackingOption = trackingOption
+        )
+    }
+
+    private fun SearchProductModel.InspirationCardOptionFilter.toInspirationSizeOptionFiltersDataView() =
+        InspirationSizeOptionFiltersDataView(
+            this.key,
+            this.name,
+            this.value
+        )
 
     private fun convertToBannerDataView(bannerModel: Banner): BannerDataView {
         return BannerDataView(

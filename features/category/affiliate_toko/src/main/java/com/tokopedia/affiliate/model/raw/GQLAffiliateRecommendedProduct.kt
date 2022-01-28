@@ -37,6 +37,7 @@ val GQL_Affiliate_Recommended_Product : String = """query recommendedAffiliatePr
           }
           rating
           productID
+          shopID
         }
       }
       pageInfo {

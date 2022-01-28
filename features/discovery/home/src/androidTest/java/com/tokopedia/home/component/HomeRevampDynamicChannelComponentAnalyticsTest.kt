@@ -7,10 +7,15 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -22,13 +27,18 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert
@@ -43,6 +53,7 @@ private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
 /**
  * Created by yfsx on 2/9/21.
  */
+@CassavaTest
 class HomeRevampDynamicChannelComponentAnalyticsTest {
     @get:Rule
     var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
@@ -58,6 +69,8 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
+    private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
+
     @Before
     fun resetAll() {
         disableCoachMark(context)
@@ -67,6 +80,12 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
                 null
             )
         )
+        val recyclerView: RecyclerView =
+                activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+        homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
+                recyclerView = recyclerView
+        )
+        IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
 
     @After
@@ -74,6 +93,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         visibilityIdlingResource?.let {
             IdlingRegistry.getInstance().unregister(visibilityIdlingResource)
         }
+        IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
     @Test
@@ -163,6 +183,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testRecommendationFeedBanner() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -193,6 +214,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testRecommendationFeedProductLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             login()
@@ -271,6 +293,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testRecommendationFeedProductNonLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -306,6 +329,34 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECHARGE_BU_WIDGET)
+        }
+    }
+
+    @Test
+    fun testComponentListCarousel() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = RecommendationListCarouselDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.buttonAddToCart).performClick() }
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+                onView(withId(R.id.buy_again_close_image_view)).perform(ViewActions.click())
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL)
+        }
+    }
+
+    @Test
+    fun testBannerComponentWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = BannerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBannerCarouselWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL)
         }
     }
 

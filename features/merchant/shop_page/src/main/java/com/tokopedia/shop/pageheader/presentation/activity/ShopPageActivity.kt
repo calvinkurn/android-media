@@ -18,14 +18,12 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
-import com.tokopedia.shop.common.constant.ShopPageConstant.HOME_V2_EXTRA
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_V2_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
@@ -113,11 +111,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
 
         performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
         performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
-        performanceMonitoringShopHomeTab = if(isUsingNewShopHomeTab()){
-            PerformanceMonitoring.start(SHOP_HOME_TAB_V2_TRACE)
-        } else{
-            PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)
-        }
+        performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_V2_TRACE)
 
         performanceMonitoringShopHomeWebViewTab = PerformanceMonitoring.start(SHOP_HOME_WEB_VIEW_TRACE)
     }
@@ -159,10 +153,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
 
     private fun getShopInfoIntent(context: Context): Intent {
         return Intent(context, ShopInfoActivity::class.java)
-    }
-
-    private fun isUsingNewShopHomeTab(): Boolean {
-        return ShopUtil.isUsingNewShopHomeTab(intent)
     }
 
     override fun getShopPageLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {

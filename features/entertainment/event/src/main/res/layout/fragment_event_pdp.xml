@@ -35,13 +35,24 @@
                         app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                         app:title="">
 
-
-                        <com.tokopedia.entertainment.pdp.widget.WidgetEventPDPCarousel
-                            android:id="@+id/carousel_event_pdp"
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fitsSystemWindows="true"
-                            app:layout_collapseMode="parallax" />
+                            android:layout_height="wrap_content">
+
+                            <com.tokopedia.entertainment.pdp.widget.WidgetEventPDPCarousel
+                                android:id="@+id/carousel_event_pdp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fitsSystemWindows="true"
+                                app:layout_collapseMode="parallax" />
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/layout_lvl7"
+                                android:background="@drawable/bg_event_pdp_background"
+                                />
+
+                        </FrameLayout>
 
                         <androidx.appcompat.widget.Toolbar
                             android:id="@+id/event_pdp_toolbar"
@@ -113,18 +124,18 @@
 
     <LinearLayout
         android:id="@+id/container_error_event_pdp"
-        android:background="@color/Unify_Background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/Unify_Background"
         android:orientation="vertical"
         android:visibility="gone" />
 
     <com.tokopedia.globalerror.GlobalError
-        android:background="@color/Unify_Background"
         android:id="@+id/global_error_pdp_event"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:background="@color/Unify_Background"
         android:gravity="center"
         android:visibility="gone" />
 </FrameLayout>

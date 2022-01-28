@@ -11,19 +11,18 @@ import com.tokopedia.broadcaster.state.*
 import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.mediator.mapper.map
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimer
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerImpl
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerListener
+import com.tokopedia.play.broadcaster.pusher.timer.*
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
 
 class LiveBroadcasterMediator(
     private val livePusher: LiveBroadcaster,
-    private val cacheHandler: LocalCacheHandler
+    private val cacheHandler: LocalCacheHandler,
+    private val mTimer: PlayLivePusherTimer,
 ) : LiveBroadcaster by livePusher, PusherMediator {
 
     override val remainingDurationInMillis: Long
-        get() = mCountDownTimer.remainingDurationInMillis
+        get() = mTimer.remainingDurationInMillis
 
     override val ingestUrl: String
         get() = livePusher.ingestUrl
@@ -31,7 +30,6 @@ class LiveBroadcasterMediator(
     override val config: BroadcasterConfig
         get() = livePusher.config
 
-    private val mCountDownTimer: PlayLivePusherCountDownTimer = PlayLivePusherCountDownTimerImpl(cacheHandler)
     private val mListeners = mutableListOf<PlayLivePusherMediatorListener>()
 
     private var mPauseDuration = 0L
@@ -42,8 +40,8 @@ class LiveBroadcasterMediator(
             broadcastStateChanged(pusherMediatorState)
 
             when {
-                state.isPaused -> mCountDownTimer.pause()
-                state.isResumed -> mCountDownTimer.resume()
+                state.isPaused -> mTimer.pause()
+                state.isResumed -> mTimer.resume()
                 state.isStopped -> removeLastPauseMillis()
                 pusherMediatorState is PlayLivePusherMediatorState.Error -> {
                     if (pusherMediatorState.error.type.isNetworkTrouble) doAutoReconnect()
@@ -56,19 +54,19 @@ class LiveBroadcasterMediator(
         }
     }
 
-    private val countDownTimerListener = object : PlayLivePusherCountDownTimerListener {
-        override fun onCountDownTimerActive(timeInMillis: Long) {
-            broadcastCountDownTimerActive(timeInMillis)
+    private val countDownTimerListener = object : PlayLivePusherTimerListener {
+        override fun onTimerActive(timeInMillis: Long) {
+            broadcastTimerActive(timeInMillis)
         }
 
-        override fun onCountDownTimerFinish() {
-            broadcastCountDownTimerFinish()
+        override fun onTimerFinish() {
+            broadcastTimerFinish()
         }
     }
 
     init {
         livePusher.setListener(livePusherListener)
-        mCountDownTimer.setListener(countDownTimerListener)
+        mTimer.setListener(countDownTimerListener)
     }
 
     override fun init(context: Context, handler: Handler) {
@@ -103,8 +101,8 @@ class LiveBroadcasterMediator(
         return state.map()
     }
 
-    override fun setLiveStreamingDuration(durationInMillis: Long) {
-        mCountDownTimer.setDuration(durationInMillis)
+    override fun setLiveStreamingDuration(durationInMillis: Long, maxDuration: Long) {
+        mTimer.setDuration(durationInMillis, maxDuration)
     }
 
     override fun setLiveStreamingPauseDuration(durationInMillis: Long) {
@@ -113,24 +111,24 @@ class LiveBroadcasterMediator(
 
     override fun startLiveStreaming(ingestUrl: String, withTimer: Boolean) {
         livePusher.start(ingestUrl)
-        if (withTimer) startLiveCountDownTimer()
+        if (withTimer) startLiveTimer()
     }
 
     override fun stopLiveStreaming() {
-        mCountDownTimer.stop()
+        mTimer.stop()
         livePusher.stop()
     }
 
-    override fun startLiveCountDownTimer() {
-        mCountDownTimer.start()
+    override fun startLiveTimer() {
+        mTimer.start()
     }
 
-    override fun restartLiveCountDownTimer(duration: Long) {
-        mCountDownTimer.restart(duration)
+    override fun restartLiveTimer(duration: Long, maxDuration: Long) {
+        mTimer.restart(duration, maxDuration)
     }
 
     override fun destroy() {
-        mCountDownTimer.destroy()
+        mTimer.destroy()
         release()
     }
 
@@ -190,12 +188,12 @@ class LiveBroadcasterMediator(
         mListeners.forEach { it.onLivePusherStatsUpdated(stats) }
     }
 
-    private fun broadcastCountDownTimerActive(timeInMillis: Long) {
-        mListeners.forEach { it.onLiveCountDownTimerActive(timeInMillis) }
+    private fun broadcastTimerActive(timeInMillis: Long) {
+        mListeners.forEach { it.onLiveTimerActive(timeInMillis) }
     }
 
-    private fun broadcastCountDownTimerFinish() {
-        mListeners.forEach { it.onLiveCountDownTimerFinish() }
+    private fun broadcastTimerFinish() {
+        mListeners.forEach { it.onLiveTimerFinish() }
     }
 
     private fun broadcastReachMaxPauseDuration() {

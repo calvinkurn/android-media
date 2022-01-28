@@ -9,6 +9,9 @@ import com.tokopedia.developer_options.presentation.model.RollenceAbTestingManua
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity
+
+import android.content.Intent
 
 class RollenceAbTestingManualSwitcherViewHolder(
     itemView: View
@@ -22,8 +25,10 @@ class RollenceAbTestingManualSwitcherViewHolder(
     override fun bind(element: RollenceAbTestingManualSwitcherUiModel) {
         val tfRollenceKey = itemView.findViewById<TextFieldUnify>(R.id.input_rollence_key_tf)
         val tfRollenceVariant = itemView.findViewById<TextFieldUnify>(R.id.input_rollence_variant_tf)
-        val btn = itemView.findViewById<UnifyButton>(R.id.apply_rollence_btn)
-        btn.setOnClickListener {
+        val btnApplyRollence = itemView.findViewById<UnifyButton>(R.id.apply_rollence_btn)
+        val btnListAbTest = itemView.findViewById<UnifyButton>(R.id.list_ab_test_btn)
+
+        btnApplyRollence.setOnClickListener {
             val rollenceKey = tfRollenceKey.textFieldInput.text
             val rollenceVariant = tfRollenceVariant.textFieldInput.text
             when {
@@ -37,6 +42,13 @@ class RollenceAbTestingManualSwitcherViewHolder(
                     RemoteConfigInstance.getInstance().abTestPlatform.setString(rollenceKey.toString().trim { it <= ' ' }, rollenceVariant.toString().trim { it <= ' ' })
                     Toast.makeText(itemView.context, "Rollence Key Applied", Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+
+        btnListAbTest.setOnClickListener {
+            itemView.context.apply {
+                val intent = Intent(this, AbTestRollenceConfigFragmentActivity::class.java)
+                startActivity(intent)
             }
         }
     }

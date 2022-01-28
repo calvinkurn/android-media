@@ -1,5 +1,6 @@
 package com.tokopedia.wishlist.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +10,8 @@ import android.view.ViewGroup
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -21,7 +23,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -31,6 +37,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -47,6 +54,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -57,13 +65,17 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
-import com.tokopedia.wishlist.R
+import com.tokopedia.wishlist.R as Rv2
 import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
 import com.tokopedia.wishlist.di.DaggerWishlistV2Component
 import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistV2Analytics
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID_INT
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST_INT
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -71,6 +83,8 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2ThreeDotsMenuBottomSheetAda
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @Keep
@@ -147,6 +161,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val FILTER_OFFERS_LABEL = "Penawaran"
         private const val FILTER_STOCK_LABEL = "Stok"
         private const val FILTER_CATEGORIES_LABEL = "Kategori"
+        private const val PADDING_RV = 10
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,6 +208,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
         if (isVisibleToUser && isAutoRefreshEnabled()) {
+            turnOffBulkDeleteMode()
             doResetFilter()
             binding?.run {
                 rvWishlist.scrollToPosition(0)
@@ -215,14 +231,23 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 is Success -> {
                     finishRefresh()
                     result.data.let { wishlistV2 ->
-                        hideLoader()
                         rvScrollListener.setHasNextPage(wishlistV2.hasNextPage)
 
-                        if (wishlistV2.totalData == 0) {
-                            isFetchRecommendation = true
-                            hideTotalLabel()
-                            hideSortFilter(wishlistV2.sortFilters)
+                        if (wishlistV2.totalData <= 0) {
+                            if (wishlistV2.sortFilters.isEmpty() && wishlistV2.items.isEmpty()) {
+                                onFailedGetWishlistV2(ResponseErrorException())
+                            } else {
+                                hideLoader()
+                                showRvWishlist()
+                                addPaddingRv()
+                                isFetchRecommendation = true
+                                hideTotalLabel()
+                                hideSortFilter(wishlistV2.sortFilters)
+                            }
                         } else {
+                            hideLoader()
+                            showRvWishlist()
+                            setPaddingReferToTypeLayout()
                             updateTotalLabel(wishlistV2.totalData)
                         }
 
@@ -237,14 +262,70 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             showToaster(wishlistV2.errorMessage, "", Toaster.TYPE_ERROR)
                         }
                     }
-
                 }
                 is Fail -> {
                     finishRefresh()
+                    onFailedGetWishlistV2(result.throwable)
                     showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
                 }
             }
         })
+    }
+
+    private fun showRvWishlist() {
+        binding?.run {
+            globalErrorWishlistV2.gone()
+            emptyStateGlobalWishlistV2.gone()
+            rvWishlist.show()
+        }
+    }
+
+    private fun onFailedGetWishlistV2(throwable: Throwable) {
+        val errorType = when (throwable) {
+            is MessageErrorException -> null
+            is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
+        }
+        if (errorType == null) {
+            binding?.run {
+                wishlistLoaderLayout.root.gone()
+                rvWishlist.gone()
+                globalErrorWishlistV2.gone()
+                emptyStateGlobalWishlistV2.apply {
+                    visible()
+                    showMessageExceptionError(throwable)
+                }
+            }
+        } else {
+            binding?.run {
+                wishlistLoaderLayout.root.gone()
+                rvWishlist.gone()
+                emptyStateGlobalWishlistV2.gone()
+                globalErrorWishlistV2.visible()
+                globalErrorWishlistV2.setType(errorType)
+                globalErrorWishlistV2.setActionClickListener { doRefresh() }
+            }
+        }
+    }
+
+    private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
+        var errorMessage = context?.let {
+            ErrorHandler.getErrorMessage(it, throwable)
+        } ?: ""
+        if (errorMessage.isEmpty()) errorMessage = getString(Rv2.string.wishlist_v2_failed_to_get_information)
+        setDescription(errorMessage)
+    }
+
+    private fun addPaddingRv() {
+        binding?.run {
+            rvWishlist.setPadding(PADDING_RV.toPx(), 0, PADDING_RV.toPx(), 0)
+        }
+    }
+
+    private fun removePaddingRv() {
+        binding?.run {
+            rvWishlist.setPadding(0, 0, 0, 0)
+        }
     }
 
     private fun observingWishlistData() {
@@ -285,7 +366,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
             viewLifecycleOwner.lifecycle.addObserver(wishlistNavtoolbar)
             wishlistNavtoolbar.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
-                    HintData(getString(R.string.hint_cari_wishlist) )),
+                    HintData(getString(Rv2.string.hint_cari_wishlist) )),
                     editorActionCallback = { query ->
                         searchQuery = query
                         if (query.isNotEmpty()) {
@@ -315,6 +396,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
             wishlistNavtoolbar.setIcon(icons)
             wishlistV2StickyCountManageLabel.wishlistManageLabel.setOnClickListener { onStickyManageClicked() }
+            wishlistV2Fb.circleMainMenu.setOnClickListener {
+                rvWishlist.smoothScrollToPosition(0)
+            }
+            wishlistV2Fb.gone()
+            setTypeLayoutIcon()
+            wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.setOnClickListener {
+                changeTypeLayout()
+                setTypeLayoutIcon()
+            }
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
@@ -327,16 +417,51 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         binding?.run {
             swipeRefreshLayout.isEnabled = true
             swipeRefreshLayout.setOnRefreshListener {
-                doRefresh()
-                isBulkDeleteShow = false
-                listBulkDelete.clear()
-                wishlistV2Adapter.hideCheckbox()
-                binding?.run {
-                    containerDelete.gone()
-                    clWishlistHeader.visible()
-                    wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
-                }
+                setRefreshing()
             }
+        }
+    }
+
+    private fun changeTypeLayout() {
+        if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
+            wishlistPref?.setTypeLayout(TYPE_GRID_INT)
+            WishlistV2Analytics.clickLayoutSettings(TYPE_GRID)
+        } else {
+            wishlistPref?.setTypeLayout(TYPE_LIST_INT)
+            WishlistV2Analytics.clickLayoutSettings(TYPE_LIST)
+        }
+        setPaddingReferToTypeLayout()
+        wishlistV2Adapter.changeTypeLayout(wishlistPref?.getTypeLayout())
+    }
+
+    private fun setPaddingReferToTypeLayout() {
+        if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
+            removePaddingRv()
+        } else {
+            addPaddingRv()
+        }
+    }
+
+    private fun setTypeLayoutIcon() {
+        binding?.run {
+            if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.setImage(IconUnify.VIEW_LIST)
+            } else if (wishlistPref?.getTypeLayout() == TYPE_GRID) {
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.setImage(IconUnify.VIEW_GRID)
+            }
+        }
+    }
+
+    private fun setRefreshing() {
+        doRefresh()
+        isBulkDeleteShow = false
+        listBulkDelete.clear()
+        wishlistV2Adapter.hideCheckbox()
+
+        binding?.run {
+            containerDelete.gone()
+            clWishlistHeader.visible()
+            wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(Rv2.string.wishlist_manage_label)
         }
     }
 
@@ -347,18 +472,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun addEndlessScrollListener() {
-        val glm = GridLayoutManager(activity, 2)
-        glm.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return when (wishlistV2Adapter.getItemViewType(position)) {
-                    WishlistV2Adapter.LAYOUT_LIST -> 2
-                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> 1
-                    else -> 2
-                }
-            }
-        }
+        val staggeredGlm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-        rvScrollListener = object : EndlessRecyclerViewScrollListener(glm) {
+        rvScrollListener = object : EndlessRecyclerViewScrollListener(staggeredGlm) {
+
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 currentPage += 1
                 onLoadMore = true
@@ -369,13 +486,42 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     loadWishlistV2()
                 }
             }
+
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+                if (dy != 0) {
+                    binding?.run {
+                        wishlistNavtoolbar.clearFocus()
+                        wishlistNavtoolbar.hideKeyboard()
+                        topLayoutShadow.visible()
+
+                        if (dy > 0) {
+                            wishlistV2Fb.gone()
+                        } else {
+                            wishlistV2Fb.visible()
+                        }
+                    }
+                }
+
+                var firstVisibleItems: IntArray? = null
+                firstVisibleItems = (layoutManager as StaggeredGridLayoutManager).findFirstVisibleItemPositions(firstVisibleItems)
+                if (firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
+                    if (firstVisibleItems[0] == 0) {
+                        binding?.run {
+                            topLayoutShadow.gone()
+                            wishlistV2Fb.gone()
+                        }
+                    }
+                }
+            }
         }
 
         binding?.run {
             rvWishlist.apply {
-                layoutManager = glm
+                layoutManager = staggeredGlm
                 adapter = wishlistV2Adapter
                 addOnScrollListener(rvScrollListener)
+                itemAnimator = null
             }
         }
     }
@@ -417,12 +563,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 is Success -> {
                     result.data.let { wishlistRemoveV2 ->
                         if (wishlistRemoveV2.success) {
-                            var msg = getString(R.string.wishlist_v2_delete_msg_default)
+                            var msg = getString(Rv2.string.wishlist_v2_delete_msg_default)
                             if (wishlistRemoveV2.message.isNotEmpty()) {
                                 msg = wishlistRemoveV2.message
                             }
 
-                            var btnText = getString(R.string.wishlist_tutup_label)
+                            var btnText = getString(Rv2.string.wishlist_tutup_label)
                             if (wishlistRemoveV2.button.text.isNotEmpty()) {
                                 btnText = wishlistRemoveV2.button.text
                             }
@@ -430,7 +576,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
                             doRefresh()
                         } else {
-                            context?.getString(R.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
+                            context?.getString(Rv2.string.wishlist_v2_common_error_msg)?.let {
+                                errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
                         }
                     }
                 }
@@ -448,22 +595,22 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     result.data.let { bulkDeleteWishlistV2 ->
                         if (bulkDeleteWishlistV2.success) {
                             val listId = bulkDeleteWishlistV2.id.replace("[","").replace("]","").split(",").toList()
-                            var msg = getString(R.string.wishlist_v2_bulk_delete_msg_toaster, listId.size)
+                            var msg = getString(Rv2.string.wishlist_v2_bulk_delete_msg_toaster, listId.size)
                             if (bulkDeleteWishlistV2.message.isNotEmpty()) {
                                 msg = bulkDeleteWishlistV2.message
                             }
 
-                            var btnText = getString(R.string.wishlist_oke_label)
+                            var btnText = getString(Rv2.string.wishlist_oke_label)
                             if (bulkDeleteWishlistV2.button.text.isNotEmpty()) {
                                 btnText = bulkDeleteWishlistV2.button.text
                             }
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
-                            listBulkDelete.clear()
-                            doRefresh()
+                            setRefreshing()
+                            setSwipeRefreshLayout()
 
                         } else {
-                            context?.getString(R.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
+                            context?.getString(Rv2.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
                         }
                     }
                 }
@@ -484,7 +631,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (atcErrorMessage != null) {
                             showToaster(atcErrorMessage, "", Toaster.TYPE_ERROR)
                         } else {
-                            context?.getString(R.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
+                            context?.getString(Rv2.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
                         }
                     } else {
                         val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
@@ -502,7 +649,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             ErrorHandler.getErrorMessage(ctx, throwable, ErrorHandler.Builder().withErrorCode(false))
                         }
                         if (errorMessage.isBlank()) {
-                            errorMessage = ctx.getString(R.string.wishlist_v2_common_error_msg)
+                            errorMessage = ctx.getString(Rv2.string.wishlist_v2_common_error_msg)
                         }
                         showToaster(errorMessage, "", Toaster.TYPE_ERROR)
                     }
@@ -537,7 +684,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun showLoader() {
-        wishlistV2Adapter.showLoader()
+        wishlistV2Adapter.showLoader(wishlistPref?.getTypeLayout())
         binding?.run {
             wishlistSortFilter.gone()
             wishlistV2StickyCountManageLabel.root.gone()
@@ -574,6 +721,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 sortFilterPrefix.setOnClickListener {
                     resetAllFilters()
                     paramWishlistV2 = WishlistV2Params()
+                    if (searchQuery.isNotEmpty()) paramWishlistV2.query = searchQuery
                     doRefresh()
                     WishlistV2Analytics.clickXChipsToClearFilter()
                 }
@@ -769,7 +917,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 LinkerManager.getInstance().executeShareRequest(
                         LinkerUtils.createShareRequest(0, linkerShareResult, object : ShareCallback {
                             override fun urlCreated(linkerShareResult: LinkerShareResult?) {
-                                val shareString = getString(R.string.wishlist_v2_share_text,
+                                val shareString = getString(Rv2.string.wishlist_v2_share_text,
                                         wishlistItem.name, wishlistItem.priceFmt,
                                         wishlistItem.shop.name) + "\n${linkerShareResult?.url}"
                                 shareModel.subjectName = userSession.shopName
@@ -948,7 +1096,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 deleteButton.apply {
                     isEnabled = true
                     if (listBulkDelete.isNotEmpty()) {
-                        text = getString(R.string.wishlist_v2_delete_text_counter, listBulkDelete.size)
+                        text = getString(Rv2.string.wishlist_v2_delete_text_counter, listBulkDelete.size)
                         setOnClickListener {
                             showPopupBulkDeleteConfirmation(listBulkDelete)
                         }
@@ -959,7 +1107,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             binding?.run {
                 containerDelete.visible()
                 deleteButton.isEnabled = false
-                deleteButton.text = getString(R.string.wishlist_v2_delete_text)
+                deleteButton.text = getString(Rv2.string.wishlist_v2_delete_text)
             }
         }
     }
@@ -1008,19 +1156,21 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         if (!isBulkDeleteShow) {
             isBulkDeleteShow = true
             binding?.run {
-
-                wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_cancel_manage_label)
+                wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(Rv2.string.wishlist_cancel_manage_label)
             }
             onManageClicked(showCheckbox = true)
             WishlistV2Analytics.clickAturOnWishlist()
         } else {
-            isBulkDeleteShow = false
-            onManageClicked(showCheckbox = false)
-            binding?.run {
-                wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
-            }
+            turnOffBulkDeleteMode()
         }
+    }
 
+    private fun turnOffBulkDeleteMode() {
+        isBulkDeleteShow = false
+        onManageClicked(showCheckbox = false)
+        binding?.run {
+            wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(Rv2.string.wishlist_manage_label)
+        }
     }
 
     override fun onManageClicked(showCheckbox: Boolean) {
@@ -1030,17 +1180,20 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             wishlistV2Adapter.showCheckbox()
             binding?.run {
                 clWishlistHeader.gone()
+                wishlistV2StickyCountManageLabel.wishlistDivider.gone()
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.gone()
                 containerDelete.visible()
                 deleteButton.isEnabled = false
-                deleteButton.text = getString(R.string.wishlist_v2_delete_text)
+                deleteButton.text = getString(Rv2.string.wishlist_v2_delete_text)
             }
-
         } else {
             setSwipeRefreshLayout()
             wishlistV2Adapter.hideCheckbox()
             binding?.run {
                 containerDelete.gone()
                 clWishlistHeader.visible()
+                wishlistV2StickyCountManageLabel.wishlistDivider.show()
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.show()
             }
         }
         WishlistV2Analytics.clickAturOnWishlist()
@@ -1048,15 +1201,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {
         val dialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
-        dialog?.setTitle(getString(R.string.wishlist_v2_popup_delete_bulk_title, listBulkDelete.size))
+        dialog?.setTitle(getString(Rv2.string.wishlist_v2_popup_delete_bulk_title, listBulkDelete.size))
         dialog?.dialogDesc?.gone()
-        dialog?.setPrimaryCTAText(getString(R.string.wishlist_delete_label))
+        dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_delete_label))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
             wishlistViewModel.bulkDeleteWishlistV2(listBulkDelete, userSession.userId)
             WishlistV2Analytics.clickHapusOnPopUpMultipleWishlistProduct()
         }
-        dialog?.setSecondaryCTAText(getString(R.string.wishlist_cancel_manage_label))
+        dialog?.setSecondaryCTAText(getString(Rv2.string.wishlist_cancel_manage_label))
         dialog?.setSecondaryCTAClickListener {
             dialog.dismiss()
             WishlistV2Analytics.clickBatalOnPopUpMultipleWishlistProduct()
@@ -1091,7 +1244,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistV2Adapter.isRefreshing = true
         binding?.run {
             containerDelete.gone()
-            clWishlistHeader.visible()
+            if (isBulkDeleteShow) {
+                clWishlistHeader.gone()
+            } else {
+                clWishlistHeader.visible()
+            }
         }
     }
 

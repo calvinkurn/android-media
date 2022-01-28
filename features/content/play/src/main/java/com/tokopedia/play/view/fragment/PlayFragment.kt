@@ -23,9 +23,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isKeyboardShown
+import com.tokopedia.play.extensions.*
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
@@ -514,7 +512,7 @@ class PlayFragment @Inject constructor(
         pageMonitoring.stopMonitoring()
     }
 
-    private fun hideKeyboard() {
+    fun hideKeyboard() {
         val view = activity?.currentFocus
         view?.let { v ->
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -529,7 +527,7 @@ class PlayFragment @Inject constructor(
         )
     }
 
-    private fun registerKeyboardListener(view: View) {
+    fun registerKeyboardListener(view: View) {
         keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.onKeyboardShown(estimatedKeyboardHeight)
@@ -542,7 +540,7 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun unregisterKeyboardListener(view: View) {
+    fun unregisterKeyboardListener(view: View) {
         keyboardWatcher.unlisten(view)
     }
 
@@ -601,6 +599,12 @@ class PlayFragment @Inject constructor(
             fragmentBottomSheetView.safeRelease()
             fragmentBottomSheetView.hide()
         }
+
+        if(bottomInsets.isAnyUserReportBottomSheetShown && playViewModel.videoPlayer.isYouTube){
+            fragmentBottomSheetView.rootView.translationZ = 1.0f
+        }else if(playViewModel.videoPlayer.isYouTube){
+            fragmentBottomSheetView.rootView.translationZ = 0.0f
+        }
     }
 
     private fun fragmentYouTubeViewOnStateChanged(
@@ -626,7 +630,7 @@ class PlayFragment @Inject constructor(
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
-        private const val KEYBOARD_REGISTER_DELAY = 200L
+        const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
     }
 }

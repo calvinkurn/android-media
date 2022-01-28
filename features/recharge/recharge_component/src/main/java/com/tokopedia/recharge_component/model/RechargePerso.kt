@@ -8,6 +8,15 @@ data class RechargePerso(
         @SerializedName("title")
         val title: String = "",
         @Expose
+        @SerializedName("subtitle")
+        val subtitle: String = "",
+        @Expose
+        @SerializedName("start_time")
+        val startTime: String = "",
+        @Expose
+        @SerializedName("end_time")
+        val endTime: String = "",
+        @Expose
         @SerializedName("media_url")
         val mediaUrl: String = "",
         @Expose

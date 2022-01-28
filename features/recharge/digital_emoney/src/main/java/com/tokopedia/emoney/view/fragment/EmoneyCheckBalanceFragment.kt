@@ -113,7 +113,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private fun executeCard(intent: Intent) {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-        if (CardUtils.isTapcashCard(intent) && goToNewTapcash()) {
+        if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),

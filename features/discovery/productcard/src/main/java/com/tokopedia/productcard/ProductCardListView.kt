@@ -79,6 +79,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
         spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
 
+        outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
+
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)

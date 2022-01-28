@@ -88,6 +88,9 @@ open class PgRecommendationViewHolder(
         buyerOrderDetailBindRecomWidgetListener.hidePgRecommendation()
     }
 
+    override fun onShowError(pageName: String, e: Throwable) {
+    }
+
     interface BuyerOrderDetailBindRecomWidgetListener {
 
         fun onProductCardClick(recommendationItem: RecommendationItem, applink: String)

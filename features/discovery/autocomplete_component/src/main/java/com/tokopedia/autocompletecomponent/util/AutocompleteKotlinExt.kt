@@ -2,9 +2,19 @@ package com.tokopedia.autocompletecomponent.util
 
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LAT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LONG
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_POST_CODE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.usecase.RequestParams
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -50,6 +60,8 @@ internal fun MutableMap<String, String>.addComponentId() {
 
     if (query.isEmpty())
         put(SRP_COMPONENT_ID, INITIAL_STATE_MANUAL_ENTER)
+    else
+        put(SRP_COMPONENT_ID, AUTO_COMPLETE_MANUAL_ENTER)
 }
 
 internal fun MutableMap<String, String>.addQueryIfEmpty() {
@@ -59,4 +71,27 @@ internal fun MutableMap<String, String>.addQueryIfEmpty() {
         val hint = get(SearchApiConst.HINT) ?: ""
         put(SearchApiConst.Q, hint)
     }
+}
+
+internal fun RequestParams.putChooseAddressParams(localCacheModel: LocalCacheModel) {
+    if (localCacheModel.lat.isNotEmpty())
+        putString(USER_LAT, localCacheModel.lat)
+
+    if (localCacheModel.long.isNotEmpty())
+        putString(USER_LONG, localCacheModel.long)
+
+    if (localCacheModel.address_id.isNotEmpty())
+        putString(USER_ADDRESS_ID, localCacheModel.address_id)
+
+    if (localCacheModel.city_id.isNotEmpty())
+        putString(USER_CITY_ID, localCacheModel.city_id)
+
+    if (localCacheModel.district_id.isNotEmpty())
+        putString(USER_DISTRICT_ID, localCacheModel.district_id)
+
+    if (localCacheModel.postal_code.isNotEmpty())
+        putString(USER_POST_CODE, localCacheModel.postal_code)
+
+    if (localCacheModel.warehouse_id.isNotEmpty())
+        putString(USER_WAREHOUSE_ID, localCacheModel.warehouse_id)
 }

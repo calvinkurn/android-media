@@ -22,7 +22,6 @@ import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_REGISTRATION_SHOP_CREATION
-import com.tokopedia.loginregister.databinding.FragmentPhoneShopCreationBinding
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
@@ -38,7 +37,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -70,8 +68,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         viewModelProvider.get(ShopCreationViewModel::class.java)
     }
 
-    private val binding: FragmentPhoneShopCreationBinding? by viewBinding()
-
     override fun getScreenName(): String = SCREEN_REGISTRATION_SHOP_CREATION
 
     override fun initInjector() = getComponent(ShopCreationComponent::class.java).inject(this)
@@ -79,6 +75,10 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_phone_shop_creation, container, false)
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
+        buttonContinue = view.findViewById(R.id.btn_continue)
+        textFieldPhone = view.findViewById(R.id.text_field_phone)
+        errorMessage = view.findViewById(R.id.error_message)
+        this.container = view.findViewById(R.id.container)
         return view
     }
 
@@ -103,7 +103,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewBinding()
         initView()
         initObserver()
     }
@@ -164,15 +163,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         shopCreationViewModel.validateUserProfileResponse.removeObservers(this)
         shopCreationViewModel.registerCheckResponse.removeObservers(this)
         shopCreationViewModel.flush()
-    }
-
-    private fun setViewBinding() {
-        binding?.let {
-            buttonContinue = it.btnContinue
-            textFieldPhone = it.textFieldPhone
-            errorMessage = it.errorMessage
-            this.container = it.container
-        }
     }
 
     private fun initView() {

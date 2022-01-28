@@ -3,7 +3,6 @@ package com.tokopedia.play.robot.play
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.ReportSummaries
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
@@ -12,6 +11,7 @@ import com.tokopedia.play.robot.Robot
 import com.tokopedia.play.robot.RobotWithValue
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
@@ -34,6 +34,7 @@ import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.extension.exhaustive
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -65,11 +66,12 @@ class PlayViewModelRobot(
         remoteConfig: RemoteConfig,
         playPreference: PlayPreference,
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
-        playChannelWebSocket: PlayChannelWebSocket,
+        playChannelWebSocket: PlayWebSocket,
         private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
         timerFactory: TimerFactory,
-        castPlayerHelper: CastPlayerHelper
+        castPlayerHelper: CastPlayerHelper,
+        playShareExperience: PlayShareExperience,
 ) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -96,7 +98,8 @@ class PlayViewModelRobot(
         repo,
         playAnalytic,
         timerFactory,
-        castPlayerHelper
+        castPlayerHelper,
+        playShareExperience
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -154,6 +157,22 @@ class PlayViewModelRobot(
         viewModel.onShowProductSheet(bottomSheetHeight)
     }
 
+    fun showCouponBottomSheet(bottomSheetHeight: Int = 50){
+        viewModel.showCouponSheet(bottomSheetHeight)
+    }
+
+    fun showKebabBottomSheet(bottomSheetHeight: Int = 20){
+        viewModel.onShowKebabMenuSheet(bottomSheetHeight)
+    }
+
+    fun showUserReportBottomSheet(bottomSheetHeight: Int = 80){
+        viewModel.onShowUserReportSheet(bottomSheetHeight)
+    }
+
+    fun showUserReportSubmissionBottomSheet(bottomSheetHeight: Int = 80){
+        viewModel.onShowUserReportSubmissionSheet(bottomSheetHeight)
+    }
+
     fun hideProductBottomSheet() {
         viewModel.onHideProductSheet()
     }
@@ -172,6 +191,22 @@ class PlayViewModelRobot(
 
     fun hideLeaderboardBottomSheet() {
         viewModel.submitAction(ClickCloseLeaderboardSheetAction)
+    }
+
+    fun hideCouponBottomSheet(){
+        viewModel.hideCouponSheet()
+    }
+
+    fun hideKebabBottomSheet(){
+        viewModel.hideKebabMenuSheet()
+    }
+
+    fun hideUserReportBottomSheet(){
+        viewModel.hideUserReportSheet()
+    }
+
+    fun hideUserReportSubmissionBottomSheet(){
+        viewModel.hideUserReportSubmissionSheet()
     }
 
     fun goBack() = viewModel.goBack()
@@ -231,11 +266,12 @@ fun givenPlayViewModelRobot(
         remoteConfig: RemoteConfig = mockk(relaxed = true),
         playPreference: PlayPreference = mockk(relaxed = true),
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
-        playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
+        playChannelWebSocket: PlayWebSocket = mockk(relaxed = true),
         repo: PlayViewerRepository = mockk(relaxed = true),
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
         timerFactory: TimerFactory = mockk(relaxed = true),
         castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
+        playShareExperience: PlayShareExperience = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -260,7 +296,8 @@ fun givenPlayViewModelRobot(
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,
-        castPlayerHelper = castPlayerHelper
+        castPlayerHelper = castPlayerHelper,
+        playShareExperience = playShareExperience,
     ).apply(fn)
 }
 

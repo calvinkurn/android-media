@@ -29,8 +29,6 @@ class AuthKey {
         @JvmField val KEY_MOJITO = "mojito_api_v1"
         @JvmField val KEY_KEROPPI = "Keroppi"
         @JvmField val TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj"
-        @JvmField val KEY_CREDIT_CARD_VAULT = encodeKey(RAW_SCROOGE_KEY)
-        @JvmField val ZEUS_WHITELIST = encodeKey(RAW_ZEUS_KEY)
         @JvmField val KEY_NOTP = encodeKey(RAW_NOTP_KEY)
         @JvmField val KEY_BRANCHIO = encodeKey(RAW_BRANCHIO_KEY_ID)
         @JvmField val ALIYUN_SECRET_KEY = encodeKey(RAW_ALIYUN_SECRET_KEY)

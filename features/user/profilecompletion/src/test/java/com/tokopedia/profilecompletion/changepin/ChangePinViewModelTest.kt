@@ -532,6 +532,22 @@ class ChangePinViewModelTest {
     }
 
     @Test
+    fun `on Success Reset Pin 2FA - other errors`() {
+        /* When */
+        resetPin2FaPojo.data.is_success = 0
+        resetPin2FaPojo.data.error = ""
+
+        every { reset2FAPinUseCase.execute(any(), any()) } answers {
+            firstArg<(ResetPin2FaPojo) -> Unit>().invoke(resetPin2FaPojo)
+        }
+
+        viewModel.resetPin2FA(userId, validateToken)
+
+        /* Then */
+        verify { resetPin2FAObserver.onChanged(any<Fail>()) }
+    }
+
+    @Test
     fun `on Error Reset Pin 2FA`() {
         /* When */
 

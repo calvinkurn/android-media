@@ -11,7 +11,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
-    android:adjustViewBounds="true"
     app:cameraGrid="off"
     app:cameraFlash="off"
     app:cameraPlaySounds="true"
@@ -28,7 +27,6 @@
     android:id="@+id/imgPreview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:adjustViewBounds="true"
     android:scaleType="centerCrop"
     android:visibility="gone"
     android:contentDescription="@string/image_preview"
@@ -89,27 +87,7 @@
       android:visibility="gone"
       app:typographyType="body_1"
       app:typographyWeight="bold"/>
-  
-<!--    DELETE SOON -->
-    <com.tokopedia.unifyprinciples.Typography
-      android:id="@+id/txtDescriptionSavingBook"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/layout_lvl4"
-      android:layout_marginLeft="@dimen/layout_lvl2"
-      android:layout_marginRight="@dimen/layout_lvl2"
-      android:padding="@dimen/layout_lvl1"
-      android:paddingLeft="@dimen/spacing_lvl4"
-      android:paddingRight="@dimen/spacing_lvl4"
-      android:textAlignment="center"
-      android:textColor="@color/updateinactivephone_dms_n600"
-      android:text="@string/text_camera_description_saving_book"
-      android:background="@color/Unify_Static_White"
-      android:visibility="gone"
-      app:typographyType="body_1"
-      app:typographyWeight="bold" />
-<!--    END -->
-  
+
   </FrameLayout>
   
   <ImageView

@@ -58,7 +58,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
-class ShopPerformancePageFragment : BaseDaggerFragment(),
+open class ShopPerformancePageFragment : BaseDaggerFragment(),
     ShopPerformanceListener, ShopPerformanceMonitoringContract {
 
     @Inject
@@ -77,13 +77,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         )
     }
 
-    private val shopPerformanceAdapter by lazy {
+    open val shopPerformanceAdapter by lazy {
         ShopPerformanceAdapter(
             shopPerformanceAdapterTypeFactory
         )
     }
 
-    private var binding by autoClearedNullable<FragmentShopPerformanceBinding>()
+    open var binding by autoClearedNullable<FragmentShopPerformanceBinding>()
 
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false

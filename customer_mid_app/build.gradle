@@ -42,7 +42,6 @@ dependencies {
 
     //Dependency used for DF module
     implementation projectOrAar(rootProject.ext.features.commonTravel)
-    implementation projectOrAar(rootProject.ext.features.flightOrderList)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)

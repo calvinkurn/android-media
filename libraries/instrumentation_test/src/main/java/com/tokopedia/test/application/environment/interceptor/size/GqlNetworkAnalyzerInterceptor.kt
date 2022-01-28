@@ -145,12 +145,12 @@ class GqlNetworkAnalyzerInterceptor : Interceptor {
         val size = response.peekBody(Long.MAX_VALUE).bytes().size
 
         interceptedNetworkDataList.add(
-                InterceptedNetworkData(
-                        requestString = requestString,
-                        size = size,
-                        requestTimeStamp = response.sentRequestAtMillis(),
-                        responseTimeStamp = response.receivedResponseAtMillis()
-                )
+            InterceptedNetworkData(
+                requestString = requestString,
+                size = size,
+                requestTimeStamp = response.sentRequestAtMillis,
+                responseTimeStamp = response.receivedResponseAtMillis
+            )
         )
 
         return response
@@ -158,7 +158,7 @@ class GqlNetworkAnalyzerInterceptor : Interceptor {
 
     private fun Request.getRequestString(): String {
         val buffer = Buffer()
-        this.body()?.writeTo(buffer)
+        this.body?.writeTo(buffer)
         return buffer.readUtf8()
     }
 }

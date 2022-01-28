@@ -178,6 +178,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           bottom_sheet
           chosen_courier
           ticker_courier
+          bottom_sheet_description
         }
       }
       pre_order {

@@ -92,7 +92,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                     positionOnHome,
                     grid.getTopadsString(),
                     grid.recommendationType,
-                    " ",
+                    channel.pageName,
                     channel.trackingAttributionModel.galaxyAttribution,
                     channel.channelHeader.name))
                 .appendChannelId(channel.id)
@@ -131,7 +131,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                     positionOnHome,
                     grid.getTopadsString(),
                     grid.recommendationType,
-                    " ",
+                    channel.pageName,
                     channel.trackingAttributionModel.galaxyAttribution,
                     channel.channelHeader.name))
                 .appendScreen(Screen.DEFAULT)
@@ -175,7 +175,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                     positionOnHome,
                     grid.getTopadsString(),
                     grid.recommendationType,
-                    " ",
+                    channel.pageName,
                     channel.trackingAttributionModel.galaxyAttribution,
                     channel.channelHeader.name))
                 .appendChannelId(channel.id)

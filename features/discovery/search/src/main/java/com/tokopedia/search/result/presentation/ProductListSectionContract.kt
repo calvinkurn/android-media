@@ -19,6 +19,7 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
 import java.util.*
@@ -78,7 +79,8 @@ interface ProductListSectionContract {
         fun stopNetworkRequestPerformanceMonitoring()
         fun startRenderPerformanceMonitoring()
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
-        fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView)
+        fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
+        fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
         fun onQuickFilterSelected(filter: Filter, option: Option)
         fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
@@ -121,6 +123,8 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
+        fun initSizeOptionFilter(dataView: List<InspirationSizeDataView>)
+        fun setSelectedSizeOption(dataView: List<InspirationSizeDataView>)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -149,6 +153,7 @@ interface ProductListSectionContract {
         fun onApplySortFilter(mapParameter: Map<String, Any>)
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
+        fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType)
@@ -165,5 +170,6 @@ interface ProductListSectionContract {
             savedOptionList: List<SavedOption>,
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
+        fun shopAdsImpressionCount(impressionCount: Int)
     }
 }

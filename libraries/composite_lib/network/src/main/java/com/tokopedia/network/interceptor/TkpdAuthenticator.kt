@@ -27,12 +27,12 @@ class TkpdAuthenticator(
     private fun getRefreshQueryPath(finalRequest: Request, response: Response): String {
         var result = ""
         try {
-            result = response.request().url().toString() + " "
+            result = response.request.url.toString() + " "
             val path: String
             val copy = finalRequest.newBuilder().build()
             val buffer = Buffer()
-            if (copy.body() != null) {
-                copy.body()!!.writeTo(buffer)
+            if (copy.body != null) {
+                copy.body!!.writeTo(buffer)
             }
             path = buffer.readUtf8()
             val pattern = Pattern.compile(TkpdAuthInterceptor.PATH_REGEX)
@@ -51,10 +51,10 @@ class TkpdAuthenticator(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
-            val path: String = getRefreshQueryPath(response.request(), response)
+            val path: String = getRefreshQueryPath(response.request, response)
             return if(responseCount(response) == 0)
                 try {
-                    val originalRequest = response.request()
+                    val originalRequest = response.request
                     val accessTokenRefresh = AccessTokenRefresh()
                     val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path)
                     if(newAccessToken.isNullOrEmpty()) {
@@ -78,7 +78,7 @@ class TkpdAuthenticator(
                 return null
             }
         }
-        return response.request()
+        return response.request
     }
 
     private fun trimToken(accessToken: String): String {
@@ -91,9 +91,9 @@ class TkpdAuthenticator(
     private fun responseCount(response: Response): Int {
         var result = 0
         var curResponse: Response? = response
-        while (curResponse?.priorResponse() != null) {
+        while (curResponse?.priorResponse != null) {
             result++
-            curResponse = curResponse.priorResponse()
+            curResponse = curResponse.priorResponse
         }
         return result
     }

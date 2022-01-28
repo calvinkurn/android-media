@@ -219,7 +219,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         val categoryList = getCategoryList()
 
         updateCategoryUIModel(
-                categoryItemListUIModel = HomeCategoryMapper.mapToCategoryList(categoryList),
+                categoryItemListUIModel = HomeCategoryMapper.mapToCategoryList(categoryList, warehouseId),
                 categoryUIModelState = TokoNowLayoutState.SHOW,
         )
     }

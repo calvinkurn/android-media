@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiCartData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
@@ -14,6 +15,56 @@ class AddToCartOccMultiViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun should_get_correct_product_id_when_successfully_occ() {
+        //Given
+        val testCartId = "cart123"
+        val expectedProductId = "123"
+        val expectedResult = AddToCartOccMultiDataModel(
+            status = "OK",
+            data = AddToCartOccMultiData(
+                success = 1,
+                cart = listOf(AddToCartOccMultiCartData(cartId = testCartId))
+            )
+        )
+        val product = ProductAttachmentUiModel.Builder().withProductId(expectedProductId).build()
+        coEvery {
+            addToCartOccMultiUseCase.executeOnBackground()
+        } returns expectedResult
+
+        //When
+        viewModel.occProduct(testUserId, product)
+
+        //Then
+        Assert.assertEquals(
+            expectedProductId,
+            (viewModel.occProduct.value as Success).data.productId)
+    }
+
+    @Test
+    fun should_get_correct_product_id_when_successfully_occ_even_when_cart_empty() {
+        //Given
+        val expectedProductId = "123"
+        val expectedResult = AddToCartOccMultiDataModel(
+            status = "OK",
+            data = AddToCartOccMultiData(
+                success = 1
+            )
+        )
+        val product = ProductAttachmentUiModel.Builder().withProductId(expectedProductId).build()
+        coEvery {
+            addToCartOccMultiUseCase.executeOnBackground()
+        } returns expectedResult
+
+        //When
+        viewModel.occProduct(testUserId, product)
+
+        //Then
+        Assert.assertEquals(
+            expectedProductId,
+            (viewModel.occProduct.value as Success).data.productId)
+    }
+
+    @Test
+    fun should_get_correct_product_id_when_successfully_occ_even_when_cart_null() {
         //Given
         val expectedProductId = "123"
         val expectedResult = AddToCartOccMultiDataModel(

@@ -83,7 +83,7 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
 
     private fun `Then verify interaction for Broad Match Item impression`(itemData: BroadMatchItemDataView) {
         verify {
-            productListView.trackBroadMatchImpression(itemData)
+            productListView.trackEventImpressionBroadMatchItem(itemData)
         }
 
         verify(exactly = 0) {
@@ -125,7 +125,7 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
         }
 
         verify(exactly = 0) {
-            productListView.trackBroadMatchImpression(any())
+            productListView.trackEventImpressionBroadMatchItem(any())
         }
     }
 }

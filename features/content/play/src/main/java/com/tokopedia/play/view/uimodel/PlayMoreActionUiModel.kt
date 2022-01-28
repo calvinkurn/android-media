@@ -11,5 +11,6 @@ data class PlayMoreActionUiModel(
         val type: PlayMoreActionType,
         @DrawableRes val iconRes: Int,
         @StringRes val subtitleRes: Int,
+        val isIconAvailable: Boolean,
         val onClick: (PlayMoreActionUiModel) -> Unit
 )

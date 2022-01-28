@@ -243,12 +243,32 @@
                 android:drawablePadding="@dimen/dp_4"
                 tools:text="17 - 19 April 2021" />
             <View
+                android:id="@+id/divider_tipping_gojek"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_24"
+                app:layout_constraintTop_toBottomOf="@id/description_barrier"
+                android:background="@color/Unify_N50"
+                android:visibility="gone"/>
+
+            <include
+                android:id="@+id/tipping_gojek_layout"
+                layout="@layout/card_tipping_gojek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintTop_toBottomOf="@id/divider_tipping_gojek"
+                android:visibility="visible" />
+
+            <View
                 android:id="@+id/detail_layout_separator"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="16dp"
                 android:background="@color/Unify_N100"
-                app:layout_constraintTop_toBottomOf="@id/description_barrier"
+                app:layout_constraintTop_toBottomOf="@id/tipping_gojek_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -494,7 +514,7 @@
         android:id="@+id/image_preview_large"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/tracking_preview_static_black"
+        android:background="@color/dms_tracking_preview_static_black"
         android:visibility="gone">
 
         <com.tokopedia.iconunify.IconUnify

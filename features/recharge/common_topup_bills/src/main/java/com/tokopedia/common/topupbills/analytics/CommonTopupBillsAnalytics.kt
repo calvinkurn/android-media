@@ -217,10 +217,10 @@ class CommonTopupBillsAnalytics {
     }
 
     //#13
-    fun clickViewErrorToasterTelcoAddBills(category: String) {
+    fun clickViewErrorToasterTelcoAddBills(category: String, errorMessage: String) {
         val data = DataLayer.mapOf(
                 TrackAppUtils.EVENT_ACTION, "view error - toaster box",
-                TrackAppUtils.EVENT_LABEL, category)
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", category, errorMessage))
         data.addGeneralViewAddBills()
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }

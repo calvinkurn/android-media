@@ -19,9 +19,5 @@ class LoadingStateVoucherViewHolder(itemView: View?) : AbstractViewHolder<Loadin
         val RES_LAYOUT = R.layout.item_mvc_loading_state_voucher
     }
 
-    override fun bind(element: LoadingStateUiModel) {
-        with(itemView) {
-            mvcSearchBarContainer?.isVisible = !element.isActiveVoucher
-        }
-    }
+    override fun bind(element: LoadingStateUiModel) { }
 }

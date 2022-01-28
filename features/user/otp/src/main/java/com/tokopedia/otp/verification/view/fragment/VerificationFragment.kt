@@ -89,6 +89,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     protected var isMoreThanOneMethod = true
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
+    protected var isOnValidation = false
 
     private var handler: Handler = Handler()
 
@@ -242,6 +243,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             }
         })
         viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
+            isOnValidation = false
             when (it) {
                 is Success -> onSuccessOtpValidate(it.data)
                 is Fail -> onFailedOtpValidate(it.throwable)
@@ -315,12 +317,12 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
+    open fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
         when {
             otpValidateData.success -> {
                 // tracker auto submit success
-                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
                 viewModel.done = true
+                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
                 trackSuccess()
                 resetCountDown()
                 val bundle = Bundle().apply {
@@ -589,8 +591,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         private const val INTERVAL = 1000
         private const val COUNTDOWN_LENGTH = 30
         private const val DELAY_ANIMATE_TEXT = 350
-
-        const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = VerificationFragment()

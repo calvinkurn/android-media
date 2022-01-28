@@ -142,7 +142,7 @@ open class WatermarkBuilder {
         )
     }
 
-    fun getWatermarks(): List<Watermark> {
+    private fun getWatermarks(): List<Watermark> {
         return this.watermarkTypes.map { watermarkType ->
             Watermark(
                 watermarkTextAndImage = watermarkTextAndImage,

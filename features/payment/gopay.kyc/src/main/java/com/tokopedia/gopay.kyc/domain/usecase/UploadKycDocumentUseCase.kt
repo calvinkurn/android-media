@@ -5,8 +5,8 @@ import com.tokopedia.common.network.util.RestConstant
 import com.tokopedia.gopay.kyc.domain.data.KycDocument
 import com.tokopedia.gopay.kyc.viewmodel.GoPayKycImageUploadViewModel
 import com.tokopedia.usecase.coroutines.UseCase
-import okhttp3.MediaType
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
@@ -45,12 +45,12 @@ class UploadKycDocumentUseCase @Inject constructor(private val restApi: RestApi)
         val selfieKtpFile = File(selfieKtpPath)
         val ktpUploadResponse = restApi.putRequestBodyDeferred(
             ktpDocumentUrl,
-            RequestBody.create(MediaType.parse(MEDIA_TYPE_IMAGE), ktpFile),
+            ktpFile.asRequestBody(MEDIA_TYPE_IMAGE.toMediaTypeOrNull()),
             mapOf()
         )
         val selfieKtpUploadResponse = restApi.putRequestBodyDeferred(
             selfieDocumentUrl,
-            RequestBody.create(MediaType.parse(MEDIA_TYPE_IMAGE), selfieKtpFile),
+            selfieKtpFile.asRequestBody(MEDIA_TYPE_IMAGE.toMediaTypeOrNull()),
             mapOf()
         )
         return (RestConstant.HTTP_SUCCESS == ktpUploadResponse.code() && RestConstant.HTTP_SUCCESS == selfieKtpUploadResponse.code())
