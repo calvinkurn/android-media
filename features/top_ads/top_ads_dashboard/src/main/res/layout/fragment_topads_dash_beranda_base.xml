@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <include
+                    android:id="@+id/hari_ini"
+                    layout="@layout/topads_dash_layout_hari_ini"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:layout_height="40dp" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/credit_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:background="@drawable/topads_dashboard_bg_rounded_white"
+                    android:elevation="@dimen/unify_space_2"
+                    android:paddingVertical="@dimen/top_ads_common_dp_10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/hari_ini">
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/image"
+                        android:layout_width="@dimen/top_ads_common_dp_20"
+                        android:layout_height="@dimen/top_ads_common_dp_20"
+                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:src="@drawable/topads_ic_wallet"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_height="40dp"
+                        tools:layout_width="40dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/creditLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lvl3"
+                        android:gravity="center_vertical"
+                        app:layout_constraintBottom_toBottomOf="@id/image"
+                        app:layout_constraintStart_toEndOf="@id/image"
+                        app:layout_constraintTop_toTopOf="@id/image">
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/credit_topads"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="bottom"
+                            android:text="@string/topads_dash_desc_credit_label"
+                            app:typographyType="small" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/credits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/credit_topads"
+                            android:textColor="@color/black"
+                            app:typographyType="heading_6"
+                            app:typographyWeight="bold"
+                            tools:text="Rp 10.000.0000" />
+
+                        <com.tokopedia.unifycomponents.ImageUnify
+                            android:id="@+id/btnRefreshCredits"
+                            android:layout_width="@dimen/unify_space_12"
+                            android:layout_height="@dimen/unify_space_12"
+                            android:layout_alignBottom="@id/credits"
+                            android:layout_marginStart="@dimen/spacing_lvl2"
+                            android:layout_toEndOf="@id/credits"
+                            android:src="@drawable/topads_dash_auto_debit" />
+                    </RelativeLayout>
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/img_auto_debit"
+                        android:layout_width="@dimen/unify_space_12"
+                        android:layout_height="@dimen/unify_space_12"
+                        android:layout_marginEnd="@dimen/spacing_lvl1"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@id/autoTopUp"
+                        app:layout_constraintEnd_toStartOf="@id/autoTopUp"
+                        app:layout_constraintTop_toTopOf="@id/autoTopUp" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/autoTopUp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_lvl3"
+                        android:text="@string/topads_dash_auto_topup_on"
+                        android:textColor="@color/black"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@id/creditLayout"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold"
+                        tools:text="Rp 10.000.0000" />
+
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:id="@+id/addCredit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_lvl3"
+                        android:text="@string/label_add_credit"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:unifyButtonSize="small"
+                        app:unifyButtonType="main"
+                        app:unifyButtonVariant="ghost" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/txtRingkasan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:text="@string/topads_dash_text_ringkasan"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/credit_history" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/txtAllPromo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:text="@string/topads_dashboard_all_promo_menu"
+                    android:textColor="@color/Unify_G500"
+                    app:layout_constraintStart_toEndOf="@id/txtRingkasan"
+                    app:layout_constraintTop_toBottomOf="@id/credit_history" />
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:src="@drawable/unify_chips_ic_chevron_disabled"
+                    app:layout_constraintBottom_toBottomOf="@id/txtAllPromo"
+                    app:layout_constraintStart_toEndOf="@id/txtAllPromo"
+                    app:layout_constraintTop_toTopOf="@id/txtAllPromo" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/txtLastUpdated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    android:textColor="@color/Unify_N700_68"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtRingkasan"
+                    app:typographyType="body_3"
+                    tools:text="Update terakhir Januari 2021, 16:00 WIB" />
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/ivLastUpdatedInformation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:padding="@dimen/spacing_lvl1"
+                    android:src="@drawable/ic_system_action_information_16"
+                    app:layout_constraintBottom_toBottomOf="@id/txtLastUpdated"
+                    app:layout_constraintStart_toEndOf="@id/txtLastUpdated"
+                    app:layout_constraintTop_toTopOf="@id/txtLastUpdated" />
+
+                <LinearLayout
+                    android:id="@+id/layoutRingkasan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/unify_space_12"
+                    android:background="@drawable/topads_dashboard_bg_rounded_white"
+                    android:elevation="@dimen/spacing_lvl1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_lvl3"
+                    app:layout_constraintTop_toBottomOf="@id/txtLastUpdated">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvRingkasan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/item_rv_ringkasan" />
+
+                    <com.tokopedia.unifycomponents.CardUnify
+                        android:id="@+id/statistic_graph"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spacing_lvl3"
+                        android:padding="@dimen/spacing_lvl3"
+                        app:layout_constraintBottom_toTopOf="@id/insightCard"
+                        app:layout_constraintTop_toBottomOf="@id/credit_history">
+
+                        <LinearLayout
+                            android:id="@+id/topads_dashboard_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <include layout="@layout/partial_top_ads_dashboard_statistics" />
+                        </LinearLayout>
+                    </com.tokopedia.unifycomponents.CardUnify>
+                </LinearLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/txtLatestReadingForYou"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:text="@string/topads_dash_text_bacaan_terbaru_untukmu"
+                    android:textSize="@dimen/fontSize_lvl4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layoutRingkasan" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:background="@drawable/topads_dashboard_bg_rounded_white"
+                    android:elevation="@dimen/spacing_lvl1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/unify_space_12"
+                    app:layout_constraintTop_toBottomOf="@id/txtLatestReadingForYou">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvReadMore"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/item_rv_read_more" />
+
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:id="@+id/btnReadMore"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl4"
+                        android:text="@string/topads_dash_read_more"
+                        app:unifyButtonSize="small"
+                        app:unifyButtonType="main"
+                        app:unifyButtonVariant="ghost" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+</androidx.constraintlayout.widget.ConstraintLayout>

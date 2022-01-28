@@ -405,5 +405,9 @@
 
     <string name="sampai_dengan">Sampai dengan</string>
     <string name="topads_headline_recom_grp_bs_title">Iklankan Produk Dengan Grup</string>
+    <string name="topads_dash_text_ringkasan">Ringkasan:</string>
+    <string name="topads_dash_from_last_week">dari minggu lalu</string>
+    <string name="topads_dash_text_bacaan_terbaru_untukmu">Bacaan terbaru untukmu</string>
+    <string name="topads_dash_read_more">Selengkapnya</string>
 </resources>
 
