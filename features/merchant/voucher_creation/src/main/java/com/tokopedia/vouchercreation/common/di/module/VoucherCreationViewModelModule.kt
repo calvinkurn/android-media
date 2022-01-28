@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponPreviewViewModel
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponSettingViewModel
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.CreateCouponDetailViewModel
+import com.tokopedia.vouchercreation.product.create.view.viewmodel.*
 import com.tokopedia.vouchercreation.shop.create.view.viewmodel.*
 import com.tokopedia.vouchercreation.shop.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
@@ -102,6 +99,11 @@ abstract class VoucherCreationViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CouponPreviewViewModel::class)
-    internal abstract fun provideCouponPreviewViewModel(couponPreviewViewModel: CouponPreviewViewModel): ViewModel
+    @ViewModelKey(CouponImagePreviewViewModel::class)
+    internal abstract fun provideCouponPreviewViewModel(couponPreviewViewModel: CouponImagePreviewViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BroadcastCouponViewModel::class)
+    internal abstract fun provideBroadcastCouponViewModel(broadcastCouponViewModel: BroadcastCouponViewModel): ViewModel
 }

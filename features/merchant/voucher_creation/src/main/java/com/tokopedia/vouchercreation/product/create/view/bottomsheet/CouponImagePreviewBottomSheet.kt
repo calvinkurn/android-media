@@ -7,26 +7,32 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.databinding.BottomsheetCouponPreviewBinding
+import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
+import com.tokopedia.vouchercreation.databinding.BottomsheetCouponImagePreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponPreviewViewModel
+import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponImagePreviewViewModel
 import javax.inject.Inject
 
 
-class CouponPreviewBottomSheet : BottomSheetUnify() {
+class CouponImagePreviewBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val EMPTY_STRING = ""
         private const val FIRST_IMAGE_URL = 0
         private const val SECOND_IMAGE_URL = 1
         private const val THIRD_IMAGE_URL = 2
@@ -34,6 +40,9 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_COUPON_SETTINGS = "settings"
         private const val BUNDLE_KEY_PRODUCT_COUNT = "product-count"
         private const val BUNDLE_KEY_PRODUCT_IMAGE_URL = "imageUrl"
+        private const val SCREEN_HEIGHT_FULL = 1f
+        private const val SCREEN_HEIGHT_ONE_HALF = 1.5f
+        private const val SCREEN_HEIGHT_MULTIPLIED = 2
 
         @JvmStatic
         fun newInstance(
@@ -41,13 +50,13 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
             couponSettings: CouponSettings,
             productCount: Int,
             productImageUrls: ArrayList<String>
-        ): CouponPreviewBottomSheet {
+        ): CouponImagePreviewBottomSheet {
             val args = Bundle()
             args.putSerializable(BUNDLE_KEY_COUPON_INFORMATION, couponInformation)
             args.putSerializable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
             args.putInt(BUNDLE_KEY_PRODUCT_COUNT, productCount)
             args.putStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL, productImageUrls)
-            val fragment = CouponPreviewBottomSheet()
+            val fragment = CouponImagePreviewBottomSheet()
             fragment.arguments = args
             return fragment
         }
@@ -56,12 +65,12 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var nullableBinding: BottomsheetCouponPreviewBinding? = null
-    private val binding: BottomsheetCouponPreviewBinding
+    private var nullableBinding: BottomsheetCouponImagePreviewBinding? = null
+    private val binding: BottomsheetCouponImagePreviewBinding
         get() = requireNotNull(nullableBinding)
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(CouponPreviewViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(CouponImagePreviewViewModel::class.java) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -76,7 +85,7 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        nullableBinding = BottomsheetCouponPreviewBinding.inflate(inflater, container, false)
+        nullableBinding = BottomsheetCouponImagePreviewBinding.inflate(inflater, container, false)
         setTitle(getString(R.string.coupon_preview))
         setChild(binding.root)
         clearContentPadding = true
@@ -85,35 +94,42 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupCouponTypeChips()
+        setupChipsClickListener()
+        binding.chipImageHorizontal.chipType = ChipsUnify.TYPE_SELECTED
         observeCouponImage()
-        previewCoupon(ImageRatio.HORIZONTAL)
     }
 
     private fun observeCouponImage() {
         viewModel.couponImage.observe(viewLifecycleOwner, { result ->
-            if (result is Success) {
+            binding.loader.gone()
+            binding.imgCoupon.visible()
 
+            if (result is Success) {
+                displayImage(result.data)
             } else {
+                Toaster.build(binding.root, getString(R.string.error_message_failed_get_image), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             }
         })
     }
 
-    private fun setupCouponTypeChips() {
+    private fun setupChipsClickListener() {
         with(binding) {
             chipImageHorizontal.selectedChangeListener = { isSelected ->
                 if (isSelected) {
                     previewCoupon(ImageRatio.HORIZONTAL)
+                    changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_FULL)
                 }
             }
             chipImageRatioSquare.selectedChangeListener = { isSelected ->
                 if (isSelected) {
                     previewCoupon(ImageRatio.SQUARE)
+                    changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF)
                 }
             }
             chipImageVertical.selectedChangeListener = { isSelected ->
                 if (isSelected) {
                     previewCoupon(ImageRatio.VERTICAL)
+                    changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED)
                 }
             }
 
@@ -150,6 +166,10 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
     }
 
     private fun previewCoupon(imageRatio: ImageRatio) {
+        binding.imgCoupon.gone()
+        binding.loader.type = LoaderUnify.TYPE_CIRCULAR
+        binding.loader.visible()
+
         val couponInformation =
             arguments?.getSerializable(BUNDLE_KEY_COUPON_INFORMATION) as? CouponInformation
                 ?: return
@@ -173,11 +193,27 @@ class CouponPreviewBottomSheet : BottomSheetUnify() {
         )
     }
 
-    private fun ArrayList<String>.getIndexAtOrEmpty(index : Int) : String {
-        return try {
-            this[index]
-        } catch(e: Exception) {
-            EMPTY_STRING
+    /**
+     * Display image in safely manner to prevent out of memory exception error when image size is
+     * too big
+     */
+    private fun displayImage(image : ByteArray) {
+        try {
+            Glide.with(binding.imgCoupon.context).asBitmap().load(image).into(binding.imgCoupon)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
+
+    private fun changeImageViewHeight(height : Float) {
+        binding.imgCoupon.layoutParams.height = height.toInt()
+        binding.imgCoupon.requestLayout()
+    }
+
+    private fun getDeviceHeight(): Float {
+        val displayMetrics = resources.displayMetrics
+        return displayMetrics.heightPixels / displayMetrics.density
+    }
+
+
 }

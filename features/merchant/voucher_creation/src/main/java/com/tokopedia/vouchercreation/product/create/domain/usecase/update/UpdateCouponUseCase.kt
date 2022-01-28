@@ -54,11 +54,14 @@ class UpdateCouponUseCase @Inject constructor(private val gqlRepository: Graphql
     }
 
     fun createRequestParam(
+        couponId : Long,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
         token: String,
-        imageUrl : String
+        imageUrl : String,
+        imageSquare: String,
+        imagePortrait: String
     ): RequestParams {
         val isPublic = if (couponInformation.target == CouponInformation.Target.PUBLIC) 1 else 0
         val startDate =
@@ -79,6 +82,7 @@ class UpdateCouponUseCase @Inject constructor(private val gqlRepository: Graphql
         }
 
         val params = UpdateCouponRequestParams(
+            voucherId = couponId,
             benefitIdr = couponSettings.discountAmount,
             benefitMax = couponSettings.maxDiscount,
             benefitPercent = couponSettings.discountPercentage,
@@ -91,8 +95,8 @@ class UpdateCouponUseCase @Inject constructor(private val gqlRepository: Graphql
             hourStart = startHour,
             hourEnd = endHour,
             image = imageUrl,
-            imageSquare = imageUrl,
-            imagePortrait = imageUrl,
+            imageSquare = imageSquare,
+            imagePortrait = imagePortrait,
             isPublic = isPublic,
             minPurchase = couponSettings.minimumPurchase,
             quota = couponSettings.quota,
@@ -101,7 +105,7 @@ class UpdateCouponUseCase @Inject constructor(private val gqlRepository: Graphql
             targetBuyer = 0,
             minimumTierLevel = 0,
             isLockToProduct = 1,
-            productIds = couponProducts.joinToString(separator = ",") { it.id.toString() },
+            productIds = couponProducts.joinToString(separator = ",") { it.id },
             productIdsCsvUrl = ""
         )
 
