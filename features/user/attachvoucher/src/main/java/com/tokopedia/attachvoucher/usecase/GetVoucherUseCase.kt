@@ -1,25 +1,20 @@
 package com.tokopedia.attachvoucher.usecase
 
-import androidx.collection.ArrayMap
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
 import com.tokopedia.attachvoucher.mapper.VoucherMapper
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.attachvoucher.data.FilterParam
 import com.tokopedia.graphql.coroutines.data.extensions.request
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class GetVoucherUseCase @Inject constructor(
+open class GetVoucherUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    dispatcher: CoroutineDispatcher,
+    dispatcher: CoroutineDispatchers,
     private val mapper: VoucherMapper
-) : CoroutineUseCase<FilterParam, List<VoucherUiModel>>(dispatcher) {
+) : CoroutineUseCase<FilterParam, List<VoucherUiModel>>(dispatcher.io) {
 
     private val paramFilter = "Filter"
     var hasNext = false

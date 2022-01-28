@@ -21,7 +21,8 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
 
 interface ProductListSectionContract {
     interface View : CustomerView {
