@@ -153,11 +153,12 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     }
 
     companion object {
-        fun createInstance(): Fragment {
-            val fragment: Fragment = UserIdentificationFormFaceFragment()
-            val args = Bundle()
-            fragment.arguments = args
-            return fragment
+        fun createInstance(type: String): Fragment {
+            return UserIdentificationFormFaceFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, type)
+                }
+            }
         }
     }
 

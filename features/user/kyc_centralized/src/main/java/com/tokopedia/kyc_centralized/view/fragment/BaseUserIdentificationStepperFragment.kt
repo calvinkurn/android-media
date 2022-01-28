@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
@@ -48,6 +49,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected var wrongImage: ImageView? = null
     protected var analytics: UserIdentificationCommonAnalytics? = null
     protected var projectId = 0
+    protected var kycType = ""
     protected var stepperModel: T? = null
     private var stepperListener: StepperListener? = null
     private var allowedSelfie = false
@@ -61,6 +63,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         }
         if (arguments != null && savedInstanceState == null) {
             stepperModel = arguments?.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
+            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
         } else if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(EXTRA_KYC_STEPPER_MODEL)
         }
@@ -154,7 +157,8 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected val isKycSelfie: Boolean
         get() {
             try {
-                if(allowedSelfie) return allowedSelfie
+                if (kycType == KYC_TYPE_KTP_WITH_SELFIE) return true
+                if (allowedSelfie) return allowedSelfie
                 if (UserIdentificationFormActivity.isSupportedLiveness) {
                     return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE)
                 }
@@ -216,5 +220,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         private const val DP_8 = 8
         private const val DP_12 = 12
         const val EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model"
+        private const val KYC_TYPE_KTP_WITH_SELFIE = "ktpWithSelfie"
     }
 }

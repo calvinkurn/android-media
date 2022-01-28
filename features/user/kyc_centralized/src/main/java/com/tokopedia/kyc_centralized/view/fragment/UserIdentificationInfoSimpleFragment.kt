@@ -13,7 +13,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
@@ -32,6 +31,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     private var defaultStatusBarColor = 0
     private var showWrapperLayout = false
     private var redirectUrl = ""
+    private var kycType = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,12 +45,13 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        projectId = activity?.intent?.data?.getQueryParameter(
-                ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
-        showWrapperLayout = activity?.intent?.data?.getQueryParameter(
-            ApplinkConstInternalGlobal.PARAM_SHOW_INTRO).toBoolean()
-        redirectUrl = activity?.intent?.data?.getQueryParameter(
-            ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).toEmptyStringIfNull()
+        activity?.intent?.data?.let {
+            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
+            showWrapperLayout = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO).toBoolean()
+            redirectUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
+            kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+        }
+
         initViews(view, savedInstanceState)
     }
 
@@ -90,7 +91,10 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
     private fun startKyc() {
         val intent = RouteManager.getIntent(requireContext(),
-                ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, projectId.toString())
+                ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
+                projectId.toString(),
+                kycType
+        )
         startActivityForResult(intent, KYC_REQUEST_CODE)
     }
 

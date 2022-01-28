@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.util.KycCleanupStorageWorker
 import com.tokopedia.kyc_centralized.view.customview.fragment.NotFoundFragment
@@ -41,6 +40,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
     private var fragmentList: ArrayList<Fragment> = arrayListOf()
     private var snackbar: SnackbarRetry? = null
     private var projectId = -1
+    private var kycType = ""
     private var analytics: UserIdentificationCommonAnalytics? = null
 
     interface Listener {
@@ -48,17 +48,13 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        try {
-            projectId = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)
-                .toIntOrZero()
+
+        intent?.data?.let {
+            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
+            kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
-        } catch (e: NumberFormatException) {
-            projectId = KYCConstant.STATUS_DEFAULT
-        } catch (e: NullPointerException) {
-            projectId = KYCConstant.STATUS_DEFAULT
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
+
         analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
         stepperModel = if (savedInstanceState != null) {
             savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA)
@@ -92,7 +88,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         } else {
             if (fragmentList.isEmpty()) {
                 fragmentList.add(UserIdentificationFormKtpFragment.createInstance())
-                fragmentList.add(UserIdentificationFormFaceFragment.createInstance())
+                fragmentList.add(UserIdentificationFormFaceFragment.createInstance(kycType))
                 fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId))
             }
             fragmentList
@@ -106,13 +102,21 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         val actualPosition = currentPosition - 1
         if (listFragment.size >= currentPosition && actualPosition >= 0) {
             val fragment = when (listFragment[actualPosition]) {
-                is UserIdentificationFormKtpFragment -> UserIdentificationFormKtpFragment.createInstance()
-                is UserIdentificationFormFaceFragment -> UserIdentificationFormFaceFragment.createInstance()
-                is UserIdentificationFormFinalFragment -> UserIdentificationFormFinalFragment.createInstance(
-                    projectId
-                )
-                is NotFoundFragment -> NotFoundFragment.createInstance()
-                else -> throw Exception()
+                is UserIdentificationFormKtpFragment -> {
+                    UserIdentificationFormKtpFragment.createInstance()
+                }
+                is UserIdentificationFormFaceFragment -> {
+                    UserIdentificationFormFaceFragment.createInstance(kycType)
+                }
+                is UserIdentificationFormFinalFragment -> {
+                    UserIdentificationFormFinalFragment.createInstance(projectId)
+                }
+                is NotFoundFragment -> {
+                    NotFoundFragment.createInstance()
+                }
+                else -> {
+                    throw Exception()
+                }
             }
             fragmentList[actualPosition] = fragment
             val fragmentArguments = fragment.arguments
