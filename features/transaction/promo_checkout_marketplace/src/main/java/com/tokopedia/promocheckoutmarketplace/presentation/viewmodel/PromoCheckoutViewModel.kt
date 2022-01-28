@@ -1005,8 +1005,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     /* UI Callback Section */
     //---------------------//
 
-    fun initFragmentUiModel(pageSource: Int) {
-        val fragmentUiModel = uiModelMapper.mapFragmentUiModel(pageSource)
+    fun initFragmentUiModel(pageSource: Int, defaultErrorMessage: String) {
+        val fragmentUiModel = uiModelMapper.mapFragmentUiModel(pageSource, defaultErrorMessage)
         _fragmentUiModel.value = fragmentUiModel
     }
 
