@@ -57,7 +57,6 @@ import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListe
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
@@ -67,6 +66,7 @@ import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewLis
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
+import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
@@ -94,7 +94,7 @@ class ProductListTypeFactoryImpl(
     private val bannerListener: BannerListener,
     private val lastFilterListener: LastFilterListener,
     private val topAdsConfig: Config,
-    private val inspirationSizeOptionListener: InspirationSizeOptionListener,
+    private val inspirationSizeListener: InspirationSizeListener,
     private val violationListener: ViolationListener,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
@@ -254,7 +254,7 @@ class ProductListTypeFactoryImpl(
                 ChooseAddressViewHolder(view, chooseAddressListener, searchNavigationListener)
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
             LastFilterViewHolder.LAYOUT -> LastFilterViewHolder(view, lastFilterListener)
-            InspirationSizeViewHolder.LAYOUT -> InspirationSizeViewHolder(view, inspirationSizeOptionListener)
+            InspirationSizeViewHolder.LAYOUT -> InspirationSizeViewHolder(view, inspirationSizeListener)
             ViolationViewHolder.LAYOUT -> ViolationViewHolder(view, violationListener)
 
             else -> super.createViewHolder(view, type)
