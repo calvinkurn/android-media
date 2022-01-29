@@ -26,14 +26,14 @@ import com.tokopedia.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
-import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
+import com.tokopedia.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.EventState
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidget.Listener {
+open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -90,12 +90,12 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
 
     override fun onResume() {
         super.onResume()
-        binding?.bottomNavDrawer?.setListener(this)
+        binding?.drawerSelector?.setListener(this)
     }
 
     override fun onPause() {
         super.onPause()
-        binding?.bottomNavDrawer?.removeListener()
+        binding?.drawerSelector?.removeListener()
     }
 
     override fun onDataSetChanged(action: ActionType) {
@@ -126,16 +126,16 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
             viewModel.uiEvent.collect {
                 when (it) {
                     is EventState.SelectionChanged -> {
-                        binding?.bottomNavDrawer?.addAllData(it.data)
+                        binding?.drawerSelector?.addAllData(it.data)
                     }
                     is EventState.CameraCaptured -> {
-                        binding?.bottomNavDrawer?.addData(it.data)
+                        binding?.drawerSelector?.addData(it.data)
                     }
                     is EventState.SelectionAdded -> {
-                        binding?.bottomNavDrawer?.addData(it.data)
+                        binding?.drawerSelector?.addData(it.data)
                     }
                     is EventState.SelectionRemoved -> {
-                        binding?.bottomNavDrawer?.removeData(it.media)
+                        binding?.drawerSelector?.removeData(it.media)
                         adapter.removeSelected(it.media)
                     }
                 }
@@ -165,9 +165,9 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
         val isMultipleSelectionType = PickerUiConfig.paramType == PickerSelectionType.MULTIPLE
 
         if (isMultipleSelectionType) {
-            binding?.bottomNavDrawer?.setMaxAdapterSize(param.limitOfMedia())
-            binding?.bottomNavDrawer?.isAbleToReorder(false)
-            binding?.bottomNavDrawer?.showWithCondition(isShown)
+            binding?.drawerSelector?.setMaxAdapterSize(param.limitOfMedia())
+            binding?.drawerSelector?.isAbleToReorder(false)
+            binding?.drawerSelector?.showWithCondition(isShown)
         }
     }
 
@@ -201,11 +201,11 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
     }
 
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
-        val mediaSelectionDrawer = binding?.bottomNavDrawer?.getData()?: emptyList()
+        val mediaSelectionDrawer = binding?.drawerSelector?.getData()?: emptyList()
 
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
             val containsVideo = binding
-                ?.bottomNavDrawer
+                ?.drawerSelector
                 ?.containsVideoMaxOf(param.maxVideoCount())
                 ?: false
 

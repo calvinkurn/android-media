@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.widget.selectornav
+package com.tokopedia.picker.ui.widget.drawerselector
 
 import android.content.Context
 import android.util.AttributeSet
@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.picker.R
 import com.tokopedia.picker.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
-import com.tokopedia.picker.ui.widget.selectornav.adapter.MediaSelectionAdapter
+import com.tokopedia.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.Unify_N0
 
-class MediaSelectionNavigationWidget : FrameLayout {
+class DrawerSelectionWidget : FrameLayout {
 
-    private var adapter: MediaSelectionAdapter? = null
+    private var adapter: DrawerSelectionAdapter? = null
     private var placeHolderBackgroundColor: Int? = null
     private var placeholderPreview: Int? = null
     private var canReorder: Boolean = false
@@ -62,7 +62,7 @@ class MediaSelectionNavigationWidget : FrameLayout {
     }
 
     private fun setupRecyclerView() {
-        adapter = MediaSelectionAdapter(arrayListOf())
+        adapter = DrawerSelectionAdapter(arrayListOf())
         binding.rvThumbnail.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,

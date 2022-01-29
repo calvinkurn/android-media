@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.widget.selectornav.adapter
+package com.tokopedia.picker.ui.widget.drawerselector.adapter
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -11,19 +11,19 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
-import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
-import com.tokopedia.picker.ui.widget.selectornav.viewholder.PlaceholderViewHolder
-import com.tokopedia.picker.ui.widget.selectornav.viewholder.ThumbnailViewHolder
+import com.tokopedia.picker.ui.widget.drawerselector.DrawerSelectionWidget
+import com.tokopedia.picker.ui.widget.drawerselector.viewholder.PlaceholderViewHolder
+import com.tokopedia.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder
 import com.tokopedia.picker.utils.ActionType
 
-class MediaSelectionAdapter(
+class DrawerSelectionAdapter(
     mediaPathList: List<MediaUiModel>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val medias: MutableList<MediaUiModel> = mediaPathList.toMutableList()
     private val listRect: MutableMap<Int,Rect> = mutableMapOf()
 
-    private var listener: MediaSelectionNavigationWidget.Listener? = null
+    private var listener: DrawerSelectionWidget.Listener? = null
     private var totalVideo = 0
     private var maxSize = 10
 
@@ -72,7 +72,7 @@ class MediaSelectionAdapter(
         return if (maxSize > 0) maxSize else medias.size
     }
 
-    fun setOnDataChangedListener(listener: MediaSelectionNavigationWidget.Listener) {
+    fun setOnDataChangedListener(listener: DrawerSelectionWidget.Listener) {
         this.listener = listener
     }
 
