@@ -2,6 +2,8 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.liveDataUtil.SingleEvent
 import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
@@ -18,6 +20,8 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
 
     private var userActionLiveData = MutableLiveData<SingleEvent<UserAction>>()
     private var errorMessage = MutableLiveData<Throwable>()
+    var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
+    var isFieldError = MutableLiveData<Boolean>()
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {

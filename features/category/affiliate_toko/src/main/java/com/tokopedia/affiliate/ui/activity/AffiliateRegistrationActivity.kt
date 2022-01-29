@@ -48,12 +48,12 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupView()
+        setupView(savedInstanceState == null)
     }
 
-    private fun setupView() {
+    private fun setupView(isSavedInstanceStateNull: Boolean) {
         initObserver()
-        initFragment()
+        if(isSavedInstanceStateNull) initFragment()
     }
 
     private fun initFragment() {

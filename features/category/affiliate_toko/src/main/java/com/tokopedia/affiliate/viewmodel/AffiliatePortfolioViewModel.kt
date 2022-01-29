@@ -25,7 +25,7 @@ class AffiliatePortfolioViewModel@Inject constructor(
     :BaseViewModel() {
     var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var updateListItem = MutableLiveData<Int>()
-    private var isError = MutableLiveData<Boolean>()
+    var isError = MutableLiveData<Boolean>()
 
     fun createDefaultListForSm() {
         val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()

@@ -20,7 +20,6 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.interfaces.PortfolioClickInterface
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
@@ -99,12 +98,24 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             layoutManager = linearLayoutManager
             adapter = affiliateAdapter
         }
-        affiliatePortfolioViewModel.createDefaultListForSm()
+        setPortfolioData()
+
+    }
+
+    private fun setPortfolioData() {
+        if(affiliatePortfolioViewModel.affiliatePortfolioData.value.isNullOrEmpty() && registrationSharedViewModel.affiliatePortfolioData.value.isNullOrEmpty()) affiliatePortfolioViewModel.createDefaultListForSm()
+        else if(affiliatePortfolioViewModel.affiliatePortfolioData.value.isNullOrEmpty() && !registrationSharedViewModel.affiliatePortfolioData.value.isNullOrEmpty()) {
+            affiliatePortfolioViewModel.affiliatePortfolioData.value = registrationSharedViewModel.affiliatePortfolioData.value
+            affiliatePortfolioViewModel.isError.value = registrationSharedViewModel.isFieldError.value
+        }
     }
 
     private fun initButton() {
-        view?.findViewById<UnifyButton>(R.id.next_button)?.setOnClickListener {
-            nextButtonClicked()
+        view?.findViewById<UnifyButton>(R.id.next_button)?.apply {
+            isEnabled = if(affiliatePortfolioViewModel.isError().value == null)false else affiliatePortfolioViewModel.isError().value != true
+            setOnClickListener {
+                nextButtonClicked()
+            }
         }
     }
 
@@ -236,6 +247,16 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                         Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        setDataInSharedViewModel()
+    }
+
+    private fun setDataInSharedViewModel() {
+        registrationSharedViewModel.affiliatePortfolioData.value = affiliatePortfolioViewModel.affiliatePortfolioData.value
+        registrationSharedViewModel.isFieldError.value = affiliatePortfolioViewModel.isError().value
     }
 
     private fun sendTracker() {
