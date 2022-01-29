@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.activity.*
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePortfolioSocialMediaBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.fragment.*
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
@@ -37,6 +38,8 @@ interface AffiliateComponent {
     fun injectHelpFragment(affiliateHelpFragment: AffiliateHelpFragment)
 
     fun injectPromotionBottomSheet(affiliatePromotionBottomSheet: AffiliatePromotionBottomSheet)
+
+    fun injectSocialMediaBottomSheet(affiliateSocialMediaBottomSheet: AffiliatePortfolioSocialMediaBottomSheet)
 
     fun injectLoginFragment(affiliateLoginFragment : AffiliateLoginFragment)
 
