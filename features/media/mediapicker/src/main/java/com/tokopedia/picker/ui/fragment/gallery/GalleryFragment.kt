@@ -165,7 +165,7 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
         val isMultipleSelectionType = PickerUiConfig.paramType == PickerSelectionType.MULTIPLE
 
         if (isMultipleSelectionType) {
-            binding?.bottomNavDrawer?.setMaxAdapterSize(param.limit)
+            binding?.bottomNavDrawer?.setMaxAdapterSize(param.limitOfMedia())
             binding?.bottomNavDrawer?.isAbleToReorder(false)
             binding?.bottomNavDrawer?.showWithCondition(isShown)
         }
@@ -204,7 +204,11 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
         val mediaSelectionDrawer = binding?.bottomNavDrawer?.getData()?: emptyList()
 
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
-            val hasAtLeastOneVideoOnDrawer = binding?.bottomNavDrawer?.hasAtLeastOneVideo()?: false
+            val hasAtLeastOneVideoOnDrawer = binding
+                ?.bottomNavDrawer
+                ?.containsVideoMaxOf(param.maxVideoCount())
+                ?: false
+
             val mediaSelectionDrawerSize = mediaSelectionDrawer.size
 
             if (media.isVideo() && hasAtLeastOneVideoOnDrawer && !isSelected) {
@@ -216,12 +220,12 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
                 return false
             }
 
-            if (mediaSelectionDrawerSize >= param.limit && !isSelected) {
+            if (mediaSelectionDrawerSize >= param.limitOfMedia() && !isSelected) {
                 Toast.makeText(
                     requireContext(),
                     getString(
                         R.string.picker_selection_limit_message,
-                        param.limit
+                        param.limitOfMedia()
                     ),
                     Toast.LENGTH_SHORT
                 ).show()

@@ -6,17 +6,33 @@ import java.io.File
 
 @SuppressLint("ResponseFieldAnnotation")
 data class PickerParam(
-    var limit: Int = 5,
-    var maxVideoDuration: Int = 30000, // in interval, 30 sec
-    var isFolderMode: Boolean = true,
-    var isIncludeVideo: Boolean = true,
-    var isOnlyVideo: Boolean = false,
-    var isIncludeAnimation: Boolean = false,
-    var isMultipleSelection: Boolean = true,
-    var excludedImages: List<File> = emptyList(),
-    var pageType: Int = PickerPageType.COMMON,
-    var cameraRatio: CameraRatio = CameraRatio.Full
+    private var maxPhoto: Int = 4,
+    private var maxVideo: Int = 1,
+    private var maxVideoDuration: Int = 30000, // in interval, 30 sec
+    private var isIncludeVideo: Boolean = true,
+    private var isOnlyVideo: Boolean = false,
+    private var isIncludeAnimation: Boolean = false,
+    private var isMultipleSelection: Boolean = true,
+    private var excludedMedias: List<File> = emptyList(),
+    private var pageType: Int = PickerPageType.COMMON,
+    private var cameraRatio: CameraRatio = CameraRatio.Full
 ) {
+
+    fun isMultipleSelectionType() = isMultipleSelection
+
+    fun isIncludeVideoFile() = isIncludeVideo
+
+    fun isOnlyVideoFile() = isOnlyVideo
+
+    fun isIncludeGifFile() = isIncludeAnimation
+
+    fun excludeMedias() = excludedMedias
+
+    fun maxVideoCount() = maxVideo
+
+    fun limitOfMedia() = maxPhoto + maxVideo
+
+    fun maxVideoDuration() = maxVideoDuration
 
     fun isCommonPageType() = pageType == PickerPageType.COMMON
 

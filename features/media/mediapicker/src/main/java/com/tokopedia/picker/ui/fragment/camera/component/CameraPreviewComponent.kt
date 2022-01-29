@@ -32,11 +32,11 @@ class CameraPreviewComponent(
     private val spaceToolBar = findViewById<Space>(R.id.space_toolbar)
 
     private val cameraView = findViewById<CameraView>(R.id.cameraView).apply {
-        if (!param.ratioIsSquare()) {
-            fullScreenCameraView()
-        } else {
+        if (param.ratioIsSquare()) {
             squareRatioCameraView()
             squareRatioOfCameraSize()
+        } else {
+            fullScreenCameraView()
         }
     }
 
@@ -58,7 +58,7 @@ class CameraPreviewComponent(
 
         cameraView.takeVideoSnapshot(
             MediaFileUtils.createMediaFile(false),
-            param.maxVideoDuration
+            param.maxVideoDuration()
         )
     }
 

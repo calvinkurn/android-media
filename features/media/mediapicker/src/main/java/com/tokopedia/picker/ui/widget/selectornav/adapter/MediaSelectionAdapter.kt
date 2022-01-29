@@ -116,8 +116,8 @@ class MediaSelectionAdapter(
         notifyDataSetChanged()
     }
 
-    fun hasAtLeastOneVideo(): Boolean {
-        return this.medias.any { it.isVideo() }
+    fun containsVideoMaxOf(count: Int): Boolean {
+        return this.medias.filter { it.isVideo() }.size == count
     }
 
     fun getData(): List<MediaUiModel> {

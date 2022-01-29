@@ -137,8 +137,8 @@ class MediaSelectionNavigationWidget : FrameLayout {
         adapter?.setData(medias.toMutableList())
     }
 
-    fun hasAtLeastOneVideo(): Boolean {
-        return adapter?.hasAtLeastOneVideo() == true
+    fun containsVideoMaxOf(count: Int): Boolean {
+        return adapter?.containsVideoMaxOf(count) == true
     }
 
     fun setPlaceholderPreview(@DrawableRes drawable: Int) {

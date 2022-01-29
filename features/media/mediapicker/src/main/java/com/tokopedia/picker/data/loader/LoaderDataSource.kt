@@ -61,11 +61,11 @@ open class LoaderDataSource(private val context: Context) {
         val path = cursor.getString(cursor.getColumnIndex(projection[2]))
         val file = makeSafeFile(path) ?: return null
 
-        if (param.excludedImages.contains(file)) return null
+        if (param.excludeMedias().contains(file)) return null
         if (!file.exists()) return null
 
         // Exclude GIF when we don't want it
-        if (!param.isIncludeAnimation) {
+        if (!param.isIncludeGifFile()) {
             if (isGifFormat(path)) return null
         }
 
@@ -81,8 +81,8 @@ open class LoaderDataSource(private val context: Context) {
 
     private fun selection(param: PickerParam, bucketId: Long): String {
         var selection = when {
-            param.isOnlyVideo -> "($MEDIA_TYPE=$MEDIA_TYPE_VIDEO)"
-            param.isIncludeVideo -> "($MEDIA_TYPE=$MEDIA_TYPE_IMAGE OR $MEDIA_TYPE=$MEDIA_TYPE_VIDEO)"
+            param.isOnlyVideoFile() -> "($MEDIA_TYPE=$MEDIA_TYPE_VIDEO)"
+            param.isIncludeVideoFile() -> "($MEDIA_TYPE=$MEDIA_TYPE_IMAGE OR $MEDIA_TYPE=$MEDIA_TYPE_VIDEO)"
             else -> ""
         }
 
@@ -96,7 +96,7 @@ open class LoaderDataSource(private val context: Context) {
     }
 
     private fun sourceUri(param: PickerParam): Uri {
-        return if (param.isOnlyVideo || param.isIncludeVideo) {
+        return if (param.isOnlyVideoFile() || param.isIncludeVideoFile()) {
             MediaStore.Files.getContentUri(VOLUME_NAME)
         } else MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     }

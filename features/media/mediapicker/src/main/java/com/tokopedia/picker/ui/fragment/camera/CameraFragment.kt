@@ -154,7 +154,7 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun hasReachedLimit(): Boolean {
-        return listener?.mediaSelected()?.size == param.limit
+        return listener?.mediaSelected()?.size == param.limitOfMedia()
     }
 
     override fun hasVideoAddedOnMediaSelection(): Boolean {
@@ -166,7 +166,7 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onShowToastMediaLimit() {
         Toast.makeText(
             requireContext(),
-            getString(R.string.picker_selection_limit_message, param.limit),
+            getString(R.string.picker_selection_limit_message, param.limitOfMedia()),
             Toast.LENGTH_SHORT
         ).show()
     }

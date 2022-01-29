@@ -107,17 +107,17 @@ class CameraControllerComponent(
     override fun release() {
         resetVideoDuration()
 
-        if (param.isIncludeVideo) {
+        if (param.isIncludeVideoFile()) {
             lstCameraMode.viewTreeObserver.removeOnScrollChangedListener(this)
         }
     }
 
     fun setupView() {
         when {
-            param.isIncludeVideo -> {
+            param.isIncludeVideoFile() -> {
                 setupCameraSlider()
             }
-            param.isOnlyVideo -> {
+            param.isOnlyVideoFile() -> {
                 listener.onCameraModeChanged(VIDEO_MODE)
                 videoModeButtonState()
             }
@@ -137,7 +137,7 @@ class CameraControllerComponent(
     }
 
     fun setThumbnailPreview(file: File) {
-        if (!param.isMultipleSelection) return
+        if (!param.isMultipleSelectionType()) return
 
         imgPreview.pickerLoadImage(file.path)
         imgPreview.show()
@@ -148,7 +148,7 @@ class CameraControllerComponent(
     }
 
     fun startRecording() {
-        if (getActiveCameraMode() != VIDEO_MODE && !param.isIncludeVideo) return
+        if (getActiveCameraMode() != VIDEO_MODE && !param.isIncludeVideoFile()) return
 
         btnTakeCamera.animStartRecording()
         videoDurationContainer.show()
@@ -158,7 +158,7 @@ class CameraControllerComponent(
 
     fun stopRecording() {
         if (getActiveCameraMode() != VIDEO_MODE) return
-        if (param.isIncludeVideo) scrollToVideoMode()
+        if (param.isIncludeVideoFile()) scrollToVideoMode()
 
         resetVideoDuration()
         btnTakeCamera.animStopRecording()
@@ -170,10 +170,10 @@ class CameraControllerComponent(
     fun onVideoDurationChanged() {
         resetVideoDuration()
 
-        val maxDuration = param.maxVideoDuration.toLong()
+        val maxDuration = param.maxVideoDuration().toLong()
 
         videoDurationTimer = object : CountDownTimer(
-            param.maxVideoDuration.toLong(),
+            param.maxVideoDuration().toLong(),
             COUNTDOWN_INTERVAL
         ) {
             override fun onTick(millisUntilFinished: Long) {
@@ -245,7 +245,7 @@ class CameraControllerComponent(
     private fun isVideoMode() = getActiveCameraMode() == VIDEO_MODE
 
     private fun setMaxDuration() {
-        txtMaxDuration.text = param.maxVideoDuration
+        txtMaxDuration.text = param.maxVideoDuration()
             .toLong()
             .toVideoDurationFormat()
     }
