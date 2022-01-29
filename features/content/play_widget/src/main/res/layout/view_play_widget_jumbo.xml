@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_play_widget_card_channel_jumbo"
+        tools:listitem="@layout/view_play_widget_card_jumbo_channel"
         tools:orientation="vertical"
         tools:spanCount="1"
         />

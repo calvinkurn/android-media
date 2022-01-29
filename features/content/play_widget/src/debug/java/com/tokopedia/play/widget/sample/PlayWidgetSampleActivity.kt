@@ -21,7 +21,7 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
 
     private val pages = listOf<Pair<String, Fragment>>(
         Pair("Feed", PlayWidgetSampleFeedFragment()),
-        Pair("Sample",  PlayWidgetSampleFragment())
+        Pair("Common",  PlayWidgetSampleCommonFragment())
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +38,7 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
         viewPager.adapter = ViewPagerAdapter(this, pages)
 
         TabsUnifyMediator(tabLayout, viewPager) { tab, position ->
-            tab.setCustomText("Content ${position + 1}")
+            tab.setCustomText(pages[position].first)
         }
     }
 

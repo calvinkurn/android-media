@@ -64,8 +64,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
             is PlayWidgetMediumView -> child.setWidgetInternalListener(listener)
-            is PlayWidgetLargeView -> child.setWidgetInternalListener(listener)
-            is PlayWidgetJumboView -> child.setWidgetInternalListener(listener)
         }
     }
 
@@ -83,8 +81,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (state.widgetType) {
             PlayWidgetType.Small -> addSmallView(state.model)
             PlayWidgetType.Medium -> addMediumView(state.model)
-            PlayWidgetType.Large -> addLargeView(state.model)
-            PlayWidgetType.Jumbo -> addJumboView(state.model)
+            PlayWidgetType.Large -> addLargeView(state.model) // todo: revisit
+            PlayWidgetType.Jumbo -> addJumboView(state.model) // todo: revisit
             else -> {}
         }
     }
@@ -102,8 +100,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setWidgetListener(listener)
             is PlayWidgetMediumView -> child.setWidgetListener(listener)
-            is PlayWidgetLargeView -> child.setWidgetListener(listener)
-            is PlayWidgetJumboView -> child.setWidgetListener(listener)
+            is PlayWidgetLargeView -> child.setWidgetListener(listener) // todo: revisit
+            is PlayWidgetJumboView -> child.setWidgetListener(listener) // todo: revisit
         }
     }
 
@@ -144,7 +142,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             widgetView.show()
             widgetView.setData(model)
             widgetView.setWidgetListener(mWidgetListener)
-            widgetView.setWidgetInternalListener(mWidgetInternalListener)
         }
     }
 
@@ -156,7 +153,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             widgetView.show()
             widgetView.setData(model)
             widgetView.setWidgetListener(mWidgetListener)
-            widgetView.setWidgetInternalListener(mWidgetInternalListener)
         }
     }
 

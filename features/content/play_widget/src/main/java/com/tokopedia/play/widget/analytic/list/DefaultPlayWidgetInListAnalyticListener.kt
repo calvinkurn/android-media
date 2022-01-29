@@ -2,9 +2,7 @@ package com.tokopedia.play.widget.analytic.list
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
-import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetSmallView
-import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.*
 import com.tokopedia.play.widget.ui.model.*
 
 /**
@@ -73,5 +71,75 @@ class DefaultPlayWidgetInListAnalyticListener (
 
     override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetBannerUiModel, channelPositionInList: Int) {
         analytic.onClickBannerCard(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
+    }
+
+    override fun onClickBannerCard(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic.onClickBannerCard(view, item, channelPositionInList, verticalWidgetPosition)
+    }
+
+    override fun onClickChannelCard(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition)
+    }
+
+    override fun onImpressBannerCard(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic.onImpressBannerCard(view, item, channelPositionInList, verticalWidgetPosition)
+    }
+
+    override fun onImpressChannelCard(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition)
+    }
+
+    override fun onClickToggleReminderChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean
+    ) {
+        analytic.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe, verticalWidgetPosition)
+    }
+
+    override fun onClickChannelCard(
+        view: PlayWidgetJumboView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition)
+    }
+
+    override fun onClickToggleReminderChannel(
+        view: PlayWidgetJumboView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean
+    ) {
+        analytic.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe, verticalWidgetPosition)
+    }
+
+    override fun onImpressChannelCard(
+        view: PlayWidgetJumboView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition)
     }
 }

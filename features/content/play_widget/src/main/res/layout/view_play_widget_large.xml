@@ -9,11 +9,10 @@
         android:id="@+id/play_widget_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:spanCount="@integer/play_widget_large_span_count"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:itemCount="2"
-        tools:listitem="@layout/item_play_widget_card_channel_large"
+        tools:listitem="@layout/view_play_widget_card_large_channel"
         tools:orientation="vertical"
-        tools:spanCount="2"
         />
 
 </FrameLayout>

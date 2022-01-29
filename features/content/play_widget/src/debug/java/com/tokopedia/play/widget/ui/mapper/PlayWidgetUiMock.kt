@@ -48,18 +48,18 @@ object PlayWidgetUiMock {
 
     private fun getSampleChannelModel(channelType: PlayWidgetChannelType) = PlayWidgetChannelUiModel(
         channelId = "123",
-        title = "Google Assistant review with me",
+        title = "BARDI hingga Memory Mulai dari 1Rb! \uD83D\uDD25 \uD83D\uDE0D",
         channelType = channelType,
         appLink = "",
         startTime = "",
-        totalView = PlayWidgetTotalView("10,0 rb", true),
+        totalView = PlayWidgetTotalView("33.1 rb", true),
         promoType = PlayWidgetPromoType.Default("Diskon 100%"),
-        reminderType = PlayWidgetReminderType.Reminded,
-        partner = PlayWidgetPartnerUiModel("123", "Google"),
+        reminderType = PlayWidgetReminderType.NotReminded,
+        partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play"),
         video = getVideoUiModel(channelType),
         hasAction = true,
         share = PlayWidgetShareUiModel(
-            "TEST CHANNEL covert vod transcoding \nYuk, nonton siaran dari testtokoucup di Tokopedia PLAY! Bakal seru banget lho!\n https://tokopedia.link/hwql0mV2Wab",
+            "Udah pada nonton \\\"BARDI hingga Memory Mulai dari 1Rb! \uD83D\uDD25 \uD83D\uDE0D\\\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\\nhttps://www.tokopedia.com/play/channel/272686?titlebar=false",
             isShow = true
         ),
         performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
@@ -71,8 +71,8 @@ object PlayWidgetUiMock {
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(
             id = "123",
-            coverUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
-            videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            coverUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg?b=UaM%25G%23Rjn4WYVBx%5DjFWX%3D~t6bbWB0PkWkqoL",
+            videoUrl = "https://vod.tokopedia.net/liveRecord/f85e64cd584687e170c3fb851569d466/play_record/7153b020-7e86-11ec-8a14-ce6d35e87b55/2022-01-26-17-00-45_2022-01-26-19-01-09.m3u8",
             isLive = channelType == PlayWidgetChannelType.Live
     )
 

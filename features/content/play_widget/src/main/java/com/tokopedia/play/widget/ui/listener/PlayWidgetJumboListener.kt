@@ -7,6 +7,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
  * @author by astidhiyaa on 12/01/22
  */
 interface PlayWidgetJumboListener : PlayWidgetRouterListener {
+
     fun onToggleReminderClicked(
         view: PlayWidgetJumboView,
         channelId: String,
@@ -14,9 +15,4 @@ interface PlayWidgetJumboListener : PlayWidgetRouterListener {
         position: Int
     ) {
     }
-
-    fun onDeleteFailedTranscodingChannel(
-        view: PlayWidgetJumboView,
-        channelId: String
-    ) {}
 }

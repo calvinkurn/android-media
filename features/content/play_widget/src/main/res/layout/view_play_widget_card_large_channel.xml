@@ -2,9 +2,10 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/play_widget_card_medium_width"
-    android:layout_height="@dimen/play_widget_card_medium_height"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/play_widget_card_large_height"
     android:foreground="?attr/selectableItemBackground"
+    android:minWidth="@dimen/play_widget_card_large_width"
     app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardElevation="@dimen/spacing_lvl1"
     app:cardPreventCornerOverlap="false"
@@ -13,18 +14,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/play_widget_dms_light_gray">
+        android:layout_height="match_parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/play_widget_thumbnail"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars"
+            />
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/play_widget_player_view"
@@ -44,14 +46,13 @@
         <FrameLayout
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHeight_percent="0.2"
-            app:layout_constraintVertical_bias="0"
             android:background="@drawable/bg_play_widget_top_gradient"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
 
         <include
             android:id="@+id/view_reminder"
@@ -61,22 +62,6 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone"
-            />
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/play_widget_iv_action"
-            android:layout_width="@dimen/play_widget_more_action_size"
-            android:layout_height="@dimen/play_widget_more_action_size"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl1"
-            android:scaleType="centerInside"
-            android:visibility="gone"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="MENU_KEBAB_VERTICAL"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
@@ -90,8 +75,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"
-            />
+            tools:visibility="visible" />
 
         <include
             android:id="@+id/play_widget_badge_total_view"
@@ -102,8 +86,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toEndOf="@+id/play_widget_badge_live"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginStart="@dimen/spacing_lvl3"
-            />
+            app:layout_goneMarginStart="@dimen/spacing_lvl3" />
 
         <LinearLayout
             android:id="@+id/play_widget_info_container"
@@ -112,7 +95,8 @@
             android:background="@drawable/bg_play_widget_bottom_gradient"
             android:orientation="vertical"
             android:paddingBottom="@dimen/spacing_lvl3"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
 
             <include
                 android:id="@+id/play_widget_badge_promo"
@@ -120,10 +104,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginBottom="@dimen/spacing_lvl3"
-                app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
-                app:layout_constraintStart_toStartOf="parent"
-                />
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_date"
@@ -136,8 +117,7 @@
                 android:textColor="@color/play_widget_dms_upcoming_date_text"
                 android:visibility="visible"
                 app:typographyType="small"
-                tools:text="10 January 2020 - 17.00"
-                />
+                tools:text="10 January 2020 - 17.00" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_title"
@@ -150,8 +130,8 @@
                 android:maxLines="2"
                 android:textColor="@color/Unify_N0"
                 android:textIsSelectable="false"
-                app:typographyType="body_3"
-                tools:text="Title maximal 2 line maximal 24 char"
+                app:typographyType="body_2"
+                tools:text="Title maximal 2 line maximal 24 char "
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -160,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginBottom="@dimen/spacing_lvl2"
+                android:layout_marginBottom="@dimen/spacing_lvl1"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/play_widget_dms_author_label"
@@ -169,43 +149,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="body_3"
-                tools:text="Tokopedia Official"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_loading_container"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/layout_lvl0"
-            android:background="@color/Unify_N700_68"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone"
-            >
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/loader_loading"
-                android:layout_width="@dimen/play_widget_unify_loader_size"
-                android:layout_height="@dimen/play_widget_unify_loader_size"
-                app:loader_type="circular_white"
-                />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/play_widget_delete_loading_text"
-                android:textColor="@color/Unify_N0"
-                app:typographyType="body_3"
-                app:typographyWeight="bold"
-                />
+                tools:text="Tokopedia Official" />
 
         </LinearLayout>
 
