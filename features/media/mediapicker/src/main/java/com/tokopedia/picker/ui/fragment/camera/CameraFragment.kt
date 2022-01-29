@@ -63,7 +63,16 @@ open class CameraFragment : BaseDaggerFragment()
     private val preview by uiComponent { CameraPreviewComponent(param, this, it) }
     private val controller by uiComponent { CameraControllerComponent(param, this, it) }
 
-    val gestureDetector by lazy { gestureDetector() }
+    val gestureDetector by lazy {
+        GestureDetector(requireContext(), FlingGestureWrapper(
+            swipeLeftToRight = {
+                controller.scrollToVideoMode()
+            },
+            swipeRightToLeft = {
+                controller.scrollToPhotoMode()
+            }
+        ))
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -141,9 +150,9 @@ open class CameraFragment : BaseDaggerFragment()
             return
         }
 
-        showShutterEffect {
-            preview.enableFlashTorch()
+        preview.enableFlashTorch()
 
+        showShutterEffect {
             if (isTakingPictureMode) {
                 preview.onStartTakePicture()
             } else {
@@ -158,9 +167,9 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun hasVideoAddedOnMediaSelection(): Boolean {
-        return listener?.mediaSelected()?.any {
+        return listener?.mediaSelected()?.filter {
             it.isVideo()
-        } == true
+        }?.size == param.maxVideoCount()
     }
 
     override fun onShowToastMediaLimit() {
@@ -174,7 +183,10 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onShowToastVideoLimit() {
         Toast.makeText(
             requireContext(),
-            getString(R.string.picker_selection_limit_video),
+            getString(
+                R.string.picker_selection_limit_video,
+                param.maxVideoCount()
+            ),
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -278,15 +290,6 @@ open class CameraFragment : BaseDaggerFragment()
             }, OVERLAY_SHUTTER_DELAY)
         }
     }
-
-    private fun gestureDetector() = GestureDetector(requireContext(), FlingGestureWrapper(
-        swipeLeftToRight = {
-            controller.scrollToVideoMode()
-        },
-        swipeRightToLeft = {
-            controller.scrollToPhotoMode()
-        }
-    ))
 
     override fun initInjector() {
         DaggerPickerComponent.builder()

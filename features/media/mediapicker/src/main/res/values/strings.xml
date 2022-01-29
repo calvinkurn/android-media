@@ -17,7 +17,7 @@
 
 <!--    message-->
     <string name="picker_selection_limit_message">Kamu hanya bisa upload maksimal %1$d media.</string>
-    <string name="picker_selection_limit_video">Kamu hanya bisa upload maksimal 1 video.</string>
+    <string name="picker_selection_limit_video">Kamu hanya bisa upload maksimal %1$d video.</string>
     <string name="picker_photo_max_size">Ukuran foto maksimal %1$d MB.</string>
     <string name="picker_video_max_size">Ukuran video maksimal %1$d MB.</string>
     <string name="picker_video_duration_max_limit">Durasi video maksimal 1 menit pas, ya.</string>

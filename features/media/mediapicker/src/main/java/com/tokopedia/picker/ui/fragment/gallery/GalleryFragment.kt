@@ -204,17 +204,20 @@ open class GalleryFragment : BaseDaggerFragment(), MediaSelectionNavigationWidge
         val mediaSelectionDrawer = binding?.bottomNavDrawer?.getData()?: emptyList()
 
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
-            val hasAtLeastOneVideoOnDrawer = binding
+            val containsVideo = binding
                 ?.bottomNavDrawer
                 ?.containsVideoMaxOf(param.maxVideoCount())
                 ?: false
 
             val mediaSelectionDrawerSize = mediaSelectionDrawer.size
 
-            if (media.isVideo() && hasAtLeastOneVideoOnDrawer && !isSelected) {
+            if (media.isVideo() && containsVideo && !isSelected) {
                 Toast.makeText(
                     requireContext(),
-                    getString(R.string.picker_selection_limit_video),
+                    getString(
+                        R.string.picker_selection_limit_video,
+                        param.maxVideoCount()
+                    ),
                     Toast.LENGTH_SHORT
                 ).show()
                 return false
