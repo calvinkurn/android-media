@@ -102,7 +102,7 @@ class UserIdentificationInfoActivityTest {
     fun retakeKtpTest() {
         ActivityComponentFactory.instance = FakeKycActivityComponentFactory(
             case = FakeKycUploadApi.Case.Retake(
-                arrayListOf(1)
+                arrayListOf(2)
             )
         )
         activityTestRule.launchActivity(null)
@@ -134,6 +134,6 @@ class UserIdentificationInfoActivityTest {
             atCameraClickNext()
         }
 
-        Thread.sleep(3_000)
+        Thread.sleep(5_000)
     }
 }

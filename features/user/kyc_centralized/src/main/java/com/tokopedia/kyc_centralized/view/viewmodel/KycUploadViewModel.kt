@@ -77,6 +77,7 @@ class KycUploadViewModel @Inject constructor(
     }
 
     fun encryptImage(originalFilePath: String, ivCache: String) {
+        Timber.d("LVN: Start encrypting $originalFilePath, $ivCache")
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)

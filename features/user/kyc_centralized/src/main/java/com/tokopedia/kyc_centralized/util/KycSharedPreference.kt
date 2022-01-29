@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.util
 
 import android.content.SharedPreferences
+import timber.log.Timber
 import javax.inject.Inject
 
 class KycSharedPreference @Inject constructor(
@@ -20,6 +21,7 @@ class KycSharedPreference @Inject constructor(
     }
 
     override fun removeCache(key: String) {
+        Timber.d("LVN: Removing key $key")
         sharedPreferences.edit().remove(key).apply()
     }
 

@@ -36,6 +36,7 @@ import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.file.FileUtil
+import timber.log.Timber
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -243,6 +244,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
         super.onDestroy()
         //Delete KYC folder immediately, if onDestroy is not called, we rely on worker
         if (isFinishing) {
+            Timber.d("LVN: onDestroy Delete")
             FileUtil.deleteFolder(externalCacheDir?.absolutePath + FILE_NAME_KYC)
         }
     }

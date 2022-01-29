@@ -186,14 +186,14 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                             }.build()
                     )
                     NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_fail_to_encrypt))
-                    Timber.w(it.throwable, "ENCRYPT ERROR")
+                    Timber.w(it.throwable, "LVN: ENCRYPT ERROR")
                 }
             }
         })
     }
 
     private fun sendErrorTimberLog(throwable: Throwable) {
-        Timber.w(throwable, "LIVENESS_UPLOAD_RESULT")
+        Timber.w(throwable, "LVN: LIVENESS_UPLOAD_RESULT")
         if (!isKycSelfie) {
             ServerLogger.log(Priority.P2, "LIVENESS_UPLOAD_RESULT", mapOf("type" to "ErrorUpload",
                     "ktpPath" to stepperModel?.ktpFile.orEmpty(),
@@ -592,7 +592,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             FileUtil.deleteFolder(context?.externalCacheDir?.absolutePath + FILE_NAME_KYC)
         } else {
             if (deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
-            if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
+//            if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
         }
     }
 
