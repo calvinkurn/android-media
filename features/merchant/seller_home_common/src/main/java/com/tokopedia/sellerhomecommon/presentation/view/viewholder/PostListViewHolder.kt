@@ -115,7 +115,7 @@ class PostListViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 tvShcPostLastUpdated.isVisible = true
                 tvShcPostLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated)
+                    .getCopy(root.context, lastUpdated.lastUpdated)
             }
             icShcRefreshPost.isVisible = element.isFromCache
             icShcRefreshPost.setOnClickListener {

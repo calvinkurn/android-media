@@ -11,7 +11,6 @@ data class ProgressDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    override val lastUpdated: Long = 0,
     val valueTxt: String = "",
     val maxValueTxt: String = "",
     val value: Int = 0,

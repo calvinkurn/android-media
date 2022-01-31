@@ -128,7 +128,7 @@ class RecommendationViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 tvShcRecommendationLastUpdated.isVisible = true
                 tvShcRecommendationLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated)
+                    .getCopy(root.context, lastUpdated.lastUpdated)
             }
             icShcRefreshRecommendation.isVisible = element.isFromCache
             icShcRefreshRecommendation.setOnClickListener {

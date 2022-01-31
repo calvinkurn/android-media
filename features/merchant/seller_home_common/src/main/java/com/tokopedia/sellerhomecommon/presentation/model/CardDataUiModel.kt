@@ -11,7 +11,7 @@ data class CardDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    override val lastUpdated: Long = 0,
+    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val description: String = "",
     val state: State = State.NORMAL,
     val value: String = "",

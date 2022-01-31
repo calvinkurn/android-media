@@ -130,7 +130,7 @@ class PieChartViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 tvShcPieChartLastUpdated.isVisible = true
                 tvShcPieChartLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated)
+                    .getCopy(root.context, lastUpdated.lastUpdated)
             }
             icShcRefreshPieChart.isVisible = element.isFromCache
             icShcRefreshPieChart.setOnClickListener {

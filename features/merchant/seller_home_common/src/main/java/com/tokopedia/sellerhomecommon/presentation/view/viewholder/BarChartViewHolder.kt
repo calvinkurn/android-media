@@ -138,7 +138,7 @@ class BarChartViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 tvShcBarChartLastUpdated.isVisible = true
                 tvShcBarChartLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated)
+                    .getCopy(root.context, lastUpdated.lastUpdated)
             }
             icShcRefreshBarChart.isVisible = element.isFromCache
             icShcRefreshBarChart.setOnClickListener {

@@ -9,7 +9,7 @@ data class PostListDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    override val lastUpdated: Long = 0,
+    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val emphasizeType: Int = IMAGE_EMPHASIZED,
     val postPagers: List<PostListPagerUiModel> = emptyList(),
     val cta: PostCtaDataUiModel = PostCtaDataUiModel()

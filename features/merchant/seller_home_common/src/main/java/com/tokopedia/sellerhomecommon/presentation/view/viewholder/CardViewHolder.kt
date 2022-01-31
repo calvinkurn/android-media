@@ -4,6 +4,7 @@ import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -145,7 +146,8 @@ class CardViewHolder(
 
     private fun setupRefreshButton(element: CardWidgetUiModel) {
         with(binding) {
-            icShcRefreshCard.isVisible = element.isFromCache
+            val shouldShowRefreshButton = element.data?.lastUpdated?.shouldShow.orFalse()
+            icShcRefreshCard.isVisible = shouldShowRefreshButton
             icShcRefreshCard.setOnClickListener {
                 listener.onReloadWidget(element)
             }

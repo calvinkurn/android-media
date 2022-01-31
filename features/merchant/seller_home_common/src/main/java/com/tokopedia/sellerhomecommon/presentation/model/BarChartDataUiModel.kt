@@ -9,7 +9,7 @@ data class BarChartDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    override val lastUpdated: Long = 0L,
+    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val chartData: BarChartUiModel = BarChartUiModel()
 ) : BaseDataUiModel {
 

@@ -9,7 +9,7 @@ data class RecommendationDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    override val lastUpdated: Long = 0,
+    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val ticker: RecommendationTickerUiModel? = null,
     val progressLevel: RecommendationProgressUiModel? = null,
     val progressBar: RecommendationProgressUiModel? = null,

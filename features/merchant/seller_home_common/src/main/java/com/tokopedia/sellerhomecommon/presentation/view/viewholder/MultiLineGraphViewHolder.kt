@@ -283,7 +283,7 @@ class MultiLineGraphViewHolder(
             val isFromCache = element.data?.isFromCache.orFalse()
 
             binding.luvShcLineGraph.run {
-                setLastUpdated(lastUpdated)
+                setLastUpdated(lastUpdated.lastUpdated)
                 setRefreshButtonVisibility(isFromCache)
                 setReloadButtonClickListener {
                     listener.onReloadWidget(element)

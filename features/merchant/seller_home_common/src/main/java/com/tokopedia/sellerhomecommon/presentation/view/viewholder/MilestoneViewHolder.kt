@@ -115,7 +115,7 @@ class MilestoneViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 tvShcMilestoneLastUpdated.isVisible = true
                 tvShcMilestoneLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated)
+                    .getCopy(root.context, lastUpdated.lastUpdated)
             }
             icShcRefreshMilestone.isVisible = element.isFromCache
             icShcRefreshMilestone.setOnClickListener {

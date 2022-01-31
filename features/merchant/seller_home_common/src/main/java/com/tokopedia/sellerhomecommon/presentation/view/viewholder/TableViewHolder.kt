@@ -116,7 +116,7 @@ class TableViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 tvShcTableLastUpdated.isVisible = true
                 tvShcTableLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated)
+                    .getCopy(root.context, lastUpdated.lastUpdated)
             }
             icShcRefreshTable.isVisible = element.isFromCache
             icShcRefreshTable.setOnClickListener {

@@ -180,7 +180,7 @@ class LineGraphViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 tvShcLineLastUpdated.isVisible = true
                 tvShcLineLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated)
+                    .getCopy(root.context, lastUpdated.lastUpdated)
             }
             icShcRefreshLineGraph.isVisible = element.isFromCache
             icShcRefreshLineGraph.setOnClickListener {
