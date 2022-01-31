@@ -14,19 +14,19 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.common.utils.TimerRunnable
+import com.tokopedia.vouchercreation.common.utils.Timer
 import com.tokopedia.vouchercreation.databinding.FragmentCouponDetailBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponDetailViewModel
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
@@ -107,7 +107,9 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupViews() {
-
+        with(binding) {
+            imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
+        }
     }
 
     private fun observeCouponDetail() {
@@ -182,10 +184,12 @@ class CouponDetailFragment : BaseDaggerFragment() {
         binding.tpgCouponType.text = coupon.typeFormatted
         binding.tpgCouponQouta.text = coupon.quota.splitByThousand()
 
-        val couponType = if (coupon.type == VoucherTypeConst.FREE_ONGKIR) CouponType.FREE_SHIPPING else CouponType.CASHBACK
+        val couponType =
+            if (coupon.type == VoucherTypeConst.FREE_ONGKIR) CouponType.FREE_SHIPPING else CouponType.CASHBACK
         val minimumPurchaseType = MinimumPurchaseType.NOMINAL
 
-        val discountType = if (coupon.discountType == 1) DiscountType.NOMINAL else DiscountType.PERCENTAGE
+        val discountType =
+            if (coupon.discountType == 1) DiscountType.NOMINAL else DiscountType.PERCENTAGE
         binding.tpgDiscountType.text = discountType.label
 
         handleDiscountType(couponType)
@@ -350,23 +354,28 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun setVoucherStatus(coupon: VoucherUiModel) {
         when (coupon.status) {
             VoucherStatusConst.ONGOING -> {
+                binding.labelCountdown.visible()
                 binding.labelVoucherStatus.setLabel(getString(R.string.mvc_ongoing))
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
             }
             VoucherStatusConst.NOT_STARTED -> {
+                binding.labelCountdown.gone()
                 binding.labelVoucherStatus.setLabel(getString(R.string.mvc_future))
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             }
             VoucherStatusConst.STOPPED -> {
+                binding.labelCountdown.gone()
                 binding.labelVoucherStatus.setLabel(getString(R.string.mvc_stopped))
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
 
             }
             VoucherStatusConst.DELETED -> {
+                binding.labelCountdown.gone()
                 binding.labelVoucherStatus.setLabel(getString(R.string.mvc_deleted))
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             }
             else -> {
+                binding.labelCountdown.gone()
                 binding.labelVoucherStatus.setLabel(getString(R.string.mvc_ended))
                 binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             }
@@ -374,31 +383,34 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     }
 
-    private fun startTimer(unformattedEndDate : String) {
+    private fun startTimer(unformattedEndDate: String) {
         binding.labelCountdown.visible()
         val endDate = unformattedEndDate.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
-        val diffMillis = endDate.time - System.currentTimeMillis()
-        val timer = TimerRunnable(diffMillis, ::onCountdownTick)
-        timer.start()
+        val timer = Timer { remainingTime ->
+            binding.labelCountdown.text = remainingTime
+        }
+        timer.startCountdown(endDate)
     }
 
-    private fun onCountdownTick(time: String) {
-        binding.labelCountdown.text = time
-    }
-
-    private fun displayQuotaUsage(coupon : VoucherUiModel) {
+    private fun displayQuotaUsage(coupon: VoucherUiModel) {
         val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
         binding.progressBarQuotaUsage.setValue(progressBarValue, true)
         binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(6).toInt()
 
         binding.tpgUsedQuota.text = coupon.confirmedQuota.toString()
-        binding.tpgTotalQuota.text = String.format(context?.getString(R.string.mvc_detail_total_quota).toBlankOrString(), coupon.quota.toString())
+        binding.tpgTotalQuota.text = String.format(
+            context?.getString(R.string.mvc_detail_total_quota).toBlankOrString(),
+            coupon.quota.toString()
+        )
 
-        binding.tpgTickerUsage.setOnClickListener { displayDescriptionBottomSheet() }
+        binding.tpgTickerUsage.setOnClickListener { displayExpenseEstimationDescription() }
 
         if (coupon.isPublic) {
             binding.tpgTickerUsage.visible()
-            binding.tpgTickerUsage.text = String.format(getString(R.string.mvc_detail_promo_usage_used), coupon.bookedQuota.toString()).parseAsHtml()
+            binding.tpgTickerUsage.text = String.format(
+                getString(R.string.mvc_detail_promo_usage_used),
+                coupon.bookedQuota.toString()
+            ).parseAsHtml()
         } else {
             binding.tpgTickerUsage.gone()
         }
@@ -406,13 +418,9 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     }
 
-    private fun displayDescriptionBottomSheet() {
+    private fun displayExpenseEstimationDescription() {
         if (!isAdded) return
-
-        val title = getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses)
-        val content = getString(R.string.mvc_detail_expenses_info).toBlankOrString()
-        DescriptionBottomSheet
-            .createInstance(requireActivity(), title)
-            .show(content, childFragmentManager)
+        val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
+        bottomSheet.show(childFragmentManager)
     }
 }

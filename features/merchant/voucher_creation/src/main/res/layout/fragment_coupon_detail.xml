@@ -47,25 +47,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/mvc_dimen_20dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="@dimen/unify_space_8"
+                app:layout_constraintBottom_toTopOf="@+id/labelCountdown"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/imgCoupon"
-                app:layout_constraintTop_toTopOf="@+id/imgCoupon" />
+                app:layout_constraintStart_toEndOf="@+id/imgCoupon" />
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/labelCountdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginStart="@dimen/mvc_dimen_20dp"
                 android:visibility="gone"
+                android:layout_marginBottom="@dimen/unify_space_8"
                 app:labelType="highlight_light_grey"
+                app:layout_constraintBottom_toTopOf="@+id/startEndVoucher"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imgCoupon"
-                app:layout_constraintTop_toBottomOf="@+id/labelVoucherStatus"
                 tools:text="14 hari : 23j : 59m : 59d"
                 tools:visibility="visible" />
 
@@ -73,13 +73,13 @@
                 android:id="@+id/startEndVoucher"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/unify_space_16"
                 android:layout_marginStart="@dimen/mvc_dimen_20dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="@+id/imgCoupon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imgCoupon"
-                app:layout_constraintTop_toBottomOf="@+id/labelCountdown"
                 tools:maxHeight="@dimen/layout_lvl4" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -696,18 +696,23 @@
 
     </ScrollView>
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardShare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardElevation="@dimen/unify_space_4"
         android:layout_alignParentBottom="true">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnShare"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
             android:text="@string/label_share" />
 
-    </com.tokopedia.unifycomponents.CardUnify>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
