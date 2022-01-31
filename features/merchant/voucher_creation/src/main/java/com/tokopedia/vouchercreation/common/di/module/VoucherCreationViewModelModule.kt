@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
+import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel
 import com.tokopedia.vouchercreation.shop.create.view.viewmodel.*
 import com.tokopedia.vouchercreation.shop.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
@@ -80,4 +81,9 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(EditQuotaViewModel::class)
     internal abstract fun provideEditQuotaViewModel(editQuotaViewModel: EditQuotaViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddProductViewModel::class)
+    internal abstract fun provideAddProductViewModel(addProductViewModel: AddProductViewModel): ViewModel
 }

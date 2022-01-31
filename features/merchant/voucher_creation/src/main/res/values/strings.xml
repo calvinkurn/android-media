@@ -371,4 +371,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="coupon_discount_type">Tipe Potongan</string>
     <string name="add_product_coupon">Tambah Kupon Produk</string>
+
+    <!-- add product -->
+    <string name="search_product">Cari Produk</string>
+
+    <!-- id tag -->
+    <item name="product" type="id"/>
+    <item name="product_variant" type="id"/>
 </resources>

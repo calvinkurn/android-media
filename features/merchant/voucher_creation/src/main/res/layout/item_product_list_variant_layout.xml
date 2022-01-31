@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbu_variant_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/mvc_dimen_42dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_remove_variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mvc_dimen_42dp"
+        android:layout_marginEnd="@dimen/mvc_dimen_20dp"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_mvc_delete"
+        tools:src="@drawable/ic_mvc_delete" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_variant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:maxLines="2"
+        app:layout_constraintLeft_toRightOf="@id/cbu_variant_item"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Kuning" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_sku"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintLeft_toRightOf="@id/cbu_variant_item"
+        app:layout_constraintTop_toBottomOf="@id/tpg_variant_name"
+        app:typographyType="body_3"
+        tools:text="SKU : ADN3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_product_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        app:layout_constraintLeft_toRightOf="@id/cbu_variant_item"
+        app:layout_constraintTop_toBottomOf="@id/tpg_sku"
+        app:typographyType="body_3"
+        tools:text="Rp 380.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_sold_and_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        app:layout_constraintLeft_toRightOf="@id/cbu_variant_item"
+        app:layout_constraintTop_toBottomOf="@id/tpg_product_price"
+        app:typographyType="body_3"
+        tools:text="Terjual 1.3 rb | Stock 2,300" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -70,6 +70,7 @@
     <dimen name="mvc_dimen_26dp">26dp</dimen>
     <dimen name="mvc_dimen_30dp">30dp</dimen>
     <dimen name="mvc_dimen_35dp">35dp</dimen>
+    <dimen name="mvc_dimen_42dp">42dp</dimen>
     <dimen name="mvc_dimen_100dp">100dp</dimen>
     <dimen name="mvc_dimen_120dp">120dp</dimen>
     <dimen name="mvc_dimen_140dp">140dp</dimen>
