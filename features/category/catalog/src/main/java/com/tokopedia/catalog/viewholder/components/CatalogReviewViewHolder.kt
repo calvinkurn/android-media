@@ -49,12 +49,12 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
 
     private fun getRatingDrawable(param: Int): Int {
         return when (param) {
-            RATING_ONE -> R.drawable.ic_rating_star_one
-            RATING_TWO -> R.drawable.ic_rating_star_two
-            RATING_THREE -> R.drawable.ic_rating_star_three
-            RATING_FOUR -> R.drawable.ic_rating_star_four
-            RATING_FIVE -> R.drawable.ic_rating_star_five
-            else -> R.drawable.ic_rating_star_zero
+            RATING_ONE -> R.drawable.catalog_ic_rating_star_one
+            RATING_TWO -> R.drawable.catalog_ic_rating_star_two
+            RATING_THREE -> R.drawable.catalog_ic_rating_star_three
+            RATING_FOUR -> R.drawable.catalog_ic_rating_star_four
+            RATING_FIVE -> R.drawable.catalog_ic_rating_star_five
+            else -> R.drawable.catalog_ic_rating_star_zero
         }
     }
 

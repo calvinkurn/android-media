@@ -28,7 +28,7 @@
         android:contentDescription="@null"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_top_separator_catalog"
-        tools:srcCompat="@drawable/ic_rating_star_five"
+        tools:srcCompat="@drawable/catalog_ic_rating_star_five"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
