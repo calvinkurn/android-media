@@ -24,7 +24,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.PostListPagerAdapter
-import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
@@ -111,15 +110,13 @@ class PostListViewHolder(
     }
 
     private fun setupLastUpdated(element: PostListWidgetUiModel) {
-        with(binding.shcPostListSuccessView) {
+        with(binding.shcPostListSuccessView.luvShcPost) {
             element.data?.lastUpdated?.let { lastUpdated ->
-                tvShcPostLastUpdated.isVisible = true
-                tvShcPostLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated.lastUpdated)
-            }
-            icShcRefreshPost.isVisible = element.isFromCache
-            icShcRefreshPost.setOnClickListener {
-                listener.onReloadWidget(element)
+                setLastUpdated(lastUpdated.lastUpdated)
+                setRefreshButtonVisibility(lastUpdated.shouldShow)
+                setRefreshButtonClickListener {
+                    listener.onReloadWidget(element)
+                }
             }
         }
     }

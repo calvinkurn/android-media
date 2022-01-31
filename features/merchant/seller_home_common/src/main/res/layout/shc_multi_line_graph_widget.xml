@@ -102,17 +102,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="top"
-            app:constraint_referenced_ids="luvShcLineGraph,tvShcMultiLineCta" />
+            app:constraint_referenced_ids="luvShcMultiLineGraph,tvShcMultiLineCta" />
 
         <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
-            android:id="@+id/luvShcLineGraph"
+            android:id="@+id/luvShcMultiLineGraph"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvShcMultiLineCta"
-            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toStartOf="@+id/guidelineShcMultiLineGraphStart" />
 
         <com.tokopedia.unifyprinciples.Typography

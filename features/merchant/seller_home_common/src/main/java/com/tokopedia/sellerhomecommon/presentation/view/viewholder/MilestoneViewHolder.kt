@@ -23,7 +23,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionU
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.MilestoneMissionItemDecoration
-import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -111,15 +110,13 @@ class MilestoneViewHolder(
     }
 
     private fun setupLastUpdatedInfo(element: MilestoneWidgetUiModel) {
-        with(successStateBinding) {
+        with(successStateBinding.luvShcMilestone) {
             element.data?.lastUpdated?.let { lastUpdated ->
-                tvShcMilestoneLastUpdated.isVisible = true
-                tvShcMilestoneLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated.lastUpdated)
-            }
-            icShcRefreshMilestone.isVisible = element.isFromCache
-            icShcRefreshMilestone.setOnClickListener {
-                listener.onReloadWidget(element)
+                setLastUpdated(lastUpdated.lastUpdated)
+                setRefreshButtonVisibility(lastUpdated.shouldShow)
+                setRefreshButtonClickListener {
+                    listener.onReloadWidget(element)
+                }
             }
         }
     }

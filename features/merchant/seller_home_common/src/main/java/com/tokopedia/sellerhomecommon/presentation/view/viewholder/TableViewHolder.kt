@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -17,7 +16,6 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcWidgetTableBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
-import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
@@ -112,15 +110,13 @@ class TableViewHolder(
     }
 
     private fun setupLastUpdatedInfo(element: TableWidgetUiModel) {
-        with(binding) {
+        binding.luvShcTable.run {
             element.data?.lastUpdated?.let { lastUpdated ->
-                tvShcTableLastUpdated.isVisible = true
-                tvShcTableLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated.lastUpdated)
-            }
-            icShcRefreshTable.isVisible = element.isFromCache
-            icShcRefreshTable.setOnClickListener {
-                listener.onReloadWidget(element)
+                setLastUpdated(lastUpdated.lastUpdated)
+                setRefreshButtonVisibility(lastUpdated.shouldShow)
+                setRefreshButtonClickListener {
+                    listener.onReloadWidget(element)
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
@@ -176,15 +177,14 @@ class LineGraphViewHolder(
     }
 
     private fun setupLastUpdated(element: LineGraphWidgetUiModel) {
-        with(binding) {
-            element.data?.lastUpdated?.let { lastUpdated ->
-                tvShcLineLastUpdated.isVisible = true
-                tvShcLineLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated.lastUpdated)
-            }
-            icShcRefreshLineGraph.isVisible = element.isFromCache
-            icShcRefreshLineGraph.setOnClickListener {
-                listener.onReloadWidget(element)
+        element.data?.lastUpdated?.let {
+            val shouldShowRefreshBtn = element.data?.lastUpdated?.shouldShow.orFalse()
+            binding.luvShcLineGraph.run {
+                setLastUpdated(it.lastUpdated)
+                setRefreshButtonVisibility(shouldShowRefreshBtn)
+                setRefreshButtonClickListener {
+                    listener.onReloadWidget(element)
+                }
             }
         }
     }

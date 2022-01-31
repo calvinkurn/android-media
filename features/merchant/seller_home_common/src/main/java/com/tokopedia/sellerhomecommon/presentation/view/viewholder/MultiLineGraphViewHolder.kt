@@ -188,7 +188,7 @@ class MultiLineGraphViewHolder(
 
     private fun setOnLoadingState() {
         binding.shcMlgSuccessState.gone()
-        binding.luvShcLineGraph.setRefreshButtonVisibility(false)
+        binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
         errorStateBinding.commonWidgetErrorState.gone()
         loadingStateBinding.shcMlgLoadingState.visible()
     }
@@ -197,7 +197,7 @@ class MultiLineGraphViewHolder(
         setupTitle(element.title)
         loadingStateBinding.shcMlgLoadingState.gone()
         binding.shcMlgSuccessState.visible()
-        binding.luvShcLineGraph.setRefreshButtonVisibility(false)
+        binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
         getWidgetComponents().forEach {
             it.gone()
         }
@@ -282,10 +282,10 @@ class MultiLineGraphViewHolder(
         element.data?.lastUpdated?.let { lastUpdated ->
             val isFromCache = element.data?.isFromCache.orFalse()
 
-            binding.luvShcLineGraph.run {
+            binding.luvShcMultiLineGraph.run {
                 setLastUpdated(lastUpdated.lastUpdated)
                 setRefreshButtonVisibility(isFromCache)
-                setReloadButtonClickListener {
+                setRefreshButtonClickListener {
                     listener.onReloadWidget(element)
                 }
             }

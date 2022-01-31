@@ -15,7 +15,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.RecommendationTickerUiM
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.WidgetRecommendationItemAdapter
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
-import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -124,15 +123,13 @@ class RecommendationViewHolder(
     }
 
     private fun setupLastUpdatedInfo(element: RecommendationWidgetUiModel) {
-        with(successStateBinding) {
+        with(successStateBinding.luvShcRecommendation) {
             element.data?.lastUpdated?.let { lastUpdated ->
-                tvShcRecommendationLastUpdated.isVisible = true
-                tvShcRecommendationLastUpdated.text = Utils.LastUpdated
-                    .getCopy(root.context, lastUpdated.lastUpdated)
-            }
-            icShcRefreshRecommendation.isVisible = element.isFromCache
-            icShcRefreshRecommendation.setOnClickListener {
-                listener.onReloadWidget(element)
+                setLastUpdated(lastUpdated.lastUpdated)
+                setRefreshButtonVisibility(lastUpdated.shouldShow)
+                setRefreshButtonClickListener {
+                    listener.onReloadWidget(element)
+                }
             }
         }
     }
@@ -280,7 +277,7 @@ class RecommendationViewHolder(
                         val margin = root.context.dpToPx(DIMEN_16_DP).toInt()
                         val marginTopLastUpdated = root.context.dpToPx(DIMEN_20_DP).toInt()
                         tvShcRecommendationCta.setMargin(0, margin, margin8dp, margin)
-                        tvShcRecommendationLastUpdated.setMargin(0, marginTopLastUpdated, 0, margin)
+                        luvShcRecommendation.setMargin(0, marginTopLastUpdated, 0, margin)
                     } else {
                         rvShcRecommendationList.visible()
                         tvShcRecommendationHeaderItem.setUnifyDrawableEnd(
@@ -293,7 +290,7 @@ class RecommendationViewHolder(
                         val marginTopLastUpdated = root.context.dpToPx(DIMEN_12_DP).toInt()
                         val marginBottom = root.context.dpToPx(DIMEN_16_DP).toInt()
                         tvShcRecommendationCta.setMargin(0, margin8dp, margin8dp, marginBottom)
-                        tvShcRecommendationLastUpdated.setMargin(
+                        luvShcRecommendation.setMargin(
                             0,
                             marginTopLastUpdated,
                             0,

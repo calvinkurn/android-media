@@ -131,35 +131,19 @@
         tools:itemCount="3"
         tools:listitem="@layout/shc_item_recommendation" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icShcRefreshRecommendation"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:background="@drawable/bg_shc_shadow_circle"
-        android:padding="6dp"
-        app:icon_name="RELOAD"
-        app:layout_constraintBottom_toBottomOf="@+id/tvShcRecommendationLastUpdated"
-        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
-        app:layout_constraintTop_toTopOf="@+id/tvShcRecommendationLastUpdated" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvShcRecommendationLastUpdated"
+    <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
+        android:id="@+id/luvShcRecommendation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
-        android:textColor="@color/Unify_N700_68"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tvShcRecommendationCta"
-        app:layout_constraintStart_toEndOf="@+id/icShcRefreshRecommendation"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvShcRecommendationList"
-        app:layout_constraintVertical_bias="0"
-        app:typographyType="small"
-        app:typographyWeight="reguler"
-        tools:text="Update terakhir hari ini, 15:00 WIB"
-        tools:visibility="visible" />
+        app:layout_constraintVertical_bias="0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcRecommendationCta"
@@ -178,8 +162,8 @@
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvShcRecommendationLastUpdated"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/luvShcRecommendation"
         app:layout_constraintTop_toBottomOf="@+id/rvShcRecommendationList"
         app:layout_constraintVertical_bias="1.0"
         app:typographyType="body_2"

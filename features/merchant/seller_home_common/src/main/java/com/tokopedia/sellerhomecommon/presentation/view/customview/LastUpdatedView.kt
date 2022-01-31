@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcLastUpdatedInfoViewBinding
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -20,11 +21,11 @@ class LastUpdatedView : LinearLayout {
     private var binding: ShcLastUpdatedInfoViewBinding? = null
 
     constructor(context: Context) : super(context) {
-        initBinding(context)
+        initView(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        initBinding(context)
+        initView(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
@@ -32,20 +33,14 @@ class LastUpdatedView : LinearLayout {
         attrs,
         defStyleAttr
     ) {
-        initBinding(context)
-    }
-
-    private fun initBinding(context: Context) {
-        binding = ShcLastUpdatedInfoViewBinding.inflate(
-            LayoutInflater.from(context), this, true
-        )
+        initView(context)
     }
 
     fun setLastUpdated(lastUpdated: Long) {
         binding?.run {
-            val lastUpdatedStr =
-                "<i>${getLastUpdatedInfo(root.context, lastUpdated)}</i>".parseAsHtml()
-            tvShcLastUpdated.text = lastUpdatedStr
+            val lastUpdatedStr = getLastUpdatedInfo(root.context, lastUpdated)
+            val lastUpdatedFmt = "<i>$lastUpdatedStr</i>".parseAsHtml()
+            tvShcLastUpdated.text = lastUpdatedFmt
         }
     }
 
@@ -53,10 +48,35 @@ class LastUpdatedView : LinearLayout {
         binding?.icShcRefreshLastUpdated?.isVisible = shouldShow
     }
 
-    fun setReloadButtonClickListener(callback: () -> Unit) {
+    fun setRefreshButtonClickListener(callback: () -> Unit) {
         binding?.icShcRefreshLastUpdated?.setOnClickListener {
             callback()
         }
+    }
+
+    private fun initView(context: Context) {
+        binding = ShcLastUpdatedInfoViewBinding.inflate(
+            LayoutInflater.from(context), this, true
+        )
+
+        showLastUpdatedInfo()
+    }
+
+    private fun showLastUpdatedInfo() {
+        binding?.viewShcLastUpdatedContainer?.run {
+            visible()
+            /*scaleX = 0f
+            scaleY = 0f*/
+        }
+        /*Handler(Looper.getMainLooper()).postDelayed({
+            binding?.viewShcLastUpdatedContainer?.run {
+                animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(100)
+                    .start()
+            }
+        }, INITIAL_SHOW_DELAY)*/
     }
 
     private fun getLastUpdatedInfo(context: Context, timeInMillis: Long): String {

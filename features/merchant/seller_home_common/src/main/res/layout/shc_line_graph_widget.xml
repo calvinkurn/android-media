@@ -101,36 +101,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="top"
-                app:constraint_referenced_ids="tvShcLineLastUpdated,btnLineGraphMore" />
+                app:constraint_referenced_ids="luvShcLineGraph,btnLineGraphMore" />
 
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/icShcRefreshLineGraph"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:background="@drawable/bg_shc_shadow_circle"
-                android:padding="6dp"
-                app:icon_name="RELOAD"
-                app:layout_constraintBottom_toBottomOf="@+id/tvShcLineLastUpdated"
-                app:layout_constraintStart_toStartOf="@+id/guidelineShcLineGraphStart"
-                app:layout_constraintTop_toTopOf="@+id/tvShcLineLastUpdated" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvShcLineLastUpdated"
+            <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
+                android:id="@+id/luvShcLineGraph"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="20dp"
-                android:textColor="@color/Unify_N700_68"
-                android:textStyle="italic"
-                android:visibility="gone"
+                android:layout_marginBottom="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnLineGraphMore"
-                app:layout_constraintStart_toEndOf="@+id/icShcRefreshLineGraph"
-                app:typographyType="small"
-                app:typographyWeight="reguler"
-                tools:text="Update terakhir hari ini, 15:00 WIB"
-                tools:visibility="visible" />
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="@+id/guidelineShcLineGraphStart" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btnLineGraphMore"
