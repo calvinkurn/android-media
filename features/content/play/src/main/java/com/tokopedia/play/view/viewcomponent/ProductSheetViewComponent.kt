@@ -136,6 +136,33 @@ class ProductSheetViewComponent(
         sendImpression()
     }
 
+    fun setProductSheet(
+        productList: List<PlayProductUiModel.Product>,
+        voucherList: List<MerchantVoucherUiModel>,
+        title: String,
+    ) {
+        showContent(true)
+
+        if (isProductCountChanged(productList.size)) listener.onProductCountChanged(this)
+
+        tvSheetTitle.text = title
+        productLineAdapter.setItemsAndAnimateChanges(productList)
+
+        if (voucherList.isEmpty()) {
+            clProductVoucher.hide()
+        } else {
+            clProductVoucher.setOnClickListener {
+                listener.onInfoVoucherClicked(this@ProductSheetViewComponent)
+            }
+
+            voucherList.let {
+                tvVoucherHeaderTitle.text = it.getOrNull(0)?.title ?: ""
+                tvVoucherHeaderDesc.text = getString(R.string.play_product_voucher_header_desc, it.size.toString())
+            }
+            clProductVoucher.show()
+        }
+    }
+
     fun setProductSheet(model: PlayProductTagsUiModel.Complete) {
         showContent(true)
 
@@ -150,7 +177,7 @@ class ProductSheetViewComponent(
             val vouchers = model.voucherList.filterIsInstance<MerchantVoucherUiModel>()
 
             clProductVoucher.setOnClickListener {
-                listener.onInfoVoucherClicked(this@ProductSheetViewComponent, vouchers)
+                listener.onInfoVoucherClicked(this@ProductSheetViewComponent)
             }
 
             vouchers.let {
@@ -270,6 +297,6 @@ class ProductSheetViewComponent(
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductCountChanged(view: ProductSheetViewComponent)
-        fun onInfoVoucherClicked(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>)
+        fun onInfoVoucherClicked(view: ProductSheetViewComponent)
     }
 }

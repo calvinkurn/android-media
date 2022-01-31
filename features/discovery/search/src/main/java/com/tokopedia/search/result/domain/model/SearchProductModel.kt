@@ -3,7 +3,10 @@ package com.tokopedia.search.result.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_SIZE_PERSO
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -134,7 +137,11 @@ data class SearchProductModel(
 
             @SerializedName("products")
             @Expose
-            val productList: List<Product> = listOf()
+            val productList: List<Product> = listOf(),
+
+            @SerializedName("violation")
+            @Expose
+            val violation: Violation = Violation(),
     )
 
     data class Redirection(
@@ -841,48 +848,115 @@ data class SearchProductModel(
     )
 
     data class SearchInspirationWidget(
-            @SerializedName("data")
-            @Expose
-            val data: List<InspirationCardData> = listOf()
+        @SerializedName("data")
+        @Expose
+        val data: List<InspirationWidgetData> = listOf()
+    ) {
+        fun asFilterList(): List<Filter> =
+            data
+                .filter { it.type == TYPE_SIZE_PERSO }
+                .map { it.asFilter() }
+    }
+
+    data class InspirationWidgetData (
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+
+        @SerializedName("type")
+        @Expose
+        val type: String = "",
+
+        @SerializedName("position")
+        @Expose
+        val position: Int = 0,
+
+        @SerializedName("options")
+        @Expose
+        val inspirationWidgetOptions: List<InspirationWidgetOption> = listOf(),
+
+        @SerializedName("tracking_option")
+        @Expose
+        val trackingOption: Int = 0,
+    ) {
+        fun asFilter(): Filter =
+            Filter(
+                options = inspirationWidgetOptions.map { it.asOption() }
+            )
+    }
+
+    data class InspirationWidgetOption (
+        @SerializedName("text")
+        @Expose
+        val text: String = "",
+
+        @SerializedName("img")
+        @Expose
+        val img: String = "",
+
+        @SerializedName("url")
+        @Expose
+        val url: String = "",
+
+        @SerializedName("color")
+        @Expose
+        val color: String = "",
+
+        @SerializedName("applink")
+        @Expose
+        val applink: String = "",
+
+        @SerializedName("filters")
+        @Expose
+        val filters: InspirationWidgetFilter,
+
+        @SerializedName("component_id")
+        @Expose
+        val componentId: String,
+    ) {
+        fun asOption() = Option(
+            key = filters.key,
+            value = filters.value,
+            name = filters.name,
+        )
+    }
+
+    data class InspirationWidgetFilter (
+        @SerializedName("key")
+        @Expose
+        val key: String = "",
+
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+
+        @SerializedName("value")
+        @Expose
+        val value: String = "",
     )
 
-    data class InspirationCardData (
-            @SerializedName("title")
-            @Expose
-            val title: String = "",
-
-            @SerializedName("type")
-            @Expose
-            val type: String = "",
-
-            @SerializedName("position")
-            @Expose
-            val position: Int = 0,
-
-            @SerializedName("options")
-            @Expose
-            val inspiratioWidgetOptions: List<InspirationCardOption> = listOf()
-    )
-
-    data class InspirationCardOption (
-            @SerializedName("text")
-            @Expose
-            val text: String = "",
-
-            @SerializedName("img")
-            @Expose
-            val img: String = "",
-
-            @SerializedName("url")
-            @Expose
-            val url: String = "",
-
-            @SerializedName("color")
-            @Expose
-            val color: String = "",
-
-            @SerializedName("applink")
-            @Expose
-            val applink: String = ""
-    )
+    data class Violation(
+        @SerializedName("headerText")
+        @Expose
+        val headerText: String = "",
+        @SerializedName("descriptionText")
+        @Expose
+        val descriptionText: String = "",
+        @SerializedName("imageURL")
+        @Expose
+        val imageUrl: String = "",
+        @SerializedName("ctaURL")
+        @Expose
+        val ctaUrl: String = "",
+        @SerializedName("buttonText")
+        @Expose
+        val buttonText: String = "",
+        @SerializedName("buttonType")
+        @Expose
+        val buttonType: String = "",
+    ) {
+        fun isValid(): Boolean {
+            return headerText.isNotEmpty() && descriptionText.isNotEmpty()
+        }
+    }
 }

@@ -80,6 +80,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 mapPostTag(listProducts),
                 PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext()))
         )
+        if (listProducts.isNotEmpty())
         listener.onPostTagItemBSImpression(
                 if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString(),
                 listProducts,
