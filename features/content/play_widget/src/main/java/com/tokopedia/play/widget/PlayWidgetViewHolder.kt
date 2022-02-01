@@ -2,7 +2,7 @@ package com.tokopedia.play.widget
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel

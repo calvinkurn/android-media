@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 
 /**
  * Created by jegul on 10/10/20

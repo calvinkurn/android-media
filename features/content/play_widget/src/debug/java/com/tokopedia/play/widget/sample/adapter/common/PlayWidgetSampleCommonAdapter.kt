@@ -3,7 +3,7 @@ package com.tokopedia.play.widget.sample.adapter.common
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 
 /**
  * Created by jegul on 07/10/20
