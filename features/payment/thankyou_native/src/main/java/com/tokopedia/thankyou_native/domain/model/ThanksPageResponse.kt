@@ -88,11 +88,30 @@ data class ThanksPageData(
         val gatewayAdditionalDataList: ArrayList<GatewayAdditionalData>?,
         @SerializedName("fee_details")
         val feeDetailList : ArrayList<FeeDetail>?,
+        @SerializedName("thanks_summaries")
+        val thanksSummaryInfo: ArrayList<ThanksSummaryInfo>?,
         //created and used locally
         var paymentMethodCount: Int,
         // parse config flag json
         var configFlagData: ConfigFlag? = null,
         ) : Parcelable
+
+@Parcelize
+data class ThanksSummaryInfo(
+    @SerializedName("key")
+    val key: String?,
+    @SerializedName("desctiption")
+    val desctiption: String?,
+    @SerializedName("message")
+    val message: String?,
+    @SerializedName("is_cta")
+    val isCta: Boolean,
+    @SerializedName("cta_link")
+    val ctaLink: String?,
+    @SerializedName("cta_text")
+    val ctaText: String?,
+
+): Parcelable
 
 @Parcelize
 data class FeeDetail (
