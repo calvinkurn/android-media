@@ -304,6 +304,12 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
         this.couponInformation = couponInformation
     }
 
+    fun clear() {
+        this.couponSettings = null
+        this.couponProducts = emptyList()
+        this.couponInformation = null
+    }
+
     fun getCouponInformationData() = this.couponInformation
 
 

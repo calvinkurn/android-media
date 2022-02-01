@@ -133,6 +133,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
     private fun onCreateCouponSuccess(coupon: Coupon) {
+        couponPreviewFragment.clear()
+        this.couponSettings = null
         replace(couponListFragment)
         showBroadCastVoucherBottomSheet(coupon)
     }
@@ -152,8 +154,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
         couponPreviewFragment.setCouponSettingsData(couponSettings)
 
         //Stub the coupon preview data for testing purpose
-        val startDate = Calendar.getInstance().apply { set(2022, 1, 1, 20, 30, 0) }
-        val endDate = Calendar.getInstance().apply {  set(2022, 1, 5, 23, 59, 0) }
+        val startDate = Calendar.getInstance().apply { set(2022, 1, 5, 20, 30, 0) }
+        val endDate = Calendar.getInstance().apply {  set(2022, 1, 10, 23, 59, 0) }
         val period = CouponInformation.Period(startDate.time, endDate.time)
         couponPreviewFragment.setCouponInformationData(
             CouponInformation(
