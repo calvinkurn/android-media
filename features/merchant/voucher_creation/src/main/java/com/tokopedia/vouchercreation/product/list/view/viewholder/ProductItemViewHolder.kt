@@ -18,8 +18,8 @@ class ProductItemViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnProductItemClickListener {
-        fun onProductCheckBoxClicked(isSelected: Boolean, productUiModel: ProductUiModel)
-        fun onVariantAccordionClicked(isVariantEmpty:Boolean, productId: String)
+        fun onProductCheckBoxClicked(isSelected: Boolean, productUiModel: ProductUiModel, adapterPosition: Int)
+        fun onVariantAccordionClicked(isVariantEmpty: Boolean, productId: String)
     }
 
     private var context: Context? = null
@@ -27,11 +27,12 @@ class ProductItemViewHolder(
 
     init {
         context = binding.root.context
-        val product = binding.root.getTag(R.id.product) as ProductUiModel
         binding.cbuProductItem.setOnCheckedChangeListener { _, isChecked ->
-            productItemClickListener.onProductCheckBoxClicked(isChecked, product)
+            val product = binding.root.getTag(R.id.product) as ProductUiModel
+            if (!product.isSelectAll) productItemClickListener.onProductCheckBoxClicked(isChecked, product, adapterPosition)
         }
         binding.productVariantLayout.setOnClickListener {
+            val product = binding.root.getTag(R.id.product) as ProductUiModel
             productItemClickListener.onVariantAccordionClicked(product.variants.isEmpty(), product.id)
         }
         binding.rvProductVariants.apply {
@@ -41,15 +42,26 @@ class ProductItemViewHolder(
     }
 
     fun bindData(productUiModel: ProductUiModel) {
+        // product list item views
         binding.root.setTag(R.id.product, productUiModel)
         binding.cbuProductItem.isChecked = productUiModel.isSelected
         binding.iuProductImage.loadImage(productUiModel.imageUrl)
+        binding.tpgProductName.text = productUiModel.productName
+        binding.tpgSku.text = productUiModel.sku
         binding.tpgProductPrice.text = productUiModel.price
         binding.tpgSoldAndStock.text = productUiModel.soldNStock
-        if (productUiModel.variants.isEmpty()) binding.rvProductVariants.gone()
-        else {
+
+        // variant layout
+        if (productUiModel.hasVariant) {
             variantListAdapter.setVariantList(productUiModel.variants)
+            binding.variantHeader.visible()
+            if (productUiModel.isVariantsEmpty) binding.variantDivider.gone()
+            else binding.variantDivider.visible()
             binding.rvProductVariants.visible()
+        } else {
+            binding.variantHeader.gone()
+            binding.variantDivider.gone()
+            binding.rvProductVariants.gone()
         }
     }
 }

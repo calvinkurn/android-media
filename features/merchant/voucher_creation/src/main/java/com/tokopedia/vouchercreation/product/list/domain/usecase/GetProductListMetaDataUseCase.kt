@@ -1,6 +1,13 @@
 package com.tokopedia.vouchercreation.product.list.domain.usecase
 
-class GetProductListMetaDataUseCase {
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.vouchercreation.product.list.domain.model.response.ShopShowcasesByShopIdResponse
+import javax.inject.Inject
+
+class GetProductListMetaDataUseCas @Inject constructor(@ApplicationContext repository: GraphqlRepository)
+    : GraphqlUseCase<ShopShowcasesByShopIdResponse>(repository) {
 
     private val query = """
         query ProductListMeta() {

@@ -23,9 +23,8 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
         @JvmStatic
         fun createRequestParams(shopId: String,
                          warehouseId: String? = null,
-                         filter: GoodsFilterInput? = null,
-                         sort: GoodsSortInput? = null,
-                         sortExtra: List<GoodsSortExtraInput>? = null): RequestParams {
+                         filter: List<GoodsFilterInput>? = null,
+                         sort: GoodsSortInput? = null): RequestParams {
             return RequestParams.create().apply {
                 putString(KEY_SHOP_ID, shopId)
                 putString(KEY_WAREHOUSE_ID, warehouseId)
@@ -36,7 +35,7 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
     }
 
     private val query = """      
-        query ProductList(${'$'}shopID: String!, ${'$'}warehouseID: String, ${'$'}filter: GoodsFilterInput, ${'$'}sort:GoodsSortInput) {
+        query ProductList(${'$'}shopID: String!, ${'$'}warehouseID: String, ${'$'}filter: [GoodsFilterInput], ${'$'}sort:GoodsSortInput) {
             ProductList(shopID: ${'$'}shopID, warehouseID: ${'$'}warehouseID, filter: ${'$'}filter, sort: ${'$'}sort) {
                 data {
                   id

@@ -34,13 +34,14 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".product.list.view.activity.ProductListActivity"
+            android:name="com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity"
+            android:exported="false"
+            android:label="@string/title_voucher_creation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:exported="false">
-
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -52,18 +53,6 @@
                     android:path="@string/path_create_voucher"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-
-        </activity>
-
-        <activity
-            android:name="com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity"
-            android:exported="false"
-            android:label="@string/title_voucher_creation"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize">
-
         </activity>
         <activity
             android:name="com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity"
@@ -120,5 +109,9 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        android:name=".product.list.view.activity.ProductListActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.White"
+        android:exported="false"/>
     </application>
 </manifest>

@@ -21,7 +21,7 @@ class GetWarehouseLocationsUseCase @Inject constructor(@ApplicationContext repos
 
         @JvmStatic
         fun createRequestParams(
-                shopId: String,
+                shopId: Int,
                 source: String = SELLER_APP_SOURCE,
                 includeTc: Boolean = false,
                 includeInactiveWh: Boolean = false): RequestParams {

@@ -10,7 +10,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.product.list.domain.model.response.*
-import com.tokopedia.vouchercreation.product.list.domain.usecase.*
+import com.tokopedia.vouchercreation.product.list.domain.usecase.GetProductListUseCase
+import com.tokopedia.vouchercreation.product.list.domain.usecase.GetProductVariantsUseCase
+import com.tokopedia.vouchercreation.product.list.domain.usecase.GetShowCasesByIdUseCase
+import com.tokopedia.vouchercreation.product.list.domain.usecase.GetWarehouseLocationsUseCase
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,11 +23,12 @@ class AddProductViewModel @Inject constructor(
         private val getProductListUseCase: GetProductListUseCase,
         private val getProductVariantsUseCase: GetProductVariantsUseCase,
         private val getWarehouseLocationsUseCase: GetWarehouseLocationsUseCase,
-        private val getProductListMetaDataUseCase: GetProductListMetaDataUseCase,
         private val getShowCasesByIdUseCase: GetShowCasesByIdUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private var selectedProducts: MutableList<String> = mutableListOf()
+    private var selectedProducts: MutableList<ProductUiModel> = mutableListOf()
+
+    private var adapterPosition: Int? = null
 
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
     val productListResult: LiveData<Result<ProductListResponse>> get() = getProductListResultLiveData
@@ -65,7 +69,7 @@ class AddProductViewModel @Inject constructor(
         })
     }
 
-    fun getSellerLocations(shopId: String) {
+    fun getSellerLocations(shopId: Int) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val params = GetWarehouseLocationsUseCase.createRequestParams(shopId)
@@ -106,22 +110,32 @@ class AddProductViewModel @Inject constructor(
 
     fun mapProductDataToProductUiModel(productDataList: List<ProductData>): List<ProductUiModel> {
         return productDataList.map { productData ->
+            // TODO: implement proper string formatting
             ProductUiModel(
                     imageUrl = productData.pictures.first().urlThumbnail,
                     id = productData.id,
                     productName = productData.name,
-                    sku = productData.sku,
-                    price = productData.price.max.toString(),
-                    soldNStock = productData.stock.toString() + " " + productData.txStats.sold
+                    sku = "SKU : " + productData.sku,
+                    price = "Rp " + productData.price.max.toString(),
+                    soldNStock = "Terjual " + productData.stock.toString() + " | " + "Stok " + productData.txStats.sold,
+                    hasVariant = productData.isVariant
             )
         }
     }
 
-    fun addSelectedProduct(productId: String) {
-        selectedProducts.add(productId)
+    fun addSelectedProduct(product: ProductUiModel) {
+        selectedProducts.add(product)
     }
 
-    fun removeSelectedProduct(productId: String) {
-        selectedProducts.removeFirst { it == productId }
+    fun removeSelectedProduct(product: ProductUiModel) {
+        selectedProducts.removeFirst { it.id == product.id }
+    }
+
+    fun setSelectedProduct(selectedProducts: List<ProductUiModel>) {
+        this.selectedProducts = selectedProducts.toMutableList()
+    }
+
+    fun getAdapterPosition(): Int? {
+        return adapterPosition
     }
 }

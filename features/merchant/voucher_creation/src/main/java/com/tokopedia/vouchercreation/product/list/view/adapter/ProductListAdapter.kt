@@ -31,10 +31,30 @@ class ProductListAdapter(
         return productUiModelList.size
     }
 
+    fun getSelectedProducts(): List<ProductUiModel> {
+        return productUiModelList.filter {
+            it.isSelected
+        }
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     fun setProductList(productUiModelList: List<ProductUiModel>) {
         this.productUiModelList = productUiModelList
         notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun selectAllProduct() {
+        this.productUiModelList.forEach {
+            it.isSelectAll = true
+            it.isSelected = true
+        }
+        notifyDataSetChanged()
+    }
+
+    fun updateSelectionState(isSelectAll: Boolean, adapterPosition: Int) {
+        this.productUiModelList[adapterPosition].isSelectAll = isSelectAll
+        notifyItemChanged(adapterPosition)
     }
 
     fun updateProductVariant(adapterPosition: Int, variants: List<ProductVariant>) {

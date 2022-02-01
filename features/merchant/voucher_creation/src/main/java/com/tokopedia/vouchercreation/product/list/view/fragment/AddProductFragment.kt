@@ -4,11 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,9 +28,14 @@ import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemVie
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel
 import javax.inject.Inject
 
-class AddProductFragment : BaseDaggerFragment(), ProductItemViewHolder.OnProductItemClickListener, ProductItemVariantViewHolder.OnVariantItemClickListener {
+class AddProductFragment : BaseDaggerFragment(),
+        ProductItemViewHolder.OnProductItemClickListener,
+        ProductItemVariantViewHolder.OnVariantItemClickListener {
 
     companion object {
+
+        private const val NO_BACKGROUND: Int = 0
+
         @JvmStatic
         fun createInstance() = AddProductFragment()
     }
@@ -46,6 +56,10 @@ class AddProductFragment : BaseDaggerFragment(), ProductItemViewHolder.OnProduct
 
     private var binding: FragmentMvcAddProductBinding? = null
     private var adapter: ProductListAdapter? = null
+    private var sellerLocationFilter: SortFilterItem? = null
+    private var categoryFilter: SortFilterItem? = null
+    private var showCaseFilter: SortFilterItem? = null
+    private var sortFilter: SortFilterItem? = null
 
     override fun getScreenName(): String {
         return getString(R.string.add_product)
@@ -75,8 +89,9 @@ class AddProductFragment : BaseDaggerFragment(), ProductItemViewHolder.OnProduct
         observeLiveData()
         val shopId = userSession.shopId
         viewModel.getProductList(shopId)
-        viewModel.getSellerLocations(shopId)
-        viewModel.getProductsMetaData()
+        val shopIdInt = shopId.toIntOrNull()
+        shopIdInt?.run { viewModel.getSellerLocations(this) }
+//        viewModel.getProductsMetaData()
         viewModel.getShopShowCases(shopId)
     }
 
@@ -92,7 +107,58 @@ class AddProductFragment : BaseDaggerFragment(), ProductItemViewHolder.OnProduct
     }
 
     private fun setupProductListFilter(binding: FragmentMvcAddProductBinding?) {
-        binding?.sfProductList
+        binding?.sfProductList?.apply {
+
+            val sellerLocationTitle = getString(R.string.mvc_seller_location)
+            sellerLocationFilter = SortFilterItem(sellerLocationTitle)
+            sellerLocationFilter?.type = ChipsUnify.TYPE_SELECTED
+            sellerLocationFilter?.listener = {
+
+            }
+            val categoryTitle = getString(R.string.mvc_category)
+            categoryFilter = SortFilterItem(categoryTitle)
+            categoryFilter?.listener = {
+
+            }
+            val showCaseTitle = getString(R.string.mvc_showcase)
+            showCaseFilter = SortFilterItem(showCaseTitle)
+            showCaseFilter?.listener = {
+
+            }
+            val sortTitle = getString(R.string.mvc_sort)
+            sortFilter = SortFilterItem(sortTitle)
+            sortFilter?.listener = {
+
+            }
+
+            val sortFilterItemList = ArrayList<SortFilterItem>()
+            sellerLocationFilter?.run { sortFilterItemList.add(this) }
+            categoryFilter?.run { sortFilterItemList.add(this) }
+            showCaseFilter?.run { sortFilterItemList.add(this) }
+            sortFilter?.run { sortFilterItemList.add(this) }
+
+            addItem(sortFilterItemList)
+
+            sellerLocationFilter?.refChipUnify?.setChevronClickListener {
+                sellerLocationFilter?.listener?.invoke()
+            }
+            sellerLocationFilter?.refChipUnify?.setChevronClickListener {
+                sellerLocationFilter?.listener?.invoke()
+            }
+            showCaseFilter?.refChipUnify?.setChevronClickListener {
+                showCaseFilter?.listener?.invoke()
+            }
+            sortFilter?.refChipUnify?.setChevronClickListener {
+                sortFilter?.listener?.invoke()
+            }
+        }
+        binding?.sfProductList?.parentListener = {
+            /* No op. We need to specify this block, otherwise the clear filter chip will do nothing
+               when clicked */
+        }
+        binding?.sfProductList?.dismissListener = {
+            viewModel.getProductList(userSession.shopId ?: "")
+        }
     }
 
     private fun setupMaxLimitTicker(binding: FragmentMvcAddProductBinding?) {
@@ -100,7 +166,20 @@ class AddProductFragment : BaseDaggerFragment(), ProductItemViewHolder.OnProduct
     }
 
     private fun setupSelectionBar(binding: FragmentMvcAddProductBinding?) {
-        binding?.selectionBar
+        binding?.cbuSelectAllProduct?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // TODO: implement proper string formatting
+                adapter?.selectAllProduct()
+                viewModel.setSelectedProduct(adapter?.getSelectedProducts() ?: listOf())
+                binding.tpgSelectAll.text = adapter?.getSelectedProducts()?.size.toString() + " " + "dipilih"
+                binding.selectionBar.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mvc_grey_f3f4f5))
+                binding.deleteProductLayout.visible()
+            } else {
+                binding.tpgSelectAll.text = getString(R.string.mvc_select_all)
+                binding.selectionBar.setBackgroundResource(NO_BACKGROUND)
+                binding.deleteProductLayout.gone()
+            }
+        }
     }
 
     private fun setupProductListView(binding: FragmentMvcAddProductBinding?) {
@@ -130,7 +209,9 @@ class AddProductFragment : BaseDaggerFragment(), ProductItemViewHolder.OnProduct
         viewModel.getProductVariantsResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    val x = result.data.product.variant.products
+//                    val x = result.data.product.variant.products
+                    val adapterPosition = viewModel.getAdapterPosition()
+//                    adapterPosition?.run { adapter?.updateProductVariant(adapterPosition, ) }
                 }
                 is Fail -> {
                     // TODO : handle negative case
@@ -159,13 +240,12 @@ class AddProductFragment : BaseDaggerFragment(), ProductItemViewHolder.OnProduct
                 }
             }
         })
-
-
     }
 
-    override fun onProductCheckBoxClicked(isSelected: Boolean, productUiModel: ProductUiModel) {
-        if (isSelected) viewModel.addSelectedProduct(productUiModel.id)
-        else viewModel.removeSelectedProduct(productUiModel.id)
+    override fun onProductCheckBoxClicked(isSelected: Boolean, productUiModel: ProductUiModel, adapterPosition: Int) {
+        if (isSelected) viewModel.addSelectedProduct(productUiModel)
+        else viewModel.removeSelectedProduct(productUiModel)
+        adapter?.updateSelectionState(isSelectAll = false, adapterPosition = adapterPosition)
     }
 
     override fun onVariantAccordionClicked(isVariantEmpty: Boolean, productId: String) {
@@ -173,7 +253,7 @@ class AddProductFragment : BaseDaggerFragment(), ProductItemViewHolder.OnProduct
     }
 
     override fun onVariantCheckBoxClicked(isSelected: Boolean, productVariant: ProductVariant) {
-        if (isSelected) viewModel.removeSelectedProduct(productVariant.variantId)
-        else viewModel.removeSelectedProduct(productVariant.variantId)
+//        if (isSelected) viewModel.removeSelectedProduct(productVariant.variantId)
+//        else viewModel.removeSelectedProduct(productVariant.variantId)
     }
 }
