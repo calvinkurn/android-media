@@ -1,7 +1,7 @@
 package com.tokopedia.saldodetails.commom.utils
 
 object TransactionTitle{
-    const val ALL_TAB = "Semua Transkasi"
+    const val ALL_TAB = "Semua Transaksi"
     const val ALL_TRANSACTION = "Semua"
     const val SALDO_REFUND = "Saldo Refund"
     const val SALDO_SALES = "Penjualan"
