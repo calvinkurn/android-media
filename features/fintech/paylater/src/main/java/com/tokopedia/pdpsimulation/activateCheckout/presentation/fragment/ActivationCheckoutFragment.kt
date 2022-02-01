@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,8 @@ import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -188,12 +191,29 @@ class ActivationCheckoutFragment : BaseDaggerFragment() {
             }
 
         })
+        gatewayDetailLayout.changePayLaterPartner.setOnClickListener {
+            context?.let {
+                AtcVariantHelper.goToAtcVariant(it,productId,"",false,"") { data, code ->
+                    startActivityForResult(data, code)
+                }
+            }
+
+        }
         gatewayDetailLayout.recyclerTenureDetail.layoutManager= LinearLayoutManager(context)
         gatewayDetailLayout.recyclerTenureDetail.adapter = activationTenureAdapter
     }
 
     override fun getScreenName(): String {
         return "Activation PayLater"
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        context?.let {
+            AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
+
+            }
+        }
     }
 
 
