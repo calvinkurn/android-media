@@ -47,9 +47,9 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:id="@+id/rel_cta"
-        android:padding="@dimen/dp_10"
+        android:padding="@dimen/mvc_dp_10"
         android:gravity="center_vertical"
-        android:layout_marginBottom="@dimen/dp_17"
+        android:layout_marginBottom="@dimen/mvc_dp_17"
         android:background="@drawable/mvc_bg_gray_line"
         android:orientation="horizontal">
         <com.tokopedia.unifycomponents.ImageUnify
@@ -65,10 +65,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv4"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_5"
-            android:layout_marginEnd="@dimen/dp_44"
-            android:layout_toRightOf="@id/iv_check"
-            android:text="Khusus produk ini $ produk pilihan lainnya"
+            android:layout_marginStart="@dimen/mvc_dp_5"
+            android:layout_marginEnd="@dimen/mvc_dp_44"
+            android:layout_toEndOf="@id/iv_check"
             android:textColor="@color/Unify_NN600"
             app:typographyType="body_3" />
 

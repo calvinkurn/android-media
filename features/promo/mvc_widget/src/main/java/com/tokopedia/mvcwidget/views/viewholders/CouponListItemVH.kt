@@ -23,6 +23,7 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val tv4: Typography = itemView.findViewById(R.id.tv4)
     val rel_cta: RelativeLayout = itemView.findViewById(R.id.rel_cta)
     val divider: View = itemView.findViewById(R.id.divider)
+    private val REDIRECT_CHECK = "redirect"
 
     init {
         rvImage.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -32,7 +33,7 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tv1.text = data.title1
         tv2.text = data.title2
         tv3.text = data.title3
-        if(data.ctaCatalog.type.isNullOrEmpty().not() && data.ctaCatalog.type == "redirect") {
+        if(data.ctaCatalog.type.isNullOrEmpty().not() && data.ctaCatalog.type == REDIRECT_CHECK) {
             rel_cta.show()
             tv4.text = data.ctaCatalog.text
             rel_cta.setOnClickListener {
