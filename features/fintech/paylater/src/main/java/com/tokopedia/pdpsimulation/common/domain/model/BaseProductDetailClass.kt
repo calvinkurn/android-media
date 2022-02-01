@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation.paylater.domain.model
+package com.tokopedia.pdpsimulation.common.domain.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

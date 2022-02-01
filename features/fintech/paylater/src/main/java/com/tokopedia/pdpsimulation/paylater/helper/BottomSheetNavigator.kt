@@ -2,10 +2,9 @@ package com.tokopedia.pdpsimulation.paylater.helper
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
-import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterInstallmentFeeInfo
-import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
-
+import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
+import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterTokopediaGopayBottomsheet
 
 class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
 

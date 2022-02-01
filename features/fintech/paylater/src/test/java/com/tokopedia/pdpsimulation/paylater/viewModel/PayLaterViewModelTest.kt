@@ -1,6 +1,7 @@
 package com.tokopedia.pdpsimulation.paylater.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
@@ -78,7 +79,7 @@ class PayLaterViewModelTest {
     @Test
     fun successPayLaterOptions()
     {
-        val payLaterGetSimulation = mockk<PayLaterGetSimulation>(relaxed = true)
+        val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
 
         coEvery {
             payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 0.0, "0")
@@ -94,13 +95,13 @@ class PayLaterViewModelTest {
             arrayListOf(SupervisorUiModel)))
         mockMapperResponse(list)
 
-        viewModel.getPayLaterAvailableDetail(0.0, "0")
+        viewModel.getPayLaterAvailableDetail(10.0, "0")
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
 
     private fun mockMapperResponse(list: ArrayList<SimulationUiModel>) {
         coEvery {
-            payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any(), 1)
+            payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any(), any())
         } coAnswers {
             firstArg<(ArrayList<SimulationUiModel>) -> Unit>().invoke(list)
         }

@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
-import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
+import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
@@ -53,7 +53,6 @@ class PayLaterViewModel @Inject constructor(
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
-
         productDetailUseCase.getProductDetail(
             ::onAvailableProductDetail,
             ::onFailProductDetail,
@@ -95,6 +94,7 @@ class PayLaterViewModel @Inject constructor(
     override fun onCleared() {
         paylaterGetSimulationV3UseCase.cancelJobs()
         productDetailUseCase.cancelJobs()
+        mapperUseCase.cancelJobs()
         super.onCleared()
     }
 

@@ -5,8 +5,8 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment.Activa
 import com.tokopedia.pdpsimulation.common.di.module.PdpSimulationModule
 import com.tokopedia.pdpsimulation.common.di.module.ViewModelModule
 import com.tokopedia.pdpsimulation.common.di.scope.PdpSimulationScope
-import com.tokopedia.pdpsimulation.common.presentation.activity.PdpSimulationActivity
-import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
+import com.tokopedia.pdpsimulation.paylater.presentation.activity.PdpSimulationActivity
+import com.tokopedia.pdpsimulation.paylater.presentation.fragment.PdpSimulationFragment
 import dagger.Component
 
 @PdpSimulationScope

@@ -1,7 +1,7 @@
 package com.tokopedia.pdpsimulation.paylater.domain.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFactory
+import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactory
 
 interface BasePayLaterWidgetUiModel : Visitable<PayLaterAdapterFactory>
 

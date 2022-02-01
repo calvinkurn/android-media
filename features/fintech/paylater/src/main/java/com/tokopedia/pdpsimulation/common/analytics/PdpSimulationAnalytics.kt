@@ -16,10 +16,6 @@ class PdpSimulationAnalytics @Inject constructor(
 
     fun sendPdpSimulationEvent(event: PdpSimulationEvent) {
         when (event) {
-            is PdpSimulationEvent.PayLater.TabChangeEvent -> sendTabChangeEvent(event.tabTitle)
-            is PdpSimulationEvent.PayLater.ChoosePayLaterOptionClickEvent -> sendChoosePayLaterOptionClickEvent(
-                event.payLaterProduct
-            )
             is PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent -> sendPayLaterProductImpressionTracking(
                 event.payLaterProduct,
                 event.actionType,
@@ -29,42 +25,10 @@ class PdpSimulationAnalytics @Inject constructor(
                 event.payLaterProduct,
                 event.tenure
             )
-
-            is PdpSimulationEvent.CreditCard.TabChangeEvent -> sendCCTabChangeEvent(event.tabTitle)
-            is PdpSimulationEvent.CreditCard.CCNotAvailableEvent -> sendCCNotAvailableEvent()
-            is PdpSimulationEvent.CreditCard.ApplyCreditCardEvent -> sendApplyCCEvent()
-            is PdpSimulationEvent.CreditCard.ChooseBankClickEvent -> sendChooseCCEvent(
-                EVENT_ACTION_CC_CHOOSE_BANK,
-                event.bankName
-            )
-            is PdpSimulationEvent.CreditCard.SeeMoreBankClickEvent -> sendSeeMoreEvent(
-                EVENT_ACTION_CC_SEE_MORE_BANK
-            )
-            is PdpSimulationEvent.CreditCard.ChooseCardClickEvent -> sendChooseCCEvent(
-                EVENT_ACTION_CC_CHOOSE_CARD,
-                event.cardName
-            )
-            is PdpSimulationEvent.CreditCard.SeeMoreCardClickEvent -> sendSeeMoreEvent(
-                EVENT_ACTION_CC_SEE_MORE_CARD
-            )
-            is PdpSimulationEvent.PayLater.TenureSortFilterClicker -> sendTenureEvent(event.tenureSelector)
             is PdpSimulationEvent.PayLater.MainBottomSheetClickEvent -> sendMainBottomSheetClickEvent(
                 event.payLaterProduct,
                 event.tenure,
                 event.url
-            )
-            is PdpSimulationEvent.PayLater.FaqImpression -> sendFaqImpressionAnalytics(
-                event.partnerName,
-                event.tenure
-            )
-            is PdpSimulationEvent.PayLater.FaqClickWebImpression -> sendFaqWebClickEvent(
-                event.partnerName,
-                event.tenure,
-                event.url
-            )
-            is PdpSimulationEvent.PayLater.FaqOptionClicked -> sendFaqClickEvent(
-                event.partnerName,
-                event.tenure
             )
             is PdpSimulationEvent.PayLater.ClickCardButton -> sendClickCardEvent(
                 event.tenure,
