@@ -83,12 +83,12 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         view.touchDelegate = compositeTouchDelegate
     }
 
-//    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-//        layoutParams = layoutParams.apply {
-//            height = measuredWidth
-//        }
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-//    }
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        layoutParams = layoutParams.apply {
+            height = measuredWidth
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
 
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {

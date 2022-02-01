@@ -15,7 +15,7 @@ class PlayWidgetJumboAdapterDelegate {
     internal class Channel(
         private val cardChannelListener: PlayWidgetJumboViewHolder.Channel.Listener,
     ) : TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetJumboViewHolder.Channel>(
-        R.layout.view_empty
+        R.layout.item_play_widget_card_jumbo_channel
     ) {
 
         override fun onBindViewHolder(
@@ -29,7 +29,7 @@ class PlayWidgetJumboAdapterDelegate {
             parent: ViewGroup,
             basicView: View
         ): PlayWidgetJumboViewHolder.Channel {
-            return PlayWidgetJumboViewHolder.Channel.create(parent, cardChannelListener)
+            return PlayWidgetJumboViewHolder.Channel.create(basicView, cardChannelListener)
         }
     }
 }

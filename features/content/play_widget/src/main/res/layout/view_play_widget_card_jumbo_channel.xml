@@ -103,12 +103,15 @@
 
         <LinearLayout
             android:id="@+id/play_widget_info_container"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="@dimen/play_widget_dp_12"
             android:paddingBottom="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            >
 
             <include
                 android:id="@+id/play_widget_badge_promo"

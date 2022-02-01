@@ -1,7 +1,6 @@
 package com.tokopedia.play.widget.ui.widget.jumbo.adapter
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -45,10 +44,10 @@ class PlayWidgetJumboViewHolder {
 
         companion object {
             fun create(
-                parent: ViewGroup,
+                itemView: View,
                 listener: Listener,
             ) = Channel(
-                itemView = PlayWidgetCardJumboView(parent.context),
+                itemView = itemView,
                 listener = listener,
             )
         }

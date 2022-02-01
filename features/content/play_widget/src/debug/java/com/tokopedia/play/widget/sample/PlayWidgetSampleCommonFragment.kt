@@ -9,10 +9,11 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.sample.adapter.common.PlayWidgetSampleCommonAdapter
 import com.tokopedia.play.widget.sample.analytic.PlayWidgetSampleAnalytic
-import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
  * Created by meyta.taliti on 27/01/22.
@@ -56,6 +57,15 @@ class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
 
     private fun getSampleData(): List<PlayWidgetState> {
         return listOf(
+            PlayWidgetState(
+                model = PlayWidgetUiMock.getSamplePlayWidget(
+                    items = listOf(
+                        PlayWidgetUiMock.getSampleChannelModel(PlayWidgetChannelType.Vod)
+                    )
+                ),
+                widgetType = PlayWidgetType.Jumbo,
+                isLoading = false,
+            ),
             PlayWidgetState(
                 model = PlayWidgetUiMock.getSamplePlayWidget(),
                 widgetType = PlayWidgetType.Small,

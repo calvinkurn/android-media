@@ -53,7 +53,7 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment() {
             PlayWidgetJumboUiModel(
                 PlayWidgetUiMock.getSamplePlayWidget(
                     items = listOf(
-                        PlayWidgetUiMock.getSampleChannelModel(PlayWidgetChannelType.Vod),
+                        PlayWidgetUiMock.getSampleChannelModel(PlayWidgetChannelType.Vod)
                     )
                 )
             ),
