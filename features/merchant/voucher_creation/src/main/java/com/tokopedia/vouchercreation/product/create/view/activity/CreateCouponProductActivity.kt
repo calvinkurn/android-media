@@ -100,6 +100,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
     private fun navigateToEditCouponPage(coupon : Coupon) {
+        this.couponSettings = coupon.settings
         val fragment = ProductCouponPreviewFragment.newInstance(
             ::navigateToCouponInformationPage,
             ::navigateToCouponSettingPage,
@@ -114,6 +115,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
     private fun navigateToDuplicateCouponPage(coupon : Coupon) {
+        this.couponSettings = coupon.settings
         val fragment = ProductCouponPreviewFragment.newInstance(
             ::navigateToCouponInformationPage,
             ::navigateToCouponSettingPage,
