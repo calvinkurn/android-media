@@ -4,6 +4,7 @@ import com.tokopedia.chat_common.domain.pojo.ReplyChatItemPojo
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import kotlinx.coroutines.delay
 import retrofit2.Response
 import rx.Observable
 import java.util.concurrent.TimeUnit
@@ -25,17 +26,18 @@ class ChatRoomApiStub @Inject constructor() : ChatRoomApi {
         return Observable.just(Response.success(DataResponse()))
     }
 
-    override fun getTemplate(
-            parameters: HashMap<String, Any>
-    ): Observable<Response<DataResponse<TemplateData>>> {
+    override suspend fun getTemplateSuspend(
+        parameters: HashMap<String, Any>
+    ): Response<DataResponse<TemplateData>> {
         val dataResponse = DataResponse<TemplateData>().apply {
             data = templateResponse
         }
-        val observable = Observable.just(Response.success(dataResponse))
+        val result = Response.success(dataResponse)
         return if (delay > 0) {
-            observable.delay(delay, TimeUnit.MILLISECONDS)
+            delay(delay)
+            result
         } else {
-            observable
+            result
         }
     }
 }

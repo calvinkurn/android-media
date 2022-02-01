@@ -53,6 +53,7 @@
     <string name="product_manage_set_promo_ads_menu">Iklankan Produk</string>
     <string name="product_manage_see_promo_ads_menu">Lihat Performa Iklan</string>
     <string name="product_manage_create_broadcast_chat">Buat Broadcast Chat</string>
+    <string name="product_manage_create_product_coupon">Buat Kupon Produk</string>
 
     <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
     <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>
@@ -147,6 +148,7 @@
     <string name="product_manage_violation_button_text">Lihat Detail</string>
 
     <string name="product_manage_max_count">%s+</string>
+    <string name="product_manage_new_tag">BARU</string>
 
     <string name="popup_tips_trick_clickable">baru di sini.</string>
     <string name="popup_label_static">Produk pertamamu siap</string>
@@ -195,8 +197,4 @@
     <string name="product_manage_back_to_home">Kembali ke Home</string>
     <string name="product_manage_no_access_description">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
     <string name="product_manage_refresh_page">Refresh Halaman</string>
-
-    <!--Product Manage List Tickers-->
-    <string name="product_manage_list_gopay_coins_cashback_info_ticker_title">Informasi untuk Seller</string>
-    <string name="product_manage_list_gopay_coins_cashback_info_ticker_description">Per 29 November 2021, seluruh cashback produkmu akan otomatis beralih ke GoPay Coins, ya. &lt;a href="tokopedia://webview?url=https://seller.tokopedia.com/edu/cashback-produk-gopaycoins"&gt;Baca Artikel&lt;/a&gt;</string>
 </resources>

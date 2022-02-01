@@ -348,7 +348,7 @@ public interface ApplinkConst {
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
     String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
-    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&layout={layout}";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}";
 
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
@@ -470,6 +470,7 @@ public interface ApplinkConst {
     }
 
     interface SellerApp {
+        String SELLER_ONBOARDING = "sellerapp://welcome";
         String PRODUCT_ADD = "sellerapp://product/add";
         String SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE = "sellerapp://shop/showcase-create";
         String TOPADS_CREDIT = "sellerapp://topads/buy";
@@ -494,6 +495,7 @@ public interface ApplinkConst {
         String VOUCHER_LIST = "sellerapp://voucher-list";
         String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";
         String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
+        String VOUCHER_PRODUCT_LIST = "sellerapp://voucher-product-list";
         String VOUCHER_DETAIL = "sellerapp://voucher-detail";
         String VOUCHER_DETAIL_PRODUCT = "sellerapp://voucher-detail-product";
         String CAMPAIGN_LIST = "sellerapp://campaign-list";
@@ -618,11 +620,6 @@ public interface ApplinkConst {
 
     interface Profile {
         String PARAM_USER_ID = "{user_id}";
-    }
-
-    interface DigitalInstantDebit {
-        String INSTANT_DEBIT_BCA_APPLINK = "tokopedia://instantdebitbca";
-        String INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK = "tokopedia://editbcaoneklik";
     }
 
     interface Transaction {

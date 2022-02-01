@@ -326,7 +326,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
             getProductDraftUseCase.params = GetProductDraftUseCase.createRequestParams(draftId)
             mGetProductDraftResult.value = withContext(Dispatchers.IO) {
                 getProductDraftUseCase.executeOnBackground()
-            }.let { Success(it) }
+            }.let {
+                Success(it)
+            }
         }, onError = {
             mGetProductDraftResult.value = Fail(it)
         })

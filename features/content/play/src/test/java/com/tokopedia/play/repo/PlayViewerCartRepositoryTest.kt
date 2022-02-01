@@ -47,7 +47,8 @@ class PlayViewerCartRepositoryTest {
             channelStatusMapper = mockk(relaxed = true),
             channelInteractiveMapper = mockk(relaxed = true),
             interactiveLeaderboardMapper = mockk(relaxed = true),
-            cartMapper = cartMapper
+            cartMapper = cartMapper,
+            playUserReportMapper = mockk(relaxed = true)
         )
 
         cartRepository = PlayViewerCartRepositoryImpl(

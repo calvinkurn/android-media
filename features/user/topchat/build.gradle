@@ -39,6 +39,16 @@ android {
             java.srcDirs += "$projectDir/src/testCommon/java"
         }
     }
+
+
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+                excludes = ['jdk.internal.*']
+            }
+        }
+    }
 }
 
 dependencies {
@@ -78,6 +88,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 

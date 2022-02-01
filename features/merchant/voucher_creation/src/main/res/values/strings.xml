@@ -11,6 +11,8 @@
     <string name="mvc_used">Terpakai</string>
     <string name="mvc_remaining_quota">Sisa kuota</string>
     <string name="mvc_edit_quota">Ubah Kuota</string>
+    <string name="mvc_edit_period">Ubah Periode</string>
+    <string name="mvc_edit">Ubah</string>
     <string name="mvc_edit_shown_period">Ubah Periode Tampil</string>
     <string name="mvc_view_detail_and_edit_voucher">Lihat Detail &amp; Ubah Voucher</string>
     <string name="mvc_view_detail">Lihat Detail</string>
@@ -93,7 +95,7 @@
 
     <!--Step 2-->
     <string name="mvc_create_tips_calculation">Cara perhitungan estimasi pengeluaran</string>
-    <string name="mvc_create_tips_estimation">Estimasi = Nominal Diskon x Kuota Voucher</string>
+    <string name="mvc_create_tips_estimation">Estimasi = Nominal Diskon x Kuota Kupon</string>
     <string name="mvc_create_voucher_name_alert_minimum">Min. 5 huruf</string>
     <string name="mvc_create_promo_type_free_deliv_tab">Gratis Ongkir</string>
     <string name="mvc_create_promo_type_free_deliv_ticker">Untuk <b>menjangkau pembeli dari berbagai kota,</b> terutama jika barangmu sulit ditemukan di kota-kota lain.</string>
@@ -253,6 +255,7 @@
     <string name="mvc_detail_ticker_cancel_promo">Untuk membatalkan promosi, klik di sini</string>
     <string name="mvc_detail_ticker_here">di sini</string>
     <string name="mvc_review_agreement">Dengan klik Tambah Voucher, saya menyetujui &lt;br>syarat dan ketentuan yang berlaku.</string>
+    <string name="mvc_check_tnc">Lihat syarat dan ketentuan</string>
     <string name="mvc_review_terms">syarat dan ketentuan</string>
     <string name="mvc_estimation_title">Estimasi Maks. Pengeluaran</string>
     <string name="mvc_estimation_description">Dipotong dari transaksi selesai</string>
@@ -354,14 +357,15 @@
     <string name="no_products">Belum ada produk</string>
     <string name="create_coupon">Buat Kupon</string>
     <string name="check_coupon_appearance">Cek Tampilan Kupon</string>
-    <string name="coupon_product_terms_and_condition">Dengan klik Buat Kupon, saya menyetujui <a href="https://learntodroid.com">syarat dan ketentuan</a> yang berlaku.</string>
+    <string name="coupon_product_terms_and_condition">Dengan klik Buat Kupon, saya menyetujui <a href="https://google.com">syarat dan ketentuan</a> yang berlaku.</string>
     <string name="quota">Kuota</string>
     <string name="product_list">Daftar Produk</string>
     <string name="listed_product">Produk terdaftar</string>
     <string name="max_product">Maks. 100 Produk</string>
-    <string name="minimum_purchase">Minimum Pembelian</string>
-    <string name="minimum_purchase_type">Tipe Minimum Pembelian</string>
+    <string name="minimum_purchase">Minimum pembelian</string>
+    <string name="minimum_purchase_type">Tipe minimum pembelian</string>
     <string name="discount_amount">Nominal Diskon</string>
+    <string name="discount_amount_free_shipping">Nominal Gratis Ongkir</string>
     <string name="discount_type">Tipe Diskon</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="hyphen">-</string>
@@ -371,6 +375,70 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="coupon_discount_type">Tipe Potongan</string>
     <string name="add_product_coupon">Tambah Kupon Produk</string>
+
+    <string name="nominal">Nominal</string>
+    <string name="quantity">Buah</string>
+    <string name="item">Barang</string>
+    <string name="nothing">Tidak ada</string>
+    <string name="shipping_cost_amount">Nominal gratis ongkir</string>
+
+    <string name="in_rupiah">Dalam Rupiah</string>
+    <string name="in_percentage">Dalam Persentase</string>
+    <string name="in_nominal">Dalam nominal</string>
+    <string name="in_quantity">Dalam buah</string>
+
+    <string name="error_message_minimum_discount">Diskon minimal Rp 5.000</string>
+    <string name="error_message_quota_below_minimum">Min. 1 voucher</string>
+    <string name="error_message_quota_exceed_maximum">Maks. 999 voucher</string>
+    <string name="error_message_invalid_cashback_minimum_purchase_nominal">Tidak boleh lebih kecil dari potongan harga</string>
+    <string name="error_message_invalid_cashback_minimum_purchase_quantity">Minimum 1 buah</string>
+    <string name="error_message_invalid_free_shipping_minimum_purchase">Nominal lebih kecil dari nominal gratis ongkir</string>
+    <string name="placeholder_rupiah">Rp %s</string>
+    <string name="placeholder_quantity">%s buah</string>
+    <string name="placeholder_percent">%s\%%</string>
+    <string name="placeholder_registered_product">(%s/100)</string>
+    <string name="placeholder_coupon_period">%s, %s WIB - %s, %s WIB</string>
+    <string name="placeholder_scheduled_coupon_period">Kupon \"%s\" aktif pada %s, %s WIB - %s, %s WIB</string>
+    <string name="cashback_percentage">Persentase cashback</string>
+    <string name="error_message_discount_percentage_range">Diskon minimal 2%, maksimal 100%</string>
+    <string name="error_message_discount_percentage_below_minimum">Min. 2%</string>
+    <string name="error_message_discount_percentage_exceed_maximum">Maks. 100%</string>
+    <string name="error_message_cashback_amount_below_minimum">Min. Rp5.000</string>
+    <string name="error_message_cashback_amount_exceed_maximum">Maks. Rp99.999.999</string>
+    <string name="error_message_maximum_price">Min Rp 5.000</string>
+    <string name="max_discount">Maks. Potongan Harga</string>
+    <string name="pcs">Pcs</string>
+    <string name="rupiah">Rp</string>
+    <string name="percent">%</string>
+    <string name="percentage">Persentase</string>
+    <string name="manage_product">Atur Produk</string>
+    <string name="max_expense_estimation_1">Kuota Kupon akan berkurang saat transaksi selesai.</string>
+    <string name="max_expense_estimation_2">Masa aktif kupon 1 minggu sejak diklaim pembeli untuk 1 kali pemakaian. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
+    <string name="coupon_scheduled">Yay, Kupon dijadwalkan!</string>
+    <string name="share_to_buyer">Bagikan ke Calon Pembeli</string>
+    <string name="broadcast_suggestion">Potensi tingkatkan orderan toko 2x lipat.</string>
+    <string name="error_message_create_coupon_product">Yaah, gagal menambahkan Kupon Produk</string>
+    <string name="error_message_update_coupon_product">Yaah, gagal memperbaharui Kupon Produk</string>
+    <string name="error_message_create_coupon_description">Kupon kamu gagal ditambahkan. Coba buat ulang atau hubungi Pusat Bantuan.</string>
+    <string name="error_message_update_coupon_description">Kupon kamu gagal diperbaharui. Coba buat ulang atau hubungi Pusat Bantuan.</string>
+    <string name="coupon_tnc">Syarat dan Ketentuan Kupon Produk merupakan bagian dari Syarat dan Ketentuan Situs/Aplikasi Tokopedia. Penggunaan Kupon Produk  tunduk pada Syarat dan Ketentuan Situs/Aplikasi, Kebijakan Privasi, dan Syarat dan Ketentuan yang tertulis dibawah ini. Pengguna disarankan membaca dengan seksama karena dapat berdampak kepada hak dan kewajiban pengguna secara hukum.\n\nDengan mendaftar dan/atau menggunakan situs www.tokopedia.com, maka Pengguna dianggap telah membaca, mengerti, memahami dan menyetujui semua isi dalam Syarat dan Ketentuan. Syarat dan Ketentuan ini merupakan bentuk kesepakatan yang dituangkan dalam sebuah perjanjian yang sah antara Pengguna dengan PT Tokopedia. Jika pengguna tidak menyetujui salah satu, sebagian, atau seluruh isi Syarat dan Ketentuan, maka pengguna tidak diperkenankan menggunakan layanan di www.tokopedia.com.</string>
+    <string name="image_ratio_tall">3:1</string>
+    <string name="image_ratio_square">1:1</string>
+    <string name="image_ratio_wide">16:9</string>
+    <string name="coupon_preview">Tampilan Kupon</string>
+    <string name="update_coupon_product">Ubah Kupon Produk</string>
+    <string name="save_changes">Simpan Perubahan</string>
+    <string name="coupon_updated">Kupon sudah diperbarui.</string>
+    <string name="coupon_duplicated">Kupon berhasil di duplikat</string>
+    <string name="placeholder_share_coupon_product_wording">Tersedia kupon untuk produk tertentu dari toko %s hanya di \@Tokopedia. Mulai %s sampai %s! %s</string>
+    <string name="please_wait">Mohon tunggu</string>
+    <string name="error_message_failed_get_image">Terjadi kesalahan dalam menampilkan gambar. Mohon coba lagi</string>
+    <!--create coupon-->
+    <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
+    <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
+    <string name="mvc_create_coupon_date_desc"><b>Maks. 10 Kupon</b> per bulan</string>
+    <string name="coupon_code_copied_to_clipboard">Kode kupon berhasil disalin</string>
+
 
     <!-- add product -->
     <string name="mvc_search_product">Cari Produk</string>

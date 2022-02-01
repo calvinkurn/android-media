@@ -16,6 +16,7 @@ class ShopBasicDataUseCase @Inject constructor(private val gqlRepository: Graphq
                 "\tshopBasicData {\n" +
                 "    result {\n" +
                 "      domain\n" +
+                "      logo\n" +
                 "      name\n" +
                 "    }\n" +
                 "    error {\n" +

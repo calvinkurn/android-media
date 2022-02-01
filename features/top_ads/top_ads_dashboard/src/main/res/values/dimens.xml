@@ -6,4 +6,9 @@
     <dimen name="arrow_width_show_case">16dp</dimen>
     <dimen name="fontvs">12sp</dimen>
     <dimen name="dp_55">55dp</dimen>
+    <dimen name="dp_90">90dp</dimen>
+
+    <dimen name="edit_icon_size">12dp</dimen>
+    <dimen name="top_spacing">12dp</dimen>
+    <dimen name="edit_icon_left_spacing">10dp</dimen>
 </resources>

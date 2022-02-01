@@ -80,11 +80,16 @@
     <string name="centralized_promo_promo_creation_broadcast_chat_description">Tingkatkan penjualan dengan kirim pesan promosi ke pembeli</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_cashback_title">Voucher Cashback</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_description">Tambah minat pembeli untuk berbelanja lebih di tokomu dengan cashback</string>
+    <string name="centralized_promo_promo_creation_voucher_product_title">Kupon Produk</string>
+    <string name="centralized_promo_promo_creation_voucher_product_description">Atur diskon khusus ke produk-produk tertentu agar semakin cepat laku.</string>
 
     <!-- First merchant voucher -->
+    <string name="centralized_promo_first_voucher_label">First Voucher</string>
     <string name="centralized_promo_bottomsheet_title">Yuk, buat Voucher Cashback!</string>
+    <string name="centralized_promo_bottomsheet_product_coupon_title">Keuntungan pakai Kupon Produk!</string>
     <string name="centralized_promo_bottomsheet_detail">Berbagai keuntungan:</string>
     <string name="centralized_promo_bottomsheet_next">Buat Voucher</string>
+    <string name="centralized_promo_bottomsheet_product_coupon_next">Buat Kupon</string>
     <string name="centralized_promo_bottomsheet_increase_sell">Tarik lebih banyak pelanggan</string>
     <string name="centralized_promo_bottomsheet_increase_sell_desc">Dengan tetap mempertahankan citra brand toko dan harga barang.</string>
     <string name="centralized_promo_bottomsheet_time">Kelola waktu aktif voucher</string>
@@ -92,6 +97,12 @@
     <string name="centralized_promo_bottomsheet_flexible">Penggunaan fleksibel</string>
     <string name="centralized_promo_bottomsheet_flexible_desc">Voucher berlaku untuk seluruh produkmu. Download &amp; bagikan ke sosial media.</string>
     <string name="centralized_promo_bottomsheet_free_delivery_info">Untuk Voucher Gratis Ongkir saat ini hanya tersedia di desktop</string>
+    <string name="centralized_promo_bottomsheet_selected_product">Pasang khusus di produk pilihan</string>
+    <string name="centralized_promo_bottomsheet_selected_product_desc">Atur detail voucher ke produk tertentu sesuai kebutuhan penjualan.</string>
+    <string name="centralized_promo_bottomsheet_flexible_discount">Lebih fleksibel kelola promosi</string>
+    <string name="centralized_promo_bottomsheet_flexible_discount_desc">Pilih manfaat promosi yang cocok dengan produk-produk pilihanmu.</string>
+    <string name="centralized_promo_bottomsheet_quick_sold_out">Stok produkmu cepat laris</string>
+    <string name="centralized_promo_bottomsheet_quick_sold_out_desc">Pasang minimum pembelian ke produk pilihan yang banyak dicari.</string>
     
     <!-- Other menu header revamp -->
     <string name="sah_new_other_shop_open">Toko Buka</string>
@@ -144,4 +155,18 @@
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
     <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
     <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
+    
+    <!-- Social Media Links -->
+    <string name="sah_social_menu_title">Media Sosial Tokopedia Seller</string>
+    <string name="sah_social_title">Media sosial Tokopedia Seller</string>
+    <string name="sah_social_desc">Ikuti akun media sosial Tokopedia Seller agar kamu tidak ketinggalan info terkini, tips dan trik berjualan, dan promo menarik.</string>
+    <string name="sah_social_ig_title">\@tokopediaseller</string>
+    <string name="sah_social_ig_desc">Nikmati konten edukasi dan kabar terbaru untuk Seller.</string>
+    <string name="sah_social_youtube_fb_title">Tokopedia Seller</string>
+    <string name="sah_social_youtube_desc">Tonton berbagai video edukasi pengembangan bisnis untuk Seller.</string>
+    <string name="sah_social_fb_desc">Nikmati konten edukasi dan kabar terbaru untuk Seller.</string>
+    <string name="sah_social_fb_com_title">Keluarga Tokopedia</string>
+    <string name="sah_social_fb_com_desc">Gabung grup Keluarga Tokopedia untuk berbagi info dan pengalaman ke sesama Seller.</string>
+    <string name="sah_social_cta">Lihat</string>
+        
 </resources>

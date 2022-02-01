@@ -14,11 +14,11 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
@@ -30,6 +30,8 @@ import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalasePic
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.setup.tags.PlayTitleAndTagsSetupFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.cleanBackstack
@@ -47,6 +49,14 @@ class PlayBroadcastSetupBottomSheet :
         PlayCoverSetupFragment.Listener,
         PlayTitleAndTagsSetupFragment.Listener
 {
+
+    private val retainedComponent by retainedComponent({ requireActivity() }) {
+        DaggerActivityRetainedComponent.builder()
+            .baseAppComponent(
+                (requireActivity().application as BaseMainApplication).baseAppComponent
+            )
+            .build()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -182,7 +192,7 @@ class PlayBroadcastSetupBottomSheet :
 
     private fun inject() {
         DaggerPlayBroadcastSetupComponent.builder()
-                .setBroadcastComponent((requireActivity() as PlayBroadcastComponentProvider).getBroadcastComponent())
+                .setActivityRetainedComponent(retainedComponent)
                 .build()
                 .inject(this)
     }

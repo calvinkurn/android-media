@@ -9,11 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4" />
+        app:typographyType="heading_5" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/linkAddVariantValueLevel1"
@@ -21,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:gravity="center"
         android:text="@string/action_add"
         android:textColor="@color/Unify_G500"
@@ -47,7 +45,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/body_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recyclerViewVariantValueLevel1" />

@@ -18,7 +18,9 @@ data class ShopBasicDataResult(
         @SerializedName("domain")
         val shopDomain: String = "",
         @SerializedName("name")
-        val shopName: String = ""
+        val shopName: String = "",
+        @SerializedName("logo")
+        val logo: String = ""
 )
 
 data class ShopBasicDataError(

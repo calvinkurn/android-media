@@ -587,8 +587,11 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                     getButtonUiModel(status, type)?.let { button -> add(button) }
                     getFooterUiModel(status)?.let { footer -> add(footer) }
                 } else {
+                    if (type == VoucherTypeConst.CASHBACK && status == VoucherStatusConst.ONGOING) {
+                        add(shareButtonUiModel)
+                    }
                     val tncFooterUiModel = FooterUiModel(
-                            context?.getString(R.string.mvc_review_agreement).toBlankOrString(),
+                            context?.getString(R.string.mvc_check_tnc).toBlankOrString(),
                             context?.getString(R.string.mvc_review_terms).toBlankOrString()
                     )
                     add(tncFooterUiModel)

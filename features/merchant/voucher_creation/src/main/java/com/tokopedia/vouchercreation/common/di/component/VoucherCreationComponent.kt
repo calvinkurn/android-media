@@ -3,9 +3,17 @@ package com.tokopedia.vouchercreation.common.di.component
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
+import com.tokopedia.vouchercreation.common.di.module.NetworkModule
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationModule
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationViewModelModule
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
+import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCouponBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.CouponImagePreviewBottomSheet
+import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
+import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
+import com.tokopedia.vouchercreation.product.voucherlist.view.fragment.CouponListFragment
+import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import com.tokopedia.vouchercreation.product.list.view.fragment.AddProductFragment
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
@@ -24,10 +32,12 @@ import dagger.Component
 
 @VoucherCreationScope
 @Component(
-        modules = [
-            VoucherCreationModule::class,
-            VoucherCreationViewModelModule::class],
-        dependencies = [BaseAppComponent::class]
+    modules = [
+        VoucherCreationModule::class,
+        VoucherCreationViewModelModule::class,
+        NetworkModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
 )
 interface VoucherCreationComponent {
     fun inject(createMerchantVoucherStepsActivity: CreateMerchantVoucherStepsActivity)
@@ -46,4 +56,12 @@ interface VoucherCreationComponent {
     fun inject(editQuotaBottomSheet: EditQuotaBottomSheet)
     fun inject(tipsAndTrickBottomSheetFragment: TipsAndTrickBottomSheetFragment)
     fun inject(tipsTrickBottomSheet: TipsTrickBottomSheet)
+
+    fun inject(productCouponPreviewFragment: ProductCouponPreviewFragment)
+    fun inject(couponSettingFragment: CouponSettingFragment)
+    fun inject(createCouponDetailFragment: CreateCouponDetailFragment)
+    fun inject(couponListFragment: CouponListFragment)
+    fun inject(couponImagePreviewBottomSheet: CouponImagePreviewBottomSheet)
+    fun inject(broadcastCouponBottomSheet: BroadcastCouponBottomSheet)
+    fun inject(createCouponProductActivity: CreateCouponProductActivity)
 }

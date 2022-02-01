@@ -634,7 +634,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         } else {
             impressionProductList = ArrayList()
         }
-        impressionProductList?.size
         if (impressionProductList?.size!! > 0) {
             feedAnalytics.eventImpressionProductBottomSheet(
                     activityId,
