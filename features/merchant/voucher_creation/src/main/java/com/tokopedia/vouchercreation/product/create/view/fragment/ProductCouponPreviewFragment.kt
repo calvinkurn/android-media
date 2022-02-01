@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,7 @@ import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndCond
 import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.dialog.UpdateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
+import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import java.net.URLEncoder
 import java.util.*
@@ -96,7 +98,9 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
 
     private var onNavigateToCouponInformationPage: () -> Unit = {}
     private var onNavigateToCouponSettingsPage: () -> Unit = {}
-    private var onNavigateToProductListPage: () -> Unit = {}
+    private var onNavigateToProductListPage: () -> Unit = {
+        startActivity(Intent(context,ProductListActivity::class.java))
+    }
     private var onUpdateCouponSuccess: () -> Unit = {}
     private var onCreateCouponSuccess: (Coupon) -> Unit = {}
     private var couponSettings: CouponSettings? = null
