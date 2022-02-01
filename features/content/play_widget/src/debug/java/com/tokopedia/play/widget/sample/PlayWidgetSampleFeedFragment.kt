@@ -58,13 +58,29 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment() {
                 PlayWidgetUiMock.getSamplePlayWidget()
             ),
             PlayWidgetSlotTabUiModel(
-                listOf("Market Museum", "WIB", "Cantik Fest", "Untukmu", "Lagi Live", "Akan Datang", "Terbaru")
+                listOf(
+                    Pair("Market Museum", true),
+                    Pair("WIB", false),
+                    Pair("Cantik Fest", false),
+                    Pair("Untukmu", false),
+                    Pair("Lagi Live", false),
+                    Pair("Akan Datang", false),
+                    Pair("Terbaru", false),
+                )
             ),
             PlayWidgetLargeUiModel(
                 PlayWidgetUiMock.getSamplePlayWidget()
             ),
             PlayWidgetSlotTabUiModel(
-                listOf("Market Museum", "WIB", "Cantik Fest", "Untukmu", "Lagi Live", "Akan Datang", "Terbaru")
+                listOf(
+                    Pair("Market Museum", true),
+                    Pair("WIB", false),
+                    Pair("Cantik Fest", false),
+                    Pair("Untukmu", false),
+                    Pair("Lagi Live", false),
+                    Pair("Akan Datang", false),
+                    Pair("Terbaru", false),
+                )
             ),
             PlayWidgetMediumUiModel(
                 PlayWidgetUiMock.getSamplePlayWidget(

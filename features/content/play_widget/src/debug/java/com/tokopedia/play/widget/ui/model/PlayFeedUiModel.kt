@@ -18,5 +18,5 @@ data class PlayWidgetMediumUiModel(
 ): PlayFeedUiModel()
 
 data class PlayWidgetSlotTabUiModel(
-    val labels: List<String>
+    val labels: List<Pair<String, Boolean>>
 ): PlayFeedUiModel()

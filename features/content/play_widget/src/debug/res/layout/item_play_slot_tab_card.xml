@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     app:centerText="true"
     app:chipSize="medium"
-    app:chipType="alternate"
     tools:chipText="Sample"
     android:layout_marginStart="@dimen/spacing_lvl3"
     />

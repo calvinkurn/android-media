@@ -78,10 +78,10 @@ class PlayWidgetViewHolder private constructor() {
 
         class SlotTabViewAdapter : RecyclerView.Adapter<SlotTabViewHolder>() {
 
-            private val mItems: MutableList<String> = mutableListOf()
+            private val mItems: MutableList<Pair<String, Boolean>> = mutableListOf()
 
             @SuppressLint("NotifyDataSetChanged")
-            fun setItems(labels: List<String>) {
+            fun setItems(labels: List<Pair<String, Boolean>>) {
                 mItems.clear()
                 mItems.addAll(labels)
                 notifyDataSetChanged()
@@ -106,8 +106,9 @@ class PlayWidgetViewHolder private constructor() {
 
             private val chip = itemView.findViewById<ChipsUnify>(R.id.cu_label)
 
-            fun bind(label: String) {
-                chip.chipText = label
+            fun bind(label: Pair<String, Boolean>) {
+                chip.chipType = if (label.second) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+                chip.chipText = label.first
             }
         }
 
