@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation.activteGopay.bottomsheet
+package com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,10 +7,9 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class GopayLinkBenefitBottomSheet:BottomSheetUnify() {
-
+class SelectGateWayBottomSheet: BottomSheetUnify() {
     private var parentView: View? = null
-    private val childLayoutRes = R.layout.pdpwidget_gopay_activation_bottomsheet
+    private val childLayoutRes = R.layout.activation_gateway_brand
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +18,7 @@ class GopayLinkBenefitBottomSheet:BottomSheetUnify() {
     }
     fun showBottomSheet(supportFragmentManager: FragmentManager)
     {
-       show(supportFragmentManager,"GoPay_Activation_BottomSheet")
+        show(supportFragmentManager,"Activation Journey Gateway Branf")
     }
     private fun initView() {
         val childView = LayoutInflater.from(context).inflate(

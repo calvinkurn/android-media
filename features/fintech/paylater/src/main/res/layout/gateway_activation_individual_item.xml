@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/individualTenureItemContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:card_type="border"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/gatewayImage"
+                android:layout_width="32dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_height="32dp"
+                android:layout_marginLeft="@dimen/dp_14"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+               app:layout_constraintTop_toTopOf="@id/guideline2"
+                app:layout_constraintBottom_toBottomOf="@id/guideline3"
+                tools:src="@tools:sample/avatars" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/paymentDetailHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="Cicil 2x Rp6.480.000"
+                app:layout_constraintBottom_toTopOf="@+id/paymentDetailSubHeader"
+                app:layout_constraintLeft_toRightOf="@id/gatewayImage"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/paymentDetailSubHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
+                android:text="Biaya cicilan 0%"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toTopOf="@+id/paymentDetailSubHeader2"
+                app:layout_constraintLeft_toRightOf="@id/gatewayImage"
+                app:layout_constraintRight_toLeftOf="@id/radioTenureSelector"
+                app:layout_constraintTop_toBottomOf="@+id/paymentDetailHeader"
+                app:layout_goneMarginBottom="@dimen/unify_space_16"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/paymentDetailSubHeader2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                android:text="Biaya cicilan 0%"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toTopOf="@+id/paymentDetailHeader"
+                app:layout_constraintLeft_toRightOf="@id/gatewayImage"
+                app:layout_constraintRight_toLeftOf="@id/radioTenureSelector"
+                app:layout_constraintTop_toBottomOf="@+id/paymentDetailSubHeader"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                android:id="@+id/radioTenureSelector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/unify_space_16"
+                app:bold="true"
+                app:layout_constraintBottom_toBottomOf="@+id/paymentDetailSubHeader2"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/paymentDetailHeader" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="16dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="16dp" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+
+
+</LinearLayout>
