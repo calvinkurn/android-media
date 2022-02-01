@@ -1,6 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.domain.model
 
-import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFactory
+import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactory
 
 data class SeeMoreOptionsUiModel(
     val remainingItems: List<Detail>

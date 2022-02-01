@@ -2,7 +2,7 @@ package com.tokopedia.pdpsimulation.paylater.domain.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFactory
+import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

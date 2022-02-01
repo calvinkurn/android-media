@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.pdpsimulation.common.presentation.activity.PdpSimulationActivity"
+            android:name="com.tokopedia.pdpsimulation.paylater.presentation.activity.PdpSimulationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
