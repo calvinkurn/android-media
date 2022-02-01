@@ -41,26 +41,27 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCardTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:visibility="gone"
-            tools:visibility="visible"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_18dp"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/glShcCardEnd"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@+id/imgShcCardState"
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_max="wrap"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Pesanan" />
+            tools:text="Pesanan"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.NotificationUnify
             android:id="@+id/notifTagCard"
@@ -132,9 +133,12 @@
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginBottom="16dp"
             android:visibility="gone"
             app:corners="10"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerCardTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/shimmerCardTitle"
+            app:layout_constraintVertical_bias="0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

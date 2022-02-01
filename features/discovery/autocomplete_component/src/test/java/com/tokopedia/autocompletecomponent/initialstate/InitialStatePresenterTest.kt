@@ -9,6 +9,13 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.autocompletecomponent.shouldNotContain
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LAT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LONG
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_POST_CODE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
@@ -34,6 +41,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
                     "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
 
     private val requestParamsSlot = slot<RequestParams>()
+    private val requestParams by lazy { requestParamsSlot.captured }
 
     @Test
     fun `Test initial state presenter has set parameter`() {
@@ -52,7 +60,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
         `When presenter get initial state data`()
 
-        `Then verify search parameter has warehouseId`(warehouseId)
+        `Then verify search parameter has choose address params`(dummyChooseAddressData)
     }
 
     private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
@@ -67,10 +75,17 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         }
     }
 
-    private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
-        val requestParams = requestParamsSlot.captured
-
-        requestParams.parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+    private fun `Then verify search parameter has choose address params`(
+        localCacheModel: LocalCacheModel
+    ) {
+        val initialStateParams = requestParams.parameters
+        initialStateParams[USER_LAT] shouldBe localCacheModel.lat
+        initialStateParams[USER_LONG] shouldBe localCacheModel.long
+        initialStateParams[USER_ADDRESS_ID] shouldBe localCacheModel.address_id
+        initialStateParams[USER_CITY_ID] shouldBe localCacheModel.city_id
+        initialStateParams[USER_DISTRICT_ID] shouldBe localCacheModel.district_id
+        initialStateParams[USER_POST_CODE] shouldBe localCacheModel.postal_code
+        initialStateParams[USER_WAREHOUSE_ID] shouldBe localCacheModel.warehouse_id
     }
 
     private fun `Test Initial State Data`(
@@ -228,18 +243,24 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     }
 
     @Test
-    fun `Test initial state presenter has set parameter and no warehouseId`() {
+    fun `Test initial state presenter has set parameter and no choose address data`() {
         `Given chosen address data`(LocalCacheModel())
         `Given getInitialStateUseCase will be successful`(initialStateCommonData)
 
         `When presenter get initial state data`()
 
-        `Then verify search parameter has no warehouseId`()
+        `Then verify search parameter has no choose address params`()
     }
 
-    private fun `Then verify search parameter has no warehouseId`() {
-        val requestParams = requestParamsSlot.captured
+    private fun `Then verify search parameter has no choose address params`() {
+        val initialStateParams = requestParams.parameters
 
-        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
+        initialStateParams.shouldNotContain(USER_LAT)
+        initialStateParams.shouldNotContain(USER_LONG)
+        initialStateParams.shouldNotContain(USER_ADDRESS_ID)
+        initialStateParams.shouldNotContain(USER_CITY_ID)
+        initialStateParams.shouldNotContain(USER_DISTRICT_ID)
+        initialStateParams.shouldNotContain(USER_POST_CODE)
+        initialStateParams.shouldNotContain(USER_WAREHOUSE_ID)
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -20,18 +21,19 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
-import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
+import com.tokopedia.imagepicker.editor.config.RemoveBackgroundConfig;
 import com.tokopedia.imagepicker.editor.main.Constant;
+import com.tokopedia.imagepicker.editor.config.WatermarkRemoteConfig;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
-import com.tokopedia.imagepicker.editor.data.ItemSelection;
+import com.tokopedia.imagepicker.editor.data.entity.ItemSelection;
 import com.tokopedia.imagepicker.editor.widget.ItemSelectionWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
@@ -46,9 +48,11 @@ import com.tokopedia.utils.image.ImageProcessingUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -79,7 +83,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
     public static final String SAVED_RATIO = "RATIO";
 
-    private static final String WATERMARK_REMOTE_CONFIG = "media_watermark_editor_tool";
     private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
@@ -114,6 +117,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private ImageEditThumbnailListWidget imageEditThumbnailListWidget;
     private ImageEditActionMainWidget imageEditActionMainWidget;
     private ItemSelectionWidget watermarkItemSelection;
+    private ItemSelectionWidget removeBgItemSelection;
     private Typography titleWatermarkStyle;
     private View editorMainView;
     private View editorControlView;
@@ -125,6 +129,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private View layoutCrop;
     private View layoutRotate;
     private View layoutWatermark;
+    private View layoutRemoveBackground;
     protected ProgressDialog progressDialog;
     private TwoLineSeekBar brightnessSeekbar;
     private TwoLineSeekBar contrastSeekbar;
@@ -149,6 +154,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private int watermarkType = Constant.TYPE_WATERMARK_TOPED;
     private String pageSource = ImageEditorTracking.UNKNOWN_PAGE;
 
+    private int removeBackgroundType = Constant.TYPE_REMOVE_BG_NORMAL;
+
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_EDITOR_BUILDER, imageEditorBuilder);
@@ -170,7 +177,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
         Intent intent = getIntent();
         if (!intent.hasExtra(EXTRA_IMAGE_EDITOR_BUILDER)) {
             finish();
@@ -246,7 +252,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         userSession = new UserSession(getApplicationContext());
         remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
 
-        remoteConfigEditor();
+        abTestAndRemoteConfigSetup();
 
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
@@ -259,6 +265,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         watermarkItemSelection = findViewById(R.id.watermark_item_selection);
+        removeBgItemSelection = findViewById(R.id.remove_bg_item_selection);
         titleWatermarkStyle = findViewById(R.id.txt_title_item);
         doneButton = findViewById(R.id.tv_done);
         vEditProgressBar = findViewById(R.id.crop_progressbar);
@@ -268,6 +275,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         layoutBrightness = findViewById(R.id.layout_brightness);
         layoutContrast = findViewById(R.id.layout_contrast);
         layoutWatermark = findViewById(R.id.layout_watermark);
+        layoutRemoveBackground = findViewById(R.id.layout_remove_background);
         tvActionTitle = findViewById(R.id.tv_action_title);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -309,8 +317,18 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         trackOpen();
     }
 
-    private void remoteConfigEditor() {
-        if (!remoteConfig.getBoolean(WATERMARK_REMOTE_CONFIG)) {
+    private void abTestAndRemoteConfigSetup() {
+        // remove background
+        if (RemoveBackgroundConfig.remoteConfig(remoteConfig)) {
+            if (!RemoveBackgroundConfig.abTest()) {
+                imageEditActionType.remove(ImageEditActionType.ACTION_REMOVE_BACKGROUND);
+            }
+        } else {
+            imageEditActionType.remove(ImageEditActionType.ACTION_REMOVE_BACKGROUND);
+        }
+
+        // watermark
+        if (!WatermarkRemoteConfig.get(remoteConfig)) {
             imageEditActionType.remove(ImageEditActionType.ACTION_WATERMARK);
         }
     }
@@ -337,6 +355,9 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     break;
                 case ACTION_CONTRAST:
                     fragment.cancelContrast();
+                    break;
+                case ACTION_REMOVE_BACKGROUND:
+                    fragment.cancelRemoveBackground();
                     break;
             }
 
@@ -393,6 +414,12 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     if (fragment != null) {
                         fragment.saveContrastImage();
                         trackClickSave(ImageEditorTrackingConstant.LABEL_CONTRAST);
+                    }
+                    break;
+                case ACTION_REMOVE_BACKGROUND:
+                    if (fragment != null) {
+                        fragment.saveRemoveBackground();
+                        trackClickSave(getLabelRemoveBackground());
                     }
                     break;
             }
@@ -563,14 +590,21 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     if (fragment != null && !isSetWatermark) {
                         hideAllControls();
                         watermarkItemSelection.clearData();
-                        setLastStateWatermarkImage();
+                        setLastStateImageBitmap();
                         watermarkType = Constant.TYPE_WATERMARK_TOPED;
                         isSetWatermark = true;
                         fragment.setWatermark();
                     }
                     layoutWatermark.setVisibility(View.VISIBLE);
-
                     tvActionTitle.setText(getString(R.string.watermark));
+                    break;
+                case ACTION_REMOVE_BACKGROUND:
+                    hideAllControls();
+                    removeBgItemSelection.clearData();
+                    setLastStateImageBitmap();
+                    setupRemoveBackgroundWidget();
+                    layoutRemoveBackground.setVisibility(View.VISIBLE);
+                    tvActionTitle.setText(getString(R.string.remove_background));
                     break;
                 case ACTION_CROP_ROTATE:
                     //currently not supported.
@@ -620,6 +654,64 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         layoutBrightness.setVisibility(View.GONE);
         layoutContrast.setVisibility(View.GONE);
         layoutWatermark.setVisibility(View.GONE);
+        layoutRemoveBackground.setVisibility(View.GONE);
+    }
+
+    private void setupRemoveBackgroundWidget() {
+        List<ItemSelection> items = new ArrayList<>();
+
+        items.add(ItemSelection.createWithPlaceholderResourceId(
+                getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_original),
+                R.drawable.ic_toped_icon_remove_bg_normal,
+                Constant.TYPE_REMOVE_BG_NORMAL,
+                true
+        ));
+
+        items.add(ItemSelection.createWithPlaceholderResourceId(
+                getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_white),
+                R.drawable.ic_toped_icon_remove_bg_white,
+                Constant.TYPE_REMOVE_BG_WHITE,
+                false
+        ));
+
+        items.add(ItemSelection.createWithPlaceholderResourceId(
+                getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_grey),
+                R.drawable.ic_toped_icon_remove_bg_gray,
+                Constant.TYPE_REMOVE_BG_BLACK,
+                false
+        ));
+
+        removeBgItemSelection.setData(
+                items,
+                (position, bitmap, type) -> setupRemoveBackgroundWidgetSelection(position, type)
+        );
+    }
+
+    private void setupRemoveBackgroundWidgetSelection(int position, int type) {
+        String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
+        int color = 0;
+
+        if (type == Constant.TYPE_REMOVE_BG_BLACK) {
+            color = ContextCompat.getColor(getApplicationContext(), R.color.dms_grey_neutral_200);
+        } else if (type == Constant.TYPE_REMOVE_BG_WHITE) {
+            color = Color.WHITE;
+        }
+
+        setRemoveBackgroundColor(position, preview, color);
+        removeBackgroundType = type;
+    }
+
+    private void setRemoveBackgroundColor(int position, String imagePath, int color) {
+        ImageEditPreviewFragment fragment = getCurrentFragment();
+        if (fragment == null) return;
+
+        if (position == 0) {
+            fragment.resetRemoveBackgroundBitmap();
+            fragment.setImageData(imagePath);
+            return;
+        }
+
+        fragment.setRemoveBackground(color);
     }
 
     private void setupBrightnessWidget() {
@@ -756,8 +848,9 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                         getString(R.string.editor_watermark_item),
                         preview,
                         Arrays.asList(bitmaps), // placeholder preview
+                        true,
                         Arrays.asList(Constant.TYPE_WATERMARK_TOPED, Constant.TYPE_WATERMARK_CENTER_TOPED)
-                ), (bitmap, type) -> {
+                ), (position, bitmap, type) -> {
                     imageEditPreviewFragment.setPreviewImageWatermark(bitmap);
                     watermarkType = type;
                 }
@@ -829,7 +922,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         }
     }
 
-    public void setLastStateWatermarkImage() {
+    public void setLastStateImageBitmap() {
         ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
 
         if (imageEditPreviewFragment != null) {
@@ -1195,6 +1288,21 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 return ImageEditorTrackingConstant.LABEL_WATERMARK_DESIGN_ONE;
             case Constant.TYPE_WATERMARK_CENTER_TOPED:
                 return ImageEditorTrackingConstant.LABEL_WATERMARK_DESGIN_TWO;
+            default:
+                break;
+        }
+        return label;
+    }
+
+    private String getLabelRemoveBackground() {
+        String label = "";
+        switch (removeBackgroundType) {
+            case Constant.TYPE_REMOVE_BG_NORMAL:
+                return ImageEditorTrackingConstant.LABEL_REMOVE_BACKGROUND_NORMAL;
+            case Constant.TYPE_REMOVE_BG_WHITE:
+                return ImageEditorTrackingConstant.LABEL_REMOVE_BACKGROUND_WHITE;
+            case Constant.TYPE_REMOVE_BG_BLACK:
+                return ImageEditorTrackingConstant.LABEL_REMOVE_BACKGROUND_GREY;
             default:
                 break;
         }

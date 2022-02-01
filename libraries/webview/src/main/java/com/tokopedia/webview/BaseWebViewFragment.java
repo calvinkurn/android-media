@@ -203,8 +203,25 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             getActivity().finish();
             return null;
         } else {
-            return onCreateWebView(inflater, container, savedInstanceState);
+            try {
+                return onCreateWebView(inflater, container, savedInstanceState);
+            } catch (Exception e) {
+                redirectToWebViewPlaystore();
+                return null;
+            }
         }
+    }
+
+    private void redirectToWebViewPlaystore(){
+        //fix crash Failed to load WebView provider: No WebView installed
+        Intent webViewPlaystoreIntent = new Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.webview")
+        );
+        Toast.makeText(getContext(), getString(com.tokopedia.webview.R.string.webview_need_install),
+                Toast.LENGTH_LONG).show();
+        startActivity(webViewPlaystoreIntent);
+        getActivity().finish();
     }
 
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
@@ -351,10 +368,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGIN) {
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 webView.loadAuthUrl(getUrl(), userSession);
-            }else {
-                if(getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
+            } else {
+                if (getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
                     ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
             }
         } else if (requestCode == LOGIN_GPLUS) {
@@ -665,7 +682,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
             globalError.setVisibility(View.VISIBLE);
-            if (swipeRefreshLayout!= null) {
+            if (swipeRefreshLayout != null) {
                 swipeRefreshLayout.setVisibility(View.GONE);
             }
         }
@@ -804,15 +821,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
         String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
         String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
-        Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }
 
-    private boolean isFDLHostEnabled(Uri uri){
-        if(remoteConfig != null){
+    private boolean isFDLHostEnabled(Uri uri) {
+        if (remoteConfig != null) {
             return remoteConfig.getBoolean(ENABLE_FDL_HOST_WEBVIEW, true)
                     && FDL_HOST.equalsIgnoreCase(uri.getHost());
-        }else{
+        } else {
             return FDL_HOST.equalsIgnoreCase(uri.getHost());
         }
     }
@@ -837,7 +854,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private void routeToNativeBrowser(String browserUrl){
+    private void routeToNativeBrowser(String browserUrl) {
         RouteManager.route(getContext(), ApplinkConst.BROWSER + "?url=" + browserUrl);
     }
 
@@ -933,10 +950,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (activity instanceof BaseSimpleWebViewActivity) {
             ((BaseSimpleWebViewActivity) activity).setWebViewTitle("");
         }
-        if (swipeRefreshLayout!= null) {
+        if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
-        if (globalError!= null) {
+        if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
         webView.reload();
