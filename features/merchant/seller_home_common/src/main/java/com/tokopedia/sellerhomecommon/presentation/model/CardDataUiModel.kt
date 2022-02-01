@@ -11,12 +11,12 @@ data class CardDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val description: String = "",
     val state: State = State.NORMAL,
     val value: String = "",
     var previousValue: String? = null
-) : BaseDataUiModel {
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {
         return value.filterIndexed { index, c ->

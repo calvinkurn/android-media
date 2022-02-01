@@ -13,9 +13,9 @@ data class TableDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val dataSet: List<TablePageUiModel> = emptyList()
-) : BaseDataUiModel {
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {
         return dataSet.all { it.rows.isEmpty() }

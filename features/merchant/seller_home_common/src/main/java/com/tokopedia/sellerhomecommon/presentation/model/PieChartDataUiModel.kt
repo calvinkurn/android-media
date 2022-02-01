@@ -9,9 +9,9 @@ class PieChartDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val data: PieChartUiModel = PieChartUiModel()
-) : BaseDataUiModel {
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {
         return data.item.all { it.value == 0 }

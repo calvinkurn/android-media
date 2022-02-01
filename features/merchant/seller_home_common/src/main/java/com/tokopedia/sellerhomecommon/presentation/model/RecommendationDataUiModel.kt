@@ -9,12 +9,12 @@ data class RecommendationDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val ticker: RecommendationTickerUiModel? = null,
     val progressLevel: RecommendationProgressUiModel? = null,
     val progressBar: RecommendationProgressUiModel? = null,
     val recommendation: RecommendationUiModel? = null
-) : BaseDataUiModel {
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {
         return recommendation?.recommendations.isNullOrEmpty()

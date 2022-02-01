@@ -39,7 +39,6 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     }
 
     fun isEmpty(): Boolean = data == null || data?.isWidgetEmpty().orFalse()
-
 }
 
 data class WidgetEmptyStateUiModel(

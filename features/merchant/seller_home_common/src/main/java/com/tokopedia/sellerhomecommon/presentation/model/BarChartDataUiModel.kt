@@ -9,9 +9,9 @@ data class BarChartDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val chartData: BarChartUiModel = BarChartUiModel()
-) : BaseDataUiModel {
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {
         return chartData.yAxis.all { it.value == 0 }

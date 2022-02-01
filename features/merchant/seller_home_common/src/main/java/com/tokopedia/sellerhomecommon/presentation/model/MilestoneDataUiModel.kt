@@ -9,7 +9,7 @@ data class MilestoneDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = true,
-    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val title: String = "",
     val subTitle: String = "",
     val backgroundColor: String = "",
@@ -20,7 +20,7 @@ data class MilestoneDataUiModel(
     val milestoneMissions: List<BaseMilestoneMissionUiModel> = emptyList(),
     val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel(),
     val deadlineMillis: Long = 0L
-) : BaseDataUiModel {
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {
         return milestoneMissions.isNullOrEmpty() || isOverDue()

@@ -6,5 +6,5 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 data class LastUpdatedUiModel(
     val lastUpdated: Long = 0L,
-    val shouldShow: Boolean = false
+    var shouldShow: Boolean = false
 )

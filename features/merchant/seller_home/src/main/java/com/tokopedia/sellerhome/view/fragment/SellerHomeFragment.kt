@@ -1577,16 +1577,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(
         widgetType: String
     ) {
-        val message = this.message.orEmpty()
+        val errorMessage = this.message.orEmpty()
         val newWidgetList = adapter.data.map { widget ->
             val isSameWidgetType = widget.widgetType == widgetType
-            if (widget is W && widget.data == null && widget.isLoaded && isSameWidgetType) {
+            val shouldShowErrorState = widget.data == null && widget.isLoaded && isSameWidgetType
+            val shouldShowExistingData = widget is W && widget.data != null && isSameWidgetType
+            return@map if (widget is W && shouldShowErrorState) {
                 widget.copyWidget().apply {
                     data = D::class.java.newInstance().apply {
-                        error = message
+                        error = errorMessage
                     }
                     isLoading = widget.data?.isFromCache ?: false
                 }
+            } else if (shouldShowExistingData) {
+                copyExistingWidget(widget)
             } else {
                 widget
             }
@@ -1602,6 +1606,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             requestVisibleWidgetsData()
             checkLoadingWidgets()
         }
+    }
+
+    private fun copyExistingWidget(widget: BaseWidgetUiModel<*>): BaseWidgetUiModel<*> {
+        val tempWidget = widget.copyWidget()
+        widget.data = null
+        val widgetData = tempWidget.data
+        if (widgetData is LastUpdatedDataInterface) {
+            widgetData.lastUpdated.shouldShow = true
+        }
+        return tempWidget
     }
 
     private fun logWidgetException(widgetType: String, throwable: Throwable) {

@@ -59,11 +59,7 @@ class CardViewHolder(
     private fun observeState(element: CardWidgetUiModel) {
         val data = element.data
         when {
-            null == data -> {
-                showViewComponent(element, false)
-                showOnError(false)
-                showShimmer(true)
-            }
+            null == data -> showLoadingState(element)
             data.error.isNotBlank() -> {
                 showShimmer(false)
                 showOnError(true)
@@ -77,6 +73,12 @@ class CardViewHolder(
                 setupTag(element)
             }
         }
+    }
+
+    private fun showLoadingState(element: CardWidgetUiModel) {
+        showViewComponent(element, false)
+        showOnError(false)
+        showShimmer(true)
     }
 
     private fun showViewComponent(element: CardWidgetUiModel, isShown: Boolean) {

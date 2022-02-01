@@ -9,11 +9,11 @@ data class PostListDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val emphasizeType: Int = IMAGE_EMPHASIZED,
     val postPagers: List<PostListPagerUiModel> = emptyList(),
     val cta: PostCtaDataUiModel = PostCtaDataUiModel()
-) : BaseDataUiModel {
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
     companion object {
         const val IMAGE_EMPHASIZED = 0

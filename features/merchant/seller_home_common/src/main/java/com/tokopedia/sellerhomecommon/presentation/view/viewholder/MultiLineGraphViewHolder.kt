@@ -190,12 +190,14 @@ class MultiLineGraphViewHolder(
         binding.shcMlgSuccessState.gone()
         binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
         errorStateBinding.commonWidgetErrorState.gone()
+        emptyStateBinding.multiLineEmptyState.gone()
         loadingStateBinding.shcMlgLoadingState.visible()
     }
 
     private fun setOnErrorState(element: MultiLineGraphWidgetUiModel) {
         setupTitle(element.title)
         loadingStateBinding.shcMlgLoadingState.gone()
+        emptyStateBinding.multiLineEmptyState.gone()
         binding.shcMlgSuccessState.visible()
         binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
         getWidgetComponents().forEach {
@@ -286,16 +288,22 @@ class MultiLineGraphViewHolder(
                 setLastUpdated(lastUpdated.lastUpdated)
                 setRefreshButtonVisibility(isFromCache)
                 setRefreshButtonClickListener {
-                    listener.onReloadWidget(element)
+                    reloadWidget(element)
                 }
             }
         }
+    }
+
+    private fun reloadWidget(element: MultiLineGraphWidgetUiModel) {
+        setOnLoadingState()
+        listener.onReloadWidget(element)
     }
 
     private fun setupEmptyState() {
         element?.let { element ->
             with(emptyStateBinding) {
                 val emptyState = element.emptyState
+                multiLineEmptyState.visible()
                 tvLineGraphEmptyStateTitle.text = emptyState.title
                 tvLineGraphEmptyStateDescription.text = emptyState.description
                 tvShcMultiLineEmptyStateCta.text = emptyState.ctaText
