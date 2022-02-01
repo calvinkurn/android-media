@@ -409,5 +409,6 @@
     <string name="topads_dash_from_last_week">dari minggu lalu</string>
     <string name="topads_dash_text_bacaan_terbaru_untukmu">Bacaan terbaru untukmu</string>
     <string name="topads_dash_read_more">Selengkapnya</string>
+    <string name="topads_dashboard_update_terakhir">Update terakhir</string>
 </resources>
 

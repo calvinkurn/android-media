@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.DepositAmount
@@ -32,6 +30,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
+import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
 import java.util.*
@@ -46,6 +45,8 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private var insightCallBack: GoToInsight? = null
 
     private var currentDateText: String = ""
+
+    private var creditHistory : CardUnify ?= null
 
     @TopAdsStatisticsType
     internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
@@ -72,6 +73,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     override fun setUpView(view: View) {
+        creditHistory = view.findViewById(R.id.credit_history)
     }
 
     override fun getChildScreenName(): String {

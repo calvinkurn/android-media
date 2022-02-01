@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtLatestReadingForYou"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/topads_dash_text_bacaan_terbaru_untukmu"
+        android:textSize="@dimen/fontSize_lvl4"
+        android:layout_marginStart="@dimen/topads_dashboard_dp_6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toBottomOf="@id/txtLatestReadingForYou">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/unify_space_12">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvReadMore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_rv_read_more" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnReadMore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:text="@string/topads_dash_read_more"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="ghost" />
+        </LinearLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
