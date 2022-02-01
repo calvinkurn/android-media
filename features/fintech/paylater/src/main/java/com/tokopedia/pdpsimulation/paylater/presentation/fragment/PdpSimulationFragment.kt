@@ -78,38 +78,20 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         interaction = PayLaterOptionInteraction(
             onCtaClicked = { handleAction(it) },
             installementDetails = { openInstallmentBottomSheet(it) },
-            seeMoreOptions = { adapterPosition ->
-                if (adapterPosition != RecyclerView.NO_POSITION)
-                    simulationAdapter.updateOptionList(adapterPosition)
-            }
+            seeMoreOptions = { simulationAdapter.updateOptionList(it) }
         )
     )
 
     private fun handleAction(detail: Detail) {
-        Toast.makeText(context, "Cta clicked", Toast.LENGTH_LONG).show()
-
         ActionHandler.handleClickNavigation(context, detail,
-            openHowToUse = {
-                bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it)
-            },
-            openGoPay = {
-                bottomSheetNavigator.showBottomSheet(
-                    PayLaterTokopediaGopayBottomsheet::class.java,
-                    it
-                )
-            }
+            openHowToUse = { bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it) },
+            openGoPay = { bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it) }
         )
     }
 
     private fun openInstallmentBottomSheet(installment: InstallmentDetails) {
-        Toast.makeText(context, "Open Installemt", Toast.LENGTH_LONG).show()
-        val bundle = Bundle().apply {
-            putParcelable(
-                PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
-                installment
-            )
-        }
-        bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
+        bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java,
+            ActionHandler.getInstallmentBundle(installment))
     }
 
     override fun onCreateView(
@@ -126,7 +108,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initArguments()
         initViews()
         payLaterViewModel.getProductDetail(productId)
@@ -164,7 +145,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
 
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
-        // hide loading
         showSimulationViews()
         setSimulationAdapter(data)
     }
@@ -245,7 +225,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 )
             }
         }
-        data.productName.let {
+        data.productName?.let {
             productDetail.productName.text = it
         }
 

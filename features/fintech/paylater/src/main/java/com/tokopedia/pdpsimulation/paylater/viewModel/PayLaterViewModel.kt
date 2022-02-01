@@ -40,7 +40,6 @@ class PayLaterViewModel @Inject constructor(
     private var idlingResourceProvider =
         TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
 
-
     fun getPayLaterAvailableDetail(price: Double, productId: String) {
         idlingResourceProvider?.increment()
         paylaterGetSimulationV3UseCase.cancelJobs()
@@ -77,6 +76,7 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
         idlingResourceProvider?.decrement()
+        mapperUseCase.cancelJobs()
         mapperUseCase.mapResponseToUi({ data ->
             if (data.isNotEmpty()) {
                 tenureMap =
