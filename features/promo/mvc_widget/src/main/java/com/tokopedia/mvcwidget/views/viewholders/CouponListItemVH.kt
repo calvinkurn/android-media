@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcCouponListItem
 import com.tokopedia.mvcwidget.R
@@ -35,9 +36,19 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tv3.text = data.title3
         if(data.ctaCatalog.type.isNullOrEmpty().not() && data.ctaCatalog.type == REDIRECT_CHECK) {
             rel_cta.show()
-            tv4.text = data.ctaCatalog.text
-            rel_cta.setOnClickListener {
-                RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+            if(data.ctaCatalog.text.isNullOrEmpty().not()) {
+                tv4.text = data.ctaCatalog.text
+            }
+            else{
+                rel_cta.hide()
+            }
+            if(data.ctaCatalog.appLink.isNullOrEmpty().not()) {
+                rel_cta.setOnClickListener {
+                    RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+                }
+            }
+            else{
+                rel_cta.hide()
             }
         }
 
