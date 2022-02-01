@@ -150,6 +150,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         setUserDetails()
     }
     private fun openHistoryActivity() {
+        sendHomeEvent(AffiliateAnalytics.ActionKeys.CLICK_GENERATED_LINK_HISTORY,"",AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE)
         val intent = Intent(context,AffiliateComponentActivity::class.java)
         intent.putExtra("isUserBlackListed",isUserBlackListed)
         startActivityForResult(intent,LINK_HISTORY_BUTTON_CLICKED)
