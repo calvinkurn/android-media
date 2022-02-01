@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation.common.helper
+package com.tokopedia.pdpsimulation.paylater.helper
 
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.unifycomponents.ticker.Ticker

@@ -22,7 +22,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
-        android:src="@drawable/ic_highlighted_feature"
         app:layout_constraintBottom_toBottomOf="@id/individual_benifit"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/individual_benifit"

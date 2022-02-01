@@ -1,6 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.domain.usecase
 
-import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
+import com.tokopedia.pdpsimulation.paylater.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel.Companion.DATA_FAILURE
 import com.tokopedia.usecase.coroutines.UseCase

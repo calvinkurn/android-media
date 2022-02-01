@@ -1,6 +1,7 @@
 package com.tokopedia.pdpsimulation.paylater.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail

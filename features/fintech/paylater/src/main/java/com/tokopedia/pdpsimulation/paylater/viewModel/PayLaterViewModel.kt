@@ -11,7 +11,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.ProductDetailUseCase
+import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

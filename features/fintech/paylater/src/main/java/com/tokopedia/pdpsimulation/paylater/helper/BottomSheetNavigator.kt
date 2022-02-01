@@ -1,8 +1,7 @@
-package com.tokopedia.pdpsimulation.common.helper
+package com.tokopedia.pdpsimulation.paylater.helper
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterInstallmentFeeInfo
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet

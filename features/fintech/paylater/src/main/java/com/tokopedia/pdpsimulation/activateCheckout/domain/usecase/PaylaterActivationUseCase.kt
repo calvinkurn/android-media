@@ -3,9 +3,9 @@ package com.tokopedia.pdpsimulation.activateCheckout.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.pdpsimulation.activateCheckout.constants.GQL_PAYLATER_ACTIVATION
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.BasePayLaterOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
+import com.tokopedia.pdpsimulation.common.constants.GQL_PAYLATER_ACTIVATION
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation.paylater.domain.usecase
+package com.tokopedia.pdpsimulation.common.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

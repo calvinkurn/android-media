@@ -18,7 +18,7 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
-import com.tokopedia.pdpsimulation.common.helper.BottomSheetNavigator
+import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterSimulationAdapter
 import com.tokopedia.pdpsimulation.common.utils.Utils

@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation.common.helper
+package com.tokopedia.pdpsimulation.paylater.helper
 
 sealed class PdpSimulationException(errMessage: String) : Throwable(errMessage) {
     class PayLaterNotApplicableException(errMessage: String) : PdpSimulationException(errMessage)
