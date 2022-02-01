@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
-import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.ui.PlayWidgetView
+//import com.tokopedia.play.widget.ui.PlayWidgetState
+//import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -27,18 +27,18 @@ class PlayWidgetCoordinator(
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
 
-    private var mWidget: PlayWidgetView? = null
-    private var mState: PlayWidgetState = PlayWidgetState(isLoading = true)
+//    private var mWidget: PlayWidgetView? = null
+//    private var mState: PlayWidgetState = PlayWidgetState(isLoading = true)
 
     private var mListener: PlayWidgetListener? = null
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
 
-    private val widgetHolderListener = object : PlayWidgetViewHolder.Listener {
-
-        override fun onWidgetImpressed(view: PlayWidgetView, item: PlayWidgetUiModel, position: Int) {
-            mAnalyticListener?.onImpressPlayWidget(view, item, position)
-        }
-    }
+//    private val widgetHolderListener = object : PlayWidgetViewHolder.Listener {
+//
+//        override fun onWidgetImpressed(view: PlayWidgetView, item: PlayWidgetUiModel, position: Int) {
+//            mAnalyticListener?.onImpressPlayWidget(view, item, position)
+//        }
+//    }
 
     private val autoPlayCoordinator = PlayWidgetAutoPlayCoordinator(scope, mainCoroutineDispatcher)
 
@@ -69,7 +69,7 @@ class PlayWidgetCoordinator(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        val currentModel = mState
+//        val currentModel = mState
         autoPlayCoordinator.onResume()
     }
 
@@ -79,34 +79,34 @@ class PlayWidgetCoordinator(
         scope.coroutineContext.cancelChildren()
     }
 
-    fun controlWidget(widget: PlayWidgetView) {
-        mWidget = widget
-        widget.setAnalyticListener(mAnalyticListener)
-        widget.setWidgetInternalListener(mWidgetInternalListener)
-        widget.setWidgetListener(mListener)
-    }
+//    fun controlWidget(widget: PlayWidgetView) {
+//        mWidget = widget
+//        widget.setAnalyticListener(mAnalyticListener)
+//        widget.setWidgetInternalListener(mWidgetInternalListener)
+//        widget.setWidgetListener(mListener)
+//    }
 
-    fun controlWidget(widgetViewHolder: PlayWidgetViewHolder) {
-        controlWidget(widgetViewHolder.itemView as PlayWidgetView)
-        widgetViewHolder.setListener(widgetHolderListener)
-    }
+//    fun controlWidget(widgetViewHolder: PlayWidgetViewHolder) {
+//        controlWidget(widgetViewHolder.itemView as PlayWidgetView)
+//        widgetViewHolder.setListener(widgetHolderListener)
+//    }
 
     fun setListener(listener: PlayWidgetListener?) {
         mListener = listener
-        mWidget?.setWidgetListener(mListener)
+//        mWidget?.setWidgetListener(mListener)
     }
 
     fun setAnalyticListener(listener: PlayWidgetAnalyticListener?) {
         mAnalyticListener = listener
-        mWidget?.setAnalyticListener(listener)
+//        mWidget?.setAnalyticListener(listener)
     }
 
-    fun connect(widget: PlayWidgetView, state: PlayWidgetState) {
-        mState = state
-        widget.setState(state)
-
-        autoPlayCoordinator.configureAutoPlay(widget, state.model.config)
-    }
+//    fun connect(widget: PlayWidgetView, state: PlayWidgetState) {
+//        mState = state
+//        widget.setState(state)
+//
+//        autoPlayCoordinator.configureAutoPlay(widget, state.model.config)
+//    }
 
     fun setImpressionHelper(helper: ImpressionHelper) {
         impressionHelper = helper

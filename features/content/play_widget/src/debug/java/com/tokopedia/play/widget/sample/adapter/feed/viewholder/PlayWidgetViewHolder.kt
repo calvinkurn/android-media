@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -20,47 +21,62 @@ import com.tokopedia.unifycomponents.ChipsUnify
 class PlayWidgetViewHolder private constructor() {
 
     internal class Jumbo private constructor(
-        itemView: View
+        itemView: View,
+        private val analyticListener: PlayWidgetAnalyticListener
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val view: PlayWidgetJumboView = itemView as PlayWidgetJumboView
 
         fun bind(item: PlayWidgetUiModel) {
+            view.setAnalyticListener(analyticListener)
             view.setData(item)
         }
 
         companion object {
-            fun create(itemView: View) = Jumbo(itemView)
+            fun create(
+                itemView: View,
+                analyticListener: PlayWidgetAnalyticListener
+            ) = Jumbo(itemView, analyticListener)
         }
     }
 
     internal class Large private constructor(
-        itemView: View
+        itemView: View,
+        private val analyticListener: PlayWidgetAnalyticListener
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val view: PlayWidgetLargeView = itemView as PlayWidgetLargeView
 
         fun bind(item: PlayWidgetUiModel) {
+            view.setAnalyticListener(analyticListener)
             view.setData(item)
         }
 
         companion object {
-            fun create(itemView: View) = Large(itemView)
+            fun create(
+                itemView: View,
+                analyticListener: PlayWidgetAnalyticListener
+            ) = Large(itemView, analyticListener)
         }
     }
 
     internal class Medium private constructor(
-        itemView: View
+        itemView: View,
+        private val analyticListener: PlayWidgetAnalyticListener
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val view: PlayWidgetMediumView = itemView as PlayWidgetMediumView
 
         fun bind(item: PlayWidgetUiModel) {
+            view.setAnalyticListener(analyticListener)
             view.setData(item)
         }
 
         companion object {
-            fun create(itemView: View) = Medium(itemView)
+            fun create(
+                itemView: View,
+                analyticListener: PlayWidgetAnalyticListener
+            ) = Medium(itemView, analyticListener)
         }
     }
 

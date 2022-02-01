@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.sample.adapter.feed.PlayWidgetSampleFeedAdapter
+import com.tokopedia.play.widget.sample.analytic.PlayWidgetFeedSampleAnalytic
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -39,7 +41,9 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment() {
     }
 
     private fun setupView(view: View) {
-        adapter = PlayWidgetSampleFeedAdapter()
+        adapter = PlayWidgetSampleFeedAdapter(
+            analyticListener = DefaultPlayWidgetInListAnalyticListener(PlayWidgetFeedSampleAnalytic())
+        )
 
         rvWidget?.adapter = adapter
         adapter.setItemsAndAnimateChanges(getSampleWidgets())

@@ -4,6 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
+import com.tokopedia.play.widget.analytic.jumbo.PlayWidgetJumboAnalyticListener
+import com.tokopedia.play.widget.analytic.list.jumbo.PlayWidgetInListJumboAnalyticListener
 import com.tokopedia.play.widget.sample.adapter.feed.viewholder.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.model.*
 
@@ -12,7 +15,9 @@ import com.tokopedia.play.widget.ui.model.*
  */
 class PlayWidgetViewAdapterDelegate private constructor() {
 
-    internal class Jumbo :
+    internal class Jumbo(
+        private val analyticListener: PlayWidgetAnalyticListener
+    ) :
         TypedAdapterDelegate<PlayWidgetJumboUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Jumbo>(
             R.layout.item_play_widget_jumbo
         ) {
@@ -21,7 +26,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): PlayWidgetViewHolder.Jumbo {
-            return PlayWidgetViewHolder.Jumbo.create(basicView)
+            return PlayWidgetViewHolder.Jumbo.create(basicView, analyticListener)
         }
 
         override fun onBindViewHolder(
@@ -32,7 +37,9 @@ class PlayWidgetViewAdapterDelegate private constructor() {
         }
     }
 
-    internal class Large :
+    internal class Large(
+        private val analyticListener: PlayWidgetAnalyticListener
+    ) :
         TypedAdapterDelegate<PlayWidgetLargeUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Large>(
             R.layout.item_play_widget_large
         ) {
@@ -47,11 +54,13 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): PlayWidgetViewHolder.Large {
-            return PlayWidgetViewHolder.Large.create(basicView)
+            return PlayWidgetViewHolder.Large.create(basicView, analyticListener)
         }
     }
 
-    internal class Medium :
+    internal class Medium(
+        private val analyticListener: PlayWidgetAnalyticListener
+    ) :
         TypedAdapterDelegate<PlayWidgetMediumUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Medium>(
             R.layout.item_play_widget_medium
         ) {
@@ -66,7 +75,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): PlayWidgetViewHolder.Medium {
-            return PlayWidgetViewHolder.Medium.create(basicView)
+            return PlayWidgetViewHolder.Medium.create(basicView, analyticListener)
         }
     }
 
