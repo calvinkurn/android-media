@@ -7,6 +7,7 @@
 
 
     <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/individualTenureItemContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:card_type="border"

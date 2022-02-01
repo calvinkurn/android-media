@@ -10,6 +10,14 @@ import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view
 
 class TenureViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
 
+    init {
+        itemView.apply {
+            individualTenureItemContainer.setOnClickListener {
+
+            }
+        }
+    }
+
     fun bindData(tenureDetail: TenureDetail) {
         itemView.apply {
             paymentDetailHeader.text = tenureDetail.chip_title

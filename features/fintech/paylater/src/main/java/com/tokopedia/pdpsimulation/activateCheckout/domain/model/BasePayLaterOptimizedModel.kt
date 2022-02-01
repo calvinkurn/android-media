@@ -31,10 +31,10 @@ data class TenureDetail (
     @SerializedName("chip_title") val chip_title : String,
     @SerializedName("monthly_installment") val monthly_installment : String,
     @SerializedName("description") val description : String,
-    @SerializedName("installment_details") val installment_details : Installment_details
+    @SerializedName("installment_details") val installment_details : ActivationInstallmentDetails
 )
 
-data class Installment_details (
+data class ActivationInstallmentDetails (
     @SerializedName("header") val header : String,
     @SerializedName("content") val detailContent : List<DetailContent>
         )
