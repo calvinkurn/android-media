@@ -390,7 +390,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onReviewImageClicked(position: Int, items: ArrayList<CatalogImage>) {
-        context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogId , position, items))
+        context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogId , position, items,true))
     }
 
     override fun hideFloatingLayout() {

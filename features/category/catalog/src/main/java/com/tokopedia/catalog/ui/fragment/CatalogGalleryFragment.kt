@@ -11,6 +11,7 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.gallery.CatalogBottomGalleyRecyclerViewAdapter
 import com.tokopedia.catalog.adapter.gallery.CatalogGalleryImagePagerAdapter
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.fragment_catalog_gallery.*
 
 class CatalogGalleryFragment : Fragment() {
@@ -18,22 +19,23 @@ class CatalogGalleryFragment : Fragment() {
     private var currentImage: Int = -1
     private var catalogId : String = ""
     private lateinit var catalogBottomGalleyRecyclerViewAdapter: CatalogBottomGalleyRecyclerViewAdapter
+    private var showBottomGallery = false
 
     companion object {
         private const val ARG_CATALOG_ID = "ARG_CATALOG_ID"
         private const val ARG_EXTRA_IMAGES = "ARG_EXTRA_IMAGES"
         private const val ARG_EXTRA_CURRENT_IMAGE = "ARG_EXTRA_CURRENT_IMAGE"
+        private const val ARG_SHOW_BOTTOM_GALLERY = "ARG_SHOW_BOTTOM_GALLERY"
         private const val LEFT = "left"
         private const val RIGHT = "right"
 
-        private const val SHOW_BOTTOM_GALLERY = false
-
-        fun newInstance(catalogId : String,currentItem: Int, catalogImages: ArrayList<CatalogImage>): CatalogGalleryFragment {
+        fun newInstance(catalogId : String,currentItem: Int, catalogImages: ArrayList<CatalogImage>, showBottomGallery : Boolean = false): CatalogGalleryFragment {
             val fragment = CatalogGalleryFragment()
             val bundle = Bundle()
             bundle.putParcelableArrayList(ARG_EXTRA_IMAGES, catalogImages)
             bundle.putString(ARG_CATALOG_ID, catalogId)
             bundle.putInt(ARG_EXTRA_CURRENT_IMAGE, currentItem)
+            bundle.putBoolean(ARG_SHOW_BOTTOM_GALLERY,showBottomGallery)
             fragment.arguments = bundle
             return fragment
         }
@@ -51,6 +53,7 @@ class CatalogGalleryFragment : Fragment() {
             catalogImages = requireArguments().getParcelableArrayList(ARG_EXTRA_IMAGES)
             currentImage = requireArguments().getInt(ARG_EXTRA_CURRENT_IMAGE)
             catalogId = requireArguments().getString(ARG_CATALOG_ID) ?: ""
+            showBottomGallery = requireArguments().getBoolean(ARG_SHOW_BOTTOM_GALLERY)
         }
 
         if (catalogImages != null) {
@@ -65,14 +68,15 @@ class CatalogGalleryFragment : Fragment() {
 
                 override fun onPageSelected(position: Int) {
                     previousPosition = position
-                    if(SHOW_BOTTOM_GALLERY){
+                    if(showBottomGallery){
                         catalogBottomGalleyRecyclerViewAdapter.changeSelectedPosition(position)
                         catalogBottomGalleyRecyclerViewAdapter.notifyDataSetChanged()
                     }
                 }
 
             })
-            if(SHOW_BOTTOM_GALLERY){
+            if(showBottomGallery){
+                image_recycler_view.show()
                 image_recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 catalogBottomGalleyRecyclerViewAdapter = CatalogBottomGalleyRecyclerViewAdapter(catalogImages!!, onImageClick, currentImage)
                 image_recycler_view.adapter = catalogBottomGalleyRecyclerViewAdapter

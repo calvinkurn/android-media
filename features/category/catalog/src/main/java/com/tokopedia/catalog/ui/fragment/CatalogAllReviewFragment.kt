@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,13 +19,15 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
 import com.tokopedia.catalog.viewmodel.CatalogAllReviewsViewModel
-import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewModel>() {
@@ -54,7 +58,7 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
     }
 
     private fun initRecyclerView() {
-        view?.findViewById<RecyclerView>(R.id.review_rv_catalog)?.apply {
+        view?.findViewById<RecyclerView>(R.id.catalog_review_rv)?.apply {
             layoutManager = LinearLayoutManager(view?.context, RecyclerView.VERTICAL, false)
             adapter = catalogAdapter
             show()
@@ -63,29 +67,40 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
 
     private fun setObservers() {
         catalogAllReviewsViewModel.getCatalogAllReviewsModel().observe(this,{
+            catalogAllReviewsViewModel.getCatalogShimmerLiveData().value = false
             when (it) {
                 is Success -> {
                     renderData(it.data.catalogGetProductReview?.reviewData)
                     it.data.catalogGetProductReview?.reviewData?.reviews?.let { reviews ->
+                        hideGlobalError()
                         catalogAdapter?.submitList(reviews)
                     } ?: kotlin.run {
-
+                        onError(Throwable("No Data"))
                     }
                 }
 
                 is Fail -> {
-
+                    onError(it.throwable)
                 }
             }
         })
+
+        catalogAllReviewsViewModel.getCatalogShimmerLiveData().observe(this,{ isShimmer ->
+            if(isShimmer){
+                startShimmer()
+            }else {
+                stopShimmer()
+            }
+        })
+
     }
 
     private fun renderData(reviewData: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData?) {
         view?.findViewById<Typography>(R.id.review_rating_catalog)?.displayTextOrHide(reviewData?.avgRating ?: "")
         if(reviewData?.avgRating?.isBlank() == true){
-            view?.findViewById<IconUnify>(R.id.rating_review_star_catalog)?.hide()
+            view?.findViewById<ImageView>(R.id.rating_review_star_catalog)?.hide()
         }else {
-            view?.findViewById<IconUnify>(R.id.rating_review_star_catalog)?.show()
+            view?.findViewById<ImageView>(R.id.rating_review_star_catalog)?.show()
         }
         view?.findViewById<Typography>(R.id.review_count_catalog)?.displayTextOrHide("dari ${reviewData?.totalHelpfulReview } ulasan membantu")
 
@@ -98,6 +113,41 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
         catalogAdapter = CatalogReviewAdapter(arrayListOf(),catalogDetailListener)
         initRecyclerView()
         catalogAllReviewsViewModel.getAllReviews(catalogId,"star","5")
+    }
+
+    private fun onError(e: Throwable) {
+        showGlobalError()
+        view?.findViewById<GlobalError>(R.id.catalog_review_global_error)?.apply {
+            if (e is UnknownHostException
+                || e is SocketTimeoutException
+            ) {
+                setType(GlobalError.NO_CONNECTION)
+            } else {
+                setType(GlobalError.SERVER_ERROR)
+            }
+            setOnClickListener {
+                hideGlobalError()
+                catalogAllReviewsViewModel.getAllReviews(catalogId,"star","5")
+            }
+        }
+    }
+
+    private fun hideGlobalError() {
+        view?.findViewById<RecyclerView>(R.id.catalog_review_rv)?.show()
+        view?.findViewById<GlobalError>(R.id.catalog_review_global_error)?.hide()
+    }
+
+    private fun showGlobalError() {
+        view?.findViewById<RecyclerView>(R.id.catalog_review_rv)?.hide()
+        view?.findViewById<GlobalError>(R.id.catalog_review_global_error)?.show()
+    }
+
+    private fun startShimmer(){
+        view?.findViewById<ConstraintLayout>(R.id.catalog_review_shimmer_layout)?.show()
+    }
+
+    private fun stopShimmer(){
+        view?.findViewById<ConstraintLayout>(R.id.catalog_review_shimmer_layout)?.hide()
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {

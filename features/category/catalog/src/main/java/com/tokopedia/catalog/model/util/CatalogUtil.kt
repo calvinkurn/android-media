@@ -19,4 +19,17 @@ object CatalogUtil {
         }
         return label.removePrefix("&")
     }
+
+    fun getRatingString(rating : String?) : String {
+        if(rating.isNullOrBlank()){
+            return ""
+        }
+        return if(rating.length >= 3){
+            rating.substring(0,3)
+        }else if(rating.length < 2 && rating.isNotBlank()) {
+            rating.substring(0,1)
+        }else {
+            ""
+        }
+    }
 }

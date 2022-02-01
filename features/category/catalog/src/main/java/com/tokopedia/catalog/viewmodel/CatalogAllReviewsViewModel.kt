@@ -13,8 +13,9 @@ import javax.inject.Inject
 class CatalogAllReviewsViewModel @Inject constructor(private var catalogAllReviewUseCase: CatalogAllReviewUseCase) : BaseViewModel() {
 
     private val catalogAllReviewsModel = MutableLiveData<Result<CatalogProductReviewResponse>>()
-
+    private val catalogReviewShimmer = MutableLiveData<Boolean>()
     fun getAllReviews(catalogId: String, key : String, value : String) {
+        catalogReviewShimmer.value = true
         viewModelScope.launchCatchError(
                 block = {
                     catalogAllReviewsModel.value = catalogAllReviewUseCase.getCatalogReviews(catalogId,key,value)
@@ -27,5 +28,9 @@ class CatalogAllReviewsViewModel @Inject constructor(private var catalogAllRevie
 
     fun getCatalogAllReviewsModel(): MutableLiveData<Result<CatalogProductReviewResponse>> {
         return catalogAllReviewsModel
+    }
+
+    fun getCatalogShimmerLiveData() : MutableLiveData<Boolean> {
+        return catalogReviewShimmer
     }
 }

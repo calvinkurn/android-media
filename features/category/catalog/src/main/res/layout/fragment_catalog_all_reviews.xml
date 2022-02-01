@@ -1,63 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/catalog_review_global_error"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:paddingTop="12dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+
+    <include
+        android:id="@+id/catalog_review_shimmer_layout"
+        layout="@layout/item_shimmer_catalog_specifications_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/rating_review_star_catalog"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        tools:visibility="visible"
+        app:srcCompat="@drawable/catalog_ic_rating_star_item"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/rating_review_star_catalog"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginStart="6dp"
-            android:visibility="gone"
-            tools:visibility="visible"
-            app:icon_color_light_enable="@color/Unify_Y300"
-            app:icon_color_night_enable="@color/Unify_Y300"
-            app:icon_name="STAR_FILLED"
-            />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_rating_catalog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="2.7"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="@id/rating_review_star_catalog"
+        app:layout_constraintStart_toEndOf="@id/rating_review_star_catalog"
+        app:layout_constraintBottom_toBottomOf="@id/rating_review_star_catalog"
+        />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/review_rating_catalog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyWeight="bold"
-            app:typographyType="body_3"
-            tools:text="2.7"
-            tools:visibility="visible"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/review_count_catalog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:textColor="@color/Unify_N700_68"
-            android:visibility="gone"
-            app:typographyType="body_3"
-            tools:visibility="visible"
-            tools:text="dari 1205 ulasan" />
-
-    </LinearLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_count_catalog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        tools:text="dari 1205 ulasan"
+        tools:visibility="visible"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toTopOf="@id/rating_review_star_catalog"
+        app:layout_constraintStart_toEndOf="@id/review_rating_catalog"
+        app:layout_constraintBottom_toBottomOf="@id/rating_review_star_catalog"
+        />
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/review_rv_catalog"
+        android:id="@+id/catalog_review_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        tools:listitem="@layout/item_catalog_review"
-        tools:itemCount="3"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        tools:listitem="@layout/item_catalog_review"
+        app:layout_constraintTop_toBottomOf="@id/review_rating_catalog"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
