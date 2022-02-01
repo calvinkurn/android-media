@@ -39,7 +39,10 @@ data class VoucherListParam (
         val voucherName: String?,
         @SerializedName("target_buyer")
         @Expose
-        val targetBuyer: String?
+        val targetBuyer: String?,
+        @SerializedName("is_lock_to_product")
+        @Expose
+        val isLockToProduct: String = "0"
 )
 {
 
@@ -68,6 +71,32 @@ data class VoucherListParam (
                     targetBuyer = targetBuyer
             )
         }
+
+        @JvmStatic
+        fun createParamCouponList(@VoucherTypeConst type: Int? = null,
+                                  @VoucherStatus status: String,
+                                  targetList: List<Int>? = null,
+                                  @VoucherSort sort: String? = null,
+                                  page: Int? = null,
+                                  isInverted: Boolean = false,
+                                  @VoucherSubsidy includeSubsidy: Int = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
+                                  @VoucherVps isVps: String = VoucherVps.ALL,
+                                  voucherName: String? = null,
+                                  targetBuyer: String? = null) : VoucherListParam {
+            return VoucherListParam(
+                voucherType = type,
+                voucherStatus = status,
+                isPublic = targetList?.joinToString(separator = ","),
+                page = page,
+                sortBy = sort,
+                isInverted = isInverted,
+                includeSubsidy = includeSubsidy,
+                isVps = isVps,
+                voucherName = voucherName,
+                targetBuyer = targetBuyer,
+                isLockToProduct = "1"
+            )
+        }
     }
 
     fun incrementPage() {
@@ -77,12 +106,13 @@ data class VoucherListParam (
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING, VoucherStatus.HISTORY)
+@StringDef(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING, VoucherStatus.HISTORY, VoucherStatus.NOT_STARTED_AND_ONGOING)
 annotation class VoucherStatus {
     companion object {
         const val NOT_STARTED = "1"
         const val ONGOING = "2"
         const val HISTORY = "3,4"
+        const val NOT_STARTED_AND_ONGOING = "1,2"
     }
 }
 
