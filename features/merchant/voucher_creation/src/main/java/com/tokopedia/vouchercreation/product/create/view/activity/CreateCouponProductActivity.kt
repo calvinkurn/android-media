@@ -63,7 +63,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
         setupDependencyInjection()
         setContentView(R.layout.activity_mvc_create_coupon)
         replace(couponListFragment)
-        setupViews()
         println(productId)
     }
 
@@ -189,17 +188,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
         )
         popFragment()
     }
-    private fun setupViews() {
-
-
-        /*productListFragment.setOnProductsSelected { products ->
-            popFragment()
-
-            //TODO : @Deyo please map your products data to List<CouponProduct>
-            //couponPreviewFragment.setCouponProductsData(products)
-        }*/
-    }
-
 
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
         val couponInformationData = couponPreviewFragment.getCouponInformationData()
