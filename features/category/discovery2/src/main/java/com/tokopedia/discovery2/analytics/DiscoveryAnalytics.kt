@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.analytics
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
+import com.tokopedia.discovery2.Utils.Companion.getParentPosition
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -575,7 +576,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         componentsItems.data?.get(0)?.let {
             val productTypeName = getProductName(it.typeProductCard)
             productCardImpressionLabel = "$login - $productTypeName"
-            productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem.plus(1)} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
+            productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
             productMap[KEY_NAME] = it.name.toString()
             productMap[KEY_ID] = it.productId.toString()
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -701,7 +702,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             componentsItems.data?.get(0)?.let {
                 val productTypeName = getProductName(it.typeProductCard)
                 productCardImpressionLabel = "$login - $productTypeName"
-                productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem.plus(1)} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
+                productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
                 listMap[KEY_NAME] = it.name.toString()
                 listMap[KEY_ID] = it.productId.toString()
                 listMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -1613,7 +1614,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     private fun trackEventImpressionCalendar(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
             KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
             KEY_POSITION to "${componentsItems.position + 1}",
             KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -1635,7 +1636,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventClickCalendarWidget(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
             KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
             KEY_POSITION to "${componentsItems.position + 1}",
             KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -1657,7 +1658,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventClickCalendarCTA(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
             KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
             KEY_POSITION to "${componentsItems.position + 1}",
             KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -1675,4 +1676,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[USER_ID] = userID
         getTracker().sendEnhanceEcommerceEvent(map)
     }
+
+
 }

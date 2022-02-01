@@ -379,5 +379,15 @@ class Utils {
                 }
             }
         }
+
+        fun getParentPosition(componentsItem:ComponentsItem):Int{
+            var parentComponentPosition = componentsItem.parentComponentPosition
+            if(componentsItem.parentComponentId.isNotEmpty()){
+                getComponent(componentsItem.parentComponentId,componentsItem.pageEndPoint)?.let { parentComp ->
+                    parentComponentPosition = parentComp.position
+                }
+            }
+            return parentComponentPosition
+        }
     }
 }

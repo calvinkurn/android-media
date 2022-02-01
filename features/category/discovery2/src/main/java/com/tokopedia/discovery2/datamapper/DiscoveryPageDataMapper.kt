@@ -57,7 +57,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                               private val localCacheModel: LocalCacheModel?,private val isLoggedIn: Boolean) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
-        val componentList = getDiscoveryComponentList(filterSaleTimer(components))
+        val componentList = getDiscoComponentListFromResponse(filterSaleTimer(components))
         if (componentList.isNotEmpty() && targetCompId.isNotEmpty()) {
             componentList.forEach { item ->
                 if (item.id == targetCompId) {
@@ -100,6 +100,14 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         for ((position, component) in components.withIndex()) {
             listComponents.addAll(parseComponent(component, position))
+        }
+        return listComponents
+    }
+
+    private fun getDiscoComponentListFromResponse(components: List<ComponentsItem>): List<ComponentsItem> {
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        for (component in components) {
+            listComponents.addAll(parseComponent(component, listComponents.size))
         }
         return listComponents
     }
@@ -245,16 +253,18 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                             }
                             if (!targetComponentIdList.isNullOrEmpty()) {
                                 val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
-                                targetComponentIdList.forEach { componentId ->
+                                targetComponentIdList.forEachIndexed { compIndex,componentId ->
                                     if (isDynamicTabs) {
                                         handleDynamicTabsComponents(componentId, index, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
-                                            listComponents.addAll(parseComponent(it, position))
+                                            listComponents.addAll(parseComponent(it,
+                                                position + compIndex + 1))
                                         }
                                     } else {
                                         handleAvailableComponents(componentId, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
-                                            listComponents.addAll(parseComponent(it, position))
+                                            listComponents.addAll(parseComponent(it,
+                                                position + compIndex + 1))
                                         }
                                     }
                                 }
@@ -438,8 +448,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         listComponents.add(component)
         component.getComponentsItem()?.let {
-//            listComponents.addAll(getSectionComponentList(it, component.position))
-            listComponents.addAll(getDiscoveryComponentList(it))
+            listComponents.addAll(getSectionComponentList(it, component.position + 1))
         }
         return listComponents
     }

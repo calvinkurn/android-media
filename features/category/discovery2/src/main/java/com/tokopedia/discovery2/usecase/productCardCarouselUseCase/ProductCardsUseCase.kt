@@ -89,6 +89,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             } else {
                 component1.pageLoadedCounter += 1
                 component1.showVerticalLoader = true
+                updatePaginatedData(productListData,component1)
                 if(component1.properties?.tokonowATCActive == true)
                     Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
@@ -123,6 +124,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     it.name)
             component.nextPageKey = nextPage
             if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
+            updatePaginatedData(productListData,it)
             if(it.properties?.tokonowATCActive == true)
                 Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
             (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
@@ -191,6 +193,14 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         if (userAddressData?.warehouse_id?.isNotEmpty() == true)
             queryParameterMap[RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
         return queryParameterMap
+    }
+
+    private fun updatePaginatedData(voucherListData:ArrayList<ComponentsItem>,parentComponentsItem: ComponentsItem){
+        voucherListData.forEach {
+            it.parentComponentId = parentComponentsItem.id
+            it.pageEndPoint = parentComponentsItem.pageEndPoint
+            it.parentComponentPosition = parentComponentsItem.position
+        }
     }
 
 }

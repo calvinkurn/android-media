@@ -28,6 +28,8 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                     comp.parentSectionId = it.sectionId
                     val creativeName = comp.creativeName ?: ""
                     var isProductComponent = true
+                    comp.pageEndPoint = component.pageEndPoint
+                    comp.pagePath = component.pagePath
                     val productListData = when (comp.name) {
                         ComponentNames.ProductCardRevamp.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
