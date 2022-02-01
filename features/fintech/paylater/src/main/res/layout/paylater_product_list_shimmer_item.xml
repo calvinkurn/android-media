@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/payLaterSimulationCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/unify_space_32"
+    >
+
+    <include layout="@layout/paylater_product_item_shimmer_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include layout="@layout/paylater_product_item_shimmer_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include layout="@layout/paylater_product_item_shimmer_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_8"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_12"
+        app:loader_type="rect"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_32"
+        android:layout_marginEnd="@dimen/unify_space_32"/>
+</LinearLayout>
+

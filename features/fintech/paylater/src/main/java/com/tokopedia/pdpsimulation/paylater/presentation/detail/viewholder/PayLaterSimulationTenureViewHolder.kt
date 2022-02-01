@@ -30,7 +30,7 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
     }
 
     companion object {
-        private val LAYOUT_ID = R.layout.paylater_simulation_tenure_item
+        val LAYOUT_ID = R.layout.paylater_simulation_tenure_item
 
         fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup, onTenureSelected: (Int) -> Unit) =
             PayLaterSimulationTenureViewHolder(

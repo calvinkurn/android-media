@@ -4,12 +4,12 @@ import androidx.annotation.Nullable
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.SeeMoreOptionsUiModel
 
 class PayLaterSimulationAdapter(adapterFactory: PayLaterAdapterFactoryImpl) :
     BaseListAdapter<BasePayLaterWidgetUiModel, PayLaterAdapterFactoryImpl>(adapterFactory) {
-
 
     private fun showEmptyState() {
         //addElement(EmptyModel())
@@ -17,8 +17,8 @@ class PayLaterSimulationAdapter(adapterFactory: PayLaterAdapterFactoryImpl) :
     }
 
     fun showLoadingInAdapter() {
-        //removeErrorNetwork()
-        //showLoading()
+        removeErrorNetwork()
+        showLoading()
     }
 
     fun showInitialLoadingFailed(throwable: Throwable) {

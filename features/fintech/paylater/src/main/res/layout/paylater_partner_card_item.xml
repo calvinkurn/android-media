@@ -33,8 +33,10 @@
                 android:paddingEnd="@dimen/pay_later_benefit_margin_dp_6"
                 android:paddingStart="@dimen/pay_later_benefit_margin_dp_6"
                 app:typographyType="small"
+                android:gravity="center"
+                app:typographyWeight="bold"
                 android:textColor="@color/Unify_N0"
-                android:background="@color/Unify_B500"
+                android:background="@drawable/bg_paylater_recommendation"
                 tools:text="Recommendation"/>
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -60,7 +62,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/ivPaylaterPartner"
                 app:typographyType="heading_6"
-                tools:text="@string/kredivo" />
+                tools:text="Title" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvInstallmentAmount"

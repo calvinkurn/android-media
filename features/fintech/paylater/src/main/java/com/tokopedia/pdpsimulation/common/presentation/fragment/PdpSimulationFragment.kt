@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
@@ -31,11 +33,15 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
 import kotlinx.android.synthetic.main.product_detail.view.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
 
 class PdpSimulationFragment : BaseDaggerFragment() {
+
+    private var isProductDetailShown: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -84,20 +90,20 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun handleAction(detail: Detail) {
         Toast.makeText(context, "Cta clicked", Toast.LENGTH_LONG).show()
 
-        /*Utils.handleClickNavigation(context, detail,
+        Utils.handleClickNavigation(context, detail,
             openHowToUse = {
                 bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it)
             },
             openGoPay = {
                 bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it)
             }
-        )*/
+        )
     }
 
     private fun openInstallmentBottomSheet(installment: InstallmentDetails) {
         Toast.makeText(context, "Open Installemt", Toast.LENGTH_LONG).show()
         val bundle = Bundle().apply { putParcelable(PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL, installment) }
-        //bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
+        bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
     }
 
     override fun onCreateView(
@@ -122,7 +128,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private fun initArguments() {
         payLaterViewModel.defaultTenure = defaultTenure
-        //tenureAdapter.lastSelectedPosition = defaultTenure
     }
 
     private fun initViews() {
@@ -132,39 +137,83 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         rvPayLaterOption.adapter = simulationAdapter
         rvPayLaterOption.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        simulationAdapter.showLoadingInAdapter()
     }
 
     private fun observeViewModel() {
         payLaterViewModel.productDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> productDetailSuccess(it.data)
-                is Fail -> productDetailFail()
+                is Fail -> productDetailFail(it.throwable)
             }
         }
 
         payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> setSimulationView(it.data)
-                is Fail -> Toast.makeText(context, "failed", Toast.LENGTH_LONG).show()
+                is Fail -> simulationFailed()
             }
         }
     }
 
+
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
         // hide loading
-        val defaultSimulationPosition = payLaterViewModel.tenureMap.get(defaultTenure) ?: 0
-
-        tenureAdapter.setData(data)
-        tenureAdapter.lastSelectedPosition = defaultSimulationPosition
-        rvPayLaterSimulation.scrollToPosition(defaultSimulationPosition)
-        simulationAdapter.addAllElements(
-            data[defaultSimulationPosition].simulationList ?: arrayListOf()
-        )
+        showSimulationViews()
+        setSimulationAdapter(data)
     }
 
-    private fun productDetailFail() {
+    private fun setSimulationAdapter(data: ArrayList<SimulationUiModel>) {
+        val defaultSelectedSimulation = payLaterViewModel.defaultSelectedSimulation
+        tenureAdapter.setData(data)
+        tenureAdapter.lastSelectedPosition = defaultSelectedSimulation
+        if (defaultSelectedSimulation >= 0) {
+            rvPayLaterSimulation.scrollToPosition(defaultSelectedSimulation)
+            simulationAdapter.addAllElements(
+                data[defaultSelectedSimulation].simulationList ?: arrayListOf()
+            )
+        }
+    }
+
+    private fun simulationFailed() {
+        // show product detail only after simulation has been done
+        if (isProductDetailShown)
+            productDetail.visible()
+    }
+
+    private fun productDetailFail(throwable: Throwable) {
+        hideSimulationViews()
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
+            is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
+            else -> setGlobalErrors(GlobalError.SERVER_ERROR)
+        }
+    }
+
+    private fun showSimulationViews() {
         productInfoShimmer.gone()
-        productDetail.gone()
+        // show product detail only after simulation has been done
+        if (isProductDetailShown)
+            productDetail.visible()
+        rvPayLaterSimulation.visible()
+        rvPayLaterOption.visible()
+        payLaterBorder.visible()
+    }
+
+    private fun hideSimulationViews() {
+        productInfoShimmer.gone()
+        rvPayLaterSimulation.gone()
+        rvPayLaterOption.gone()
+        payLaterBorder.gone()
+    }
+
+    private fun setGlobalErrors(errorType: Int) {
+        payLaterSimulationGlobalError.setType(errorType)
+        payLaterSimulationGlobalError.visible()
+        payLaterSimulationGlobalError.setActionClickListener {
+            payLaterSimulationGlobalError.gone()
+            payLaterViewModel.getProductDetail(productId)
+        }
     }
 
     /**
@@ -172,18 +221,17 @@ class PdpSimulationFragment : BaseDaggerFragment() {
      */
     private fun productDetailSuccess(data: GetProductV3) {
         payLaterViewModel.getPayLaterAvailableDetail(data.price ?: 0.0, productId)
-        productInfoShimmer.gone()
         if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(0.0) == true)
             productDetail.gone()
         else
             setProductDetailView(data)
-
     }
 
     /**
      * This method called to set view for the product image,price and variant
      */
     private fun setProductDetailView(data: GetProductV3) {
+        isProductDetailShown = true
         data.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
                 productDetail.productImage.setImageUrl(
@@ -199,9 +247,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             CurrencyFormatUtil.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
 
         showProductVariant(data)
-
     }
-
 
     /**
      * THis method set data for the product variant

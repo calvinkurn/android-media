@@ -23,6 +23,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
     companion object {
         val LAYOUT = R.layout.paylater_partner_card_item
+        const val TYPE_FILLED = "filled"
     }
 
     private val context: Context = itemView.context
@@ -54,7 +55,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
     private fun setUpCta(element: Detail) {
         itemView.payLaterActionCta.text = element.cta.name
-        itemView.payLaterActionCta.buttonVariant = if (element.cta.button_color == "filled") UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
+        itemView.payLaterActionCta.buttonVariant = if (element.cta.button_color == TYPE_FILLED) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
         itemView.payLaterActionCta.setOnClickListener {
             interaction.onCtaClicked(element)
         }

@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.viewholder.PayLaterSimulationShimmerViewHolder
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.viewholder.PayLaterSimulationTenureViewHolder
 
 class PayLaterSimulationTenureAdapter(
     private val showPayLaterOption: (ArrayList<BasePayLaterWidgetUiModel>) -> Unit) :
-    RecyclerView.Adapter<PayLaterSimulationTenureViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val tenureItemList = arrayListOf<SimulationUiModel>()
     var lastSelectedPosition = -1
@@ -17,12 +18,16 @@ class PayLaterSimulationTenureAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PayLaterSimulationTenureViewHolder {
+    ): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return PayLaterSimulationTenureViewHolder.getViewHolder(inflater, parent) { pos ->
-            if (isTenureSelectionChanged(pos)) {
-                showPayLaterOption(tenureItemList[pos].simulationList!!)
-                changeAndUpdateSelection(pos)
+        return when(viewType) {
+            PayLaterSimulationShimmerViewHolder.LAYOUT_ID -> PayLaterSimulationShimmerViewHolder.getViewHolder(inflater, parent)
+            else ->
+            PayLaterSimulationTenureViewHolder.getViewHolder(inflater, parent) { pos ->
+                if (isTenureSelectionChanged(pos)) {
+                    showPayLaterOption(tenureItemList[pos].simulationList!!)
+                    changeAndUpdateSelection(pos)
+                }
             }
         }
     }
@@ -37,13 +42,20 @@ class PayLaterSimulationTenureAdapter(
         notifyItemChanged(pos)
     }
 
-    override fun onBindViewHolder(holder: PayLaterSimulationTenureViewHolder, position: Int) {
-        val descriptionData = tenureItemList[position]
-        holder.bindData(descriptionData)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is PayLaterSimulationTenureViewHolder) {
+            val descriptionData = tenureItemList[position]
+            holder.bindData(descriptionData)
+        }
     }
 
     override fun getItemCount(): Int {
-        return tenureItemList.size
+        return if (tenureItemList.isEmpty()) 3 else tenureItemList.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if(tenureItemList.isEmpty()) PayLaterSimulationShimmerViewHolder.LAYOUT_ID
+            else PayLaterSimulationTenureViewHolder.LAYOUT_ID
     }
 
     fun setData(data: List<SimulationUiModel>) {

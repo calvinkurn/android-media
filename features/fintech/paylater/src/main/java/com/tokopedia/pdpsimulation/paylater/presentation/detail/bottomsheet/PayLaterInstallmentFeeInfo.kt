@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFactoryImpl
@@ -14,14 +13,13 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
-import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
-import kotlinx.android.synthetic.main.paylater_car_additional_fee_info.*
+import kotlinx.android.synthetic.main.paylater_additional_fee_info_bottomsheet.*
 
 class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
 
     private var installmentDetails: InstallmentDetails? = null
 
-    private val childLayoutRes = R.layout.paylater_car_additional_fee_info
+    private val childLayoutRes = R.layout.paylater_additional_fee_info_bottomsheet
 
     private fun getAdapterTypeFactory() = PayLaterAdapterFactoryImpl(
         interaction = PayLaterOptionInteraction(

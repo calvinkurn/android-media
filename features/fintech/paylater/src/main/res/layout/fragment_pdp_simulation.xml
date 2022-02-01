@@ -10,27 +10,22 @@
         layout="@layout/product_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
-    <com.tokopedia.unifycomponents.LoaderUnify
+    <include
         android:id="@+id/productInfoShimmer"
+        layout="@layout/product_detail_shimmer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/pay_later_margin_dp_10"
-        app:layout_constraintBottom_toBottomOf="@id/productDetail"
-        app:layout_constraintLeft_toLeftOf="@id/productDetail"
-        app:layout_constraintRight_toRightOf="@id/productDetail"
-        app:layout_constraintTop_toTopOf="@id/productDetail"
-        app:loader_type="rect"
-        tools:visibility="gone" />
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/productDetail" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/payLaterBorder"
         android:layout_width="match_parent"
         android:background="@color/Unify_NN200"
         android:layout_height="@dimen/pay_later_divider_height_dp_1"
-        app:layout_constraintTop_toBottomOf="@id/productDetail" />
+        app:layout_constraintTop_toBottomOf="@id/productInfoShimmer" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPayLaterSimulation"
@@ -55,6 +50,26 @@
         tools:itemCount="6"
         tools:listitem="@layout/paylater_partner_card_item" />
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/payLaterSimulationGlobalError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
+
+  <!--  <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyStateError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation"
+        app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched"
+        app:unifyEmptyStatePrimaryCTAText="@string/title_try_again"
+        app:unifyEmptyStateTitle="@string/pay_later_something_went_wrong" />
+-->
  </androidx.constraintlayout.widget.ConstraintLayout>
 
 
