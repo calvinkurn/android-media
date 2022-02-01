@@ -46,8 +46,8 @@ class CatalogReviewViewModelTest {
         runBlocking {
             coEvery { catalogAllReviewRepository.getAllReviews(any(),any(), any()) } returns mockGqlResponse
             viewModel.getAllReviews(CatalogTestUtils.CATALOG_ID,"star","5")
+            assert(viewModel.getCatalogShimmerLiveData().value == true)
             assert(viewModel.getCatalogAllReviewsModel().value is Success)
-            assert(viewModel.getCatalogShimmerLiveData().value == false)
         }
     }
 
