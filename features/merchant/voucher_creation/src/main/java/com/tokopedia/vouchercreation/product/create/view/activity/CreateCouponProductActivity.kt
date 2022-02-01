@@ -1,10 +1,12 @@
 package com.tokopedia.vouchercreation.product.create.view.activity
 
 import android.os.Bundle
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
@@ -35,6 +37,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         ::navigateToProductListPage,
         ::onCreateCouponSuccess,
         ::onUpdateCouponSuccess,
+        ::onDuplicateCouponSuccess,
         null,
         ProductCouponPreviewFragment.Mode.CREATE
     )
@@ -103,6 +106,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
             ::navigateToProductListPage,
             ::onCreateCouponSuccess,
             ::onUpdateCouponSuccess,
+            ::onDuplicateCouponSuccess,
             coupon,
             ProductCouponPreviewFragment.Mode.UPDATE
         )
@@ -116,6 +120,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
             ::navigateToProductListPage,
             ::onCreateCouponSuccess,
             ::onUpdateCouponSuccess,
+            ::onDuplicateCouponSuccess,
             coupon,
             ProductCouponPreviewFragment.Mode.DUPLICATE
         )
@@ -134,6 +139,12 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun onUpdateCouponSuccess() {
         popFragment()
+        showToaster(getString(R.string.coupon_updated))
+    }
+
+    private fun onDuplicateCouponSuccess() {
+        popFragment()
+        showToaster(getString(R.string.coupon_duplicated))
     }
 
     private fun saveCouponSettingsData(couponSettings: CouponSettings) {
@@ -229,5 +240,11 @@ class CreateCouponProductActivity : AppCompatActivity() {
             bottomSheet.dismiss()
         }
         bottomSheet.show(supportFragmentManager)
+    }
+
+    private fun showToaster(text: String) {
+        if (text.isEmpty()) return
+        val view = findViewById<FrameLayout>(R.id.parent_view)
+        Toaster.build(view, text).show()
     }
 }

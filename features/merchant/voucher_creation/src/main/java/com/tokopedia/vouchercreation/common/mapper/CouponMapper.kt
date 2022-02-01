@@ -34,9 +34,9 @@ class CouponMapper @Inject constructor() {
 
         val maxExpense = (voucher.quota * voucher.discountAmtMax).toLong()
         val discountPercentage = if (voucher.discountType == DISCOUNT_TYPE_NOMINAL) {
-            NumberConstant.PERCENT
-        } else {
             voucher.discountAmt
+        } else {
+            NumberConstant.PERCENT
         }
 
         val couponType = if (voucher.type == VoucherTypeConst.FREE_ONGKIR) {
