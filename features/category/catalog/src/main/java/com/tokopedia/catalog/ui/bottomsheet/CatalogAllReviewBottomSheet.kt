@@ -35,8 +35,10 @@ class CatalogAllReviewBottomSheet : BottomSheetUnify() {
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
-        childFragmentManager.beginTransaction().replace(R.id.frame_content,
-                CatalogAllReviewFragment.newInstance(catalogId,catalogDetailListener)).commit()
+        if(savedInstanceState == null) {
+            childFragmentManager.beginTransaction().replace(R.id.frame_content,
+                    CatalogAllReviewFragment.newInstance(catalogId, catalogDetailListener)).commit()
+        }
     }
 
     companion object {

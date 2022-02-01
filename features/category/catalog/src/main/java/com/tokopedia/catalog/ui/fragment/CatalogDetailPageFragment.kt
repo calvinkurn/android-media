@@ -98,6 +98,7 @@ class CatalogDetailPageFragment : Fragment(),
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         var isBottomSheetOpen = false
+        const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()

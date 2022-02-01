@@ -52,13 +52,18 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
             val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
             if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim() ?: "" else ""
         }
-        prepareView()
+        prepareView(savedInstanceState == null)
     }
 
-    private fun prepareView() {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.catalog_detail_parent_view, CatalogDetailPageFragment.newInstance(catalogId))
-                .commit()
+    private fun prepareView(replaceFragment : Boolean) {
+        if(replaceFragment) {
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.catalog_detail_parent_view,
+                            CatalogDetailPageFragment.newInstance(catalogId),
+                            CatalogDetailPageFragment.CATALOG_DETAIL_PAGE_FRAGMENT_TAG
+                    )
+                    .commit()
+        }
     }
 
     override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {
