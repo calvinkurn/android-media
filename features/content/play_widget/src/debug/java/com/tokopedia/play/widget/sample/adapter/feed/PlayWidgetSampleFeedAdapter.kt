@@ -14,6 +14,7 @@ class PlayWidgetSampleFeedAdapter : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexi
             .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo())
             .addDelegate(PlayWidgetViewAdapterDelegate.Large())
             .addDelegate(PlayWidgetViewAdapterDelegate.Medium())
+            .addDelegate(PlayWidgetViewAdapterDelegate.SlotTab())
     }
 
     override fun areItemsTheSame(oldItem: PlayFeedUiModel, newItem: PlayFeedUiModel): Boolean {

@@ -5,10 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.sample.adapter.feed.viewholder.PlayWidgetViewHolder
-import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetLargeUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
+import com.tokopedia.play.widget.ui.model.*
 
 /**
  * Created by meyta.taliti on 29/01/22.
@@ -70,6 +67,25 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             basicView: View
         ): PlayWidgetViewHolder.Medium {
             return PlayWidgetViewHolder.Medium.create(basicView)
+        }
+    }
+
+    internal class SlotTab :
+        TypedAdapterDelegate<PlayWidgetSlotTabUiModel, PlayFeedUiModel, PlayWidgetViewHolder.SlotTab>(
+            R.layout.item_play_slot_tab
+        ) {
+        override fun onBindViewHolder(
+            item: PlayWidgetSlotTabUiModel,
+            holder: PlayWidgetViewHolder.SlotTab
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): PlayWidgetViewHolder.SlotTab {
+            return PlayWidgetViewHolder.SlotTab.create(basicView)
         }
     }
 }

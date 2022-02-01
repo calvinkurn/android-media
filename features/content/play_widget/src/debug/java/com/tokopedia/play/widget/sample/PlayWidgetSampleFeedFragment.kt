@@ -9,10 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.sample.adapter.feed.PlayWidgetSampleFeedAdapter
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
-import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetLargeUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
+import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
@@ -60,8 +57,14 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment() {
             PlayWidgetMediumUiModel(
                 PlayWidgetUiMock.getSamplePlayWidget()
             ),
+            PlayWidgetSlotTabUiModel(
+                listOf("Market Museum", "WIB", "Cantik Fest", "Untukmu", "Lagi Live", "Akan Datang", "Terbaru")
+            ),
             PlayWidgetLargeUiModel(
                 PlayWidgetUiMock.getSamplePlayWidget()
+            ),
+            PlayWidgetSlotTabUiModel(
+                listOf("Market Museum", "WIB", "Cantik Fest", "Untukmu", "Lagi Live", "Akan Datang", "Terbaru")
             ),
             PlayWidgetMediumUiModel(
                 PlayWidgetUiMock.getSamplePlayWidget(
