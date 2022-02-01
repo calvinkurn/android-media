@@ -18,9 +18,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.CtaCatalog
+import com.tokopedia.mvcwidget.FollowWidgetType
+import com.tokopedia.mvcwidget.IntentManger
+import com.tokopedia.mvcwidget.LiveDataResult
+import com.tokopedia.mvcwidget.MvcCouponListItem
+import com.tokopedia.mvcwidget.MvcDetailViewModel
+import com.tokopedia.mvcwidget.MvcListItem
+import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.TickerText
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCListResponse
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
@@ -251,7 +260,7 @@ class MvcDetailView @JvmOverloads constructor(
 
                 spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val mvcListItem = MvcCouponListItem(it.tagImageURLs, it.title ?: "", it.minimumUsageLabel
-                        ?: "", spannableString2)
+                        ?: "", spannableString2, it.ctaCatalog?:CtaCatalog())
                 tempCouponList.add(mvcListItem)
             }
         }

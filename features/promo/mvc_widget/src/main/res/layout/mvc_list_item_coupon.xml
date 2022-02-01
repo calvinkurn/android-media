@@ -42,6 +42,45 @@
         android:textColor="@color/Unify_N700_68"
         tools:text="Berakhir dalam 10 hari • Sisa 20 kupon" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/rel_cta"
+        android:padding="@dimen/dp_10"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/dp_17"
+        android:background="@drawable/mvc_bg_gray_line"
+        android:orientation="horizontal">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_check"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/mvc_ic_check_circle"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv4"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_44"
+            android:layout_toRightOf="@id/iv_check"
+            android:text="Khusus produk ini $ produk pilihan lainnya"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:tint="@color/Unify_NN900"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_arrow_right_default"/>
+    </RelativeLayout>
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"

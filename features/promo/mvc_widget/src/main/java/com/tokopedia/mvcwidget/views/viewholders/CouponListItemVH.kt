@@ -4,10 +4,13 @@ import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcCouponListItem
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.unifyprinciples.Typography
@@ -17,6 +20,8 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val tv1: Typography = itemView.findViewById(R.id.tv1)
     val tv2: Typography = itemView.findViewById(R.id.tv2)
     val tv3: Typography = itemView.findViewById(R.id.tv3)
+    val tv4: Typography = itemView.findViewById(R.id.tv4)
+    val rel_cta: RelativeLayout = itemView.findViewById(R.id.rel_cta)
     val divider: View = itemView.findViewById(R.id.divider)
 
     init {
@@ -27,6 +32,13 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tv1.text = data.title1
         tv2.text = data.title2
         tv3.text = data.title3
+        if(data.ctaCatalog.type.isNullOrEmpty().not() && data.ctaCatalog.type == "redirect") {
+            rel_cta.show()
+            tv4.text = data.ctaCatalog.text
+            rel_cta.setOnClickListener {
+                RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+            }
+        }
 
         toggleView(data.title2,tv2)
         toggleView(data.title3,tv3)
