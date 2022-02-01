@@ -135,7 +135,9 @@ class CatalogDetailPageFragment : Fragment(),
 
         setupRecyclerView(view)
         setObservers()
-        setUpBottomSheet()
+        if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
+            setUpBottomSheet()
+        }
     }
 
     private fun initViews() {
