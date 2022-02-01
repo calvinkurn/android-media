@@ -475,7 +475,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun navigateToTermsFragment(channels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
-        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(this).apply {
+        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance().apply {
             setChannels(channels)
         })
         val currentFragment =
@@ -486,7 +486,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun navigateToPortfolioFragment() {
-        openFragment(AffiliatePortfolioFragment.getFragmentInstance(this))
+        openFragment(AffiliatePortfolioFragment.getFragmentInstance())
     }
 
     override fun validateUserStatus() {
