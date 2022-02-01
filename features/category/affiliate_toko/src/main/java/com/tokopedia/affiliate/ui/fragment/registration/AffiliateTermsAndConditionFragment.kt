@@ -92,15 +92,27 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         setDataToRV(createListForTermsAndCondition(context))
     }
 
+    private fun sendButtonClick(eventAction: String) {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            eventAction,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_REG_T_ANC_C,
+            if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN,
+            userSessionInterface.userId
+        )
+    }
+
     private fun initClickListener() {
         view?.findViewById<CheckboxUnify>(R.id.checkbox_terms)?.setOnCheckedChangeListener { _, isChecked ->
                 view?.findViewById<UnifyButton>(R.id.terms_accept_btn)?.isEnabled = isChecked
         }
         view?.findViewById<UnifyButton>(R.id.terms_accept_btn)?.setOnClickListener {
+            sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR)
             sendTracker()
             affiliateTermsAndConditionViewModel.affiliateOnBoarding(channels)
         }
         view?.findViewById<Typography>(R.id.syarat_text)?.setOnClickListener {
+            sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_SYARAT)
             AffiliateWebViewBottomSheet.newInstance(getString(R.string.terms_and_condition_upper), AFFILIATE_TANDC_URL).show(childFragmentManager,"")
         }
     }
@@ -123,6 +135,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_terms_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_BACK)
                 affiliateNavigationInterface.handleBackButton(false)
             }
         }

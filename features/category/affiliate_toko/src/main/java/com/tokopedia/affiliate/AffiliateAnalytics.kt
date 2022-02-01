@@ -123,6 +123,7 @@ object AffiliateAnalytics {
             const val REGISTRATION_PAGE = "registration page"
             const val AFFILIATE_REGISTRATION_PAGE = "affiliate registration page"
             const val AFFILIATE_REGISTRATION_PAGE_PROMOTION_CHANNEL= "affiliate registration page - promotion channel input"
+            const val AFFILIATE_REG_T_ANC_C = "affiliate registration page - terms and condition"
         }
     }
 
@@ -155,6 +156,8 @@ object AffiliateAnalytics {
             const val CLICK_MASUK = "click - masuk"
             const val CLICK_PELJARI = "click - pelajari"
             const val CLICK_TAMBAH_SOCIAL_MEDIA= "click - tambah social media"
+            const val CLICK_BACK = "click - back"
+            const val CLICK_SYARAT = "click - syarat dan ketentuan"
         }
     }
 
