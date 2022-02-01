@@ -12,12 +12,16 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
+import com.tokopedia.pdpsimulation.activateCheckout.listner.TenureSelectListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
+import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -46,7 +50,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment() {
         arguments?.getInt(PARAM_GATEWAY_ID) ?: -1
     }
 
-    private val activationTenureAdapter = ActivationTenureAdapter(listOf())
+    private lateinit var  activationTenureAdapter  : ActivationTenureAdapter
+
+    private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
+        BottomSheetNavigator(childFragmentManager)
+    }
 
 
     override fun initInjector() = getComponent(PdpSimulationComponent::class.java).inject(this)
@@ -168,6 +176,18 @@ class ActivationCheckoutFragment : BaseDaggerFragment() {
 
 
     private fun initView() {
+        activationTenureAdapter = ActivationTenureAdapter(listOf(),object : TenureSelectListner{
+            override fun selectedTenure(tenureSelectedModel: TenureSelectedModel) {
+                val bundle = Bundle().apply {
+                    putParcelable(
+                        PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
+                        tenureSelectedModel.installmentDetails
+                    )
+                }
+                bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
+            }
+
+        })
         gatewayDetailLayout.recyclerTenureDetail.layoutManager= LinearLayoutManager(context)
         gatewayDetailLayout.recyclerTenureDetail.adapter = activationTenureAdapter
     }

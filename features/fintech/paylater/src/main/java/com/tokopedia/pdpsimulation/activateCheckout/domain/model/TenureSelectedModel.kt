@@ -6,6 +6,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class TenureSelectedModel(
-    val priceText:String? = null,
-    val installmentDetails: InstallmentDetails?
+    var priceText:String? = null,
+    var installmentDetails: InstallmentDetails?
 ): Parcelable
