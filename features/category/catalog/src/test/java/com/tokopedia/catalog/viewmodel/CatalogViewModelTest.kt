@@ -86,21 +86,25 @@ class CatalogViewModelTest {
         }
     }
 
-    private fun createMockGraphqlResponse(response : JsonObject): GraphqlResponse {
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val jsonObject: JsonObject = response
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = CatalogResponseData::class.java
-        val obj: Any = CommonUtils.fromJson(data, objectType)
-        result[objectType] = obj
-        return GraphqlResponse(result, errors, false)
+    companion object {
+        fun createMockGraphqlResponse(response : JsonObject): GraphqlResponse {
+            val result = HashMap<Type, Any>()
+            val errors = HashMap<Type, List<GraphqlError>>()
+            val jsonObject: JsonObject = response
+            val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
+            val objectType = CatalogResponseData::class.java
+            val obj: Any = CommonUtils.fromJson(data, objectType)
+            result[objectType] = obj
+            return GraphqlResponse(result, errors, false)
+        }
+
+        fun getJsonObject(pathString : String) : JsonObject {
+            return CommonUtils.fromJson(
+                    CatalogTestUtils.getJsonFromFile(pathString),
+                    JsonObject::class.java
+            )
+        }
     }
 
-    private fun getJsonObject(pathString : String) : JsonObject {
-        return CommonUtils.fromJson(
-                CatalogTestUtils.getJsonFromFile(pathString),
-                JsonObject::class.java
-        )
-    }
+
 }
