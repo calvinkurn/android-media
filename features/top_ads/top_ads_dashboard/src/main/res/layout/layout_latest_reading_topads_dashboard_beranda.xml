@@ -28,11 +28,11 @@
             android:padding="@dimen/unify_space_12">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvReadMore"
+                android:id="@+id/rvLatestReading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_rv_read_more" />
+                tools:listitem="@layout/item_rv_latest_reading" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnReadMore"
