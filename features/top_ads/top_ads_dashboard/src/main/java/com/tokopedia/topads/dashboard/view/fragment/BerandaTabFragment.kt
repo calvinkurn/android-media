@@ -139,6 +139,8 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
         rvLatestReading.layoutManager = LinearLayoutManager(requireContext())
         rvLatestReading.adapter = latestReadingRvAdapter
+
+        ringkasanRvAdapter.infoClicked = { showInformationBottomSheet() }
     }
 
     private fun setUpClick() {
@@ -163,8 +165,12 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
             ringkasanBottomSheet.show(childFragmentManager, "")
         }
         ivRingkasanInformation.setOnClickListener {
-            ringkasanInformationBottomSheet.show(childFragmentManager,"")
+            showInformationBottomSheet()
         }
+    }
+
+    private fun showInformationBottomSheet() {
+        ringkasanInformationBottomSheet.show(childFragmentManager, "")
     }
 
     private fun renderInsightViewPager(data: HashMap<String, KeywordInsightDataMain>) {

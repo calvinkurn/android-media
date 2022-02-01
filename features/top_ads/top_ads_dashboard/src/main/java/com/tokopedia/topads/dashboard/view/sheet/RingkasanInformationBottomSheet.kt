@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.Information
 import com.tokopedia.topads.dashboard.view.adapter.beranda.InformationRvAdapter
@@ -40,6 +41,7 @@ class RingkasanInformationBottomSheet() : BottomSheetUnify() {
         showKnob = true
         showCloseIcon = false
         setTitle(resources.getString(R.string.topads_dashboard_information_title))
+        bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
