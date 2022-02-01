@@ -425,7 +425,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
         binding.tpgTickerUsage.setOnClickListener { displayExpenseEstimationDescription() }
 
-        if (coupon.isPublic) {
+        if (coupon.isPublic && coupon.status == VoucherStatusConst.ONGOING) {
             binding.tpgTickerUsage.visible()
             binding.tpgTickerUsage.text = String.format(
                 getString(R.string.placeholder_quota_usage),

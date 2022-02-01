@@ -90,7 +90,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:typographyType="small"
+                app:typographyType="body_3"
                 tools:text="14 hari : 23j : 59m : 59d"
                 tools:visibility="visible" />
 
