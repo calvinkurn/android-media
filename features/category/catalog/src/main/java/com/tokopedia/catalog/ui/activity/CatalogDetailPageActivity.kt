@@ -55,8 +55,8 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         prepareView(savedInstanceState == null)
     }
 
-    private fun prepareView(replaceFragment : Boolean) {
-        if(replaceFragment) {
+    private fun prepareView(savedInstanceIsNull : Boolean) {
+        if(savedInstanceIsNull) {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.catalog_detail_parent_view,
                             CatalogDetailPageFragment.newInstance(catalogId),
