@@ -100,11 +100,11 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
-    override fun createAdapter() = CouponListAdapter {
+    override fun createAdapter() = CouponListAdapter { selectedCoupon ->
         moreBottomSheet?.show(childFragmentManager)
-        moreBottomSheet?.setOnItemClickListener(VoucherStatusConst.NOT_STARTED) { menu ->
+        moreBottomSheet?.setOnItemClickListener(selectedCoupon.status) { menu ->
             moreBottomSheet?.dismiss()
-            onMoreMenuItemClickListener(menu, "voucherDummy")
+            onMoreMenuItemClickListener(menu, selectedCoupon)
         }
     }
 
@@ -140,12 +140,12 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     }
 
-    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: String) {
+    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, selectedCoupon : VoucherUiModel) {
         when (menu) {
-            is EditQuotaCoupon -> editQuotaVoucher()
-            is ViewDetailCoupon -> viewDetailVoucher()
-            is EditCoupon -> editVoucher()
-            is BroadCastChat -> broadCastChat(123)
+            is EditQuotaCoupon -> editQuotaVoucher(selectedCoupon)
+            is ViewDetailCoupon -> viewDetailVoucher(selectedCoupon.id.toLong())
+            is EditCoupon -> editVoucher(selectedCoupon)
+            is BroadCastChat -> broadCastChat(selectedCoupon.id)
             is ShareCoupon -> shareVoucher()
             is EditPeriodCoupon -> editPeriod()
             is DownloadCoupon -> downloadVoucher()
@@ -156,7 +156,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
-    private fun editQuotaVoucher() {
+    private fun editQuotaVoucher(coupon: VoucherUiModel) {
         hitMoreMenuItemEventTracker(
             moreMenuItemEventAction = MoreMenuItemEventAction(
                 ongoingAction = VoucherCreationAnalyticConstant.EventAction.Click.EDIT_QUOTA_ONGOING,
@@ -167,12 +167,11 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         // showEditQuotaBottomSheet(voucher)
     }
 
-    private fun editVoucher() {
+    private fun editVoucher(coupon: VoucherUiModel) {
         onEditCouponMenuSelected(populateDummyCoupon())
-        // editVoucher(voucher)
     }
 
-    private fun viewDetailVoucher() {
+    private fun viewDetailVoucher(couponId: Long) {
         hitMoreMenuItemEventTracker(
             moreMenuItemEventAction = MoreMenuItemEventAction(
                 ongoingAction = VoucherCreationAnalyticConstant.EventAction.Click.DETAIL_AND_EDIT_ONGOING,
@@ -181,8 +180,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             ),
             isActiveVoucher = false
         )
-        onViewCouponDetailMenuSelected(populateDummyCoupon().id)
-        // viewVoucherDetail(voucher.id)
+        onViewCouponDetailMenuSelected(couponId)
     }
 
     private fun broadCastChat(voucherId: Int) {

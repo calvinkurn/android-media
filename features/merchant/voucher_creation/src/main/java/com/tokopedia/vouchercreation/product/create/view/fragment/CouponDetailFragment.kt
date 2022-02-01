@@ -83,6 +83,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CouponDetailViewModel::class.java) }
     private val couponId by lazy { arguments?.getLong(BUNDLE_KEY_COUPON_ID).orZero() }
+    private var timer : Timer? = null
 
     override fun getScreenName() = CouponDetailFragment::class.simpleName
 
@@ -119,9 +120,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
         viewModel.couponDetail.observe(viewLifecycleOwner, { result ->
             hideLoading()
             if (result is Success) {
+                showContent()
                 val coupon = result.data
                 binding.header.headerView?.text = coupon.name
-                displayCouponImage(coupon.image)
+                displayCouponImage(coupon.imageSquare)
                 displayCountdown(coupon.status, coupon.finishTime)
                 displayCouponStatus(coupon)
                 displayCouponInformationSection(
@@ -152,7 +154,9 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     private fun displayCountdown(couponStatus: Int, finishTime: String) {
         if (couponStatus == VoucherStatusConst.ONGOING) {
-            binding.labelCountdown.isVisible = couponStatus == VoucherStatusConst.ONGOING
+            //val timerIcon = ContextCompat.getDrawable(requireActivity(), R.drawable.ic_timer) ?: return
+            //binding.labelCountdown.setLabelImage(timerIcon, timerIcon.intrinsicWidth, timerIcon.intrinsicHeight)
+            binding.groupCountdown.isVisible = couponStatus == VoucherStatusConst.ONGOING
             startTimer(finishTime)
         }
     }
@@ -401,10 +405,11 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun startTimer(unformattedEndDate: String) {
         binding.labelCountdown.visible()
         val endDate = unformattedEndDate.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
-        val timer = Timer { remainingTime ->
+        timer = Timer(endDate)
+        timer?.setOnTickListener { remainingTime ->
             binding.labelCountdown.text = remainingTime
         }
-        timer.startCountdown(endDate)
+        timer?.startCountdown()
     }
 
     private fun displayQuotaUsage(coupon: VoucherUiModel) {
@@ -441,6 +446,11 @@ class CouponDetailFragment : BaseDaggerFragment() {
         binding.loader.gone()
     }
 
+    private fun showContent() {
+        binding.cardShare.visible()
+        binding.content.visible()
+    }
+
     private fun hideContent() {
         binding.cardShare.gone()
         binding.content.gone()
@@ -453,5 +463,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
             Snackbar.LENGTH_SHORT,
             Toaster.TYPE_ERROR
         ).show()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        timer?.stopCountdown()
     }
 }

@@ -36,17 +36,20 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 
-class CouponSettingFragment : BaseDaggerFragment() {
+class CouponSettingFragment private constructor(): BaseDaggerFragment() {
 
     companion object {
         private const val SCREEN_NAME = "Coupon Setting Page"
         private const val EMPTY_STRING = ""
         private const val ZERO = 0
 
-        fun newInstance(): CouponSettingFragment {
+        fun newInstance(onCouponSaved: (CouponSettings) -> Unit): CouponSettingFragment {
             val args = Bundle()
-            val fragment = CouponSettingFragment()
-            fragment.arguments = args
+            val fragment = CouponSettingFragment().apply {
+                arguments = args
+                this.onCouponSaved = onCouponSaved
+            }
+
             return fragment
         }
 
@@ -800,10 +803,6 @@ class CouponSettingFragment : BaseDaggerFragment() {
     private fun hidePercentageDiscountTypeWidget() {
         binding.groupNominalDiscountType.gone()
         binding.groupPercentageDiscountType.gone()
-    }
-
-    fun setOnCouponSaved(onCouponSaved: (CouponSettings) -> Unit) {
-        this.onCouponSaved = onCouponSaved
     }
 
     fun setCouponSettings(couponSettings: CouponSettings?) {

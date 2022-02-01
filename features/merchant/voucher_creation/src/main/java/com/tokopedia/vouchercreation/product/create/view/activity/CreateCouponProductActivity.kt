@@ -39,7 +39,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         ProductCouponPreviewFragment.Mode.CREATE
     )
 
-    private val couponSettingFragment = CouponSettingFragment()
+    private val couponSettingFragment = CouponSettingFragment.newInstance(::saveCouponSettingsData)
     private val couponListFragment = CouponListFragment.newInstance(
         ::navigateToCreateCouponPage,
         ::navigateToEditCouponPage,
@@ -94,16 +94,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
     private fun navigateToCreateCouponPage() {
-        val fragment = ProductCouponPreviewFragment.newInstance(
-            ::navigateToCouponInformationPage,
-            ::navigateToCouponSettingPage,
-            ::navigateToProductListPage,
-            ::onCreateCouponSuccess,
-            ::onUpdateCouponSuccess,
-            null,
-            ProductCouponPreviewFragment.Mode.CREATE
-        )
-        replaceAndAddToBackstack(fragment, TAG_FRAGMENT_COUPON_PREVIEW)
+        replaceAndAddToBackstack(couponPreviewFragment, TAG_FRAGMENT_COUPON_PREVIEW)
     }
 
     private fun navigateToEditCouponPage(coupon : Coupon) {
@@ -146,60 +137,59 @@ class CreateCouponProductActivity : AppCompatActivity() {
         popFragment()
     }
 
+    private fun saveCouponSettingsData(couponSettings: CouponSettings) {
+        this.couponSettings = couponSettings
+        couponPreviewFragment.setCouponSettingsData(couponSettings)
+
+        //Stub the coupon preview data for testing purpose
+        val startDate = Calendar.getInstance().apply { set(2022, 1, 1, 20, 30, 0) }
+        val endDate = Calendar.getInstance().apply {  set(2022, 1, 5, 23, 59, 0) }
+        val period = CouponInformation.Period(startDate.time, endDate.time)
+        couponPreviewFragment.setCouponInformationData(
+            CouponInformation(
+                CouponInformation.Target.PUBLIC,
+                "Kupon Kopi Kenangan",
+                "KOPKEN",
+                period
+            )
+        )
+
+        //Stub the products data for testing purpose
+        couponPreviewFragment.setCouponProductsData(
+            listOf(
+                CouponProduct(
+                    "2147956088",
+                    18000,
+                    5.0F,
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
+                    19
+                ),
+                CouponProduct(
+                    "15455652",
+                    18000,
+                    4.7F,
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
+                    1000
+                ),
+                CouponProduct(
+                    "15429644",
+                    18000,
+                    5.0F,
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
+                    2100
+                ),
+                CouponProduct(
+                    "15409031",
+                    25000,
+                    4.0F,
+                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
+                    31000
+                )
+            )
+        )
+        popFragment()
+    }
     private fun setupViews() {
-        couponSettingFragment.setOnCouponSaved { couponSettings ->
-            popFragment()
-
-            this.couponSettings = couponSettings
-            couponPreviewFragment.setCouponSettingsData(couponSettings)
-
-            //Stub the coupon preview data for testing purpose
-            val startDate = Calendar.getInstance().apply { set(2022, 0, 29, 22, 30, 0) }
-            val endDate = Calendar.getInstance().apply {  set(2022, 0, 30, 22, 0, 0) }
-            val period = CouponInformation.Period(startDate.time, endDate.time)
-            couponPreviewFragment.setCouponInformationData(
-                CouponInformation(
-                    CouponInformation.Target.PUBLIC,
-                    "Kupon Kopi Kenangan",
-                    "KOPKEN",
-                    period
-                )
-            )
-
-            //Stub the products data for testing purpose
-            couponPreviewFragment.setCouponProductsData(
-                listOf(
-                    CouponProduct(
-                        "2147956088",
-                        18000,
-                        5.0F,
-                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                        19
-                    ),
-                    CouponProduct(
-                        "15455652",
-                        18000,
-                        4.7F,
-                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                        1000
-                    ),
-                    CouponProduct(
-                        "15429644",
-                        18000,
-                        5.0F,
-                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                        2100
-                    ),
-                    CouponProduct(
-                        "15409031",
-                        25000,
-                        4.0F,
-                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                        31000
-                    )
-                )
-            )
-        }
 
 
         /*productListFragment.setOnProductsSelected { products ->

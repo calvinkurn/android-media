@@ -4,29 +4,41 @@ import android.os.CountDownTimer
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class Timer(private val onTick : (String) -> Unit) {
+class Timer(private val endDate: Date) {
+
+    private lateinit var timer : CountDownTimer
+    private var onTicked : (String) -> Unit = {}
 
     companion object {
         private const val SECOND = 1000
-        private const val TIMER_FORMAT = "%dj : %dm : %dd"
+        private const val TIMER_FORMAT = "%02d : %02d : %02d"
     }
 
-    fun startCountdown(endDate: Date) {
+    fun startCountdown() {
         val dateDifferenceInMillis = findDateDifferenceInMillis(endDate)
-        val timer = object : CountDownTimer(dateDifferenceInMillis, SECOND.toLong()) {
+        timer = object : CountDownTimer(dateDifferenceInMillis, SECOND.toLong()) {
             override fun onFinish() {
 
             }
 
             override fun onTick(millisUntilFinished: Long) {
-                val hours = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
-                val minutes = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
+                val hours = TimeUnit.MILLISECONDS.toHours(millisUntilFinished)
+                val minutes = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished))
                 val seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))
+
                 val formattedTime = String.format(TIMER_FORMAT, hours.toInt(), minutes.toInt(), seconds.toInt())
-                onTick(formattedTime)
+                onTicked(formattedTime)
             }
         }
         timer.start()
+    }
+
+    fun setOnTickListener(onTicked : (String) -> Unit) {
+        this.onTicked = onTicked
+    }
+
+    fun stopCountdown() {
+        timer.cancel()
     }
 
     private fun findDateDifferenceInMillis(endDate: Date) : Long {

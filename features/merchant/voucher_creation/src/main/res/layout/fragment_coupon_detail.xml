@@ -57,18 +57,40 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imgCoupon" />
 
-            <com.tokopedia.unifycomponents.Label
-                android:id="@+id/labelCountdown"
+            <View
+                android:id="@+id/background"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
+                android:padding="@dimen/unify_space_16"
+                app:layout_constraintBottom_toBottomOf="@+id/labelCountdown"
+                app:layout_constraintEnd_toEndOf="@+id/labelCountdown"
+                app:layout_constraintStart_toStartOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="@+id/labelCountdown" />
+
+            <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/mvc_dimen_20dp"
-                android:layout_marginBottom="@dimen/unify_space_8"
-                android:visibility="gone"
-                app:labelType="highlight_light_grey"
-                app:layout_constraintBottom_toTopOf="@+id/startEndVoucher"
+                android:src="@drawable/ic_timer"
+                app:layout_constraintBottom_toBottomOf="@+id/labelCountdown"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imgCoupon"
+                app:layout_constraintTop_toTopOf="@+id/labelCountdown" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/labelCountdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/unify_space_8"
+                android:padding="@dimen/unify_space_4"
+                app:layout_constraintBottom_toTopOf="@+id/startEndVoucher"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:typographyType="small"
                 tools:text="14 hari : 23j : 59m : 59d"
                 tools:visibility="visible" />
 
@@ -78,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/mvc_dimen_20dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_4"
                 app:layout_constraintBottom_toBottomOf="@+id/imgCoupon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -694,6 +716,13 @@
                 android:visibility="gone"
                 app:constraint_referenced_ids="imgCopyToClipboard,tpgCouponCode,typography"
                 tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupCountdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="imageView,labelCountdown,background" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
