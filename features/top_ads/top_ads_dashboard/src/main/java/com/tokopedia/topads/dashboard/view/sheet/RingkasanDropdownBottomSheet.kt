@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.Chip
+import com.tokopedia.topads.dashboard.data.model.Chip
 import com.tokopedia.topads.dashboard.view.adapter.beranda.AdPlacementRvAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class RingkasanBottomSheet(private val itemClick: (Chip) -> Unit) : BottomSheetUnify() {
+class RingkasanDropdownBottomSheet(private val itemClick: (Chip) -> Unit) : BottomSheetUnify() {
 
     private lateinit var rvAdPlacement: RecyclerView
     private lateinit var adapter: AdPlacementRvAdapter
@@ -52,7 +51,7 @@ class RingkasanBottomSheet(private val itemClick: (Chip) -> Unit) : BottomSheetU
     }
 
     companion object {
-        private val childLayout = R.layout.topads_insight_select_ads_type_bottomsheet
-        fun createInstance(itemClick: (Chip) -> Unit) = RingkasanBottomSheet(itemClick)
+        private val childLayout = R.layout.topads_single_recyclerview_layout
+        fun createInstance(itemClick: (Chip) -> Unit) = RingkasanDropdownBottomSheet(itemClick)
     }
 }

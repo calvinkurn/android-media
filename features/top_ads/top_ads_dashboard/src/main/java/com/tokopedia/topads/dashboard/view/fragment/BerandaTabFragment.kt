@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.Chip
+import com.tokopedia.topads.dashboard.data.model.Chip
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
@@ -32,7 +32,8 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapt
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment.Companion.MANUAL_AD
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniKeyFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
-import com.tokopedia.topads.dashboard.view.sheet.RingkasanBottomSheet
+import com.tokopedia.topads.dashboard.view.sheet.RingkasanDropdownBottomSheet
+import com.tokopedia.topads.dashboard.view.sheet.RingkasanInformationBottomSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
@@ -54,13 +55,14 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private var insightCallBack: GoToInsight? = null
     private var currentDateText: String = ""
 
-    private val ringkasanBottomSheet by lazy { RingkasanBottomSheet.createInstance(::ringkasanClicked) }
+    private val ringkasanInformationBottomSheet by lazy { RingkasanInformationBottomSheet.createInstance() }
+    private val ringkasanBottomSheet by lazy { RingkasanDropdownBottomSheet.createInstance(::ringkasanClicked) }
     private val ringkasanRvAdapter by lazy { RingkasanTopAdsDashboardRvAdapter.createInstance() }
     private val latestReadingRvAdapter by lazy { LatestReadingTopAdsDashboardRvAdapter.createInstance() }
 
     private lateinit var ivRingkasanDropDown: ImageUnify
     private lateinit var txtLastUpdated: Typography
-    private lateinit var ivLastUpdatedInformation: ImageUnify
+    private lateinit var ivRingkasanInformation: ImageUnify
     private lateinit var rvRingkasan: RecyclerView
     private lateinit var rvLatestReading: RecyclerView
     private lateinit var btnReadMore: UnifyButton
@@ -159,6 +161,9 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         }
         ivRingkasanDropDown.setOnClickListener {
             ringkasanBottomSheet.show(childFragmentManager, "")
+        }
+        ivRingkasanInformation.setOnClickListener {
+            ringkasanInformationBottomSheet.show(childFragmentManager,"")
         }
     }
 
@@ -314,7 +319,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         creditHistory = view.findViewById(R.id.credit_history)
         ivRingkasanDropDown = view.findViewById(R.id.ivRingkasanDropDown)
         txtLastUpdated = view.findViewById(R.id.txtLastUpdated)
-        ivLastUpdatedInformation = view.findViewById(R.id.ivLastUpdatedInformation)
+        ivRingkasanInformation = view.findViewById(R.id.ivRingkasanInformation)
         rvRingkasan = view.findViewById(R.id.rvRingkasan)
         rvLatestReading = view.findViewById(R.id.rvLatestReading)
         btnReadMore = view.findViewById(R.id.btnReadMore)
