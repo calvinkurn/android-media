@@ -141,16 +141,16 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
     private fun setupView() {
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
-        recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerView)
-                }
-            }
-        })
+//        recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                    mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerView)
+//                }
+//            }
+//        })
     }
 
     fun setData(data: PlayWidgetUiModel) {

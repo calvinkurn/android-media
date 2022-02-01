@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.jumbo.PlayWidgetJumboAnalyticListener
@@ -32,6 +33,8 @@ class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
     private var mWidgetListener: PlayWidgetJumboListener? = null
     private var mAnalyticListener: PlayWidgetJumboAnalyticListener? = null
     private var mWidgetInternalListener: PlayWidgetInternalListener? = null
+
+    private val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
     private val channelCardListener = object : PlayWidgetJumboViewHolder.Channel.Listener {
         override fun onChannelImpressed(
@@ -108,6 +111,7 @@ class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
      * Setup view
      */
     private fun setupView() {
+        recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
 //        recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 //
