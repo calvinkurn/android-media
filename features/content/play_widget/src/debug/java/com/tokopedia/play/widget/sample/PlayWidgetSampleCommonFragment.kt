@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.sample.adapter.common.PlayWidgetSampleCommonAdapter
 import com.tokopedia.play.widget.sample.analytic.PlayWidgetSampleAnalytic
-import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
