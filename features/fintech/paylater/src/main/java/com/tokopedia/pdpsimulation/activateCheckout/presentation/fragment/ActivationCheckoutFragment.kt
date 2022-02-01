@@ -18,7 +18,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivation
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
-import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -74,9 +74,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment() {
             {
                 is Success -> {
                     setProductData(it.data)
-                    it.data.price?.let { productPrice ->
+                    it.data.price?.let { priceProduct ->
                         payLaterActivationViewModel.getOptimizedCheckoutDetail(productId,
-                            productPrice,gatewayId)
+                            priceProduct,gatewayId)
                     }
                 }
                 is Fail -> {
