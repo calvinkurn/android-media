@@ -5,7 +5,6 @@ import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
 import com.tokopedia.catalog.CatalogTestUtils
 import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
-import com.tokopedia.catalog.model.raw.CatalogResponseData
 import com.tokopedia.catalog.repository.CatalogAllReviewRepository
 import com.tokopedia.catalog.usecase.detail.CatalogAllReviewUseCase
 import com.tokopedia.graphql.CommonUtils
@@ -46,13 +45,17 @@ class CatalogReviewViewModelTest {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_review_dummy_response.json"))
         runBlocking {
             coEvery { catalogAllReviewRepository.getAllReviews(any(),any(), any()) } returns mockGqlResponse
-            catalogReviewUseCase.getCatalogReviews(CatalogTestUtils.CATALOG_ID,"star","5",viewModel.getCatalogAllReviewsModel())
-            if(viewModel.getCatalogAllReviewsModel().value is Success){
-                assert(true)
-            }else {
-                assert(false)
-            }
+            viewModel.getAllReviews(CatalogTestUtils.CATALOG_ID,"star","5")
+            assert(viewModel.getCatalogAllReviewsModel().value is Success)
+        }
+    }
 
+    @Test
+    fun `Get Catalog Review Response Exception`() {
+        runBlocking {
+            coEvery { catalogAllReviewRepository.getAllReviews(any(),any(), any()) } throws Exception()
+            viewModel.getAllReviews(CatalogTestUtils.CATALOG_ID,"star","5")
+            assert(viewModel.getCatalogAllReviewsModel().value is Fail)
         }
     }
 
@@ -61,31 +64,28 @@ class CatalogReviewViewModelTest {
         val mockGqlResponse: GraphqlResponse  = CatalogViewModelTest.createMockGraphqlResponse(CatalogViewModelTest.getJsonObject("catalog_empty_dummy_response.json"))
         runBlocking {
             coEvery { catalogAllReviewRepository.getAllReviews(any(),any(), any()) } returns mockGqlResponse
-            catalogReviewUseCase.getCatalogReviews(CatalogTestUtils.CATALOG_ID,"star","5",viewModel.getCatalogAllReviewsModel())
-            if(viewModel.getCatalogAllReviewsModel().value is Fail){
-                assert(true)
-            }else {
-                assert(false)
-            }
-
+            viewModel.getAllReviews(CatalogTestUtils.CATALOG_ID,"star","5")
+            assert(viewModel.getCatalogAllReviewsModel().value is Fail)
         }
     }
 
-    private fun createMockGraphqlResponse(response : JsonObject): GraphqlResponse {
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val jsonObject: JsonObject = response
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = CatalogProductReviewResponse::class.java
-        val obj: Any = CommonUtils.fromJson(data, objectType)
-        result[objectType] = obj
-        return GraphqlResponse(result, errors, false)
-    }
+   companion object {
+       fun createMockGraphqlResponse(response : JsonObject): GraphqlResponse {
+           val result = HashMap<Type, Any>()
+           val errors = HashMap<Type, List<GraphqlError>>()
+           val jsonObject: JsonObject = response
+           val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
+           val objectType = CatalogProductReviewResponse::class.java
+           val obj: Any = CommonUtils.fromJson(data, objectType)
+           result[objectType] = obj
+           return GraphqlResponse(result, errors, false)
+       }
 
-    private fun getJsonObject(pathString : String) : JsonObject {
-        return CommonUtils.fromJson(
-                CatalogTestUtils.getJsonFromFile(pathString),
-                JsonObject::class.java
-        )
-    }
+       fun getJsonObject(pathString : String) : JsonObject {
+           return CommonUtils.fromJson(
+               CatalogTestUtils.getJsonFromFile(pathString),
+               JsonObject::class.java
+           )
+       }
+   }
 }

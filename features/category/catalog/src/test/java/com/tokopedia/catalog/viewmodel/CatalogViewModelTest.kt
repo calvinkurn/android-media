@@ -86,6 +86,16 @@ class CatalogViewModelTest {
         }
     }
 
+    @Test
+    fun `Get Catalog Product Response Exception`() {
+        runBlocking {
+            coEvery { catalogDetailRepository.getCatalogDetail(any(),any(), any()) } throws Exception()
+            viewModel.getProductCatalog(CatalogTestUtils.CATALOG_ID,CatalogTestUtils.USER_ID,CatalogTestUtils.DEVICE)
+            assert(viewModel.catalogDetailDataModel.value is Fail)
+        }
+    }
+
+
     companion object {
         fun createMockGraphqlResponse(response : JsonObject): GraphqlResponse {
             val result = HashMap<Type, Any>()
@@ -105,6 +115,4 @@ class CatalogViewModelTest {
             )
         }
     }
-
-
 }

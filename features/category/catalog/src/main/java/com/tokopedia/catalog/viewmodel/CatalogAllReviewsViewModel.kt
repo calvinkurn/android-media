@@ -17,7 +17,7 @@ class CatalogAllReviewsViewModel @Inject constructor(private var catalogAllRevie
     fun getAllReviews(catalogId: String, key : String, value : String) {
         viewModelScope.launchCatchError(
                 block = {
-                    catalogAllReviewUseCase.getCatalogReviews(catalogId,key,value,catalogAllReviewsModel)
+                    catalogAllReviewsModel.value = catalogAllReviewUseCase.getCatalogReviews(catalogId,key,value)
                 },
                 onError = {
                     catalogAllReviewsModel.value = Fail(it)
