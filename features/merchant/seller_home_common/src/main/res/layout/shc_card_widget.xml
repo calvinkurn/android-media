@@ -146,7 +146,7 @@
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="18dp"
             android:visibility="gone"
             app:corners="10"
             app:layout_constraintBottom_toBottomOf="parent"

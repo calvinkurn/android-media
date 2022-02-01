@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetCardDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import javax.inject.Inject
@@ -9,7 +10,9 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 21/05/20
  */
 
-class CardMapper @Inject constructor() :
+class CardMapper @Inject constructor(
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
+) : BaseWidgetMapper(lastUpdatedSharedPref),
     BaseResponseMapper<GetCardDataResponse, List<CardDataUiModel>> {
 
     companion object {
@@ -34,7 +37,8 @@ class CardMapper @Inject constructor() :
                 },
                 value = if (it.value.isNullOrBlank()) ZERO else it.value,
                 isFromCache = isFromCache,
-                showWidget = it.showWidget.orFalse()
+                showWidget = it.showWidget.orFalse(),
+                lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache)
             )
         }
     }

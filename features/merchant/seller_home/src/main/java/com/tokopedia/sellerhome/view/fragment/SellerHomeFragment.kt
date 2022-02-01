@@ -1184,7 +1184,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
                 oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
                 oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
-                oldWidget.emptyState == newWidget.emptyState
+                oldWidget.emptyState == newWidget.emptyState && oldWidget.data?.isFromCache == newWidget.data?.isFromCache
     }
 
     @Suppress("UNCHECKED_CAST")

@@ -151,9 +151,14 @@ class CardViewHolder(
             val shouldShowRefreshButton = element.data?.lastUpdated?.shouldShow.orFalse()
             icShcRefreshCard.isVisible = shouldShowRefreshButton
             icShcRefreshCard.setOnClickListener {
-                listener.onReloadWidget(element)
+                refreshWidget(element)
             }
         }
+    }
+
+    private fun refreshWidget(element: CardWidgetUiModel) {
+        showLoadingState(element)
+        listener.onReloadWidget(element)
     }
 
     private fun showCardState(data: CardDataUiModel?) {
@@ -183,6 +188,9 @@ class CardViewHolder(
             val visibility = if (isLoading) View.VISIBLE else View.GONE
             shimmerCardTitle.visibility = visibility
             shimmerCardValue.visibility = visibility
+            if (isLoading) {
+                icShcRefreshCard.gone()
+            }
         }
     }
 

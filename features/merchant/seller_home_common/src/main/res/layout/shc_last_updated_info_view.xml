@@ -12,8 +12,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icShcRefreshLastUpdated"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:background="@drawable/bg_shc_shadow_circle"
         android:padding="6dp"
         app:icon_name="RELOAD" />
