@@ -44,7 +44,7 @@ class AffiliatePortfolioViewModel@Inject constructor(
             isError.value = !isValidUrl(text,(affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel))
         }else {
             (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = false
-            isError.value = !checkDataForAtLeastOne()
+            isError.value = !checkDataForAtLeastOne(false)
         }
     }
 
@@ -57,14 +57,16 @@ class AffiliatePortfolioViewModel@Inject constructor(
         }
     }
 
-    fun checkDataForAtLeastOne()  : Boolean{
+    fun checkDataForAtLeastOne(isUpdateList: Boolean = true)  : Boolean{
         var firstFound = false
         affiliatePortfolioData.value?.forEachIndexed {i,item->
             if(item is AffiliatePortfolioUrlModel)
             {
                 if(!item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text!!,item)){
+                    if(isUpdateList){
                     item.portfolioItm.isError = true
                     updateListItem.value = i
+                    }
                     return false
                 }else if(!item.portfolioItm.text.isNullOrEmpty() && isValidUrl(item.portfolioItm.text!!,item)){
                     firstFound = true
