@@ -13,20 +13,24 @@ object PlayWidgetUiMock {
 
     private val cardItemTypeRandom = Random(2)
 
-    fun getSamplePlayWidget(): PlayWidgetUiModel = PlayWidgetUiModel(
-        title = "Ini JumboTRON!",
-        actionTitle = "Lihat semua",
+    fun getSamplePlayWidget(
+        title: String = "Video Menarik Untukmu!",
+        isActionVisible: Boolean = true,
+        items: List<PlayWidgetItemUiModel> = getSampleItemData()
+    ): PlayWidgetUiModel = PlayWidgetUiModel(
+        title = title,
+        actionTitle = "Lihat Semua",
         actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
-        isActionVisible = true,
+        isActionVisible = isActionVisible,
         config = getPlayWidgetConfigUiModel(),
-        items = getSampleItemData(),
+        items = items,
         background = getPlayWidgetBackgroundUiModel()
     )
 
     private fun getSampleItemData(): List<PlayWidgetItemUiModel> {
         val size = 5
         return List(size) {
-            if (it == size-1) getSampleBannerModel()
+            if (it == size-3) getSampleBannerModel()
             else {
                 val channelType = when (cardItemTypeRandom.nextInt(0, 6)) {
                     0 -> PlayWidgetChannelType.Upcoming
@@ -42,11 +46,11 @@ object PlayWidgetUiMock {
     }
 
     private fun getSampleBannerModel() = PlayWidgetBannerUiModel(
-            imageUrl = "https://ecs7.tokopedia.net/img/cache/700/attachment/2020/9/2/inv/inv_b4cb80bc-aa3c-44b9-b368-ca373c488db1.jpg",
+            imageUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg",
             appLink = "",
     )
 
-    private fun getSampleChannelModel(channelType: PlayWidgetChannelType) = PlayWidgetChannelUiModel(
+    fun getSampleChannelModel(channelType: PlayWidgetChannelType) = PlayWidgetChannelUiModel(
         channelId = "123",
         title = "BARDI hingga Memory Mulai dari 1Rb! \uD83D\uDD25 \uD83D\uDE0D",
         channelType = channelType,

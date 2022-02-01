@@ -7,6 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.sample.adapter.feed.PlayWidgetSampleFeedAdapter
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
+import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetJumboUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetLargeUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
  * Created by meyta.taliti on 28/01/22.
@@ -14,6 +21,8 @@ import com.tokopedia.play.widget.R
 class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment() {
 
     private val rvWidget by lazy { view?.findViewById<RecyclerView>(R.id.rv_widget_sample_feed) }
+
+    private lateinit var adapter: PlayWidgetSampleFeedAdapter
 
     override fun getScreenName(): String {
         return "PlayWidgetSampleFeedFragment"
@@ -33,6 +42,36 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment() {
     }
 
     private fun setupView(view: View) {
+        adapter = PlayWidgetSampleFeedAdapter()
 
+        rvWidget?.adapter = adapter
+        adapter.setItemsAndAnimateChanges(getSampleWidgets())
+    }
+
+    private fun getSampleWidgets(): List<PlayFeedUiModel> {
+        return listOf(
+            PlayWidgetJumboUiModel(
+                PlayWidgetUiMock.getSamplePlayWidget(
+                    items = listOf(
+                        PlayWidgetUiMock.getSampleChannelModel(PlayWidgetChannelType.Vod),
+                    )
+                )
+            ),
+            PlayWidgetMediumUiModel(
+                PlayWidgetUiMock.getSamplePlayWidget()
+            ),
+            PlayWidgetLargeUiModel(
+                PlayWidgetUiMock.getSamplePlayWidget()
+            ),
+            PlayWidgetMediumUiModel(
+                PlayWidgetUiMock.getSamplePlayWidget(
+                    title = "",
+                    isActionVisible = false
+                )
+            ),
+            PlayWidgetLargeUiModel(
+                PlayWidgetUiMock.getSamplePlayWidget()
+            ),
+        )
     }
 }

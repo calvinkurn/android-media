@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.sample
+package com.tokopedia.play.widget.sample.analytic
 
 import android.content.Context
 import android.widget.Toast

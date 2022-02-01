@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.jumbo.PlayWidgetJumboAnalyticListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetJumboListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.widget.jumbo.adapter.PlayWidgetJumboAdapter
@@ -17,10 +17,11 @@ import com.tokopedia.play.widget.ui.widget.jumbo.adapter.PlayWidgetJumboViewHold
 /**
  * @author by astidhiyaa on 12/01/22
  */
-class PlayWidgetJumboView : ConstraintLayout {
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
@@ -30,8 +31,7 @@ class PlayWidgetJumboView : ConstraintLayout {
 
     private var mWidgetListener: PlayWidgetJumboListener? = null
     private var mAnalyticListener: PlayWidgetJumboAnalyticListener? = null
-
-    private val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+    private var mWidgetInternalListener: PlayWidgetInternalListener? = null
 
     private val channelCardListener = object : PlayWidgetJumboViewHolder.Channel.Listener {
         override fun onChannelImpressed(
@@ -108,13 +108,26 @@ class PlayWidgetJumboView : ConstraintLayout {
      * Setup view
      */
     private fun setupView() {
-        recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
+//        recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                    mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerView)
+//                }
+//            }
+//        })
     }
 
     fun setData(data: PlayWidgetUiModel) {
         adapter.setItemsAndAnimateChanges(data.items)
 
         mIsAutoPlay = data.config.autoPlay
+    }
+
+    override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
+        this.mWidgetInternalListener = listener
     }
 }

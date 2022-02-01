@@ -64,6 +64,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
             is PlayWidgetMediumView -> child.setWidgetInternalListener(listener)
+            is PlayWidgetLargeView -> child.setWidgetInternalListener(listener)
+            is PlayWidgetJumboView -> child.setWidgetInternalListener(listener)
         }
     }
 
@@ -141,7 +143,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         } else {
             widgetView.show()
             widgetView.setData(model)
-            widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetListener(mWidgetListener) // todo: revisit
         }
     }
 
@@ -152,7 +154,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         } else {
             widgetView.show()
             widgetView.setData(model)
-            widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetListener(mWidgetListener) // todo: revisit
         }
     }
 
