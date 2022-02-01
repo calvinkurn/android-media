@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -40,6 +42,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         private const val EMPTY_STRING = ""
         private const val ZERO: Long = 0
         private const val PERCENT = 100
+        private const val DISCOUNT_TYPE_NOMINAL = 1
 
         @JvmStatic
         fun newInstance(couponId: Long): CouponDetailFragment {
@@ -114,18 +117,13 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     private fun observeCouponDetail() {
         viewModel.couponDetail.observe(viewLifecycleOwner, { result ->
+            hideLoading()
             if (result is Success) {
                 val coupon = result.data
-
                 binding.header.headerView?.text = coupon.name
-
-                binding.imgCoupon.loadImageRounded(
-                    url = coupon.image,
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
-                        .toFloat()
-                )
-                startTimer(coupon.finishTime)
-                setVoucherStatus(coupon)
+                displayCouponImage(coupon.image)
+                displayCountdown(coupon.status, coupon.finishTime)
+                displayCouponStatus(coupon)
                 displayCouponInformationSection(
                     coupon.name,
                     coupon.code,
@@ -135,11 +133,28 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 )
                 displayCouponSettingsSection(coupon)
                 displayQuotaUsage(coupon)
-
+                //refreshProductsSection()
+            } else {
+                hideLoading()
+                hideContent()
+                showError()
             }
-
-            //refreshProductsSection(couponProducts)
         })
+    }
+
+    private fun displayCouponImage(imageUrl: String) {
+        binding.imgCoupon.loadImageRounded(
+            url = imageUrl,
+            resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+                .toFloat()
+        )
+    }
+
+    private fun displayCountdown(couponStatus: Int, finishTime: String) {
+        if (couponStatus == VoucherStatusConst.ONGOING) {
+            binding.labelCountdown.isVisible = couponStatus == VoucherStatusConst.ONGOING
+            startTimer(finishTime)
+        }
     }
 
 
@@ -189,7 +204,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         val minimumPurchaseType = MinimumPurchaseType.NOMINAL
 
         val discountType =
-            if (coupon.discountType == 1) DiscountType.NOMINAL else DiscountType.PERCENTAGE
+            if (coupon.discountType == DISCOUNT_TYPE_NOMINAL) DiscountType.NOMINAL else DiscountType.PERCENTAGE
         binding.tpgDiscountType.text = discountType.label
 
         handleDiscountType(couponType)
@@ -351,7 +366,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     }
 
-    private fun setVoucherStatus(coupon: VoucherUiModel) {
+    private fun displayCouponStatus(coupon: VoucherUiModel) {
         when (coupon.status) {
             VoucherStatusConst.ONGOING -> {
                 binding.labelCountdown.visible()
@@ -399,7 +414,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
         binding.tpgUsedQuota.text = coupon.confirmedQuota.toString()
         binding.tpgTotalQuota.text = String.format(
-            context?.getString(R.string.mvc_detail_total_quota).toBlankOrString(),
+            getString(R.string.mvc_detail_total_quota).toBlankOrString(),
             coupon.quota.toString()
         )
 
@@ -408,19 +423,35 @@ class CouponDetailFragment : BaseDaggerFragment() {
         if (coupon.isPublic) {
             binding.tpgTickerUsage.visible()
             binding.tpgTickerUsage.text = String.format(
-                getString(R.string.mvc_detail_promo_usage_used),
+                getString(R.string.placeholder_quota_usage),
                 coupon.bookedQuota.toString()
             ).parseAsHtml()
         } else {
             binding.tpgTickerUsage.gone()
         }
-
-
     }
 
     private fun displayExpenseEstimationDescription() {
         if (!isAdded) return
         val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun hideLoading() {
+        binding.loader.gone()
+    }
+
+    private fun hideContent() {
+        binding.cardShare.gone()
+        binding.content.gone()
+    }
+
+    private fun showError() {
+        Toaster.build(
+            binding.root,
+            getString(R.string.error_message_failed_get_coupon_detail),
+            Snackbar.LENGTH_SHORT,
+            Toaster.TYPE_ERROR
+        ).show()
     }
 }

@@ -9,16 +9,19 @@
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/header"
         android:layout_width="match_parent"
-        app:unify_header_title="@string/add_product_coupon"
+        app:unify_header_title="@string/view_coupon_detail"
         android:layout_height="?attr/actionBarSize" />
 
     <ScrollView
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/cardShare"
         android:layout_below="@id/header"
         android:fillViewport="true"
-        tools:context=".product.create.view.fragment.ProductCouponPreviewFragment">
+        android:visibility="gone"
+        tools:context=".product.create.view.fragment.ProductCouponPreviewFragment"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -59,8 +62,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/mvc_dimen_20dp"
-                android:visibility="gone"
                 android:layout_marginBottom="@dimen/unify_space_8"
+                android:visibility="gone"
                 app:labelType="highlight_light_grey"
                 app:layout_constraintBottom_toTopOf="@+id/startEndVoucher"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -73,9 +76,9 @@
                 android:id="@+id/startEndVoucher"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/unify_space_16"
                 android:layout_marginStart="@dimen/mvc_dimen_20dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="@dimen/unify_space_16"
                 app:layout_constraintBottom_toBottomOf="@+id/imgCoupon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -87,10 +90,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_24"
+                android:text="@string/used_coupon"
                 app:layout_constraintStart_toStartOf="@+id/imgCoupon"
                 app:layout_constraintTop_toBottomOf="@id/imgCoupon"
                 app:typographyType="body_3"
-                android:text="@string/used_coupon"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.ProgressBarUnify
@@ -696,11 +699,24 @@
 
     </ScrollView>
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_64"
+        android:layout_margin="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_centerInParent="true"
+        app:loader_type="circular" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardShare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/unify_space_4"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:layout_alignParentBottom="true">
 
         <com.tokopedia.unifycomponents.UnifyButton
