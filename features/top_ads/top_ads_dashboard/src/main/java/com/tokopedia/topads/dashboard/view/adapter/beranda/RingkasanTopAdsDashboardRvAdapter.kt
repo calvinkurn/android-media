@@ -20,7 +20,7 @@ class RingkasanTopAdsDashboardRvAdapter :
 
     }
 
-    override fun getItemCount() = 5
+    override fun getItemCount() = list.size
 
     inner class RingkasanViewHolder(view: View) : RecyclerView.ViewHolder(view)
 

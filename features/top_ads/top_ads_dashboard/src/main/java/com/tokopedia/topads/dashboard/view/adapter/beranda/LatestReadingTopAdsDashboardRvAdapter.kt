@@ -24,7 +24,7 @@ class LatestReadingTopAdsDashboardRvAdapter :
 
     }
 
-    override fun getItemCount() = 4
+    override fun getItemCount() = list.size
 
     inner class LatestReadingViewHolder(view: View) : RecyclerView.ViewHolder(view)
 

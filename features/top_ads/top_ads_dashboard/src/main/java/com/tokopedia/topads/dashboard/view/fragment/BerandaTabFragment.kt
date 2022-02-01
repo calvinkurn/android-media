@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.Chip
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
@@ -31,6 +32,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapt
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment.Companion.MANUAL_AD
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniKeyFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.topads.dashboard.view.sheet.RingkasanBottomSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
@@ -52,8 +54,9 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private var insightCallBack: GoToInsight? = null
     private var currentDateText: String = ""
 
-    private lateinit var ringkasanRvAdapter: RingkasanTopAdsDashboardRvAdapter
-    private lateinit var latestReadingRvAdapter : LatestReadingTopAdsDashboardRvAdapter
+    private val ringkasanBottomSheet by lazy { RingkasanBottomSheet.createInstance(::ringkasanClicked) }
+    private val ringkasanRvAdapter by lazy { RingkasanTopAdsDashboardRvAdapter.createInstance() }
+    private val latestReadingRvAdapter by lazy { LatestReadingTopAdsDashboardRvAdapter.createInstance() }
 
     private lateinit var ivRingkasanDropDown: ImageUnify
     private lateinit var txtLastUpdated: Typography
@@ -124,12 +127,14 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         }
     }
 
+    private fun ringkasanClicked(it: Chip) {
+
+    }
+
     private fun setUpRecyclerView() {
-        ringkasanRvAdapter = RingkasanTopAdsDashboardRvAdapter.createInstance()
         rvRingkasan.layoutManager = GridLayoutManager(requireContext(), 2)
         rvRingkasan.adapter = ringkasanRvAdapter
 
-        latestReadingRvAdapter = LatestReadingTopAdsDashboardRvAdapter.createInstance()
         rvLatestReading.layoutManager = LinearLayoutManager(requireContext())
         rvLatestReading.adapter = latestReadingRvAdapter
     }
@@ -151,6 +156,9 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         }
         autoTopUp?.setOnClickListener {
             startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
+        }
+        ivRingkasanDropDown.setOnClickListener {
+            ringkasanBottomSheet.show(childFragmentManager, "")
         }
     }
 

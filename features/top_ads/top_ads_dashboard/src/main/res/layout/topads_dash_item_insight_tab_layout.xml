@@ -4,7 +4,7 @@
     android:id="@+id/tabInsightId"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="@dimen/spacing_lvl3"
     app:centerText="true"
     app:chipSize="medium"
     app:chipType="normal" />
