@@ -279,7 +279,7 @@ ext {
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.3.7",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.4.3",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
