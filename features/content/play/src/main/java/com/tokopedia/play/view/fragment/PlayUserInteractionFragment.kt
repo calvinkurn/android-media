@@ -717,7 +717,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * Observe
      */
     private fun observeVideoMeta() {
-        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, DistinctObserver { meta ->
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
             changeLayoutBasedOnVideoOrientation(meta.videoStream.orientation)
             triggerImmersive(false)
 
@@ -737,7 +737,7 @@ class PlayUserInteractionFragment @Inject constructor(
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
             if (meta.videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
 
-        })
+        }
     }
 
     private fun observeVideoProperty() {
