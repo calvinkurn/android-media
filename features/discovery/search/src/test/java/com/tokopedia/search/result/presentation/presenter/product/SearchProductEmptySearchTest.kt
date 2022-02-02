@@ -1,12 +1,13 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.every
 import io.mockk.slot
@@ -55,15 +56,16 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify empty search product model`(expectedIsFilterActive: Boolean) {
-        val emptySearchViewModelSlot = slot<EmptySearchProductDataView>()
+        val visitableListSlot = slot<List<Visitable<*>>>()
 
         verify {
-            productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
+            productListView.setProductList(capture(visitableListSlot))
         }
 
-        val emptySearchViewModel = emptySearchViewModelSlot.captured
-        emptySearchViewModel.isBannerAdsAllowed shouldBe true
-        emptySearchViewModel.isFilterActive shouldBe expectedIsFilterActive
+        val visitableList = visitableListSlot.captured
+        val emptyStateDataView = visitableList.filterIsInstance<EmptyStateDataView>().first()
+
+        emptyStateDataView.isFilterActive shouldBe expectedIsFilterActive
     }
 
     private fun `Then verify empty search recommendation use case is called`() {
