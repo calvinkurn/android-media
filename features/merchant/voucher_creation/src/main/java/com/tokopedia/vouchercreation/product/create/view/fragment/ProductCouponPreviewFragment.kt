@@ -40,6 +40,7 @@ import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCou
 import com.tokopedia.vouchercreation.product.create.view.dialog.UpdateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
+import timber.log.Timber
 import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
@@ -117,7 +118,7 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
         UpdateProductCouponFailedDialog(requireActivity(), ::onRetryUpdateCoupon, ::onRequestHelp)
     }
 
-    private var pageMode = Mode.CREATE
+    private val pageMode by lazy { arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode ?: Mode.CREATE }
 
     private val CouponType.label: String
         get() {
@@ -161,6 +162,11 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
             .inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.d("Preview: Lifecycle app is OnCreate")
+        handlePageMode()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -173,20 +179,16 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        handleArguments()
         setupViews()
         observeValidCoupon()
         observeCreateCouponResult()
         observeUpdateCouponResult()
-        handlePageMode()
+        Timber.d("Preview: Lifecycle app is OnViewCreated")
     }
 
-    private fun handleArguments() {
-        pageMode = arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode ?: Mode.CREATE
-    }
 
     private fun handlePageMode() {
-        when(arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode ?: Mode.CREATE) {
+        when(pageMode) {
             Mode.CREATE -> {}
             Mode.UPDATE -> {
                 changeToolbarTitle(getString(R.string.update_coupon_product))
@@ -209,6 +211,7 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
     }
 
     private fun populateParamsFromBundle() {
+        Timber.d("Preview: populateParamsFromBundle")
         val coupon: Coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon ?: return
         this.couponSettings = coupon.settings
         this.couponProducts = coupon.products
@@ -293,6 +296,7 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
 
 
     fun setCouponSettingsData(couponSettings: CouponSettings) {
+        Timber.d("Preview: setCouponsettingdata")
         this.couponSettings = couponSettings
     }
 
