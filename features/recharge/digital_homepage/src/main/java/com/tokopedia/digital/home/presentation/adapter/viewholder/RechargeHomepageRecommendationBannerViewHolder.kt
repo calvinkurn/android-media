@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
 import com.tokopedia.digital.home.model.RechargeHomepageRecommendationBannerModel
@@ -35,7 +34,7 @@ class RechargeHomepageRecommendationBannerViewHolder(
             if (element.section.applink.isNotEmpty()) {
                 tvRechargeRecomBannerSeeAll.text = element.section.textLink
                 tvRechargeRecomBannerSeeAll.setOnClickListener {
-                    RouteManager.route(root.context, element.section.applink)
+                    listener.onRechargeBannerAllItemClicked(element.section)
                 }
                 tvRechargeRecomBannerSeeAll.show()
             } else {

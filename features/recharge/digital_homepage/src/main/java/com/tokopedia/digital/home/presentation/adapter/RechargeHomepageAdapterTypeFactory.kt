@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomLastItemBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsUnifyBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
 import com.tokopedia.digital.home.model.RechargeHomepageBannerEmptyModel
@@ -17,6 +18,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
+import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastItemModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardsModel
 import com.tokopedia.digital.home.model.RechargeHomepageRecommendationBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
@@ -34,10 +36,12 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualBannersViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualIconsViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageFavoriteViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLastItemViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLoadingViewholder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductBannerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerV2ViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomLastItemViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardUnifyViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardsViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageRecommendationBannerViewHolder
@@ -139,9 +143,11 @@ class RechargeHomepageAdapterTypeFactory(
     fun type(recommendationBannerModel: RechargeHomepageRecommendationBannerModel): Int =
         RechargeHomepageRecommendationBannerViewHolder.LAYOUT
 
-    fun type(productCardCustomBanner: RechargeHomepageProductCardCustomBannerV2Model): Int {
-        return RechargeHomepageProductCardCustomBannerV2ViewHolder.LAYOUT
-    }
+    fun type(productCardCustomBanner: RechargeHomepageProductCardCustomBannerV2Model): Int =
+        RechargeHomepageProductCardCustomBannerV2ViewHolder.LAYOUT
+
+    fun type(customLastItem: RechargeHomepageProductCardCustomLastItemModel): Int =
+        RechargeHomepageProductCardCustomLastItemViewHolder.LAYOUT
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
@@ -297,6 +303,14 @@ class RechargeHomepageAdapterTypeFactory(
                 )
 
                 RechargeHomepageRecommendationBannerViewHolder(binding, listener)
+            }
+            RechargeHomepageProductCardCustomLastItemViewHolder.LAYOUT -> {
+                val binding = ViewRechargeHomeProductCardCustomLastItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
+                RechargeHomepageProductCardCustomLastItemViewHolder(binding, listener)
             }
             else -> super.createViewHolder(parent, type)
         }
