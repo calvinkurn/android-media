@@ -94,6 +94,7 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.addonbottomsheet.view.AddOnBottomSheet
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -137,6 +138,9 @@ import javax.inject.Inject
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
+
+    @Inject
+    lateinit var addOnBottomSheet: AddOnBottomSheet
 
     private var binding by autoClearedNullable<FragmentCartBinding>()
 
@@ -517,7 +521,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun initViewListener() {
         binding?.apply {
-            goToCourierPageButton.setOnClickListener { checkGoToShipment("") }
+            goToCourierPageButton.setOnClickListener {
+                addOnBottomSheet.show(this@CartFragment)
+            }
+//            goToCourierPageButton.setOnClickListener { checkGoToShipment("") }
             imgChevronSummary.setOnClickListener { onClickChevronSummaryTransaction() }
             textTotalPaymentLabel.setOnClickListener { onClickChevronSummaryTransaction() }
             tvTotalPrices.setOnClickListener { onClickChevronSummaryTransaction() }
