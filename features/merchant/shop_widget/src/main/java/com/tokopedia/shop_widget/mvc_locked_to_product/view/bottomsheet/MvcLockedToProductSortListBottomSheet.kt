@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.M
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductSortUiModel
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.viewmodel.MvcLockedToProductSortListBottomSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -29,6 +31,7 @@ class MvcLockedToProductSortListBottomSheet : BottomSheetUnify(),
 
     companion object {
         private val TAG = MvcLockedToProductSortListBottomSheet::class.java.simpleName
+        private const val DEFAULT_MARGIN_AND_PADDING_VALUE = 16
         fun createInstance() = MvcLockedToProductSortListBottomSheet()
     }
 
@@ -81,10 +84,26 @@ class MvcLockedToProductSortListBottomSheet : BottomSheetUnify(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
         configSubmitButton()
         initRecyclerView()
         getSortListData()
         observeSortListData()
+    }
+
+    private fun setupView() {
+        bottomSheetWrapper.setPadding(
+            0,
+            DEFAULT_MARGIN_AND_PADDING_VALUE.toPx(),
+            0,
+            0
+        )
+        (bottomSheetHeader.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
+            DEFAULT_MARGIN_AND_PADDING_VALUE.toPx(),
+            0,
+            DEFAULT_MARGIN_AND_PADDING_VALUE.toPx(),
+            DEFAULT_MARGIN_AND_PADDING_VALUE.toPx()
+        )
     }
 
     fun show(

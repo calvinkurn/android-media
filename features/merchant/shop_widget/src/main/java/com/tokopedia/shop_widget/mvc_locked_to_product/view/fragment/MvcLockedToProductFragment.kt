@@ -129,6 +129,16 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         sendOpenScreenTracker()
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshCartCounterData()
+    }
+
+    private fun refreshCartCounterData() {
+        if (isUserLogin)
+            viewBinding?.navigationToolbar?.setBadgeCounter(IconList.ID_CART, getCartCounter())
+    }
+
     private fun sendOpenScreenTracker() {
         tracking.sendOpenScreenMvcLockedToProduct(
             voucherId,
@@ -140,10 +150,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun loadInitialData() {
         adapter.showInitialPagePlaceholderLoading()
-        if (shopId.isNotEmpty())
-            getMvcLockedToProductData(voucherId)
-//        else
-//            getShopIdFromDomain(shopDomain)
+        getMvcLockedToProductData(voucherId)
     }
 
     private fun setupSwipeRefreshLayout() {
@@ -202,9 +209,9 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                         }
                     }
                     val failErrorUiModel = MvcLockedToProductMapper.mapToMvcLockedToProductErrorUiModel(
-                        errorDescription = errorMessage,
-                        globalErrorType = globalErrorType
-                    )
+                            errorDescription = errorMessage,
+                            globalErrorType = globalErrorType
+                        )
                     showErrorView(failErrorUiModel)
                 }
             }
@@ -324,8 +331,6 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             iconBuilder.addIcon(IconList.ID_CART) {}
             iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
             setIcon(iconBuilder)
-            if (isUserLogin)
-                setBadgeCounter(IconList.ID_CART, getCartCounter())
             setToolbarPageName(getString(R.string.mvc_locked_to_product_toolbar_name))
         }
     }
