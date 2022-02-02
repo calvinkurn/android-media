@@ -235,13 +235,15 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun sendPendapatanEvent(eventAction: String, eventLabel: String) {
-        AffiliateAnalytics.sendEvent(
-            AffiliateAnalytics.EventKeys.CLICK_PG,
-            eventAction,
-            AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
-            eventLabel,
-            UserSession(context).userId
-        )
+        context?.let {
+            AffiliateAnalytics.sendEvent(
+                AffiliateAnalytics.EventKeys.CLICK_PG,
+                eventAction,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                eventLabel,
+                UserSession(it).userId
+            )
+        }
     }
 
     private fun setAffiliateBalance(affiliateBalance: AffiliateBalance.AffiliateBalance.Data) {

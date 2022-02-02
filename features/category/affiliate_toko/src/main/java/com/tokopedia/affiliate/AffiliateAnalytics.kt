@@ -74,6 +74,38 @@ object AffiliateAnalytics {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    fun sendIcomeTracker(
+        event: String,
+        action: String,
+        category: String,
+        eventLabel: String,
+        position: Int,
+        itemId: String,
+        userId: String
+    ){
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        productMap[EventKeys.KEY_ITEM_ID] = itemId
+        productMap[EventKeys.KEY_CREATIVE_NAME] = ""
+        productMap[EventKeys.KEY_CREATIVE_SLOT] = (position + 1).toString()
+        productMap[EventKeys.KEY_ITEM_NAME] = ItemKeys.AFFILIATE_TRANSACTION_PAGE
+        list.add(productMap)
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            EVENT_PROMO_CLICK to mapOf(
+                KEY_PROMOTIONS to list))
+        val map = HashMap<String,Any>()
+        map[EventKeys.KEY_EVENT] = event
+        map[EventKeys.KEY_EVENT_CATEGORY] = category
+        map[EventKeys.KEY_EVENT_ACTION] = action
+        map[EventKeys.KEY_EVENT_LABEL] = eventLabel
+        map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
+        map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
+        map[EventKeys.KEY_ECOMMERCE] = eCommerce
+        map[EventKeys.KEY_USER_ID] = userId
+
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
     interface EventKeys {
         companion object {
             const val KEY_EVENT = "event"
@@ -186,6 +218,7 @@ object AffiliateAnalytics {
         companion object{
             const val AFFILIATE_PERNAH_DIBEL = "/affiliate - promosikan pernah dibeli"
             const val AFFILIATE_PERNAH_DILIHAT = "/affiliate - promosikan pernah dilihat"
+            const val AFFILIATE_TRANSACTION_PAGE = "/affiliate pendapatan page - transaction history"
         }
     }
 
@@ -195,6 +228,8 @@ object AffiliateAnalytics {
             const val OUTGOING = "outgoing"
             const val LOGIN = "login"
             const val NON_LOGIN = "non login"
+            const val DEPOSIT = "deposit"
+            const val WITHDRAWAL = "withdrawal"
         }
     }
 

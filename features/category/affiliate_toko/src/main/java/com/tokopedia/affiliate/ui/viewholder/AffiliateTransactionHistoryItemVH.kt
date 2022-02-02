@@ -40,6 +40,7 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
             itemView.findViewById<ConstraintLayout>(R.id.transaction_history_parent_view).setOnClickListener {
                 when(element?.transaction?.transactionType){
                     TRANSACTION_TYPE_DEPOSIT -> {
+                        sendTransactionClickEvent(element?.transaction?.transactionID,AffiliateAnalytics.LabelKeys.DEPOSIT)
                         AffiliateAnalytics.sendEvent(
                                 AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
                                 AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
@@ -49,6 +50,7 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
                         itemView.context.startActivity(AffiliateTransactionDetailActivity.createIntent(itemView.context, element?.transaction?.transactionID))
                     }
                     TRANSACTION_TYPE_WITHDRAWAL -> {
+                        sendTransactionClickEvent(element?.transaction?.transactionID,AffiliateAnalytics.LabelKeys.WITHDRAWAL)
                         AffiliateAnalytics.sendEvent(
                                 AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
                                 AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
@@ -89,5 +91,12 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
                 }
             }
         }
+    }
+
+    private fun sendTransactionClickEvent(transactionID: String, label: String) {
+        AffiliateAnalytics.sendIcomeTracker(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+            label,adapterPosition,transactionID,UserSession(itemView.context).userId
+        )
     }
 }
