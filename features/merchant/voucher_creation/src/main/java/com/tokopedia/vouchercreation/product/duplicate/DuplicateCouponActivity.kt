@@ -28,16 +28,18 @@ class DuplicateCouponActivity : AppCompatActivity() {
 
     private val couponSettingFragment = CouponSettingFragment.newInstance(::saveCouponSettingsData)
     private val coupon by lazy { intent.extras?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon }
-    private val couponPreviewFragment = ProductCouponPreviewFragment.newInstance(
-        ::navigateToCouponInformationPage,
-        ::navigateToCouponSettingPage,
-        ::navigateToProductListPage,
-        {},
-        {},
-        ::onDuplicateCouponSuccess,
-        coupon,
-        ProductCouponPreviewFragment.Mode.DUPLICATE
-    )
+    private val couponPreviewFragment by lazy {
+        ProductCouponPreviewFragment.newInstance(
+            ::navigateToCouponInformationPage,
+            ::navigateToCouponSettingPage,
+            ::navigateToProductListPage,
+            {},
+            {},
+            ::onDuplicateCouponSuccess,
+            coupon,
+            ProductCouponPreviewFragment.Mode.DUPLICATE
+        )
+    }
 
     companion object {
         private const val BUNDLE_KEY_COUPON = "coupon"
@@ -65,6 +67,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
     }
 
     private fun displayPage() {
+        couponSettingFragment.setCouponSettings(coupon?.settings)
         replace(couponPreviewFragment)
     }
 
@@ -77,11 +80,19 @@ class DuplicateCouponActivity : AppCompatActivity() {
 
 
     private fun navigateToCouponInformationPage() {
-        router.replaceAndAddToBackstack(supportFragmentManager, R.id.parent_view, setupCreateCouponDetailFragment())
+        router.replaceAndAddToBackstack(
+            supportFragmentManager,
+            R.id.parent_view,
+            setupCreateCouponDetailFragment()
+        )
     }
 
     private fun navigateToCouponSettingPage() {
-        router.replaceAndAddToBackstack(supportFragmentManager, R.id.parent_view, couponSettingFragment)
+        router.replaceAndAddToBackstack(
+            supportFragmentManager,
+            R.id.parent_view,
+            couponSettingFragment
+        )
     }
 
     private fun navigateToProductListPage() {
@@ -90,7 +101,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
 
 
     private fun onDuplicateCouponSuccess() {
-       finish()
+        finish()
     }
 
     private fun showToaster(text: String) {
@@ -104,7 +115,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
 
         //Stub the coupon preview data for testing purpose
         val startDate = Calendar.getInstance().apply { set(2022, 1, 5, 20, 30, 0) }
-        val endDate = Calendar.getInstance().apply {  set(2022, 1, 10, 23, 59, 0) }
+        val endDate = Calendar.getInstance().apply { set(2022, 1, 10, 23, 59, 0) }
         val period = CouponInformation.Period(startDate.time, endDate.time)
         couponPreviewFragment.setCouponInformationData(
             CouponInformation(

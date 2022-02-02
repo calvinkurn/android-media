@@ -75,11 +75,12 @@ class CouponListActivity: BaseSimpleActivity() {
     }
 
     private fun navigateToEditCouponPage(coupon: Coupon) {
-        startActivity(Intent(this, UpdateCouponActivity::class.java))
+        UpdateCouponActivity.start(this, coupon)
     }
 
     private fun navigateToDuplicateCouponPage(coupon: Coupon) {
-        startActivity(Intent(this, DuplicateCouponActivity::class.java))
+        showToaster(getString(R.string.coupon_duplicated))
+        DuplicateCouponActivity.start(this, coupon)
     }
 
 

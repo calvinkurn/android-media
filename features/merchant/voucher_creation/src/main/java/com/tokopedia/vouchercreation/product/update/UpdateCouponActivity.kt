@@ -37,16 +37,19 @@ class UpdateCouponActivity : AppCompatActivity() {
     }
     private val coupon by lazy { intent.extras?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon }
 
-    private val couponPreviewFragment = ProductCouponPreviewFragment.newInstance(
-        ::navigateToCouponInformationPage,
-        ::navigateToCouponSettingPage,
-        ::navigateToProductListPage,
-        {},
-        ::onUpdateCouponSuccess,
-        {},
-        coupon,
-        ProductCouponPreviewFragment.Mode.UPDATE
-    )
+    private val couponPreviewFragment by lazy {
+        ProductCouponPreviewFragment.newInstance(
+            ::navigateToCouponInformationPage,
+            ::navigateToCouponSettingPage,
+            ::navigateToProductListPage,
+            {},
+            ::onUpdateCouponSuccess,
+            {},
+            coupon,
+            ProductCouponPreviewFragment.Mode.UPDATE
+        )
+    }
+
     private val couponSettingFragment = CouponSettingFragment.newInstance(::saveCouponSettingsData)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,9 +67,7 @@ class UpdateCouponActivity : AppCompatActivity() {
     }
 
     private fun displayPage() {
-        val coupon = intent.extras?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon
-
-
+        couponSettingFragment.setCouponSettings(coupon?.settings)
         router.replace(supportFragmentManager, R.id.parent_view, couponPreviewFragment)
     }
 
