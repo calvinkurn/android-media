@@ -45,7 +45,7 @@ class CoverFormView : ConstraintLayout {
     }
 
     fun setCover(imageUrl: String) {
-        binding.ivCoverCircleImage.visibility = View.GONE
+        binding.ivCoverImagePlaceholder.visibility = View.GONE
         binding.ivCoverFormPreview.setImageUrl(imageUrl)
     }
 

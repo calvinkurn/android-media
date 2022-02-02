@@ -357,10 +357,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
         analytic.openSetupScreen()
     }
 
-    private fun openBroadcastFinalSetupPage() {
-        navigateToFragment(PlayBeforeLiveFragment::class.java)
-    }
-
     private fun openBroadcastActivePage() {
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
         analytic.openBroadcastScreen(viewModel.channelId)

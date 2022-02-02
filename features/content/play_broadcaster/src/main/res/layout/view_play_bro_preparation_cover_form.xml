@@ -76,11 +76,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_cover_circle_image"
-            android:layout_width="@dimen/layout_lvl8"
-            android:layout_height="@dimen/layout_lvl8"
-            android:src="@drawable/ic_play_cover_placeholder"
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_cover_image_placeholder"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="IMAGE"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
