@@ -408,6 +408,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun setPromoInputErrorIfAny(response: CouponListRecommendationResponse) {
         val attemptedPromoCodeError = response.couponListRecommendation.data.attemptedPromoCodeError
         if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
+            sendAnalyticsOnErrorAttemptPromo(attemptedPromoCodeError.code, attemptedPromoCodeError.message)
             promoInputUiModel.value?.let {
                 it.uiData.exception = PromoErrorException(attemptedPromoCodeError.message)
                 it.uiData.promoCode = attemptedPromoCodeError.code
