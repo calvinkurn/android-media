@@ -55,7 +55,7 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         try {
             holder.bind(getItem(position));
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
