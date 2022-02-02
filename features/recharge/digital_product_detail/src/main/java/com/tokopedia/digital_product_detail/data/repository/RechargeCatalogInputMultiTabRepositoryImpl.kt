@@ -17,13 +17,14 @@ class RechargeCatalogInputMultiTabRepositoryImpl @Inject constructor(
         menuID: Int,
         operatorId: String,
         clientNumber: String,
-        filterData: ArrayList<HashMap<String, Any>>?
+        filterData: ArrayList<HashMap<String, Any>>?,
+        isFilterRefreshed: Boolean
     ) = withContext(dispatchers.io){
         val catalog = getRechargeCatalogInputMultiTabUseCase.apply {
             createProductListParams(menuID, operatorId, clientNumber, filterData)
         }.executeOnBackground()
 
-        return@withContext mapper.mapMultiTabFullDenom(catalog)
+        return@withContext mapper.mapMultiTabFullDenom(catalog, isFilterRefreshed)
     }
 
     override suspend fun getProductInputMultiTabDenomGrid(

@@ -2,14 +2,14 @@ package com.tokopedia.digital_product_detail.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipListBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.DigitalChipsAdapter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
-class DigitalPDPChipListFilerViewHolder (private val binding: ViewPdpFilterChipListBinding
-): RecyclerView.ViewHolder(binding.root){
+class DigitalPDPChipListFilerViewHolder (private val binding: ViewPdpFilterChipListBinding, val listener: ListFilterListener): RecyclerView.ViewHolder(binding.root){
 
     fun bind(element: TelcoFilterTagComponent){
         val chipsAdapter = DigitalChipsAdapter()
@@ -19,6 +19,10 @@ class DigitalPDPChipListFilerViewHolder (private val binding: ViewPdpFilterChipL
 
             if (element.filterTagDataCollections.size > MAX_FILTER_SIZE) tgSeeAllChipsList.show()
             else tgSeeAllChipsList.hide()
+
+            tgSeeAllChipsList.setOnClickListener {
+                listener.onSeeAllClicked(element, position)
+            }
 
             rvChipsList.run {
                 adapter = chipsAdapter
@@ -32,5 +36,9 @@ class DigitalPDPChipListFilerViewHolder (private val binding: ViewPdpFilterChipL
 
     companion object {
         const val MAX_FILTER_SIZE = 5
+    }
+
+    interface ListFilterListener{
+        fun onSeeAllClicked(element: TelcoFilterTagComponent, position: Int)
     }
 }

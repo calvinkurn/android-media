@@ -35,7 +35,11 @@ class DigitalChipsAdapter: RecyclerView.Adapter<DigitalPDPChipFilterViewHolder>(
     }
 
     fun setChipList(listFilterDataCollection : List<FilterTagDataCollection>){
-        this.listFilterDataCollection = listFilterDataCollection.toMutableList()
+        this.listFilterDataCollection = listFilterDataCollection.take(LIMIT_FILTER_DATA_COLLECTION).toMutableList()
         notifyDataSetChanged()
+    }
+
+    companion object {
+        const val LIMIT_FILTER_DATA_COLLECTION = 5
     }
 }

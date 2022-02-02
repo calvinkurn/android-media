@@ -7,7 +7,7 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipListBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipListFilerViewHolder
 
-class DigitalFilterAdapter: RecyclerView.Adapter<DigitalPDPChipListFilerViewHolder>() {
+class DigitalFilterAdapter: RecyclerView.Adapter<DigitalPDPChipListFilerViewHolder>(), DigitalPDPChipListFilerViewHolder.ListFilterListener {
 
     private var listFilterDataComponent = mutableListOf<TelcoFilterTagComponent>()
 
@@ -28,7 +28,7 @@ class DigitalFilterAdapter: RecyclerView.Adapter<DigitalPDPChipListFilerViewHold
             parent,
             false
         )
-        return DigitalPDPChipListFilerViewHolder(binding)
+        return DigitalPDPChipListFilerViewHolder(binding, this)
     }
 
     fun setChipList(listFilterDataComponent: List<TelcoFilterTagComponent>){
@@ -36,4 +36,7 @@ class DigitalFilterAdapter: RecyclerView.Adapter<DigitalPDPChipListFilerViewHold
         notifyDataSetChanged()
     }
 
+    override fun onSeeAllClicked(element: TelcoFilterTagComponent, position: Int) {
+
+    }
 }

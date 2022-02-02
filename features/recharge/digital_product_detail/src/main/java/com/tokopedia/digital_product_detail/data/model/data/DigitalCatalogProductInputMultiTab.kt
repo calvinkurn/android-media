@@ -184,7 +184,7 @@ data class TelcoFilterTagComponent(
     val paramName: String = "",
     @SerializedName("data_collections")
     @Expose
-    val filterTagDataCollections: List<FilterTagDataCollection> = mutableListOf()
+    var filterTagDataCollections: List<FilterTagDataCollection> = mutableListOf()
 )
 
 data class FilterTagDataCollection(
@@ -194,7 +194,7 @@ data class FilterTagDataCollection(
     @SerializedName("value")
     @Expose
     val value: String = "",
-    val isSelected: Boolean = false
+    var isSelected: Boolean = false
 ): Visitable<BaseListCheckableTypeFactory<FilterTagDataCollection>> {
 
     override fun type(typeFactory: BaseListCheckableTypeFactory<FilterTagDataCollection>): Int {

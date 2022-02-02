@@ -13,6 +13,8 @@ import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPuls
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifyprinciples.R
 import java.lang.ref.WeakReference
 import kotlin.math.abs
@@ -65,5 +67,13 @@ fun Menu.setupOrderListIcon(activityRef: WeakReference<Activity>) {
                 activity.resources,
                 Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true))
         }
+    }
+}
+
+fun SortFilterItem.toggle() {
+    type = if (type == ChipsUnify.TYPE_NORMAL) {
+        ChipsUnify.TYPE_SELECTED
+    } else {
+        ChipsUnify.TYPE_NORMAL
     }
 }
