@@ -128,10 +128,15 @@ class RecommendationViewHolder(
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {
-                    listener.onReloadWidget(element)
+                    refreshWidget(element)
                 }
             }
         }
+    }
+
+    private fun refreshWidget(element: RecommendationWidgetUiModel) {
+        showLoadingState()
+        listener.onReloadWidget(element)
     }
 
     private fun setTagNotification(tag: String) {

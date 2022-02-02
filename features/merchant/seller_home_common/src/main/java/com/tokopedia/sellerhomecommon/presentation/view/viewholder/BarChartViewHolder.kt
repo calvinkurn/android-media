@@ -83,6 +83,7 @@ class BarChartViewHolder(
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
+            luvShcBarChart.gone()
             emptyStateBinding.shcBarChartEmptyState.gone()
         }
     }
@@ -94,6 +95,7 @@ class BarChartViewHolder(
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
+            luvShcBarChart.gone()
             emptyStateBinding.shcBarChartEmptyState.gone()
 
             ImageHandler.loadImageWithId(
@@ -136,13 +138,19 @@ class BarChartViewHolder(
     private fun setupLastUpdatedInfo(element: BarChartWidgetUiModel) {
         binding.luvShcBarChart.run {
             element.data?.lastUpdated?.let { lastUpdated ->
+                visible()
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {
-                    listener.onReloadWidget(element)
+                    refreshWidget(element)
                 }
             }
         }
+    }
+
+    private fun refreshWidget(element: BarChartWidgetUiModel) {
+        setOnLoading()
+        listener.onReloadWidget(element)
     }
 
     private fun setTagNotification(tag: String) {

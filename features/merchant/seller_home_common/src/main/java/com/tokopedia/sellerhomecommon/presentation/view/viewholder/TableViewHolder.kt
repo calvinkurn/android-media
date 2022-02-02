@@ -112,13 +112,19 @@ class TableViewHolder(
     private fun setupLastUpdatedInfo(element: TableWidgetUiModel) {
         binding.luvShcTable.run {
             element.data?.lastUpdated?.let { lastUpdated ->
+                visible()
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {
-                    listener.onReloadWidget(element)
+                    refreshWidget(element)
                 }
             }
         }
+    }
+
+    private fun refreshWidget(element: TableWidgetUiModel) {
+        showLoadingState()
+        listener.onReloadWidget(element)
     }
 
     private fun setOnTableEmpty(element: TableWidgetUiModel) = with(binding) {
@@ -164,6 +170,7 @@ class TableViewHolder(
         tvShcTableEmptyTitle.gone()
         tvShcTableEmptyDescription.gone()
         btnShcTableEmpty.gone()
+        luvShcTable.gone()
     }
 
     private fun showErrorState() = with(binding) {
@@ -176,6 +183,7 @@ class TableViewHolder(
         tvShcTableEmptyTitle.gone()
         tvShcTableEmptyDescription.gone()
         btnShcTableEmpty.gone()
+        luvShcTable.gone()
 
         errorStateBinding.imgWidgetOnError.loadImage(
             com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection

@@ -72,6 +72,7 @@ class PieChartViewHolder(
             pieChartShc.gone()
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
+            luvShcPieChart.gone()
             emptyStateBinding.groupShcPieChartEmpty.gone()
         }
     }
@@ -96,6 +97,7 @@ class PieChartViewHolder(
         pieChartShc.visible()
         tvPieChartValue.visible()
         tvPieChartSubValue.visible()
+        luvShcPieChart.visible()
         emptyStateBinding.groupShcPieChartEmpty.gone()
 
         if (element.isEmpty()) {
@@ -143,6 +145,7 @@ class PieChartViewHolder(
             loadingStateBinding.shimmerWidgetCommon.gone()
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
+            luvShcPieChart.gone()
             emptyStateBinding.groupShcPieChartEmpty.gone()
 
             errorStateBinding.imgWidgetOnError.loadImage(

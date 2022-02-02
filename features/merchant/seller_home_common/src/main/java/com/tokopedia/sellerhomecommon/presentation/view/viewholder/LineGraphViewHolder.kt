@@ -82,11 +82,7 @@ class LineGraphViewHolder(
         val data: LineGraphDataUiModel? = element.data
         itemView.show()
         when {
-            null == data -> {
-                showViewComponent(false, element)
-                onStateError(false)
-                onStateLoading(true)
-            }
+            null == data -> showLoadingState(element)
             data.error.isNotBlank() -> {
                 onStateLoading(false)
                 showViewComponent(false, element)
@@ -99,6 +95,12 @@ class LineGraphViewHolder(
                 showViewComponent(true, element)
             }
         }
+    }
+
+    private fun showLoadingState(element: LineGraphWidgetUiModel) {
+        showViewComponent(false, element)
+        onStateError(false)
+        onStateLoading(true)
     }
 
     private fun setupTooltip(element: LineGraphWidgetUiModel) = with(binding) {
@@ -135,6 +137,7 @@ class LineGraphViewHolder(
             tvLineGraphSubValue.visibility = componentVisibility
             btnLineGraphMore.visibility = componentVisibility
             lineGraphView.visibility = componentVisibility
+            luvShcLineGraph.visibility = componentVisibility
 
             val isCtaVisible =
                 element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
@@ -183,10 +186,15 @@ class LineGraphViewHolder(
                 setLastUpdated(it.lastUpdatedInMillis)
                 setRefreshButtonVisibility(shouldShowRefreshBtn)
                 setRefreshButtonClickListener {
-                    listener.onReloadWidget(element)
+                    refreshWidget(element)
                 }
             }
         }
+    }
+
+    private fun refreshWidget(element: LineGraphWidgetUiModel) {
+        showLoadingState(element)
+        listener.onReloadWidget(element)
     }
 
     private fun setupSeeMoreCta(element: LineGraphWidgetUiModel) {

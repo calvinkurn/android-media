@@ -115,10 +115,15 @@ class MilestoneViewHolder(
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {
-                    listener.onReloadWidget(element)
+                    refreshWidget(element)
                 }
             }
         }
+    }
+
+    private fun refreshWidget(element: MilestoneWidgetUiModel) {
+        showLoadingState(element)
+        listener.onReloadWidget(element)
     }
 
     private fun setOnCloseWidgetClicked(element: MilestoneWidgetUiModel) {

@@ -68,17 +68,13 @@ class PostListViewHolder(
     private fun observeState(postListWidgetUiModel: PostListWidgetUiModel) {
         val data = postListWidgetUiModel.data
         when {
-            data == null -> onLoading()
+            data == null -> showLoadingState()
             data.error.isNotEmpty() -> {
                 onError(postListWidgetUiModel.title)
                 listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel, data.error)
             }
             else -> onSuccessLoadData(postListWidgetUiModel)
         }
-    }
-
-    private fun onLoading() {
-        showLoadingState()
     }
 
     private fun onError(cardTitle: String) {
@@ -115,10 +111,15 @@ class PostListViewHolder(
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {
-                    listener.onReloadWidget(element)
+                    refreshWidget(element)
                 }
             }
         }
+    }
+
+    private fun refreshWidget(element: PostListWidgetUiModel) {
+        showLoadingState()
+        listener.onReloadWidget(element)
     }
 
     private fun showEmptyState(element: PostListWidgetUiModel) {
