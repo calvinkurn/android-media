@@ -93,6 +93,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         observerProductData()
         observerOtherDetail()
         initView()
+
+        productInfoActivationShimmer.visibility = View.VISIBLE
+        detailHeader.visibility = View.GONE
         payLaterActivationViewModel.getProductDetail(productId)
 
     }
@@ -101,6 +104,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.productDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    productInfoActivationShimmer.visibility = View.GONE
+                    detailHeader.visibility = View.VISIBLE
                     setProductData(it.data)
                     payLaterActivationViewModel.getOptimizedCheckoutDetail(
                         productId,
@@ -297,8 +302,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         context?.let {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
-                if (!this.selectedProductId.isBlank()) {
+                if (this.selectedProductId.isNotBlank()) {
                     productId = this.selectedProductId
+
+                    productInfoActivationShimmer.visibility = View.VISIBLE
+                    detailHeader.visibility = View.GONE
                     payLaterActivationViewModel.getProductDetail(this.selectedProductId)
 
                 }

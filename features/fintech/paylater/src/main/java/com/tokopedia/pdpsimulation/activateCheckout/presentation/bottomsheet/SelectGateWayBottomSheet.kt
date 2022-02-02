@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.GatewayListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.activation_gateway_brand.*
 
 class SelectGateWayBottomSheet : BottomSheetUnify() {
@@ -24,6 +26,8 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getArgumentData()
+        setDefaultParams()
+        setTitle(getString(R.string.which_paylater_you_want))
     }
 
     private fun getArgumentData() {
@@ -47,6 +51,13 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
             null, false
         )
         setChild(childView)
+    }
+
+    private fun setDefaultParams() {
+        isDragable = true
+        isHideable = true
+        showCloseIcon = true
+        showHeader = true
     }
 
 

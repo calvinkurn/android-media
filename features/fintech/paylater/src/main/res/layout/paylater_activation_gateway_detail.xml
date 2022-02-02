@@ -54,11 +54,11 @@
         android:layout_height="wrap_content"
         android:text="Ganti"
         android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@+id/subheaderGateway"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/subheaderGateway"
-        app:typographyWeight="reguler"
 
-        />
+        app:typographyWeight="reguler" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTenureDetail"
