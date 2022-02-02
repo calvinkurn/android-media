@@ -14,19 +14,19 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
-import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
-import com.tokopedia.pdpsimulation.paylater.presentation.fragment.PdpSimulationFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
-class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>, PdpSimulationCallback {
+class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>,
+    PdpSimulationCallback {
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
     private val REQUEST_CODE_LOGIN = 123
+
     @Inject
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
 

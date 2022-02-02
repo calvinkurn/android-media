@@ -6,20 +6,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.GatewayViewHolder
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.TenureViewHolder
 
-class ActivationTenureAdapter(
+class GatewayListAdapter(
     var tenureDetailList: List<TenureDetail>,
-    private val listner: ActivationListner
-) : RecyclerView.Adapter<TenureViewHolder>() {
+) : RecyclerView.Adapter<GatewayViewHolder>() {
 
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): TenureViewHolder {
+    ): GatewayViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return TenureViewHolder.getViewHolder(inflater, parent, listner)
+        return GatewayViewHolder.getViewHolder(inflater, parent)
     }
 
 
@@ -27,16 +27,9 @@ class ActivationTenureAdapter(
         return tenureDetailList.size
     }
 
-    fun updateList(newTenureList: List<TenureDetail>) {
-        this.tenureDetailList = newTenureList
-        notifyDataSetChanged()
-    }
 
-    override fun onBindViewHolder(holder: TenureViewHolder, position: Int) {
-        holder.bindData(
-            tenureDetailList[position],
-            DataMapper.mapToInstallationDetail(tenureDetailList[position]), position
-        )
+    override fun onBindViewHolder(holder: GatewayViewHolder, position: Int) {
+
     }
 
 }

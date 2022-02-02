@@ -11,16 +11,18 @@ object DataMapper {
     fun mapToInstallationDetail(tenureDetail: TenureDetail): TenureSelectedModel {
 
         val priceText = tenureDetail.monthly_installment
-        val tenure ="X${tenureDetail.tenure}"
+        val tenure = "X${tenureDetail.tenure}"
         val contentList: MutableList<Content> = ArrayList()
-        for(i in 0 until tenureDetail.installment_details.detailContent.size)
-        {
-            val content = Content(tenureDetail.installment_details.detailContent[i].title,
+        for (i in 0 until tenureDetail.installment_details.detailContent.size) {
+            val content = Content(
+                tenureDetail.installment_details.detailContent[i].title,
                 tenureDetail.installment_details.detailContent[i].value,
-                tenureDetail.installment_details.detailContent[i].type)
+                tenureDetail.installment_details.detailContent[i].type
+            )
             contentList.add(content)
         }
-         val installmentDetails = InstallmentDetails(tenureDetail.installment_details.header,contentList);
-        return TenureSelectedModel(priceText,tenure,installmentDetails)
+        val installmentDetails =
+            InstallmentDetails(tenureDetail.installment_details.header, contentList)
+        return TenureSelectedModel(priceText, tenure, installmentDetails)
     }
 }

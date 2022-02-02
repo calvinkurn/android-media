@@ -30,7 +30,7 @@ class PayLaterActivationViewModel @Inject constructor(
     val payLaterActivationDetailLiveData: LiveData<Result<PaylaterGetOptimizedModel>> =
         _payLaterActivationDetailLiveData
 
-    var price =0.0
+    var price = 0.0
 
 
     fun getProductDetail(productId: String) {
@@ -70,7 +70,7 @@ class PayLaterActivationViewModel @Inject constructor(
 
     private fun onSuccessActivationData(paylaterGetOptimizedModel: PaylaterGetOptimizedModel) {
         paylaterGetOptimizedModel.let {
-            _payLaterActivationDetailLiveData.postValue( Success(it))
+            _payLaterActivationDetailLiveData.postValue(Success(it))
         }
 
     }

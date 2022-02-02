@@ -11,26 +11,29 @@ import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view.*
 
-class TenureViewHolder(itemView: View,val tenureSelectListner: ActivationListner):RecyclerView.ViewHolder(itemView) {
+class TenureViewHolder(itemView: View, val tenureSelectListner: ActivationListner) :
+    RecyclerView.ViewHolder(itemView) {
 
-    fun bindData(tenureDetail: TenureDetail, tenureSelectedModel: TenureSelectedModel,currentPosition:Int) {
+    fun bindData(
+        tenureDetail: TenureDetail,
+        tenureSelectedModel: TenureSelectedModel,
+        currentPosition: Int
+    ) {
 
         itemView.apply {
-           // changeViewColor(tenureSelectListner.isDisable())
-            if(tenureDetail.isSelected) {
+            // changeViewColor(tenureSelectListner.isDisable())
+            if (tenureDetail.isSelected) {
                 individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 radioSelector.isChecked = true
-            }
-            else
-            {
+            } else {
                 individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
                 radioSelector.isChecked = false
             }
             paymentDetailHeader.text = tenureDetail.chip_title
             paymentDetailSubHeader.text = tenureDetail.description
             individualTenureItemContainer.setOnClickListener {
-                tenureSelectListner.selectedTenure(tenureSelectedModel,currentPosition)
-           }
+                tenureSelectListner.selectedTenure(tenureSelectedModel, currentPosition)
+            }
         }
     }
 
@@ -49,9 +52,13 @@ class TenureViewHolder(itemView: View,val tenureSelectListner: ActivationListner
     companion object {
         private val LAYOUT_ID = R.layout.paylater_activation_individual_tenure
 
-        fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup,tenureSelectListner: ActivationListner) =
+        fun getViewHolder(
+            inflater: LayoutInflater,
+            parent: ViewGroup,
+            tenureSelectListner: ActivationListner
+        ) =
             TenureViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false),tenureSelectListner
+                inflater.inflate(LAYOUT_ID, parent, false), tenureSelectListner
             )
     }
 }

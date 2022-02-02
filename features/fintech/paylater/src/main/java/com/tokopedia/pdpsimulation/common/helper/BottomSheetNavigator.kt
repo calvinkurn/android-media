@@ -2,6 +2,7 @@ package com.tokopedia.pdpsimulation.paylater.helper
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterTokopediaGopayBottomsheet
@@ -30,6 +31,9 @@ class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
                     bundle,
                     childFragmentManager
                 )
+            }
+            modelClass.isAssignableFrom(SelectGateWayBottomSheet::class.java)->{
+                SelectGateWayBottomSheet.show(bundle,childFragmentManager)
             }
         }
     }

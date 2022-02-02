@@ -17,6 +17,8 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedM
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.GATEWAY_LIST
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
@@ -38,17 +40,19 @@ import kotlinx.android.synthetic.main.product_detail.view.*
 import javax.inject.Inject
 
 
-class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
+class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val payLaterActivationViewModel: PayLaterActivationViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val payLaterActivationViewModel: PayLaterActivationViewModel by lazy(
+        LazyThreadSafetyMode.NONE
+    ) {
         val viewModelProvider = ViewModelProvider(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(PayLaterActivationViewModel::class.java)
     }
 
-    private var productId: String  =""
+    private var productId: String = ""
 
     private val gatewayId: Int by lazy {
         arguments?.getInt(PARAM_GATEWAY_ID) ?: -1
@@ -58,9 +62,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
         arguments?.getInt(PARAM_PRODUCT_TENURE) ?: 0
     }
 
-    private lateinit var  activationTenureAdapter  : ActivationTenureAdapter
-    private lateinit var installmentModel:InstallmentDetails
-    private  var listOfTenureDetail:List<TenureDetail> = ArrayList()
+    private lateinit var activationTenureAdapter: ActivationTenureAdapter
+    private lateinit var installmentModel: InstallmentDetails
+    private var listOfTenureDetail: List<TenureDetail> = ArrayList()
+    private lateinit var listOfGateway: PaylaterGetOptimizedModel
     private var selectedTenurePosition = 0
     private var selectedGateway = 0
     var quantity = 1
@@ -84,7 +89,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productId = arguments?.getString(PARAM_PRODUCT_ID,"").toString()
+        productId = arguments?.getString(PARAM_PRODUCT_ID, "").toString()
         observerProductData()
         observerOtherDetail()
         initView()
@@ -93,13 +98,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
     }
 
     private fun observerProductData() {
-        payLaterActivationViewModel.productDetailLiveData.observe(viewLifecycleOwner){
-            when(it)
-            {
+        payLaterActivationViewModel.productDetailLiveData.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success -> {
                     setProductData(it.data)
-                        payLaterActivationViewModel.getOptimizedCheckoutDetail(productId,
-                            payLaterActivationViewModel.price*quantity,gatewayId)
+                    payLaterActivationViewModel.getOptimizedCheckoutDetail(
+                        productId,
+                        payLaterActivationViewModel.price * quantity, gatewayId
+                    )
 
                 }
                 is Fail -> {
@@ -112,16 +118,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
     }
 
 
-    private fun observerOtherDetail(){
-        payLaterActivationViewModel.payLaterActivationDetailLiveData.observe(viewLifecycleOwner){
-            when(it)
-            {
+    private fun observerOtherDetail() {
+        payLaterActivationViewModel.payLaterActivationDetailLiveData.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success -> {
-                    if(it.data.checkoutData.isNotEmpty()) {
+                    if (it.data.checkoutData.isNotEmpty()) {
+                        listOfGateway = it.data
                         setSelectedTenure(it.data)
                         setTenureOptionsData(it.data)
-                    }
-                    else{
+                    } else {
                         limitExceededMethod()
                     }
                 }
@@ -138,18 +143,16 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
     }
 
     private fun setSelectedTenure(data: PaylaterGetOptimizedModel) {
-        for(i in 0 until data.checkoutData[selectedGateway].tenureDetail.size)
-        {
-            if(tenureSelected == data.checkoutData[selectedGateway].tenureDetail[i].tenure)
-            {
+        for (i in 0 until data.checkoutData[selectedGateway].tenureDetail.size) {
+            if (tenureSelected == data.checkoutData[selectedGateway].tenureDetail[i].tenure) {
                 selectedTenurePosition = i
                 break
             }
         }
         data.checkoutData[selectedGateway].tenureDetail[selectedTenurePosition].isSelected = true
-          DataMapper.mapToInstallationDetail(data.checkoutData[selectedGateway].tenureDetail[selectedTenurePosition]).installmentDetails?.let {
-              installmentModel = it
-          }
+        DataMapper.mapToInstallationDetail(data.checkoutData[selectedGateway].tenureDetail[selectedTenurePosition]).installmentDetails?.let {
+            installmentModel = it
+        }
         DataMapper.mapToInstallationDetail(data.checkoutData[selectedGateway].tenureDetail[selectedTenurePosition]).tenure?.let {
             paymentDuration.text = it
         }
@@ -159,19 +162,21 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
     }
 
     private fun setTenureOptionsData(data: PaylaterGetOptimizedModel) {
-        if(data.checkoutData.isNotEmpty())
-        {
+        if (data.checkoutData.isNotEmpty()) {
             setGatewayProductImage(data.checkoutData[selectedGateway])
-            if(!data.checkoutData[selectedGateway].gateway_name.isBlank())
-                gatewayDetailLayout.getwayBrandName.text = data.checkoutData[selectedGateway].gateway_name
+            if (!data.checkoutData[selectedGateway].gateway_name.isBlank())
+                gatewayDetailLayout.getwayBrandName.text =
+                    data.checkoutData[selectedGateway].gateway_name
             else
                 gatewayDetailLayout.getwayBrandName.visibility = View.GONE
-            if(!data.checkoutData[selectedGateway].subtitle.isBlank())
-                gatewayDetailLayout.subheaderGateway.text = data.checkoutData[selectedGateway].subtitle
+            if (!data.checkoutData[selectedGateway].subtitle.isBlank())
+                gatewayDetailLayout.subheaderGateway.text =
+                    data.checkoutData[selectedGateway].subtitle
             else
                 gatewayDetailLayout.subheaderGateway.visibility = View.GONE
-            if(!data.checkoutData[selectedGateway].subtitle2.isBlank())
-                gatewayDetailLayout.subheaderGatewayDetail.text = data.checkoutData[selectedGateway].subtitle2
+            if (!data.checkoutData[selectedGateway].subtitle2.isBlank())
+                gatewayDetailLayout.subheaderGatewayDetail.text =
+                    data.checkoutData[selectedGateway].subtitle2
             else
                 gatewayDetailLayout.subheaderGatewayDetail.visibility = View.GONE
             gatewayDetailLayout.additionalDetail.text = data.footer
@@ -186,7 +191,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
     }
 
     private fun setGatewayProductImage(checkoutData: CheckoutData) {
-        if(context.isDarkMode())
+        if (context.isDarkMode())
             gatewayDetailLayout.gatewayImg.setImageUrl(checkoutData.dark_img_url)
         else
             gatewayDetailLayout.gatewayImg.setImageUrl(checkoutData.light_img_url)
@@ -211,8 +216,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
         showVariantProductHeader(productData)
     }
 
-    private fun showVariantProductHeader(data: GetProductV3)
-    {
+    private fun showVariantProductHeader(data: GetProductV3) {
         data.variant?.let { variant ->
             if (variant.products.isNotEmpty() && variant.selections.isNotEmpty()) {
                 var combination = -1
@@ -232,33 +236,47 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
     }
 
 
-
     private fun initView() {
-        addListners()
+        addListeners()
         gatewayDetailLayout.recyclerTenureDetail.isNestedScrollingEnabled = false
-        gatewayDetailLayout.recyclerTenureDetail.layoutManager= LinearLayoutManager(context)
+        gatewayDetailLayout.recyclerTenureDetail.layoutManager = LinearLayoutManager(context)
         gatewayDetailLayout.recyclerTenureDetail.adapter = activationTenureAdapter
     }
 
-    private fun addListners() {
+    private fun addListeners() {
 
-        detailHeader.quantityEditor.setValueChangedListener{newValue,_,_ ->
-            quantity = newValue
-            payLaterActivationViewModel.getOptimizedCheckoutDetail(productId,payLaterActivationViewModel.price*quantity, gatewayId)
+        gatewayDetailLayout.changePayLaterPartner.setOnClickListener {
+            if (this::listOfGateway.isInitialized) {
+                val bundle = Bundle().apply {
+                    putParcelable(
+                        GATEWAY_LIST,
+                        listOfGateway
+                    )
+                }
+                bottomSheetNavigator.showBottomSheet(SelectGateWayBottomSheet::class.java, bundle)
+            }
         }
 
-        activationTenureAdapter = ActivationTenureAdapter(listOf(),this)
-        detailHeader.showVariantBottomSheet.setOnClickListener{
+        detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
+            quantity = newValue
+            payLaterActivationViewModel.getOptimizedCheckoutDetail(
+                productId,
+                payLaterActivationViewModel.price * quantity,
+                gatewayId
+            )
+        }
+
+        activationTenureAdapter = ActivationTenureAdapter(listOf(), this)
+        detailHeader.showVariantBottomSheet.setOnClickListener {
             context?.let {
-                AtcVariantHelper.goToAtcVariant(it,productId,"",false,"") { data, code ->
+                AtcVariantHelper.goToAtcVariant(it, productId, "", false, "") { data, code ->
                     startActivityForResult(data, code)
                 }
             }
         }
 
         priceBreakdown.setOnClickListener {
-            if(this::installmentModel.isInitialized)
-            {
+            if (this::installmentModel.isInitialized) {
                 val bundle = Bundle().apply {
                     putParcelable(
                         PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
@@ -279,7 +297,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         context?.let {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
-                if(!this.selectedProductId.isBlank() ) {
+                if (!this.selectedProductId.isBlank()) {
                     productId = this.selectedProductId
                     payLaterActivationViewModel.getProductDetail(this.selectedProductId)
 
@@ -287,8 +305,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
             }
         }
     }
-
-
 
 
     companion object {
@@ -309,10 +325,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(),ActivationListner {
         tenureSelectedModel: TenureSelectedModel,
         newPositionToSelect: Int
     ) {
-        tenureSelectedModel.installmentDetails?.let{
+        tenureSelectedModel.installmentDetails?.let {
             installmentModel = it
         }
-        tenureSelectedModel.priceText?.let{
+        tenureSelectedModel.priceText?.let {
             amountToPay.text = it
         }
         tenureSelectedModel.tenure?.let {
