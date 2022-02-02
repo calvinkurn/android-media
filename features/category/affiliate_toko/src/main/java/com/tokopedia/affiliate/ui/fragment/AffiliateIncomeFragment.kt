@@ -234,7 +234,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
     }
 
-    private fun sendHomeEvent(eventAction: String,eventLabel: String) {
+    private fun sendPendapatanEvent(eventAction: String, eventLabel: String) {
         AffiliateAnalytics.sendEvent(
             AffiliateAnalytics.EventKeys.CLICK_PG,
             eventAction,
@@ -268,6 +268,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             })
         }
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
+           sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,"")
            sendTarikSaldoClickEvent()
            openWithdrawalScreen()
         }
@@ -327,7 +328,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
     private fun initDateRangeClickListener() {
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
-            sendHomeEvent(AffiliateAnalytics.ActionKeys.CLICK_FILTER_DATE,"")
+            sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_FILTER_DATE,"")
             AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this).show(childFragmentManager, "")
         }
     }
@@ -364,7 +365,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 //    }
 
     override fun rangeChanged(range: AffiliateDatePickerData) {
-        sendHomeEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,range.value)
+        sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,range.value)
         affiliateIncomeViewModel.onRangeChanged(range)
     }
 
