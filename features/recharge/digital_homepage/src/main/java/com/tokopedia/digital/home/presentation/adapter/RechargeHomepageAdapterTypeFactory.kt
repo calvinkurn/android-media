@@ -16,6 +16,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
+import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardsModel
 import com.tokopedia.digital.home.model.RechargeHomepageRecommendationBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
@@ -35,6 +36,7 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageFavoriteViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLoadingViewholder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerV2ViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardUnifyViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardsViewHolder
@@ -137,11 +139,11 @@ class RechargeHomepageAdapterTypeFactory(
     fun type(recommendationBannerModel: RechargeHomepageRecommendationBannerModel): Int =
         RechargeHomepageRecommendationBannerViewHolder.LAYOUT
 
-    fun type(productCardCustomBanner: RechargeHomePageProductCardCustomBannerV2Model): Int {
+    fun type(productCardCustomBanner: RechargeHomepageProductCardCustomBannerV2Model): Int {
         return RechargeHomepageProductCardCustomBannerV2ViewHolder.LAYOUT
     }
 
-       override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
+    override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
 
@@ -279,8 +281,14 @@ class RechargeHomepageAdapterTypeFactory(
                 )
                 RechargeHomepageProductCardUnifyViewHolder(binding, listener)
             }
-            RechargeHomepageThreeIconsViewHolder.LAYOUT -> RechargeHomepageThreeIconsViewHolder(parent, listener)
-            RechargeHomepageProductCardCustomBannerV2ViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerV2ViewHolder(parent, listener)
+            RechargeHomepageThreeIconsViewHolder.LAYOUT -> RechargeHomepageThreeIconsViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageProductCardCustomBannerV2ViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerV2ViewHolder(
+                parent,
+                listener
+            )
             RechargeHomepageRecommendationBannerViewHolder.LAYOUT -> {
                 val binding = ViewRechargeHomeRecommendationBannerBinding.inflate(
                     LayoutInflater.from(parent.context),

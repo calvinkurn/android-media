@@ -541,10 +541,10 @@ open class RechargeProductCardUnifyModel(open val section: RechargeHomepageSecti
 
 }
 
-data class RechargeHomePageProductCardCustomBannerV2Model(override val section: RechargeHomepageSections.Section): RechargeProductCardUnifyModel(section){
+data class RechargeHomepageProductCardCustomBannerV2Model(override val section: RechargeHomepageSections.Section): RechargeProductCardUnifyModel(section){
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is RechargeHomePageProductCardCustomBannerV2Model) {
+        return if (b is RechargeHomepageProductCardCustomBannerV2Model) {
             section == b.section
         } else false
     }
