@@ -9,6 +9,7 @@
     <string name="sah_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="sah_reload">Muat ulang</string>
     <string name="sah_exit_message">Tekan sekali lagi untuk keluar</string>
+    <string name="sah_some_widgets_need_to_be_refreshed">Beberapa data perlu diperbarui</string>
 
     <!--bottom nav-->
     <string name="sah_home">Home</string>

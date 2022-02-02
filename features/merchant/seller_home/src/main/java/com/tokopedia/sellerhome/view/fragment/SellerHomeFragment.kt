@@ -172,6 +172,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var notifCenterCount = 0
     private var isFirstLoad = true
     private var isErrorToastShown = false
+    private var isReloading = false
     private var shouldShowSuccessToaster: Boolean = false
 
     private var performanceMonitoringSellerHomePltCompleted = false
@@ -674,6 +675,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
+        isReloading = true
         shouldShowSuccessToaster = true
         getWidgetsData(listOf(widget))
     }
@@ -788,6 +790,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun reloadPage() = binding?.run {
+        isReloading = true
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
         swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
@@ -1086,6 +1089,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
+        isReloading = false
         binding?.sahGlobalError?.gone()
         emptyState?.gone()
         recyclerView?.visible()
@@ -1220,7 +1224,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (adapter.data.isEmpty()) {
             showErrorViewByException(throwable)
         } else {
-            throwable.showErrorToaster()
+            if (isReloading) {
+                throwable.showErrorToaster()
+            }
             sahGlobalError.gone()
             emptyState?.gone()
             showWidgetRefreshButton()
@@ -1505,6 +1511,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(
         widgetType: String
     ) {
+        isReloading = false
         val isFromCache = firstOrNull()?.isFromCache == true
         stopSellerHomeFragmentWidgetPerformanceMonitoring(widgetType, isFromCache)
         stopPltMonitoringIfNotCompleted(isFromCache)
@@ -1590,6 +1597,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widgetType: String
     ) {
         val errorMessage = this.message.orEmpty()
+        var isAnyWidgetNeedToUpdated = false
         val newWidgetList = adapter.data.map { widget ->
             val isSameWidgetType = widget.widgetType == widgetType
             val shouldShowErrorState = widget.data == null && widget.isLoaded && isSameWidgetType
@@ -1602,6 +1610,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     isLoading = widget.data?.isFromCache ?: false
                 }
             } else if (shouldShowExistingData) {
+                isAnyWidgetNeedToUpdated = true
                 copyExistingWidget(widget)
             } else {
                 widget
@@ -1613,10 +1622,36 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         notifyWidgetWithSdkChecking {
             updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         }
-        showErrorToaster()
+
+        if (isAnyWidgetNeedToUpdated && !isReloading) {
+            showWidgetLastUpdatedWarningToaster()
+        } else {
+            showErrorToaster()
+        }
+
         view?.addOneTimeGlobalLayoutListener {
             requestVisibleWidgetsData()
             checkLoadingWidgets()
+        }
+        isReloading = false
+    }
+
+    private fun showWidgetLastUpdatedWarningToaster() {
+        binding?.run {
+            if (isErrorToastShown) return
+            isErrorToastShown = true
+
+            val message = getString(R.string.sah_some_widgets_need_to_be_refreshed)
+            Toaster.build(
+                this.root, message,
+                Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.sah_reload)
+            ) {
+                reloadPageOrLoadDataOfErrorWidget()
+            }.show()
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                isErrorToastShown = false
+            }, TOAST_DURATION)
         }
     }
 
