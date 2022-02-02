@@ -19,6 +19,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import javax.inject.Singleton
 
 /**
  * @author by nisie on 13/11/18.
@@ -52,7 +53,7 @@ open class UserIdentificationCommonModule {
 
     @ActivityScope
     @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+    open fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @ActivityScope
     @Provides

@@ -1,28 +1,24 @@
-[
-  {
-    "data": {
-      "kycProjectInfo": {
-        "IsAllowToRegister": true,
-        "IsSelfie": false,
-        "Message": "",
-        "Reason": [],
+{
+  "kycProjectInfo": {
+    "IsAllowToRegister": true,
+    "IsSelfie": false,
+    "Message": "",
+    "Reason": [],
+    "Status": 3,
+    "StatusName": "Belum Terverifikasi",
+    "TypeList": [
+      {
+        "IsAllowToUpload": true,
         "Status": 3,
         "StatusName": "Belum Terverifikasi",
-        "TypeList": [
-          {
-            "IsAllowToUpload": true,
-            "Status": 3,
-            "StatusName": "Belum Terverifikasi",
-            "TypeID": 1
-          },
-          {
-            "IsAllowToUpload": true,
-            "Status": 3,
-            "StatusName": "Belum Terverifikasi",
-            "TypeID": 2
-          }
-        ]
+        "TypeID": 1
+      },
+      {
+        "IsAllowToUpload": true,
+        "Status": 3,
+        "StatusName": "Belum Terverifikasi",
+        "TypeID": 2
       }
-    }
+    ]
   }
-]
+}

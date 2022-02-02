@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.di
 import android.app.Activity
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kyc_centralized.data.network.KycUploadApi
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceInterface
 import okhttp3.OkHttpClient
@@ -18,6 +19,12 @@ class FakeKycActivityComponentFactory(val case: FakeKycUploadApi.Case = FakeKycU
                     retrofitBuilder: Retrofit.Builder
                 ): KycUploadApi {
                     return FakeKycUploadApi(case)
+                }
+            })
+            .userIdentificationCommonModule(object : UserIdentificationCommonModule() {
+                private val fakeGql = FakeGraphqlRepository()
+                override fun provideGraphQlRepository(): GraphqlRepository {
+                    return FakeGraphqlRepository()
                 }
             })
             .build()

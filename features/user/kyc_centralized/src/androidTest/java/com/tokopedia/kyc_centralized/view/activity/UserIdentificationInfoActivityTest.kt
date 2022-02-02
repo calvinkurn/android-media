@@ -54,21 +54,12 @@ class UserIdentificationInfoActivityTest {
 
     @Before
     fun setup() {
-        setupGraphqlMockResponse {
-            addMockResponse(
-                "get_project_info",
-                getRawString(
-                    ApplicationProvider.getApplicationContext(),
-                    R.raw.get_project_info_not_verified
-                ),
-                MockModelConfig.FIND_BY_CONTAINS
-            )
-        }
+        // no op
     }
 
 
     @Test
-    fun launchTest() {
+    fun happyFlowTest() {
         ActivityComponentFactory.instance = FakeKycActivityComponentFactory()
         activityTestRule.launchActivity(null)
         val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(
