@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseMo
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -33,7 +33,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private val _focusedProductList = MutableStateFlow(emptyList<ProductUiModel>())
     private val _selectedProductList = MutableStateFlow(emptyList<ProductUiModel>())
 
-    private val _sortFilter = MutableStateFlow(SortFilterUiModel.Empty)
+    private val _sort = MutableStateFlow<SortUiModel?>(null)
 
     private val _campaignAndEtalase = combine(
         _selectedEtalase,
@@ -51,13 +51,13 @@ class PlayBroProductSetupViewModel @Inject constructor(
         _campaignAndEtalase,
         _focusedProductList,
         _selectedProductList,
-        _sortFilter,
-    ) { campaignAndEtalase, focusedProductList, selectedProductList, sortFilter ->
+        _sort,
+    ) { campaignAndEtalase, focusedProductList, selectedProductList, sort ->
         PlayBroProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
             selectedProductList = selectedProductList,
-            sortFilter = sortFilter,
+            sort = sort,
         )
     }.stateIn(
         viewModelScope,
@@ -72,7 +72,9 @@ class PlayBroProductSetupViewModel @Inject constructor(
     }
 
     fun submitAction(action: PlayBroProductChooserAction) {
-
+        when (action) {
+            is PlayBroProductChooserAction.SetSort -> handleSetSort(action.sort)
+        }
     }
 
     private fun getProductsInEtalase(etalaseId: String) {
@@ -97,5 +99,9 @@ class PlayBroProductSetupViewModel @Inject constructor(
         }) {
             print(it)
         }
+    }
+
+    private fun handleSetSort(sort: SortUiModel) {
+        _sort.value = sort
     }
 }

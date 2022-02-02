@@ -6,18 +6,37 @@ package com.tokopedia.play.broadcaster.ui.model.sort
 data class SortUiModel(
     val id: Int,
     val text: String,
-)
-
-data class SortFilterUiModel(
-    val selectedId: Int,
-    val sortList: List<SortUiModel>,
 ) {
     companion object {
-        val Empty: SortFilterUiModel
-            get() = SortFilterUiModel(
-                selectedId = -1,
-                sortList = emptyList()
-            )
+        val supportedSortList: List<SortUiModel> = listOf(
+            SortUiModel(
+                id = 2,
+                text = "Terbaru",
+            ),
+            SortUiModel(
+                id = 23,
+                text = "Paling Sesuai",
+            ),
+            SortUiModel(
+                id = 9,
+                text = "Harga Terendah",
+            ),
+            SortUiModel(
+                id = 10,
+                text = "Harga Tertinggi",
+            ),
+            SortUiModel(
+                id = 11,
+                text = "Ulasan Terbanyak",
+            ),
+        )
+
+        fun getSortById(id: Int): SortUiModel? {
+            return supportedSortList.firstOrNull { it.id == id }
+        }
+
+        val Empty: SortUiModel
+            get() = supportedSortList.first()
     }
 }
 

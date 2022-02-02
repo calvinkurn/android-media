@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -11,17 +12,21 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -31,7 +36,7 @@ import javax.inject.Inject
 class ProductChooserBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
-) : BottomSheetUnify() {
+) : BottomSheetUnify(), ProductSortBottomSheet.Listener {
 
     private lateinit var viewModel: PlayBroProductSetupViewModel
 
@@ -39,8 +44,14 @@ class ProductChooserBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayBroProductChooserBinding
         get() = _binding!!
 
+    private val eventBus by viewLifecycleBound(
+        creator = { EventBus<Any>() },
+    )
+
     private val productListView by viewComponent { ProductListViewComponent(binding.rvProducts) }
-    private val sortChipsView by viewComponent { SortChipsViewComponent(binding.chipsSort) }
+    private val sortChipsView by viewComponent(isEagerInit = true) {
+        SortChipsViewComponent(binding.chipsSort, eventBus)
+    }
     private val etalaseChipsView by viewComponent { EtalaseChipsViewComponent(binding.chipsEtalase) }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -68,6 +79,17 @@ class ProductChooserBottomSheet @Inject constructor(
         _binding = null
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ProductSortBottomSheet -> childFragment.setListener(this)
+        }
+    }
+
+    override fun onSortChosen(bottomSheet: ProductSortBottomSheet, item: SortUiModel) {
+        viewModel.submitAction(PlayBroProductChooserAction.SetSort(item))
+    }
+
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
     }
@@ -89,9 +111,17 @@ class ProductChooserBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderProductList(prevState?.focusedProductList, state.focusedProductList)
-                renderSortChips(prevState?.sortFilter, state.sortFilter)
+                renderSortChips(prevState?.sort, state.sort)
                 renderEtalaseChips(prevState?.campaignAndEtalase, state.campaignAndEtalase)
                 renderBottomSheetTitle(state.selectedProductList)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            eventBus.subscribe().collect {
+                when (it) {
+                    is SortChipsViewComponent.Event -> handleSortChipsEvent(it)
+                }
             }
         }
     }
@@ -106,16 +136,12 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderSortChips(
-        prevSortFilter: SortFilterUiModel?,
-        sortFilter: SortFilterUiModel
+        prevSort: SortUiModel?,
+        sort: SortUiModel?,
     ) {
-        if (prevSortFilter?.selectedId == sortFilter.selectedId) return
+        if (prevSort?.id == sort?.id) return
 
-        sortChipsView.setText(
-            sortFilter.sortList.firstOrNull {
-                it.id == sortFilter.selectedId
-            }?.text.orEmpty()
-        )
+        sortChipsView.setText(sort?.text)
     }
 
     private fun renderEtalaseChips(
@@ -150,6 +176,21 @@ class ProductChooserBottomSheet @Inject constructor(
                 30
             )
         )
+    }
+
+    /**
+     * View Event
+     */
+    private fun handleSortChipsEvent(event: SortChipsViewComponent.Event) {
+        when (event) {
+            SortChipsViewComponent.Event.OnClicked -> {
+                ProductSortBottomSheet.getFragment(
+                    childFragmentManager,
+                    requireActivity().classLoader,
+                    selectedId = viewModel.uiState.value.sort?.id
+                ).show(childFragmentManager)
+            }
+        }
     }
 
     companion object {

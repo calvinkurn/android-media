@@ -4,7 +4,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseMo
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -13,7 +13,7 @@ data class PlayBroProductChooserUiState(
     val campaignAndEtalase: CampaignAndEtalaseUiModel,
     val focusedProductList: List<ProductUiModel>,
     val selectedProductList: List<ProductUiModel>,
-    val sortFilter: SortFilterUiModel,
+    val sort: SortUiModel?,
 ) {
 
     companion object {
@@ -22,7 +22,7 @@ data class PlayBroProductChooserUiState(
                 campaignAndEtalase = CampaignAndEtalaseUiModel.Empty,
                 focusedProductList = emptyList(),
                 selectedProductList = emptyList(),
-                sortFilter = SortFilterUiModel.Empty,
+                sort = null,
             )
     }
 }
