@@ -2672,11 +2672,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun renderProductCount() {
-        val productCount = if (filterTab?.isFilterActive() == true) {
-            filterTab?.getProductCount()
-        } else {
-            viewModel.getTotalProductCount()
-        }
+        val productCount = viewModel.getTotalProductCount()
         textProductCount?.text = getString(R.string.product_manage_count_format, productCount)
     }
 
