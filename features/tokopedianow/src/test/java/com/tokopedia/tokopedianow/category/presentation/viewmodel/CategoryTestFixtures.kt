@@ -22,6 +22,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -129,11 +130,19 @@ open class CategoryTestFixtures {
         }
     }
 
+    protected fun `Given address data null`() {
+        tokoNowCategoryViewModel.mockSuperClassField("chooseAddressData", null)
+    }
+
     protected fun `Given view already created`() {
         tokoNowCategoryViewModel.onViewCreated()
     }
 
     protected fun `When view created`() {
         tokoNowCategoryViewModel.onViewCreated()
+    }
+
+    protected fun `When view reload page`() {
+        tokoNowCategoryViewModel.onViewReloadPage()
     }
 }

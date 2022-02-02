@@ -15,7 +15,7 @@ class CategorySetUserPreferenceTest: CategoryTestFixtures() {
 
     @Test
     fun `set user preference should give success result`() {
-        val userPreferenceResponse = "userpreference/set-user-preference.json"
+        val userPreferenceResponse = "userpreference/set-user-preference-2h.json"
             .jsonToObject<SetUserPreference.SetUserPreferenceResponse>()
 
         `Given user preference data`(userPreferenceResponse.data)
@@ -24,6 +24,15 @@ class CategorySetUserPreferenceTest: CategoryTestFixtures() {
 
         `Then verify user preference use case called`()
         `Then verify the data`(userPreferenceResponse.data)
+    }
+
+    @Test
+    fun `set user preference with null address data`() {
+        `Given address data null`()
+
+        `When user preference use case called`()
+
+        `Then verify user preference use case not called`()
     }
 
     @Test
@@ -50,6 +59,10 @@ class CategorySetUserPreferenceTest: CategoryTestFixtures() {
 
     private fun `Then verify user preference use case called`() {
         coVerify { setUserPreferenceUseCase.execute(any(), any()) }
+    }
+
+    private fun `Then verify user preference use case not called`() {
+        coVerify(exactly = 0) { setUserPreferenceUseCase.execute(any(), any()) }
     }
 
     private fun `Then verify the data`(data: SetUserPreference.SetUserPreferenceData) {
