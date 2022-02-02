@@ -15,6 +15,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
@@ -38,6 +40,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
+import okhttp3.Route
 import java.util.ArrayList
 
 
@@ -214,22 +217,29 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                     detailText.requestLayout()
 
                 } else {
-                    val rowView = inflater.inflate(R.layout.thank_payment_summary_item, null, false)
+                    val rowView = inflater.inflate(R.layout.thank_payment_mode_item, null, false)
                     val tvTitle = rowView.findViewById<Typography>(R.id.tvInvoicePaymentModeName)
                     val tvValue = rowView.findViewById<Typography>(R.id.tvInvoicePaidWithModeValue)
                     tvTitle.text = info.desctiption
                     tvValue.text = info.message
                     tvValue.setWeight(Typography.BOLD)
 
+                    val lp  = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    lp.topMargin = 4.toPx()
+                    rowView.layoutParams = lp
                     llSummaryContainer.addView(rowView)
                 }
             }
         }
-
     }
 
     private fun openPaymentDetails(info: ThanksSummaryInfo) {
-
+        if(info.ctaApplink.isNullOrEmpty() ) {
+            if (info.ctaLink.isNullOrEmpty().not())
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, info.ctaLink)
+        } else {
+            RouteManager.route(context, info.ctaApplink)
+        }
     }
 
     private fun getGatewayAdditionalInfo(): GatewayAdditionalData? {
