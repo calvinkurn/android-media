@@ -37,7 +37,6 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.SetupBroadcastScheduleBottomSheet
-import com.tokopedia.play.broadcaster.view.fragment.edit.TitleAndTagsEditBottomSheet
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastScheduleViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -181,7 +180,6 @@ class PlayBeforeLiveFragment @Inject constructor(
             is ProductEditFragment -> childFragment.setListener(setupResultListener)
             is CoverEditFragment -> childFragment.setListener(setupResultListener)
             is SetupBroadcastScheduleBottomSheet -> childFragment.setListener(setupResultListener)
-            is TitleAndTagsEditBottomSheet -> childFragment.setListener(setupResultListener)
         }
     }
 
@@ -232,7 +230,6 @@ class PlayBeforeLiveFragment @Inject constructor(
             analytic.clickEditProductTaggingOnFinalSetupPage()
         }
         tvChannelTitle.setOnClickListener {
-            openEditTitleAndTagsPage()
             analytic.clickEditTitleOnFinalSetupPage()
         }
         ivImagePreview.setOnClickListener {
@@ -451,11 +448,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                 .commit()
     }
 
-    private fun openEditTitleAndTagsPage() {
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val editTitleAndTagsBottomSheet = fragmentFactory.instantiate(requireContext().classLoader, TitleAndTagsEditBottomSheet::class.java.name) as TitleAndTagsEditBottomSheet
-        editTitleAndTagsBottomSheet.show(childFragmentManager, TAG_TITLE_AND_TAGS_EDIT)
-    }
+
 
     private fun openSetupBroadcastSchedulePage() {
         getSetupBroadcastScheduleBottomSheet().show(childFragmentManager)

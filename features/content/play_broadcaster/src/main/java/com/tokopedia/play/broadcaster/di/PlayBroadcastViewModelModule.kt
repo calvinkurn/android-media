@@ -50,11 +50,6 @@ abstract class PlayBroadcastViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PlayTitleAndTagsSetupViewModel::class)
-    abstract fun getPlayTitleAndTagsSetupViewModel(viewModel: PlayTitleAndTagsSetupViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(PlayCoverSetupViewModel::class)
     abstract fun getPlayBroadcastCoverTitleViewModel(viewModel: PlayCoverSetupViewModel): ViewModel
 }

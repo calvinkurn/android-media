@@ -28,7 +28,6 @@ import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFr
 import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.fragment.setup.tags.PlayTitleAndTagsSetupFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
@@ -46,8 +45,7 @@ class PlayBroadcastSetupBottomSheet :
         PlayBottomSheetCoordinator,
         PlayEtalasePickerFragment.Listener,
         ProductSetupListener,
-        PlayCoverSetupFragment.Listener,
-        PlayTitleAndTagsSetupFragment.Listener
+        PlayCoverSetupFragment.Listener
 {
 
     private val retainedComponent by retainedComponent({ requireActivity() }) {
@@ -159,15 +157,6 @@ class PlayBroadcastSetupBottomSheet :
         return null
     }
 
-    override suspend fun onTitleAndTagsSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
-        val error = mListener?.onSetupCompletedWithData(this@PlayBroadcastSetupBottomSheet, dataStore)
-        return if (error == null) {
-            dismiss()
-            null
-        }
-        else error
-    }
-
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
 
@@ -175,7 +164,6 @@ class PlayBroadcastSetupBottomSheet :
             is PlayEtalasePickerFragment -> childFragment.setListener(this)
             is PlayEtalaseDetailFragment -> childFragment.setListener(this)
             is PlayCoverSetupFragment -> childFragment.setListener(this)
-            is PlayTitleAndTagsSetupFragment -> childFragment.setListener(this)
         }
     }
 
