@@ -2,6 +2,7 @@ package com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,9 +50,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment() {
         viewModelProvider.get(PayLaterActivationViewModel::class.java)
     }
 
-    private val productId: String by lazy {
-        arguments?.getString(PARAM_PRODUCT_ID) ?: ""
-    }
+    private var productId: String  =""
+
+
     private val gatewayId: Int by lazy {
         arguments?.getInt(PARAM_GATEWAY_ID) ?: -1
     }
@@ -83,6 +84,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        productId = arguments?.getString(PARAM_PRODUCT_ID,"").toString()
         initView()
         payLaterActivationViewModel.getProductDetail(productId)
         observerProductData()
@@ -282,7 +284,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         context?.let {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
+                if(!this.selectedProductId.isBlank() ) {
+                    productId = this.selectedProductId
+                    payLaterActivationViewModel.getProductDetail(this.selectedProductId)
 
+                }
             }
         }
     }
