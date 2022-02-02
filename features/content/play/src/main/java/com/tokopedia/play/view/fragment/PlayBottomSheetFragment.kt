@@ -56,7 +56,10 @@ import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -81,8 +84,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
         private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
-
-        private const val TO_SECONDS_DIVIDER = 1000L
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
@@ -295,8 +296,14 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
-            val startTimeInSecond = startTime.toLongOrZero()
-            val duration = (userReportTimeMillis - startTimeInSecond) / TO_SECONDS_DIVIDER
+            val startTimeInSecond = try {
+                val sdf = SimpleDateFormat("hh:mm:ss")
+                val dt: Date = sdf.parse(startTime.split("T", "+")[1])
+                TimeUnit.MILLISECONDS.toSeconds(dt.time)
+            }catch (e: Exception){
+                0
+            }
+            val duration = TimeUnit.MILLISECONDS.toSeconds(userReportTimeMillis) - startTimeInSecond
             duration
         }else{
             playViewModel.getVideoTimestamp()
