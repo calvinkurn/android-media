@@ -34,6 +34,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.io) {
 
     private var loadingJob: Job? = null
+    private var catalogProductJob: Job? = null
+
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect()
     )
@@ -90,12 +92,16 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
-        _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
-        launchCatchError(block = {
-            val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
-            _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomGrid))
-        }){
-            _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
+        catalogProductJob?.cancel()
+        catalogProductJob = viewModelScope.launch {
+            _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
+            launchCatchError(block = {
+                delay(1000)
+                val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
+                _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomGrid))
+            }){
+                _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
+            }
         }
     }
 
@@ -119,6 +125,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }) {
             _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
         }
+    }
+
+    fun cancelCatalogProductJob() {
+        catalogProductJob?.cancel()
     }
 
     fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,

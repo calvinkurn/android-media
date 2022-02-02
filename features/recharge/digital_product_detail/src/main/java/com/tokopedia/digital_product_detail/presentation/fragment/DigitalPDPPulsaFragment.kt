@@ -185,10 +185,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
                 } else {
                     operator = TelcoOperator()
+                    viewModel.cancelCatalogProductJob()
                     showEmptyState()
                 }
             } catch (exception: NoSuchElementException) {
                 operator = TelcoOperator()
+                viewModel.cancelCatalogProductJob()
+                binding?.rechargePdpPulsaClientNumberWidget?.setLoading(false)
                 rechargePdpPulsaClientNumberWidget.setErrorInputField(
                     getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
                     true

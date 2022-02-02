@@ -36,6 +36,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val _filterData = ArrayList<HashMap<String, Any>>()
 
     private var loadingJob: Job? = null
+    private var catalogProductJob: Job? = null
+
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect()
     )
@@ -110,12 +112,15 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     }
 
     fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
-        _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
-        launchCatchError(block = {
-            val denomFull = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber, _filterData)
-            _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
-        }){
-            _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
+        catalogProductJob?.cancel()
+        catalogProductJob = viewModelScope.launch {
+            _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
+            launchCatchError(block = {
+                val denomFull = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber, _filterData)
+                _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
+            }){
+                _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
+            }
         }
     }
 
@@ -139,6 +144,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }) {
             _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
         }
+    }
+
+    fun cancelCatalogProductJob() {
+        catalogProductJob?.cancel()
     }
 
     fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,

@@ -272,7 +272,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     fun setErrorInputField(errorMessage: String, resetProvider: Boolean = false) {
         binding.clientNumberWidgetInputField.run {
             val temp = textInputLayout.helperText.toString()
-            if (temp != errorMessage) {
+            if (temp != errorMessage && getInputNumber().isNotEmpty()) {
                 setMessage(errorMessage)
                 isInputError = true
 

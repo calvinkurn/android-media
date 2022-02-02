@@ -202,10 +202,13 @@ class DigitalPDPDataPlanFragment :
 
                 } else {
                     operator = TelcoOperator()
+                    viewModel.cancelCatalogProductJob()
                     showEmptyState()
                 }
             } catch (exception: NoSuchElementException) {
                 operator = TelcoOperator()
+                viewModel.cancelCatalogProductJob()
+                binding?.rechargePdpPaketDataClientNumberWidget?.setLoading(false)
                 rechargePdpPaketDataClientNumberWidget.setErrorInputField(
                     getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
                     true
