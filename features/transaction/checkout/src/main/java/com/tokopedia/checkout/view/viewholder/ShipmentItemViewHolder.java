@@ -949,11 +949,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         labelFreeShippingCourierName.setVisibility(View.GONE);
         if (selectedCourierItemData.getEstimatedTimeDelivery() != null) {
-            // todo bold
             HtmlLinkHelper htmlLinkHelper = new HtmlLinkHelper(labelSelectedFreeShipping.getContext(), selectedCourierItemData.getEstimatedTimeDelivery());
             labelSelectedFreeShipping.setText(htmlLinkHelper.getSpannedString());
+            labelSelectedFreeShipping.setWeight(Typography.BOLD);
         }
-//        renderFreeShippingTitle(selectedCourierItemData);
         renderFreeShippingEta(selectedCourierItemData);
     }
 
