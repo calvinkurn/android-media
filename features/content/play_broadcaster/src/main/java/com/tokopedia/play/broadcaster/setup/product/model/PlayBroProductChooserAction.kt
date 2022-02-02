@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.product.model
 
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 
 /**
@@ -8,4 +10,6 @@ import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 sealed class PlayBroProductChooserAction {
 
     data class SetSort(val sort: SortUiModel) : PlayBroProductChooserAction()
+    data class SelectCampaign(val campaign: CampaignUiModel) : PlayBroProductChooserAction()
+    data class SelectEtalase(val etalase: EtalaseUiModel) : PlayBroProductChooserAction()
 }

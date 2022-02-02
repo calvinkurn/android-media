@@ -16,33 +16,37 @@
         app:layout_constraintTop_toTopOf="parent"
         app:search_bar_show_icon="false"
         />
-    
-    <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/chips_sort"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/play_dp_12"
-        app:chipSize="small"
-        app:chipText="@string/play_bro_etalase_sort"
-        app:chipType="normal"
-        app:layout_constraintStart_toStartOf="@id/search_bar"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
-        />
 
-    <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/chips_etalase"
+    <LinearLayout
+        android:id="@+id/container_chips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        app:chipSize="small"
-        app:chipText="@string/play_bro_etalase"
-        app:layout_constraintBottom_toBottomOf="@id/chips_sort"
+        android:layout_marginTop="@dimen/play_dp_12"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/chips_sort"
-        app:layout_constraintTop_toTopOf="@id/chips_sort"
-        app:layout_constraintWidth_default="wrap"
-        />
+        >
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/chips_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            app:chipSize="small"
+            app:chipText="@string/play_bro_etalase_sort"
+            app:chipType="normal"
+            />
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/chips_etalase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipSize="small"
+            app:chipText="@string/play_bro_etalase"
+            />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_products"
@@ -52,7 +56,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/search_bar"
-        app:layout_constraintTop_toBottomOf="@id/chips_etalase"
+        app:layout_constraintTop_toBottomOf="@id/container_chips"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

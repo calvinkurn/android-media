@@ -6,6 +6,7 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 
 /**
  * Created by kenny.hadisaputra on 27/01/22
@@ -32,7 +33,9 @@ internal class EtalaseListAdapterDelegate private constructor() {
         }
     }
 
-    internal class Campaign : TypedAdapterDelegate<
+    internal class Campaign(
+        private val listener: EtalaseListViewHolder.Body.Listener,
+    ) : TypedAdapterDelegate<
             EtalaseListModel.Campaign,
             EtalaseListModel,
             EtalaseListViewHolder.Body>(R.layout.view_empty) {
@@ -48,11 +51,13 @@ internal class EtalaseListAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): EtalaseListViewHolder.Body {
-            return EtalaseListViewHolder.Body.create(parent)
+            return EtalaseListViewHolder.Body.create(parent, listener)
         }
     }
 
-    internal class Etalase : TypedAdapterDelegate<
+    internal class Etalase(
+        private val listener: EtalaseListViewHolder.Body.Listener,
+    ) : TypedAdapterDelegate<
             EtalaseListModel.Etalase,
             EtalaseListModel,
             EtalaseListViewHolder.Body>(R.layout.view_empty) {
@@ -68,7 +73,7 @@ internal class EtalaseListAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): EtalaseListViewHolder.Body {
-            return EtalaseListViewHolder.Body.create(parent)
+            return EtalaseListViewHolder.Body.create(parent, listener)
         }
     }
 }

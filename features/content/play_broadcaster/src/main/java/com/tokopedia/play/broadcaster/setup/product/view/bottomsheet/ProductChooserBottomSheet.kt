@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
@@ -52,7 +53,9 @@ class ProductChooserBottomSheet @Inject constructor(
     private val sortChipsView by viewComponent(isEagerInit = true) {
         SortChipsViewComponent(binding.chipsSort, eventBus)
     }
-    private val etalaseChipsView by viewComponent { EtalaseChipsViewComponent(binding.chipsEtalase) }
+    private val etalaseChipsView by viewComponent {
+        EtalaseChipsViewComponent(binding.chipsEtalase, eventBus)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -103,7 +106,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.8f).toInt()
+            height = (getScreenHeight() * 0.85f).toInt()
         }
     }
 
@@ -111,7 +114,7 @@ class ProductChooserBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderProductList(prevState?.focusedProductList, state.focusedProductList)
-                renderSortChips(prevState?.sort, state.sort)
+                renderSortChips(prevState?.sort, state.sort, state.campaignAndEtalase)
                 renderEtalaseChips(prevState?.campaignAndEtalase, state.campaignAndEtalase)
                 renderBottomSheetTitle(state.selectedProductList)
             }
@@ -121,6 +124,7 @@ class ProductChooserBottomSheet @Inject constructor(
             eventBus.subscribe().collect {
                 when (it) {
                     is SortChipsViewComponent.Event -> handleSortChipsEvent(it)
+                    is EtalaseChipsViewComponent.Event -> handleEtalaseChipsEvent(it)
                 }
             }
         }
@@ -138,17 +142,21 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun renderSortChips(
         prevSort: SortUiModel?,
         sort: SortUiModel?,
+        campaignAndEtalase: CampaignAndEtalaseUiModel,
     ) {
-        if (prevSort?.id == sort?.id) return
+        if (prevSort?.id != sort?.id) {
+            sortChipsView.setText(sort?.text)
+        }
 
-        sortChipsView.setText(sort?.text)
+        if (campaignAndEtalase.selected !is SelectedEtalaseModel.Campaign) sortChipsView.show()
+        else sortChipsView.hide()
     }
 
     private fun renderEtalaseChips(
         prevModel: CampaignAndEtalaseUiModel?,
         model: CampaignAndEtalaseUiModel
     ) {
-        if (prevModel?.selected == model.selected) return
+        if (prevModel == model) return
 
         val selectedTitle = when (model.selected) {
             is SelectedEtalaseModel.Campaign -> model.selected.campaign.title
@@ -189,6 +197,15 @@ class ProductChooserBottomSheet @Inject constructor(
                     requireActivity().classLoader,
                     selectedId = viewModel.uiState.value.sort?.id
                 ).show(childFragmentManager)
+            }
+        }
+    }
+
+    private fun handleEtalaseChipsEvent(event: EtalaseChipsViewComponent.Event) {
+        when (event) {
+            EtalaseChipsViewComponent.Event.OnClicked -> {
+                (parentFragment as? ProductSetupFragment)
+                    ?.openCampaignAndEtalaseList()
             }
         }
     }

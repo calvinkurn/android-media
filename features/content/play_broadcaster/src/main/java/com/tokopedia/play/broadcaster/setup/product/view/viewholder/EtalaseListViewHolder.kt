@@ -9,6 +9,8 @@ import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListBodyBinding
 import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListHeaderBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
 
@@ -37,6 +39,7 @@ internal class EtalaseListViewHolder private constructor() {
 
     internal class Body(
         private val binding: ItemEtalaseListBodyBinding,
+        private val listener: Listener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: EtalaseListModel.Campaign) {
@@ -72,6 +75,10 @@ internal class EtalaseListViewHolder private constructor() {
             binding.labelStatus.visibility =
                 if (item.campaignUiModel.status.status == CampaignStatus.Unknown) View.GONE
                 else View.VISIBLE
+
+            itemView.setOnClickListener {
+                listener.onCampaignClicked(item.campaignUiModel)
+            }
         }
 
         fun bind(item: EtalaseListModel.Etalase) {
@@ -84,15 +91,25 @@ internal class EtalaseListViewHolder private constructor() {
 
             binding.tvDateDesc.visibility = View.GONE
             binding.labelStatus.visibility = View.GONE
+
+            itemView.setOnClickListener {
+                listener.onEtalaseClicked(item.etalaseUiModel)
+            }
         }
 
         companion object {
-            fun create(parent: ViewGroup): Body {
+            fun create(parent: ViewGroup, listener: Listener): Body {
                 return Body(
                     ItemEtalaseListBodyBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false)
+                        .inflate(LayoutInflater.from(parent.context), parent, false),
+                    listener,
                 )
             }
+        }
+
+        interface Listener {
+            fun onCampaignClicked(campaign: CampaignUiModel)
+            fun onEtalaseClicked(etalase: EtalaseUiModel)
         }
     }
 }

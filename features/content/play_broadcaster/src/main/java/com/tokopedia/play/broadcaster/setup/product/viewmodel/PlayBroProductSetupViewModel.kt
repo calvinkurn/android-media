@@ -27,7 +27,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
-    private val _selectedEtalase = MutableStateFlow(SelectedEtalaseModel.None)
+    private val _selectedEtalase = MutableStateFlow<SelectedEtalaseModel>(SelectedEtalaseModel.None)
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
     private val _focusedProductList = MutableStateFlow(emptyList<ProductUiModel>())
@@ -66,14 +66,16 @@ class PlayBroProductSetupViewModel @Inject constructor(
     )
 
     init {
-//        getCampaignList()
-//        getEtalaseList()
+        getCampaignList()
+        getEtalaseList()
         getProductsInEtalase("0")
     }
 
     fun submitAction(action: PlayBroProductChooserAction) {
         when (action) {
             is PlayBroProductChooserAction.SetSort -> handleSetSort(action.sort)
+            is PlayBroProductChooserAction.SelectEtalase -> handleSelectEtalase(action.etalase)
+            is PlayBroProductChooserAction.SelectCampaign -> handleSelectCampaign(action.campaign)
         }
     }
 
@@ -103,5 +105,13 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
     private fun handleSetSort(sort: SortUiModel) {
         _sort.value = sort
+    }
+
+    private fun handleSelectEtalase(etalase: EtalaseUiModel) {
+        _selectedEtalase.value = SelectedEtalaseModel.Etalase(etalase)
+    }
+
+    private fun handleSelectCampaign(campaign: CampaignUiModel) {
+        _selectedEtalase.value = SelectedEtalaseModel.Campaign(campaign)
     }
 }

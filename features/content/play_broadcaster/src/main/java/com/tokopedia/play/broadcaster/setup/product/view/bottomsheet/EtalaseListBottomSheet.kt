@@ -11,15 +11,19 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -37,7 +41,13 @@ class EtalaseListBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayBroEtalaseListBinding
         get() = _binding!!
 
-    private val etalaseListView by viewComponent { EtalaseListViewComponent(binding.rvEtalase) }
+    private val eventBus by viewLifecycleBound(
+        creator = { EventBus<Any>() }
+    )
+
+    private val etalaseListView by viewComponent {
+        EtalaseListViewComponent(binding.rvEtalase, eventBus)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -91,6 +101,14 @@ class EtalaseListBottomSheet @Inject constructor(
                 )
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            eventBus.subscribe().collect {
+                when (it) {
+                    is EtalaseListViewComponent.Event -> handleEtalaseListEvent(it)
+                }
+            }
+        }
     }
 
     private fun renderBottomSheetTitle(
@@ -127,6 +145,22 @@ class EtalaseListBottomSheet @Inject constructor(
         }
 
         etalaseListView.setEtalaseList(combinedEtalaseList)
+    }
+
+    /**
+     * View Event
+     */
+    private fun handleEtalaseListEvent(event: EtalaseListViewComponent.Event) {
+        when (event) {
+            is EtalaseListViewComponent.Event.OnCampaignSelected -> {
+                viewModel.submitAction(PlayBroProductChooserAction.SelectCampaign(event.campaign))
+                dismiss()
+            }
+            is EtalaseListViewComponent.Event.OnEtalaseSelected -> {
+                viewModel.submitAction(PlayBroProductChooserAction.SelectEtalase(event.etalase))
+                dismiss()
+            }
+        }
     }
 
     companion object {
