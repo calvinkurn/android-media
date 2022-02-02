@@ -1,12 +1,14 @@
 package com.tokopedia.digital_product_detail.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -199,6 +201,7 @@ class DigitalPDPDataPlanFragment :
                     }
 
                 } else {
+                    operator = TelcoOperator()
                     showEmptyState()
                 }
             } catch (exception: NoSuchElementException) {
@@ -288,10 +291,10 @@ class DigitalPDPDataPlanFragment :
             binding?.rechargePdpPaketDataClientNumberWidget?.run {
                 setLoading(false)
                 if (msg.isEmpty()) {
-                    showCheckIcon()
+                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideCheckIcon()
+                    hideIndicatorIcon()
                     setErrorInputField(msg)
                     onHideBuyWidget()
                 }
@@ -457,7 +460,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
-        binding?.rechargePdpPaketDataClientNumberWidget?.setInputNumber(data.prefill)
+        binding?.rechargePdpPaketDataClientNumberWidget?.setInputNumber(data.prefill, true)
     }
 
     private fun renderTicker(tickers: List<TopupBillsTicker>) {
@@ -602,7 +605,7 @@ class DigitalPDPDataPlanFragment :
 
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber)
+            setInputNumber(clientNumber, true)
         }
     }
 
@@ -767,6 +770,14 @@ class DigitalPDPDataPlanFragment :
                 userSession.userId
             )
         }
+    }
+
+    override fun isKeyboardShown(): Boolean {
+        context?.let {
+            val inputMethodManager = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            return inputMethodManager.isAcceptingText
+        }
+        return false
     }
 
     /**

@@ -1,12 +1,14 @@
 package com.tokopedia.digital_product_detail.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -15,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
@@ -181,6 +184,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     }
 
                 } else {
+                    operator = TelcoOperator()
                     showEmptyState()
                 }
             } catch (exception: NoSuchElementException) {
@@ -270,10 +274,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             binding?.rechargePdpPulsaClientNumberWidget?.run {
                 setLoading(false)
                 if (msg.isEmpty()) {
-                    showCheckIcon()
+                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideCheckIcon()
+                    hideIndicatorIcon()
                     setErrorInputField(msg)
                     onHideBuyWidget()
                 }
@@ -309,7 +313,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
-        binding?.rechargePdpPulsaClientNumberWidget?.setInputNumber(data.prefill)
+        binding?.rechargePdpPulsaClientNumberWidget?.setInputNumber(data.prefill, true)
     }
 
     private fun onFailedRecommendation(){
@@ -412,6 +416,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                                 userSession.userId
                             )
                         }
+                    }
+
+                    override fun isKeyboardShown(): Boolean {
+                        context?.let {
+                            val inputMethodManager = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            return inputMethodManager.isAcceptingText
+                        }
+                        return false
                     }
                 },
                 autoCompleteListener = object :
@@ -736,7 +748,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber)
+            setInputNumber(clientNumber, true)
         }
     }
 
@@ -824,7 +836,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpPulsaClientNumberWidget?.run {
-                setInputNumber(clientNumber)
+                setInputNumber(clientNumber, true)
             }
         }
     }
