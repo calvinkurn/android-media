@@ -770,7 +770,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}"
 
             if (fintechRedirectionWidgetDataClass.cta == 2) {
-                openWebViewUrl(rediretionLink)
+                openWebViewUrl(url = rediretionLink, showTitleBar = true)
             } else {
                 val intent = RouteManager.getIntent(requireContext(), rediretionLink)
                 startActivity(intent)
@@ -3179,10 +3179,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.addToCart(addToCartOccRequestParams)
     }
 
-    private fun openWebViewUrl(url: String) {
+    private fun openWebViewUrl(url: String,showTitleBar:Boolean = false) {
         val webViewUrl = String.format(
                 Locale.getDefault(),
-                "%s?titlebar=false&url=%s",
+                "%s?titlebar=${showTitleBar}&url=%s",
                 ApplinkConst.WEBVIEW,
                 url
         )
