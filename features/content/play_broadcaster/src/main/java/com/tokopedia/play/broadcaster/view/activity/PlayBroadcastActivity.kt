@@ -313,8 +313,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
                 openBroadcastActivePage()
                 showDialogContinueLiveStreaming()
             }
-            /** TODO: this should be removed soon */
-//            ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
             else -> openBroadcastSetupPage()
         }
     }

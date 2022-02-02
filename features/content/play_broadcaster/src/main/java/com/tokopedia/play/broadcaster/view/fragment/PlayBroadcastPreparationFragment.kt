@@ -208,11 +208,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         coverSetupViewModel.observableUploadCoverEvent.observe(viewLifecycleOwner) {
             when(it) {
-                /** TODO: handle if error upload cover */
                 is NetworkResult.Success -> {
                     viewLifecycleOwner.lifecycleScope.launch {
                         parentViewModel.getChannelDetail()
                     }
+                }
+                is NetworkResult.Fail -> {
+                    showErrorToaster(it.error)
                 }
             }
         }
@@ -268,7 +270,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if(isShow) {
             showMainComponent(false)
 
-            /** TODO: set cover if exists */
             binding.formCover.setTitle(parentViewModel.channelTitle)
             binding.formCover.setShopName(parentViewModel.getShopName())
             binding.formCover.visibility = View.VISIBLE

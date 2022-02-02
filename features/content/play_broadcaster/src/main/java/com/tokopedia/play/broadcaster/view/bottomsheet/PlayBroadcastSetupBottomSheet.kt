@@ -156,11 +156,6 @@ class PlayBroadcastSetupBottomSheet :
 
     override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
         dialog?.onBackPressed()
-        /** TODO: remove this later */
-//        navigateToFragment(
-//                fragmentClass = PlayTitleAndTagsSetupFragment::class.java,
-//        )
-
         return null
     }
 
