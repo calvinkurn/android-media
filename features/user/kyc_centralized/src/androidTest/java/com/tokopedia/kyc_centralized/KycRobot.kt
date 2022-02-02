@@ -2,8 +2,8 @@ package com.tokopedia.kyc_centralized
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.kyc_centralized.test.R
 
 class KycRobot {
@@ -42,6 +42,19 @@ class KycRobot {
 
 }
 
+class KycResultRobot {
+
+    fun shouldShowPendingPage() {
+        onView(withText(R.string.kyc_pending_title)).check(matches(isDisplayed()))
+    }
+
+}
+
 fun kycRobot(func: KycRobot.() -> Unit): KycRobot {
     return KycRobot().apply(func)
+}
+
+infix fun KycRobot.upload(func: KycResultRobot.() -> Unit): KycResultRobot {
+    Thread.sleep(1500)
+    return KycResultRobot().apply(func)
 }
