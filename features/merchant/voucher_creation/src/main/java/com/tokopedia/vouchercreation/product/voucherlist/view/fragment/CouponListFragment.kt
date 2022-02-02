@@ -30,7 +30,6 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
-import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
@@ -193,7 +192,10 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private fun onCouponOptionClicked(coupon: VoucherUiModel) {
         moreBottomSheet?.show(childFragmentManager)
-        moreBottomSheet?.setOnItemClickListener(VoucherStatusConst.ONGOING) { menu ->
+        moreBottomSheet?.setOnItemClickListener(
+            couponStatus = coupon.status,
+            couponTitle = coupon.name
+        ) { menu ->
             moreBottomSheet?.dismiss()
             clickMoreMenuItem(menu, coupon)
         }
