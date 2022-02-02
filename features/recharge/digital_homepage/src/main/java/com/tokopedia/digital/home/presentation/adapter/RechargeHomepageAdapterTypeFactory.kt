@@ -137,7 +137,11 @@ class RechargeHomepageAdapterTypeFactory(
     fun type(recommendationBannerModel: RechargeHomepageRecommendationBannerModel): Int =
         RechargeHomepageRecommendationBannerViewHolder.LAYOUT
 
-    override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
+    fun type(productCardCustomBanner: RechargeHomePageProductCardCustomBannerV2Model): Int {
+        return RechargeHomepageProductCardCustomBannerV2ViewHolder.LAYOUT
+    }
+
+       override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
 
@@ -275,10 +279,8 @@ class RechargeHomepageAdapterTypeFactory(
                 )
                 RechargeHomepageProductCardUnifyViewHolder(binding, listener)
             }
-            RechargeHomepageThreeIconsViewHolder.LAYOUT -> RechargeHomepageThreeIconsViewHolder(
-                parent,
-                listener
-            )
+            RechargeHomepageThreeIconsViewHolder.LAYOUT -> RechargeHomepageThreeIconsViewHolder(parent, listener)
+            RechargeHomepageProductCardCustomBannerV2ViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerV2ViewHolder(parent, listener)
             RechargeHomepageRecommendationBannerViewHolder.LAYOUT -> {
                 val binding = ViewRechargeHomeRecommendationBannerBinding.inflate(
                     LayoutInflater.from(parent.context),

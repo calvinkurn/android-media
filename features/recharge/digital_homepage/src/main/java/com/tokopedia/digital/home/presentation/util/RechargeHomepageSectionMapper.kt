@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.util
 
 import android.graphics.Typeface
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -139,6 +138,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_SWIPE_BANNER -> RechargeHomepageSwipeBannerModel(it)
                     SECTION_PRODUCT_CARD_DGU -> RechargeProductCardUnifyModel(it)
                     SECTION_3_ICONS -> RechargeHomepageThreeIconsModel(it)
+                    SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2 -> RechargeHomePageProductCardCustomBannerV2Model(it)
                     SECTION_RECOMMENDATION_BANNER -> RechargeHomepageRecommendationBannerModel(it)
                     else -> null
                 }

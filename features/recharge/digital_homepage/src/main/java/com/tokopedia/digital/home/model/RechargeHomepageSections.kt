@@ -437,7 +437,7 @@ data class RechargeHomepageSwipeBannerModel(val section: RechargeHomepageSection
 
 }
 
-open class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.Section) :
+open class RechargeProductCardUnifyModel(open val section: RechargeHomepageSections.Section) :
     RechargeHomepageSectionModel {
 
     // use 1 media type for all items
@@ -539,6 +539,19 @@ open class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
         } else false
     }
 
+}
+
+data class RechargeHomePageProductCardCustomBannerV2Model(override val section: RechargeHomepageSections.Section): RechargeProductCardUnifyModel(section){
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomePageProductCardCustomBannerV2Model) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
 }
 
 data class RechargeHomepageThreeIconsModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel{
