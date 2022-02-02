@@ -2,7 +2,11 @@ package com.tokopedia.topchat.chattemplate.activity.base
 
 import android.content.Context
 import android.content.Intent
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
@@ -76,6 +80,10 @@ abstract class BaseChatTemplateTest {
             "template/success_get_template_buyer.json",
             TemplateData::class.java
         )
+    }
+
+    protected fun assertSnackBarWithSubText(msg: String) {
+        onView(withSubstring(msg)).check(matches(isDisplayed()))
     }
 
     companion object {
