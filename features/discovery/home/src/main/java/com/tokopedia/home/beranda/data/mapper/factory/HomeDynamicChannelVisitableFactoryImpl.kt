@@ -198,7 +198,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createFeaturedShopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(FeaturedShopDataModel(
-                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+                DynamicChannelComponentMapper.mapHomeChannelToComponentBannerHeader(channel, verticalPosition)
         ))
         if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination().isNotEmpty()) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(

@@ -424,7 +424,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun isFromSeller(fromUid: String, tag: String): Boolean {
-        return (tag == ROLE_SELLER && fromUid != userSession.userId)
+        return (tag == ROLE_SELLER && fromUid != userSession.userId) && !GlobalConfig.isSellerApp()
     }
 
     private fun isFromMyselfAsSeller(fromUid: String, tag: String): Boolean {

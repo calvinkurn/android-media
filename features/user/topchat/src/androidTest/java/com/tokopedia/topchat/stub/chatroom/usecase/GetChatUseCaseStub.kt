@@ -42,6 +42,8 @@ class GetChatUseCaseStub @Inject constructor(
         "buyer/chat_replies_delete_image.json"
     private val blockedChatAsBuyer =
         "success_get_blocked_chat_replies.json"
+    private val voucherAttachmentSellerResponsePath =
+        "seller/success_get_chat_first_page_with_voucher.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -74,6 +76,11 @@ class GetChatUseCaseStub @Inject constructor(
 
     val blockedChatResponse: GetExistingChatPojo
         get() = alterResponseOf(blockedChatAsBuyer) { response ->
+            alterDateToToday(response)
+        }
+
+    val voucherAttachmentChatWithSellerResponse: GetExistingChatPojo
+        get() = alterResponseOf(voucherAttachmentSellerResponsePath) { response ->
             alterDateToToday(response)
         }
 
