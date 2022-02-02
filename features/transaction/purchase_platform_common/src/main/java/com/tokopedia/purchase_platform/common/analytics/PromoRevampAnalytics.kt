@@ -122,13 +122,4 @@ object PromoRevampAnalytics {
     fun eventCheckoutClickPilihPromoLainOnBottomsheetPromoError() {
         sendEventCategoryAction(CLICK_COURIER, CATEGORY_COURIER_SELECTION, CLICK_PILIH_PROMO_LAIN_ON_BOTTOMSHEET_PROMO_ERROR)
     }
-
-    fun eventViewAutoApplyPromoToaster(userId: String, promoCodes: List<String>, cartIds: List<String>, message: String) {
-        val eventLabel = "${promoCodes.joinToString(",")} - ${cartIds.joinToString(",")} - $message"
-        val gtmData = TrackAppUtils.gtmData(VIEW_BGP_IRIS, CATEGORY_CART, VIEW_AUTO_APPLY_PROMO_TOASTER, eventLabel)
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
-        gtmData[ExtraKey.USER_ID] = userId
-
-        sendEvent(gtmData)
-    }
 }
