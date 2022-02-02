@@ -5,51 +5,49 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardJumboAdapter
-import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboBannerViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboChannelViewHolder
+import com.tokopedia.play.widget.analytic.jumbo.PlayWidgetJumboAnalyticListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetJumboListener
 import com.tokopedia.play.widget.ui.model.*
-import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.widget.jumbo.adapter.PlayWidgetJumboAdapter
+import com.tokopedia.play.widget.ui.widget.jumbo.adapter.PlayWidgetJumboViewHolder
 
 /**
  * @author by astidhiyaa on 12/01/22
  */
-class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
     )
 
-    override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
-        mWidgetInternalListener = listener
-    }
-    private val itemContainer: FrameLayout
-
     private val recyclerViewItem: RecyclerView
 
     private var mWidgetListener: PlayWidgetJumboListener? = null
-
+    private var mAnalyticListener: PlayWidgetJumboAnalyticListener? = null
     private var mWidgetInternalListener: PlayWidgetInternalListener? = null
 
     private val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
-    private val channelCardListener = object : PlayWidgetCardJumboChannelViewHolder.Listener {
+    private val channelCardListener = object : PlayWidgetJumboViewHolder.Channel.Listener {
         override fun onChannelImpressed(
             view: View,
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
+            mAnalyticListener?.onImpressChannelCard(
+                this@PlayWidgetJumboView,
+                item,
+                channelPositionInList = position,
+                isAutoPlay = mIsAutoPlay
+            )
         }
 
         override fun onChannelClicked(
@@ -57,16 +55,13 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            if (mWidgetListener != null
-                && (item.channelType == PlayWidgetChannelType.Live
-                        || item.channelType == PlayWidgetChannelType.Vod
-                        || item.channelType == PlayWidgetChannelType.Upcoming
-                        || GlobalConfig.isSellerApp())
-            ) {
-                mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
-            } else {
-                RouteManager.route(context, item.appLink)
-            }
+            mAnalyticListener?.onClickChannelCard(
+                this@PlayWidgetJumboView,
+                item,
+                channelPositionInList = position,
+                isAutoPlay = mIsAutoPlay
+            )
+            mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
         }
 
         override fun onToggleReminderChannelClicked(
@@ -74,6 +69,12 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
             reminderType: PlayWidgetReminderType,
             position: Int
         ) {
+            mAnalyticListener?.onClickToggleReminderChannel(
+                this@PlayWidgetJumboView,
+                item,
+                channelPositionInList = position,
+                isRemindMe = reminderType.reminded,
+            )
             mWidgetListener?.onToggleReminderClicked(
                 this@PlayWidgetJumboView,
                 item.channelId,
@@ -84,26 +85,14 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
 
     }
 
-    private val bannerCardListener = object : PlayWidgetCardJumboBannerViewHolder.Listener {
-        override fun onBannerClicked(
-            view: View,
-            item: PlayWidgetBannerUiModel,
-            position: Int
-        ) {
-        }
-    }
-
-    private val adapter = PlayWidgetCardJumboAdapter(
-        channelCardListener = channelCardListener,
-        bannerCardListener = bannerCardListener,
+    private val adapter = PlayWidgetJumboAdapter(
+        cardChannelListener = channelCardListener,
     )
 
     private var mIsAutoPlay: Boolean = false
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_jumbo, this)
-
-        itemContainer = view.findViewById(R.id.play_widget_container)
 
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
 
@@ -112,6 +101,10 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
 
     fun setWidgetListener(listener: PlayWidgetJumboListener?) {
         mWidgetListener = listener
+    }
+
+    fun setAnalyticListener(listener: PlayWidgetJumboAnalyticListener?) {
+        mAnalyticListener = listener
     }
 
     /**
@@ -126,5 +119,9 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
         adapter.setItemsAndAnimateChanges(data.items)
 
         mIsAutoPlay = data.config.autoPlay
+    }
+
+    override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
+        this.mWidgetInternalListener = listener
     }
 }

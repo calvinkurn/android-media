@@ -1,39 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent">
+    >
 
-    <FrameLayout
-        android:id="@+id/play_widget_container"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/play_widget_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/play_widget_dp_12"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="@integer/play_widget_large_span_count"
+        tools:listitem="@layout/view_play_widget_card_large_channel"
+        tools:orientation="vertical"
+        />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/play_widget_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:clipToPadding="false"
-            android:paddingStart="@dimen/spacing_lvl4"
-            android:paddingEnd="@dimen/spacing_lvl3"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/play_widget_large_title"
-            tools:itemCount="2"
-            tools:listitem="@layout/item_play_widget_card_channel_large"
-            tools:orientation="horizontal"
-            tools:spanCount="2" />
-    </FrameLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

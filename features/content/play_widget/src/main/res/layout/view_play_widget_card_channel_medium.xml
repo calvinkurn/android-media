@@ -50,7 +50,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHeight_percent="0.2"
             app:layout_constraintVertical_bias="0"
-            android:background="@drawable/bg_play_widget_medium_top_gradient"
+            android:background="@drawable/bg_play_widget_top_gradient"
             />
 
         <include
@@ -105,27 +105,26 @@
             app:layout_goneMarginStart="@dimen/spacing_lvl3"
             />
 
-        <include
-            android:id="@+id/play_widget_badge_promo"
-            layout="@layout/layout_promo_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
-            app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
-            app:layout_constraintStart_toStartOf="parent"
-            />
-
         <LinearLayout
             android:id="@+id/play_widget_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_play_widget_medium_bottom_gradient"
+            android:background="@drawable/bg_play_widget_bottom_gradient"
             android:orientation="vertical"
-            android:paddingTop="@dimen/spacing_lvl3"
             android:paddingBottom="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"
             >
+
+            <include
+                android:id="@+id/play_widget_badge_promo"
+                layout="@layout/layout_promo_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
+                app:layout_constraintStart_toStartOf="parent"
+                />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_date"
@@ -135,7 +134,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/play_widget_dms_medium_upcoming_date_text"
+                android:textColor="@color/play_widget_dms_upcoming_date_text"
                 android:visibility="visible"
                 app:typographyType="small"
                 tools:text="10 January 2020 - 17.00"
@@ -150,10 +149,11 @@
                 android:layout_marginBottom="@dimen/spacing_lvl1"
                 android:ellipsize="end"
                 android:lines="2"
+                android:maxLines="2"
                 android:textColor="@color/Unify_N0"
                 android:textIsSelectable="false"
                 app:typographyType="body_3"
-                tools:text="Google Assistant Google Assistant"
+                tools:text="Title maximal 2 line maximal 24 char"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -165,13 +165,13 @@
                 android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/play_widget_dms_author_label"
                 android:textIsSelectable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:typographyType="small"
-                tools:text="Google"
+                app:typographyType="body_3"
+                tools:text="Tokopedia Official"
                 />
 
         </LinearLayout>
@@ -187,6 +187,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone"
             >
 
             <com.tokopedia.unifycomponents.LoaderUnify

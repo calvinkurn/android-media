@@ -64,8 +64,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
             is PlayWidgetMediumView -> child.setWidgetInternalListener(listener)
-            is PlayWidgetLargeView -> child.setWidgetInternalListener(listener)
-            is PlayWidgetJumboView -> child.setWidgetInternalListener(listener)
         }
     }
 
@@ -144,7 +142,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             widgetView.show()
             widgetView.setData(model)
             widgetView.setWidgetListener(mWidgetListener)
-            widgetView.setWidgetInternalListener(mWidgetInternalListener)
+            widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
 
@@ -156,7 +154,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             widgetView.show()
             widgetView.setData(model)
             widgetView.setWidgetListener(mWidgetListener)
-            widgetView.setWidgetInternalListener(mWidgetInternalListener)
+            widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
 

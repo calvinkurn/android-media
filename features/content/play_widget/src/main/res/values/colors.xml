@@ -16,20 +16,14 @@
     <color name="play_widget_dms_small_overlay_gradient_center">#4D000000</color>
     <color name="play_widget_dms_small_overlay_gradient_bottom">#CC000000</color>
 
-    <color name="play_widget_dms_overlay_gradient_1">#3D212121</color>
-    <color name="play_widget_dms_overlay_gradient_2">#29212121</color>
-    <color name="play_widget_dms_overlay_gradient_3">#00212121</color>
-    <color name="play_widget_dms_overlay_gradient_4">#CC212121</color>
-    <color name="play_widget_dms_overlay_gradient_5">#D9000000</color>
+    <color name="play_widget_dms_transparent">#00000000</color>
+    <color name="play_widget_dms_overlay_gradient_16">#29212121</color>
+    <color name="play_widget_dms_overlay_gradient_24">#3D212121</color>
+    <color name="play_widget_dms_overlay_gradient_80">#CC212121</color>
+    <color name="play_widget_dms_overlay_gradient_85">#D9000000</color>
 
-    <color name="play_widget_dms_jumbo_overlay_gradient_white">#00000000</color>
-    <color name="play_widget_dms_jumbo_overlay_gradient_darker">#00000000</color>
-
-    <color name="play_widget_dms_medium_upcoming_date_text">#FA591D</color>
-    <color name="play_widget_dms_medium_title_text">#F531353B</color>
-    <color name="play_widget_dms_medium_shop_name_text">#AD31353B</color>
-
-    <color name="play_dms_Y300">#FFC400</color>
+    <color name="play_widget_dms_upcoming_date_text">#FFC400</color>
+    <color name="play_widget_dms_author_label">#CCFFFFFF</color>
 
     <color name="play_widget_dms_bg_promo_detail_badge">#00AA5B</color>
 

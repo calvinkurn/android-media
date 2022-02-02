@@ -1,7 +1,2 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.play.widget">
-
-    <application>
-        <activity android:name=".sample.PlayWidgetSampleActivity" />
-    </application>
+<manifest package="com.tokopedia.play.widget">
 </manifest>

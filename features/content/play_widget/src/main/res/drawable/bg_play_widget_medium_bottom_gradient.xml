@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:angle="-90"
-        android:startColor="@color/play_widget_dms_overlay_gradient_2"
-        android:centerColor="@color/play_widget_dms_overlay_gradient_1"
-        android:endColor="@color/play_widget_dms_overlay_gradient_3"
-        />
-</shape>
