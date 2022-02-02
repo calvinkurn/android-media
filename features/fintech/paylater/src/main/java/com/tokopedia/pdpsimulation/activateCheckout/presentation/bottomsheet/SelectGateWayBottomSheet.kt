@@ -4,18 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.GatewayListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.activation_gateway_brand.*
 
 class SelectGateWayBottomSheet : BottomSheetUnify() {
     private val childLayoutRes = R.layout.activation_gateway_brand
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         getArgumentData()
     }
 
@@ -29,7 +36,8 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
     }
 
     private fun setRecyclerData(gatewayList: List<CheckoutData>) {
-
+        gatewayListRecycler.layoutManager = LinearLayoutManager(context)
+        gatewayListRecycler.adapter = GatewayListAdapter(gatewayList)
     }
 
 

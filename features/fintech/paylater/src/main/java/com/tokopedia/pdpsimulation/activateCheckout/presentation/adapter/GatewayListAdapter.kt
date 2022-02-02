@@ -3,14 +3,11 @@ package com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
-import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
-import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.GatewayViewHolder
-import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.TenureViewHolder
 
 class GatewayListAdapter(
-    var tenureDetailList: List<TenureDetail>,
+    var gatewayDetailList: List<CheckoutData>,
 ) : RecyclerView.Adapter<GatewayViewHolder>() {
 
 
@@ -24,12 +21,12 @@ class GatewayListAdapter(
 
 
     override fun getItemCount(): Int {
-        return tenureDetailList.size
+        return gatewayDetailList.size
     }
 
 
     override fun onBindViewHolder(holder: GatewayViewHolder, position: Int) {
-
+        holder.bindData(gatewayDetailList[position])
     }
 
 }

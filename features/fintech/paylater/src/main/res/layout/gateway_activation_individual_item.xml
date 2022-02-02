@@ -33,13 +33,13 @@
 
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/paymentDetailHeader"
+                android:id="@+id/gatewayHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
                 android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Cicil 2x Rp6.480.000"
-                app:layout_constraintBottom_toTopOf="@+id/paymentDetailSubHeader"
+                tools:text="Cicil 2x Rp6.480.000"
+                app:layout_constraintBottom_toTopOf="@+id/gatewaySubHeader"
                 app:layout_constraintLeft_toRightOf="@id/gatewayImage"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
@@ -48,31 +48,31 @@
 
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/paymentDetailSubHeader"
+                android:id="@+id/gatewaySubHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
-                android:text="Biaya cicilan 0%"
+                tools:text="Biaya cicilan 0%"
                 android:textColor="@color/Unify_NN600"
-                app:layout_constraintBottom_toTopOf="@+id/paymentDetailSubHeader2"
+                app:layout_constraintBottom_toTopOf="@+id/gatewaySubHeader2"
                 app:layout_constraintLeft_toRightOf="@id/gatewayImage"
                 app:layout_constraintRight_toLeftOf="@id/radioTenureSelector"
-                app:layout_constraintTop_toBottomOf="@+id/paymentDetailHeader"
+                app:layout_constraintTop_toBottomOf="@+id/gatewayHeader"
                 app:layout_goneMarginBottom="@dimen/unify_space_16"
                 app:typographyType="body_2" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/paymentDetailSubHeader2"
+                android:id="@+id/gatewaySubHeader2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pay_later_margin_dp_10"
                 android:layout_marginBottom="@dimen/unify_space_16"
-                android:text="Biaya cicilan 0%"
+                tools:text="Biaya cicilan 0%"
                 android:textColor="@color/Unify_NN600"
-                app:layout_constraintBottom_toTopOf="@+id/paymentDetailHeader"
+                app:layout_constraintBottom_toTopOf="@+id/gatewayHeader"
                 app:layout_constraintLeft_toRightOf="@id/gatewayImage"
                 app:layout_constraintRight_toLeftOf="@id/radioTenureSelector"
-                app:layout_constraintTop_toBottomOf="@+id/paymentDetailSubHeader"
+                app:layout_constraintTop_toBottomOf="@+id/gatewaySubHeader"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -81,9 +81,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/unify_space_16"
                 app:bold="true"
-                app:layout_constraintBottom_toBottomOf="@+id/paymentDetailSubHeader2"
+                app:layout_constraintBottom_toBottomOf="@+id/gatewaySubHeader2"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/paymentDetailHeader" />
+                app:layout_constraintTop_toTopOf="@id/gatewayHeader" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
