@@ -20,7 +20,11 @@ abstract class BaseWidgetMapper(
             saveLastUpdated(dataKey, nowMillis)
             nowMillis
         }
-        return LastUpdatedUiModel(lastUpdated, isFromCache)
+        return LastUpdatedUiModel(
+            lastUpdatedInMillis = lastUpdated,
+            isTheLatest = !isFromCache,
+            shouldShow = isFromCache
+        )
     }
 
     private fun saveLastUpdated(dataKey: String, timeInMillis: Long) {

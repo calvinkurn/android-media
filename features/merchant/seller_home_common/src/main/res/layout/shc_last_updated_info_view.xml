@@ -16,7 +16,9 @@
         android:layout_height="26dp"
         android:background="@drawable/bg_shc_shadow_circle"
         android:padding="6dp"
-        app:icon_name="RELOAD" />
+        android:visibility="gone"
+        app:icon_name="RELOAD"
+        tools:visibility="invisible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcLastUpdated"

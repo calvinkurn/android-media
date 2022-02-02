@@ -282,11 +282,11 @@ class MultiLineGraphViewHolder(
 
     private fun setupLastUpdated(element: MultiLineGraphWidgetUiModel) {
         element.data?.lastUpdated?.let { lastUpdated ->
-            val isFromCache = element.data?.isFromCache.orFalse()
+            val shouldShowRefreshBtn = element.data?.lastUpdated?.shouldShow.orFalse()
 
             binding.luvShcMultiLineGraph.run {
-                setLastUpdated(lastUpdated.lastUpdated)
-                setRefreshButtonVisibility(isFromCache)
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(shouldShowRefreshBtn)
                 setRefreshButtonClickListener {
                     reloadWidget(element)
                 }

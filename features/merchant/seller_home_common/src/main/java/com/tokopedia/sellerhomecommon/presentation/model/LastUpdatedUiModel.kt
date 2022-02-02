@@ -5,6 +5,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 data class LastUpdatedUiModel(
-    val lastUpdated: Long = 0L,
+    var lastUpdatedInMillis: Long = 0L,
+    var isTheLatest: Boolean = false,
     var shouldShow: Boolean = false
 )

@@ -112,7 +112,7 @@ class PostListViewHolder(
     private fun setupLastUpdated(element: PostListWidgetUiModel) {
         with(binding.shcPostListSuccessView.luvShcPost) {
             element.data?.lastUpdated?.let { lastUpdated ->
-                setLastUpdated(lastUpdated.lastUpdated)
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {
                     listener.onReloadWidget(element)

@@ -1184,7 +1184,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
                 oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
                 oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
-                oldWidget.emptyState == newWidget.emptyState && oldWidget.data?.isFromCache == newWidget.data?.isFromCache
+                oldWidget.emptyState == newWidget.emptyState
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -1223,6 +1223,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             throwable.showErrorToaster()
             sahGlobalError.gone()
             emptyState?.gone()
+            showWidgetRefreshButton()
         }
         swipeRefreshLayout.isRefreshing = false
         setProgressBarVisibility(false)
@@ -1237,6 +1238,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             errorType = SellerHomeErrorHandler.ErrorType.ERROR_LAYOUT,
             deviceId = userSession.deviceId.orEmpty()
         )
+    }
+
+    private fun showWidgetRefreshButton() {
+        val widgets = adapter.data.map { widget ->
+            val copiedWidget = widget.copyWidget() as BaseWidgetUiModel<BaseDataUiModel>
+            (copiedWidget.data as? LastUpdatedDataInterface)?.lastUpdated?.shouldShow = true
+            copiedWidget
+        }
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
+        }
     }
 
     private fun showErrorViewByException(throwable: Throwable) = binding?.run {

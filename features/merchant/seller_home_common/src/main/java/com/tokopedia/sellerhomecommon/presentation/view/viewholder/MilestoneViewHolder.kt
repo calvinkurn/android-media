@@ -112,7 +112,7 @@ class MilestoneViewHolder(
     private fun setupLastUpdatedInfo(element: MilestoneWidgetUiModel) {
         with(successStateBinding.luvShcMilestone) {
             element.data?.lastUpdated?.let { lastUpdated ->
-                setLastUpdated(lastUpdated.lastUpdated)
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {
                     listener.onReloadWidget(element)

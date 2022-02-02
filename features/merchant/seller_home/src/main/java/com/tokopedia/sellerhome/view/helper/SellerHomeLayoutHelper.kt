@@ -32,6 +32,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LastUpdatedDataInterface
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
@@ -300,6 +301,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     ): List<BaseWidgetUiModel<*>> {
         val newWidgetList = widgets.toMutableList()
         forEach { widgetData ->
+            hideLastUpdatedRefreshButton(widgetData)
             newWidgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey
             }.takeIf { it > -1 }?.let { index ->
@@ -318,6 +320,10 @@ class SellerHomeLayoutHelper @Inject constructor(
             }
         }
         return newWidgetList
+    }
+
+    private fun <D> hideLastUpdatedRefreshButton(widgetData: D) {
+        (widgetData as? LastUpdatedDataInterface)?.lastUpdated?.shouldShow = false
     }
 
     /**

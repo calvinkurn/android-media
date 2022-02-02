@@ -112,7 +112,7 @@ class TableViewHolder(
     private fun setupLastUpdatedInfo(element: TableWidgetUiModel) {
         binding.luvShcTable.run {
             element.data?.lastUpdated?.let { lastUpdated ->
-                setLastUpdated(lastUpdated.lastUpdated)
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {
                     listener.onReloadWidget(element)
