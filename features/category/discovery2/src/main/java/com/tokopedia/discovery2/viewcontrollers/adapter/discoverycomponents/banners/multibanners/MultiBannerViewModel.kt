@@ -19,6 +19,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -36,6 +37,8 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
     private val applinkCheck: MutableLiveData<String> = MutableLiveData()
     private val refreshPage: MutableLiveData<Boolean> = MutableLiveData()
+    private val _hideShimmer = SingleLiveEvent<Boolean>()
+    private val _showErrorState = SingleLiveEvent<Boolean>()
 
     @Inject
     lateinit var checkPushStatusUseCase: CheckPushStatusUseCase
@@ -65,6 +68,8 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun getBannerUrlWidth() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile, "width")
     fun checkApplink(): LiveData<String> = applinkCheck
     fun isPageRefresh(): LiveData<Boolean> = refreshPage
+    val hideShimmer: LiveData<Boolean> = _hideShimmer
+    val showErrorState: LiveData<Boolean> = _showErrorState
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -79,13 +84,12 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                     bannerData.value = components
                 }
             }, onError = {
-                components.verticalProductFailState = true
                 components.noOfPagesLoaded = 1
                 if (it is UnknownHostException || it is SocketTimeoutException) {
                     components.verticalProductFailState = true
-//                    _showErrorState.value = true
+                    _showErrorState.value = true
                 } else {
-//                    _hideShimmer.value = true
+                    _hideShimmer.value = true
                 }
             })
         }
@@ -201,5 +205,10 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun getComponentPosition() = position
     fun shouldShowShimmer(): Boolean {
         return components.properties?.dynamic == true && components.noOfPagesLoaded != 1 && !components.verticalProductFailState
+    }
+
+    fun reload() {
+        components.noOfPagesLoaded = 0
+        fetchBannerData()
     }
 }

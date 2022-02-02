@@ -14,12 +14,12 @@ class BannerGQLRepository @Inject constructor() : BaseRepository(), BannerReposi
             queryParamterMap: MutableMap<String, Any>,
             pageEndPoint: String,
             productComponentName: String?
-    ): List<DataItem> {
+    ): MutableList<DataItem> {
         val response = (getGQLData(
                 GQL_COMPONENT,
                 DataResponse::class.java, Utils.getComponentsGQLParams(componentId, pageEndPoint, Utils.getQueryString(queryParamterMap)), GQL_COMPONENT_QUERY_NAME
         ) as DataResponse)
 
-        return response.data.component?.data ?: emptyList()
+        return (response.data.component?.data ?: emptyList()).toMutableList()
     }
 }

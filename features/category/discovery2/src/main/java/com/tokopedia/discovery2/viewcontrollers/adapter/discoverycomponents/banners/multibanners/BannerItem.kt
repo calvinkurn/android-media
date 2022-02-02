@@ -13,7 +13,7 @@ private const val VIEW_ID_CONSTANT = 100
 
 class BannerItem(val bannerItemData: DataItem, private val constraintLayout: ConstraintLayout,
                  private val constraintSet: ConstraintSet, private val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH,
-                 private val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, private val index: Int,
+                 private val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, private val viewWeight: Float? = Utils.DEFAULT_BANNER_WEIGHT, private val index: Int,
                  private val previousBannerItem: BannerItem?, val context: Context, private val islastItem: Boolean) {
 
     var bannerImageView = View(context)
@@ -33,7 +33,11 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
         constraintSet.constrainWidth(bannerImageView.id, ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.constrainHeight(bannerImageView.id, ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.setDimensionRatio(bannerImageView.id, "H, $viewWidth : $viewHeight")
-        constraintSet.setHorizontalWeight(bannerImageView.id, 1.0F)
+        if (viewWeight != null) {
+            constraintSet.setHorizontalWeight(bannerImageView.id, viewWeight)
+        } else {
+            constraintSet.setHorizontalWeight(bannerImageView.id, 1.0F)
+        }
 
         if (previousBannerItem == null) {
             constraintSet.connect(bannerImageView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START,
@@ -52,9 +56,10 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
         constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
         if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
             try {
-                if(context.isValidGlideContext())
+                if (context.isValidGlideContext())
                     (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile)
-            } catch (e: Throwable) { }
+            } catch (e: Throwable) {
+            }
         }
         constraintSet.applyTo(constraintLayout)
     }

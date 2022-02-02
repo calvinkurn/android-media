@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -55,7 +54,7 @@ class BannerCarouselViewModel(application: Application, val component: Component
     }
 
     private fun fetchBannerData() {
-        if (getComponent(component.id, component.pageEndPoint)?.properties?.dynamic == true) {
+        if (component.properties?.dynamic == true) {
             launchCatchError(block = {
                 if (bannerUseCase.loadFirstPageComponents(component.id, component.pageEndPoint)) {
                     component.data?.let {
@@ -93,5 +92,10 @@ class BannerCarouselViewModel(application: Application, val component: Component
             return it.ctaApp ?: ""
         }
         return ""
+    }
+
+    fun reload() {
+        component.noOfPagesLoaded = 0
+        fetchBannerData()
     }
 }
