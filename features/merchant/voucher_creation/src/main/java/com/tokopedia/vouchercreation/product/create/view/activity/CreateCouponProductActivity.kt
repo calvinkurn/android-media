@@ -3,11 +3,9 @@ package com.tokopedia.vouchercreation.product.create.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -20,7 +18,6 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingF
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
-import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import java.util.*
 import javax.inject.Inject
 
@@ -156,11 +153,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
         return couponInfoFragment
     }
 
-    private fun showToaster(text: String) {
-        if (text.isEmpty()) return
-        val view = findViewById<FrameLayout>(R.id.parent_view)
-        Toaster.build(view, text).show()
-    }
 
     private fun notifyCreateCouponSuccessToCouponListPage(coupon: Coupon) {
         val intent = Intent()

@@ -1,7 +1,6 @@
 package com.tokopedia.vouchercreation.product.voucherlist.view.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.FrameLayout
@@ -28,22 +27,8 @@ class CouponListActivity : BaseSimpleActivity() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    companion object {
-        const val BUNDLE_KEY_COUPON = "coupon"
-
-        @JvmStatic
-        fun start(context: Context, coupon: Coupon?) {
-            val starter = Intent(context, CouponListActivity::class.java).apply {
-                putExtra(BUNDLE_KEY_COUPON, coupon)
-            }
-            context.startActivity(starter)
-        }
-    }
-
     override fun getLayoutRes() = R.layout.activity_mvc_coupon_list
     override fun getNewFragment() = couponListFragment
-
-    //private val coupon by lazy { intent.extras?.getParcelable(BUNDLE_KEY_COUPON) as? Coupon }
 
     private val couponListFragment = CouponListFragment.newInstance(
         ::navigateToCreateCouponPage,
@@ -56,7 +41,6 @@ class CouponListActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
-        //displayCreateCouponSuccess()
     }
 
     private fun setupDependencyInjection() {
@@ -65,13 +49,6 @@ class CouponListActivity : BaseSimpleActivity() {
             .build()
             .inject(this)
     }
-
-    /*private fun displayCreateCouponSuccess() {
-        if (coupon != null) {
-            showBroadCastVoucherBottomSheet(coupon ?: return)
-        }
-    }*/
-
 
     private fun navigateToCreateCouponPage() {
         val intent = Intent(this, CreateCouponProductActivity::class.java)
@@ -85,7 +62,6 @@ class CouponListActivity : BaseSimpleActivity() {
     private fun navigateToDuplicateCouponPage(coupon: Coupon) {
         DuplicateCouponActivity.start(this, coupon)
     }
-
 
     private fun navigateToCouponDetail(couponId: Long) {
         VoucherProductDetailActivity.start(this, couponId)
