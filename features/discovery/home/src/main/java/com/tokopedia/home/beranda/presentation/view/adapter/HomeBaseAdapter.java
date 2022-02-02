@@ -53,7 +53,11 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(getItem(position));
+        try {
+            holder.bind(getItem(position));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressWarnings("unchecked")
