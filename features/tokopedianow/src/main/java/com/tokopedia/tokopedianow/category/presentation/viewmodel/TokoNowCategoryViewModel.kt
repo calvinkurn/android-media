@@ -33,8 +33,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
-import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
-import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -42,7 +40,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSear
 import com.tokopedia.tokopedianow.searchcategory.utils.*
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CATEGORY
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
@@ -277,9 +274,6 @@ class TokoNowCategoryViewModel @Inject constructor (
     fun onCategoryGridRetry() {
         processEmptyState(true)
     }
-
-    override fun getPageSourceForGeneralSearchTracking() =
-        "$TOKOPEDIA_NOW.$TOKONOW_CATEGORY.$LOCAL_SEARCH.$warehouseId"
 
     private fun sendOpenScreenTrackingUrl(categoryModel: CategoryModel) {
         openScreenTrackingUrlMutableLiveData.value = CategoryTrackerModel(

@@ -8,6 +8,7 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -15,6 +16,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
@@ -266,6 +268,14 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         every { userSession.isLoggedIn } returns isLoggedIn
     }
 
+    protected fun onSetUserPreference_thenReturn(userPreferenceData: SetUserPreference.SetUserPreferenceData) {
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } returns userPreferenceData
+    }
+
+    protected fun onSetUserPreference_thenReturn(error: Throwable) {
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
+    }
+
     protected fun verifyGetCategoryListUseCaseCalled(){
         coVerify(exactly = 1) { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) }
     }
@@ -315,6 +325,17 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         val data = (viewModel.getLayout.value as Success<RepurchaseLayoutUiModel>).data
         val condition = data.layoutList.firstOrNull { it::class.java == layout::class.java } != null
         assertTrue(condition)
+    }
+
+    protected fun verifySetUserPreferenceUseCaseCalled(
+        localCacheModel: LocalCacheModel,
+        serviceType: String
+    ) {
+        coVerify { setUserPreferenceUseCase.execute(localCacheModel, serviceType) }
+    }
+
+    protected fun verifySetUserPreferenceUseCaseNotCalled() {
+        coVerify(exactly = 0) { setUserPreferenceUseCase.execute(any(), any()) }
     }
 
     protected fun callPrivateLoadMoreProduct() {

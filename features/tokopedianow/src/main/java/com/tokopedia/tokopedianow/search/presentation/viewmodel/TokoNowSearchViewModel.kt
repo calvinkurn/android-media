@@ -24,8 +24,6 @@ import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFact
 import com.tokopedia.tokopedianow.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
-import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
-import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
@@ -278,9 +276,6 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     override fun getKeywordForGeneralSearchTracking() = query
-
-    override fun getPageSourceForGeneralSearchTracking() =
-        "$TOKOPEDIA_NOW.$TOKONOW.$LOCAL_SEARCH.$warehouseId"
 
     override fun executeLoadMore() {
         getSearchLoadMorePageUseCase.cancelJobs()

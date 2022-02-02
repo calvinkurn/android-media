@@ -67,6 +67,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.PAGESOURCE
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.RELATEDKEYWORD
@@ -801,7 +802,9 @@ abstract class BaseSearchCategoryViewModel(
         return if (previousKeyword.isBlank()) NONE else previousKeyword
     }
 
-    protected abstract fun getPageSourceForGeneralSearchTracking(): String
+    private fun getPageSourceForGeneralSearchTracking(): String {
+        return "$TOKOPEDIA_NOW.$TOKONOW.$LOCAL_SEARCH.$warehouseId"
+    }
 
     private fun updateViewForFirstPage(isEmptyProductList: Boolean) {
         updateVisitableListLiveData()
@@ -1191,18 +1194,20 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun switchService() {
-        val currentServiceType = chooseAddressData?.service_type.orEmpty()
+        chooseAddressData?.let {
+            val currentServiceType = it.service_type
 
-        val serviceType = if (
-            currentServiceType == ServiceType.NOW_15M ||
-            currentServiceType == ServiceType.NOW_OOC
-        ) {
-            ServiceType.NOW_2H
-        } else {
-            ServiceType.NOW_15M
+            val serviceType = if (
+                currentServiceType == ServiceType.NOW_15M ||
+                currentServiceType == ServiceType.NOW_OOC
+            ) {
+                ServiceType.NOW_2H
+            } else {
+                ServiceType.NOW_15M
+            }
+
+            setUserPreference(serviceType)
         }
-
-        setUserPreference(serviceType)
     }
 
     open fun onBindRecommendationCarousel(

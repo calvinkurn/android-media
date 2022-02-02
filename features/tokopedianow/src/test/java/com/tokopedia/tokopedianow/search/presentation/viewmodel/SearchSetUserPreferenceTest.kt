@@ -15,7 +15,7 @@ class SearchSetUserPreferenceTest: SearchTestFixtures() {
 
     @Test
     fun `set user preference should give success result`() {
-        val userPreferenceResponse = "userpreference/set-user-preference.json"
+        val userPreferenceResponse = "userpreference/set-user-preference-2h.json"
             .jsonToObject<SetUserPreference.SetUserPreferenceResponse>()
 
         `Given user preference data`(userPreferenceResponse.data)
