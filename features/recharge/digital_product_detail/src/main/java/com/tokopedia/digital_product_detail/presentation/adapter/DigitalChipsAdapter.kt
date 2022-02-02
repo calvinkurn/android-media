@@ -4,11 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipFilterViewHolder
 
-class DigitalChipsAdapter: RecyclerView.Adapter<DigitalPDPChipFilterViewHolder>(), DigitalPDPChipFilterViewHolder.ChipListener {
-
+class DigitalChipsAdapter(
+    private val chipListener: DigitalPDPChipFilterViewHolder.ChipListener
+): RecyclerView.Adapter<DigitalPDPChipFilterViewHolder>() {
+    private var filterTagComponent = TelcoFilterTagComponent()
     private var listFilterDataCollection = mutableListOf<FilterTagDataCollection>()
 
     override fun getItemCount(): Int {
@@ -16,7 +19,7 @@ class DigitalChipsAdapter: RecyclerView.Adapter<DigitalPDPChipFilterViewHolder>(
     }
 
     override fun onBindViewHolder(holder: DigitalPDPChipFilterViewHolder, position: Int) {
-        holder.bind(listFilterDataCollection[position])
+        holder.bind(filterTagComponent, listFilterDataCollection[position])
     }
 
     override fun onCreateViewHolder(
@@ -27,15 +30,13 @@ class DigitalChipsAdapter: RecyclerView.Adapter<DigitalPDPChipFilterViewHolder>(
             LayoutInflater.from(parent.context),
             parent,
             false)
-        return DigitalPDPChipFilterViewHolder(binding, this)
+        return DigitalPDPChipFilterViewHolder(binding, chipListener)
     }
 
-    override fun onChipClicked(element: FilterTagDataCollection, position: Int) {
 
-    }
-
-    fun setChipList(listFilterDataCollection : List<FilterTagDataCollection>){
-        this.listFilterDataCollection = listFilterDataCollection.take(LIMIT_FILTER_DATA_COLLECTION).toMutableList()
+    fun setChipList(filterTagComponent: TelcoFilterTagComponent){
+        this.filterTagComponent = filterTagComponent
+        this.listFilterDataCollection = filterTagComponent.filterTagDataCollections.take(LIMIT_FILTER_DATA_COLLECTION).toMutableList()
         notifyDataSetChanged()
     }
 

@@ -6,13 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.BottomSheetFilterBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.DigitalFilterAdapter
+import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipFilterViewHolder
+import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipListFilerViewHolder
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class FilterPDPBottomsheet(private val title: String, private val action:String, private val filterTagComponents: List<TelcoFilterTagComponent>): BottomSheetUnify() {
+class FilterPDPBottomsheet(private val title: String, private val action:String,
+                           private val filterTagComponents: List<TelcoFilterTagComponent>,
+                           private val listener: FilterBottomSheetListener
+):
+    BottomSheetUnify(),
+    DigitalPDPChipFilterViewHolder.ChipListener,
+    DigitalPDPChipListFilerViewHolder.ListFilterListener
+{
 
     init {
         isFullpage = false
@@ -21,6 +32,7 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
     }
 
     private var binding by autoClearedNullable<BottomSheetFilterBinding>()
+    private val adapterFilter = DigitalFilterAdapter(this@FilterPDPBottomsheet, this@FilterPDPBottomsheet)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,16 +51,60 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
     private fun initView(){
         binding = BottomSheetFilterBinding.inflate(LayoutInflater.from(context))
         binding?.run {
-            val adapterFilter = DigitalFilterAdapter()
             adapterFilter.setChipList(filterTagComponents)
             rvPdpFilter.adapter = adapterFilter
             rvPdpFilter.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            btnPdpFilter.setOnClickListener {
+                listener.onClickSaveFilter(filterTagComponents, initialSelectedCounter(filterTagComponents))
+                dismiss()
+            }
         }
 
         setTitle(title)
         setAction(action, {
-
+            resetFilter()
         })
         setChild(binding?.root)
+    }
+
+    override fun onChipClicked(tagComponent: TelcoFilterTagComponent, element: FilterTagDataCollection, position: Int) {
+        filterTagComponents.filter {
+            it.paramName.equals(tagComponent.paramName)
+        }.first().filterTagDataCollections.get(position).run {
+            isSelected = !isSelected
+        }
+    }
+
+    override fun onSeeAllClicked(element: TelcoFilterTagComponent, position: Int) {
+
+    }
+
+    private fun resetFilter(){
+        filterTagComponents.forEach {
+            it.filterTagDataCollections.forEach {
+                it.isSelected = false
+            }
+        }
+        adapterFilter.notifyDataSetChanged()
+    }
+    private fun initialSelectedCounter(filterTagComponents: List<TelcoFilterTagComponent>): Int {
+        var initialSelectedCounter = 0
+        if (!filterTagComponents.isNullOrEmpty()){
+            filterTagComponents.forEachIndexed { index, tagComponent ->
+                if (!index.isZero()){
+                    tagComponent.filterTagDataCollections.forEach {
+                        if (it.isSelected){
+                            initialSelectedCounter++
+                        }
+                    }
+                }
+            }
+        }
+
+        return initialSelectedCounter
+    }
+
+    interface FilterBottomSheetListener {
+        fun onClickSaveFilter(filterTagComponents: List<TelcoFilterTagComponent>, initialSelectedCounter: Int)
     }
 }

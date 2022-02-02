@@ -2,6 +2,7 @@ package com.tokopedia.digital_product_detail.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipBinding
 import com.tokopedia.unifycomponents.ChipsUnify
 
@@ -9,7 +10,7 @@ class DigitalPDPChipFilterViewHolder(private val binding: ViewPdpFilterChipBindi
                                      private val chipListener: ChipListener
 ): RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(element: FilterTagDataCollection){
+    fun bind(tagComponent: TelcoFilterTagComponent, element: FilterTagDataCollection){
         with(binding){
             chipPdpItem.run {
                 chipText = element.value
@@ -17,13 +18,16 @@ class DigitalPDPChipFilterViewHolder(private val binding: ViewPdpFilterChipBindi
                 else ChipsUnify.TYPE_NORMAL
 
                 root.setOnClickListener {
-                    chipListener.onChipClicked(element, position)
+                    chipType = if (chipType == ChipsUnify.TYPE_SELECTED) ChipsUnify.TYPE_NORMAL
+                    else ChipsUnify.TYPE_SELECTED
+                    chipListener.onChipClicked(tagComponent, element, position)
                 }
             }
         }
     }
 
     interface ChipListener {
-        fun onChipClicked(element: FilterTagDataCollection, position: Int)
+        fun onChipClicked(tagComponent: TelcoFilterTagComponent,
+                          element: FilterTagDataCollection, position: Int)
     }
 }

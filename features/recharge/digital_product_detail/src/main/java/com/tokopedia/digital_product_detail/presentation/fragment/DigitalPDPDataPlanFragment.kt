@@ -94,7 +94,8 @@ class DigitalPDPDataPlanFragment :
     RechargeDenomFullListener,
     RechargeClientNumberWidget.ClientNumberInputFieldListener,
     RechargeClientNumberWidget.ClientNumberFilterChipListener,
-    RechargeClientNumberWidget.ClientNumberAutoCompleteListener
+    RechargeClientNumberWidget.ClientNumberAutoCompleteListener,
+    FilterPDPBottomsheet.FilterBottomSheetListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -392,7 +393,7 @@ class DigitalPDPDataPlanFragment :
         showErrorToaster(throwable)
     }
 
-    private fun onSuccessSortFilter(){
+    private fun onSuccessSortFilter(initialSelectedCounter: Int = 0){
         binding?.let {
             if (!viewModel.filterData.isNullOrEmpty()){
                 it.sortFilterPaketData.run {
@@ -404,9 +405,13 @@ class DigitalPDPDataPlanFragment :
                         filterItems.add(item)
                     }
 
-                    var selectedChipsCounter = 0
+                    var selectedChipsCounter = initialSelectedCounter
 
                     filterItems.forEachIndexed{ index, sortFilterItem ->
+                        if (chipItems.get(index).isSelected) {
+                            sortFilterItem.type = ChipsUnify.TYPE_SELECTED
+                        }
+
                         sortFilterItem.listener = {
                             sortFilterItem.toggle()
 
@@ -424,11 +429,12 @@ class DigitalPDPDataPlanFragment :
                     }
 
                     addItem(filterItems)
+                    val filterData = viewModel.filterData
                     sortFilterPrefix.setOnClickListener {
                         fragmentManager?.let {
                             FilterPDPBottomsheet(getString(R.string.bottom_sheet_filter_title),
                                 getString(R.string.bottom_sheet_filter_reset),
-                                viewModel.filterData)
+                                filterData, this@DigitalPDPDataPlanFragment)
                                 .show(it, "")
                         }
                     }
@@ -1037,6 +1043,14 @@ class DigitalPDPDataPlanFragment :
         fragmentManager?.let {
             ProductDescBottomSheet(denomFull, this).show(it, "")
         }
+    }
+
+    /** FilterBottomSheetListener */
+
+    override fun onClickSaveFilter(filterTagComponents: List<TelcoFilterTagComponent>, initialSelectedCounter: Int) {
+        viewModel.updateFilterData(filterTagComponents)
+        onSuccessSortFilter(initialSelectedCounter)
+        viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
     }
 
     override fun onRequestPermissionsResult(

@@ -5,9 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipListBinding
+import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipFilterViewHolder
 import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipListFilerViewHolder
 
-class DigitalFilterAdapter: RecyclerView.Adapter<DigitalPDPChipListFilerViewHolder>(), DigitalPDPChipListFilerViewHolder.ListFilterListener {
+class DigitalFilterAdapter(
+    private val chipListener: DigitalPDPChipFilterViewHolder.ChipListener,
+    private val listListener: DigitalPDPChipListFilerViewHolder.ListFilterListener
+): RecyclerView.Adapter<DigitalPDPChipListFilerViewHolder>() {
 
     private var listFilterDataComponent = mutableListOf<TelcoFilterTagComponent>()
 
@@ -28,15 +32,11 @@ class DigitalFilterAdapter: RecyclerView.Adapter<DigitalPDPChipListFilerViewHold
             parent,
             false
         )
-        return DigitalPDPChipListFilerViewHolder(binding, this)
+        return DigitalPDPChipListFilerViewHolder(binding, chipListener, listListener)
     }
 
     fun setChipList(listFilterDataComponent: List<TelcoFilterTagComponent>){
         this.listFilterDataComponent = listFilterDataComponent.toMutableList()
         notifyDataSetChanged()
-    }
-
-    override fun onSeeAllClicked(element: TelcoFilterTagComponent, position: Int) {
-
     }
 }
