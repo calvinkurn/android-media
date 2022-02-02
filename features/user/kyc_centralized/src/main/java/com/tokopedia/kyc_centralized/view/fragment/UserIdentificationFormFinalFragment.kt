@@ -592,7 +592,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             FileUtil.deleteFolder(context?.externalCacheDir?.absolutePath + FILE_NAME_KYC)
         } else {
             if (deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
-//            if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
+            if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
         }
     }
 
