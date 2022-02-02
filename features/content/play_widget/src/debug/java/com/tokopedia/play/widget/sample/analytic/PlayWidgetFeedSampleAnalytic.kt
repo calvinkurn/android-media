@@ -5,23 +5,12 @@ import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by meyta.taliti on 01/02/22.
  */
 class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
-
-    override fun onImpressPlayWidget(
-        view: PlayWidgetView,
-        item: PlayWidgetUiModel,
-        verticalWidgetPosition: Int,
-        businessWidgetPosition: Int
-    ) {
-        Log.d("FeedPlayWidget","onImpressPlayWidget $verticalWidgetPosition")
-    }
 
     override fun onClickChannelCard(
         view: PlayWidgetJumboView,

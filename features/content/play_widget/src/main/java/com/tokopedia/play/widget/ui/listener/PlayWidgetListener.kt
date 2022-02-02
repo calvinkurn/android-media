@@ -11,5 +11,9 @@ interface PlayWidgetListener :
     PlayWidgetLargeListener,
     PlayWidgetJumboListener {
 
-    fun onWidgetShouldRefresh(view: PlayWidgetView)
+    /**
+     * works for medium & small type only, with PlayWidgetCoordinator
+     */
+    fun onWidgetShouldRefresh(view: PlayWidgetView) {}
+
 }

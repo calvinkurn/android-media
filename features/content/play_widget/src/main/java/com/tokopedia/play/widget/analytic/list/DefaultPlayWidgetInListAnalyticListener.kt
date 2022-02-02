@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.analytic.list
 
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.*
@@ -15,7 +16,11 @@ class DefaultPlayWidgetInListAnalyticListener (
     private var businessWidgetPosition = 0
     private var verticalWidgetPosition = RecyclerView.NO_POSITION
 
-    override fun onImpressPlayWidget(view: PlayWidgetView, item: PlayWidgetUiModel, widgetPositionInList: Int) {
+    override fun onImpressPlayWidget(
+        view: PlayWidgetView,
+        item: PlayWidgetUiModel,
+        widgetPositionInList: Int
+    ) {
         verticalWidgetPosition = widgetPositionInList
         businessWidgetPosition = item.config.businessWidgetPosition
         analytic.onImpressPlayWidget(view, item, widgetPositionInList, businessWidgetPosition)

@@ -314,6 +314,11 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         } else model.items
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        this.mWidgetInternalListener?.onWidgetDetached(this)
+    }
+
     companion object {
         private const val LEFT_BANNER_POSITION = 0
     }

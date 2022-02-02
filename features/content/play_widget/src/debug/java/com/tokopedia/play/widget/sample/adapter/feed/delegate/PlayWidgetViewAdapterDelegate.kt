@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
-import com.tokopedia.play.widget.analytic.jumbo.PlayWidgetJumboAnalyticListener
-import com.tokopedia.play.widget.analytic.list.jumbo.PlayWidgetInListJumboAnalyticListener
 import com.tokopedia.play.widget.sample.adapter.feed.viewholder.PlayWidgetViewHolder
-import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetJumboUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetLargeUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
 
 /**
  * Created by meyta.taliti on 29/01/22.
@@ -16,7 +18,7 @@ import com.tokopedia.play.widget.ui.model.*
 class PlayWidgetViewAdapterDelegate private constructor() {
 
     internal class Jumbo(
-        private val analyticListener: PlayWidgetAnalyticListener
+        private val coordinator: PlayWidgetCoordinator
     ) :
         TypedAdapterDelegate<PlayWidgetJumboUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Jumbo>(
             R.layout.item_play_widget_jumbo
@@ -26,7 +28,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): PlayWidgetViewHolder.Jumbo {
-            return PlayWidgetViewHolder.Jumbo.create(basicView, analyticListener)
+            return PlayWidgetViewHolder.Jumbo.create(basicView, coordinator)
         }
 
         override fun onBindViewHolder(
@@ -38,7 +40,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
     }
 
     internal class Large(
-        private val analyticListener: PlayWidgetAnalyticListener
+        private val coordinator: PlayWidgetCoordinator
     ) :
         TypedAdapterDelegate<PlayWidgetLargeUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Large>(
             R.layout.item_play_widget_large
@@ -54,12 +56,12 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): PlayWidgetViewHolder.Large {
-            return PlayWidgetViewHolder.Large.create(basicView, analyticListener)
+            return PlayWidgetViewHolder.Large.create(basicView, coordinator)
         }
     }
 
     internal class Medium(
-        private val analyticListener: PlayWidgetAnalyticListener
+        private val coordinator: PlayWidgetCoordinator
     ) :
         TypedAdapterDelegate<PlayWidgetMediumUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Medium>(
             R.layout.item_play_widget_medium
@@ -75,26 +77,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): PlayWidgetViewHolder.Medium {
-            return PlayWidgetViewHolder.Medium.create(basicView, analyticListener)
-        }
-    }
-
-    internal class SlotTab :
-        TypedAdapterDelegate<PlayWidgetSlotTabUiModel, PlayFeedUiModel, PlayWidgetViewHolder.SlotTab>(
-            R.layout.item_play_slot_tab
-        ) {
-        override fun onBindViewHolder(
-            item: PlayWidgetSlotTabUiModel,
-            holder: PlayWidgetViewHolder.SlotTab
-        ) {
-            holder.bind(item)
-        }
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            basicView: View
-        ): PlayWidgetViewHolder.SlotTab {
-            return PlayWidgetViewHolder.SlotTab.create(basicView)
+            return PlayWidgetViewHolder.Medium.create(basicView, coordinator)
         }
     }
 }

@@ -1,15 +1,12 @@
 package com.tokopedia.play.widget.sample.coordinator
 
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
-//import com.tokopedia.play.widget.ui.PlayWidgetState
-//import com.tokopedia.play.widget.ui.PlayWidgetView
-import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
+import com.tokopedia.play.widget.ui.PlayWidgetJumboView
+import com.tokopedia.play.widget.ui.PlayWidgetLargeView
+import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,93 +24,65 @@ class PlayWidgetCoordinator(
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
 
-//    private var mWidget: PlayWidgetView? = null
-//    private var mState: PlayWidgetState = PlayWidgetState(isLoading = true)
-
     private var mListener: PlayWidgetListener? = null
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
 
-//    private val widgetHolderListener = object : PlayWidgetViewHolder.Listener {
-//
-//        override fun onWidgetImpressed(view: PlayWidgetView, item: PlayWidgetUiModel, position: Int) {
-//            mAnalyticListener?.onImpressPlayWidget(view, item, position)
-//        }
-//    }
-
-    private val autoPlayCoordinator = PlayWidgetAutoPlayCoordinator(scope, mainCoroutineDispatcher)
-
-    private val mWidgetInternalListener = object : PlayWidgetInternalListener {
-
-        /**
-         * only works for medium & small
-         */
-        override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
-            autoPlayCoordinator.onWidgetCardsScrollChanged(widgetCardsContainer)
-        }
-
-        override fun onWidgetDetached(widget: View) {
-            autoPlayCoordinator.onWidgetDetached(widget)
-        }
-    }
-
-    private var impressionHelper = ImpressionHelper()
+    private val impressionHelper = ImpressionHelper()
 
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() {
-        autoPlayCoordinator.onPause()
+    fun controlWidget(widget: PlayWidgetMediumView) {
+        widget.setWidgetListener(mListener)
+        widget.setAnalyticListener(mAnalyticListener)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-//        val currentModel = mState
-        autoPlayCoordinator.onResume()
+    fun controlWidget(widget: PlayWidgetLargeView) {
+        widget.setWidgetListener(mListener)
+        widget.setAnalyticListener(mAnalyticListener)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        autoPlayCoordinator.onDestroy()
-        scope.coroutineContext.cancelChildren()
+    fun controlWidget(widget: PlayWidgetJumboView) {
+        widget.setWidgetListener(mListener)
+        widget.setAnalyticListener(mAnalyticListener)
     }
 
-//    fun controlWidget(widget: PlayWidgetView) {
-//        mWidget = widget
-//        widget.setAnalyticListener(mAnalyticListener)
-//        widget.setWidgetInternalListener(mWidgetInternalListener)
-//        widget.setWidgetListener(mListener)
-//    }
+    fun connect(widget: PlayWidgetMediumView, model: PlayWidgetUiModel) {
+        widget.setData(model)
+    }
 
-//    fun controlWidget(widgetViewHolder: PlayWidgetViewHolder) {
-//        controlWidget(widgetViewHolder.itemView as PlayWidgetView)
-//        widgetViewHolder.setListener(widgetHolderListener)
-//    }
+    fun connect(widget: PlayWidgetLargeView, model: PlayWidgetUiModel) {
+        widget.setData(model)
+    }
+
+    fun connect(widget: PlayWidgetJumboView, model: PlayWidgetUiModel) {
+        widget.setData(model)
+    }
 
     fun setListener(listener: PlayWidgetListener?) {
         mListener = listener
-//        mWidget?.setWidgetListener(mListener)
     }
 
     fun setAnalyticListener(listener: PlayWidgetAnalyticListener?) {
         mAnalyticListener = listener
-//        mWidget?.setAnalyticListener(listener)
-    }
-
-//    fun connect(widget: PlayWidgetView, state: PlayWidgetState) {
-//        mState = state
-//        widget.setState(state)
-//
-//        autoPlayCoordinator.configureAutoPlay(widget, state.model.config)
-//    }
-
-    fun setImpressionHelper(helper: ImpressionHelper) {
-        impressionHelper = helper
     }
 
     fun getImpressionHelper(): ImpressionHelper {
         return impressionHelper
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        scope.coroutineContext.cancelChildren()
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {
