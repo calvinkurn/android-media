@@ -53,7 +53,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** ViewModel */
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
-    private lateinit var titleSetupViewModel: PlayTitleAndTagsSetupViewModel
     private lateinit var coverSetupViewModel: PlayCoverSetupViewModel
     private lateinit var scheduleViewModel: BroadcastScheduleViewModel
 
@@ -73,7 +72,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        titleSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayTitleAndTagsSetupViewModel::class.java)
         coverSetupViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayCoverSetupViewModel::class.java)
         scheduleViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(BroadcastScheduleViewModel::class.java)
     }
@@ -125,7 +123,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun setupView() {
         binding.viewActionBar.setShopName(parentViewModel.getShopName())
         binding.viewActionBar.setShopIcon(parentViewModel.getShopIconUrl())
-        binding.formTitle.setMaxCharacter(titleSetupViewModel.maxTitleChars)
+        binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
     }
 
     private fun setupInsets(view: View) {
@@ -177,7 +175,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             binding.viewPreparationMenu.isSetTitleChecked(true)
         }
 
-        titleSetupViewModel.observableUploadEvent.observe(viewLifecycleOwner) {
+        viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
                     binding.formTitle.setLoading(false)
@@ -309,7 +307,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onTitleSaved(view: TitleFormView, title: String) {
         hideKeyboard()
         binding.formTitle.setLoading(true)
-        titleSetupViewModel.uploadTitle(title)
+        viewModel.uploadTitle(title)
     }
 
     /** Callback Cover Form */
