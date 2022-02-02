@@ -15,14 +15,17 @@ class CatalogGalleryActivity : BaseSimpleActivity() {
         private const val ARG_EXTRA_IMAGES = "ARG_EXTRA_IMAGES"
         private const val ARG_EXTRA_CURRENT_IMAGE = "ARG_EXTRA_CURRENT_IMAGE"
         private const val ARG_SHOW_BOTTOM_GALLERY = "ARG_SHOW_BOTTOM_GALLERY"
+        private const val ARG_SHOW_BOTTOM_NUMBERING = "ARG_SHOW_BOTTOM_NUMBERING"
 
         fun newIntent(context: Context?, catalogId : String, currentItem: Int, catalogImages: ArrayList<CatalogImage>,
-                      showBottomGallery : Boolean = false): Intent {
+                      showBottomGallery : Boolean = false,
+                      showNumbering : Boolean = false): Intent {
             val intent = Intent(context, CatalogGalleryActivity::class.java)
             intent.putExtra(ARG_CATALOG_ID, catalogId)
             intent.putExtra(ARG_EXTRA_IMAGES, catalogImages)
             intent.putExtra(ARG_EXTRA_CURRENT_IMAGE, currentItem)
             intent.putExtra(ARG_SHOW_BOTTOM_GALLERY,showBottomGallery)
+            intent.putExtra(ARG_SHOW_BOTTOM_NUMBERING,showNumbering)
             return intent
         }
     }
@@ -32,7 +35,8 @@ class CatalogGalleryActivity : BaseSimpleActivity() {
         val currentItem: Int = intent.getIntExtra(ARG_EXTRA_CURRENT_IMAGE, 0)
         val catalogImage: ArrayList<CatalogImage> = intent.getParcelableArrayListExtra(ARG_EXTRA_IMAGES) ?: ArrayList()
         val showBottomGallery : Boolean = intent.getBooleanExtra(ARG_SHOW_BOTTOM_GALLERY,false)
-        return CatalogGalleryFragment.newInstance(catalogId,currentItem, catalogImage,showBottomGallery)
+        val showBottomNumbering : Boolean = intent.getBooleanExtra(ARG_SHOW_BOTTOM_NUMBERING,false)
+        return CatalogGalleryFragment.newInstance(catalogId,currentItem, catalogImage,showBottomGallery, showBottomNumbering)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

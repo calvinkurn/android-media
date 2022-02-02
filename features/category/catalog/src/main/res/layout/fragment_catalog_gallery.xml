@@ -30,6 +30,20 @@
         android:visibility="gone"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/numbering"
+        tools:text="4/5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N0"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/image_recycler_view"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        />
+
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager_intermediary"
         android:layout_width="0dp"
