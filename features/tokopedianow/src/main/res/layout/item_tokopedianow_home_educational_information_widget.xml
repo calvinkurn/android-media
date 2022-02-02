@@ -13,13 +13,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="11dp"
+        android:paddingTop="11dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="11dp"
         android:background="@color/tokopedianow_cardview_background_dms_color">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_two_hours"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/tokopedianow_usp_illustration_width"
+            android:layout_height="@dimen/tokopedianow_usp_illustration_height"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
@@ -43,8 +46,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_stock_available"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/tokopedianow_usp_illustration_width"
+            android:layout_height="@dimen/tokopedianow_usp_illustration_height"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tp_stock_available"
             app:layout_constraintStart_toStartOf="@+id/guideline1"
@@ -68,8 +71,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_guaranteed_quality"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/tokopedianow_usp_illustration_width"
+            android:layout_height="@dimen/tokopedianow_usp_illustration_height"
             app:layout_constraintBottom_toBottomOf="@+id/tp_stock_available"
             app:layout_constraintEnd_toStartOf="@+id/tp_guaranteed_quality"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
