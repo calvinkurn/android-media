@@ -190,11 +190,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun enableLinkingAccountRollout(): Boolean =
-        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
-
     private fun isEnableLinkAccount(): Boolean  {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true) && enableLinkingAccountRollout()
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true)
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -1572,7 +1569,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
         private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING = "android_user_home_account_biometric_offering"
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
-        private const val LINK_STATUS_ROLLOUT = "goto_linking"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
