@@ -736,7 +736,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
             if (meta.videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
-
         }
     }
 
