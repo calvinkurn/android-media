@@ -4,6 +4,7 @@ import com.tokopedia.logisticcart.utils.RatesParamHelper
 
 private const val VALUE_ANDROID = "android"
 private const val VALUE_CLIENT = "client"
+private const val VALUE_CARTAPP = "cartapp"
 private const val VALUE_LANG_ID = "id"
 
 data class RatesParam(
@@ -112,7 +113,7 @@ data class RatesParam(
     fun toBoAffordabilityMap(appVersion: String): Map<String, Any?> = mapOf(
             "origin" to origin,
             "destination" to destination,
-            "source" to from,
+            "source" to VALUE_CARTAPP,
             "type" to type,
             "device_version" to "$VALUE_ANDROID-$appVersion",
             "weight" to weight,

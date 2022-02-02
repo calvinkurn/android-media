@@ -19,13 +19,16 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
-import java.lang.Math.*
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.min
@@ -441,7 +444,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         arrowBoAffordability.show()
                         layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutBoAffordability.setOnClickListener {
-                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData.shopId, true)
+                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData.shopId, cartShopHolderData.isTokoNow)
                         }
                         actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
                     }

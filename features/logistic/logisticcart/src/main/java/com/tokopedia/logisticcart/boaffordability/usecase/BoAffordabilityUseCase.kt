@@ -5,13 +5,14 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityDataResponse
 import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityGqlResponse
 import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityResponse
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) : UseCase<BoAffordabilityResponse>() {
+class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) : UseCase<BoAffordabilityDataResponse>() {
 
     private var requestParam: RatesParam? = null
 
@@ -21,7 +22,7 @@ class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val
     }
 
     @GqlQuery("BoAffordabilityQuery", QUERY)
-    override suspend fun executeOnBackground(): BoAffordabilityResponse {
+    override suspend fun executeOnBackground(): BoAffordabilityDataResponse {
         val param = this.requestParam?.toBoAffordabilityMap(GlobalConfig.VERSION_NAME) ?: throw RuntimeException("Param must be initialized")
         val request = GraphqlRequest(
                 BoAffordabilityQuery(),
@@ -29,14 +30,7 @@ class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val
                 mapOf("input" to param)
         )
         return gqlRepository.response(listOf(request))
-                .getData<BoAffordabilityGqlResponse>(BoAffordabilityGqlResponse::class.java).response
-
-//        return BoAffordabilityResponse(
-//            40_000, BoAffordabilityTexts(
-//                "<b>+Rp10.900</b> lagi untuk dapat potongan ongkir! +Rp10.900 lagi di toko ini, ongkir Rp10.000 <s>Rp30.000</s>",
-//                "<b>+Rp10.900</b> lagi untuk dapat potongan ongkir! +Rp10.900 lagi di toko ini, ongkir Rp10.000 <s>Rp30.000</s>"
-//            )
-//        )
+                .getData<BoAffordabilityGqlResponse>(BoAffordabilityGqlResponse::class.java).response.data
     }
 
     companion object {
