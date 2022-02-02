@@ -13,6 +13,25 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+<!--                <data-->
+<!--                    android:host="@string/host_fintech"-->
+<!--                    android:path="@string/path_paylater"-->
+<!--                    android:scheme="@string/internal_scheme" />-->
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name="com.tokopedia.pdpsimulation.activateCheckout.presentation.activity.OptimizedCheckoutActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/host_fintech"
                     android:path="@string/path_paylater"

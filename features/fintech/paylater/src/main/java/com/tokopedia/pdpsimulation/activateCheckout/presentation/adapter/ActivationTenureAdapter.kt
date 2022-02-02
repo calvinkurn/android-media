@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
-import com.tokopedia.pdpsimulation.activateCheckout.listner.TenureSelectListner
+import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.TenureViewHolder
 
-class ActivationTenureAdapter(var tenureDetailList: List<TenureDetail>,val listner:TenureSelectListner) : RecyclerView.Adapter<TenureViewHolder>() {
+class ActivationTenureAdapter(var tenureDetailList: List<TenureDetail>,val listner:ActivationListner) : RecyclerView.Adapter<TenureViewHolder>() {
 
     var selectedPosition = 0;
 
@@ -35,4 +35,5 @@ class ActivationTenureAdapter(var tenureDetailList: List<TenureDetail>,val listn
         holder.bindData(tenureDetailList[position],
             DataMapper.mapToInstallationDetail(tenureDetailList[position]),position)
     }
+
 }

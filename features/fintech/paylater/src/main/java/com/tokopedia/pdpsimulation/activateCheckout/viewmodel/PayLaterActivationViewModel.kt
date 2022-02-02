@@ -30,6 +30,8 @@ class PayLaterActivationViewModel @Inject constructor(
     val payLaterActivationDetailLiveData: LiveData<Result<PaylaterGetOptimizedModel>> =
         _payLaterActivationDetailLiveData
 
+    var price =0.0
+
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
@@ -43,6 +45,9 @@ class PayLaterActivationViewModel @Inject constructor(
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
         baseProductDetailClass.getProductV3?.let {
+            it.price?.let { productPrice ->
+                price = productPrice
+            }
             _productDetailLiveData.value = Success(it)
         }
     }
@@ -65,7 +70,7 @@ class PayLaterActivationViewModel @Inject constructor(
 
     private fun onSuccessActivationData(paylaterGetOptimizedModel: PaylaterGetOptimizedModel) {
         paylaterGetOptimizedModel.let {
-            _payLaterActivationDetailLiveData.value = Success(it)
+            _payLaterActivationDetailLiveData.postValue( Success(it))
         }
 
     }
@@ -73,6 +78,5 @@ class PayLaterActivationViewModel @Inject constructor(
     fun onFailActivationData(throwable: Throwable) {
         _payLaterActivationDetailLiveData.value = Fail(throwable)
     }
-
 
 }
