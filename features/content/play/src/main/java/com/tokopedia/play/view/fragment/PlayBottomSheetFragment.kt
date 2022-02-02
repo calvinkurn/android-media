@@ -53,10 +53,11 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -298,8 +299,9 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
             val startTimeInSecond = try {
-                val sdf = SimpleDateFormat("hh:mm:ss")
-                val dt: Date = sdf.parse(startTime.split("T", "+")[1])
+                val dt: Date = DateUtil.formatDate(currentFormat = DateUtil.YYYY_MM_DD_T_HH_MM_SS, newFormat = DateUtil.HH_MM, startTime).toDate(
+                    DateUtil.HH_MM
+                )
                 TimeUnit.MILLISECONDS.toSeconds(dt.time)
             }catch (e: Exception){
                 0
