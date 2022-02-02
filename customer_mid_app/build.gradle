@@ -40,6 +40,111 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
+    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+    implementation projectOrAar(rootProject.ext.features.feedComponent)
+    implementation projectOrAar(rootProject.ext.features.kolCommon)
+    implementation projectOrAar(rootProject.ext.features.interestPickCommon)
+    implementation projectOrAar(rootProject.ext.features.home)
+    implementation projectOrAar(rootProject.ext.features.commonWallet)
+    implementation projectOrAar(rootProject.ext.features.variantCommon)
+    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.reputationCommon)
+    implementation projectOrAar(rootProject.ext.features.commonTopupBills)
+    implementation projectOrAar(rootProject.ext.features.logout)
+    implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
+    implementation projectOrAar(rootProject.ext.features.productManageCommon)
+    implementation projectOrAar(rootProject.ext.features.topAdsManagementSourceTagging)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.discovery2)
+    implementation projectOrAar(rootProject.ext.features.logisticCommon)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.nps)
+    implementation projectOrAar(rootProject.ext.features.withdraw)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.features.navigationCommon)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
+    implementation projectOrAar(rootProject.ext.features.promoCheckout)
+    implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
+    implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
+    implementation projectOrAar(rootProject.ext.features.userIdentificationCommon)
+    implementation projectOrAar(rootProject.ext.features.gallery)
+    implementation projectOrAar(rootProject.ext.features.categoryCommon)
+    implementation projectOrAar(rootProject.ext.features.officialStore)
+    implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.productShare)
+    implementation projectOrAar(rootProject.ext.libraries.irisSession)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.dynamicFeatures)
+    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
+    implementation projectOrAar(rootProject.ext.libraries.datePickerRange)
+    implementation projectOrAar(rootProject.ext.libraries.baseListSeller)
+    implementation projectOrAar(rootProject.ext.libraries.locationmanager)
+    implementation projectOrAar(rootProject.ext.libraries.imagePreviewSlider)
+    implementation projectOrAar(rootProject.ext.libraries.imagePreview)
+    implementation projectOrAar(rootProject.ext.features.attachcommon)
+    implementation projectOrAar(rootProject.ext.features.common_promo)
+    implementation projectOrAar(rootProject.ext.libraries.bannerDynamic)
+    implementation projectOrAar(rootProject.ext.libraries.inappupdate)
+    implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
+    implementation projectOrAar(rootProject.ext.features.tokopointsNotification)
+    implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
+    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
+    implementation projectOrAar(rootProject.ext.libraries.websocket)
+    implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
+    implementation projectOrAar(rootProject.ext.features.csat_rating)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.agerestriction)
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.banner
+    implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.iconNotification
+    implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.pin
+    implementation rootProject.ext.unifyDependencies.accordion
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.supportLibDependencies.supportV13
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.miscDependencies.biometric
+    implementation rootProject.ext.firebase.fireStore
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.apacheLang
+    implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.supportLibDependencies.exifinterface
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.liveDataKtx
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticGTMUtil
+    implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+
     //Dependency used for DF module
     implementation projectOrAar(rootProject.ext.features.commonTravel)
     implementation projectOrAar(rootProject.ext.features.payment)
@@ -48,7 +153,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.explore)
     implementation projectOrAar(rootProject.ext.features.loyalty)
     implementation projectOrAar(rootProject.ext.features.commonElectronicMoney)
-    implementation projectOrAar(rootProject.ext.features.loyalty)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
