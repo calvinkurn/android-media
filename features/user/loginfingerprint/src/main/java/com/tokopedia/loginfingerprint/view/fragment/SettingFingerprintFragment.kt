@@ -113,18 +113,31 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
             enableSwitch = true
         })
 
-        viewModel.registerFingerprintResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessRegisterFingerprint(it.data)
-                is Fail -> {
-                    enableSwitch = false
-                    binding?.fragmentFingerprintSettingSwitch?.isChecked = false
-                    onErrorRegisterFingerprint(throwable = it.throwable)
-                }
+        viewModel.navigateSuccessRegister.observe(viewLifecycleOwner) {
+            tracker.trackRegisterFpSuccess()
+            enableSwitch = false
+            binding?.fragmentFingerprintSettingSwitch?.isChecked = true
+            view?.let { view ->
+                Toaster.build(view, getString(R.string.fingerprint_success_login_toaster), Toaster.LENGTH_LONG).show()
             }
-            enableSwitch = true
-            hideLoading()
-        })
+
+            enableSwitchAndHideLoading()
+        }
+
+        viewModel.errorMessageRegister.observe(viewLifecycleOwner) {
+            enableSwitch = false
+            binding?.fragmentFingerprintSettingSwitch?.isChecked = false
+
+            showToaster(it)
+            tracker.trackRegisterFpFailed(it)
+
+            enableSwitchAndHideLoading()
+        }
+    }
+
+    private fun enableSwitchAndHideLoading() {
+        enableSwitch = true
+        hideLoading()
     }
 
     private fun showToaster(message: String?) {
