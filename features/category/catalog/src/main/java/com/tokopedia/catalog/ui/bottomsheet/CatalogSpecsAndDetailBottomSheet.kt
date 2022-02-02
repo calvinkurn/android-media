@@ -159,11 +159,11 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         viewPager?.adapter = null
         tabLayout?.addOnTabSelectedListener(null)
         viewPager = null
         tabLayout = null
+        super.onDestroyView()
     }
 
     private fun setCustomTabText(context : Context?, tabLayout: TabLayout?){
