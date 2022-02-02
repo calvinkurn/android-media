@@ -8,7 +8,6 @@
     <com.tokopedia.unifycomponents.CardUnify2
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/unify_space_8"
         app:cardCornerRadius="@dimen/unify_space_16"
         app:cardElevation="0dp"
         app:layout_constrainedHeight="true"

@@ -7,6 +7,7 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
 import com.tokopedia.digital.home.model.RechargeHomepageRecommendationBannerModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemRecommendationBannerAdapter
+import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeRecommendationBannerItemDecoration
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -51,6 +52,13 @@ class RechargeHomepageRecommendationBannerViewHolder(
 
             rvRechargeRecomBanner.layoutManager = layoutManager
             rvRechargeRecomBanner.adapter = adapter
+            rvRechargeRecomBanner.addItemDecoration(
+                RechargeRecommendationBannerItemDecoration(
+                    GRID_COLUMN,
+                    root.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    false
+                )
+            )
         }
     }
 
