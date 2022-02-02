@@ -454,7 +454,7 @@ class CatalogDetailPageFragment : Fragment(),
         linkerData.id = catalogId
         linkerData.type = LinkerData.CATALOG_TYPE
         linkerData.name = getString(com.tokopedia.catalog.R.string.catalog_share_link_name,catalogName)
-        linkerData.uri  = CatalogUtil.getShareUrl(catalogId)
+        linkerData.uri  = CatalogUtil.getShareURI(catalogUrl)
         linkerData.description = getString(com.tokopedia.catalog.R.string.catalog_share_link_description)
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
