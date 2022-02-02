@@ -128,6 +128,7 @@ object AffiliateAnalytics {
             const val AFFILIATE_HOME_PAGE_FILTER = "affiliate home page - filter date"
             const val AFFILIATE_HOME_PAGE_BOTTOM_SHEET = "affiliate home page - bottom sheet"
             const val AFFILIATE_PROMOSIKAN_PAGE = "affiliate promosikan page"
+            const val AFFILIATE_PENDAPATAN_PAGE = "affiliate pendapatan page"
         }
     }
 
