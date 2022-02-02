@@ -316,7 +316,7 @@
     <string name="topads_dashboard_no_product_sheet_body">Tambah produk terlebih dahulu untuk mulai beriklan</string>
     <string name="topads_dashboard_no_product_sheet_button">Tambah produk</string>
     <string name="topads_dashboard_updated_daily_budget">Anggaran harian diperbaharui</string>
-    
+
     <string name="topads_insight_select_ads_type">Pilih tipe iklan</string>
     <string name="topads_insight_title_bid_keyword">Rekomendasi biaya kata kunci (%d)</string>
     <string name="topads_insight_title_new_keyword">Rekomendasi kata kunci baru (%d)</string>
@@ -351,7 +351,6 @@
 
     <string name="title_current_cost">Biaya saat ini</string>
     <string name="title_new_fee">Biaya baru</string>
-
 
 
     <!--RECOMMENDATION DAILY BUDGET & PRODUCT -->
@@ -419,5 +418,20 @@
     <string name="pendapatan_sub_title">Total pendapatan dari produk terjual melalui iklanmu.</string>
     <string name="pengeluaran_sub_title">Total pengeluaran untuk semua iklanmu.</string>
     <string name="efektivitas_iklan_sub_title">Perbandingan pendapatan dengan pengeluaran iklan.</string>
+    <string name="topads_dashboard_home_dialog_title">Tampilan TopAds yang baru!</string>
+    <string name="topads_dashboard_home_dialog_description">Tampilan TopAds yang baru!</string>
+    <string name="topads_dashboard_home_dialog_button_text">Ayo Cek Tampilannnya</string>
+
+    <string name="topads_dashboard_home_coachmark_1_title">Ringkasan performa iklan</string>
+    <string name="topads_dashboard_home_coachmark_1_desc">Ayo cek performa iklanmu di sini. Kamu bisa klik di tiap bagiannya untuk lihat grafiknya juga.</string>
+    <string name="topads_dashboard_home_coachmark_2_title">Details grafik saat diklik</string>
+    <string name="topads_dashboard_home_coachmark_2_desc">Memantau performa iklan jadi lebih mudah, kan? Grafiknya bisa diganti juga dengan data performa iklan lainnya, ya.</string>
+    <string name="topads_dashboard_home_coachmark_3_title">Rekomendasi iklan</string>
+    <string name="topads_dashboard_home_coachmark_3_desc">Ikuti juga rekomendasi jitu dari hasil analisa TopAds untuk tingkatkan performa iklanmu!</string>
+    <string name="topads_dashboard_home_coachmark_4_title">Selalu update dengan bacaan terbaru</string>
+    <string name="topads_dashboard_home_coachmark_4_desc">Biar tidak ketinggalan info terbaru tentang TopAds, pastikan juga kamu baca artikel di sini, ya!</string>
+    <string name="topads_dashboard_home_coachmark_5_title">Ada yang baru juga di sini!</string>
+    <string name="topads_dashboard_home_coachmark_5_desc">Tersedia 6 topik artikel tentang TopAds untukmu. Biar makin kenal TopAds, yuk pilih topik mana yang mau kamu baca.</string>
+
 </resources>
 

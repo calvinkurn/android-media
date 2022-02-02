@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
@@ -81,7 +80,7 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
         })
 
         viewModel.creditAmount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            credits.text = it
+            creditAmount.text = it
         })
     }
 

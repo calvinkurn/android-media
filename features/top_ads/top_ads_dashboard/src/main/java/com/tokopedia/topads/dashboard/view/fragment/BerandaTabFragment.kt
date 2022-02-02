@@ -4,11 +4,19 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager.widget.ViewPager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.DepositAmount
@@ -41,15 +49,33 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
+import kotlinx.android.synthetic.main.fragment_topads_dashboard_beranda_base.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by Pika on 15/5/20.
  */
 open class BerandaTabFragment : TopAdsBaseTabFragment() {
+
+    private lateinit var shimmerView: ConstraintLayout
+    private lateinit var scrollView: NestedScrollView
+    private lateinit var autoTopUp: Typography
+    private lateinit var creditAmount: Typography
+    private lateinit var txtLastUpdated: Typography
+    private lateinit var rvRingkasan: RecyclerView
+    private lateinit var rvLatestReading: RecyclerView
+    private lateinit var btnReadMore: UnifyButton
+    private lateinit var addCredit: UnifyButton
+    private lateinit var ivRingkasanDropDown: ImageUnify
+    private lateinit var ivRingkasanInformation: ImageUnify
+    private lateinit var creditHistoryImage: ImageUnify
+    private lateinit var btnRefreshCredits: ImageUnify
+    private lateinit var imgAutoDebit: ImageUnify
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var creditHistory: CardUnify
+    private lateinit var statisticsPager: ViewPager
 
     private var dataStatistic: DataStatistic? = null
     private var insightCallBack: GoToInsight? = null
@@ -59,14 +85,6 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private val ringkasanBottomSheet by lazy { RingkasanDropdownBottomSheet.createInstance(::ringkasanClicked) }
     private val ringkasanRvAdapter by lazy { RingkasanTopAdsDashboardRvAdapter.createInstance() }
     private val latestReadingRvAdapter by lazy { LatestReadingTopAdsDashboardRvAdapter.createInstance() }
-
-    private lateinit var ivRingkasanDropDown: ImageUnify
-    private lateinit var txtLastUpdated: Typography
-    private lateinit var ivRingkasanInformation: ImageUnify
-    private lateinit var rvRingkasan: RecyclerView
-    private lateinit var rvLatestReading: RecyclerView
-    private lateinit var btnReadMore: UnifyButton
-    private var creditHistory: CardUnify? = null
 
     @TopAdsStatisticsType
     internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
@@ -116,14 +134,15 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
-        image.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_wallet))
+        creditHistoryImage.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_wallet))
         //arrow.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
 
+        showNewTopAdsDialog()
         setUpRecyclerView()
         setUpClick()
         loadData()
         loadStatisticsData()
-        swipe_refresh_layout.setOnRefreshListener {
+        swipeRefreshLayout.setOnRefreshListener {
             loadData()
             loadStatisticsData()
         }
@@ -147,7 +166,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         /*help_section.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
         }*/
-        credit_history.setOnClickListener {
+        creditHistory.setOnClickListener {
             goToCreditHistory(false)
         }
         addCredit.setOnClickListener {
@@ -158,7 +177,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         goToInsights.setOnClickListener {
             insightCallBack?.gotToInsights()
         }
-        autoTopUp?.setOnClickListener {
+        autoTopUp.setOnClickListener {
             startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
         }
         ivRingkasanDropDown.setOnClickListener {
@@ -215,7 +234,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DepositAmount) {
         swipe_refresh_layout.isRefreshing = false
-        credits.text = dataDeposit.amountFmt
+        creditAmount.text = dataDeposit.amountFmt
     }
 
     private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
@@ -227,7 +246,9 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
                 resources.getStringArray(R.array.top_ads_tab_statistics_labels)
             )
         }
-        val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
+        val fragment = statisticsPager.adapter?.instantiateItem(
+            statisticsPager, statisticsPager.currentItem
+        ) as? Fragment
         if (fragment != null && fragment is TopAdsDashStatisticFragment) {
             fragment.showLineGraph(this.dataStatistic)
         }
@@ -237,14 +258,14 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         val isAutoTopUpActive =
             (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         if (isAutoTopUpActive) {
-            autoTopUp?.visibility = View.VISIBLE
-            addCredit?.visibility = View.GONE
-            img_auto_debit.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_auto_debit))
-            img_auto_debit.visibility = View.VISIBLE
+            autoTopUp.visibility = View.VISIBLE
+            addCredit.visibility = View.GONE
+            imgAutoDebit.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_auto_debit))
+            imgAutoDebit.visibility = View.VISIBLE
         } else {
-            autoTopUp?.visibility = View.GONE
-            addCredit?.visibility = View.VISIBLE
-            img_auto_debit.visibility = View.GONE
+            autoTopUp.visibility = View.GONE
+            addCredit.visibility = View.VISIBLE
+            imgAutoDebit.visibility = View.GONE
         }
     }
 
@@ -325,9 +346,58 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         creditHistory = view.findViewById(R.id.credit_history)
         ivRingkasanDropDown = view.findViewById(R.id.ivRingkasanDropDown)
         txtLastUpdated = view.findViewById(R.id.txtLastUpdated)
+        creditAmount = view.findViewById(R.id.creditAmount)
         ivRingkasanInformation = view.findViewById(R.id.ivRingkasanInformation)
         rvRingkasan = view.findViewById(R.id.rvRingkasan)
         rvLatestReading = view.findViewById(R.id.rvLatestReading)
         btnReadMore = view.findViewById(R.id.btnReadMore)
+        scrollView = view.findViewById(R.id.scroll_view)
+        shimmerView = view.findViewById(R.id.shimmerView)
+        creditHistoryImage = view.findViewById(R.id.creditHistoryImage)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        btnRefreshCredits = view.findViewById(R.id.btnRefreshCredits)
+        imgAutoDebit = view.findViewById(R.id.imgAutoDebit)
+        addCredit = view.findViewById(R.id.addCredit)
+        autoTopUp = view.findViewById(R.id.autoTopUp)
+        statisticsPager = view.findViewById(R.id.pager)
+    }
+
+    private fun showNewTopAdsDialog() {
+        DialogUnify(
+            requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION
+        ).apply {
+            setTitle(resources.getString(R.string.topads_dashboard_home_dialog_title))
+            setDescription(resources.getString(R.string.topads_dashboard_home_dialog_description))
+            setPrimaryCTAText(resources.getString(R.string.topads_dashboard_home_dialog_button_text))
+            setImageDrawable(R.drawable.topads_dashboard_dialog_img)
+            setPrimaryCTAClickListener {
+                dismiss()
+                showCoachMark()
+            }
+        }.show()
+    }
+
+    private fun showCoachMark() {
+        val coachMarkItems = arrayListOf(
+            CoachMark2Item(
+                rvRingkasan,
+                resources.getString(R.string.topads_dashboard_home_coachmark_1_title),
+                resources.getString(R.string.topads_dashboard_home_coachmark_1_desc),
+                CoachMark2.POSITION_TOP
+            ), CoachMark2Item(
+                requireView().findViewById(R.id.topads_content_statistics),
+                resources.getString(R.string.topads_dashboard_home_coachmark_2_title),
+                resources.getString(R.string.topads_dashboard_home_coachmark_2_desc),
+                CoachMark2.POSITION_TOP
+            ),
+            CoachMark2Item(
+                rvLatestReading,
+                resources.getString(R.string.topads_dashboard_home_coachmark_4_title),
+                resources.getString(R.string.topads_dashboard_home_coachmark_4_desc),
+                CoachMark2.POSITION_TOP
+            )
+        )
+        val coachMark = CoachMark2(requireContext())
+        coachMark.showCoachMark(coachMarkItems)
     }
 }
