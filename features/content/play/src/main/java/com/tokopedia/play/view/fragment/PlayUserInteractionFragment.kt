@@ -750,6 +750,10 @@ class PlayUserInteractionFragment @Inject constructor(
             } else if (it.state == PlayViewerVideoState.End) showInteractionIfWatchMode()
 
             playButtonViewOnStateChanged(state = it.state)
+
+            if(isAllowAutoSwipe(it.state)) {
+                doAutoSwipe()
+            }
         })
     }
 
@@ -1309,6 +1313,9 @@ class PlayUserInteractionFragment @Inject constructor(
         ).show()
     }
 
+    private fun isAllowAutoSwipe(state: PlayViewerVideoState) =
+        state == PlayViewerVideoState.End && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage()
+
     private fun doAutoSwipe() {
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             delay(AUTO_SWIPE_DELAY)
@@ -1330,7 +1337,6 @@ class PlayUserInteractionFragment @Inject constructor(
             PlayViewerVideoState.Pause -> playButtonView.showPlayButton()
             PlayViewerVideoState.End -> {
                 if (playViewModel.bottomInsets.isAnyShown || !playNavigation.canNavigateNextPage()) playButtonView.showRepeatButton()
-                else doAutoSwipe()
             }
             else -> playButtonView.hide()
         }
