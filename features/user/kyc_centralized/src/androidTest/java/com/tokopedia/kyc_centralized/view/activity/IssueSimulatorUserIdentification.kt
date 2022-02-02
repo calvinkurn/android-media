@@ -45,16 +45,7 @@ class IssueSimulatorUserIdentification {
 
     @Before
     fun setup() {
-        setupGraphqlMockResponse {
-            addMockResponse(
-                "get_project_info",
-                InstrumentationMockHelper.getRawString(
-                    ApplicationProvider.getApplicationContext(),
-                    R.raw.get_project_info_not_verified
-                ),
-                MockModelConfig.FIND_BY_CONTAINS
-            )
-        }
+        // no op
     }
 
     @Test

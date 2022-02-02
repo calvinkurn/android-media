@@ -61,6 +61,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
 import com.tokopedia.user_identification_common.KycCommonUrl
 import com.tokopedia.user_identification_common.KycUrl
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
@@ -186,14 +187,14 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                             }.build()
                     )
                     NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_fail_to_encrypt))
-                    Timber.w(it.throwable, "LVN: ENCRYPT ERROR")
+                    Timber.w(it.throwable, "$LIVENESS_TAG: ENCRYPT ERROR")
                 }
             }
         })
     }
 
     private fun sendErrorTimberLog(throwable: Throwable) {
-        Timber.w(throwable, "LVN: LIVENESS_UPLOAD_RESULT")
+        Timber.w(throwable, "$LIVENESS_TAG: LIVENESS_UPLOAD_RESULT")
         if (!isKycSelfie) {
             ServerLogger.log(Priority.P2, "LIVENESS_UPLOAD_RESULT", mapOf("type" to "ErrorUpload",
                     "ktpPath" to stepperModel?.ktpFile.orEmpty(),
@@ -588,6 +589,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     fun deleteTmpFile(deleteKtp: Boolean, deleteFace: Boolean) {
+        Timber.d("$LIVENESS_TAG: deleting ktp ($deleteKtp) face ($deleteFace)")
         if(deleteKtp && deleteFace) {
             FileUtil.deleteFolder(context?.externalCacheDir?.absolutePath + FILE_NAME_KYC)
         } else {

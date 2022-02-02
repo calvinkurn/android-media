@@ -35,6 +35,7 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.utils.image.ImageProcessingUtil
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import java.io.File
 
 @UiTest
 @RunWith(AndroidJUnit4::class)
@@ -84,33 +85,22 @@ class UserIdentificationInfoActivityTest {
             atCameraClickCapture()
             atCameraClickNext()
             atFaceIntroClickNext()
+            // In this segment, liveness face result is provided by intent stubbing
         }
 
         Thread.sleep(3_000)
     }
 
     @Test
-    fun retakeKtpTest() {
+    fun retakeFaceOnlyTest() {
         ActivityComponentFactory.instance = FakeKycActivityComponentFactory(
             case = FakeKycUploadApi.Case.Retake(
                 arrayListOf(2)
             )
         )
         activityTestRule.launchActivity(null)
-        val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(
-            Bitmap.CompressFormat.JPEG,
-            UserIdentificationFormActivity.FILE_NAME_KYC
-        )
-        val sampleJpeg = ctx.assets.open("sample.jpeg")
-        sampleJpeg.copyTo(cameraResultFile.outputStream())
-        intending(hasData(ApplinkConstInternalGlobal.LIVENESS_DETECTION)).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(
-                    ApplinkConstInternalGlobal.PARAM_FACE_PATH,
-                    cameraResultFile.absolutePath
-                )
-            })
-        )
+
+        provideSampleForLiveness()
 
         kycRobot {
             checkTermsAndCondition()
@@ -119,6 +109,35 @@ class UserIdentificationInfoActivityTest {
             atCameraClickCapture()
             atCameraClickNext()
             atFaceIntroClickNext()
+
+            // In this segment, liveness face result is provided by intent stubbing
+
+            atFinalPressCta()
+
+        }
+
+        Thread.sleep(5_000)
+    }
+
+    @Test
+    fun retakeKtpAndFaceTest() {
+        ActivityComponentFactory.instance = FakeKycActivityComponentFactory(
+            case = FakeKycUploadApi.Case.Retake(
+                arrayListOf(1, 2)
+            )
+        )
+        activityTestRule.launchActivity(null)
+
+        provideSampleForLiveness()
+
+        kycRobot {
+            checkTermsAndCondition()
+            atInfoClickNext()
+            atKtpIntroClickNext()
+            atCameraClickCapture()
+            atCameraClickNext()
+            atFaceIntroClickNext()
+
             atFinalPressCta()
 
             atCameraClickCapture()
@@ -126,5 +145,25 @@ class UserIdentificationInfoActivityTest {
         }
 
         Thread.sleep(5_000)
+    }
+
+
+    private fun provideSampleForLiveness(delay: Boolean = false) {
+        if (delay) Thread.sleep(1_000)
+        intending(hasData(ApplinkConstInternalGlobal.LIVENESS_DETECTION)).respondWithFunction {
+            val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(
+                Bitmap.CompressFormat.JPEG,
+                UserIdentificationFormActivity.FILE_NAME_KYC
+            )
+            val sampleJpeg = ctx.assets.open("sample.jpeg")
+            sampleJpeg.copyTo(cameraResultFile.outputStream())
+            Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(
+                    ApplinkConstInternalGlobal.PARAM_FACE_PATH,
+                    cameraResultFile.absolutePath
+                )
+            })
+        }
+        if (delay) Thread.sleep(1_000)
     }
 }

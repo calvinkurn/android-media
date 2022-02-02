@@ -17,6 +17,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.crypto.Cipher
@@ -77,7 +79,7 @@ class KycUploadViewModel @Inject constructor(
     }
 
     fun encryptImage(originalFilePath: String, ivCache: String) {
-        Timber.d("LVN: Start encrypting $originalFilePath, $ivCache")
+        Timber.d("$LIVENESS_TAG: Start encrypting $originalFilePath, $ivCache")
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)

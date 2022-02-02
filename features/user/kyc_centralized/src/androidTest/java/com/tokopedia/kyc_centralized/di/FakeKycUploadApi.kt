@@ -8,6 +8,8 @@ import okhttp3.RequestBody
 
 class FakeKycUploadApi(private val case: Case = Case.Success) : KycUploadApi {
 
+    var uploadCount = 0
+
     override suspend fun uploadImages(
         projectId: RequestBody,
         params: RequestBody,
@@ -20,12 +22,23 @@ class FakeKycUploadApi(private val case: Case = Case.Success) : KycUploadApi {
                     isSuccessRegister = true,
                 )
             )
-            is Case.Retake -> KycResponse(
-                data = KycData(
-                    isSuccessRegister = false,
-                    listRetake = case.code
-                )
-            )
+            is Case.Retake -> {
+                if (uploadCount == 0) {
+                    uploadCount += 1
+                    KycResponse(
+                        data = KycData(
+                            isSuccessRegister = false,
+                            listRetake = case.code
+                        )
+                    )
+                } else {
+                    KycResponse(
+                        data = KycData(
+                            isSuccessRegister = true,
+                        )
+                    )
+                }
+            }
         }
     }
 

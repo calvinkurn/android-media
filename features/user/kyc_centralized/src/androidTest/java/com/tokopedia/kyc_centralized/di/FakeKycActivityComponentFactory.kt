@@ -47,6 +47,9 @@ class FakeKycActivityComponentFactorySimulateNullPref : ActivityComponentFactory
                 override fun provideKycPrefInterface(pref: SharedPreferences): KycSharedPreferenceInterface {
                     return FakeKycPreferences()
                 }
+                override fun provideGraphQlRepository(): GraphqlRepository {
+                    return FakeGraphqlRepository()
+                }
             })
             .build()
     }
