@@ -27,7 +27,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
     lateinit var router: FragmentRouter
 
     private val couponSettingFragment = CouponSettingFragment.newInstance(::saveCouponSettingsData)
-    private val coupon by lazy { intent.extras?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon }
+    private val coupon by lazy { intent.extras?.getParcelable(BUNDLE_KEY_COUPON) as? Coupon }
     private val couponPreviewFragment by lazy {
         ProductCouponPreviewFragment.newInstance(
             ::navigateToCouponInformationPage,

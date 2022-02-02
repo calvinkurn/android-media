@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.FrameLayout
@@ -27,6 +28,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     companion object {
         private const val PRODUCT_ID_SEGMENT_INDEX = 1
+        const val BUNDLE_KEY_COUPON = "coupon"
+        const val REQUEST_CODE_CREATE_COUPON = 100
     }
 
     @Inject
@@ -85,14 +88,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
 
     private fun onCreateCouponSuccess(coupon: Coupon) {
-        val intent = Intent(this, CouponListActivity::class.java)
-
-        /*val bundle = Bundle()
-        bundle.putSerializable(CouponListActivity.BUNDLE_KEY_COUPON, coupon)
-
-        intent.putExtras(bundle)*/
-        startActivity(intent)
-        finish()
+        //finish()
+        notifyCreateCouponSuccessToCouponListPage(coupon)
     }
 
 
@@ -163,5 +160,16 @@ class CreateCouponProductActivity : AppCompatActivity() {
         if (text.isEmpty()) return
         val view = findViewById<FrameLayout>(R.id.parent_view)
         Toaster.build(view, text).show()
+    }
+
+    private fun notifyCreateCouponSuccessToCouponListPage(coupon: Coupon) {
+        val intent = Intent()
+
+        val bundle = Bundle()
+        bundle.putParcelable(BUNDLE_KEY_COUPON, coupon)
+
+        intent.putExtras(bundle)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 }

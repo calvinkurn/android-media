@@ -35,7 +35,7 @@ class UpdateCouponActivity : AppCompatActivity() {
             context.startActivity(starter)
         }
     }
-    private val coupon by lazy { intent.extras?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon }
+    private val coupon by lazy { intent.extras?.getParcelable(BUNDLE_KEY_COUPON) as? Coupon }
 
     private val couponPreviewFragment by lazy {
         ProductCouponPreviewFragment.newInstance(
