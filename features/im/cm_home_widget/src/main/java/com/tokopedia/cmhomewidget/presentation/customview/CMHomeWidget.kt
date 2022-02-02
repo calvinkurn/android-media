@@ -50,6 +50,8 @@ class CMHomeWidget @JvmOverloads constructor(
 
     private var isShowShimmer = false
 
+    private var cmHomeWidgetCloseClickListener : CMHomeWidgetCloseClickListener? = null
+
     init {
         initAttrs(context, attrs)
         injectComponent()
@@ -135,6 +137,7 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     fun setOnCMHomeWidgetCloseClickListener(cmHomeWidgetCloseClickListener: CMHomeWidgetCloseClickListener) {
+        this.cmHomeWidgetCloseClickListener = cmHomeWidgetCloseClickListener
         binding.ivCmHomeWidgetClose.setOnClickListener {
             cmHomeWidgetData?.let {
                 cmHomeWidgetCloseClickListener.onCMHomeWidgetDismissClick(
@@ -168,6 +171,12 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     override fun onBuyDirectBtnClick(dataItem: CMHomeWidgetProductCardData) {
+        cmHomeWidgetData?.let {
+            cmHomeWidgetCloseClickListener?.onCMHomeWidgetDismissClick(
+                it.parentId,
+                it.campaignId
+            )
+        }
         sendCMHomeWidgetClickEvent()
         startRequiredActivity(dataItem.cmHomeWidgetActionButtons?.get(0)?.appLink)
     }
