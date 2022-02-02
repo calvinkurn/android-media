@@ -82,10 +82,10 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
     }
 
     companion object {
-        fun createInstance(type: String): Fragment {
+        fun createInstance(kycType: String): Fragment {
             return UserIdentificationFormKtpFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, type)
+                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
                 }
             }
         }

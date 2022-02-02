@@ -65,6 +65,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var analytics: UserIdentificationAnalytics? = null
     private var statusCode = 0
     private var projectId = -1
+    private var kycType = ""
     private var callback: String? = null
     private var kycBenefitLayout: View? = null
     private var defaultStatusBarColor = 0
@@ -88,6 +89,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             isSourceSeller = arguments?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER)?: false
             projectId = arguments?.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, KYCConstant.KYC_PROJECT_ID)?: KYCConstant.KYC_PROJECT_ID
             callback = arguments?.getString(ApplinkConstInternalGlobal.PARAM_CALL_BACK)
+            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
         }
         if (isSourceSeller) {
             goToFormActivity()
@@ -350,7 +352,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun goToFormActivity() {
         if (activity != null) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, projectId.toString())
+            val intent = RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
+                    projectId.toString(),
+                    kycType
+            )
             intent.putExtra(ALLOW_SELFIE_FLOW_EXTRA, allowedSelfie)
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM)
         }
@@ -386,14 +393,15 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     companion object {
         private const val FLAG_ACTIVITY_KYC_FORM = 1301
         const val ALLOW_SELFIE_FLOW_EXTRA = "allow_selfie_flow"
-        fun createInstance(isSourceSeller: Boolean, projectid: Int, callback: String?): UserIdentificationInfoFragment {
-            val fragment = UserIdentificationInfoFragment()
-            val args = Bundle()
-            args.putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller)
-            args.putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
-            args.putString(ApplinkConstInternalGlobal.PARAM_CALL_BACK, callback)
-            fragment.arguments = args
-            return fragment
+        fun createInstance(isSourceSeller: Boolean, projectid: Int, kycType: String = "", callback: String?): UserIdentificationInfoFragment {
+            return UserIdentificationInfoFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller)
+                    putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
+                    putString(ApplinkConstInternalGlobal.PARAM_CALL_BACK, callback)
+                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+                }
+            }
         }
     }
 }

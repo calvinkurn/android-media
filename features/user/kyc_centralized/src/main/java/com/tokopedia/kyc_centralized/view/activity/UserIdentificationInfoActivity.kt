@@ -16,6 +16,7 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
     var isSourceSeller = false
     private var projectId = -1
     private var callbackUrl: String? = null
+    private var kycType = ""
 
     interface Listener {
         fun onTrackBackPressed()
@@ -38,16 +39,11 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        try {
-            projectId = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
-            callbackUrl = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK)
-        } catch (ex: NullPointerException) {
-            projectId = KYCConstant.STATUS_DEFAULT
-        } catch (ex: NumberFormatException) {
-            projectId = KYCConstant.STATUS_DEFAULT
-        } catch (e: Exception) {
-            e.printStackTrace()
+        intent?.data?.let {
+            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
+            kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         }
-        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId, callbackUrl)
+        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId, kycType, callbackUrl)
     }
 }
