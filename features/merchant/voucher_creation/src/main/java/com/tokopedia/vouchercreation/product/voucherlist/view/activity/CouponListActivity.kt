@@ -77,7 +77,8 @@ class CouponListActivity : BaseSimpleActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CreateCouponProductActivity.REQUEST_CODE_CREATE_COUPON) {
             if (resultCode == Activity.RESULT_OK) {
-                val coupon = data?.getParcelableExtra<Coupon>(CreateCouponProductActivity.BUNDLE_KEY_COUPON) as? Coupon ?: return
+                val coupon = data?.getParcelableExtra<Coupon>(CreateCouponProductActivity.BUNDLE_KEY_COUPON)
+                    ?: return
                 showBroadCastVoucherBottomSheet(coupon)
             }
         }

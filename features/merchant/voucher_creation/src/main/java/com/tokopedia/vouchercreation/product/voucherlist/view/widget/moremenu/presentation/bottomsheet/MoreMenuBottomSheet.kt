@@ -50,8 +50,9 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         setupView()
     }
 
-    fun setOnItemClickListener(@VoucherStatusConst voucherStatus: Int, callback: (MoreMenuUiModel) -> Unit) {
-        status = voucherStatus
+    fun setOnItemClickListener(@VoucherStatusConst couponStatus: Int, couponTitle: String, callback: (MoreMenuUiModel) -> Unit) {
+        setTitle(couponTitle)
+        status = couponStatus
         moreMenuAdapter = MoreMenuAdapter(callback, MoreMenuDiffer())
     }
 
@@ -61,7 +62,6 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         binding = BottomsheetMvcMoreMenuBinding.inflate(LayoutInflater.from(context))
-        setTitle("Nama Kupon Maks. 30 character")
         setChild(binding?.root)
     }
 

@@ -121,7 +121,6 @@ class MoreMenuActivity : AppCompatActivity() {
                         upcomingAction = VoucherCreationAnalyticConstant.EventAction.Click.DOWNLOAD_UPCOMING
                     )
                 )
-                showDownloadBottomSheet(voucher)
             }
             is MoreMenuUiModel.CancelVoucher -> {
                 hitMoreMenuItemEventTracker(
@@ -208,55 +207,6 @@ class MoreMenuActivity : AppCompatActivity() {
 //                        context?.getString(R.string.mvc_general_error).toBlankOrString()
 //                    }
 //                view?.showErrorToaster(errorMessage)
-//            }
-//            .show(childFragmentManager)
-    }
-
-    private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
-//        if (!isAdded) return
-//        DownloadVoucherBottomSheet.createInstance(
-//            voucher.image,
-//            voucher.imageSquare,
-//            userSession.userId
-//        )
-//            .setOnDownloadClickListener { voucherList ->
-//                context?.run {
-//                    permissionCheckerHelper.checkPermission(this@VoucherListFragment,
-//                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-//                        object : PermissionCheckerHelper.PermissionCheckListener {
-//                            override fun onPermissionDenied(permissionText: String) {
-//                                permissionCheckerHelper.onPermissionDenied(this@run, permissionText)
-//                                view?.let {
-//                                    Toaster.make(
-//                                        it,
-//                                        getString(R.string.mvc_storage_permission_enabled_needed),
-//                                        Toast.LENGTH_LONG
-//                                    )
-//                                }
-//                            }
-//
-//                            override fun onNeverAskAgain(permissionText: String) {
-//                                permissionCheckerHelper.onNeverAskAgain(this@run, permissionText)
-//                            }
-//
-//                            override fun onPermissionGranted() {
-//                                if (ActivityCompat.checkSelfPermission(
-//                                        this@run,
-//                                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-//                                    ) == PackageManager.PERMISSION_GRANTED
-//                                ) {
-//                                    voucherList.forEach {
-//                                        downloadFiles(it.downloadVoucherType.imageUrl)
-//                                    }
-//                                }
-//                            }
-//                        })
-//                }
-//                VoucherCreationTracking.sendVoucherListClickTracking(
-//                    action = VoucherCreationAnalyticConstant.EventAction.Click.DOWNLOAD_VOUCHER,
-//                    isActive = isActiveVoucher,
-//                    userId = userSession.userId
-//                )
 //            }
 //            .show(childFragmentManager)
     }
