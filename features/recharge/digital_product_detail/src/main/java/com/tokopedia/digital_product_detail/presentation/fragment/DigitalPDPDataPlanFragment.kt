@@ -166,6 +166,11 @@ class DigitalPDPDataPlanFragment :
                 menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
             }
         }
+        if (!clientNumber.isNullOrEmpty()) {
+            binding?.rechargePdpPaketDataClientNumberWidget?.run {
+                setInputNumber(clientNumber, true)
+            }
+        }
     }
 
     private fun renderProduct() {
