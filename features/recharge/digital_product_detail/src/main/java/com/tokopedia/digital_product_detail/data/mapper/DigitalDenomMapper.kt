@@ -21,7 +21,7 @@ class DigitalDenomMapper @Inject constructor() {
         return InputMultiTabDenomModel(
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
             getDenomFullMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
-                dataCollectionMCCM, true),
+                dataCollectionProduct, true),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList()
         )
     }

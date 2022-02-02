@@ -129,6 +129,14 @@ class DenomFullViewHolder(
                     ViewGroup.LayoutParams.MATCH_PARENT
                 } else resources.getDimension(R.dimen.widget_denom_full_width).toInt()
 
+                layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE){
+                    if (denomFull.flashSalePercentage.isMoreThanZero()) {
+                        resources.getDimension(R.dimen.widget_denom_full_height_countdown).toInt()
+                    } else {
+                        resources.getDimension(R.dimen.widget_denom_full_height).toInt()
+                    }
+                } else ViewGroup.LayoutParams.WRAP_CONTENT
+
                 cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else
                     if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE) CardUnify.TYPE_SHADOW
                     else CardUnify.TYPE_BORDER
