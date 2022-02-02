@@ -38,18 +38,6 @@
         app:layout_constraintTop_toBottomOf="@id/quickText" />
 
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/widgetShimmer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/unify_space_4"
-        android:layout_marginRight="@dimen/unify_space_4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="rect"
-        tools:visibility="gone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

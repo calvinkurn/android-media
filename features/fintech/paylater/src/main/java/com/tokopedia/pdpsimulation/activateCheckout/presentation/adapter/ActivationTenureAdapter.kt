@@ -10,6 +10,8 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.Tenu
 
 class ActivationTenureAdapter(var tenureDetailList: List<TenureDetail>,val listner:TenureSelectListner) : RecyclerView.Adapter<TenureViewHolder>() {
 
+    var selectedPosition = 0;
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -30,7 +32,7 @@ class ActivationTenureAdapter(var tenureDetailList: List<TenureDetail>,val listn
     }
 
     override fun onBindViewHolder(holder: TenureViewHolder, position: Int) {
-
-        holder.bindData(tenureDetailList[position], DataMapper.mapToInstallationDetail(tenureDetailList[position]))
+        holder.bindData(tenureDetailList[position],
+            DataMapper.mapToInstallationDetail(tenureDetailList[position]),position)
     }
 }

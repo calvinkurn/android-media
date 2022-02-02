@@ -27,6 +27,7 @@ data class CheckoutData (
         )
 
 data class TenureDetail (
+    var isSelected:Boolean = false,
     @SerializedName("tenure") val tenure : Int,
     @SerializedName("chip_title") val chip_title : String,
     @SerializedName("monthly_installment") val monthly_installment : String,

@@ -53,6 +53,7 @@ class PayLaterActivationViewModel @Inject constructor(
 
 
     fun getOptimizedCheckoutDetail(productId: String, price: Double, gatewayId: Int) {
+        paylaterActivationUseCase.cancelJobs()
         paylaterActivationUseCase.getPayLaterActivationDetail(
             ::onSuccessActivationData,
             ::onFailActivationData,

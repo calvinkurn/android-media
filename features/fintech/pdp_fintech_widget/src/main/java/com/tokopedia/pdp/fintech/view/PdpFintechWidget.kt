@@ -44,7 +44,6 @@ class PdpFintechWidget @JvmOverloads constructor(
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private lateinit var baseView: View
-    private lateinit var loader: LoaderUnify
     private lateinit var titleTextView: Typography
     private lateinit var fintechWidgetAdapter: FintechWidgetAdapter
     private lateinit var instanceProductUpdateListner: ProductUpdateListner
@@ -77,7 +76,6 @@ class PdpFintechWidget @JvmOverloads constructor(
             when (it) {
                 is Success -> {
                     setPriceToChipMap(it.data)
-                    loader.visibility = View.GONE
                      it.data.baseWidgetResponse?.baseData?.let { baseChipResponse->
                          if(baseChipResponse.list.size>0)
                             titleTextView.text = baseChipResponse.list[0].title
@@ -129,7 +127,6 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun initView() {
         baseView = inflate(context, R.layout.pdp_fintech_widget_layout, this)
-        loader = baseView.findViewById(R.id.widgetShimmer)
         titleTextView = baseView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.quickText)
     }
 
@@ -141,7 +138,6 @@ class PdpFintechWidget @JvmOverloads constructor(
         try {
             this.productID = productID
             this.instanceProductUpdateListner = fintechWidgetViewHolder
-            loader.visibility = View.VISIBLE
             if (counter == 0) {
                 counter++
                 categoryId?.let {
@@ -172,7 +168,6 @@ class PdpFintechWidget @JvmOverloads constructor(
         }
         productPrice?.let {
             priceToChip[it]?.let { chipList ->
-                loader.visibility = View.GONE
                 instanceProductUpdateListner.showWidget()
                 fintechWidgetAdapter.setData(chipList)
             } ?: run {

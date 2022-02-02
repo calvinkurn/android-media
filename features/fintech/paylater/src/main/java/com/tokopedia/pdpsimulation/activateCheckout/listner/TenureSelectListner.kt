@@ -4,6 +4,6 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedM
 
 interface TenureSelectListner {
 
-    fun selectedTenure(tenureSelectedModel: TenureSelectedModel)
+    fun selectedTenure(tenureSelectedModel: TenureSelectedModel,newPositionToSelect:Int)
 
 }

@@ -9,8 +9,9 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
 object DataMapper {
 
     fun mapToInstallationDetail(tenureDetail: TenureDetail): TenureSelectedModel {
-        lateinit var tenureSelectModel: TenureSelectedModel
-        tenureSelectModel.priceText = "${tenureDetail.monthly_installment}X${tenureDetail.tenure}"
+
+        val priceText = tenureDetail.monthly_installment
+        val tenure ="X${tenureDetail.tenure}"
         val contentList: MutableList<Content> = ArrayList()
         for(i in 0 until tenureDetail.installment_details.detailContent.size)
         {
@@ -19,7 +20,7 @@ object DataMapper {
                 tenureDetail.installment_details.detailContent[i].type)
             contentList.add(content)
         }
-         tenureSelectModel.installmentDetails = InstallmentDetails(tenureDetail.installment_details.header,contentList);
-        return tenureSelectModel
+         val installmentDetails = InstallmentDetails(tenureDetail.installment_details.header,contentList);
+        return TenureSelectedModel(priceText,tenure,installmentDetails)
     }
 }
