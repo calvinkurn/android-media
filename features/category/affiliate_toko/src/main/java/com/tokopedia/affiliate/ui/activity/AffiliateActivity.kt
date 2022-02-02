@@ -370,11 +370,12 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             HOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.HOME_NAV_BAR_CLICK
             PROMO_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_NAV_BAR_CLICK
             HELP_MENU -> eventAction = AffiliateAnalytics.ActionKeys.BANUTAN_NAV_BAR_CLICK
+            INCOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PENDAPATAN_NAV_BAR_CLICK
         }
         AffiliateAnalytics.sendEvent(
-            AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+            AffiliateAnalytics.EventKeys.CLICK_PG,
             eventAction,
-            AffiliateAnalytics.CategoryKeys.HOME_PORTAL,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             "",
             userSessionInterface.userId
         )
