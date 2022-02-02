@@ -14,6 +14,7 @@ class PlayWidgetJumboAdapter(
     init {
         delegatesManager
             .addDelegate(PlayWidgetJumboAdapterDelegate.Channel(cardChannelListener))
+        // todo: graceful handling of banner card type
     }
 
     override fun areItemsTheSame(
