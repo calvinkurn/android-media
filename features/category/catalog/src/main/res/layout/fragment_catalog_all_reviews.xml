@@ -49,7 +49,8 @@
         tools:visibility="visible"
         android:visibility="gone"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        app:layout_constraintTop_toTopOf="@id/rating_review_star_catalog"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintStart_toEndOf="@id/rating_review_star_catalog"
         app:layout_constraintBottom_toBottomOf="@id/rating_review_star_catalog"
         />
@@ -63,8 +64,9 @@
         app:typographyType="body_3"
         tools:text="dari 1205 ulasan"
         tools:visibility="visible"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toTopOf="@id/rating_review_star_catalog"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintStart_toEndOf="@id/review_rating_catalog"
         app:layout_constraintBottom_toBottomOf="@id/rating_review_star_catalog"
         />
@@ -77,9 +79,9 @@
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="3"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl6"
         tools:listitem="@layout/item_catalog_review"
-        app:layout_constraintTop_toBottomOf="@id/review_rating_catalog"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />

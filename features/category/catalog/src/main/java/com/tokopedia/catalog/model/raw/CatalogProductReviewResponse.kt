@@ -29,7 +29,7 @@ data class CatalogProductReviewResponse(
             @Expose @SerializedName("reviews")
             val reviews: List<Review?>?,
             @Expose @SerializedName("totalHelpfulReview")
-            val totalHelpfulReview: Int?
+            val totalHelpfulReview: String?
         ) {
             @Parcelize
             data class Review(

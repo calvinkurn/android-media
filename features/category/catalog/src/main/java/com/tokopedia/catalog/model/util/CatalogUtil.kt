@@ -26,7 +26,7 @@ object CatalogUtil {
         }
         return if(rating.length >= 3){
             rating.substring(0,3)
-        }else if(rating.length < 2 && rating.isNotBlank()) {
+        }else if(rating.length <= 2 && rating.isNotBlank()) {
             rating.substring(0,1)
         }else {
             ""

@@ -21,4 +21,5 @@
     <string name="catalog_ulasan">Ulasan</string>
     <string name="catalog_lihat_semua_ulasan">Lihat Semua Ulasan</string>
     <string name="catalog_review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
+    <string name="catalog_highlighted_reviews">dari %s ulasan membantu</string>
 </resources>

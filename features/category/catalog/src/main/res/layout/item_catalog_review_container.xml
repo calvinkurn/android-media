@@ -54,7 +54,7 @@
         android:id="@+id/review_count_catalog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         android:layout_marginTop="@dimen/layout_lvl1"
@@ -83,7 +83,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/spacing_lvl4"
         tools:listitem="@layout/item_catalog_review"
-        tools:itemCount="1"
+        tools:itemCount="3"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         />

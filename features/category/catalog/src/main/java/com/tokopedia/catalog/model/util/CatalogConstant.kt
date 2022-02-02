@@ -42,5 +42,6 @@ object CatalogConstant {
     const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
 
     const val COMPARISION_DETAIL = "comparision-detail"
+    const val STAR = "star"
 
 }

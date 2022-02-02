@@ -45,7 +45,7 @@ data class ComponentData(
         @Expose @SerializedName("reviews")
         val reviews: ArrayList<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>?,
         @Expose @SerializedName("totalHelpfulReview")
-        val totalHelpfulReview: Int?
+        val totalHelpfulReview: String?
 
 ){
     @Parcelize
@@ -96,4 +96,4 @@ data class ReviewComponentData(
         val catalogId : String?,
         val avgRating: String?,
         val reviews: ArrayList<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>?,
-        val totalHelpfulReview: Int?): Parcelable
+        val totalHelpfulReview: String?): Parcelable

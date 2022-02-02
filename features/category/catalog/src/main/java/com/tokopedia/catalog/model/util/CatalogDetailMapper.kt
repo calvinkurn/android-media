@@ -97,7 +97,7 @@ object CatalogDetailMapper {
         return listOfComponents
     }
 
-    fun mapIntoReviewDataModel(catalogId : String, componentName : String,
+    private fun mapIntoReviewDataModel(catalogId : String, componentName : String,
                                        componentType : String, crudeReviewData: List<ComponentData>?)
     : List<BaseCatalogDataModel> {
         val listOfReviewComponents = ArrayList<BaseCatalogDataModel>();

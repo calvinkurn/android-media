@@ -8,6 +8,7 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.components.CatalogReviewAdapter
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.CatalogReviewDataModel
+import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
@@ -41,13 +42,13 @@ class CatalogReviewContainerViewHolder(private val view : View,
                 }
             }
 
-            view.findViewById<Typography>(R.id.review_rating_catalog)?.displayTextOrHide(element.data.avgRating ?: "")
+            view.findViewById<Typography>(R.id.review_rating_catalog)?.displayTextOrHide(CatalogUtil.getRatingString(element.data.avgRating))
             if(element.data.avgRating.isNullOrBlank()){
                 view.findViewById<IconUnify>(R.id.rating_review_star_catalog)?.hide()
             }else {
                 view.findViewById<IconUnify>(R.id.rating_review_star_catalog)?.show()
             }
-            view.findViewById<Typography>(R.id.review_count_catalog)?.displayTextOrHide("dari ${element.data.totalHelpfulReview } ulasan membantu")
+            view.findViewById<Typography>(R.id.review_count_catalog)?.displayTextOrHide(view.context?.resources?.getString(com.tokopedia.catalog.R.string.catalog_highlighted_reviews, element.data.totalHelpfulReview) ?: "")
         }
     }
 }

@@ -18,6 +18,8 @@ import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
+import com.tokopedia.catalog.model.util.CatalogConstant
+import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.viewmodel.CatalogAllReviewsViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
@@ -96,13 +98,13 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
     }
 
     private fun renderData(reviewData: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData?) {
-        view?.findViewById<Typography>(R.id.review_rating_catalog)?.displayTextOrHide(reviewData?.avgRating ?: "")
+        view?.findViewById<Typography>(R.id.review_rating_catalog)?.displayTextOrHide(CatalogUtil.getRatingString(reviewData?.avgRating))
         if(reviewData?.avgRating?.isBlank() == true){
             view?.findViewById<ImageView>(R.id.rating_review_star_catalog)?.hide()
         }else {
             view?.findViewById<ImageView>(R.id.rating_review_star_catalog)?.show()
         }
-        view?.findViewById<Typography>(R.id.review_count_catalog)?.displayTextOrHide("dari ${reviewData?.totalHelpfulReview } ulasan membantu")
+        view?.findViewById<Typography>(R.id.review_count_catalog)?.displayTextOrHide(context?.resources?.getString(com.tokopedia.catalog.R.string.catalog_highlighted_reviews, reviewData?.totalHelpfulReview) ?: "")
 
     }
 
@@ -112,7 +114,7 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
         }
         catalogAdapter = CatalogReviewAdapter(arrayListOf(),catalogDetailListener)
         initRecyclerView()
-        catalogAllReviewsViewModel.getAllReviews(catalogId,"star","5")
+        catalogAllReviewsViewModel.getAllReviews(catalogId,CatalogConstant.STAR,CatalogConstant.ZERO_VALUE)
     }
 
     private fun onError(e: Throwable) {
@@ -127,7 +129,7 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
             }
             setOnClickListener {
                 hideGlobalError()
-                catalogAllReviewsViewModel.getAllReviews(catalogId,"star","5")
+                catalogAllReviewsViewModel.getAllReviews(catalogId,CatalogConstant.STAR,CatalogConstant.ZERO_VALUE)
             }
         }
     }
