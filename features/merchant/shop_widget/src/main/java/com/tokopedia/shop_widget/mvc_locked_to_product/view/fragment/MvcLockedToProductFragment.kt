@@ -59,6 +59,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         private const val GRID_SPAN_COUNT = 2
         private const val START_PAGE = 1
         private const val PER_PAGE = 10
+        private const val PAGE_SOURCE_KEY = "page_source"
         fun createInstance() = MvcLockedToProductFragment()
     }
 
@@ -74,7 +75,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var voucherId: String = ""
     private var shopId: String = ""
-    private var shopDomain: String = ""
+    private var previousPage: String = ""
     private var selectedSortData: MvcLockedToProductSortUiModel =
         MvcLockedToProductSortListFactory.getDefaultSortData()
     private val isUserLogin: Boolean
@@ -98,12 +99,11 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun getIntentData() {
         activity?.intent?.data?.let {
-            val segmentData = it.pathSegments.getOrNull(4).orEmpty()
-            if (segmentData.toIntOrNull() != null) {
-                shopId = segmentData
-            } else {
-                shopDomain = segmentData
+            val shopIdSegmentData = it.pathSegments.getOrNull(4).orEmpty()
+            if (shopIdSegmentData.toIntOrNull() != null) {
+                shopId = shopIdSegmentData
             }
+            previousPage = it.getQueryParameter(PAGE_SOURCE_KEY).orEmpty()
             voucherId = it.pathSegments.getOrNull(5).orEmpty()
         }
     }
@@ -144,6 +144,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             voucherId,
             shopId,
             userId,
+            previousPage,
             isUserLogin
         )
     }

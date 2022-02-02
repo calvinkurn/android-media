@@ -54,9 +54,10 @@ class MvcLockedToProductTracking @Inject constructor() {
         voucherId: String,
         shopId: String,
         userId: String,
+        previousPage: String,
         isLogin: Boolean
     ) {
-        val pageSource = String.format(MVC_LOCKED_TO_PRODUCT_PAGE_SOURCE, voucherId)
+        val pageSource = String.format(MVC_LOCKED_TO_PRODUCT_PAGE_SOURCE, voucherId, previousPage)
         val screenName = String.format(MVC_LOCKED_TO_PRODUCT_SCREEN_NAME, shopId)
         val loggedInStatus = getLoggedInStatus(isLogin)
         val eventMap = mapOf(
