@@ -37,14 +37,12 @@
             app:layout_constraintStart_toEndOf="@id/ic_bro_set_title"
             app:layout_constraintTop_toTopOf="@id/ic_bro_set_title" />
 
-        <com.tokopedia.iconunify.IconUnify
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_bro_title_checked"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
             android:visibility="invisible"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="CHECK_CIRCLE"
+            android:src="@drawable/ic_play_bro_preparation_checked"
             app:layout_constraintEnd_toEndOf="@id/ic_bro_set_title"
             app:layout_constraintTop_toTopOf="@id/ic_bro_set_title"
             tools:visibility="visible" />
@@ -82,14 +80,12 @@
             app:layout_constraintStart_toEndOf="@id/ic_bro_set_cover"
             app:layout_constraintTop_toTopOf="@id/ic_bro_set_cover" />
 
-        <com.tokopedia.iconunify.IconUnify
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_bro_cover_checked"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
             android:visibility="invisible"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="CHECK_CIRCLE"
+            android:src="@drawable/ic_play_bro_preparation_checked"
             app:layout_constraintEnd_toEndOf="@id/ic_bro_set_cover"
             app:layout_constraintTop_toTopOf="@id/ic_bro_set_cover"
             tools:visibility="visible" />
@@ -126,14 +122,12 @@
             app:layout_constraintStart_toEndOf="@id/ic_bro_set_product"
             app:layout_constraintTop_toTopOf="@id/ic_bro_set_product" />
 
-        <com.tokopedia.iconunify.IconUnify
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_bro_product_checked"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
             android:visibility="invisible"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="CHECK_CIRCLE"
+            android:src="@drawable/ic_play_bro_preparation_checked"
             app:layout_constraintEnd_toEndOf="@id/ic_bro_set_product"
             app:layout_constraintTop_toTopOf="@id/ic_bro_set_product"
             tools:visibility="visible" />
