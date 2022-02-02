@@ -100,14 +100,16 @@ data class ThanksPageData(
 data class ThanksSummaryInfo(
     @SerializedName("key")
     val key: String?,
-    @SerializedName("desctiption")
+    @SerializedName("description")
     val desctiption: String?,
     @SerializedName("message")
     val message: String?,
     @SerializedName("is_cta")
-    val isCta: Boolean,
+    val isCta: Boolean?,
     @SerializedName("cta_link")
     val ctaLink: String?,
+    @SerializedName("cta_applink")
+    val ctaApplink: String?,
     @SerializedName("cta_text")
     val ctaText: String?,
 
