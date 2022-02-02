@@ -822,9 +822,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.isDisableChangeCourier()) {
             // Is single shipping only
             renderSingleShippingCourier(shipmentCartItemModel, selectedCourierItemData);
-        } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null || !shipmentCartItemModel.isShowCourierChangeCard()) {
-            // Is free ongkir shipping OR normal shipping but not show `pilih kurir` card
+        } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+            // Is free ongkir shipping
             renderFreeShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
+        } else if (!shipmentCartItemModel.isShowCourierChangeCard()) {
+            // normal shipping but not show `pilih kurir` card
+            renderNormalShippingWithoutChooseCourierCard(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
             // Is normal shipping
             renderNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
@@ -931,6 +934,26 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         renderFreeShippingCourierVisibility(selectedCourierItemData);
         renderFreeShippingTitle(selectedCourierItemData);
+        renderFreeShippingEta(selectedCourierItemData);
+    }
+
+    private void renderNormalShippingWithoutChooseCourierCard(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
+        layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+        layoutStateHasErrorShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedFreeShipping.setVisibility(View.VISIBLE);
+        layoutStateHasSelectedFreeShipping.setOnClickListener(
+                getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+        );
+
+        labelFreeShippingCourierName.setVisibility(View.GONE);
+        if (selectedCourierItemData.getEstimatedTimeDelivery() != null) {
+            // todo bold
+            HtmlLinkHelper htmlLinkHelper = new HtmlLinkHelper(labelSelectedFreeShipping.getContext(), selectedCourierItemData.getEstimatedTimeDelivery());
+            labelSelectedFreeShipping.setText(htmlLinkHelper.getSpannedString());
+        }
+//        renderFreeShippingTitle(selectedCourierItemData);
         renderFreeShippingEta(selectedCourierItemData);
     }
 
