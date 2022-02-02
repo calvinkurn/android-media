@@ -65,12 +65,6 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         loadInitialData()
     }
 
-    private fun loadInitialData() {
-        clearAdapterData()
-        showLoading()
-        loadData(1)
-    }
-
     private fun enableLoadMore() {
         if (endlessRecyclerViewScrollListener == null) {
             endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
@@ -139,6 +133,12 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
             Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                 getString(com.tokopedia.baselist.R.string.retry_label), listener)
         }
+    }
+
+    fun loadInitialData() {
+        clearAdapterData()
+        showLoading()
+        loadData(1)
     }
 
     fun renderList(list: List<F>, hasNextPage: Boolean) {
