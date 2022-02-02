@@ -294,6 +294,74 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
+    fun `Successfully get recommendation with tdn data - less than tdn_index`() {
+        val recomList = listOf(
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3)
+        )
+        val testPage = 1
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data.tdnBanner, null)
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data - less than check first false`() {
+        val recomList = listOf(
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3)
+        )
+        val testPage = 2
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, recomList)
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data - check first false`() {
+        val recomList = listOf(
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3),
+            RecommendationItem(4)
+        )
+        val testPage = 2
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, recomList)
+    }
+
+
+    @Test
     fun `Failed to get first recommendation`() {
         val expectedResult = mockk<Throwable>(relaxed = true)
         coEvery {
@@ -747,7 +815,7 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Get fingerprint status success`() {
-        val data = CheckFingerprintResult(isSuccess = true, isRegistered = false)
+        val data = CheckFingerprintResult(isSuccess = true, isRegistered = false, errorMessage = "")
         val mockResponse = CheckFingerprintPojo(data)
 
         /* When */
@@ -760,6 +828,22 @@ class HomeAccountUserViewModelTest {
         verify {
             checkFingerprintResult.onChanged(Success(data))
         }
+    }
+
+    @Test
+    fun `Get fingerprint status fail - success trie, has errors `() {
+        val errorMsg = "error"
+        val data = CheckFingerprintResult(isSuccess = true, isRegistered = false, errorMessage = errorMsg)
+        val mockResponse = CheckFingerprintPojo(data)
+
+        /* When */
+        coEvery {
+            checkFingerprintToggleUseCase.invoke(any())
+        } returns mockResponse
+
+        viewModel.getFingerprintStatus()
+
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
     }
 
     @Test
