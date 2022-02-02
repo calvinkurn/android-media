@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCo
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
+import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import com.tokopedia.vouchercreation.product.voucherlist.view.fragment.CouponListFragment
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import java.util.*
@@ -88,7 +90,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
     private fun navigateToProductListPage() {
-        //TODO : @Deyo Navigate to product list fragment
+        startActivity(Intent(this, ProductListActivity::class.java))
     }
 
     private fun navigateToCreateCouponPage() {
