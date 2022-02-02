@@ -238,9 +238,6 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation projectOrAar(rootProject.ext.libraries.dataExplorer)
-    }
 
     implementation projectOrAar(rootProject.ext.libraries.pageInfoPusher)
 
