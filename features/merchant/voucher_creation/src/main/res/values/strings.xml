@@ -371,8 +371,6 @@
     <string name="hyphen">-</string>
     <string name="maximum_expense_estimation">Estimasi Maks. Pengeluaran</string>
     <string name="expense_description">Dipotong dari transaksi selesai.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="coupon_discount_type">Tipe Potongan</string>
     <string name="add_product_coupon">Tambah Kupon Produk</string>
 
@@ -433,11 +431,17 @@
     <string name="placeholder_share_coupon_product_wording">Tersedia kupon untuk produk tertentu dari toko %s hanya di \@Tokopedia. Mulai %s sampai %s! %s</string>
     <string name="please_wait">Mohon tunggu</string>
     <string name="error_message_failed_get_image">Terjadi kesalahan dalam menampilkan gambar. Mohon coba lagi</string>
+
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
     <string name="mvc_create_coupon_date_desc"><b>Maks. 10 Kupon</b> per bulan</string>
     <string name="coupon_code_copied_to_clipboard">Kode kupon berhasil disalin</string>
+
+    <!--coupon list-->
+    <string name="mvc_coupon_product_sold">Produk Terjual</string>
+    <string name="mvc_coupon_product_min_payment">Min. pembelian Rp. %s</string>
+    <string name="mvc_coupon_product_max_benefit">hingga Rp. %s</string>
 
 
     <!-- add product -->

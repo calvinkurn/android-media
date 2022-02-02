@@ -9,7 +9,8 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.viewholder
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 
 class CouponListAdapter(
-    private val onCouponOptionClicked: (coupon: VoucherUiModel) -> Unit
+    private val onCouponOptionClicked: (coupon: VoucherUiModel) -> Unit,
+    private val onCouponIconCopyClicked: (couponCode: String) -> Unit
 ) : RecyclerView.Adapter<CouponListViewHolder>() {
 
     private var items: MutableList<VoucherUiModel> = mutableListOf()
@@ -28,6 +29,9 @@ class CouponListAdapter(
             holder.bindData(coupon)
             holder.moreButton?.setOnClickListener {
                 onCouponOptionClicked.invoke(coupon)
+            }
+            holder.iconCopyCode?.setOnClickListener {
+                onCouponIconCopyClicked.invoke(coupon.code)
             }
         }
     }
