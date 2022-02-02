@@ -28,6 +28,20 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
         )
     }
 
+    fun setParams(shopIds: List<String>, promoId: String, promoCode: String) {
+        params = mapOf(
+                GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
+                GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
+                        GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
+                        GetMiniCartListUseCase.PARAM_KEY_PROMO to mapOf(
+                            GetMiniCartListUseCase.PARAM_KEY_PROMO_ID to promoId,
+                            GetMiniCartListUseCase.PARAM_KEY_PROMO_CODE to promoCode
+                        ),
+                        ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                )
+        )
+    }
+
     override suspend fun executeOnBackground(): MiniCartSimplifiedData {
         if (params == null) {
             throw RuntimeException("Parameter is null!")

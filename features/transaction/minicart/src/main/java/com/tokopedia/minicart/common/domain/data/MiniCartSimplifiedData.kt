@@ -35,6 +35,7 @@ data class MiniCartItem(
         var productParentId: String = "",
         var quantity: Int = 0,
         var notes: String = "",
+        var cartString: String = "",
 
         // Fields below are for analytics & atc occ purpose only
         var campaignId: String = "",
