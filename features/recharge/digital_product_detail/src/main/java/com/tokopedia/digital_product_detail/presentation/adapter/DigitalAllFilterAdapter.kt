@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
-import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipBinding
-import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipFilterViewHolder
+import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterCheckboxBinding
+import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPFilterAllViewHolder
 
-class DigitalChipsAdapter(private val chipListener: DigitalPDPChipFilterViewHolder.ChipListener): RecyclerView.Adapter<DigitalPDPChipFilterViewHolder>() {
+class DigitalAllFilterAdapter(private val checkBoxListener: DigitalPDPFilterAllViewHolder.CheckBoxListener): RecyclerView.Adapter<DigitalPDPFilterAllViewHolder>()  {
     private var filterTagComponent = TelcoFilterTagComponent()
     private var listFilterDataCollection = mutableListOf<FilterTagDataCollection>()
 
@@ -16,29 +16,25 @@ class DigitalChipsAdapter(private val chipListener: DigitalPDPChipFilterViewHold
         return listFilterDataCollection.size
     }
 
-    override fun onBindViewHolder(holder: DigitalPDPChipFilterViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DigitalPDPFilterAllViewHolder, position: Int) {
         holder.bind(filterTagComponent, listFilterDataCollection[position])
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): DigitalPDPChipFilterViewHolder {
-        val binding = ViewPdpFilterChipBinding.inflate(
+    ): DigitalPDPFilterAllViewHolder {
+        val binding = ViewPdpFilterCheckboxBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false)
-        return DigitalPDPChipFilterViewHolder(binding, chipListener)
+        return DigitalPDPFilterAllViewHolder(binding, checkBoxListener)
     }
 
-
-    fun setChipList(filterTagComponent: TelcoFilterTagComponent){
+    fun setCheckBoxList(filterTagComponent: TelcoFilterTagComponent){
         this.filterTagComponent = filterTagComponent
-        this.listFilterDataCollection = filterTagComponent.filterTagDataCollections.take(LIMIT_FILTER_DATA_COLLECTION).toMutableList()
+        this.listFilterDataCollection = filterTagComponent.filterTagDataCollections.toMutableList()
         notifyDataSetChanged()
     }
 
-    companion object {
-        const val LIMIT_FILTER_DATA_COLLECTION = 5
-    }
 }

@@ -10,73 +10,33 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.BottomSheetAllFilterBinding
-import com.tokopedia.digital_product_detail.presentation.adapter.DigitalPDPFilterAllAdapterTypeFactory
+import com.tokopedia.digital_product_detail.presentation.adapter.DigitalAllFilterAdapter
+import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPFilterAllViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class AllFilterPDPBottomsheet(private val title:String, private val filterTagDataCollections: List<FilterTagDataCollection>): BottomSheetUnify(),
-    BaseCheckableViewHolder.CheckableInteractionListener,
-    BaseListCheckableAdapter.OnCheckableAdapterListener<FilterTagDataCollection> {
+class AllFilterPDPBottomsheet(private val title:String,
+                              private var filterTagComponent : TelcoFilterTagComponent,
+                              private val checkBoxListener: DigitalPDPFilterAllViewHolder.CheckBoxListener) : BottomSheetUnify(){
 
-
-    private var binding by autoClearedNullable<BottomSheetAllFilterBinding>()
-
-    private lateinit var checkableAdapter: BaseListCheckableAdapter<FilterTagDataCollection,
-            BaseListCheckableTypeFactory<FilterTagDataCollection>>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        iniBottomSheet()
-        initAdapter()
-        initView()
-    }
-
-    private fun iniBottomSheet(){
+    init {
         isFullpage = false
         isDragable = false
         showCloseIcon = false
-        binding = BottomSheetAllFilterBinding.inflate(LayoutInflater.from(context))
-        setTitle(title)
-        setChild(binding?.root)
     }
 
-    private fun initView(){
-        binding?.let {
-            it.rvPdpFilterAll.run {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                adapter = checkableAdapter
-            }
-        }
+    private var binding by autoClearedNullable<BottomSheetAllFilterBinding>()
+    private var adapterAllFilter = DigitalAllFilterAdapter(checkBoxListener)
 
-    }
-
-    private fun initAdapter(){
-        val typeFactory = DigitalPDPFilterAllAdapterTypeFactory(this)
-        checkableAdapter = object : BaseListCheckableAdapter<FilterTagDataCollection,
-                BaseListCheckableTypeFactory<FilterTagDataCollection>>(typeFactory, this) {
-            override fun getItemId(position: Int): Long {
-                return position.toLong()
-            }
-        }
-        checkableAdapter.setHasStableIds(true)
-    }
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        checkableAdapter.addElement(filterTagDataCollections)
-        val checkPositionList = HashSet<Int>()
-        filterTagDataCollections.let { collections ->
-            for (i in 0 until collections.size){
-                if (collections[i].isSelected){
-                    checkPositionList.add(i)
-                }
-            }
-        }
-        checkableAdapter.setCheckedPositionList(checkPositionList)
-        checkableAdapter.notifyDataSetChanged()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initView()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,15 +44,18 @@ class AllFilterPDPBottomsheet(private val title:String, private val filterTagDat
         bottomSheetBehaviorKnob(view, true)
     }
 
-    override fun onItemChecked(t: FilterTagDataCollection?, isChecked: Boolean) {
-        val filterChecked = checkableAdapter.totalChecked > 0
-    }
+    private fun initView(){
+        binding = BottomSheetAllFilterBinding.inflate(LayoutInflater.from(context))
+        binding?.let {
+            adapterAllFilter.setCheckBoxList(filterTagComponent)
+            it.rvPdpFilterAll.run {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                adapter = adapterAllFilter
+            }
+        }
 
-    override fun isChecked(position: Int): Boolean {
-        return checkableAdapter.isChecked(position)
-    }
-
-    override fun updateListByCheck(isChecked: Boolean, position: Int) {
-        //checkableAdapter.updateListByCheck(isChecked, position)
+        setTitle(title)
+        setChild(binding?.root)
     }
 }

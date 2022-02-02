@@ -40,11 +40,12 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
+import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.presentation.bottomsheet.AllFilterPDPBottomsheet
+import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPFilterAllViewHolder
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
@@ -434,7 +435,7 @@ class DigitalPDPDataPlanFragment :
                         fragmentManager?.let {
                             FilterPDPBottomsheet(getString(R.string.bottom_sheet_filter_title),
                                 getString(R.string.bottom_sheet_filter_reset),
-                                filterData, this@DigitalPDPDataPlanFragment)
+                                filterData, this@DigitalPDPDataPlanFragment, it)
                                 .show(it, "")
                         }
                     }

@@ -1,44 +1,33 @@
 package com.tokopedia.digital_product_detail.presentation.adapter.viewholder
 
-import android.widget.CheckBox
-import android.widget.CompoundButton
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
-import com.tokopedia.digital_product_detail.R
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterCheckboxBinding
 
 class DigitalPDPFilterAllViewHolder(private val binding: ViewPdpFilterCheckboxBinding,
-                                    private val checkableInteractionListener: CheckableInteractionListener?)
-    : BaseCheckableViewHolder<FilterTagDataCollection>(binding.root, checkableInteractionListener),
-    CompoundButton.OnCheckedChangeListener {
+                                    private val checkBoxListener: CheckBoxListener
+)
+    : RecyclerView.ViewHolder(binding.root) {
 
-    private lateinit var checkbox: CheckBox
+    fun bind(tagComponent: TelcoFilterTagComponent, element: FilterTagDataCollection) {
+        with(binding) {
+            tgFilterTag.text = element.value
+            checboxFilterTag.isChecked = element.isSelected
 
-    init {
-        initView()
-    }
+            root.setOnClickListener {
+                checboxFilterTag.isChecked = !element.isSelected
+                checkBoxListener.onCheckBoxClicked(tagComponent, element, position)
+            }
 
-    private fun initView(){
-        binding?.let {
-            checkbox = it.checboxFilterTag
-        }
-    }
-
-    override fun bind(element: FilterTagDataCollection) {
-        super.bind(element)
-        binding?.let {
-            it.tgFilterTag.text = element.value
-            it.root?.let {
-                toggle()
+            checboxFilterTag.setOnCheckedChangeListener{ buttonView, isChecked ->
+                checkBoxListener.onCheckBoxClicked(tagComponent, element, position)
             }
         }
     }
 
-    override fun getCheckable(): CompoundButton {
-        return checkbox
-    }
-
-    companion object {
-        val LAYOUT = R.layout.view_pdp_filter_checkbox
+    interface CheckBoxListener {
+        fun onCheckBoxClicked(tagComponent: TelcoFilterTagComponent,
+                              element: FilterTagDataCollection, position: Int)
     }
 }
