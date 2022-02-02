@@ -8,6 +8,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherListParam
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.GetVoucherListUseCase
@@ -24,10 +25,12 @@ class CouponListViewModel @Inject constructor(
     val couponList: LiveData<Result<List<VoucherUiModel>>>
         get() = _couponList
 
-    fun getVoucherList() {
+    fun getVoucherList(page: Int) {
         launchCatchError(block = {
             val ongoingVoucherRequestParam = VoucherListParam.createParamCouponList(
-                status = VoucherStatus.NOT_STARTED_AND_ONGOING
+                status = VoucherStatus.NOT_STARTED_AND_ONGOING,
+                page = page,
+                perPage = LIST_COUPON_PER_PAGE
             )
             _couponList.value = Success(withContext(dispatchers.io) {
                 getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)

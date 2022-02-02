@@ -19,13 +19,14 @@ class CouponListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val moreButton by lazy { binding?.iuMoreButton }
     val iconCopyCode by lazy { binding?.iconCopyCode }
 
-    fun bindData(coupon: VoucherUiModel) {
+    fun bindData(coupon: VoucherUiModel, isItemLoading: Boolean) {
         setCouponTitleAndDescription(coupon)
         setCouponStatus(coupon)
         setCouponDate(coupon)
         setCouponQuota(coupon)
         setImageCoupon(coupon.isPublic, coupon.type)
         showPromoCode(coupon.isPublic, coupon.code)
+        binding?.itemLoading?.isVisible = isItemLoading
     }
 
     private fun setCouponTitleAndDescription(coupon: VoucherUiModel) {

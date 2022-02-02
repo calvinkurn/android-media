@@ -35,6 +35,7 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.da
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
 import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import java.util.*
@@ -42,19 +43,6 @@ import javax.inject.Inject
 
 class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiModel>() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)
-            .get(CouponListViewModel::class.java)
-    }
-
-    private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
-        return@lazy MoreMenuBottomSheet.createInstance()
-    }
-
-    private var onRedirectToCouponPreview : (Coupon, ProductCouponPreviewFragment.Mode) -> Unit = { _, _ -> }
     companion object {
         fun newInstance(
             onCreateCouponMenuSelected: () -> Unit,
@@ -72,9 +60,22 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)
+            .get(CouponListViewModel::class.java)
+    }
+
+    private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
+        return@lazy MoreMenuBottomSheet.createInstance()
+    }
+
     private var onCreateCouponMenuSelected : () -> Unit = {}
     private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
     private var onDuplicateCouponMenuSelected : (Coupon) -> Unit = {}
+    private var onRedirectToCouponPreview : (Coupon, ProductCouponPreviewFragment.Mode) -> Unit = { _, _ -> }
 
     override fun getScreenName(): String = CouponListFragment::class.java.simpleName
 
@@ -104,7 +105,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
         viewModel.couponList.observe(viewLifecycleOwner) {
             if (it is Success) {
-                renderList(it.data, false)
+                renderList(it.data, it.data.isNotEmpty())
             }
         }
     }
@@ -115,12 +116,14 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout = view.findViewById(R.id.swipeMvcList)
 
+    override fun getPerPage() = LIST_COUPON_PER_PAGE
+
     override fun addElementToAdapter(list: List<VoucherUiModel>) {
         adapter?.addData(list)
     }
 
     override fun loadData(page: Int) {
-        viewModel.getVoucherList()
+        viewModel.getVoucherList(page)
     }
 
     override fun clearAdapterData() {
@@ -128,11 +131,11 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     override fun onShowLoading() {
-
+        adapter?.showLoading()
     }
 
     override fun onHideLoading() {
-
+        adapter?.hideLoading()
     }
 
     override fun onDataEmpty() {
