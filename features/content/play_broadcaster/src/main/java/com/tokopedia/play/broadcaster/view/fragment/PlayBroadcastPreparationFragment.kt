@@ -31,6 +31,7 @@ import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.Toaster
 import java.util.*
@@ -92,6 +93,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupObserver()
 
         if(parentViewModel.channelTitle.isEmpty()) showTitleForm(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireView().requestApplyInsetsWhenAttached()
     }
 
     override fun onDestroyView() {
