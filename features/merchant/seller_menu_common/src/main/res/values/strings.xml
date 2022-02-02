@@ -12,12 +12,12 @@
     <string name="setting_menu_shop_setting">Pengaturan toko</string>
     <string name="setting_menu_setting">Pengaturan</string>
     <string name="setting_menu_shop_profile">PROFIL TOKO</string>
-    <string name="setting_menu_basic_info">Informasi Dasar</string>
-    <string name="setting_menu_shop_notes">Catatan Toko</string>
-    <string name="setting_menu_shop_working_hours">Jam Buka Tutup Toko</string>
+    <string name="setting_menu_basic_info">Edit informasi toko</string>
+    <string name="setting_menu_shop_notes">Edit catatan toko</string>
+    <string name="setting_menu_shop_working_hours">Atur jadwal operasional toko</string>
     <string name="setting_menu_location_and_shipment">LOKASI DAN PENGIRIMAN</string>
-    <string name="setting_menu_add_and_shop_location">Lokasi Toko</string>
-    <string name="setting_menu_set_shipment_method">Atur Layanan Pengiriman</string>
+    <string name="setting_menu_add_and_shop_location">Tambah dan ubah lokasi toko</string>
+    <string name="setting_menu_set_shipment_method">Atur layanan pengiriman</string>
     <string name="setting_error_message">Data tidak dapat ditampilkan</string>
     <string name="setting_error_description">Ketuk icon untuk memuat ulang</string>
     <string name="setting_active">Aktif</string>
