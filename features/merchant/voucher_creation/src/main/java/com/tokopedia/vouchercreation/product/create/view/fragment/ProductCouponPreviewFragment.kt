@@ -49,8 +49,6 @@ import javax.inject.Inject
 class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
 
     companion object {
-        private const val BUNDLE_KEY_COUPON = "coupon"
-        private const val BUNDLE_KEY_MODE = "mode"
         private const val EMPTY_STRING = ""
         private const val SCREEN_NAME = "Product coupon preview page"
         private const val ZERO: Long = 0
@@ -64,16 +62,9 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
             onNavigateToProductListPage: () -> Unit,
             onCreateCouponSuccess: (Coupon) -> Unit,
             onUpdateCouponSuccess: () -> Unit,
-            onDuplicateCouponSuccess: () -> Unit,
-            coupon: Coupon?,
-            mode: Mode
-        ): ProductCouponPreviewFragment {
-            val args = Bundle()
-            args.putSerializable(BUNDLE_KEY_COUPON, coupon)
-            args.putSerializable(BUNDLE_KEY_MODE, mode)
+            onDuplicateCouponSuccess: () -> Unit): ProductCouponPreviewFragment {
 
             val fragment = ProductCouponPreviewFragment().apply {
-                arguments = args
                 this.onNavigateToCouponInformationPage = onNavigateToCouponInformationPage
                 this.onNavigateToCouponSettingsPage = onNavigateToCouponSettingsPage
                 this.onNavigateToProductListPage = onNavigateToProductListPage
@@ -118,7 +109,7 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
         UpdateProductCouponFailedDialog(requireActivity(), ::onRetryUpdateCoupon, ::onRequestHelp)
     }
 
-    private val pageMode by lazy { arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode ?: Mode.CREATE }
+    private var pageMode = Mode.CREATE
 
     private val CouponType.label: String
         get() {
@@ -162,12 +153,6 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
             .inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.d("Preview: Lifecycle app is OnCreate")
-        handlePageMode()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -193,30 +178,18 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
             Mode.UPDATE -> {
                 changeToolbarTitle(getString(R.string.update_coupon_product))
                 changeButtonBehavior()
-                populateParamsFromBundle()
             }
-            Mode.DUPLICATE -> {
-                populateParamsFromBundle()
-            }
+            Mode.DUPLICATE -> {}
         }
     }
 
     private fun changeButtonBehavior() {
         binding.btnCreateCoupon.text = getString(R.string.save_changes)
         binding.btnCreateCoupon.setOnClickListener {
-            val coupon: Coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon ?: return@setOnClickListener
-            this.couponId = coupon.id
-            updateCoupon(coupon.id)
+            updateCoupon(couponId)
         }
     }
 
-    private fun populateParamsFromBundle() {
-        Timber.d("Preview: populateParamsFromBundle")
-        val coupon: Coupon = arguments?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon ?: return
-        this.couponSettings = coupon.settings
-        this.couponProducts = coupon.products
-        this.couponInformation = coupon.information
-    }
 
     private fun setupViews() {
         binding.tpgReadArticle.setOnClickListener { redirectToSellerEduPage() }
@@ -296,7 +269,6 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
 
 
     fun setCouponSettingsData(couponSettings: CouponSettings) {
-        Timber.d("Preview: setCouponsettingdata")
         this.couponSettings = couponSettings
     }
 
@@ -306,6 +278,17 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
 
     fun setCouponInformationData(couponInformation: CouponInformation) {
         this.couponInformation = couponInformation
+    }
+
+    fun setCoupon(coupon : Coupon) {
+        this.couponId = coupon.id
+        this.couponInformation = coupon.information
+        this.couponSettings = coupon.settings
+        this.couponProducts = coupon.products
+    }
+
+    fun setPageMode(mode: Mode) {
+        this.pageMode = mode
     }
 
     fun clear() {
@@ -321,6 +304,7 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
         super.onResume()
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
+        handlePageMode()
         refreshProductsSection(couponProducts)
 
         viewModel.validateCoupon(couponSettings, couponInformation, couponProducts)

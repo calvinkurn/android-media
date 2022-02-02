@@ -37,9 +37,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         ::navigateToProductListPage,
         ::onCreateCouponSuccess,
         ::onUpdateCouponSuccess,
-        ::onDuplicateCouponSuccess,
-        null,
-        ProductCouponPreviewFragment.Mode.CREATE
+        ::onDuplicateCouponSuccess
     )
 
     private val couponSettingFragment = CouponSettingFragment.newInstance(::saveCouponSettingsData)
@@ -97,35 +95,15 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun navigateToEditCouponPage(coupon: Coupon) {
         this.couponSettings = coupon.settings
-        val fragment = ProductCouponPreviewFragment.newInstance(
-            ::navigateToCouponInformationPage,
-            ::navigateToCouponSettingPage,
-            ::navigateToProductListPage,
-            ::onCreateCouponSuccess,
-            ::onUpdateCouponSuccess,
-            ::onDuplicateCouponSuccess,
-            coupon,
-            ProductCouponPreviewFragment.Mode.UPDATE
-        )
-        replaceAndAddToBackstack(fragment)
+        couponPreviewFragment.setCoupon(coupon)
+        couponPreviewFragment.setPageMode(ProductCouponPreviewFragment.Mode.UPDATE)
+        replaceAndAddToBackstack(couponPreviewFragment)
     }
 
     private fun navigateToDuplicateCouponPage(coupon: Coupon) {
         this.couponSettings = coupon.settings
-        couponPreviewFragment.setCouponProductsData(coupon.products)
-        couponPreviewFragment.setCouponInformationData(coupon.information)
-        couponPreviewFragment.setCouponSettingsData(coupon.settings)
-       /* val fragment = ProductCouponPreviewFragment.newInstance(
-            ::navigateToCouponInformationPage,
-            ::navigateToCouponSettingPage,
-            ::navigateToProductListPage,
-            ::onCreateCouponSuccess,
-            ::onUpdateCouponSuccess,
-            ::onDuplicateCouponSuccess,
-            coupon,
-            ProductCouponPreviewFragment.Mode.DUPLICATE
-        )
-        replaceAndAddToBackstack(fragment)*/
+        couponPreviewFragment.setCoupon(coupon)
+        couponPreviewFragment.setPageMode(ProductCouponPreviewFragment.Mode.DUPLICATE)
         replaceAndAddToBackstack(couponPreviewFragment)
     }
 
@@ -151,18 +129,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         showToaster(getString(R.string.coupon_duplicated))
     }
 
-    /*private fun refresh() {
-        val fragment = supportFragmentManager.findFragmentByTag(TAG_FRAGMENT_COUPON_PREVIEW)
-        fragment?.let {
-            supportFragmentManager.beginTransaction().hide(couponSettingFragment).commit()
-            supportFragmentManager
-                .beginTransaction()
-                .detach(it)
-                .attach(it)
-                .commit()
-        }
 
-    }*/
     private fun saveCouponSettingsData(couponSettings: CouponSettings) {
         this.couponSettings = couponSettings
         couponPreviewFragment.setCouponSettingsData(couponSettings)
@@ -218,31 +185,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
         couponPreviewFragment.setCouponSettingsData(couponSettings)
     }
 
- /*   private fun imme() {
-        popFragment()
-        supportFragmentManager
-            .beginTransaction()
-            .remove(couponPreviewFragment)
-            .commit()
-    }
-    private fun hide() {
-        Timber.d("Before removing coupon preview, backstack count is ${supportFragmentManager.backStackEntryCount}")
-        supportFragmentManager
-            .beginTransaction()
-            .remove(couponPreviewFragment)
-            .commit()
-
-        Timber.d("After removing coupon preview, backstack count is ${supportFragmentManager.backStackEntryCount}")
-      supportFragmentManager
-            .beginTransaction()
-          .remove(couponSettingFragment)
-          .commit()
-
-        Timber.d("After removing coupon setting, backstack count is ${supportFragmentManager.backStackEntryCount}")
-
-        supportFragmentManager.beginTransaction().add(R.id.parent_view,couponPreviewFragment).commit()
-    }
-*/
     private fun setupCreateCouponDetailFragment(): CreateCouponDetailFragment {
         val couponInformationData = couponPreviewFragment.getCouponInformationData()
         val couponInfoFragment = CreateCouponDetailFragment(couponInformationData)
