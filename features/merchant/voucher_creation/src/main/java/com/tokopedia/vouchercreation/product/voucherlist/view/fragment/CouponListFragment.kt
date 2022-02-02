@@ -360,7 +360,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             }.show(childFragmentManager)
     }
 
-    private fun loadInitialData() {
+    fun loadInitialData() {
         this.clearAdapterData()
         this.onShowLoading()
         this.loadData(1)

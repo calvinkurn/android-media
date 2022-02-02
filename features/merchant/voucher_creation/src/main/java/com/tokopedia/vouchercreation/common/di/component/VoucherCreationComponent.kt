@@ -15,8 +15,11 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingF
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.voucherlist.view.fragment.CouponListFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
+import com.tokopedia.vouchercreation.product.duplicate.DuplicateCouponActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import com.tokopedia.vouchercreation.product.list.view.fragment.AddProductFragment
+import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity
+import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet.CreatePromoCodeBottomSheetFragment
 import com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
@@ -43,6 +46,10 @@ import dagger.Component
 interface VoucherCreationComponent {
     fun inject(createMerchantVoucherStepsActivity: CreateMerchantVoucherStepsActivity)
     fun inject(productListActivity: ProductListActivity)
+    fun inject(couponListActivity: CouponListActivity)
+    fun inject(updateCouponActivity: UpdateCouponActivity)
+    fun inject(duplicateCouponActivity: DuplicateCouponActivity)
+
     fun inject(merchantVoucherTargetFragment: MerchantVoucherTargetFragment)
     fun inject(voucherListFragment: VoucherListFragment)
     fun inject(addProductFragment: AddProductFragment)

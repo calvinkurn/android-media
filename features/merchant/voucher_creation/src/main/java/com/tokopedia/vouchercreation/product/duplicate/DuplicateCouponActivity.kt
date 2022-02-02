@@ -1,13 +1,13 @@
-package com.tokopedia.vouchercreation.product.create.view.activity
+package com.tokopedia.vouchercreation.product.duplicate
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
@@ -19,43 +19,42 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingF
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
-import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import java.util.*
 import javax.inject.Inject
 
-class CreateCouponProductActivity : AppCompatActivity() {
-
-    companion object {
-        private const val PRODUCT_ID_SEGMENT_INDEX = 1
-    }
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
+class DuplicateCouponActivity : AppCompatActivity() {
     @Inject
     lateinit var router: FragmentRouter
 
+    private val couponSettingFragment = CouponSettingFragment.newInstance(::saveCouponSettingsData)
+    private val coupon by lazy { intent.extras?.getSerializable(BUNDLE_KEY_COUPON) as? Coupon }
     private val couponPreviewFragment = ProductCouponPreviewFragment.newInstance(
         ::navigateToCouponInformationPage,
         ::navigateToCouponSettingPage,
         ::navigateToProductListPage,
-        ::onCreateCouponSuccess,
         {},
         {},
-        null,
-        ProductCouponPreviewFragment.Mode.CREATE
+        ::onDuplicateCouponSuccess,
+        coupon,
+        ProductCouponPreviewFragment.Mode.DUPLICATE
     )
 
-    private val couponSettingFragment = CouponSettingFragment.newInstance(::saveCouponSettingsData)
+    companion object {
+        private const val BUNDLE_KEY_COUPON = "coupon"
 
-    private val productId: String? by lazy { getProductIdDataFromApplink() }
+        @JvmStatic
+        fun start(context: Context, coupon: Coupon) {
+            val starter = Intent(context, DuplicateCouponActivity::class.java)
+                .putExtra(BUNDLE_KEY_COUPON, coupon)
+            context.startActivity(starter)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
-        setContentView(R.layout.activity_mvc_create_coupon)
-        router.replace(supportFragmentManager, R.id.parent_view, couponPreviewFragment)
-        println(productId)
+        setContentView(R.layout.activity_mvc_coupon_list)
+        displayPage()
     }
 
     private fun setupDependencyInjection() {
@@ -65,11 +64,17 @@ class CreateCouponProductActivity : AppCompatActivity() {
             .inject(this)
     }
 
-    private fun getProductIdDataFromApplink(): String? {
-        val applinkData = RouteManager.getIntent(this, intent.data.toString()).data
-        val pathSegments = applinkData?.pathSegments.orEmpty()
-        return pathSegments.getOrNull(PRODUCT_ID_SEGMENT_INDEX)
+    private fun displayPage() {
+        replace(couponPreviewFragment)
     }
+
+    private fun replace(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.parent_view, fragment)
+            .commit()
+    }
+
 
     private fun navigateToCouponInformationPage() {
         router.replaceAndAddToBackstack(supportFragmentManager, R.id.parent_view, setupCreateCouponDetailFragment())
@@ -84,17 +89,15 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
 
-    private fun onCreateCouponSuccess(coupon: Coupon) {
-        val intent = Intent(this, CouponListActivity::class.java)
-
-        /*val bundle = Bundle()
-        bundle.putSerializable(CouponListActivity.BUNDLE_KEY_COUPON, coupon)
-
-        intent.putExtras(bundle)*/
-        startActivity(intent)
-        finish()
+    private fun onDuplicateCouponSuccess() {
+       finish()
     }
 
+    private fun showToaster(text: String) {
+        if (text.isEmpty()) return
+        val view = findViewById<FrameLayout>(R.id.parent_view)
+        Toaster.build(view, text).show()
+    }
 
     private fun saveCouponSettingsData(couponSettings: CouponSettings) {
         couponSettingFragment.setCouponSettings(couponSettings)
@@ -157,11 +160,5 @@ class CreateCouponProductActivity : AppCompatActivity() {
             couponPreviewFragment.setCouponInformationData(coupon)
         }
         return couponInfoFragment
-    }
-
-    private fun showToaster(text: String) {
-        if (text.isEmpty()) return
-        val view = findViewById<FrameLayout>(R.id.parent_view)
-        Toaster.build(view, text).show()
     }
 }

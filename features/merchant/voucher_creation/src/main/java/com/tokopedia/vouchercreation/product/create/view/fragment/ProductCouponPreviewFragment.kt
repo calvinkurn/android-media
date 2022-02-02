@@ -46,7 +46,7 @@ import java.util.*
 import javax.inject.Inject
 
 
-class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
+class ProductCouponPreviewFragment: BaseDaggerFragment() {
 
     companion object {
         private const val EMPTY_STRING = ""
@@ -62,7 +62,10 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
             onNavigateToProductListPage: () -> Unit,
             onCreateCouponSuccess: (Coupon) -> Unit,
             onUpdateCouponSuccess: () -> Unit,
-            onDuplicateCouponSuccess: () -> Unit): ProductCouponPreviewFragment {
+            onDuplicateCouponSuccess: () -> Unit,
+            coupon: Coupon?,
+            mode : Mode
+        ): ProductCouponPreviewFragment {
 
             val fragment = ProductCouponPreviewFragment().apply {
                 this.onNavigateToCouponInformationPage = onNavigateToCouponInformationPage
@@ -71,6 +74,11 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
                 this.onCreateCouponSuccess = onCreateCouponSuccess
                 this.onUpdateCouponSuccess = onUpdateCouponSuccess
                 this.onDuplicateCouponSuccess = onDuplicateCouponSuccess
+                this.couponInformation = coupon?.information
+                this.couponProducts = coupon?.products ?: emptyList()
+                this.couponSettings = coupon?.settings
+                this.couponId = coupon?.id.orZero()
+                this.pageMode = mode
             }
 
             return fragment
@@ -278,23 +286,6 @@ class ProductCouponPreviewFragment private constructor(): BaseDaggerFragment() {
 
     fun setCouponInformationData(couponInformation: CouponInformation) {
         this.couponInformation = couponInformation
-    }
-
-    fun setCoupon(coupon : Coupon) {
-        this.couponId = coupon.id
-        this.couponInformation = coupon.information
-        this.couponSettings = coupon.settings
-        this.couponProducts = coupon.products
-    }
-
-    fun setPageMode(mode: Mode) {
-        this.pageMode = mode
-    }
-
-    fun clear() {
-        this.couponSettings = null
-        this.couponProducts = emptyList()
-        this.couponInformation = null
     }
 
     fun getCouponInformationData() = this.couponInformation

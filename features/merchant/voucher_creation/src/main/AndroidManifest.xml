@@ -1,13 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.vouchercreation">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name="com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity"
+            android:name=".product.update.UpdateCouponActivity"
+            android:exported="false" />
+        <activity
+            android:name=".product.duplicate.DuplicateCouponActivity"
+            android:exported="false" />
+        <activity
+            android:name=".shop.voucherlist.view.activity.VoucherListActivity"
             android:exported="false"
             android:label="@string/title_voucher_creation"
             android:launchMode="singleTask"
@@ -35,7 +43,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity"
+            android:name=".shop.create.view.activity.CreateMerchantVoucherStepsActivity"
             android:exported="false"
             android:label="@string/title_voucher_creation"
             android:launchMode="singleTask"
@@ -55,7 +63,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity"
+            android:name=".shop.detail.view.activity.VoucherDetailActivity"
             android:exported="false"
             android:label="@string/title_voucher_creation"
             android:launchMode="singleTask"
@@ -134,4 +142,5 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>
+
 </manifest>
