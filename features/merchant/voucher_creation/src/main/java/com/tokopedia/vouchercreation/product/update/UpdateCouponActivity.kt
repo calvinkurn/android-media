@@ -73,8 +73,8 @@ class UpdateCouponActivity : AppCompatActivity() {
 
 
     private fun onUpdateCouponSuccess() {
-        router.popFragment(supportFragmentManager)
         showToaster(getString(R.string.coupon_updated))
+        finish()
     }
 
 

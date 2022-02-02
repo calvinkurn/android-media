@@ -79,7 +79,6 @@ class CouponListActivity: BaseSimpleActivity() {
     }
 
     private fun navigateToDuplicateCouponPage(coupon: Coupon) {
-        showToaster(getString(R.string.coupon_duplicated))
         DuplicateCouponActivity.start(this, coupon)
     }
 
