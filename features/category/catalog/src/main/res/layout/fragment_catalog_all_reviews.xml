@@ -79,7 +79,6 @@
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="3"
-        android:layout_marginTop="@dimen/spacing_lvl6"
         tools:listitem="@layout/item_catalog_review"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

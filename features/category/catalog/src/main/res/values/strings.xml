@@ -18,9 +18,11 @@
     <string name="catalog_video_widget_title">Tonton video ulasannya, yuk!</string>
     <string name="catalog_feature_not_available">tidak tersedia</string>
     <string name="catalog_nav_bar_search_hint">Cari di Tokopedia</string>
-    <string name="catalog_ulasan">Ulasan</string>
-    <string name="catalog_lihat_semua_ulasan">Lihat Semua Ulasan</string>
+    <string name="catalog_ulasan">Ulasan paling membantu buatmu</string>
+    <string name="catalog_ulasan_produk">Ulasan produk</string>
+    <string name="catalog_lihat_semua">Lihat Semua</string>
     <string name="catalog_review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
-    <string name="catalog_highlighted_reviews">dari %s ulasan membantu</string>
+    <string name="catalog_highlighted_reviews">dari %s rating produk</string>
     <string name="catalog_numbering_images">%s/%s</string>
+    <string name="catalog_rating_total">/5,0</string>
 </resources>

@@ -31,7 +31,7 @@ class CatalogAllReviewBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTitle(getString(com.tokopedia.catalog.R.string.catalog_ulasan))
+        setTitle(getString(com.tokopedia.catalog.R.string.catalog_ulasan_produk))
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }

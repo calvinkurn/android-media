@@ -72,7 +72,6 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
             catalogAllReviewsViewModel.getCatalogShimmerLiveData().value = false
             when (it) {
                 is Success -> {
-                    renderData(it.data.catalogGetProductReview?.reviewData)
                     it.data.catalogGetProductReview?.reviewData?.reviews?.let { reviews ->
                         hideGlobalError()
                         catalogAdapter?.submitList(reviews)

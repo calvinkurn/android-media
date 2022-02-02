@@ -21,57 +21,79 @@
         android:textColor="@color/Unify_N700_96"
         />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/rating_review_star_catalog"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:visibility="gone"
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/rating_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_review_title_catalog"
-        tools:visibility="visible"
-        app:icon_color_light_enable="@color/Unify_Y300"
-        app:icon_color_night_enable="@color/Unify_Y300"
-        app:icon_name="STAR_FILLED"
-        />
+        app:card_type="border"
+        android:padding="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            >
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/rating_review_star_catalog"
+                android:layout_width="@dimen/unify_space_24"
+                android:layout_height="@dimen/unify_space_24"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:srcCompat="@drawable/catalog_ic_rating_star_item"
+                />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/review_rating_catalog"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/rating_review_star_catalog"
-        app:layout_constraintTop_toBottomOf="@id/txt_review_title_catalog"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:typographyWeight="bold"
-        app:typographyType="body_3"
-        tools:text="2.7"
-        tools:visibility="visible"
-        />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/review_rating_catalog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                app:typographyWeight="bold"
+                app:typographyType="body_1"
+                tools:text="2.7"
+                tools:visibility="visible"
+                />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/review_count_catalog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:textColor="@color/Unify_N700_68"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        app:layout_constraintBottom_toBottomOf="@+id/review_rating_catalog"
-        app:layout_constraintLeft_toRightOf="@+id/review_rating_catalog"
-        app:typographyType="body_3"
-        tools:visibility="visible"
-        tools:text="dari 1205 ulasan" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/review_rating_catalog_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl1"
+                app:typographyType="body_3"
+                android:text="@string/catalog_rating_total"
+                android:textColor="@color/Unify_N700_32"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/review_count_catalog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700_68"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                tools:visibility="visible"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                tools:text="dari 1205 ulasan" />
+
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/separator_catalog"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:layout_constraintTop_toBottomOf="@id/review_count_catalog"
+        app:layout_constraintTop_toBottomOf="@id/rating_linear_layout"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
+        android:visibility="gone"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -81,7 +103,7 @@
         app:layout_constraintTop_toBottomOf="@+id/separator_catalog"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         tools:listitem="@layout/item_catalog_review"
         tools:itemCount="3"
         android:orientation="vertical"
@@ -93,7 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:text="@string/catalog_lihat_semua_ulasan"
+        android:text="@string/catalog_lihat_semua"
         android:textColor="@color/Unify_G500"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/review_rv_catalog"
