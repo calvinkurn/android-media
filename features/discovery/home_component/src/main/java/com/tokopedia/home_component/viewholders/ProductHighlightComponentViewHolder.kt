@@ -1,7 +1,9 @@
 package com.tokopedia.home_component.viewholders
 
+import android.content.Context
 import android.graphics.Color
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -38,6 +40,8 @@ class ProductHighlightComponentViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_product_highlight
+        const val TITLE_LENGTH = 22
+        const val START_INDEX = 0
     }
 
     override fun bind(element: ProductHighlightDataModel?) {
@@ -83,7 +87,7 @@ class ProductHighlightComponentViewHolder(
             val expiredTime = DateHelper.getExpiredTime(dataModel.channelModel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(dataModel.channelModel.channelConfig.serverTimeOffset, expiredTime)) {
                 binding?.dealsCountDown?.run {
-                    val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_Static_White))}"
+                    val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))}"
                     timerVariant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != defaultColor || dataModel.channelModel.channelBanner.gradientColor.size > 1){
                         TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
@@ -118,7 +122,13 @@ class ProductHighlightComponentViewHolder(
     }
 
     private fun setDealsChannelTitle(it: ChannelHeader) {
-        binding?.dealsChannelTitle?.text = it.name
+        val title = if (it.name.length > TITLE_LENGTH) "${
+            it.name.substring(
+                START_INDEX,
+                TITLE_LENGTH
+            )
+        }${getString(R.string.discovery_home_product_highlight_ellipsize_character)}" else it.name
+        binding?.dealsChannelTitle?.text = title
         if (it.textColor.isNotEmpty()) {
             val textColor = Color.parseColor(it.textColor)
             binding?.dealsChannelTitle?.setTextColor(textColor)
