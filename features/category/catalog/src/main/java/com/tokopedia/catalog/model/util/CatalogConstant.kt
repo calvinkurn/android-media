@@ -49,4 +49,8 @@ object CatalogConstant {
 
     const val COMPARISION_DETAIL = "comparision-detail"
 
+    const val WWW_DOT_TEXT = "www."
+    const val HTTPS_TEXT = "https://"
+    const val HTTPS_WWW_DOT_TEXT = "https://www."
+
 }

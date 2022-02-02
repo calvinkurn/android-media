@@ -23,8 +23,8 @@ object CatalogUtil {
     }
 
     fun getShareURI(catalogUrl: String): String {
-        return  if (!catalogUrl.contains("www."))
-            catalogUrl.replace("https://", "https://www.")
+        return  if (!catalogUrl.contains(CatalogConstant.WWW_DOT_TEXT))
+            catalogUrl.replace(CatalogConstant.HTTPS_TEXT, CatalogConstant.HTTPS_WWW_DOT_TEXT)
         else
             catalogUrl
     }
