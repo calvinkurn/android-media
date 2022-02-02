@@ -30,6 +30,10 @@ import javax.inject.Inject
 
 class CreateCouponProductActivity : AppCompatActivity() {
 
+    companion object {
+        private const val PRODUCT_ID_SEGMENT_INDEX = 1
+    }
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -50,12 +54,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         ::navigateToCouponDetail
     )
 
-    private var couponSettings: CouponSettings? = null
     private val productId: String? by lazy { getProductIdDataFromApplink() }
-
-    companion object {
-        private const val PRODUCT_ID_SEGMENT_INDEX = 1
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +82,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
     private fun navigateToCouponSettingPage() {
-        couponSettingFragment.setCouponSettings(couponSettings)
+
         replaceAndAddToBackstack(couponSettingFragment)
     }
 
@@ -92,21 +91,25 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
     private fun navigateToCreateCouponPage() {
+        couponPreviewFragment.setPageMode(ProductCouponPreviewFragment.Mode.CREATE)
+        couponPreviewFragment.clear()
+        couponSettingFragment.clear()
         replaceAndAddToBackstack(couponPreviewFragment)
     }
 
     private fun navigateToEditCouponPage(coupon: Coupon) {
-        this.couponSettings = coupon.settings
+        couponSettingFragment.setCouponSettings(coupon.settings)
         couponPreviewFragment.setCoupon(coupon)
         couponPreviewFragment.setPageMode(ProductCouponPreviewFragment.Mode.UPDATE)
         replaceAndAddToBackstack(couponPreviewFragment)
     }
 
     private fun navigateToDuplicateCouponPage(coupon: Coupon) {
-        this.couponSettings = coupon.settings
+        couponSettingFragment.setCouponSettings(coupon.settings)
         couponPreviewFragment.setCoupon(coupon)
         couponPreviewFragment.setPageMode(ProductCouponPreviewFragment.Mode.DUPLICATE)
         replaceAndAddToBackstack(couponPreviewFragment)
+        showToaster(getString(R.string.coupon_duplicated))
     }
 
     private fun navigateToCouponDetail(couponId: Long) {
@@ -116,7 +119,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun onCreateCouponSuccess(coupon: Coupon) {
         couponPreviewFragment.clear()
-        this.couponSettings = null
+        couponSettingFragment.clear()
         replace(couponListFragment)
         showBroadCastVoucherBottomSheet(coupon)
     }
@@ -128,13 +131,11 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun onDuplicateCouponSuccess() {
         popFragment()
-        showToaster(getString(R.string.coupon_duplicated))
     }
 
 
     private fun saveCouponSettingsData(couponSettings: CouponSettings) {
-        this.couponSettings = couponSettings
-        couponPreviewFragment.setCouponSettingsData(couponSettings)
+        couponSettingFragment.setCouponSettings(couponSettings)
 
         //Stub the coupon preview data for testing purpose
         val startDate = Calendar.getInstance().apply { set(2022, 1, 5, 20, 30, 0) }
@@ -183,7 +184,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
             )
         )
         popFragment()
-        this.couponSettings = couponSettings
         couponPreviewFragment.setCouponSettingsData(couponSettings)
     }
 

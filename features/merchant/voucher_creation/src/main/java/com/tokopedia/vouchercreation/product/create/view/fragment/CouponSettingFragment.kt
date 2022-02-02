@@ -809,6 +809,10 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
         this.couponSettings = couponSettings
     }
 
+    fun clear() {
+        this.couponSettings = null
+    }
+
     private fun displayExpenseEstimationDescription() {
         if (!isAdded) return
         val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
