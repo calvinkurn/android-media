@@ -98,7 +98,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         super.onViewCreated(view, savedInstanceState)
         val chip = view.findViewById<SortFilter>(R.id.sf_voucher_list)
         chip.setOnClickListener {
-
+            print("sss")
         }
         chip.parentListener = {
             onCreateCouponMenuSelected()
@@ -110,13 +110,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
-    override fun createAdapter() = CouponListAdapter { selectedCoupon ->
-        moreBottomSheet?.show(childFragmentManager)
-        moreBottomSheet?.setOnItemClickListener(selectedCoupon.status) { menu ->
-            moreBottomSheet?.dismiss()
-            onMoreMenuItemClickListener(menu, selectedCoupon)
-        }
-    }
+    override fun createAdapter() = CouponListAdapter(::onCouponOptionClicked, ::onCouponIconCopyClicked)
 
     override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.rvVoucherList)
 
@@ -150,7 +144,20 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     }
 
-    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, selectedCoupon : VoucherUiModel) {
+
+    private fun onCouponIconCopyClicked(couponCode: String) {
+        context?.let { SharingUtil.copyTextToClipboard(it, couponCode, couponCode) }
+    }
+
+    private fun onCouponOptionClicked(voucherUiModel: VoucherUiModel) {
+        moreBottomSheet?.show(childFragmentManager)
+        moreBottomSheet?.setOnItemClickListener(VoucherStatusConst.NOT_STARTED) { menu ->
+            moreBottomSheet?.dismiss()
+            onMoreMenuItemClickListener(menu, voucherUiModel)
+        }
+    }
+
+    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, selectedCoupon: VoucherUiModel) {
         when (menu) {
             is EditQuotaCoupon -> editQuotaVoucher(selectedCoupon)
             is ViewDetailCoupon -> viewDetailVoucher(selectedCoupon.id.toLong())

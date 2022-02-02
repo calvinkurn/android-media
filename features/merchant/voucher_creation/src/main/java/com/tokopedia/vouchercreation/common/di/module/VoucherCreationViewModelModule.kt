@@ -10,6 +10,7 @@ import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponSetting
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CreateCouponDetailViewModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
+import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel
 import com.tokopedia.vouchercreation.shop.create.view.viewmodel.*
 import com.tokopedia.vouchercreation.shop.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
@@ -120,4 +121,9 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(CouponDetailViewModel::class)
     internal abstract fun provideCouponDetailViewModel(couponDetailViewModel: CouponDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddProductViewModel::class)
+    internal abstract fun provideAddProductViewModel(addProductViewModel: AddProductViewModel): ViewModel
 }

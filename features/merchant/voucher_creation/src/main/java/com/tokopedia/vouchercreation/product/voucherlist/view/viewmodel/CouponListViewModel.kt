@@ -26,8 +26,8 @@ class CouponListViewModel @Inject constructor(
 
     fun getVoucherList() {
         launchCatchError(block = {
-            val ongoingVoucherRequestParam = VoucherListParam.createParam(
-                status = VoucherStatus.ONGOING
+            val ongoingVoucherRequestParam = VoucherListParam.createParamCouponList(
+                status = VoucherStatus.NOT_STARTED_AND_ONGOING
             )
             _couponList.value = Success(withContext(dispatchers.io) {
                 getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)
