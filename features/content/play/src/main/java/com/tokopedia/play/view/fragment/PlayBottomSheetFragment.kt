@@ -299,7 +299,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
             val startTimeInSecond = try {
-                val dt: Date = DateUtil.formatDate(currentFormat = DateUtil.YYYY_MM_DD_T_HH_MM_SS, newFormat = DateUtil.HH_MM, startTime).toDate(
+                val dt: Date = startTime.toDate(
                     DateUtil.HH_MM
                 )
                 TimeUnit.MILLISECONDS.toSeconds(dt.time)
