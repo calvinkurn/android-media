@@ -10,14 +10,13 @@ import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.Digi
 
 class DigitalAllFilterAdapter(private val checkBoxListener: DigitalPDPFilterAllViewHolder.CheckBoxListener): RecyclerView.Adapter<DigitalPDPFilterAllViewHolder>()  {
     private var filterTagComponent = TelcoFilterTagComponent()
-    private var listFilterDataCollection = mutableListOf<FilterTagDataCollection>()
 
     override fun getItemCount(): Int {
-        return listFilterDataCollection.size
+        return filterTagComponent.filterTagDataCollections.size
     }
 
     override fun onBindViewHolder(holder: DigitalPDPFilterAllViewHolder, position: Int) {
-        holder.bind(filterTagComponent, listFilterDataCollection[position])
+        holder.bind(filterTagComponent, filterTagComponent.filterTagDataCollections[position])
     }
 
     override fun onCreateViewHolder(
@@ -33,7 +32,6 @@ class DigitalAllFilterAdapter(private val checkBoxListener: DigitalPDPFilterAllV
 
     fun setCheckBoxList(filterTagComponent: TelcoFilterTagComponent){
         this.filterTagComponent = filterTagComponent
-        this.listFilterDataCollection = filterTagComponent.filterTagDataCollections.toMutableList()
         notifyDataSetChanged()
     }
 
