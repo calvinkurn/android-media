@@ -185,7 +185,9 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         chip.parentListener = {
             onCreateCouponMenuSelected()
         }
+
         setupObserver()
+        getInitialValues()
     }
 
     override fun createAdapter() = CouponListAdapter(::onCouponOptionClicked, ::onCouponIconCopyClicked)
@@ -202,8 +204,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     override fun loadData(page: Int) {
         viewModel.getVoucherList(page)
-        viewModel.getBroadCastMetaData()
-        viewModel.getShopBasicData()
     }
 
     override fun clearAdapterData() {
@@ -224,6 +224,11 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     override fun onGetListError(message: String) {
 
+    }
+    
+    private fun getInitialValues() {
+        viewModel.getBroadCastMetaData()
+        viewModel.getShopBasicData()
     }
 
     private fun onCouponIconCopyClicked(couponCode: String) {
