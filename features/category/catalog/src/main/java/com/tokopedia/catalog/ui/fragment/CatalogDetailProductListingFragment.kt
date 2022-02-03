@@ -135,8 +135,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         observeData()
         setUpAdapter()
         setupRecyclerView()
-        //setUpNavigation()
-        //setUpVisibleFragmentListener()
         initSearchQuickSortFilter(view)
         sortFilterBottomSheet = SortFilterBottomSheet()
     }

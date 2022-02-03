@@ -82,7 +82,6 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
                 }
 
                 itemView.addOnImpressionListener(element.impressHolder) {
-                    listener.showCoachmark(shipmentTitle, element.isBoeType())
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
 

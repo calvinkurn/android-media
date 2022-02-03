@@ -3,6 +3,7 @@ package com.tokopedia.catalog.model.util
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.catalog.model.util.CatalogConstant.CATALOG_URL
 
 object CatalogUtil {
 
@@ -22,10 +23,14 @@ object CatalogUtil {
     }
 
     fun getShareURI(catalogUrl: String): String {
-        return  if (!catalogUrl.contains("www."))
-            catalogUrl.replace("https://", "https://www.")
+        return  if (!catalogUrl.contains(CatalogConstant.WWW_DOT_TEXT))
+            catalogUrl.replace(CatalogConstant.HTTPS_TEXT, CatalogConstant.HTTPS_WWW_DOT_TEXT)
         else
             catalogUrl
+    }
+
+    fun getShareUrl(catalogId : String) : String{
+        return "${CatalogConstant.CATALOG_DEEPLINK_PREFIX}$catalogId"
     }
 
     fun getImagesFromCatalogImages(catalogImages: ArrayList<CatalogImage>?): ArrayList<String>? {

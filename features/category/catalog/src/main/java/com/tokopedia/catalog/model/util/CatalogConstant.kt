@@ -27,7 +27,9 @@ object CatalogConstant {
 
     const val ZERO_VALUE = "0"
 
+    const val CATALOG_DEEPLINK_PREFIX = "https://www.tokopedia.com/catalog/"
     const val CATALOG_URL = "tokopedia://catalog/"
+    const val CATALOG_SHARE = "share"
 
     const val SOURCE = "catalog"
     const val DEVICE = "android"
@@ -46,5 +48,9 @@ object CatalogConstant {
     const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
 
     const val COMPARISION_DETAIL = "comparision-detail"
+
+    const val WWW_DOT_TEXT = "www."
+    const val HTTPS_TEXT = "https://"
+    const val HTTPS_WWW_DOT_TEXT = "https://www."
 
 }

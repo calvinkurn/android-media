@@ -364,7 +364,7 @@ class CatalogDetailPageFragment : Fragment(),
                     if(UserSession(this@CatalogDetailPageFragment.context).userId.isNullOrEmpty()) "0"
                     else UserSession(this@CatalogDetailPageFragment.context).userId,
                     catalogId,
-                    ""
+                    CatalogConstant.CATALOG_SHARE
             )
             setMetaData(
                     "${CatalogConstant.KATALOG} $catalogName",
@@ -389,7 +389,7 @@ class CatalogDetailPageFragment : Fragment(),
             channel = shareModel.channel
             campaign = shareModel.campaign
             isThrowOnError = false
-            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+            if (shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
         }
@@ -403,7 +403,7 @@ class CatalogDetailPageFragment : Fragment(),
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         val shareString = resources.getString(com.tokopedia.catalog.R.string.catalog_share_string,
-                                catalogName,CatalogUtil.getShareURI(catalogUrl))
+                                catalogName,linkerShareData?.url)
                         SharingUtil.executeShareIntent(
                                 shareModel,
                                 linkerShareData,
@@ -452,6 +452,7 @@ class CatalogDetailPageFragment : Fragment(),
     private fun linkerDataMapper(catalogId: String): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = catalogId
+        linkerData.type = LinkerData.CATALOG_TYPE
         linkerData.name = getString(com.tokopedia.catalog.R.string.catalog_share_link_name,catalogName)
         linkerData.uri  = CatalogUtil.getShareURI(catalogUrl)
         linkerData.description = getString(com.tokopedia.catalog.R.string.catalog_share_link_description)
