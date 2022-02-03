@@ -4,6 +4,7 @@ import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 
 data class VoucherListParam (
@@ -78,9 +79,8 @@ data class VoucherListParam (
                                   targetList: List<Int>? = null,
                                   @VoucherSort sort: String? = null,
                                   page: Int? = null,
+                                  perPage: Int? = Int.ZERO,
                                   isInverted: Boolean = false,
-                                  @VoucherSubsidy includeSubsidy: Int = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
-                                  @VoucherVps isVps: String = VoucherVps.ALL,
                                   voucherName: String? = null,
                                   targetBuyer: String? = null) : VoucherListParam {
             return VoucherListParam(
@@ -88,10 +88,11 @@ data class VoucherListParam (
                 voucherStatus = status,
                 isPublic = targetList?.joinToString(separator = ","),
                 page = page,
+                perPage = perPage,
                 sortBy = sort,
                 isInverted = isInverted,
-                includeSubsidy = includeSubsidy,
-                isVps = isVps,
+                includeSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
+                isVps = VoucherVps.ALL,
                 voucherName = voucherName,
                 targetBuyer = targetBuyer,
                 isLockToProduct = "1"
