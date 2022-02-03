@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -20,7 +18,10 @@ import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
-import com.tokopedia.pdpsimulation.paylater.domain.model.*
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
+import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.ActionHandler
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
@@ -78,19 +79,17 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         interaction = PayLaterOptionInteraction(
             onCtaClicked = { handleAction(it) },
             installementDetails = { openInstallmentBottomSheet(it) },
-            seeMoreOptions = { adapterPosition ->
-                if (adapterPosition != RecyclerView.NO_POSITION)
-                    simulationAdapter.updateOptionList(adapterPosition)
-            }
+            seeMoreOptions = { simulationAdapter.updateOptionList(it) }
         )
     )
 
     private fun handleAction(detail: Detail) {
-        Toast.makeText(context, "Cta clicked", Toast.LENGTH_LONG).show()
-
         ActionHandler.handleClickNavigation(context, detail,
             openHowToUse = {
-                bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it)
+                bottomSheetNavigator.showBottomSheet(
+                    PayLaterActionStepsBottomSheet::class.java,
+                    it
+                )
             },
             openGoPay = {
                 bottomSheetNavigator.showBottomSheet(
@@ -102,14 +101,10 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun openInstallmentBottomSheet(installment: InstallmentDetails) {
-        Toast.makeText(context, "Open Installemt", Toast.LENGTH_LONG).show()
-        val bundle = Bundle().apply {
-            putParcelable(
-                PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
-                installment
-            )
-        }
-        bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
+        bottomSheetNavigator.showBottomSheet(
+            PayLaterInstallmentFeeInfo::class.java,
+            ActionHandler.getInstallmentBundle(installment)
+        )
     }
 
     override fun onCreateView(
@@ -126,7 +121,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initArguments()
         initViews()
         payLaterViewModel.getProductDetail(productId)
@@ -164,7 +158,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
 
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
-        // hide loading
         showSimulationViews()
         setSimulationAdapter(data)
     }
@@ -245,7 +238,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 )
             }
         }
-        data.productName.let {
+        data.productName?.let {
             productDetail.productName.text = it
         }
 
