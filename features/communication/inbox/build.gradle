@@ -87,7 +87,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.features.wishlistCommon)
     androidTestImplementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
+    androidTestimplementation projectOrAar(rootProject.ext.libraries.network)
     androidTestImplementation rootProject.ext.debugToolsDependencies.chuck
     androidTestImplementation projectOrAar(rootProject.ext.features.shopCommon)
     androidTestImplementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)

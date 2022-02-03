@@ -50,7 +50,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
+    androidTestimplementation projectOrAar(rootProject.ext.libraries.network)
     androidTestImplementation rootProject.ext.firebase.messaging
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
 }
