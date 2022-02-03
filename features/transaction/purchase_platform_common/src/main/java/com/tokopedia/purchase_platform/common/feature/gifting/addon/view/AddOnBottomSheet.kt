@@ -1,6 +1,5 @@
-package com.tokopedia.purchase_platform.common.feature.addonbottomsheet.view
+package com.tokopedia.purchase_platform.common.feature.gifting.addon.view
 
-import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import android.view.LayoutInflater
@@ -9,13 +8,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.purchase_platform.common.databinding.LayoutAddOnBottomSheetBinding
+import com.tokopedia.purchase_platform.common.feature.gifting.addon.view.di.DaggerAddOnComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
 class AddOnBottomSheet {
 
-//    @Inject
-//    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var viewBinding: LayoutAddOnBottomSheetBinding? = null
     private var viewModel: AddOnViewModel? = null
@@ -23,27 +23,29 @@ class AddOnBottomSheet {
 
     fun show(fragment: Fragment) {
         fragment.context?.let {
-            val viewBinding = LayoutAddOnBottomSheetBinding.inflate(LayoutInflater.from(it))
-//            this.viewBinding = viewBinding
-//            viewModel = ViewModelProvider(fragment, viewModelFactory).get(AddOnViewModel::class.java)
-//            initializeView(it, viewBinding, fragment.parentFragmentManager)
+            initializeInjector(fragment)
+            initializeViewModel(fragment)
+            initializeView(it, fragment.parentFragmentManager)
         }
+    }
+
+    private fun initializeViewModel(fragment: Fragment) {
+        viewModel = ViewModelProvider(fragment, viewModelFactory).get(AddOnViewModel::class.java)
     }
 
     fun dismiss() {
         bottomSheet?.dismiss()
     }
 
-/*
-    private fun initializeInjector(baseAppComponent: Application?) {
-        if (baseAppComponent is BaseMainApplication) {
-            DaggerMiniCartWidgetComponent.builder()
-                    .baseAppComponent(baseAppComponent.baseAppComponent)
+    private fun initializeInjector(fragment: Fragment) {
+        val application = fragment.activity?.application
+        if (application is BaseMainApplication) {
+            DaggerAddOnComponent.builder()
+                    .baseAppComponent(application.baseAppComponent)
                     .build()
                     .inject(this)
         }
     }
-*/
 
     private fun initializeBottomSheet(viewBinding: LayoutAddOnBottomSheetBinding, fragmentManager: FragmentManager) {
         bottomSheet = BottomSheetUnify().apply {
@@ -61,7 +63,10 @@ class AddOnBottomSheet {
         }
     }
 
-    private fun initializeView(context: Context, viewBinding: LayoutAddOnBottomSheetBinding, fragmentManager: FragmentManager) {
+    private fun initializeView(context: Context, fragmentManager: FragmentManager) {
+        val viewBinding = LayoutAddOnBottomSheetBinding.inflate(LayoutInflater.from(context))
+        this.viewBinding = viewBinding
+
         initializeBottomSheet(viewBinding, fragmentManager)
     }
 
