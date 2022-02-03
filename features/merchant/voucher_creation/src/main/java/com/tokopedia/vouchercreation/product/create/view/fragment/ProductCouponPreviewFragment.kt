@@ -108,6 +108,8 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductCouponPreviewViewModel::class.java) }
     private var couponId : Long = -1
+    private var maxAllowedProduct = 0
+
     private val createCouponErrorNotice by lazy {
         CreateProductCouponFailedDialog(requireActivity(), ::onRetryCreateCoupon, ::onRequestHelp)
     }
@@ -175,8 +177,9 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         observeValidCoupon()
         observeCreateCouponResult()
         observeUpdateCouponResult()
+        observeMaxAllowedProductResult()
+        viewModel.getMaxAllowedProducts(pageMode)
     }
-
 
     private fun handlePageMode() {
         when(pageMode) {
@@ -236,23 +239,26 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     private fun observeCreateCouponResult() {
         viewModel.createCoupon.observe(viewLifecycleOwner, { result ->
             binding.btnCreateCoupon.isLoading = false
-            if (result is Success) {
-                this.couponId = result.data.toLong()
-                val coupon = Coupon(
-                    result.data.toLong(),
-                    couponInformation ?: return@observe,
-                    couponSettings ?: return@observe,
-                    couponProducts
-                )
+            when(result) {
+                is Success -> {
+                    this.couponId = result.data.toLong()
+                    val coupon = Coupon(
+                        result.data.toLong(),
+                        couponInformation ?: return@observe,
+                        couponSettings ?: return@observe,
+                        couponProducts
+                    )
 
-                if (pageMode == Mode.CREATE) {
-                    onCreateCouponSuccess(coupon)
-                } else {
-                    onDuplicateCouponSuccess()
+                    if (pageMode == Mode.CREATE) {
+                        onCreateCouponSuccess(coupon)
+                    } else {
+                        onDuplicateCouponSuccess()
+                    }
                 }
-
-            } else {
-                createCouponErrorNotice.show()
+                is Fail -> {
+                    showError(result.throwable)
+                    createCouponErrorNotice.show()
+                }
             }
         })
     }
@@ -268,6 +274,23 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
                 is Fail -> {
                     showError(result.throwable)
                     updateCouponErrorNotice.show()
+                }
+            }
+        })
+    }
+
+    private fun observeMaxAllowedProductResult() {
+        viewModel.maxAllowedProductCount.observe(viewLifecycleOwner, { result ->
+            binding.loader.gone()
+            when (result) {
+                is Success -> {
+                    binding.content.visible()
+                    binding.tpgMaxProduct.text = String.format(getString(R.string.placeholder_max_product), result.data)
+                    this.maxAllowedProduct = result.data
+                }
+                is Fail -> {
+                    binding.content.gone()
+                    showError(result.throwable)
                 }
             }
         })
@@ -384,7 +407,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
             binding.labelProductCompleteStatus.setLabel(getString(R.string.completed))
 
             binding.tpgProductCount.text =
-                String.format(getString(R.string.placeholder_registered_product), products.size)
+                String.format(getString(R.string.placeholder_registered_product), products.size, maxAllowedProduct)
         } else {
             binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             binding.labelProductCompleteStatus.setLabel(getString(R.string.incomplete))
