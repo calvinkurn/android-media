@@ -228,22 +228,27 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     private fun goToAskBuyer() {
         val orderId = orderId.takeIf { it.isNotBlank() } ?: getOrderIdExtra()
-        val intent = RouteManager.getIntent(activity,
-                ApplinkConst.TOPCHAT_ASKBUYER,
-                detailResponse?.customer?.id.orEmpty(), "",
-                PARAM_SOURCE_ASK_BUYER, detailResponse?.customer?.name, detailResponse?.customer?.image).apply {
+        val firstProduct = detailResponse?.getFirstProduct()
+        val intent = RouteManager.getIntent(
+            activity,
+            ApplinkConst.TOPCHAT_ASKBUYER,
+            detailResponse?.customer?.id.orEmpty(), "",
+            PARAM_SOURCE_ASK_BUYER, detailResponse?.customer?.name, detailResponse?.customer?.image
+        ).apply {
             putExtra(ApplinkConst.Chat.INVOICE_ID, orderId) // it's actually require the id of the order
             putExtra(ApplinkConst.Chat.INVOICE_CODE, detailResponse?.invoice)
-
-            if (detailResponse?.listProduct?.isNotEmpty() == true) {
-                putExtra(ApplinkConst.Chat.INVOICE_TITLE, detailResponse?.listProduct?.firstOrNull()?.name.orEmpty())
-                putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, detailResponse?.listProduct?.firstOrNull()?.thumbnail.orEmpty())
+            if (firstProduct != null) {
+                putExtra(ApplinkConst.Chat.INVOICE_TITLE, firstProduct.name)
+                putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, firstProduct.thumbnail)
             }
             putExtra(ApplinkConst.Chat.INVOICE_DATE, detailResponse?.paymentDate)
             putExtra(ApplinkConst.Chat.INVOICE_URL, detailResponse?.invoiceUrl)
             putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse?.statusCode?.toString())
             putExtra(ApplinkConst.Chat.INVOICE_STATUS, detailResponse?.statusText)
-            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, dynamicPriceResponse?.paymentData?.value)
+            putExtra(
+                ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT,
+                dynamicPriceResponse?.paymentData?.value
+            )
         }
         startActivity(intent)
     }
@@ -595,59 +600,39 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun renderProducts() {
         detailResponse?.run {
             val bundleDetailList = mutableListOf<BaseProductUiModel>()
-            bundleDetailList.addAll(getProductBundleList(bundleDetail?.bundle.orEmpty()))
-            bundleDetailList.addAll(getProductNonBundleList(haveProductBundle, bundleDetail?.nonBundle.orEmpty(), listProduct))
+            bundleDetailList.addAll(getProductBundleList(details.bundle))
+            bundleDetailList.addAll(getProductNonBundleList(details.nonBundle))
             val dataProducts = SomDetailProducts(bundleDetailList, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
             listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
         }
     }
 
     private fun getProductNonBundleList(
-            haveProductBundle: Boolean,
-            nonBundle: List<SomDetailOrder.Data.GetSomDetail.BundleDetailModel.BundleDetailProduct>,
-            listProduct: List<SomDetailOrder.Data.GetSomDetail.Products>
+        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>
     ): List<BaseProductUiModel> {
-        return if (haveProductBundle) {
-            nonBundle.map {
-                NonProductBundleUiModel(
-                        product = SomDetailOrder.Data.GetSomDetail.Products(
-                                id = it.id,
-                                orderDetailId = it.orderDetailId,
-                                name = it.name,
-                                thumbnail = it.thumbnail,
-                                priceText = it.priceText,
-                                quantity = it.quantity,
-                                note = it.note
-                        )
-                )
-            }
-        } else {
-            listProduct.map {
-                NonProductBundleUiModel(it)
-            }
-        }
+        return products.map { NonProductBundleUiModel(it) }
     }
 
     private fun getProductBundleList(
-            bundleList: List<SomDetailOrder.Data.GetSomDetail.BundleDetailModel.BundleProduct>
+        bundleList: List<SomDetailOrder.Data.GetSomDetail.Details.Bundle>
     ): List<ProductBundleUiModel> {
         return bundleList.map { bundle ->
             return@map ProductBundleUiModel(
-                    bundleId = bundle.bundleId,
-                    bundleName = bundle.bundleName,
-                    bundlePrice = Utils.parseRupiah(bundle.bundlePrice),
-                    bundleSubTotal = Utils.parseRupiah(bundle.bundleSubTotal),
-                    orderDetail = bundle.orderDetail.map {
-                        SomDetailOrder.Data.GetSomDetail.Products(
-                                id = it.id,
-                                orderDetailId = it.orderDetailId,
-                                name = it.name,
-                                thumbnail = it.thumbnail,
-                                priceText = it.priceText,
-                                quantity = it.quantity,
-                                note = it.note
-                        )
-                    }
+                bundleId = bundle.bundleId,
+                bundleName = bundle.bundleName,
+                bundlePrice = Utils.parseRupiah(bundle.bundlePrice),
+                bundleSubTotal = Utils.parseRupiah(bundle.bundleSubtotalPrice),
+                orderDetail = bundle.orderDetail.map {
+                    SomDetailOrder.Data.GetSomDetail.Details.Product(
+                        id = it.id,
+                        orderDetailId = it.orderDetailId,
+                        name = it.name,
+                        thumbnail = it.thumbnail,
+                        priceText = it.priceText,
+                        quantity = it.quantity,
+                        note = it.note
+                    )
+                }
             )
         }
     }

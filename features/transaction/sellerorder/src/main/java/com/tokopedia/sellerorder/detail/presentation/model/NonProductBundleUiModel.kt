@@ -8,7 +8,7 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.factory.ProductAdap
  */
 
 data class NonProductBundleUiModel(
-        val product: SomDetailOrder.Data.GetSomDetail.Products
+    val product: SomDetailOrder.Data.GetSomDetail.Details.Product
 ) : BaseProductUiModel {
 
     override fun type(typeFactory: ProductAdapterFactory): Int {

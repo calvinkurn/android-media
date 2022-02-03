@@ -66,15 +66,6 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 checkout_date
                 payment_date
                 notes
-                products {
-                  id
-                  order_detail_id
-                  name
-                  thumbnail
-                  price_text
-                  quantity
-                  note
-                }
                 customer {
                   id
                   name
@@ -243,8 +234,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   action_key
                   action_url
                 }
-                have_product_bundle
-                bundle_detail {
+                details {
                   bundle {
                     bundle_id
                     bundle_name

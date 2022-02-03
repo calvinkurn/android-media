@@ -21,7 +21,7 @@ class SomDetailProductBundlingAdapter(
         private val actionListener: SomDetailAdapter.ActionListener?
 ) : RecyclerView.Adapter<SomDetailProductBundlingAdapter.ViewHolder>() {
 
-    var products = emptyList<SomDetailOrder.Data.GetSomDetail.Products>()
+    var products = emptyList<SomDetailOrder.Data.GetSomDetail.Details.Product>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -39,7 +39,7 @@ class SomDetailProductBundlingAdapter(
 
         private val binding by viewBinding<ItemSomProductBundlingProductBinding>()
 
-        fun bind(product: SomDetailOrder.Data.GetSomDetail.Products) {
+        fun bind(product: SomDetailOrder.Data.GetSomDetail.Details.Product) {
             binding?.run {
                 root.setOnClickListener {
                     actionListener?.onClickProduct(product.orderDetailId.toIntOrZero())

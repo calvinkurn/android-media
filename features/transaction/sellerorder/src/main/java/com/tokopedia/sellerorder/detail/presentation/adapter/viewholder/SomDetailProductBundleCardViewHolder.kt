@@ -41,7 +41,7 @@ class SomDetailProductBundleCardViewHolder(
         }
     }
 
-    private fun setupProductList(products: List<SomDetailOrder.Data.GetSomDetail.Products>) {
+    private fun setupProductList(products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>) {
         binding?.rvSomProductBundling?.run {
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
