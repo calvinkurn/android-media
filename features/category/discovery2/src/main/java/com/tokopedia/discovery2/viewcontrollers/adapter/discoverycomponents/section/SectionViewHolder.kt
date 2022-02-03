@@ -64,7 +64,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         carouselEmptyState.apply {
             title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
             description?.text =
-                context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+                context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
             refreshBtn?.setOnClickListener {
                 hide()
                 shimmer.show()

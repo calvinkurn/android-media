@@ -8,6 +8,7 @@
     <include
         layout="@layout/disco_section_shimmer"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LocalLoad
