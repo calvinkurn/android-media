@@ -23,6 +23,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -293,7 +294,11 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         if (cameraResultFile.exists()) {
             imagePreview?.loadImage(cameraResultFile.absolutePath)
             imagePath = cameraResultFile.absolutePath
-            Timber.d("Successfully taken image. path: $imagePath, size: ${FileUtil.getFileSizeInKb(cameraResultFile)}")
+            Timber.d(
+                "$LIVENESS_TAG: Successfully took an image. path: %s, size: %s",
+                imagePath.substringAfterLast("/"),
+                FileUtil.getFileSizeInKb(cameraResultFile)
+            )
             showImagePreview()
         } else {
             Toast.makeText(context, getString(R.string.error_upload_image_kyc), Toast.LENGTH_LONG).show()

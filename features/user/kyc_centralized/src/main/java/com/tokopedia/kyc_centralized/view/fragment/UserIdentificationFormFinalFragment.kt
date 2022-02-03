@@ -565,7 +565,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
 
         kyc_upload_error_button?.setOnClickListener {
-            when {message.contains(FAILED_ENCRYPTION) || message.contains(FILE_PATH_KTP_EMPTY) -> {
+            when {
+                message.contains(FAILED_ENCRYPTION) || message.contains(FILE_PATH_KTP_EMPTY) -> {
                     deleteTmpFile(deleteKtp = true, deleteFace = true)
                     stepperListener?.finishPage()
                 }
