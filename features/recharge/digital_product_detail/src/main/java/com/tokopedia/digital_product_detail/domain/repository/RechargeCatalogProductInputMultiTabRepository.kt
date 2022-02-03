@@ -5,7 +5,7 @@ import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 
 interface RechargeCatalogProductInputMultiTabRepository {
     suspend fun getProductInputMultiTabDenomFull(menuID: Int, operatorId: String, clientNumber: String,
-                                             filterData: ArrayList<HashMap<String, Any>>?): InputMultiTabDenomModel
+                                             filterData: ArrayList<HashMap<String, Any>>?, isFilterRefreshed: Boolean = true): InputMultiTabDenomModel
 
     suspend fun getProductInputMultiTabDenomGrid(menuID: Int, operatorId: String, clientNumber: String): DenomMCCMModel
 }

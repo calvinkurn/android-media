@@ -8,4 +8,8 @@
     <string name="digital_pdp_recommendation_title">Paling sering kamu beli &#128071;</string>
     <string name="error_message_with_code">%s. Kode Error: (%s)</string>
     <string name="bottom_sheet_prod_desc_title">Tentang produk ini</string>
+    <string name="bottom_sheet_filter_btn">Simpan</string>
+    <string name="bottom_sheet_filter_title">Filter</string>
+    <string name="bottom_sheet_filter_reset">Reset</string>
+    <string name="bottom_sheet_filter_see_all">Lihat Semua</string>
 </resources>
