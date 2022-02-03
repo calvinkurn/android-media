@@ -825,7 +825,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             // Is free ongkir shipping
             renderFreeShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
-        } else if (!shipmentCartItemModel.isShowCourierChangeCard()) {
+        } else if (shipmentCartItemModel.isHideChangeCourierCard()) {
             // normal shipping but not show `pilih kurir` card
             renderNormalShippingWithoutChooseCourierCard(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {

@@ -92,7 +92,7 @@ class ShipmentCartItemModel(
         var isAutoCourierSelection: Boolean = false,
         var hasGeolocation: Boolean = false,
         // regular shipment service but do not show change courier card
-        var isShowCourierChangeCard: Boolean = true,
+        var isHideChangeCourierCard: Boolean = false,
 
         // Courier Selection Error
         var courierSelectionErrorTitle: String? = null,

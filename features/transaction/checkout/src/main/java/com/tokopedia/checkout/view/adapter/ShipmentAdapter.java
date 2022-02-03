@@ -668,6 +668,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setOrderPriority(null);
                 shipmentCartItemModel.setShippingBorderRed(false);
+                shipmentCartItemModel.setHideChangeCourierCard(newCourierItemData.isHideChangeCourierCard());
                 CourierItemData oldCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
                 checkAppliedCourierPromo(position, oldCourierItemData, newCourierItemData, shipmentCartItemModel);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(newCourierItemData);
@@ -680,6 +681,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentDetailData.setShipmentCartData(shipmentCartItemModel.getShipmentCartData());
                 shipmentCartItemModel.setSelectedShipmentDetailData(shipmentDetailData);
                 shipmentCartItemModel.setShippingBorderRed(false);
+                shipmentCartItemModel.setHideChangeCourierCard(newCourierItemData.isHideChangeCourierCard());
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
@@ -751,7 +753,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels,
-                                             CourierItemData recommendedCourier, int position, boolean isShowCourierChangeCard) {
+                                             CourierItemData recommendedCourier, int position) {
         for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
             shippingCourierUiModel.setSelected(false);
         }
@@ -768,7 +770,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
                 cartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierUiModels);
             }
-            cartItemModel.setShowCourierChangeCard(isShowCourierChangeCard);
         }
     }
 

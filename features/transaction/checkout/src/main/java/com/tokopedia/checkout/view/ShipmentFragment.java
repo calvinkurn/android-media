@@ -2027,7 +2027,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                     shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier, true);
                     shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-                    shipmentAdapter.setShippingCourierViewModels(shippingCourierUiModels, recommendedCourier, cartItemPosition, serviceData.getSelectedShipperProductId() == 0);
+                    shipmentAdapter.setShippingCourierViewModels(shippingCourierUiModels, recommendedCourier, cartItemPosition);
                     if (!TextUtils.isEmpty(recommendedCourier.getPromoCode()) && isDurationClick) {
                         checkCourierPromo(recommendedCourier, cartItemPosition);
                     }

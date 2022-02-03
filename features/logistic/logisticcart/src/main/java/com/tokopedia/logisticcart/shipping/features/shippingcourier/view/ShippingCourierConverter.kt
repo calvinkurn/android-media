@@ -34,6 +34,7 @@ class ShippingCourierConverter @Inject constructor() {
         courierItemData.insuranceUsedInfo = shippingCourierUiModel.productData.insurance.insuranceUsedInfo
         courierItemData.insuranceUsedDefault = shippingCourierUiModel.productData.insurance.insuranceUsedDefault
         courierItemData.isUsePinPoint = shippingCourierUiModel.productData.isShowMap == 1
+        courierItemData.isHideChangeCourierCard = shippingCourierUiModel.serviceData.selectedShipperProductId > 0
         if (!courierItemData.isUsePinPoint) {
             if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 courierItemData.isUsePinPoint = true
