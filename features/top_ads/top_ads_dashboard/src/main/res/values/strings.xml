@@ -433,5 +433,8 @@
     <string name="topads_dashboard_home_coachmark_5_title">Ada yang baru juga di sini!</string>
     <string name="topads_dashboard_home_coachmark_5_desc">Tersedia 6 topik artikel tentang TopAds untukmu. Biar makin kenal TopAds, yuk pilih topik mana yang mau kamu baca.</string>
 
+    <string name="topads_dashboard_iklan_google">Iklan Google</string>
+    <string name="topads_dashboard_iklan_banner">Iklan Banner</string>
+    <string name="topads_dashboard_iklan_tanpa_modal">Iklan Tanpa Modal</string>
 </resources>
 

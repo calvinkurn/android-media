@@ -27,23 +27,24 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
+import com.tokopedia.topads.dashboard.data.constant.TopAdsSummaryType
 import com.tokopedia.topads.dashboard.data.model.Chip
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
-import com.tokopedia.topads.dashboard.data.utils.Utils.getString
+import com.tokopedia.topads.dashboard.data.utils.Utils.asString
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.beranda.LatestReadingTopAdsDashboardRvAdapter
-import com.tokopedia.topads.dashboard.view.adapter.beranda.RingkasanTopAdsDashboardRvAdapter
+import com.tokopedia.topads.dashboard.view.adapter.beranda.TopAdsBerandaSummaryRvAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment.Companion.MANUAL_AD
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniKeyFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
-import com.tokopedia.topads.dashboard.view.sheet.RingkasanDropdownBottomSheet
-import com.tokopedia.topads.dashboard.view.sheet.RingkasanInformationBottomSheet
+import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
+import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
@@ -68,12 +69,13 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private lateinit var autoTopUp: Typography
     private lateinit var creditAmount: Typography
     private lateinit var txtLastUpdated: Typography
-    private lateinit var rvRingkasan: RecyclerView
+    private lateinit var txtAdType: Typography
+    private lateinit var rvSummary: RecyclerView
     private lateinit var rvLatestReading: RecyclerView
     private lateinit var btnReadMore: UnifyButton
     private lateinit var addCredit: UnifyButton
-    private lateinit var ivRingkasanDropDown: ImageUnify
-    private lateinit var ivRingkasanInformation: ImageUnify
+    private lateinit var ivSummaryDropDown: ImageUnify
+    private lateinit var ivSummaryInformation: ImageUnify
     private lateinit var creditHistoryImage: ImageUnify
     private lateinit var btnRefreshCredits: ImageUnify
     private lateinit var imgAutoDebit: ImageUnify
@@ -86,9 +88,13 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private var insightCallBack: GoToInsight? = null
     private var currentDateText: String = ""
 
-    private val ringkasanInformationBottomSheet by lazy { RingkasanInformationBottomSheet.createInstance() }
-    private val ringkasanBottomSheet by lazy { RingkasanDropdownBottomSheet.createInstance(::ringkasanClicked) }
-    private val ringkasanRvAdapter by lazy { RingkasanTopAdsDashboardRvAdapter.createInstance() }
+    private val summaryAdTypeList by lazy { getSummaryAdTypes() }
+    private var lastSelectedAdType: Chip? = null
+    private val summaryAdTypesBottomSheet by lazy {
+        SummaryAdTypesBottomSheet.createInstance(summaryAdTypeList, ::adTypeChanged)
+    }
+    private val summaryInformationBottomSheet by lazy { SummaryInformationBottomSheet.createInstance() }
+    private val summaryRvAdapter by lazy { TopAdsBerandaSummaryRvAdapter.createInstance() }
     private val latestReadingRvAdapter by lazy { LatestReadingTopAdsDashboardRvAdapter.createInstance() }
 
     companion object {
@@ -160,7 +166,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
             checkResponse.summaryStats = true
             when (it) {
                 is Success -> {
-                    ringkasanRvAdapter.addItems(it.data.cells)
+                    summaryRvAdapter.addItems(it.data.cells)
                     txtLastUpdated.text = String.format(
                         resources.getString(R.string.topads_dashboard_last_update_text),
                         it.data.summary.lastUpdate
@@ -179,18 +185,27 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         }
     }
 
-    private fun ringkasanClicked(it: Chip) {
+    //method to be invoked when ad type is changed from ringkasan dropdown section
+    private fun adTypeChanged(chip: Chip) {
+        lastSelectedAdType?.isSelected = false
+        lastSelectedAdType = chip
+        txtAdType.text = chip.title
 
+        topAdsDashboardViewModel.fetchSummaryStatistics(
+            startDate.asString(), endDate.asString(), chip.adTypeId
+        )
+        if (summaryAdTypesBottomSheet.isVisible)
+            summaryAdTypesBottomSheet.dismiss()
     }
 
     private fun setUpRecyclerView() {
-        rvRingkasan.layoutManager = GridLayoutManager(requireContext(), 2)
-        rvRingkasan.adapter = ringkasanRvAdapter
+        rvSummary.layoutManager = GridLayoutManager(requireContext(), 2)
+        rvSummary.adapter = summaryRvAdapter
 
         rvLatestReading.layoutManager = LinearLayoutManager(requireContext())
         rvLatestReading.adapter = latestReadingRvAdapter
 
-        ringkasanRvAdapter.infoClicked = { showInformationBottomSheet() }
+        summaryRvAdapter.infoClicked = { showInformationBottomSheet() }
     }
 
     private fun setUpClick() {
@@ -211,16 +226,16 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         autoTopUp.setOnClickListener {
             startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
         }
-        ivRingkasanDropDown.setOnClickListener {
-            ringkasanBottomSheet.show(childFragmentManager, "")
+        ivSummaryDropDown.setOnClickListener {
+            summaryAdTypesBottomSheet.show(childFragmentManager, "")
         }
-        ivRingkasanInformation.setOnClickListener {
+        ivSummaryInformation.setOnClickListener {
             showInformationBottomSheet()
         }
     }
 
     private fun showInformationBottomSheet() {
-        ringkasanInformationBottomSheet.show(childFragmentManager, "")
+        summaryInformationBottomSheet.show(childFragmentManager, "")
     }
 
     private fun renderInsightViewPager(data: HashMap<String, KeywordInsightDataMain>) {
@@ -260,9 +275,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
-        topAdsDashboardViewModel.fetchSummaryStatistics(
-            startDate.getString(), endDate.getString(), "0"
-        )
+        adTypeChanged(summaryAdTypeList[0])
         topAdsDashboardViewModel.fetchLatestReading()
     }
 
@@ -383,11 +396,12 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     override fun setUpView(view: View) {
         creditHistory = view.findViewById(R.id.credit_history)
-        ivRingkasanDropDown = view.findViewById(R.id.ivRingkasanDropDown)
+        txtAdType = view.findViewById(R.id.txtAdType)
+        ivSummaryDropDown = view.findViewById(R.id.ivSummaryDropDown)
         txtLastUpdated = view.findViewById(R.id.txtLastUpdated)
         creditAmount = view.findViewById(R.id.creditAmount)
-        ivRingkasanInformation = view.findViewById(R.id.ivRingkasanInformation)
-        rvRingkasan = view.findViewById(R.id.rvRingkasan)
+        ivSummaryInformation = view.findViewById(R.id.ivSummaryInformation)
+        rvSummary = view.findViewById(R.id.rvSummary)
         rvLatestReading = view.findViewById(R.id.rvLatestReading)
         btnReadMore = view.findViewById(R.id.btnReadMore)
         scrollView = view.findViewById(R.id.scroll_view)
@@ -401,11 +415,26 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         statisticsPager = view.findViewById(R.id.pager)
     }
 
+    private fun getSummaryAdTypes() = listOf(
+        Chip(
+            resources.getString(R.string.topads_dashboard_all_promo_menu),
+            TopAdsSummaryType.ALL, true
+        ),
+        Chip(resources.getString(R.string.topads_dash_iklan_produck), TopAdsSummaryType.PRODUCT),
+        Chip(resources.getString(R.string.topads_dash_headline_title), TopAdsSummaryType.SHOP),
+        Chip(resources.getString(R.string.topads_dashboard_iklan_google), TopAdsSummaryType.GOOGLE),
+        Chip(resources.getString(R.string.topads_dashboard_iklan_banner), TopAdsSummaryType.BANNER),
+        Chip(
+            resources.getString(R.string.topads_dashboard_iklan_tanpa_modal),
+            TopAdsSummaryType.NO_MODAL
+        ),
+    )
+
     private fun showNewTopAdsDialog() {
         fun showCoachMark() {
             val coachMarkItems = arrayListOf(
                 CoachMark2Item(
-                    rvRingkasan,
+                    rvSummary,
                     resources.getString(R.string.topads_dashboard_home_coachmark_1_title),
                     resources.getString(R.string.topads_dashboard_home_coachmark_1_desc),
                     CoachMark2.POSITION_TOP
@@ -446,21 +475,28 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         showNewTopAdsDialog()
     }
 
+    //this class holds 3 boolean to keep track if all the 3 api's have been called successfully, as if all values are true will be hiding shimmer view and showing the actual view
     inner class CheckResponse {
         var creditHistory: Boolean = true
             set(value) {
-                field = value
-                hideShimmer()
+                if (!creditHistory) {
+                    field = value
+                    hideShimmer()
+                }
             }
         var summaryStats: Boolean = false
             set(value) {
-                field = value
-                hideShimmer()
+                if (!summaryStats) {
+                    field = value
+                    hideShimmer()
+                }
             }
         var latestReading: Boolean = false
             set(value) {
-                field = value
-                hideShimmer()
+                if (!latestReading) {
+                    field = value
+                    hideShimmer()
+                }
             }
     }
 }

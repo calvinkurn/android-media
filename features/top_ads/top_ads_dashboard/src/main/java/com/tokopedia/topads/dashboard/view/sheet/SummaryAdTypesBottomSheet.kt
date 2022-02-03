@@ -11,7 +11,8 @@ import com.tokopedia.topads.dashboard.data.model.Chip
 import com.tokopedia.topads.dashboard.view.adapter.beranda.AdPlacementRvAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class RingkasanDropdownBottomSheet(private val itemClick: (Chip) -> Unit) : BottomSheetUnify() {
+class SummaryAdTypesBottomSheet(private val list: List<Chip>, private val itemClick: (Chip) -> Unit) :
+    BottomSheetUnify() {
 
     private lateinit var rvAdPlacement: RecyclerView
     private lateinit var adapter: AdPlacementRvAdapter
@@ -44,14 +45,14 @@ class RingkasanDropdownBottomSheet(private val itemClick: (Chip) -> Unit) : Bott
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = AdPlacementRvAdapter.createInstance(itemClick)
-        adapter.addItems(listOf(Chip("ank"), Chip("okay"), Chip("oakd"), Chip("okdied")))
+        adapter = AdPlacementRvAdapter.createInstance(list, itemClick)
         rvAdPlacement.layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
         rvAdPlacement.adapter = adapter
     }
 
     companion object {
         private val childLayout = R.layout.topads_single_recyclerview_layout
-        fun createInstance(itemClick: (Chip) -> Unit) = RingkasanDropdownBottomSheet(itemClick)
+        fun createInstance(list: List<Chip>, itemClick: (Chip) -> Unit) =
+            SummaryAdTypesBottomSheet(list, itemClick)
     }
 }

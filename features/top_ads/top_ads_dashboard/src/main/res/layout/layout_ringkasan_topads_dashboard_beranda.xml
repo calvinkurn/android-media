@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtAllPromo"
+        android:id="@+id/txtAdType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
@@ -26,14 +26,14 @@
         app:layout_constraintTop_toTopOf="@id/txtRingkasan" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivRingkasanDropDown"
+        android:id="@+id/ivSummaryDropDown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:src="@drawable/unify_chips_ic_chevron_disabled"
-        app:layout_constraintBottom_toBottomOf="@id/txtAllPromo"
-        app:layout_constraintStart_toEndOf="@id/txtAllPromo"
-        app:layout_constraintTop_toTopOf="@id/txtAllPromo" />
+        app:layout_constraintBottom_toBottomOf="@id/txtAdType"
+        app:layout_constraintStart_toEndOf="@id/txtAdType"
+        app:layout_constraintTop_toTopOf="@id/txtAdType" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtLastUpdated"
@@ -49,7 +49,7 @@
         tools:text="Update terakhir Januari 2021, 16:00 WIB" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivRingkasanInformation"
+        android:id="@+id/ivSummaryInformation"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:padding="@dimen/spacing_lvl1"
@@ -71,7 +71,7 @@
             android:padding="@dimen/spacing_lvl1">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvRingkasan"
+                android:id="@+id/rvSummary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

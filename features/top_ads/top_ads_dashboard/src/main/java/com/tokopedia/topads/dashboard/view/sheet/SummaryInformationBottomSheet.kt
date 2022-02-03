@@ -13,7 +13,7 @@ import com.tokopedia.topads.dashboard.data.model.Information
 import com.tokopedia.topads.dashboard.view.adapter.beranda.InformationRvAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class RingkasanInformationBottomSheet() : BottomSheetUnify() {
+class SummaryInformationBottomSheet() : BottomSheetUnify() {
 
     private lateinit var recyclerView: RecyclerView
     private val adapter by lazy { InformationRvAdapter.createInstance(getInformationList()) }
@@ -88,6 +88,6 @@ class RingkasanInformationBottomSheet() : BottomSheetUnify() {
 
     companion object {
         private val childLayout = R.layout.topads_single_recyclerview_layout
-        fun createInstance() = RingkasanInformationBottomSheet()
+        fun createInstance() = SummaryInformationBottomSheet()
     }
 }

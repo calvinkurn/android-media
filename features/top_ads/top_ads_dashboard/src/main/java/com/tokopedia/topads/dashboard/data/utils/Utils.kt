@@ -30,7 +30,7 @@ object Utils {
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy", locale)
     val format = SimpleDateFormat("yyyy-MM-dd", locale)
 
-    fun Date?.getString(): String {
+    fun Date?.asString(): String {
         return if (this == null) ""
         else
             SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(this)

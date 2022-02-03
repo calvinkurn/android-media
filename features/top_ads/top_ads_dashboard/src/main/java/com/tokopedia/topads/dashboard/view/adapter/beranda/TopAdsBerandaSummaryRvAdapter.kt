@@ -9,8 +9,8 @@ import com.tokopedia.topads.dashboard.data.model.TopadsWidgetSummaryStatisticsMo
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class RingkasanTopAdsDashboardRvAdapter :
-    RecyclerView.Adapter<RingkasanTopAdsDashboardRvAdapter.RingkasanViewHolder>() {
+class TopAdsBerandaSummaryRvAdapter :
+    RecyclerView.Adapter<TopAdsBerandaSummaryRvAdapter.RingkasanViewHolder>() {
 
     private val list = mutableListOf<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Cell>()
     var infoClicked: (() -> Unit)? = null
@@ -46,6 +46,6 @@ class RingkasanTopAdsDashboardRvAdapter :
 
     companion object {
         private val layout = R.layout.item_rv_ringkasan
-        fun createInstance() = RingkasanTopAdsDashboardRvAdapter()
+        fun createInstance() = TopAdsBerandaSummaryRvAdapter()
     }
 }
