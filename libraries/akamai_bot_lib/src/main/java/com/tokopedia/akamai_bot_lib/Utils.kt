@@ -57,7 +57,7 @@ val registeredGqlFunctions = mapOf(
     "rechargeCheckVoucher" to "rcv",
     "playInteractiveUserTapSession" to "PlayTap",
     "ValidateInactivePhoneResponse" to "rgsc",
-    "GetStatusInactivePhoneNumber" to "rgsc"
+    "GetStatusInactivePhoneNumber" to "rgsc",
     "gc_redeem_voucher" to "rvc",
 )
 
