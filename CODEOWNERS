@@ -1,4 +1,5 @@
 /features/content/createpost/           				@tokopedia/android-minionsolo-dev
+/features/content/createpost_common/           			@tokopedia/android-minionsolo-dev
 /features/content/explore/              				@tokopedia/android-minionsolo-dev
 /features/content/feed/                 				@tokopedia/android-minionsolo-dev
 /features/content/interest_pick/        				@tokopedia/android-minionsolo-dev
@@ -294,6 +295,8 @@
 /libraries/floating_window                              @tokopedia/android-core-dev @tokopedia/android-miniondave-dev
 /libraries/graphql/									    @tokopedia/android-core-dev
 /libraries/image_picker/								@tokopedia/android-core-dev
+/libraries/image_picker_insta/							@tokopedia/android-minionsolo-dev
+/libraries/image_picker_insta_common/					@tokopedia/android-minionsolo-dev
 /libraries/image_picker_common/						    @tokopedia/android-core-dev
 /libraries/image_preview/								@tokopedia/android-core-dev
 /libraries/imageuploader/								@tokopedia/android-core-dev
