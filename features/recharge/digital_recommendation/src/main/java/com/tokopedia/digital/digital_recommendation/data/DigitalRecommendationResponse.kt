@@ -81,13 +81,13 @@ data class RecommendationItem(
         val ratingType: String = "",
 
         @field:SerializedName("rating")
-        val rating: Float = 0.0f,
+        val rating: Double = 0.0,
 
         @field:SerializedName("review")
         val review: String = "",
 
         @field:SerializedName("soldPercentageValue")
-        val soldPercentageValue: String = "",
+        val soldPercentageValue: Int = 0,
 
         @field:SerializedName("soldPercentageLabel")
         val soldPercentageLabel: String = "",
@@ -120,7 +120,7 @@ data class RecommendationItem(
         val priceSuffix: String = "",
 
         @field:SerializedName("specialInfoText")
-        val specialInfoTextColor: String = "",
+        val specialInfoText: String = "",
 
         @field:SerializedName("specialInfoColor")
         val specialInfoColor: String = "",
@@ -165,7 +165,13 @@ data class RecommendationItem(
         val trackingData: TrackingData = TrackingData(),
 
         @field:SerializedName("webLink")
-        val webLink: String = ""
+        val webLink: String = "",
+
+        @field:SerializedName("textLink")
+        val textLink: String = "",
+
+        @field:SerializedName("textLinkColor")
+        val textLinkColor: String = ""
 )
 
 data class TrackingData(
