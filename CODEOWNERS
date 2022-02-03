@@ -143,6 +143,8 @@
 /features/travel/travel_country_code                    @tokopedia/android-minionmark-dev
 /features/travel/travel_homepage                        @tokopedia/android-minionmark-dev
 /features/travel/travel_passenger                       @tokopedia/android-minionmark-dev
+/dynamic-features-customerapp_pro/travel                @tokopedia/android-minionmark-dev
+/dynamic-features/travel                                @tokopedia/android-minionmark-dev
 
 /features/salam/umrah                                   @tokopedia/android-minionmark-dev
 /libraries/travel_calendar                              @tokopedia/android-minionmark-dev
@@ -358,6 +360,7 @@
 /tkpdabstraction/                                   	@tokopedia/android-gatekeeperlegacy-dev
 
 /customerapp/                                       	@tokopedia/android-core-dev
+/customerapp_pro/                                       @tokopedia/android-core-dev
 /customer_mid_app/                                      @tokopedia/android-core-dev
 /sellerapp/                                         	@tokopedia/android-minionstuart-dev
 /testapp/                                               @tokopedia/android-core-dev
