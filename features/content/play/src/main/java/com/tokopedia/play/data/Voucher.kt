@@ -7,37 +7,37 @@ import com.google.gson.annotations.SerializedName
  * Created by mzennis on 2020-03-06.
  */
 class Voucher (
-        @SerializedName("voucher_id")
+        @SerializedName("ID")
         val id: String = "",
-        @SerializedName("shop_id")
+        @SerializedName("ShopID")
         val shopId: String = "",
-        @SerializedName("voucher_type")
+        @SerializedName("VoucherType")
         val voucherType: Int = 0,
-        @SerializedName("voucher_name")
+        @SerializedName("Name")
         val voucherName: String = "",
-        @SerializedName("voucher_image")
+        @SerializedName("VoucherImage")
         val voucherImage: String = "",
-        @SerializedName("title")
+        @SerializedName("Title")
         val title: String = "",
-        @SerializedName("subtitle")
+        @SerializedName("Subtitle")
         val subtitle: String = "",
-        @SerializedName("voucher_quota")
+        @SerializedName("VoucherQuota")
         val quota: Int = 0,
-        @SerializedName("voucher_finish_time")
+        @SerializedName("VoucherFinishTime")
         val finishTime: String = "", // formatted string date
-        @SerializedName("voucher_code")
+        @SerializedName("VoucherCode")
         val code: String = "",
-        @SerializedName("voucher_image_square")
+        @SerializedName("VoucherImageSquare")
         val imageSquare: String = "",
-        @SerializedName("is_quota_available")
+        @SerializedName("IsQuotaAvailable")
         val isAvailable: Int = 0,
         @SerializedName("tnc")
         val termAndCondition: String = "",
-        @SerializedName("is_copyable")
+        @SerializedName("IsVoucherCopyable")
         val isCopyable: Boolean = false,
-        @SerializedName("is_highlighted")
+        @SerializedName("IsHighlighted")
         val isHighlighted: Boolean = false,
-        @SerializedName("is_private")
+        @SerializedName("IsPrivate")
         val isPrivate: Boolean = false
 
 )

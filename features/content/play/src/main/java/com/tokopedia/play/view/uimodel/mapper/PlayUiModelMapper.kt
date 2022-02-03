@@ -4,6 +4,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -29,6 +30,10 @@ class PlayUiModelMapper @Inject constructor(
         private val playUserReportMapper: PlayUserReportReasoningMapper,
         private val cartMapper: PlayCartMapper,
 ) {
+
+    fun mapProductSection(input: List<Section>): List<PlayProductSectionUiModel.ProductSection>{
+        return input.map(productTagMapper::mapSection)
+    }
 
     fun mapProductTags(input: List<Product>): List<PlayProductUiModel> {
         return input.map(productTagMapper::mapProductTag)

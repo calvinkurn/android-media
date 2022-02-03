@@ -17,11 +17,11 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
-import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
-import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
+import com.tokopedia.play.ui.productsheet.adapter.ProductSectionAdapter
+import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
@@ -54,19 +54,8 @@ class ProductSheetViewComponent(
     private val clProductEmpty: ConstraintLayout = findViewById(R.id.cl_product_empty)
     private val btnProductEmpty: UnifyButton = findViewById(R.id.btn_action_product_empty)
 
-    private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
-        override fun onBuyProduct(product: PlayProductUiModel.Product) {
-            listener.onBuyButtonClicked(this@ProductSheetViewComponent, product)
-
-        }
-
-        override fun onAtcProduct(product: PlayProductUiModel.Product) {
-            listener.onAtcButtonClicked(this@ProductSheetViewComponent, product)
-        }
-
-        override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-            listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
-        }
+    private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
+        //TODO() = tracker
     })
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
@@ -74,7 +63,8 @@ class ProductSheetViewComponent(
     private val productScrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
+                //TODO() = tracker
+//                listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
             }
         }
     }
@@ -82,7 +72,8 @@ class ProductSheetViewComponent(
     private val layoutManagerProductList = object : LinearLayoutManager(rvProductList.context, RecyclerView.VERTICAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
-            listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
+            //TODO() = tracker
+//            listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
         }
     }
 
@@ -96,9 +87,10 @@ class ProductSheetViewComponent(
 
         rvProductList.apply {
             layoutManager = layoutManagerProductList
-            adapter = productLineAdapter
+            adapter = productSectionAdapter
             addOnScrollListener(StopFlingScrollListener())
-            addItemDecoration(ProductLineItemDecoration(context))
+            //TODO() = setup divider
+//            addItemDecoration(ProductLineItemDecoration(context))
         }
 
         rvProductList.addOnScrollListener(productScrollListener)
@@ -136,17 +128,19 @@ class ProductSheetViewComponent(
         sendImpression()
     }
 
+    //TODO() = clean code
     fun setProductSheet(
+        sectionList: List<PlayProductSectionUiModel.ProductSection>,
         productList: List<PlayProductUiModel.Product>,
         voucherList: List<MerchantVoucherUiModel>,
         title: String,
     ) {
         showContent(true)
 
-        if (isProductCountChanged(productList.size)) listener.onProductCountChanged(this)
+//        if (isProductCountChanged(productList.size)) listener.onProductCountChanged(this)
 
         tvSheetTitle.text = title
-        productLineAdapter.setItemsAndAnimateChanges(productList)
+        productSectionAdapter.setItemsAndAnimateChanges(sectionList)
 
         if (voucherList.isEmpty()) {
             clProductVoucher.hide()
@@ -163,34 +157,35 @@ class ProductSheetViewComponent(
         }
     }
 
-    fun setProductSheet(model: PlayProductTagsUiModel.Complete) {
-        showContent(true)
-
-        if (isProductCountChanged(model.productList.size)) listener.onProductCountChanged(this)
-
-        tvSheetTitle.text = model.basicInfo.bottomSheetTitle
-        productLineAdapter.setItemsAndAnimateChanges(model.productList)
-
-        if (model.voucherList.isEmpty()) {
-            clProductVoucher.hide()
-        } else {
-            val vouchers = model.voucherList.filterIsInstance<MerchantVoucherUiModel>()
-
-            clProductVoucher.setOnClickListener {
-                listener.onInfoVoucherClicked(this@ProductSheetViewComponent)
-            }
-
-            vouchers.let {
-                tvVoucherHeaderTitle.text = it.getOrNull(0)?.title ?: ""
-                tvVoucherHeaderDesc.text = getString(R.string.play_product_voucher_header_desc, it.size.toString())
-            }
-            clProductVoucher.show()
-        }
-    }
+//    fun setProductSheet(model: PlayProductTagsUiModel.Complete) {
+//        showContent(true)
+//
+//        if (isProductCountChanged(model.productList.size)) listener.onProductCountChanged(this)
+//
+//        tvSheetTitle.text = model.basicInfo.bottomSheetTitle
+//        productLineAdapter.setItemsAndAnimateChanges(model.productList)
+//
+//        if (model.voucherList.isEmpty()) {
+//            clProductVoucher.hide()
+//        } else {
+//            val vouchers = model.voucherList.filterIsInstance<MerchantVoucherUiModel>()
+//
+//            clProductVoucher.setOnClickListener {
+//                listener.onInfoVoucherClicked(this@ProductSheetViewComponent)
+//            }
+//
+//            vouchers.let {
+//                tvVoucherHeaderTitle.text = it.getOrNull(0)?.title ?: ""
+//                tvVoucherHeaderDesc.text = getString(R.string.play_product_voucher_header_desc, it.size.toString())
+//            }
+//            clProductVoucher.show()
+//        }
+//    }
 
     fun showPlaceholder() {
         showContent(true)
-        setProductSheet(getPlaceholderModel())
+        //TODO() = shimmering
+//        setProductSheet(getPlaceholderModel())
     }
 
     fun showError(isConnectionError: Boolean, onError: () -> Unit) {
@@ -242,14 +237,15 @@ class ProductSheetViewComponent(
     )
 
     private fun isProductCountChanged(productSize: Int): Boolean {
-        return productLineAdapter.getItems().isNotEmpty() &&
-                productLineAdapter.getItems().first() is PlayProductUiModel.Product &&
-                productLineAdapter.itemCount != productSize
+        return productSectionAdapter.getItems().isNotEmpty() &&
+                productSectionAdapter.getItems().first() is PlayProductSectionUiModel.ProductSection &&
+                productSectionAdapter.itemCount != productSize
     }
 
     private fun sendImpression() {
         if (isProductSheetsInitialized) {
-            listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
+            //TODO() = tracker
+//            listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
         }
         else isProductSheetsInitialized = true
 
@@ -271,13 +267,13 @@ class ProductSheetViewComponent(
     /**
      * Analytic Helper
      */
-    fun getVisibleProducts(): List<Pair<PlayProductUiModel.Product, Int>> {
-        val products = productLineAdapter.getItems()
+    fun getVisibleProducts(): List<Pair<PlayProductSectionUiModel.ProductSection, Int>> {
+        val products = productSectionAdapter.getItems()
         if (products.isNotEmpty()) {
             val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
             val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
-                    .filterIsInstance<PlayProductUiModel.Product>()
+                    .filterIsInstance<PlayProductSectionUiModel.ProductSection>()
                     .mapIndexed { index, item ->
                         Pair(item, startPosition + index)
                     }

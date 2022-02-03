@@ -1,11 +1,10 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.play.data.Product
+import com.tokopedia.play.data.Section
 import com.tokopedia.play.di.PlayScope
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import javax.inject.Inject
 
@@ -14,6 +13,25 @@ import javax.inject.Inject
  */
 @PlayScope
 class PlayProductTagUiMapper @Inject constructor() {
+
+    fun mapSection(input: Section): PlayProductSectionUiModel.ProductSection {
+        return PlayProductSectionUiModel.ProductSection(
+            title = input.sectionTitle,
+            type = when (input.sectionType){
+                "out_of_stock" -> ProductSectionType.OutOfStock
+                "upcoming" -> ProductSectionType.Upcoming
+                "active"  -> ProductSectionType.Active
+                else -> ProductSectionType.Other
+            },
+            productList = input.listOfProducts.map(::mapProductTag),
+            serverTime = input.serverTime,
+            startTime = input.timerStartTime,
+            endTime = input.timerEndTime,
+            timerInfo = input.countdown.countdownInfo,
+            background = input.background
+        )
+    }
+
 
     fun mapProductTag(input: Product): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(

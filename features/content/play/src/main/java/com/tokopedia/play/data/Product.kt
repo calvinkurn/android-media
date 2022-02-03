@@ -6,38 +6,38 @@ import com.google.gson.annotations.SerializedName
  * Created by mzennis on 2020-03-06.
  */
 data class Product(
-        @SerializedName("id")
+        @SerializedName("ID")
         val id: String = "",
-        @SerializedName("name")
+        @SerializedName("Name")
         val name: String = "",
-        @SerializedName("image_url")
+        @SerializedName("ImageUrl")
         val image: String = "",
-        @SerializedName("shop_id")
+        @SerializedName("ShopID")
         val shopId: String = "",
-        @SerializedName("original_price")
+        @SerializedName("OriginalPrice")
         val originalPrice: Double = 0.0,
-        @SerializedName("original_price_formatted")
+        @SerializedName("OriginalPriceFormatted")
         val originalPriceFormatted: String = "",
-        @SerializedName("price")
+        @SerializedName("Price")
         val price: Double = 0.0,
-        @SerializedName("price_formatted")
+        @SerializedName("PriceFormatted")
         val priceFormatted: String = "",
-        @SerializedName("discount")
+        @SerializedName("Discount")
         val discount: Int = 0,
-        @SerializedName("order")
+        @SerializedName("Order")
         val order: Int = 0,
-        @SerializedName("is_variant")
+        @SerializedName("IsVariant")
         val isVariant: Boolean,
-        @SerializedName("is_available")
+        @SerializedName("IsAvailable")
         val isAvailable: Boolean,
-        @SerializedName("quantity")
+        @SerializedName("Quantity")
         val quantity: Int = 0,
-        @SerializedName("min_quantity")
+        @SerializedName("MinQuantity")
         val minimumQuantity: Int = 0,
-        @SerializedName("is_free_shipping")
+        @SerializedName("IsFreeShipping")
         val isFreeShipping: Boolean = false,
-        @SerializedName("app_link")
+        @SerializedName("AppLink")
         val appLink: String = "",
-        @SerializedName("web_link")
+        @SerializedName("WebLink")
         val webLink: String = ""
 )

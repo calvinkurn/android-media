@@ -15,14 +15,21 @@ data class Section (
     @SerializedName("startTime")
     val timerStartTime: String = "",
 
-    @SerializedName("serverTime")
+    @SerializedName("endTime")
     val timerEndTime: String = "",
 
-    @SerializedName("type")
+    @SerializedName("serverTime")
     val serverTime: String = "",
 
     @SerializedName("products")
     val listOfProducts: List<Product> = emptyList(),
+
+    @SerializedName("background")
+    val background: Background = Background(),
+
+    @SerializedName("countdown")
+    val countdown: Countdown = Countdown(),
+
 ){
     data class Background(
         @SerializedName("gradient")

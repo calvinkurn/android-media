@@ -13,6 +13,7 @@ import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.SectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -175,6 +176,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         voucher = VoucherUiModel.Empty,
         maxFeatured = 0,
         resultState = ResultState.Loading,
+        section = SectionUiModel.Empty
     )
 
     private fun mapProduct(configResponse: ChannelDetailsWithRecomResponse.Config) = ProductUiModel(

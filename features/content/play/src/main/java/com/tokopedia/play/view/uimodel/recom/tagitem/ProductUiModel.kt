@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel.recom.tagitem
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -38,5 +39,16 @@ data class VariantUiModel(
         fun isVariantPartiallySelected(variantsMap: Map<String, String>): Boolean {
             return variantsMap.any { it.value.toLongOrZero() == 0L } || variantsMap.isEmpty()
         }
+    }
+}
+
+data class SectionUiModel(
+    val sections : List<PlayProductSectionUiModel.ProductSection>
+){
+    companion object{
+        val Empty: SectionUiModel
+            get() = SectionUiModel(
+                sections = emptyList()
+            )
     }
 }

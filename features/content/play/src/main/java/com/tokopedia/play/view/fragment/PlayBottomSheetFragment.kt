@@ -40,7 +40,6 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
-import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -188,8 +187,9 @@ class PlayBottomSheetFragment @Inject constructor(
         openShopPage(partnerId)
     }
 
+    //TODO() = tracker
     override fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
-        trackImpressedProduct(products)
+//        trackImpressedProduct(products)
     }
 
     override fun onProductCountChanged(view: ProductSheetViewComponent) {
@@ -725,9 +725,10 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
-        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
-    }
+    //TODO() = tracker
+//    private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
+//        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
+//    }
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
@@ -750,14 +751,16 @@ class PlayBottomSheetFragment @Inject constructor(
                         tagItem.resultState.error is UnknownHostException,
                 onError = { playViewModel.submitAction(RetryGetTagItemsAction) }
             )
-        } else if (tagItem.product.productList.isNotEmpty()) {
+        } else if (tagItem.section.sections.isNotEmpty()) {
             productSheetView.setProductSheet(
                 productList = tagItem.product.productList,
                 voucherList = tagItem.voucher.voucherList,
                 title = bottomSheetTitle,
+                sectionList = tagItem.section.sections
             )
 
-            if (tagItem.product.productList != prevTagItem?.product?.productList) trackImpressedProduct()
+            //TODO() = tracker
+//            if (tagItem.product.productList != prevTagItem?.product?.productList) trackImpressedProduct()
         } else {
             productSheetView.showEmpty(partnerId)
         }
