@@ -54,6 +54,7 @@ class CouponListViewModel @Inject constructor(
     private var isFreeBroadCastIconVisible: Boolean = false
     private var isSuccessDialogDisplayed: Boolean = false
     private var couponStatusFilter: String = VoucherStatus.NOT_STARTED_AND_ONGOING
+    private var couponSearchKeyword: String? = null
 
     fun setIsFreeBroadCastIconVisible(broadCastQuota: Int) {
         isFreeBroadCastIconVisible = (broadCastQuota > 0)
@@ -71,12 +72,17 @@ class CouponListViewModel @Inject constructor(
         couponStatusFilter = couponStatus
     }
 
+    fun setCouponSearchKeyword(keyword: String) {
+        couponSearchKeyword = keyword
+    }
+
     fun getVoucherList(page: Int) {
         launchCatchError(block = {
             val ongoingVoucherRequestParam = VoucherListParam.createParamCouponList(
                 status = couponStatusFilter,
                 page = page,
-                perPage = LIST_COUPON_PER_PAGE
+                perPage = LIST_COUPON_PER_PAGE,
+                voucherName = couponSearchKeyword
             )
             _couponList.value = Success(withContext(dispatchers.io) {
                 getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)

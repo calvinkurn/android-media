@@ -47,7 +47,7 @@ class CouponListAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
-        this.items.clear()
+        this.items = mutableListOf()
         notifyDataSetChanged()
     }
 
