@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Bungkus barang dengan (opsional):" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageUnify2"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        app:layout_constraintEnd_toStartOf="@+id/checkboxUnify"
+        app:layout_constraintStart_toEndOf="@+id/imageUnify2"
+        app:layout_constraintTop_toTopOf="@+id/imageUnify2"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Kemasan dan Kartu Ucapan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/checkboxUnify"
+        app:layout_constraintStart_toStartOf="@+id/typography5"
+        app:layout_constraintTop_toBottomOf="@+id/typography5"
+        app:typographyType="body_3"
+        tools:text="Simple &amp; Polos" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/checkboxUnify"
+        app:layout_constraintStart_toStartOf="@+id/typography5"
+        app:layout_constraintTop_toBottomOf="@+id/typography6"
+        app:typographyType="body_3"
+        tools:text="Rp4.000" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkboxUnify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/imageUnify2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageUnify2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
