@@ -6,6 +6,7 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ContentRechargeHomepageLastItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastItemModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.loader.loadImage
 
 class RechargeHomepageLastItemViewHolder(
@@ -14,7 +15,7 @@ class RechargeHomepageLastItemViewHolder(
 ) : AbstractViewHolder<RechargeHomepageProductCardCustomLastItemModel.LastItem>(binding.root) {
 
     override fun bind(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
-        renderBackground(element)
+        renderView(element)
         applyCarousel()
 
         binding.root.setOnClickListener {
@@ -22,9 +23,14 @@ class RechargeHomepageLastItemViewHolder(
         }
     }
 
-    private fun renderBackground(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
+    private fun renderView(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
         with(binding) {
-            rechargeHomepageLastItemBackground.loadImage(element.section.mediaUrl)
+            cardViewRechargeHomepageLastItem.title = getString(R.string.recharge_homepage_last_item_title)
+            cardViewRechargeHomepageLastItem.description = getString(R.string.recharge_homepage_last_item_subtitle)
+            cardViewRechargeHomepageLastItem.ctaIconView.setImage(newIconId = IconUnify.CHEVRON_RIGHT)
+            cardViewRechargeHomepageLastItem.setCta(getString(R.string.recharge_home_banner_see_all_label)) {
+                listener.onRechargeBannerAllItemClicked(element.section)
+            }
         }
     }
 

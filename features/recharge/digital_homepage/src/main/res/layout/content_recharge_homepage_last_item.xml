@@ -1,92 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.viewallcard.ViewAllCard xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view_recharge_homepage_last_item"
     android:layout_width="@dimen/digital_unify_card_width"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/digital_unify_card_minimum_height"
     app:cardCornerRadius="@dimen/layout_lvl1"
     app:cardElevation="@dimen/unify_space_4"
-    app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/recharge_homepage_last_item_background"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/Unify_G500"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/recharge_homepage_last_item_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/unify_space_2"
-            android:paddingLeft="@dimen/unify_space_12"
-            android:paddingRight="@dimen/unify_space_12"
-            android:text="@string/recharge_homepage_last_item_title"
-            android:textColor="@color/Unify_Static_White_96"
-            app:layout_constraintBottom_toTopOf="@id/recharge_homepage_last_item_subtitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="heading_5" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/recharge_homepage_last_item_subtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/unify_space_12"
-            android:paddingRight="@dimen/unify_space_12"
-            android:text="@string/recharge_homepage_last_item_subtitle"
-            android:textColor="@color/Unify_Static_White_96"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recharge_homepage_last_item_title"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/recharge_homepage_last_item_see_all"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
-            android:layout_marginBottom="@dimen/unify_space_12"
-            android:text="@string/recharge_home_banner_see_all_label"
-            android:textColor="@color/Unify_Static_White_96"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/recharge_homepage_last_item_chevron"
-            app:layout_constraintStart_toStartOf="parent"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/recharge_homepage_last_item_chevron"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/unify_space_12"
-            app:icon_color_light_disabled="@color/Unify_Static_White_96"
-            app:icon_color_light_enable="@color/Unify_Static_White_96"
-            app:icon_color_night_disabled="@color/Unify_Static_White_96"
-            app:icon_color_night_enable="@color/Unify_Static_White_96"
-            app:icon_enable_state="true"
-            app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintBottom_toBottomOf="@id/recharge_homepage_last_item_see_all"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/recharge_homepage_last_item_see_all"
-            app:layout_constraintTop_toTopOf="@id/recharge_homepage_last_item_see_all" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.cardview.widget.CardView>
+    app:view_all_card_unify_mode="invert"
+    app:cardUseCompatPadding="true" />
