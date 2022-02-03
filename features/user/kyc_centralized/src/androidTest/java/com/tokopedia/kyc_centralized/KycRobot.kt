@@ -5,6 +5,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.kyc_centralized.test.R
+import kotlinx.android.synthetic.main.layout_kyc_upload_error.*
 
 class KycRobot {
 
@@ -38,6 +39,11 @@ class KycRobot {
     fun atFinalPressCta() {
         Thread.sleep(2_500)
         onView(withId(R.id.upload_button)).perform(click())
+    }
+
+    fun atFinalPressErrorButton() {
+        Thread.sleep(2000)
+        onView(withId(R.id.kyc_upload_error_button)).perform(click())
     }
 
 }

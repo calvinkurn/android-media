@@ -5,6 +5,8 @@ import com.tokopedia.kyc_centralized.data.model.response.KycResponse
 import com.tokopedia.kyc_centralized.data.network.KycUploadApi
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.internal.http2.ErrorCode
+import okhttp3.internal.http2.StreamResetException
 
 class FakeKycUploadApi(private val case: Case = Case.Success) : KycUploadApi {
 
@@ -22,6 +24,17 @@ class FakeKycUploadApi(private val case: Case = Case.Success) : KycUploadApi {
                     isSuccessRegister = true,
                 )
             )
+            Case.NetworkFailed -> {
+                if (uploadCount == 0) {
+                    throw StreamResetException(ErrorCode.CANCEL)
+                } else {
+                    KycResponse(
+                        data = KycData(
+                            isSuccessRegister = true,
+                        )
+                    )
+                }
+            }
             is Case.Retake -> {
                 if (uploadCount == 0) {
                     uploadCount += 1
@@ -53,6 +66,7 @@ class FakeKycUploadApi(private val case: Case = Case.Success) : KycUploadApi {
 
     sealed class Case {
         object Success : Case()
+        object NetworkFailed: Case()
         data class Retake(val code: ArrayList<Int>) : Case()
     }
 }

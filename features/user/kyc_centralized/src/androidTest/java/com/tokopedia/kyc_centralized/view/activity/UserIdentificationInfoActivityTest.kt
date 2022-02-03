@@ -33,9 +33,7 @@ class UserIdentificationInfoActivityTest {
     )
 
     @get:Rule
-    var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
-        Manifest.permission.CAMERA,
-    )
+    var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
 
     private val ctx = ApplicationProvider.getApplicationContext<Context>()
 
@@ -112,6 +110,29 @@ class UserIdentificationInfoActivityTest {
 
             atCameraClickCapture()
             atCameraClickNext()
+        } upload {
+            shouldShowPendingPage()
+        }
+    }
+
+    @Test
+    fun retryCausedByNetworkTest() {
+        ActivityComponentFactory.instance = FakeKycActivityComponentFactory(
+            case = FakeKycUploadApi.Case.NetworkFailed
+        )
+        activityTestRule.launchActivity(null)
+        stubSampleForLiveness()
+
+        kycRobot {
+            checkTermsAndCondition()
+            atInfoClickNext()
+            atKtpIntroClickNext()
+            atCameraClickCapture()
+            atCameraClickNext()
+            atFaceIntroClickNext()
+
+            // In this segment, liveness face result is provided by intent stubbing
+            atFinalPressErrorButton()
         } upload {
             shouldShowPendingPage()
         }
