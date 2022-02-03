@@ -324,8 +324,11 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
 
     private fun refreshCouponInformationSection(coupon: CouponInformation) {
         binding.imgCopyToClipboard.visible()
-        binding.labelCouponInformationCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
-        binding.labelCouponInformationCompleteStatus.setLabel(getString(R.string.completed))
+
+        if (viewModel.isCouponInformationValid(coupon)) {
+            binding.labelCouponInformationCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+            binding.labelCouponInformationCompleteStatus.setLabel(getString(R.string.completed))
+        }
 
         val target = when (coupon.target) {
             CouponInformation.Target.PUBLIC -> getString(R.string.mvc_public)

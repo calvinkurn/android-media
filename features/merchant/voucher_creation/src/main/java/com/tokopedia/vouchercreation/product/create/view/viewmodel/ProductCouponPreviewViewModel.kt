@@ -152,4 +152,20 @@ class ProductCouponPreviewViewModel @Inject constructor(
             _maxAllowedProductCount.value = Fail(it)
         })
     }
+
+    fun isCouponInformationValid(couponInformation: CouponInformation): Boolean {
+        if (couponInformation.target == CouponInformation.Target.NOT_SELECTED) {
+            return false
+        }
+
+        if (couponInformation.target == CouponInformation.Target.PRIVATE && couponInformation.code.isEmpty()) {
+            return false
+        }
+
+        if (couponInformation.name.isEmpty()) {
+            return false
+        }
+
+        return true
+    }
 }
