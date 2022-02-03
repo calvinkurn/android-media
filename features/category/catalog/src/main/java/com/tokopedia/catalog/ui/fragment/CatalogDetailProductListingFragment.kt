@@ -135,8 +135,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         observeData()
         setUpAdapter()
         setupRecyclerView()
-        setUpNavigation()
-        setUpVisibleFragmentListener()
         initSearchQuickSortFilter(view)
         sortFilterBottomSheet = SortFilterBottomSheet()
     }
@@ -199,17 +197,17 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             }
         })
 
-        viewModel.selectedSortIndicatorCount.observe(viewLifecycleOwner, Observer {
+        viewModel.selectedSortIndicatorCount.observe(viewLifecycleOwner, {
             searchSortFilter?.indicatorCounter = it
         })
 
-        viewModel.dynamicFilterModel.observe(viewLifecycleOwner, Observer {
+        viewModel.dynamicFilterModel.observe(viewLifecycleOwner, {
             it?.let { dm ->
                 setDynamicFilter(dm)
             }
         })
 
-        viewModel.mProductList.observe(viewLifecycleOwner, Observer {
+        viewModel.mProductList.observe(viewLifecycleOwner, {
 
             when (it) {
                 is Success -> {
@@ -244,13 +242,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             }
         })
 
-        viewModel.mProductCount.observe(viewLifecycleOwner, Observer {
+        viewModel.mProductCount.observe(viewLifecycleOwner, {
             it?.let {
                 setHeaderCount(it)
             }
         })
 
-        viewModel.getDynamicFilterData().observe(viewLifecycleOwner, Observer {
+        viewModel.getDynamicFilterData().observe(viewLifecycleOwner, {
 
             when (it) {
                 is Success -> {
@@ -262,7 +260,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             }
         })
 
-        viewModel.mQuickFilterModel.observe(viewLifecycleOwner, Observer {
+        viewModel.mQuickFilterModel.observe(viewLifecycleOwner, {
 
             when (it) {
                 is Success -> {
@@ -319,7 +317,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return "category page - " + getDepartMentId();
+        return "category page - " + getDepartMentId()
     }
 
     override fun initInjector() {
@@ -512,9 +510,15 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchSortFilter?.parentListener = {}
+        searchSortFilter = null
+        sortFilterBottomSheet = null
+    }
+
     override fun onDetach() {
         super.onDetach()
-        sortFilterBottomSheet = null
         viewModel.onDetach()
     }
 
