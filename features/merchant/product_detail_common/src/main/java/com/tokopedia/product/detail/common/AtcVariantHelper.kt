@@ -43,6 +43,7 @@ object AtcVariantHelper {
     const val SEARCH_PAGESOURCE = "search result"
     const val CATEGORY_PAGESOURCE = "category page"
     const val BUNDLING_PAGESOURCE = "bundling page"
+    const val SHOP_COUPON_PAGESOURCE = "shop-coupon-product"
 
     /**
      * For PDP and ProductBundle only
