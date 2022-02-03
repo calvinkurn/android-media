@@ -10,6 +10,7 @@ class DigitalRecommendationQuery {
               digiPersoGetPersonalizedItems(input: ${'$'}input) {
                 title
                 mediaURL
+                mediaURLType
                 appLink
                 webLink
                 textLink
@@ -30,6 +31,8 @@ class DigitalRecommendationQuery {
                   title
                   mediaURL
                   mediaUrlType
+                  mediaURLTitle
+                  iconURL
                   subtitle
                   subtitleMode
                   label1
@@ -39,6 +42,33 @@ class DigitalRecommendationQuery {
                   appLink
                   webLink
                   backgroundColor
+                  campaignLabelText
+                  campaignLabelTextColor
+                  campaignLabelBackgroundURL
+                  productInfo1 {
+                    text
+                    color
+                  }
+                  productInfo2 {
+                    text
+                    color
+                  }
+                  ratingType
+                  rating
+                  review
+                  soldPercentageValue
+                  soldPercentageLabel
+                  soldPercentageLabelColor
+                  showSoldPercentage
+                  slashedPrice
+                  discount
+                  cashback
+                  specialDiscount
+                  price
+                  pricePrefix
+                  priceSuffix
+                  specialInfoText
+                  specialInfoColor
                   trackingData {
                     productID
                     operatorID
