@@ -15,7 +15,8 @@ data class CouponInformation(
     @Parcelize
     enum class Target : Parcelable {
         PUBLIC,
-        SPECIAL
+        PRIVATE,
+        NOT_SELECTED
     }
     @Parcelize
     data class Period(val startDate : Date, val endDate : Date) : Parcelable

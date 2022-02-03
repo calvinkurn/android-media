@@ -15,9 +15,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:visibility="gone"
+        tools:visibility="visible"
         tools:context=".product.create.view.fragment.ProductCouponPreviewFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -681,12 +684,12 @@
                 app:typographyType="body_2" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/typography26"
+                android:id="@+id/tpgMaxProduct"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/unify_space_4"
-                android:text="@string/max_product"
+                tools:text="@string/placeholder_max_product"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
@@ -731,7 +734,7 @@
                 android:layout_height="@dimen/unify_space_2"
                 android:layout_marginTop="@dimen/unify_space_24"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/typography26" />
+                app:layout_constraintTop_toBottomOf="@+id/tpgMaxProduct" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnPreviewCouponImage"
@@ -832,5 +835,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_64"
+        android:layout_margin="@dimen/unify_space_16"
+        android:layout_gravity="center"
+        app:loader_type="circular" />
 
 </LinearLayout>

@@ -35,6 +35,7 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                 "          img_banner_label_cashback_hingga\n" +
                 "          prefix_voucher_code\n" +
                 "          is_eligible\n" +
+                "          max_product\n" +
                 "        }\n" +
                 "    }\n" +
                 "}"
@@ -99,7 +100,8 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                 bannerCashbackLabelUrl = bannerCashbackLabelUrl,
                 bannerCashbackUntilLabelUrl = bannerCashbackUntilLabelUrl,
                 voucherCodePrefix = voucherCodePrefix,
-                isCreateVoucherEligible = isEligible == ELIGIBLE_VALUE
+                isCreateVoucherEligible = isEligible == ELIGIBLE_VALUE,
+                maxProducts = maxProduct
             )
         }
     }

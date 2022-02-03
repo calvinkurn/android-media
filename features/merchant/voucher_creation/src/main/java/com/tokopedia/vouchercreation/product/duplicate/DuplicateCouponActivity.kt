@@ -94,10 +94,9 @@ class DuplicateCouponActivity : AppCompatActivity() {
         )
     }
 
-    private fun navigateToProductListPage() {
+    private fun navigateToProductListPage(coupon: Coupon) {
         startActivity(Intent(this, ProductListActivity::class.java))
     }
-
 
     private fun onDuplicateCouponSuccess() {
         finish()

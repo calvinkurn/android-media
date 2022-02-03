@@ -91,7 +91,7 @@ class UpdateCouponActivity : AppCompatActivity() {
         router.replaceAndAddToBackstack(supportFragmentManager, R.id.parent_view, couponSettingFragment)
     }
 
-    private fun navigateToProductListPage() {
+    private fun navigateToProductListPage(coupon: Coupon) {
         startActivity(Intent(this, ProductListActivity::class.java))
     }
 

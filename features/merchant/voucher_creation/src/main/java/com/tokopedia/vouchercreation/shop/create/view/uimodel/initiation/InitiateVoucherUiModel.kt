@@ -11,5 +11,6 @@ data class InitiateVoucherUiModel(
         val bannerCashbackLabelUrl: String = "",
         val bannerCashbackUntilLabelUrl: String = "",
         val voucherCodePrefix: String = "",
-        val isCreateVoucherEligible: Boolean = false
+        val isCreateVoucherEligible: Boolean = false,
+        val maxProducts : Int = 0
 )

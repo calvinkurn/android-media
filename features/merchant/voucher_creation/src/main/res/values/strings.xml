@@ -343,7 +343,7 @@
     <string name="coupon_target">Target Kupon</string>
     <string name="coupon_name">Nama Kupon</string>
     <string name="coupon_code">Kode Kupon</string>
-    <string name="coupon_period">Periode Kupon</string>
+    <string name="coupon_period">Periode</string>
     <string name="learn_more">Mau tau lebih lanjut?</string>
     <string name="read_article">Baca artikel</string>
     <string name="coupon_product_usage_information">Pembeli dapat menukarkan kupon ini di halaman toko dan halaman produk-produk kamu.</string>
@@ -361,7 +361,6 @@
     <string name="quota">Kuota</string>
     <string name="product_list">Daftar Produk</string>
     <string name="listed_product">Produk terdaftar</string>
-    <string name="max_product">Maks. 100 Produk</string>
     <string name="minimum_purchase">Minimum pembelian</string>
     <string name="minimum_purchase_type">Tipe minimum pembelian</string>
     <string name="discount_amount">Nominal Diskon</string>
@@ -394,9 +393,10 @@
     <string name="placeholder_rupiah">Rp %s</string>
     <string name="placeholder_quantity">%s buah</string>
     <string name="placeholder_percent">%s\%%</string>
-    <string name="placeholder_registered_product">(%s/100)</string>
+    <string name="placeholder_registered_product">(%s/%s)</string>
     <string name="placeholder_coupon_period">%s, %s WIB - %s, %s WIB</string>
     <string name="placeholder_scheduled_coupon_period">Kupon \"%s\" aktif pada %s, %s WIB - %s, %s WIB</string>
+    <string name="placeholder_max_product">Maks. %s Produk</string>
     <string name="cashback_percentage">Persentase cashback</string>
     <string name="error_message_discount_percentage_range">Diskon minimal 2%, maksimal 100%</string>
     <string name="error_message_discount_percentage_below_minimum">Min. 2%</string>
