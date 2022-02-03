@@ -227,9 +227,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     override fun initInjector() {
-        if (activity != null && activity is HasComponent<*>) {
-            (activity as HasComponent<UserIdentificationCommonComponent>).component.inject(this)
-        }
+        getComponent(UserIdentificationCommonComponent::class.java).inject(this)
     }
 
     private fun openCameraView(viewMode: Int, requestCode: Int) {
