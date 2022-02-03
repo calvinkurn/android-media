@@ -375,6 +375,38 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
+    fun clickFullDenomChevron(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PRODUCT_CLUSTER,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickPromoFullDenomChevron(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        denomType: DenomWidgetEnum
+    ) {
+        val isMCCMorFlashSale =
+            if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE) MCCM else FLASH_SALE
+
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PROMO_SECTION,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
     /** Common Tracking Methods*/
 
     fun Bundle.viewItemList(userId: String): Bundle {
