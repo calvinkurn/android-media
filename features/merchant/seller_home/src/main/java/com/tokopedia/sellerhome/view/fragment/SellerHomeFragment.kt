@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -98,10 +99,13 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
@@ -677,7 +681,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
         isReloading = true
         shouldShowSuccessToaster = true
-        getWidgetsData(listOf(widget))
+        launchOnViewLifecycleScope(Dispatchers.Unconfined) {
+            val similarWidget = adapter.data.filter {
+                val isSameWidget = it.widgetType == widget.widgetType
+                val isDataFromCache = it.data?.isFromCache.orFalse()
+                isSameWidget && isDataFromCache
+            }
+            withContext(Dispatchers.Main) {
+                getWidgetsData(similarWidget)
+            }
+        }
     }
 
     fun setNavigationOtherMenuView(view: View?) {
@@ -1955,6 +1968,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val milestoneWidgets = adapter.data.filterIsInstance<MilestoneWidgetUiModel>()
                 getMilestoneData(milestoneWidgets)
             }
+        }
+    }
+
+    private fun launchOnViewLifecycleScope(
+        context: CoroutineContext = EmptyCoroutineContext,
+        action: suspend () -> Unit
+    ) {
+        viewLifecycleOwner.lifecycleScope.launch(context) {
+            action()
         }
     }
 
