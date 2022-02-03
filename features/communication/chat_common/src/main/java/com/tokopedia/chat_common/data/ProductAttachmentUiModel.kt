@@ -82,10 +82,8 @@ open class ProductAttachmentUiModel protected constructor(
     var isSupportVariant: Boolean = builder.isSupportVariant
     var cartId: String = ""
 
-    var isUpcomingCampaign: Boolean = false
-        private set
-    var locationStock: LocationStock = LocationStock()
-        private set
+    var isUpcomingCampaign: Boolean = builder.isUpcomingCampaign
+    var locationStock: LocationStock = builder.locationStock
 
     init {
         if (variants.isNotEmpty()) {
@@ -349,6 +347,8 @@ open class ProductAttachmentUiModel protected constructor(
         internal var needSync: Boolean = true
         internal var isSupportVariant: Boolean = false
         internal var campaignId: Long = 0
+        internal var locationStock: LocationStock = LocationStock()
+        internal var isUpcomingCampaign: Boolean = false
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)
@@ -375,6 +375,8 @@ open class ProductAttachmentUiModel protected constructor(
             withIsSupportVariant(product.productProfile.isSupportVariant)
             withCampaignId(product.productProfile.campaignId)
             withIsPreOrder(product.productProfile.isPreOrder)
+            withLocationStock(product.productProfile.locationStock)
+            withIsUpcomingCampaign(product.productProfile.isUpcomingCampaign)
             return self()
         }
 
@@ -505,6 +507,16 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withCampaignId(campaignId: Long): Builder {
             this.campaignId = campaignId
+            return self()
+        }
+
+        fun withLocationStock(locationStock: LocationStock): Builder {
+            this.locationStock = locationStock
+            return self()
+        }
+
+        fun withIsUpcomingCampaign(isUpcomingCampaign: Boolean): Builder {
+            this.isUpcomingCampaign = isUpcomingCampaign
             return self()
         }
 
