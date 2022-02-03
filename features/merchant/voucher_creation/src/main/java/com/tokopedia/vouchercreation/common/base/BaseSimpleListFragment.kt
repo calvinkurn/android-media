@@ -66,7 +66,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         loadInitialData()
     }
 
-    private fun loadInitialData() {
+    fun loadInitialData() {
         clearAllData()
         showLoading()
         loadData(1)
@@ -173,10 +173,5 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         } else {
             onGetListErrorWithEmptyData(throwable)
         }
-    }
-
-    fun onRetryClicked() {
-        showLoading()
-        loadInitialData()
     }
 }

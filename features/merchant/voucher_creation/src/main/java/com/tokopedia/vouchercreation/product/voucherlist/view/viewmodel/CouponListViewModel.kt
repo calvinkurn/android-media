@@ -9,6 +9,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherListParam
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.GetVoucherListUseCase

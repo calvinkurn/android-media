@@ -51,6 +51,7 @@ import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
 import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.model.MoreMenuItemEventAction
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
@@ -148,12 +149,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         chip.parentListener = {
             onCreateCouponMenuSelected()
         }
-        observer()
-        viewModel.couponList.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                renderList(it.data, it.data.isNotEmpty())
-            }
-        }
+        setupObserver()
     }
 
     override fun createAdapter() = CouponListAdapter(::onCouponOptionClicked, ::onCouponIconCopyClicked)
@@ -192,7 +188,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     }
 
-
     private fun onCouponIconCopyClicked(couponCode: String) {
         context?.let { SharingUtil.copyTextToClipboard(it, couponCode, couponCode) }
     }
@@ -208,15 +203,17 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
-    private fun observer() {
+    private fun setupObserver() {
         observeCouponList()
         observeCancelCoupon()
         observeStopCoupon()
     }
 
     private fun observeCouponList() = viewModel.couponList.observe(viewLifecycleOwner) {
-        if (it is Success) {
-            renderList(it.data, false)
+        viewModel.couponList.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                renderList(it.data, it.data.isNotEmpty())
+            }
         }
     }
 
@@ -483,12 +480,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
                     }
                 view?.showErrorToaster(errorMessage)
             }.show(childFragmentManager)
-    }
-
-    fun loadInitialData() {
-        this.clearAdapterData()
-        this.onShowLoading()
-        this.loadData(1)
     }
 
     private fun showCancellationSuccessToaster(successMessageRes: Int, couponId: Int) {
