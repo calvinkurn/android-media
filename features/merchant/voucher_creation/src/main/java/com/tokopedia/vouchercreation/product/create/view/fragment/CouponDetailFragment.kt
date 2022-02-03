@@ -16,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherDiscountTypeConst
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -42,7 +43,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         private const val EMPTY_STRING = ""
         private const val ZERO: Long = 0
         private const val PERCENT = 100
-        private const val DISCOUNT_TYPE_NOMINAL = 1
+        private const val DISCOUNT_TYPE_NOMINAL = "idr"
 
         @JvmStatic
         fun newInstance(couponId: Long): CouponDetailFragment {
@@ -208,7 +209,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         val minimumPurchaseType = MinimumPurchaseType.NOMINAL
 
         val discountType =
-            if (coupon.discountType == DISCOUNT_TYPE_NOMINAL) DiscountType.NOMINAL else DiscountType.PERCENTAGE
+            if (coupon.discountTypeFormatted == DISCOUNT_TYPE_NOMINAL) DiscountType.NOMINAL else DiscountType.PERCENTAGE
         binding.tpgDiscountType.text = discountType.label
 
         handleDiscountType(couponType)

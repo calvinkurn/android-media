@@ -11,7 +11,7 @@ import javax.inject.Inject
 class CouponMapper @Inject constructor() {
 
     companion object {
-        private const val DISCOUNT_TYPE_NOMINAL = 1
+        private const val DISCOUNT_TYPE_NOMINAL = "idr"
     }
 
     fun map(voucher: VoucherUiModel): Coupon {
@@ -33,7 +33,7 @@ class CouponMapper @Inject constructor() {
         )
 
         val maxExpense = (voucher.quota * voucher.discountAmtMax).toLong()
-        val discountPercentage = if (voucher.discountType == DISCOUNT_TYPE_NOMINAL) {
+        val discountPercentage = if (voucher.discountTypeFormatted == DISCOUNT_TYPE_NOMINAL) {
             voucher.discountAmt
         } else {
             NumberConstant.PERCENT
@@ -45,7 +45,7 @@ class CouponMapper @Inject constructor() {
             CouponType.CASHBACK
         }
 
-        val discountType = if (voucher.discountType == DISCOUNT_TYPE_NOMINAL) {
+        val discountType = if (voucher.discountTypeFormatted == DISCOUNT_TYPE_NOMINAL) {
             DiscountType.NOMINAL
         } else {
             DiscountType.PERCENTAGE
