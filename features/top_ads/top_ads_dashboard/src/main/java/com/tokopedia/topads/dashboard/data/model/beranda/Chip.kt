@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.data.model
+package com.tokopedia.topads.dashboard.data.model.beranda
 
 data class Chip(
     val title: String,

@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.domain.interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.data.model.TopadsWidgetSummaryStatisticsModel
+import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

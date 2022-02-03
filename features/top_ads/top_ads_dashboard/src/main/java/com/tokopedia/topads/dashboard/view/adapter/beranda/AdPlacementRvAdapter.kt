@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.Chip
+import com.tokopedia.topads.dashboard.data.model.beranda.Chip
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class AdPlacementRvAdapter(

@@ -13,9 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,12 +24,13 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
-import com.tokopedia.topads.dashboard.data.constant.TopAdsSummaryType
-import com.tokopedia.topads.dashboard.data.model.Chip
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
+import com.tokopedia.topads.dashboard.data.model.beranda.Chip
+import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
+import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils
 import com.tokopedia.topads.dashboard.data.utils.Utils.asString
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
@@ -88,7 +86,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private var insightCallBack: GoToInsight? = null
     private var currentDateText: String = ""
 
-    private val summaryAdTypeList by lazy { getSummaryAdTypes() }
+    private val summaryAdTypeList by lazy { TopAdsDashboardBerandaUtils.getSummaryAdTypes(resources) }
     private var lastSelectedAdType: Chip? = null
     private val summaryAdTypesBottomSheet by lazy {
         SummaryAdTypesBottomSheet.createInstance(summaryAdTypeList, ::adTypeChanged)
@@ -166,10 +164,10 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
             checkResponse.summaryStats = true
             when (it) {
                 is Success -> {
-                    summaryRvAdapter.addItems(it.data.cells)
+                    updateSummaryItems(it.data)
                     txtLastUpdated.text = String.format(
                         resources.getString(R.string.topads_dashboard_last_update_text),
-                        it.data.summary.lastUpdate
+                        it.data.lastUpdate
                     )
                 }
                 is Fail -> {}
@@ -183,6 +181,10 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
                 is Fail -> {}
             }
         }
+    }
+
+    private fun updateSummaryItems(data: TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Summary) {
+
     }
 
     //method to be invoked when ad type is changed from ringkasan dropdown section
@@ -415,64 +417,19 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         statisticsPager = view.findViewById(R.id.pager)
     }
 
-    private fun getSummaryAdTypes() = listOf(
-        Chip(
-            resources.getString(R.string.topads_dashboard_all_promo_menu),
-            TopAdsSummaryType.ALL, true
-        ),
-        Chip(resources.getString(R.string.topads_dash_iklan_produck), TopAdsSummaryType.PRODUCT),
-        Chip(resources.getString(R.string.topads_dash_headline_title), TopAdsSummaryType.SHOP),
-        Chip(resources.getString(R.string.topads_dashboard_iklan_google), TopAdsSummaryType.GOOGLE),
-        Chip(resources.getString(R.string.topads_dashboard_iklan_banner), TopAdsSummaryType.BANNER),
-        Chip(
-            resources.getString(R.string.topads_dashboard_iklan_tanpa_modal),
-            TopAdsSummaryType.NO_MODAL
-        ),
-    )
-
-    private fun showNewTopAdsDialog() {
-        fun showCoachMark() {
-            val coachMarkItems = arrayListOf(
-                CoachMark2Item(
-                    rvSummary,
-                    resources.getString(R.string.topads_dashboard_home_coachmark_1_title),
-                    resources.getString(R.string.topads_dashboard_home_coachmark_1_desc),
-                    CoachMark2.POSITION_TOP
-                ), CoachMark2Item(
-                    requireView().findViewById(R.id.topads_content_statistics),
-                    resources.getString(R.string.topads_dashboard_home_coachmark_2_title),
-                    resources.getString(R.string.topads_dashboard_home_coachmark_2_desc),
-                    CoachMark2.POSITION_TOP
-                ),
-                CoachMark2Item(
-                    rvLatestReading,
-                    resources.getString(R.string.topads_dashboard_home_coachmark_4_title),
-                    resources.getString(R.string.topads_dashboard_home_coachmark_4_desc),
-                    CoachMark2.POSITION_TOP
-                )
-            )
-            val coachMark = CoachMark2(requireContext())
-            coachMark.showCoachMark(coachMarkItems)
-        }
-        DialogUnify(
-            requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION
-        ).apply {
-            setTitle(resources.getString(R.string.topads_dashboard_home_dialog_title))
-            setDescription(resources.getString(R.string.topads_dashboard_home_dialog_description))
-            setPrimaryCTAText(resources.getString(R.string.topads_dashboard_home_dialog_button_text))
-            setImageDrawable(R.drawable.topads_dashboard_dialog_img)
-            setPrimaryCTAClickListener {
-                dismiss()
-                showCoachMark()
-            }
-        }.show()
+    private fun showDialog() {
+        TopAdsDashboardBerandaUtils.showDialogWithCoachMark(
+            requireContext(), rvSummary,
+            requireView().findViewById(R.id.topads_content_statistics),
+            rvLatestReading
+        )
     }
 
     private fun hideShimmer() {
         if (!checkResponse.creditHistory || !checkResponse.latestReading || !checkResponse.summaryStats) return
         shimmerView.hide()
         swipeRefreshLayout.show()
-        showNewTopAdsDialog()
+        showDialog()
     }
 
     //this class holds 3 boolean to keep track if all the 3 api's have been called successfully, as if all values are true will be hiding shimmer view and showing the actual view

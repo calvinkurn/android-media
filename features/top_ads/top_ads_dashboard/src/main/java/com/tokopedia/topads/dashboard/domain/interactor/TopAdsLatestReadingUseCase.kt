@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.domain.interactor
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.topads.dashboard.data.model.TopAdsLatestReading
+import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
 import javax.inject.Inject
 
 class TopAdsLatestReadingUseCase @Inject constructor() {

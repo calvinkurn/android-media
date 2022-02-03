@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.Chip
+import com.tokopedia.topads.dashboard.data.model.beranda.Chip
 import com.tokopedia.topads.dashboard.view.adapter.beranda.AdPlacementRvAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
