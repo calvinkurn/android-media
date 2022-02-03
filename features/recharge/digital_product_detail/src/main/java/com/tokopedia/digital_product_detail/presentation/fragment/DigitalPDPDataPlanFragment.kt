@@ -40,14 +40,19 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
+import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPFilterAllViewHolder
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
+import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -65,6 +70,8 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget.InputNumberActionType
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -88,7 +95,8 @@ class DigitalPDPDataPlanFragment :
     RechargeDenomFullListener,
     RechargeClientNumberWidget.ClientNumberInputFieldListener,
     RechargeClientNumberWidget.ClientNumberFilterChipListener,
-    RechargeClientNumberWidget.ClientNumberAutoCompleteListener
+    RechargeClientNumberWidget.ClientNumberAutoCompleteListener,
+    FilterPDPBottomsheet.FilterBottomSheetListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -246,6 +254,14 @@ class DigitalPDPDataPlanFragment :
                     val selectedPositionDenom = viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
                     val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
 
+                    if (denomData.data.isFilterRefreshed) {
+                        digitalPDPTelcoAnalytics.impressionFilterChip(
+                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                            operator.attributes.name,
+                            userSession.userId,
+                        )
+                        onSuccessSortFilter()
+                    }
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
                     onSuccessMCCM(denomData.data.denomMCCMFull, selectedPositionMCCM)
 
@@ -381,6 +397,74 @@ class DigitalPDPDataPlanFragment :
     private fun onFailedGetPrefixOperator(throwable: Throwable) {
         showEmptyState()
         showErrorToaster(throwable)
+    }
+
+    private fun onSuccessSortFilter(initialSelectedCounter: Int = 0){
+        binding?.let {
+            if (!viewModel.filterData.isNullOrEmpty()){
+                it.sortFilterPaketData.run {
+                    show()
+                    val filterItems = arrayListOf<SortFilterItem>()
+                    val chipItems = viewModel.filterData.first().filterTagDataCollections
+                    chipItems.forEach {
+                        val item = SortFilterItem(it.value)
+                        filterItems.add(item)
+                    }
+
+                    var selectedChipsCounter = initialSelectedCounter
+
+                    filterItems.forEachIndexed{ index, sortFilterItem ->
+                        if (chipItems.get(index).isSelected) {
+                            sortFilterItem.type = ChipsUnify.TYPE_SELECTED
+                        }
+
+                        sortFilterItem.listener = {
+                            sortFilterItem.toggle()
+                            digitalPDPTelcoAnalytics.clickFilterChip(
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                operator.attributes.name,
+                                sortFilterItem.title.toString(),
+                                userSession.userId,
+                            )
+                            if (filterItems[index].type == ChipsUnify.TYPE_SELECTED){
+                                chipItems.get(index).isSelected = true
+                                selectedChipsCounter++
+                            } else {
+                                chipItems.get(index).isSelected = false
+                                selectedChipsCounter--
+                            }
+
+                            viewModel.filterData.first().filterTagDataCollections = chipItems
+                            onChipClicked()
+                        }
+                    }
+
+                    addItem(filterItems)
+                    val filterData = viewModel.filterData
+                    sortFilterPrefix.setOnClickListener {
+                        digitalPDPTelcoAnalytics.clickFilterChip(
+                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                            operator.attributes.name,
+                            getString(R.string.bottom_sheet_filter_title),
+                            userSession.userId,
+                        )
+                        fragmentManager?.let {
+                            FilterPDPBottomsheet(getString(R.string.bottom_sheet_filter_title),
+                                getString(R.string.bottom_sheet_filter_reset),
+                                filterData, this@DigitalPDPDataPlanFragment)
+                                .show(it, "")
+                        }
+                    }
+
+                    indicatorCounter = selectedChipsCounter
+                }
+            }
+        }
+    }
+
+    private fun onChipClicked(){
+        viewModel.updateFilterData()
+        viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
     }
 
     private fun onSuccessDenomFull(denomData: DenomWidgetModel, selectedPosition: Int?) {
@@ -976,6 +1060,23 @@ class DigitalPDPDataPlanFragment :
         fragmentManager?.let {
             ProductDescBottomSheet(denomFull, this).show(it, "")
         }
+    }
+
+    /** FilterBottomSheetListener */
+
+    override fun onClickSaveFilter(filterTagComponents: List<TelcoFilterTagComponent>, initialSelectedCounter: Int) {
+        viewModel.updateFilterData(filterTagComponents)
+        onSuccessSortFilter(initialSelectedCounter)
+        viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
+    }
+
+    override fun onChipClicked(chipName: String) {
+        digitalPDPTelcoAnalytics.clickFilterChip(
+            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            chipName,
+            userSession.userId,
+        )
     }
 
     override fun onRequestPermissionsResult(

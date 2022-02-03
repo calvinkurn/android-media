@@ -16,6 +16,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -33,7 +34,9 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    val _filterData = ArrayList<HashMap<String, Any>>()
+    private val _filterDataParams = ArrayList<HashMap<String, Any>>()
+
+    var filterData = emptyList<TelcoFilterTagComponent>()
 
     private var loadingJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
@@ -57,15 +60,18 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
+    private val _favoriteNumberData =
+        MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
     val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
         get() = _favoriteNumberData
 
-    private val _catalogPrefixSelect = MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
+    private val _catalogPrefixSelect =
+        MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
     val catalogPrefixSelect: LiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>
         get() = _catalogPrefixSelect
 
-    private val _observableDenomMCCMData = MutableLiveData<RechargeNetworkResult<InputMultiTabDenomModel>>()
+    private val _observableDenomMCCMData =
+        MutableLiveData<RechargeNetworkResult<InputMultiTabDenomModel>>()
     val observableDenomMCCMData: LiveData<RechargeNetworkResult<InputMultiTabDenomModel>>
         get() = _observableDenomMCCMData
 
@@ -77,28 +83,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
 
-    fun addFilter(paramName: String, listKey: ArrayList<String>){
-        val valueItem = HashMap<String, Any>()
-        valueItem[FILTER_PARAM_NAME] = paramName
-        valueItem[FILTER_VALUE] = listKey
-        _filterData.add(valueItem)
-    }
-
-    fun updateFilter(paramName: String, listKey: ArrayList<String>){
-        removeFilter(paramName)
-        addFilter(paramName, listKey)
-    }
-
-    fun removeFilter(paramName: String) {
-        val iterator = _filterData.iterator()
-        while (iterator.hasNext()) {
-            val item = iterator.next()
-            if (item.containsValue(paramName)) {
-                iterator.remove()
-            }
-        }
-    }
-
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         _menuDetailData.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.io, block = {
@@ -109,12 +93,24 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
+    fun getRechargeCatalogInputMultiTab(
+        menuId: Int,
+        operator: String,
+        clientNumber: String,
+        isFilterRefreshed: Boolean = true
+    ) {
         _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
         launchCatchError(block = {
-            val denomFull = repo.getProductInputMultiTabDenomFull(menuId, operator, clientNumber, _filterData)
+            val denomFull = repo.getProductInputMultiTabDenomFull(
+                menuId,
+                operator,
+                clientNumber,
+                _filterDataParams,
+                isFilterRefreshed
+            )
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
-        }){
+            setFilterDataParam(denomFull.filterTagComponents)
+        }) {
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
         }
     }
@@ -123,8 +119,11 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         _favoriteNumberData.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
-            _favoriteNumberData.postValue(RechargeNetworkResult.Success(
-                favoriteNumber.persoFavoriteNumber.items))
+            _favoriteNumberData.postValue(
+                RechargeNetworkResult.Success(
+                    favoriteNumber.persoFavoriteNumber.items
+                )
+            )
         }) {
             _favoriteNumberData.postValue(RechargeNetworkResult.Fail(it))
         }
@@ -141,14 +140,20 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
-    fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
-                  digitalIdentifierParam: RequestBodyIdentifier,
-                  digitalSubscriptionParams: DigitalSubscriptionParams,
-                  userId: String
-    ){
+    fun addToCart(
+        digitalCheckoutPassData: DigitalCheckoutPassData,
+        digitalIdentifierParam: RequestBodyIdentifier,
+        digitalSubscriptionParams: DigitalSubscriptionParams,
+        userId: String
+    ) {
         _addToCartResult.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
+            val categoryIdAtc = repo.addToCart(
+                digitalCheckoutPassData,
+                digitalIdentifierParam,
+                digitalSubscriptionParams,
+                userId
+            )
             _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
@@ -158,7 +163,13 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             }
         }
     }
-    fun updateCheckoutPassData(denomData: DenomData, idemPotencyKeyActive: String, clientNumberWidget: String, operatorActiveId: String){
+
+    fun updateCheckoutPassData(
+        denomData: DenomData,
+        idemPotencyKeyActive: String,
+        clientNumberWidget: String,
+        operatorActiveId: String
+    ) {
         digitalCheckoutPassData.apply {
             categoryId = denomData.categoryId
             clientNumber = clientNumberWidget
@@ -171,7 +182,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
-    fun updateCategoryCheckoutPassData(categoryId: String){
+    fun updateCategoryCheckoutPassData(categoryId: String) {
         digitalCheckoutPassData.categoryId = categoryId
     }
 
@@ -192,22 +203,69 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedPositionId(listDenomData: List<DenomData>): Int?{
-        var selectedProductPositionId : Int? = null
+    fun getSelectedPositionId(listDenomData: List<DenomData>): Int? {
+        var selectedProductPositionId: Int? = null
         listDenomData.forEachIndexed { index, denomData ->
             if (denomData.id.equals(selectedFullProduct.denomData.id, false)
-                && selectedFullProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
+                && selectedFullProduct.denomData.id.isNotEmpty()
+            ) selectedProductPositionId = index
         }
         return selectedProductPositionId
     }
 
-    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean = (selectedFullProduct.denomData.id.isNotEmpty()
-            && selectedFullProduct.position >= 0
-            && selectedFullProduct.denomWidgetEnum == layoutType
-            && isEligibleToBuy)
+    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean =
+        (selectedFullProduct.denomData.id.isNotEmpty()
+                && selectedFullProduct.position >= 0
+                && selectedFullProduct.denomWidgetEnum == layoutType
+                && isEligibleToBuy)
 
-    fun onResetSelectedProduct(){
+    fun onResetSelectedProduct() {
         selectedFullProduct = SelectedProduct()
+    }
+
+    fun updateFilterData(filterTagComponents: List<TelcoFilterTagComponent>) {
+        filterData = filterTagComponents
+        updateFilterData()
+    }
+
+    fun updateFilterData() {
+        setFilterDataParam(filterData)
+    }
+
+    private fun setFilterDataParam(filterTagComponents: List<TelcoFilterTagComponent>) {
+        filterData = filterTagComponents
+        filterData.forEach {
+            val paramName = it.paramName
+            val arrayListIdFilter = arrayListOf<String>()
+            it.filterTagDataCollections.forEach {
+                if (it.isSelected) {
+                    arrayListIdFilter.add(it.key)
+                }
+            }
+            updateFilterParam(paramName, arrayListIdFilter)
+        }
+    }
+
+    private fun addFilterParam(paramName: String, listKey: ArrayList<String>) {
+        val valueItem = HashMap<String, Any>()
+        valueItem[FILTER_PARAM_NAME] = paramName
+        valueItem[FILTER_VALUE] = listKey
+        _filterDataParams.add(valueItem)
+    }
+
+    private fun updateFilterParam(paramName: String, listKey: ArrayList<String>) {
+        removeFilterParam(paramName)
+        addFilterParam(paramName, listKey)
+    }
+
+    private fun removeFilterParam(paramName: String) {
+        val iterator = _filterDataParams.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+            if (item.containsValue(paramName)) {
+                iterator.remove()
+            }
+        }
     }
 
     companion object {
