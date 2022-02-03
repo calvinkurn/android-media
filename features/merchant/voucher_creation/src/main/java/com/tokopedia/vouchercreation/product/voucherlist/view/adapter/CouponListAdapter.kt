@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.viewholder.CouponListViewHolder
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
-import java.lang.Exception
 
 class CouponListAdapter(
     private val onCouponOptionClicked: (coupon: VoucherUiModel) -> Unit,
@@ -46,8 +45,10 @@ class CouponListAdapter(
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
-        this.items.clear()
+        this.items = mutableListOf()
+        notifyDataSetChanged()
     }
 
     fun showLoading() {
