@@ -147,6 +147,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showShimmer()
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         creditHistoryImage.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_wallet))
         //arrow.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
@@ -157,6 +158,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         loadData()
         loadStatisticsData()
         swipeRefreshLayout.setOnRefreshListener {
+            showShimmer()
             loadData()
             loadStatisticsData()
         }
@@ -444,32 +446,33 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private fun hideShimmer() {
         if (!checkResponse.creditHistory || !checkResponse.latestReading || !checkResponse.summaryStats) return
         shimmerView.hide()
+        (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(true)
         swipeRefreshLayout.show()
         showFirstTimeDialog()
+    }
+
+    private fun showShimmer() {
+        shimmerView.show()
+        (requireActivity() as TopAdsDashboardActivity).toggleMultiActionButton(false)
+        swipeRefreshLayout.hide()
     }
 
     //this class holds 3 boolean to keep track if all the 3 api's have been called successfully, as if all values are true will be hiding shimmer view and showing the actual view
     inner class CheckResponse {
         var creditHistory: Boolean = true
             set(value) {
-                if (!creditHistory) {
-                    field = value
-                    hideShimmer()
-                }
+                field = value
+                hideShimmer()
             }
         var summaryStats: Boolean = false
             set(value) {
-                if (!summaryStats) {
-                    field = value
-                    hideShimmer()
-                }
+                field = value
+                hideShimmer()
             }
         var latestReading: Boolean = false
             set(value) {
-                if (!latestReading) {
-                    field = value
-                    hideShimmer()
-                }
+                field = value
+                hideShimmer()
             }
     }
 }
