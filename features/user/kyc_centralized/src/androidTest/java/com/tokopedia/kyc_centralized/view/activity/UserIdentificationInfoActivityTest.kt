@@ -1,28 +1,19 @@
 package com.tokopedia.kyc_centralized.view.activity
 
-import android.Manifest
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kyc_centralized.di.*
+import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
+import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.kycRobot
+import com.tokopedia.kyc_centralized.stubKtpCamera
+import com.tokopedia.kyc_centralized.stubLiveness
+import com.tokopedia.kyc_centralized.upload
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.tokopedia.kyc_centralized.upload
-import com.tokopedia.utils.image.ImageProcessingUtil
 
 @UiTest
 @RunWith(AndroidJUnit4::class)
@@ -33,11 +24,6 @@ class UserIdentificationInfoActivityTest {
         UserIdentificationInfoActivity::class.java, false, false
     )
 
-    @get:Rule
-    var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
-
-    private val ctx = ApplicationProvider.getApplicationContext<Context>()
-
     @Before
     fun setup() {
         // no op
@@ -47,16 +33,15 @@ class UserIdentificationInfoActivityTest {
     fun happyFlowTest() {
         ActivityComponentFactory.instance = FakeKycActivityComponentFactory()
         activityTestRule.launchActivity(null)
-        stubSampleForLiveness()
+        stubSampleForKtpAndLivenessPictures()
 
         kycRobot {
             checkTermsAndCondition()
             atInfoClickNext()
             atKtpIntroClickNext()
-            atCameraClickCapture()
-            atCameraClickNext()
+            // KTP Camera is stubbed here
             atFaceIntroClickNext()
-            // In this segment, liveness face result is provided by intent stubbing
+            // Liveness is stubbed here
         } upload {
             shouldShowPendingPage()
         }
@@ -70,18 +55,15 @@ class UserIdentificationInfoActivityTest {
             )
         )
         activityTestRule.launchActivity(null)
-        stubSampleForLiveness()
+        stubSampleForKtpAndLivenessPictures()
 
         kycRobot {
             checkTermsAndCondition()
             atInfoClickNext()
             atKtpIntroClickNext()
-            atCameraClickCapture()
-            atCameraClickNext()
+            // KTP Camera is stubbed here
             atFaceIntroClickNext()
-
-            // In this segment, liveness face result is provided by intent stubbing
-
+            // Liveness is stubbed here
             atFinalPressCta()
 
         } upload {
@@ -97,20 +79,17 @@ class UserIdentificationInfoActivityTest {
             )
         )
         activityTestRule.launchActivity(null)
-        stubSampleForLiveness()
+        stubSampleForKtpAndLivenessPictures()
 
         kycRobot {
             checkTermsAndCondition()
             atInfoClickNext()
             atKtpIntroClickNext()
-            atCameraClickCapture()
-            atCameraClickNext()
+            // KTP Camera is stubbed here
             atFaceIntroClickNext()
 
             atFinalPressCta()
-
-            atCameraClickCapture()
-            atCameraClickNext()
+            // KTP Camera is stubbed here
         } upload {
             shouldShowPendingPage()
         }
@@ -122,17 +101,15 @@ class UserIdentificationInfoActivityTest {
             case = FakeKycUploadApi.Case.NetworkFailed
         )
         activityTestRule.launchActivity(null)
-        stubSampleForLiveness()
+        stubSampleForKtpAndLivenessPictures()
 
         kycRobot {
             checkTermsAndCondition()
             atInfoClickNext()
             atKtpIntroClickNext()
-            atCameraClickCapture()
-            atCameraClickNext()
+            // KTP Camera is stubbed here
             atFaceIntroClickNext()
-
-            // In this segment, liveness face result is provided by intent stubbing
+            // Liveness is stubbed here
             atFinalPressErrorButton()
         } upload {
             shouldShowPendingPage()
@@ -140,20 +117,8 @@ class UserIdentificationInfoActivityTest {
     }
 
 
-    private fun stubSampleForLiveness() {
-        intending(hasData(ApplinkConstInternalGlobal.LIVENESS_DETECTION)).respondWithFunction {
-            val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(
-                Bitmap.CompressFormat.JPEG,
-                UserIdentificationFormActivity.FILE_NAME_KYC
-            )
-            val sampleJpeg = ctx.assets.open("sample.jpeg")
-            sampleJpeg.copyTo(cameraResultFile.outputStream())
-            Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(
-                    ApplinkConstInternalGlobal.PARAM_FACE_PATH,
-                    cameraResultFile.absolutePath
-                )
-            })
-        }
+    private fun stubSampleForKtpAndLivenessPictures() {
+        stubLiveness()
+        stubKtpCamera()
     }
 }
