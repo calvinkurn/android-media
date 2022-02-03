@@ -116,7 +116,13 @@ class UserIdentificationInfoActivityTest {
         }
     }
 
-
+    /**
+     * In this scenario, we also stub the intent for requesting KTP Camera even though the
+     * [UserIdentificationCameraActivity] is also part of this module, we avoid testing it
+     * because capturing picture with CameraView requires physical device
+     *
+     * To test the camera, you can use [IssueSimulatorUserIdentification]
+     * */
     private fun stubSampleForKtpAndLivenessPictures() {
         stubLiveness()
         stubKtpCamera()
