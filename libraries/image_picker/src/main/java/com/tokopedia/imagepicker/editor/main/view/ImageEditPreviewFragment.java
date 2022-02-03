@@ -397,13 +397,20 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Override
     public void onSuccessSaveWatermarkImage(String filePath) {
         onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
+        if (listOutputWatermark != null)
+        for(Bitmap bitmap: listOutputWatermark) {
+            if (!bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
+            listOutputWatermark = null;
+        }
     }
 
     @Override
     public void onSuccessGetWatermarkImage(Bitmap[] bitmap) {
         listOutputWatermark = bitmap;
-        gestureCropImageView.setImageBitmap(bitmap[0]);
-        onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(bitmap);
+        gestureCropImageView.setImageBitmap(listOutputWatermark[0]);
+        onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(listOutputWatermark);
     }
 
     void setPreviewImageWatermark(Bitmap bitmap) {
@@ -570,7 +577,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public void cancelWatermark() {
         if (listOutputWatermark != null) {
             for(Bitmap bitmap: listOutputWatermark) {
-                bitmap.recycle();
+                if (!bitmap.isRecycled()) {
+                    bitmap.recycle();
+                }
+                listOutputWatermark = null;
             }
         }
         if (lastStateImage == null) return;
