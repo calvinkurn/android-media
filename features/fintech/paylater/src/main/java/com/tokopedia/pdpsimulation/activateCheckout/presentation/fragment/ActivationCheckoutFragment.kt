@@ -94,10 +94,17 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         observerOtherDetail()
         initView()
 
-        productInfoActivationShimmer.visibility = View.VISIBLE
-        detailHeader.visibility = View.GONE
+        startAllLoaders()
         payLaterActivationViewModel.getProductDetail(productId)
 
+    }
+
+    private fun startAllLoaders() {
+        productInfoActivationShimmer.visibility = View.VISIBLE
+        detailHeader.visibility = View.GONE
+        amountBottomDetailLoader.visibility = View.VISIBLE
+        gatewayDetailShimmer.visibility = View.VISIBLE
+        gatewayDetailLayout.visibility = View.GONE
     }
 
     fun updateSelectedTenure(gatewaySelected: Int)
@@ -112,7 +119,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     productInfoActivationShimmer.visibility = View.GONE
                     detailHeader.visibility = View.VISIBLE
                     setProductData(it.data)
-                    amountBottomDetailLoader.visibility = View.VISIBLE
                     payLaterActivationViewModel.getOptimizedCheckoutDetail(
                         productId,
                         payLaterActivationViewModel.price * quantity, gatewayId
@@ -135,12 +141,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 is Success -> {
                     amountBottomDetailLoader.visibility = View.GONE
                     if (it.data.checkoutData.isNotEmpty()) {
+                        gatewayDetailShimmer.visibility = View.GONE
+                        gatewayDetailLayout.visibility = View.VISIBLE
+                        amountBottomDetailLoader.visibility = View.GONE
                         checkDisableLogic(it.data.checkoutData[selectedGateway].disable)
                         listOfGateway = it.data
                         setSelectedTenure(it.data)
                         setTenureOptionsData(it.data)
                     } else {
-                        limitExceededMethod()
+
                     }
                 }
                 is Fail -> {
@@ -155,9 +164,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         this.isDisable()
     }
 
-    private fun limitExceededMethod() {
-        activationTenureAdapter.notifyDataSetChanged()
-    }
+
 
     private fun setSelectedTenure(data: PaylaterGetOptimizedModel) {
         for (i in 0 until data.checkoutData[selectedGateway].tenureDetail.size) {
@@ -277,6 +284,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
             quantity = newValue
             amountBottomDetailLoader.visibility = View.VISIBLE
+            gatewayDetailShimmer.visibility = View.VISIBLE
+            gatewayDetailLayout.visibility = View.GONE
             payLaterActivationViewModel.getOptimizedCheckoutDetail(
                 productId,
                 payLaterActivationViewModel.price * quantity,
@@ -318,8 +327,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 if (this.selectedProductId.isNotBlank()) {
                     productId = this.selectedProductId
 
-                    productInfoActivationShimmer.visibility = View.VISIBLE
-                    detailHeader.visibility = View.GONE
+                   startAllLoaders()
                     payLaterActivationViewModel.getProductDetail(this.selectedProductId)
 
                 }

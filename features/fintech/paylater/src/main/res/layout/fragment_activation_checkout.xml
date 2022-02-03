@@ -41,9 +41,19 @@
                 layout="@layout/paylater_activation_gateway_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_marginLeft="@dimen/unify_space_16"
                 android:layout_marginRight="@dimen/unify_space_16"
                 app:layout_constraintTop_toBottomOf="@id/productInfoActivationShimmer" />
+
+            <include
+                android:id="@+id/gatewayDetailShimmer"
+                layout="@layout/tenure_activation_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginRight="@dimen/unify_space_16"
+                app:layout_constraintTop_toBottomOf="@id/gatewayDetailLayout" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

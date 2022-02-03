@@ -76,7 +76,7 @@ class PayLaterActivationViewModel @Inject constructor(
     }
 
     fun onFailActivationData(throwable: Throwable) {
-        _payLaterActivationDetailLiveData.value = Fail(throwable)
+        _payLaterActivationDetailLiveData.postValue ( Fail(throwable))
     }
 
 }
