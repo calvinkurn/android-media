@@ -83,7 +83,28 @@ class CreateCouponProductActivity : AppCompatActivity() {
         router.replaceAndAddToBackstack(supportFragmentManager, R.id.parent_view, couponSettingFragment)
     }
 
-    private fun navigateToProductListPage() {
+    private fun navigateToProductListPage(coupon: Coupon) {
+        val couponSettings = coupon.settings
+
+        val targetBuyer = 0 //0 for all user
+        val benefitType = when {
+            couponSettings.type == CouponType.FREE_SHIPPING -> "idr"
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> "idr"
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> "percent"
+            else -> "idr"
+        }
+
+        val couponType = when (couponSettings.type) {
+            CouponType.NONE -> EMPTY_STRING
+            CouponType.CASHBACK -> "cashback"
+            CouponType.FREE_SHIPPING -> "shipping"
+        }
+
+        val benefitIdr = couponSettings.discountAmount
+        val benefitMax = couponSettings.maxDiscount
+        val benefitPercent = couponSettings.discountPercentage
+        val minPurchase = couponSettings.minimumPurchase
+
         startActivity(Intent(this, ProductListActivity::class.java))
     }
 

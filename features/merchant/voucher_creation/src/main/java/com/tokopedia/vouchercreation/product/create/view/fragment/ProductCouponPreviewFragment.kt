@@ -54,11 +54,12 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         private const val ROTATION_ANGLE_ZERO = 0f
         private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
         private const val ROTATION_ANIM_DURATION_IN_MILLIS: Long = 300
+        private const val COUPON_ID_NOT_YET_CREATED : Long = -1
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
             onNavigateToCouponSettingsPage: () -> Unit,
-            onNavigateToProductListPage: () -> Unit,
+            onNavigateToProductListPage: (Coupon) -> Unit,
             onCreateCouponSuccess: (Coupon) -> Unit,
             onUpdateCouponSuccess: () -> Unit,
             onDuplicateCouponSuccess: () -> Unit,
@@ -97,7 +98,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
 
     private var onNavigateToCouponInformationPage: () -> Unit = {}
     private var onNavigateToCouponSettingsPage: () -> Unit = {}
-    private var onNavigateToProductListPage: () -> Unit = {}
+    private var onNavigateToProductListPage: (Coupon) -> Unit = {}
     private var onDuplicateCouponSuccess: () -> Unit = {}
     private var onUpdateCouponSuccess: () -> Unit = {}
     private var onCreateCouponSuccess: (Coupon) -> Unit = {}
@@ -204,7 +205,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         binding.tpgReadArticle.setOnClickListener { redirectToSellerEduPage() }
         binding.tpgCouponInformation.setOnClickListener { onNavigateToCouponInformationPage() }
         binding.tpgCouponSetting.setOnClickListener { onNavigateToCouponSettingsPage() }
-        binding.tpgAddProduct.setOnClickListener { onNavigateToProductListPage() }
+        binding.tpgAddProduct.setOnClickListener { navigateToProductListPage() }
         binding.btnCreateCoupon.setOnClickListener { createCoupon() }
         binding.btnPreviewCouponImage.setOnClickListener { displayCouponPreviewBottomSheet() }
         binding.imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
@@ -648,5 +649,15 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     private fun showError(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(requireActivity(), throwable)
         Toaster.build(binding.root, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+    }
+
+    private fun navigateToProductListPage() {
+        val coupon = Coupon(
+            COUPON_ID_NOT_YET_CREATED,
+            couponInformation ?: return,
+            couponSettings ?: return,
+            couponProducts
+        )
+        onNavigateToProductListPage(coupon)
     }
 }
