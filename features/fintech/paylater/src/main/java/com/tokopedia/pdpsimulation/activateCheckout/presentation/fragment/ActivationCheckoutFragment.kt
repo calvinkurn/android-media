@@ -69,7 +69,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private var selectedTenurePosition = 0
     private var selectedGateway = 0
     var quantity = 1
-    var disableKey = false
+    var isDisabled= false
 
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
@@ -133,6 +133,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             when (it) {
                 is Success -> {
                     if (it.data.checkoutData.isNotEmpty()) {
+                        checkDisableLogic(it.data.checkoutData[selectedGateway].disable)
                         listOfGateway = it.data
                         setSelectedTenure(it.data)
                         setTenureOptionsData(it.data)
@@ -147,8 +148,12 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
+    private fun checkDisableLogic(disable: Boolean) {
+        isDisabled = disable
+        this.isDisable()
+    }
+
     private fun limitExceededMethod() {
-        this.disableKey = true
         activationTenureAdapter.notifyDataSetChanged()
     }
 
@@ -331,8 +336,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     override fun isDisable(): Boolean {
-        return disableKey
+        return isDisabled
     }
+
 
     override fun selectedTenure(
         tenureSelectedModel: TenureSelectedModel,

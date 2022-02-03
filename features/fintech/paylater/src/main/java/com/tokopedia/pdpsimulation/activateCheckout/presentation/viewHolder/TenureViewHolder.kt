@@ -8,6 +8,7 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment.ActivationCheckoutFragment
 import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view.*
 
@@ -21,7 +22,7 @@ class TenureViewHolder(itemView: View, val tenureSelectListner: ActivationListne
     ) {
 
         itemView.apply {
-            // changeViewColor(tenureSelectListner.isDisable())
+             changeViewColor(tenureSelectListner.isDisable())
             if (tenureDetail.isSelected) {
                 individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 radioSelector.isChecked = true
@@ -37,16 +38,24 @@ class TenureViewHolder(itemView: View, val tenureSelectListner: ActivationListne
         }
     }
 
-//    private fun changeViewColor(disable: Boolean) {
-//        if(disable)
-//        {
-//            itemView.paymentDetailHeader.setTextColor(R.color.bottom_sheet_item_text_color)
-//        }
-//        else
-//        {
-//
-//        }
-//    }
+    private fun changeViewColor(disable: Boolean) {
+        itemView.apply {
+            if(disable)
+            {
+                paymentDetailHeader.isEnabled = false
+               paymentDetailSubHeader.isEnabled = false
+
+            }
+            else
+            {
+               paymentDetailHeader.isEnabled = true
+                paymentDetailSubHeader.isEnabled = true
+
+
+            }
+        }
+
+    }
 
 
     companion object {

@@ -10,7 +10,8 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.Tenu
 
 class ActivationTenureAdapter(
     var tenureDetailList: List<TenureDetail>,
-    private val listner: ActivationListner
+    private val listner: ActivationListner,
+    private val isDisabled:Boolean = false
 ) : RecyclerView.Adapter<TenureViewHolder>() {
 
 
@@ -27,7 +28,7 @@ class ActivationTenureAdapter(
         return tenureDetailList.size
     }
 
-    fun updateList(newTenureList: List<TenureDetail>) {
+    fun updateList(newTenureList: List<TenureDetail>,) {
         this.tenureDetailList = newTenureList
         notifyDataSetChanged()
     }
