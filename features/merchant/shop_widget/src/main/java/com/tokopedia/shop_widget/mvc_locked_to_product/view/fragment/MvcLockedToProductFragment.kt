@@ -150,6 +150,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun loadInitialData() {
+        resetEndlessScrollState()
         adapter.showInitialPagePlaceholderLoading()
         getMvcLockedToProductData(voucherId)
     }
@@ -388,6 +389,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun getNewProductListData() {
+        resetEndlessScrollState()
         adapter.updateTotalProductAndSortData(selectedSortData)
         adapter.showNewProductListPlaceholder()
         getProductListData(voucherId, START_PAGE)
@@ -421,6 +423,10 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             )
             startActivity(intent)
         }
+    }
+
+    private fun resetEndlessScrollState(){
+        endlessRecyclerViewScrollListener?.resetState()
     }
 
 }
