@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
 import com.tokopedia.tokomember.model.BottomSheetContentItem
 
-
 data class GyroTokomemberItem(
     var id : Long = 0L,
     @SerializedName("url")
@@ -35,3 +34,7 @@ data class GyroTokomemberItem(
         return typeFactory.type(this)
     }
 }
+
+data class TokomemberModel(
+    val listOfTokomemberItem: List<GyroTokomemberItem> = arrayListOf(),
+)

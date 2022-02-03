@@ -1,41 +1,22 @@
 package com.tokopedia.tokomember.usecase
 
-import com.tokopedia.tokomember.model.MembershipGetShopRegistrationWidget
-import com.tokopedia.tokomember.model.ShopRegisterResponse
+import com.tokopedia.tokomember.model.MembershipShopResponse
 import com.tokopedia.tokomember.repository.TokomemberRepository
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
 class TokomemberUsecase @Inject constructor(private val tokomemberRepository: TokomemberRepository) :
-    UseCase<ShopRegisterResponse>() {
+    UseCase<MembershipShopResponse>() {
 
     var shopId by Delegates.notNull<Int>()
     var amount by Delegates.notNull<Float>()
-    fun getTokomemberData(
-        shopId: Int?,
-        amount: Float?,
-        success: (MembershipGetShopRegistrationWidget?) -> Unit,
-        onFail: (Throwable) -> Unit
-    ) {
-        if (shopId != null) {
-            this.shopId = shopId
-        }
-        if (amount != null) {
-            this.amount = amount
-        }
-        execute({
-            success(it.data?.membershipGetShopRegistrationWidget)
-        }, {
-            onFail(it)
-        })
-    }
 
-    override suspend fun executeOnBackground(): ShopRegisterResponse {
+    override suspend fun executeOnBackground(): MembershipShopResponse {
         return tokomemberRepository.getTokomemberData(shopId, amount)
     }
 
-    fun setGqlParams(queryParamTokomember: Pair<Int, Float>) {
+    fun setGqlParams(queryParamTokomember: Triple<Int, Float, Any?>) {
        this.shopId = queryParamTokomember.first
         this.amount = queryParamTokomember.second
     }

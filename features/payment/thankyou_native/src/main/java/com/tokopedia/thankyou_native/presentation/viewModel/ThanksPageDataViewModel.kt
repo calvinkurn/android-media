@@ -4,16 +4,16 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
+import com.tokopedia.thankyou_native.data.mapper.PageType
+import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
-import com.tokopedia.tokomember.model.MembershipGetShopRegistrationWidget
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
-import com.tokopedia.tokomember.usecase.TokomemberUsecase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -72,7 +72,9 @@ class ThanksPageDataViewModel @Inject constructor(
                         queryParamTokomember  =
                             getTokomemberRequestParams(thanksPageData)
                     }
-                    postGyroRecommendation(it.engineData , queryParamTokomember)
+                    val triple = Triple(480244,50000F, PaymentPageMapper.getPaymentPageType(thanksPageData.pageType))
+                    PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)
+                    postGyroRecommendation(it.engineData , triple)
                 }
             }
         }
@@ -105,12 +107,12 @@ class ThanksPageDataViewModel @Inject constructor(
 
     private fun postGyroRecommendation(
         engineData: FeatureEngineData?,
-        queryParamTokomember: Pair<Int, Float>?
+        queryParamTokomember: Triple<Int, Float, PageType?>
     ) {
         gyroEngineMapperUseCase.cancelJobs()
         gyroEngineMapperUseCase.getFeatureListData(engineData,queryParamTokomember, {
             gyroRecommendationLiveData.postValue(it)
-        }, { it.printStackTrace() })
+        }) { it.printStackTrace() }
     }
 
     private fun onThanksPageDataSuccess(thanksPageData: ThanksPageData) {

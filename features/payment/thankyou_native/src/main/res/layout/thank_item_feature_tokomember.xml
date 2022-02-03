@@ -23,38 +23,38 @@
             android:layout_height="wrap_content">
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/ivFeatureItem"
+                android:id="@+id/ivFeatureItemToko"
                 android:layout_width="@dimen/layout_lvl4"
                 android:layout_height="@dimen/layout_lvl4"
                 android:scaleType="centerInside"
-                app:layout_constraintBottom_toBottomOf="@+id/tvFeatureItemDescription"
+                app:layout_constraintBottom_toBottomOf="@+id/tvFeatureItemDescriptionToko"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:unify_image_corner_radius="0" />
 
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvFeatureItemTitle"
+                android:id="@+id/tvFeatureItemTitleToko"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivFeatureItem"
+                app:layout_constraintStart_toEndOf="@id/ivFeatureItemToko"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 tools:text="Title" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvFeatureItemDescription"
+                android:id="@+id/tvFeatureItemDescriptionToko"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl1"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivFeatureItem"
-                app:layout_constraintTop_toBottomOf="@id/tvFeatureItemTitle"
+                app:layout_constraintStart_toEndOf="@id/ivFeatureItemToko"
+                app:layout_constraintTop_toBottomOf="@id/tvFeatureItemTitleToko"
                 app:typographyType="body_3"
                 tools:text="Title" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,12 +3,11 @@ package com.tokopedia.tokomember.model
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 
-data class ShopRegisterResponse(
+data class MembershipShopResponse(
 
-	@SerializedName("data")
-	val data: Data? = null
+	@SerializedName("membershipGetShopRegistrationWidget")
+	val membershipGetShopRegistrationWidget: MembershipGetShopRegistrationWidget? = null
 )
 
 @Parcelize

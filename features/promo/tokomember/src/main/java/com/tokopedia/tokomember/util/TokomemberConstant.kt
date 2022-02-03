@@ -7,7 +7,7 @@ import com.tokopedia.tokomember.util.FollowWidgetType.Companion.MEMBERSHIP_OPEN
 const val IO = "IO"
 
 const val TM_REGISTRATION_SHOP_DATA ="""
-     query membershipGetShopRegistrationWidget(${'$'}shopID: Int!, ${'$'}amount: Int!) {
+     query membershipGetShopRegistrationWidget(${'$'}shopID: Int!, ${'$'}amount: Float!) {
   membershipGetShopRegistrationWidget(orderData: {
         shopID: ${'$'}shopID, amount: ${'$'}amount } ) {
         resultStatus {

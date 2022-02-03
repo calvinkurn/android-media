@@ -8,20 +8,20 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroTokomemberItem
-import com.tokopedia.tokomember.TokomemberActivity
-import kotlinx.android.synthetic.main.thank_item_feature_list.view.*
+import kotlinx.android.synthetic.main.thank_item_feature_tokomember.view.*
 
 class GyroTokomemberViewHolder(val view: View, val listener: GyroAdapterListener)
     : AbstractViewHolder<GyroTokomemberItem>(view) {
 
-    private val ivFeatureItem = itemView.ivFeatureItem
-    private val tvFeatureItemTitle = itemView.tvFeatureItemTitle
-    private val tvFeatureItemDescription = itemView.tvFeatureItemDescription
-
+    private val ivFeatureItem = itemView.ivFeatureItemToko
+    private val tvFeatureItemTitle = itemView.tvFeatureItemTitleToko
+    private val tvFeatureItemDescription = itemView.tvFeatureItemDescriptionToko
+    private val viewFlipperItemContainer = itemView.containerViewFlipper
 
     override fun bind(element: GyroTokomemberItem?) {
+        showShimmer()
         element?.apply {
-
+            showItem()
             itemView.tag = element
             ivFeatureItem.scaleType = ImageView.ScaleType.CENTER_INSIDE
 
@@ -47,7 +47,18 @@ class GyroTokomemberViewHolder(val view: View, val listener: GyroAdapterListener
         }
     }
 
+    private fun showShimmer() {
+        viewFlipperItemContainer.displayedChild = SHIMMER
+    }
+
+    private fun showItem() {
+        viewFlipperItemContainer.displayedChild = DATA
+    }
+
     companion object {
         val LAYOUT_ID = R.layout.thank_item_feature_tokomember
+        const val SHIMMER = 0
+        const val DATA = 1
+        const val ERROR = 2
     }
 }

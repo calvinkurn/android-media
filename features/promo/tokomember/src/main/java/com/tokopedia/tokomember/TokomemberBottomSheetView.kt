@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.tokomember.TokomemberActivity.Companion.KEY_MEMBERSHIP
 import com.tokopedia.tokomember.di.DaggerTokomemberComponent
 import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -15,6 +16,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TokomemberBottomSheetView : BottomSheetUnify() {
 
+    private var onFinishedListener: TokomemberBottomSheetView.OnFinishedListener? = null
     private var textTitle: Typography? = null
     private var textDesc: Typography? = null
     private var button: UnifyButton? = null
@@ -55,15 +57,21 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
         this.apply {
             isDragable = true
             isHideable = true
-            showKnob = true
-            showCloseIcon = false
+            showKnob = false
+            showCloseIcon = true
+            clearContentPadding = true
             bottomSheet.isGestureInsetBottomIgnored = true
             customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels / 2).toDp()
+
+            setCloseClickListener {
+                dismiss()
+                onFinishedListener?.onFinish()
+            }
         }
     }
 
     private fun setBottomSheet() {
-        bottomSheetData = arguments?.getParcelable("key_membership")
+        bottomSheetData = arguments?.getParcelable(KEY_MEMBERSHIP)
 
         textTitle?.text = bottomSheetData?.title
         textDesc?.text = bottomSheetData?.description
@@ -72,5 +80,13 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
         button?.setOnClickListener {
             RouteManager.route(context, bottomSheetData?.cta?.appLink)
         }
+    }
+
+    fun setOnFinishedListener(onFinishedListener: OnFinishedListener) {
+        this.onFinishedListener = onFinishedListener
+    }
+
+    interface OnFinishedListener {
+        fun onFinish()
     }
 }

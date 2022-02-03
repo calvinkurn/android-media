@@ -62,6 +62,14 @@ class GyroView @JvmOverloads constructor(
         }
     }
 
+    fun updateTokoMemberWidget(position: Int, gyroTokomemberItem: GyroTokomemberItem?) {
+        if (adapter.list.any { it is GyroTokomemberItem } && position >=0) {
+            adapter.list.removeAt(position)
+            adapter.list.add(position, gyroTokomemberItem)
+            adapter.notifyItemChanged(position)
+        }
+    }
+
     private fun addTORecyclerView(featureEngineItem: ArrayList<Visitable<*>>) {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -101,7 +109,11 @@ class GyroView @JvmOverloads constructor(
                         gyroRecommendationItem,
                         thanksPageData, position + 1
                     )
-                    listener?.registerMembership(gyroRecommendationItem.listOfBottomSheetContent,gyroRecommendationItem.membershipCardId)
+                    listener?.registerMembership(
+                        gyroRecommendationItem.listOfBottomSheetContent,
+                        gyroRecommendationItem.membershipCardId,
+                        position
+                    )
                 }
                 is GyroRecommendationListItem -> {
                     analytics.onGyroRecommendationListClick(
@@ -127,5 +139,9 @@ class GyroView @JvmOverloads constructor(
 }
 
 interface RegisterMemberShipListener {
-    fun registerMembership(bundle: BottomSheetContentItem, memberShipCardId:String)
+    fun registerMembership(
+        bottomSheetContentItem: BottomSheetContentItem,
+        memberShipCardId: String,
+        position: Int
+    )
 }

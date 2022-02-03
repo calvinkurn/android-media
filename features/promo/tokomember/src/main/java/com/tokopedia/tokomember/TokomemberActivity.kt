@@ -10,22 +10,15 @@ import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 
-class TokomemberActivity : BaseActivity() {
-    var isOnResume = false
-    private var appLink : String?=null
-    private val REQUEST_CODE_LOGIN = 12
+class TokomemberActivity : BaseActivity() , TokomemberBottomSheetView.OnFinishedListener {
+    private var isOnResume = false
     lateinit var userSession: UserSession
 
     companion object {
-
-        const val REDIRECTION_LINK = "redirectionLink"
-        const val DATA_HASH_CODE = "dataHash"
-
-        fun getIntent(context: Context, redirectionLink: String = "",hashCode:Int = 0 , bundle: Bundle= Bundle()): Intent {
+        const val KEY_MEMBERSHIP = "key_membership"
+        fun getIntent(context: Context, bottomSheetContentItem: BottomSheetContentItem?): Intent {
             val intent = Intent(context, TokomemberActivity::class.java)
-            intent.putExtra(REDIRECTION_LINK, redirectionLink)
-            intent.putExtra(DATA_HASH_CODE,hashCode)
-            intent.putExtra("key_membership",bundle)
+            intent.putExtra(KEY_MEMBERSHIP,bottomSheetContentItem)
             return intent
         }
     }
@@ -34,7 +27,6 @@ class TokomemberActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
         handleDimming()
-        appLink = intent.extras?.getString(REDIRECTION_LINK, "") ?: ""
         showTmBottomSheetDetail()
     }
 
@@ -48,6 +40,7 @@ class TokomemberActivity : BaseActivity() {
 
     private fun showTmBottomSheetDetail() {
         val bottomSheet = TokomemberBottomSheetView.newInstance(intent?.extras?:Bundle())
+        bottomSheet.setOnFinishedListener(this)
         bottomSheet.setShowListener {
             val titleMargin = dpToPx(16).toInt()
             bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
@@ -80,4 +73,9 @@ class TokomemberActivity : BaseActivity() {
         super.onDestroy()
         isOnResume = false
     }
+
+    override fun onFinish() {
+        finish()
+    }
+
 }

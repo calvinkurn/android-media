@@ -10,7 +10,6 @@ data class GyroRecommendation(
         var title : String,
         var description: String,
         var gyroVisitable : ArrayList<Visitable<*>>,
-        var gyroTokomemberBottomSheet : BottomSheetContentItem = BottomSheetContentItem(),
         var gyroMembershipSuccessWidget : GyroTokomemberItem = GyroTokomemberItem()
 )
 

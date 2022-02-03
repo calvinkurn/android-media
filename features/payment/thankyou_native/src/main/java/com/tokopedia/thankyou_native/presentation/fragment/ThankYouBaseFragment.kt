@@ -34,6 +34,7 @@ import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroTokomemberItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
@@ -102,6 +103,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     lateinit var userSession: UserSessionInterface
 
     private var membershipBottomSheetData: BottomSheetContentItem? = null
+    private var mTokomemberItemPosition = -1
+    private var gyroTokomemberItem: GyroTokomemberItem? = null
+    private var memberShipCardId: String = ""
 
     override fun initInjector() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
@@ -245,6 +249,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             }
         })
         thanksPageDataViewModel.gyroRecommendationLiveData.observe(viewLifecycleOwner, Observer {
+            gyroTokomemberItem = it?.gyroMembershipSuccessWidget
             addDataToGyroRecommendationView(it)
         })
 
@@ -276,18 +281,16 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             when(it) {
                 is Success -> {
                     view?.context?.apply {
-                        val bundle = Bundle()
-                        bundle.putParcelable("key_membership",bundle)
-                        startActivity(TokomemberActivity.getIntent(this,bundle = bundle))
+                        startActivityForResult(TokomemberActivity.getIntent(this,membershipBottomSheetData) , REQUEST_CODE_TOKOMEMBER)
                     }
                 }
                 is Fail -> {
-                    Toaster.build(requireView(), "Error message", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Toaster.build(requireView(), "Error message", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR , "Coba Lagi" , View.OnClickListener {
+                        thanksPageDataViewModel.registerTokomember(memberShipCardId)
+                    }).show()
                 }
             }
-
         }
-
     }
 
     private fun updateLocalizingAddressData(data: GetDefaultChosenAddressResponse) {
@@ -539,6 +542,14 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         if (iRecommendationView != null) {
             iRecommendationView?.onActivityResult(requestCode, resultCode, data)
         }
+        when (requestCode) {
+            REQUEST_CODE_TOKOMEMBER -> context?.let {
+                getFeatureListingContainer()?.updateTokoMemberWidget(
+                    mTokomemberItemPosition,
+                    gyroTokomemberItem
+                )
+            }
+        }
     }
 
     fun showErrorOnUI(errorMessage: String, retry: (() -> Unit)?) {
@@ -571,8 +582,14 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         )
     }
 
-    override fun registerMembership(membershipBottomSheetData: BottomSheetContentItem, memberShipCardId:String) {
-        this.membershipBottomSheetData = membershipBottomSheetData
+    override fun registerMembership(
+        bottomSheetContentItem: BottomSheetContentItem,
+        memberShipCardId: String,
+        position: Int
+    ) {
+        mTokomemberItemPosition = position
+        this.memberShipCardId = memberShipCardId
+        this.membershipBottomSheetData = bottomSheetContentItem
         thanksPageDataViewModel.registerTokomember(memberShipCardId)
     }
 
@@ -587,5 +604,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         const val TOP_ADS_SRC = "thank_you_page"
         const val TOP_ADS_HEADLINE_ABOVE_RECOM = "variant1"
         const val TOP_ADS_HEADLINE_BELOW_RECOM = "variant2"
+        const val REQUEST_CODE_TOKOMEMBER = 7
     }
 }
