@@ -120,7 +120,7 @@ class DenomFullViewHolder(
                 } else hide()
 
                 setOnClickListener {
-                    denomFullListener.onChevronDenomClicked(denomFull, position)
+                    denomFullListener.onChevronDenomClicked(denomFull, position, denomType)
                 }
             }
 

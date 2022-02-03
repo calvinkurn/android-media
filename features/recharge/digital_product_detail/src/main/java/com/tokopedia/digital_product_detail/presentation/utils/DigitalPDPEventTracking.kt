@@ -69,6 +69,8 @@ interface DigitalPDPEventTracking {
             const val IMPRESSION_PDP_BANNER = "impression pdp banner"
             const val IMPRESSION_FILTER_CHIP = "impression filter chip"
             const val CLICK_FILTER_CHIP = "click filter chip"
+            const val CLICK_CHEVRON_IN_PRODUCT_CLUSTER = "click chevron in product cluster"
+            const val CLICK_CHEVRON_IN_PROMO_SECTION = "click chevron in promo section"
         }
     }
 }

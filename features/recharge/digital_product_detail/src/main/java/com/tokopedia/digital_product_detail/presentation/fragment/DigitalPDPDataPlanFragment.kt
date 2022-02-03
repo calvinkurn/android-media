@@ -1056,9 +1056,25 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    override fun onChevronDenomClicked(denomFull: DenomData, position: Int) {
+    override fun onChevronDenomClicked(denomFull: DenomData, position: Int, layoutType: DenomWidgetEnum) {
         fragmentManager?.let {
             ProductDescBottomSheet(denomFull, this).show(it, "")
+        }
+        if (layoutType == DenomWidgetEnum.FULL_TYPE) {
+            digitalPDPTelcoAnalytics.clickFullDenomChevron(
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId,
+            )
+        } else {
+            digitalPDPTelcoAnalytics.clickPromoFullDenomChevron(
+                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId,
+                layoutType
+            )
         }
     }
 
