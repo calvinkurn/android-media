@@ -28,6 +28,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
+import kotlin.math.abs
 
 class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                            defStyleAttr: Int = 0)
@@ -44,6 +45,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     private var textFieldStaticLabel: String = ""
 
+    private var isClearableState = false
+
     init {
         initInputField()
         initSortFilterChip()
@@ -57,7 +60,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 isInputError = false
                 textInputLayout.hint = textFieldStaticLabel
                 clearErrorState()
-                hideCheckIcon()
+                hideIndicatorIcon()
                 hideOperatorIcon()
                 mInputFieldListener?.onClearInput()
             }
@@ -90,6 +93,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                         hideClearIcon()
                         clearErrorState()
+                        // if manual input
+                        if (abs(before - count) == 1 && mInputFieldListener?.isKeyboardShown() == true) {
+                            isClearableState = false
+                        }
                         setLoading(s?.toString()?.isNotEmpty() == true)
                         mInputFieldListener?.onRenderOperator(true)
                     }
@@ -99,7 +106,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         clearFocus()
                         hideSoftKeyboard()
-                        hideCheckIcon()
+                        hideIndicatorIcon()
                         showClearIcon()
                     }
                     true
@@ -145,11 +152,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             sortFilterItem.listener = {
                 if (number.subtitle.isEmpty()) {
                     setContactName("")
-                    setInputNumber(number.title)
+                    setInputNumber(number.title, true)
                     mFilterChipListener?.onClickFilterChip(false)
                 } else {
                     setContactName(number.title)
-                    setInputNumber(number.subtitle)
+                    setInputNumber(number.subtitle, true)
                     mFilterChipListener?.onClickFilterChip(true)
                 }
                 clearFocusAutoComplete()
@@ -218,7 +225,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         binding.clientNumberWidgetInputField.textInputLayout.hint = textFieldStaticLabel
     }
 
-    fun setInputNumber(inputNumber: String) {
+    fun setInputNumber(inputNumber: String, isAutoFill: Boolean = false) {
+        isClearableState = isAutoFill
         binding.clientNumberWidgetInputField.editText.setText(
             CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber))
     }
@@ -236,11 +244,26 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         binding.clientNumberWidgetInputField.isLoading = isLoading
     }
 
-    fun showCheckIcon() {
+    fun showIndicatorIcon() {
+        if (isClearableState) {
+            hideCheckIcon()
+            showClearIcon()
+        } else {
+            hideClearIcon()
+            showCheckIcon()
+        }
+    }
+
+    fun hideIndicatorIcon() {
+        hideClearIcon()
+        hideCheckIcon()
+    }
+
+    private fun showCheckIcon() {
         binding.clientNumberWidgetInputField.icon1.show()
     }
 
-    fun hideCheckIcon() {
+    private fun hideCheckIcon() {
         binding.clientNumberWidgetInputField.icon1.hide()
     }
 
@@ -249,7 +272,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     fun setErrorInputField(errorMessage: String, resetProvider: Boolean = false) {
         binding.clientNumberWidgetInputField.run {
             val temp = textInputLayout.helperText.toString()
-            if (temp != errorMessage) {
+            if (temp != errorMessage && getInputNumber().isNotEmpty()) {
                 setMessage(errorMessage)
                 isInputError = true
 
@@ -360,6 +383,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         fun onRenderOperator(isDelayed: Boolean)
         fun onClearInput()
         fun onClickContact()
+        fun isKeyboardShown(): Boolean
     }
 
     interface ClientNumberAutoCompleteListener {

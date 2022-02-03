@@ -23,6 +23,7 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,6 +40,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     var filterData = emptyList<TelcoFilterTagComponent>()
 
     private var loadingJob: Job? = null
+    private var catalogProductJob: Job? = null
+
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect()
     )
@@ -99,8 +102,9 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         clientNumber: String,
         isFilterRefreshed: Boolean = true
     ) {
+        catalogProductJob?.cancel()
         _observableDenomMCCMData.postValue(RechargeNetworkResult.Loading)
-        launchCatchError(block = {
+        catalogProductJob = launchCatchError(block = {
             val denomFull = repo.getProductInputMultiTabDenomFull(
                 menuId,
                 operator,
@@ -111,7 +115,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
             setFilterDataParam(denomFull.filterTagComponents)
         }) {
-            _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
+            if (it !is CancellationException)
+                _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
         }
     }
 
@@ -138,6 +143,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }) {
             _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
         }
+    }
+
+    fun cancelCatalogProductJob() {
+        catalogProductJob?.cancel()
     }
 
     fun addToCart(
