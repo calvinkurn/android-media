@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
@@ -54,6 +55,7 @@ class RechargeHomepageRecommendationBannerViewHolder(
     }
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_recommendation_banner
 
         private const val GRID_COLUMN = 2
