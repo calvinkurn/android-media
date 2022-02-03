@@ -42,11 +42,6 @@ abstract class PlayBroadcastFragmentModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayBeforeLiveFragment::class)
-    abstract fun getBeforeLiveFragment(fragment: PlayBeforeLiveFragment): Fragment
-
-    @Binds
-    @IntoMap
     @FragmentKey(PlayPermissionFragment::class)
     abstract fun getPermissionFragment(fragment: PlayPermissionFragment): Fragment
 
