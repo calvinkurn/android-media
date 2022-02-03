@@ -13,6 +13,8 @@ object TopAdsDashboardConstant {
     const val PARAM_CURRENT_TAB = "currentTab"
     const val PARAM_INSIGHT_TAB = "tabInsight"
     const val PARAM_TAB = "tab"
+    const val PARAM_SHOP_ID = "shopID"
+    const val PARAM_AD_TYPES = "adTypes"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3

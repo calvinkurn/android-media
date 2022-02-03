@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCALE
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.dashboard.R
@@ -28,6 +29,12 @@ object Utils {
 
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy", locale)
     val format = SimpleDateFormat("yyyy-MM-dd", locale)
+
+    fun Date?.getString(): String {
+        return if (this == null) ""
+        else
+            SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(this)
+    }
 
     fun setSearchListener(context: Context?, view: View, onSuccess: () -> Unit) {
         val searchbar = view.findViewById<SearchBarUnify>(R.id.searchBar)

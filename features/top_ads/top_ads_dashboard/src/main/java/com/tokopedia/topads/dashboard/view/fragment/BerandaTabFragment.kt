@@ -19,6 +19,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
@@ -31,7 +32,10 @@ import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
+import com.tokopedia.topads.dashboard.data.utils.Utils
+import com.tokopedia.topads.dashboard.data.utils.Utils.getString
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.beranda.LatestReadingTopAdsDashboardRvAdapter
@@ -42,6 +46,7 @@ import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniKey
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.RingkasanDropdownBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.RingkasanInformationBottomSheet
+import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
@@ -49,7 +54,11 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_topads_dashboard_beranda_base.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -86,11 +95,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private val ringkasanRvAdapter by lazy { RingkasanTopAdsDashboardRvAdapter.createInstance() }
     private val latestReadingRvAdapter by lazy { LatestReadingTopAdsDashboardRvAdapter.createInstance() }
 
-    @TopAdsStatisticsType
-    internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
-
     companion object {
-
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
 
         fun createInstance(): BerandaTabFragment {
@@ -103,6 +108,12 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
+
+    @Inject
+    lateinit var topAdsDashboardViewModel: TopAdsDashboardViewModel
+
+    @TopAdsStatisticsType
+    internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
     private val topAdsInsightTabAdapter: TopAdsInsightTabAdapter? by lazy {
         context?.run { TopAdsInsightTabAdapter() }
     }
@@ -137,6 +148,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         creditHistoryImage.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_wallet))
         //arrow.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
 
+        observeLiveData()
         showNewTopAdsDialog()
         setUpRecyclerView()
         setUpClick()
@@ -145,6 +157,17 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         swipeRefreshLayout.setOnRefreshListener {
             loadData()
             loadStatisticsData()
+        }
+    }
+
+    private fun observeLiveData() {
+        topAdsDashboardViewModel.summaryStatisticsLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    it.data.cells.let { it1 -> ringkasanRvAdapter.addItems(it1) }
+                }
+                is Fail -> {}
+            }
         }
     }
 
@@ -229,7 +252,9 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
-
+        topAdsDashboardViewModel.getSummaryStatistics(
+            startDate.getString(), endDate.getString(), "0"
+        )
     }
 
     private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DepositAmount) {
@@ -340,6 +365,11 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     interface GoToInsight {
         fun gotToInsights()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        topAdsDashboardViewModel.summaryStatisticsLiveData.removeObservers(this)
     }
 
     override fun setUpView(view: View) {
