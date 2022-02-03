@@ -1,11 +1,13 @@
 package com.tokopedia.vouchercreation.product.create.data.source
 
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.product.create.data.service.ImageGeneratorService
 import okhttp3.ResponseBody
 import javax.inject.Inject
 
 class ImageGeneratorRemoteDataSource @Inject constructor(
-    private val imageGeneratorService: ImageGeneratorService
+    private val imageGeneratorService: ImageGeneratorService,
+    private val userSessionInterface: UserSessionInterface
 ) {
 
     suspend fun previewImage(
@@ -29,6 +31,7 @@ class ImageGeneratorRemoteDataSource @Inject constructor(
         audienceTarget: String
     ): ResponseBody {
         return imageGeneratorService.previewImage(
+            userSessionInterface.accessToken,
             sourceId,
             platform,
             isPublic,

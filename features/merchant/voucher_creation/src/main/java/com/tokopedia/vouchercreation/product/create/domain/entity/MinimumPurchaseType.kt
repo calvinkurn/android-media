@@ -1,6 +1,10 @@
 package com.tokopedia.vouchercreation.product.create.domain.entity
 
-enum class MinimumPurchaseType {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+enum class MinimumPurchaseType: Parcelable {
     NONE,
     NOMINAL,
     QUANTITY,

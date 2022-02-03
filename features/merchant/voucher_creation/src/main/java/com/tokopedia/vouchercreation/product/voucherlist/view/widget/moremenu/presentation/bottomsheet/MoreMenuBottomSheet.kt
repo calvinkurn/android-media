@@ -50,8 +50,9 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         setupView()
     }
 
-    fun setOnItemClickListener(@VoucherStatusConst voucherStatus: Int, callback: (MoreMenuUiModel) -> Unit) {
-        status = voucherStatus
+    fun setOnItemClickListener(@VoucherStatusConst couponStatus: Int, couponTitle: String, callback: (MoreMenuUiModel) -> Unit) {
+        setTitle(couponTitle)
+        status = couponStatus
         moreMenuAdapter = MoreMenuAdapter(callback, MoreMenuDiffer())
     }
 
@@ -61,11 +62,11 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         binding = BottomsheetMvcMoreMenuBinding.inflate(LayoutInflater.from(context))
-        setTitle("Nama Kupon Maks. 30 character")
         setChild(binding?.root)
     }
 
     private fun setupView() {
+        //val menuItem = dummyVoucherMenu()
         val menuItem = getMenuListByStatusVoucher(status)
         moreMenuAdapter?.submitList(menuItem)
 
@@ -84,6 +85,44 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
             else -> listOf()
         }
     }
+
+    private fun dummyVoucherMenu() : List<MoreMenuUiModel> =
+        listOf(
+            EditQuotaCoupon(
+                title = context?.getString(R.string.mvc_edit_quota).orEmpty(),
+                icon = IconUnify.COUPON
+            ),
+            EditPeriodCoupon(
+                title = context?.getString(R.string.mvc_edit_period).orEmpty(),
+                icon = IconUnify.CALENDAR
+            ),
+            EditCoupon(
+                title = context?.getString(R.string.mvc_edit).orEmpty(),
+                icon = IconUnify.EDIT
+            ),
+            ViewDetailCoupon(
+                title = context?.getString(R.string.mvc_view_detail).orEmpty(),
+                icon = IconUnify.CLIPBOARD
+            ),
+            DuplicateCoupon(
+                title = context?.getString(R.string.mvc_duplicate).orEmpty(),
+                icon = IconUnify.COPY
+            ),
+            ItemDivider,
+            BroadCastChat(
+                title = context?.getString(R.string.mvc_broadcast_chat).orEmpty(),
+                icon = IconUnify.BROADCAST
+            ),
+            DownloadCoupon(
+                title = context?.getString(R.string.mvc_download).orEmpty(),
+                icon = IconUnify.DOWNLOAD
+            ),
+            ItemDivider,
+            CancelCoupon(
+                title = context?.getString(R.string.mvc_cancel).orEmpty(),
+                icon = IconUnify.CLEAR
+            )
+        )
 
     private fun getUpcomingStatusVoucherMenu(): List<MoreMenuUiModel> =
             listOf(

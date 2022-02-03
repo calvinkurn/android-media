@@ -426,12 +426,15 @@
     <string name="coupon_preview">Tampilan Kupon</string>
     <string name="update_coupon_product">Ubah Kupon Produk</string>
     <string name="save_changes">Simpan Perubahan</string>
-    <string name="coupon_updated">Kupon sudah diperbarui.</string>
+    <string name="coupon_updated">Kupon berhasil diperbarui.</string>
     <string name="coupon_duplicated">Kupon berhasil di duplikat</string>
     <string name="placeholder_share_coupon_product_wording">Tersedia kupon untuk produk tertentu dari toko %s hanya di \@Tokopedia. Mulai %s sampai %s! %s</string>
     <string name="please_wait">Mohon tunggu</string>
+    <string name="used_coupon">Kupon terpakai</string>
     <string name="error_message_failed_get_image">Terjadi kesalahan dalam menampilkan gambar. Mohon coba lagi</string>
-
+    <string name="error_message_failed_get_coupon_detail">Terjadi kesalahan dalam menampilkan detail kupon. Mohon coba lagi</string>
+    <string name="placeholder_quota_usage">Kupon yang sedang menunggu pembayaran dari pembeli: &lt;b>%s Kupon&lt;/b></string>
+    <string name="view_coupon_detail">Lihat Detil Kupon</string>
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
@@ -443,4 +446,17 @@
     <string name="mvc_coupon_product_min_payment">Min. pembelian Rp. %s</string>
     <string name="mvc_coupon_product_max_benefit">hingga Rp. %s</string>
 
+
+    <!-- add product -->
+    <string name="mvc_search_product">Cari Produk</string>
+    <string name="mvc_delete_product">Hapus Produk</string>
+    <string name="mvc_seller_location">Lokasi Seller</string>
+    <string name="mvc_category">Kategori</string>
+    <string name="mvc_showcase">Etalase</string>
+    <string name="mvc_select_all">Pilih semua</string>
+    <string name="mvc_product_variant">Varian produk</string>
+
+    <!-- id tag -->
+    <item name="product" type="id"/>
+    <item name="product_variant" type="id"/>
 </resources>
