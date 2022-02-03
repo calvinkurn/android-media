@@ -28,6 +28,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
         const val REQUEST_CODE_CREATE_COUPON = 100
         private const val EMPTY_STRING = ""
         private const val APP_LINK = "create-voucher-product"
+        private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
+        private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
     }
 
     @Inject
@@ -183,13 +185,13 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun getCouponDefaultStartDate() : Date {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.HOUR_OF_DAY, 3)
+        calendar.add(Calendar.HOUR_OF_DAY, COUPON_START_DATE_OFFSET_IN_HOUR)
         return calendar.time
     }
 
     private fun getCouponDefaultEndDate(): Date {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, 30)
+        calendar.add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
         return calendar.time
     }
 
