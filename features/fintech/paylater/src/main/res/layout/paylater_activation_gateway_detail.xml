@@ -17,7 +17,7 @@
         android:id="@+id/getwayBrandName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/unify_space_16"
         tools:text="GopayLater Cicil"
         app:layout_constraintLeft_toRightOf="@id/gatewayImg"

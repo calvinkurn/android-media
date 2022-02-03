@@ -5,5 +5,4 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedM
 interface ActivationListner {
     fun isDisable(): Boolean
     fun selectedTenure(tenureSelectedModel: TenureSelectedModel, newPositionToSelect: Int)
-
 }

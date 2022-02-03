@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.activateCheckout.listner.GatewaySelectActivityListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment.ActivationCheckoutFragment
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
@@ -22,10 +23,11 @@ import javax.inject.Inject
 
 
 class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>,
-    PdpSimulationCallback {
+    PdpSimulationCallback,GatewaySelectActivityListner {
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
     private val REQUEST_CODE_LOGIN = 123
+    private lateinit var activationCheckoutFragment: ActivationCheckoutFragment
 
     @Inject
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
@@ -64,7 +66,9 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
                 bundle.putString(PARAM_GATEWAY_ID, it.getString(PARAM_GATEWAY_ID))
                 bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
             }
-            ActivationCheckoutFragment.newInstance(bundle)
+
+            activationCheckoutFragment = ActivationCheckoutFragment.newInstance(bundle)
+            return activationCheckoutFragment
         }
     }
 
@@ -103,8 +107,15 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     }
 
     override fun getComponent() = pdpSimulationComponent
-    override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {}
+    override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
+    }
     override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
         pdpSimulationAnalytics.get().sendPdpSimulationEvent(pdpSimulationEvent)
     }
+
+    override fun setGatewayValue(gatewaySelected: Int) {
+        activationCheckoutFragment.updateSelectedTenure(gatewaySelected)
+    }
+
+
 }

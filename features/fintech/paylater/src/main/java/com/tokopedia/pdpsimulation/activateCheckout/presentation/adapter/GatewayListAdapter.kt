@@ -4,10 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.GateWayCardClicked
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.GatewayViewHolder
 
 class GatewayListAdapter(
     var gatewayDetailList: List<CheckoutData>,
+    gatewayClickListener: GateWayCardClicked,
 ) : RecyclerView.Adapter<GatewayViewHolder>() {
 
 

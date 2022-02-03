@@ -100,6 +100,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     }
 
+    fun updateSelectedTenure(gatewaySelected: Int)
+    {
+        this.selectedGateway = gatewaySelected
+    }
+
     private fun observerProductData() {
         payLaterActivationViewModel.productDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
@@ -349,6 +354,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         activationTenureAdapter.notifyItemChanged(selectedTenurePosition)
         selectedTenurePosition = newPositionToSelect
     }
+
 
 
 }
