@@ -470,7 +470,7 @@ class CatalogDetailPageFragment : Fragment(),
         catalogUiUpdater.run {
             productInfoMap?.let {
                 if(catalogUiUpdater.productInfoMap?.images?.isNotEmpty() == true){
-                    context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogId , currentItem, catalogUiUpdater.productInfoMap!!.images!!))
+                    context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogName,catalogId , currentItem, catalogUiUpdater.productInfoMap!!.images!!))
                 }
             }
         }
@@ -531,13 +531,36 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun readMoreReviewsClicked(catalogId: String) {
-        val catalogAllReviewBottomSheet = CatalogAllReviewBottomSheet.newInstance(catalogId,this)
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_ON_LIHAT_SEMUA_REVIEW,
+            "$catalogName - $catalogId",userSession.userId,catalogId)
+        val catalogAllReviewBottomSheet = CatalogAllReviewBottomSheet.newInstance(catalogName,catalogId,this)
         catalogAllReviewBottomSheet.show(childFragmentManager, "")
     }
 
-    override fun onReviewImageClicked(position: Int, items: ArrayList<CatalogImage>) {
-        context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogId , position, items,
-            showBottomGallery = false,showNumbering = true))
+    override fun onReviewImageClicked(
+        position: Int,
+        items: ArrayList<CatalogImage>,
+        reviewId : String,
+        isFromBottomSheet: Boolean
+    ) {
+        if(isFromBottomSheet){
+            CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_IMAGE_ON_LIST_REVIEW,
+                "$catalogName - $catalogId - $reviewId",userSession.userId,catalogId)
+        }else {
+            CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_IMAGE_ON_REVIEW,
+                "$catalogName - $catalogId - $reviewId",userSession.userId,catalogId)
+        }
+        context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogName, catalogId , position, items,
+            showBottomGallery = false,showNumbering = true, reviewId))
     }
 
     override fun hideFloatingLayout() {

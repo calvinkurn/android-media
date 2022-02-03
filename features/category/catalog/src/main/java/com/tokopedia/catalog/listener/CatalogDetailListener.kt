@@ -47,7 +47,8 @@ interface CatalogDetailListener {
     /**
      * CatalogReviewViewHolder
      */
-    fun onReviewImageClicked(position: Int, items : ArrayList<CatalogImage>)
+    fun onReviewImageClicked(position: Int, items : ArrayList<CatalogImage>, reviewId : String,
+                             isFromBottomSheet : Boolean = true)
 
     val childsFragmentManager: FragmentManager?
 

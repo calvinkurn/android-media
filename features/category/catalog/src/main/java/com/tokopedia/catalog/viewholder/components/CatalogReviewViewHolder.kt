@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.gallery.CatalogImageReviewAdapter
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
@@ -16,13 +17,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 
 class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        const val GRID_LAYOUT_MANAGER_SPAN_COUNT = 5
         const val RATING_ONE = 1
         const val RATING_TWO = 2
         const val RATING_THREE = 3
@@ -33,16 +33,28 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
 
     }
 
+    private var isFromBottomSheet = false
+    private var catalogName = ""
+    private var catalogId = ""
+
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
     private var catalogDetailListener : CatalogDetailListener? = null
 
-    fun bind(model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review, listener: CatalogDetailListener?) {
+    fun bind(model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review,
+             listener: CatalogDetailListener?,
+             argIsFromBottomSheet : Boolean = false,
+             argCatalogName : String = "",
+             argCatalogId : String = ""
+         ) {
+        isFromBottomSheet = argIsFromBottomSheet
+        catalogName = argCatalogName
+        catalogId  = argCatalogId
         catalogDetailListener = listener
         setReviewStars(model.rating)
         view.findViewById<Typography>(R.id.txt_user_name_catalog)?.displayTextOrHide(model.reviewerName ?: "")
         view.findViewById<Typography>(R.id.txt_date_user_catalog)?.displayTextOrHide(model.reviewDate ?: "")
-        setReviewDescription(model.reviewText ?: "")
+        setReviewDescription(model.reviewText ?: "", model.reviewId ?: "")
         view.findViewById<RecyclerView>(R.id.image_review_rv_catalog)
         renderReviewImage(model,catalogDetailListener)
     }
@@ -69,21 +81,31 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
         }
     }
 
-    private fun setReviewDescription(description : String) {
+    private fun setReviewDescription(description : String, reviewId : String) {
         if (description.isEmpty()) {
             view.findViewById<Typography>(R.id.txt_desc_review_catalog)?.hide()
             return
         }
         view.findViewById<Typography>(R.id.txt_desc_review_catalog)?.apply {
-            maxLines = MAX_LINES_REVIEW_DESCRIPTION
-            val formattingResult = reviewDescFormatter(context, description)
-            text = formattingResult.first
-            if(formattingResult.second) {
-                setOnClickListener {
-                    maxLines = Integer.MAX_VALUE
-                    text = HtmlLinkHelper(context, description).spannedString
+            if(!isFromBottomSheet){
+                maxLines = MAX_LINES_REVIEW_DESCRIPTION
+                val formattingResult = reviewDescFormatter(context, description)
+                text = formattingResult.first
+                if(formattingResult.second) {
+                    setOnClickListener {
+                        CatalogDetailAnalytics.sendEvent(
+                            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                            CatalogDetailAnalytics.ActionKeys.CLICK_SELENGKAPNYA_ON_REVIEW,
+                            "$catalogName - $catalogId - $reviewId",UserSession(context).userId,catalogId)
+                        maxLines = Integer.MAX_VALUE
+                        text = HtmlLinkHelper(context, description).spannedString
+                    }
                 }
+            }else {
+                text = description
             }
+
             show()
         }
     }
@@ -109,6 +131,6 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
         val recyclerView = view.findViewById<RecyclerView>(R.id.image_review_rv_catalog)
         recyclerView.show()
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = CatalogImageReviewAdapter(catalogReviewImages,false, catalogDetailListener)
+        recyclerView.adapter = CatalogImageReviewAdapter(catalogReviewImages,model.reviewId ?: "",isFromBottomSheet, catalogDetailListener)
     }
 }

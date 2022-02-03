@@ -44,7 +44,9 @@ data class CatalogProductReviewResponse(
                 @Expose @SerializedName("reviewText")
                 val reviewText: String?,
                 @Expose @SerializedName("reviewerName")
-                val reviewerName: String?
+                val reviewerName: String?,
+                @Expose @SerializedName("reviewId")
+                val reviewId: String?
             ) : Parcelable
         }
     }

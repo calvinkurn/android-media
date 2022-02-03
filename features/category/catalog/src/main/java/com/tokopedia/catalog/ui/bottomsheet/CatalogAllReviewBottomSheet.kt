@@ -11,6 +11,7 @@ class CatalogAllReviewBottomSheet : BottomSheetUnify() {
 
     private var catalogId: String = ""
     private var catalogDetailListener: CatalogDetailListener? = null
+    private var catalogName = ""
 
     init {
         isFullpage = true
@@ -34,21 +35,24 @@ class CatalogAllReviewBottomSheet : BottomSheetUnify() {
         setTitle(getString(com.tokopedia.catalog.R.string.catalog_ulasan_produk))
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
+            catalogName = requireArguments().getString(ARG_EXTRA_CATALOG_NAME, "")
         }
         if(savedInstanceState == null) {
             childFragmentManager.beginTransaction().replace(R.id.frame_content,
-                    CatalogAllReviewFragment.newInstance(catalogId, catalogDetailListener)).commit()
+                    CatalogAllReviewFragment.newInstance(catalogName, catalogId, catalogDetailListener)).commit()
         }
     }
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
 
-        fun newInstance(catalogId : String, listener: CatalogDetailListener?): CatalogAllReviewBottomSheet {
+        fun newInstance(catalogName : String, catalogId : String, listener: CatalogDetailListener?): CatalogAllReviewBottomSheet {
             return CatalogAllReviewBottomSheet().apply {
                 catalogDetailListener = listener
                 arguments = Bundle().apply {
                     putString(ARG_EXTRA_CATALOG_ID, catalogId)
+                    putString(ARG_EXTRA_CATALOG_NAME, catalogName)
                 }
             }
         }

@@ -7,7 +7,12 @@ import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
 import com.tokopedia.catalog.viewholder.components.CatalogReviewViewHolder
 
-class CatalogReviewAdapter (private var list : List<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>, private val catalogDetailListener: CatalogDetailListener?)
+class CatalogReviewAdapter (private var list : List<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>,
+                            private val catalogDetailListener: CatalogDetailListener?,
+                            private val isFromBottomSheet : Boolean = false,
+                            private val catalogName : String = "",
+                            private val catalogId : String = ""
+    )
     : RecyclerView.Adapter<CatalogReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatalogReviewViewHolder {
@@ -18,7 +23,7 @@ class CatalogReviewAdapter (private var list : List<CatalogProductReviewResponse
 
     override fun onBindViewHolder(holder: CatalogReviewViewHolder, position: Int) {
         list[position]?.let {
-            holder.bind(it,catalogDetailListener)
+            holder.bind(it,catalogDetailListener, isFromBottomSheet, catalogName , catalogId)
         }
     }
 

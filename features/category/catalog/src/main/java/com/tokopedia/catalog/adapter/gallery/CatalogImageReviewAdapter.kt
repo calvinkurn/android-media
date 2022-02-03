@@ -11,7 +11,8 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 
 class CatalogImageReviewAdapter(private val imageReviews: ArrayList<CatalogImage> = arrayListOf(),
-                                private val showSeeAll: Boolean = true,
+                                private val reviewId : String,
+                                private val isFromBottomSheet: Boolean = false,
                                 private val catalogDetailListener: CatalogDetailListener?) :
         RecyclerView.Adapter<CatalogImageReviewAdapter.ImageReviewViewHolder>() {
 
@@ -34,7 +35,7 @@ class CatalogImageReviewAdapter(private val imageReviews: ArrayList<CatalogImage
             with(view) {
                 findViewById<AppCompatImageView>(R.id.image_review)?.loadImageRounded(item.imageURL ?: "", ROUNDED_IMAGE_EDGES)
                 view.setOnClickListener {
-                    catalogDetailListener?.onReviewImageClicked(adapterPosition,imageReviews)
+                    catalogDetailListener?.onReviewImageClicked(adapterPosition,imageReviews,reviewId,isFromBottomSheet)
                 }
             }
         }

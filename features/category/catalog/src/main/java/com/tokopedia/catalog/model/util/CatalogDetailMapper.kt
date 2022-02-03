@@ -48,7 +48,8 @@ object CatalogDetailMapper {
 
                 CatalogConstant.REVIEW -> {
                     val crudeReviewData = component.data
-                    listOfComponents.addAll(mapIntoReviewDataModel(catalogGetDetailModular.basicInfo.id
+                    listOfComponents.addAll(mapIntoReviewDataModel(catalogGetDetailModular.basicInfo.name ?: "",
+                        catalogGetDetailModular.basicInfo.id
                             , component.name, component.type, crudeReviewData))
                 }
 
@@ -97,13 +98,13 @@ object CatalogDetailMapper {
         return listOfComponents
     }
 
-    private fun mapIntoReviewDataModel(catalogId : String, componentName : String,
+    private fun mapIntoReviewDataModel(catalogName : String, catalogId : String, componentName : String,
                                        componentType : String, crudeReviewData: List<ComponentData>?)
     : List<BaseCatalogDataModel> {
         val listOfReviewComponents = ArrayList<BaseCatalogDataModel>();
         crudeReviewData?.firstOrNull()?.let {  componentData ->
             listOfReviewComponents.add(CatalogReviewDataModel(componentName, type = componentType,
-                    data = ReviewComponentData(catalogId,componentData.avgRating,componentData.reviews,
+                    data = ReviewComponentData(catalogName,catalogId,componentData.avgRating,componentData.reviews,
                             componentData.totalHelpfulReview)))
         }
         return listOfReviewComponents

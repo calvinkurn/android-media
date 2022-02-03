@@ -41,6 +41,7 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
     lateinit var catalogAllReviewsViewModel: CatalogAllReviewsViewModel
 
     private var catalogId: String = ""
+    private var catalogName : String = ""
 
     private var catalogDetailListener: CatalogDetailListener? = null
     private var catalogAdapter : CatalogReviewAdapter? = null
@@ -111,7 +112,8 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
-        catalogAdapter = CatalogReviewAdapter(arrayListOf(),catalogDetailListener)
+        catalogAdapter = CatalogReviewAdapter(arrayListOf(),catalogDetailListener,
+            true, catalogName, catalogId)
         initRecyclerView()
         catalogAllReviewsViewModel.getAllReviews(catalogId,CatalogConstant.STAR,CatalogConstant.ZERO_VALUE)
     }
@@ -174,12 +176,14 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
 
-        fun newInstance(catalogId: String, listener: CatalogDetailListener?): CatalogAllReviewFragment {
+        fun newInstance(catalogName : String, catalogId: String, listener: CatalogDetailListener?): CatalogAllReviewFragment {
             return CatalogAllReviewFragment().apply {
                 catalogDetailListener = listener
                 val bundle = Bundle()
                 bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+                bundle.putString(ARG_EXTRA_CATALOG_NAME, catalogName)
                 arguments = bundle
             }
         }
