@@ -307,10 +307,11 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         val target = when (coupon.target) {
             CouponInformation.Target.PUBLIC -> getString(R.string.mvc_public)
             CouponInformation.Target.PRIVATE -> getString(R.string.mvc_special)
+            CouponInformation.Target.NOT_SELECTED -> getString(R.string.hyphen)
         }
         binding.tpgCouponTarget.text = target
 
-        binding.tpgCouponName.text = coupon.name
+        handleCouponName(coupon.target, coupon.name)
         handleCouponCodeVisibility(coupon.code, coupon.target)
 
         val startDate = coupon.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
@@ -328,10 +329,19 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         binding.tpgCouponPeriod.text = period
     }
 
+    private fun handleCouponName(target: CouponInformation.Target, couponName : String) {
+        if (target == CouponInformation.Target.NOT_SELECTED) {
+            binding.tpgCouponName.text = getString(R.string.hyphen)
+        } else {
+            binding.tpgCouponName.text = couponName
+        }
+    }
+
     private fun handleCouponCodeVisibility(couponCode: String, target: CouponInformation.Target) {
         when (target) {
             CouponInformation.Target.PUBLIC -> binding.groupCouponCode.gone()
             CouponInformation.Target.PRIVATE -> binding.groupCouponCode.visible()
+            CouponInformation.Target.NOT_SELECTED -> binding.groupCouponCode.gone()
         }
 
         binding.tpgCouponCode.text = couponCode

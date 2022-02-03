@@ -11,14 +11,13 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.NumberConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
-import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
+import java.util.*
 import javax.inject.Inject
 
 class CreateCouponProductActivity : AppCompatActivity() {
@@ -27,6 +26,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         private const val PRODUCT_ID_SEGMENT_INDEX = 1
         const val BUNDLE_KEY_COUPON = "coupon"
         const val REQUEST_CODE_CREATE_COUPON = 100
+        private const val EMPTY_STRING = ""
         private const val APP_LINK = "create-voucher-product"
     }
 
@@ -57,6 +57,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         setContentView(R.layout.activity_mvc_create_coupon)
         router.replace(supportFragmentManager, R.id.parent_view, couponPreviewFragment)
         println(productId)
+        couponPreviewFragment.setCouponInformationData(populateDefaultCouponStartEndDate())
     }
 
     private fun setupDependencyInjection() {
@@ -167,4 +168,29 @@ class CreateCouponProductActivity : AppCompatActivity() {
         val path = pathSegments.getOrNull(NumberConstant.ZERO)
         return path == APP_LINK
     }
+
+
+    private fun populateDefaultCouponStartEndDate(): CouponInformation {
+        val startDate = getCouponDefaultStartDate()
+        val endDate = getCouponDefaultEndDate()
+        return CouponInformation(
+            CouponInformation.Target.NOT_SELECTED,
+            EMPTY_STRING,
+            EMPTY_STRING,
+            CouponInformation.Period(startDate, endDate)
+        )
+    }
+
+    private fun getCouponDefaultStartDate() : Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.HOUR_OF_DAY, 3)
+        return calendar.time
+    }
+
+    private fun getCouponDefaultEndDate(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, 30)
+        return calendar.time
+    }
+
 }

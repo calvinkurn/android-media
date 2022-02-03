@@ -14,7 +14,8 @@ data class CouponTargetUiModel(
 
 enum class CouponTargetEnum(val value: Int){
     PRIVATE(0),
-    PUBLIC(1)
+    PUBLIC(1),
+    NOT_SELECTED(-1)
 }
 
 internal fun CouponTargetEnum?.convertToCouponInformationTarget() =
@@ -24,9 +25,9 @@ internal fun CouponTargetEnum?.convertToCouponInformationTarget() =
         CouponInformation.Target.PRIVATE
     }
 
-internal fun CouponInformation.Target?.convertToCouponTargetEnum() =
-    if (this == CouponInformation.Target.PUBLIC) {
-        CouponTargetEnum.PUBLIC
-    } else {
-        CouponTargetEnum.PRIVATE
-    }
+internal fun CouponInformation.Target?.convertToCouponTargetEnum() = when (this) {
+    CouponInformation.Target.PUBLIC -> CouponTargetEnum.PUBLIC
+    CouponInformation.Target.PRIVATE -> CouponTargetEnum.PRIVATE
+    CouponInformation.Target.NOT_SELECTED -> CouponTargetEnum.NOT_SELECTED
+    null -> CouponTargetEnum.NOT_SELECTED
+}
