@@ -44,12 +44,14 @@ class TenureViewHolder(itemView: View, val tenureSelectListner: ActivationListne
             {
                 paymentDetailHeader.isEnabled = false
                paymentDetailSubHeader.isEnabled = false
+                radioSelector.isEnabled = false
 
             }
             else
             {
                paymentDetailHeader.isEnabled = true
                 paymentDetailSubHeader.isEnabled = true
+                radioSelector.isEnabled = true
 
 
             }
