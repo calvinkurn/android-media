@@ -48,7 +48,6 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     private var snackbar: SnackbarRetry? = null
     private var projectId = -1
     private var analytics: UserIdentificationCommonAnalytics? = null
-    lateinit var daggerComponent: UserIdentificationCommonComponent
 
     interface Listener {
         fun trackOnBackPressed()
@@ -80,7 +79,6 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             )
         )
         KycCleanupStorageWorker.scheduleWorker(this, externalCacheDir?.absolutePath + FILE_NAME_KYC)
-        daggerComponent = ActivityComponentFactory.instance.createActivityComponent(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -197,7 +195,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     }
 
     override fun getComponent(): UserIdentificationCommonComponent {
-        return daggerComponent
+        return ActivityComponentFactory.instance.createActivityComponent(this)
     }
 
     fun setTextViewWithBullet(text: String, context: Context, layout: LinearLayout) {
