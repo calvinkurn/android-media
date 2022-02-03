@@ -32,6 +32,8 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMa
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.getSummaryAdTypes
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.mapToSummary
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.showDialogWithCoachMark
+import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.berandaDialogShown
+import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.showBerandaDialog
 import com.tokopedia.topads.dashboard.data.utils.Utils.asString
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
@@ -186,6 +188,16 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     //method to be invoked when ad type is changed from ringkasan dropdown section
     private fun adTypeChanged(chip: Chip) {
+        fun dismissBottomSheet() {
+            if (summaryAdTypesBottomSheet.isVisible)
+                summaryAdTypesBottomSheet.dismiss()
+        }
+        if (chip.isSelected) {
+            dismissBottomSheet()
+            return
+        }
+
+        chip.isSelected = true
         lastSelectedAdType?.isSelected = false
         lastSelectedAdType = chip
         txtAdType.text = chip.title
@@ -193,8 +205,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         topAdsDashboardViewModel.fetchSummaryStatistics(
             startDate.asString(), endDate.asString(), chip.adTypeId
         )
-        if (summaryAdTypesBottomSheet.isVisible)
-            summaryAdTypesBottomSheet.dismiss()
+        dismissBottomSheet()
     }
 
     private fun setUpRecyclerView() {
@@ -232,7 +243,11 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
             showInformationBottomSheet()
         }
         btnRefreshCredits.setOnClickListener { topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess) }
-        btnReadMore.setOnClickListener { (requireActivity() as? TopAdsDashboardActivity)?.switchTab(TopAdsDashboardActivity.INSIGHT_PAGE) }
+        btnReadMore.setOnClickListener {
+            (requireActivity() as? TopAdsDashboardActivity)?.switchTab(
+                TopAdsDashboardActivity.INSIGHT_PAGE
+            )
+        }
     }
 
     private fun showInformationBottomSheet() {
@@ -416,19 +431,21 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         statisticsPager = view.findViewById(R.id.pager)
     }
 
-    private fun showDialog() {
+    private fun showFirstTimeDialog() {
+        if (!requireActivity().showBerandaDialog()) return
         requireContext().showDialogWithCoachMark(
             rvSummary,
             requireView().findViewById(R.id.topads_content_statistics),
             rvLatestReading
         )
+        requireActivity().berandaDialogShown()
     }
 
     private fun hideShimmer() {
         if (!checkResponse.creditHistory || !checkResponse.latestReading || !checkResponse.summaryStats) return
         shimmerView.hide()
         swipeRefreshLayout.show()
-        showDialog()
+        showFirstTimeDialog()
     }
 
     //this class holds 3 boolean to keep track if all the 3 api's have been called successfully, as if all values are true will be hiding shimmer view and showing the actual view

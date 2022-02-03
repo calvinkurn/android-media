@@ -32,6 +32,7 @@ class TopAdsBerandaSummaryRvAdapter :
     }
 
     fun addItems(items: List<SummaryBeranda>) {
+        list.clear()
         list.addAll(items)
         notifyDataSetChanged()
     }

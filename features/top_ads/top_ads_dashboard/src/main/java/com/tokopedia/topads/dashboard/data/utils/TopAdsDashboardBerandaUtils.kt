@@ -85,10 +85,7 @@ object TopAdsDashboardBerandaUtils {
     }
 
     fun Resources.getSummaryAdTypes() = listOf(
-        Chip(
-            getString(R.string.topads_dashboard_all_promo_menu),
-            TopAdsSummaryType.ALL, true
-        ),
+        Chip(getString(R.string.topads_dashboard_all_promo_menu), TopAdsSummaryType.ALL),
         Chip(getString(R.string.topads_dash_iklan_produck), TopAdsSummaryType.PRODUCT),
         Chip(getString(R.string.topads_dash_headline_title), TopAdsSummaryType.SHOP),
         Chip(getString(R.string.topads_dashboard_iklan_google), TopAdsSummaryType.GOOGLE),

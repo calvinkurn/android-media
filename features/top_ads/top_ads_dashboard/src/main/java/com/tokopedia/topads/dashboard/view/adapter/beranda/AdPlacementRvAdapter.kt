@@ -26,7 +26,6 @@ class AdPlacementRvAdapter(
             if (item.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
 
         holder.chip.setOnClickListener {
-            item.isSelected = true
             itemClick(item)
         }
     }
