@@ -509,7 +509,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
 
     private fun redirectToSellerEduPage() {
         if (!isAdded) return
-        val url = UrlConstant.SELLER_HOSTNAME + UrlConstant.SELLER_EDU
+        val url = UrlConstant.SELLER_HOSTNAME + UrlConstant.PRODUCT_COUPON
         val encodedUrl = URLEncoder.encode(url, "utf-8")
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)
