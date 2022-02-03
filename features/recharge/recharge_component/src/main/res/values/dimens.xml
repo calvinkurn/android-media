@@ -22,8 +22,8 @@
     <dimen name="widget_denom_full_price_shimmering_width">117dp</dimen>
     <dimen name="widget_denom_full_progress_bar_shimmering_width">135dp</dimen>
     <dimen name="widget_denom_full_desc_shimmering_width">260dp</dimen>
-    <dimen name="widget_denom_full_height">140dp</dimen>
-    <dimen name="widget_denom_full_height_countdown">157dp</dimen>
+    <dimen name="widget_denom_full_height">144dp</dimen>
+    <dimen name="widget_denom_full_height_countdown">178dp</dimen>
     <dimen name="widget_denom_full_width">280dp</dimen>
     <dimen name="widget_banner_height">105dp</dimen>
 </resources>
