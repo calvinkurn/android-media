@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -31,17 +32,17 @@ import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.content_creation_video_post.*
 import kotlinx.android.synthetic.main.content_creation_video_post.view.*
 import kotlinx.android.synthetic.main.feed_preview_post_fragment_new.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
+import java.lang.Runnable
 import kotlin.math.round
 
 /**
@@ -102,6 +103,10 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val menuTitle =  activity?.getString(R.string.feed_content_text_lanjut)
         if(!menuTitle.isNullOrEmpty()) {
             MenuManager.addCustomMenu(activity, menuTitle, true, menu) {
+                GlobalScope.launchCatchError(Dispatchers.IO, block = {
+                    setMediaWidthAndHeight()
+                }) { Timber.d(it) }
+
                 activityListener?.clickContinueOnTaggingPage()
             }
         }
@@ -110,6 +115,9 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             MenuManager.MENU_ITEM_ID -> {
+                GlobalScope.launchCatchError(Dispatchers.IO, block = {
+                    setMediaWidthAndHeight()
+                }) { Timber.d(it) }
                 activityListener?.clickContinueOnTaggingPage()
                 return true
             }
@@ -707,6 +715,22 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             (parent.width - newBitmapHeight) / 2
         } else
             0
+    }
+    private fun setMediaWidthAndHeight(){
+        val mediaModel = createPostModel.completeImageList[0]
+        try {
+
+                var mBmp = Glide.with(requireActivity())
+                        .asBitmap()
+                        .load(mediaModel.path)
+                        .submit()
+                        .get()
+                createPostModel.mediaWidth = mBmp.width.toPx()
+                createPostModel.mediaHeight = mBmp.height.toPx()
+
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 }
 

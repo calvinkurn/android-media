@@ -22,7 +22,6 @@ class ProductFeaturedViewComponent(
 ) : ViewComponent(container, R.id.view_product_featured) {
 
     private val rvProductFeatured: ProductFeaturedRecyclerView = findViewById(R.id.rv_product_featured)
-    private val featuredProduct = mutableListOf<PlayProductUiModel>()
 
     private val adapter = ProductFeaturedAdapter(
         productFeaturedListener = object : ProductBasicViewHolder.Listener {
@@ -58,34 +57,24 @@ class ProductFeaturedViewComponent(
     }
 
     fun setFeaturedProducts(products: List<PlayProductUiModel>, maxProducts: Int) {
-        if (products != adapter.getItems()) {
-            try {
-                rvProductFeatured.post {
-                    rvProductFeatured.invalidateItemDecorations()
-                }
-            } catch (ignored: IllegalStateException) {}
-        }
+        if (products != adapter.getItems()) invalidateItemDecorations()
 
         val featuredItems = getFinalFeaturedItems(products, maxProducts)
         adapter.setItemsAndAnimateChanges(featuredItems)
-
-        if (featuredItems.isEmpty()) hide()
-        else show()
-
-        featuredProduct.clear()
-        featuredProduct.addAll(featuredItems)
 
         sendImpression()
     }
 
     fun showIfNotEmpty() {
-        if (adapter.itemCount != 0 &&
-                adapter.getItem(0) !is PlayProductUiModel.Placeholder) show()
+        if (adapter.itemCount != 0) show()
         else hide()
     }
 
-    fun showPlaceholder() {
-        setFeaturedProducts(getPlaceholder(), TOTAL_PLACEHOLDER)
+    fun setPlaceholder() {
+        val placeholders = getPlaceholder()
+        if (placeholders != adapter.getItems()) invalidateItemDecorations()
+
+        adapter.setItemsAndAnimateChanges(getPlaceholder())
     }
 
     fun setFadingEndBounds(width: Int) {
@@ -94,6 +83,14 @@ class ProductFeaturedViewComponent(
             ProductFeaturedItemDecoration(rvProductFeatured.context, extraEndMargin = width)
         )
         rvProductFeatured.setFadingEndBounds(width)
+    }
+
+    private fun invalidateItemDecorations() {
+        try {
+            rvProductFeatured.post {
+                rvProductFeatured.invalidateItemDecorations()
+            }
+        } catch (ignored: IllegalStateException) {}
     }
 
     private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {
