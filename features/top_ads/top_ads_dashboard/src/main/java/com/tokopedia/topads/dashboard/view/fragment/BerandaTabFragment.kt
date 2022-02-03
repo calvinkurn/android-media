@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
@@ -18,24 +17,23 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.Chip
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
+import com.tokopedia.topads.dashboard.data.model.Chip
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
-import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.getString
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.beranda.LatestReadingTopAdsDashboardRvAdapter
@@ -56,12 +54,9 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_topads_dashboard_beranda_base.*
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Created by Pika on 15/5/20.
@@ -86,6 +81,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private lateinit var creditHistory: CardUnify
     private lateinit var statisticsPager: ViewPager
 
+    private val checkResponse by lazy { CheckResponse() }
     private var dataStatistic: DataStatistic? = null
     private var insightCallBack: GoToInsight? = null
     private var currentDateText: String = ""
@@ -149,7 +145,6 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         //arrow.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
 
         observeLiveData()
-        showNewTopAdsDialog()
         setUpRecyclerView()
         setUpClick()
         loadData()
@@ -162,10 +157,23 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     private fun observeLiveData() {
         topAdsDashboardViewModel.summaryStatisticsLiveData.observe(viewLifecycleOwner) {
+            checkResponse.summaryStats = true
             when (it) {
                 is Success -> {
-                    it.data.cells.let { it1 -> ringkasanRvAdapter.addItems(it1) }
+                    ringkasanRvAdapter.addItems(it.data.cells)
+                    txtLastUpdated.text = String.format(
+                        resources.getString(R.string.topads_dashboard_last_update_text),
+                        it.data.summary.lastUpdate
+                    )
                 }
+                is Fail -> {}
+            }
+        }
+
+        topAdsDashboardViewModel.latestReadingLiveData.observe(viewLifecycleOwner) {
+            checkResponse.latestReading = true
+            when (it) {
+                is Success -> latestReadingRvAdapter.addItems(it.data)
                 is Fail -> {}
             }
         }
@@ -248,17 +256,18 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     private fun loadData() {
-        swipe_refresh_layout.isEnabled = true
+        swipeRefreshLayout.isEnabled = true
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
-        topAdsDashboardViewModel.getSummaryStatistics(
+        topAdsDashboardViewModel.fetchSummaryStatistics(
             startDate.getString(), endDate.getString(), "0"
         )
+        topAdsDashboardViewModel.fetchLatestReading()
     }
 
     private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DepositAmount) {
-        swipe_refresh_layout.isRefreshing = false
+        swipeRefreshLayout.isRefreshing = false
         creditAmount.text = dataDeposit.amountFmt
     }
 
@@ -393,6 +402,29 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     private fun showNewTopAdsDialog() {
+        fun showCoachMark() {
+            val coachMarkItems = arrayListOf(
+                CoachMark2Item(
+                    rvRingkasan,
+                    resources.getString(R.string.topads_dashboard_home_coachmark_1_title),
+                    resources.getString(R.string.topads_dashboard_home_coachmark_1_desc),
+                    CoachMark2.POSITION_TOP
+                ), CoachMark2Item(
+                    requireView().findViewById(R.id.topads_content_statistics),
+                    resources.getString(R.string.topads_dashboard_home_coachmark_2_title),
+                    resources.getString(R.string.topads_dashboard_home_coachmark_2_desc),
+                    CoachMark2.POSITION_TOP
+                ),
+                CoachMark2Item(
+                    rvLatestReading,
+                    resources.getString(R.string.topads_dashboard_home_coachmark_4_title),
+                    resources.getString(R.string.topads_dashboard_home_coachmark_4_desc),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+            val coachMark = CoachMark2(requireContext())
+            coachMark.showCoachMark(coachMarkItems)
+        }
         DialogUnify(
             requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION
         ).apply {
@@ -407,27 +439,28 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         }.show()
     }
 
-    private fun showCoachMark() {
-        val coachMarkItems = arrayListOf(
-            CoachMark2Item(
-                rvRingkasan,
-                resources.getString(R.string.topads_dashboard_home_coachmark_1_title),
-                resources.getString(R.string.topads_dashboard_home_coachmark_1_desc),
-                CoachMark2.POSITION_TOP
-            ), CoachMark2Item(
-                requireView().findViewById(R.id.topads_content_statistics),
-                resources.getString(R.string.topads_dashboard_home_coachmark_2_title),
-                resources.getString(R.string.topads_dashboard_home_coachmark_2_desc),
-                CoachMark2.POSITION_TOP
-            ),
-            CoachMark2Item(
-                rvLatestReading,
-                resources.getString(R.string.topads_dashboard_home_coachmark_4_title),
-                resources.getString(R.string.topads_dashboard_home_coachmark_4_desc),
-                CoachMark2.POSITION_TOP
-            )
-        )
-        val coachMark = CoachMark2(requireContext())
-        coachMark.showCoachMark(coachMarkItems)
+    private fun hideShimmer() {
+        if (!checkResponse.creditHistory || !checkResponse.latestReading || !checkResponse.summaryStats) return
+        shimmerView.hide()
+        swipeRefreshLayout.show()
+        showNewTopAdsDialog()
+    }
+
+    inner class CheckResponse {
+        var creditHistory: Boolean = true
+            set(value) {
+                field = value
+                hideShimmer()
+            }
+        var summaryStats: Boolean = false
+            set(value) {
+                field = value
+                hideShimmer()
+            }
+        var latestReading: Boolean = false
+            set(value) {
+                field = value
+                hideShimmer()
+            }
     }
 }

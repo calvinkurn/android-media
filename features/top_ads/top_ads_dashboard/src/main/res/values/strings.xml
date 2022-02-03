@@ -408,7 +408,7 @@
     <string name="topads_dash_from_last_week">dari minggu lalu</string>
     <string name="topads_dash_text_bacaan_terbaru_untukmu">Bacaan terbaru untukmu</string>
     <string name="topads_dash_read_more">Selengkapnya</string>
-    <string name="topads_dashboard_update_terakhir">Update terakhir</string>
+    <string name="topads_dashboard_last_update_text">Update terakhir %s</string>
     <string name="topads_dashboard_information_title">Info statistik ringkasan iklan</string>
 
     <string name="topads_dashboard_efektivitas_iklan">Efektivitas Iklan</string>
@@ -419,7 +419,7 @@
     <string name="pengeluaran_sub_title">Total pengeluaran untuk semua iklanmu.</string>
     <string name="efektivitas_iklan_sub_title">Perbandingan pendapatan dengan pengeluaran iklan.</string>
     <string name="topads_dashboard_home_dialog_title">Tampilan TopAds yang baru!</string>
-    <string name="topads_dashboard_home_dialog_description">Tampilan TopAds yang baru!</string>
+    <string name="topads_dashboard_home_dialog_description">Yuk, pelajari tampilan baru TopAds biar kamu bisa kelola iklan dengan lebih mudah.</string>
     <string name="topads_dashboard_home_dialog_button_text">Ayo Cek Tampilannnya</string>
 
     <string name="topads_dashboard_home_coachmark_1_title">Ringkasan performa iklan</string>

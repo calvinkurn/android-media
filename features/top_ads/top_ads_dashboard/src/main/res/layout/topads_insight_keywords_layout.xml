@@ -27,7 +27,7 @@
             tools:text="@string/topads_insight_recomm_keyword_title" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txtSubTitle"
+            android:id="@+id/txtDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -44,7 +44,7 @@
             android:text="@string/label_select_all"
             android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintStart_toStartOf="@id/leftGuide"
-            app:layout_constraintTop_toBottomOf="@id/txtSubTitle" />
+            app:layout_constraintTop_toBottomOf="@id/txtDescription" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider"

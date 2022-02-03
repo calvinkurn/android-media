@@ -38,7 +38,6 @@
                 android:id="@+id/btnReadMore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:text="@string/topads_dash_read_more"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="main"

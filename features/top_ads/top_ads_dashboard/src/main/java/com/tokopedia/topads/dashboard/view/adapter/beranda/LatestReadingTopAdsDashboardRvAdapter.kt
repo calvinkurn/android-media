@@ -5,11 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.TopAdsLatestReading
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class LatestReadingTopAdsDashboardRvAdapter :
     RecyclerView.Adapter<LatestReadingTopAdsDashboardRvAdapter.LatestReadingViewHolder>() {
 
-    private val list = mutableListOf<Any>()
+    private val list = mutableListOf<TopAdsLatestReading.CategoryTree.Data.Category>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LatestReadingViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -17,16 +20,27 @@ class LatestReadingTopAdsDashboardRvAdapter :
     }
 
     override fun onBindViewHolder(holder: LatestReadingViewHolder, position: Int) {
+        val item = list[holder.adapterPosition]
 
+        with(holder) {
+            txtTitle.text = item.title
+            txtDescription.text = item.description
+            creditHistoryImage.setImageUrl(item.icon.url)
+        }
     }
 
-    fun addItems() {
-
+    fun addItems(data: List<TopAdsLatestReading.CategoryTree.Data.Category>) {
+        list.addAll(data)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount() = list.size
 
-    inner class LatestReadingViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    inner class LatestReadingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val creditHistoryImage: ImageUnify = view.findViewById(R.id.creditHistoryImage)
+        val txtTitle: Typography = view.findViewById(R.id.txtTitle)
+        val txtDescription: Typography = view.findViewById(R.id.txtDescription)
+    }
 
     companion object {
         private val layout = R.layout.item_rv_latest_reading

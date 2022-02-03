@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/shimmerView"
-        android:visibility="gone"
+        android:visibility="visible"
         layout="@layout/shimmer_layout_topads_dashboard_beranda_fragment"
         tools:visibility="gone" />
 
@@ -15,7 +15,7 @@
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
