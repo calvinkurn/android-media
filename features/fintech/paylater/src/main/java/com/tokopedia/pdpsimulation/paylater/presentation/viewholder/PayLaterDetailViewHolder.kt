@@ -62,12 +62,14 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
     private fun setUpFooter(element: Detail) {
         if (element.paylaterDisableDetail?.status == true) {
+            itemView.clPartnerCard.alpha = 0.38f
             itemView.payLaterActionCta.gone()
             itemView.llBenefits.gone()
             itemView.payLaterStatusTicker.visible()
             itemView.payLaterStatusTicker.tickerTitle = element.paylaterDisableDetail.header
             itemView.payLaterStatusTicker.setHtmlDescription(element.paylaterDisableDetail.description.orEmpty())
         } else {
+            itemView.clPartnerCard.alpha = 1.0f
             itemView.payLaterActionCta.visible()
             itemView.payLaterStatusTicker.gone()
             setPayLaterBenefits(element)
@@ -100,8 +102,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     private fun setPayLaterHeader(element: Detail) {
         itemView.apply {
             tvTitlePaymentPartner.text = element.gatewayDetail?.name
-            tvInstallmentAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.installment_per_month?: 0.0, false)
-            tvTenureMultiplier.text = "x${element.tenure}"
+            tvInstallmentAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.installment_per_month_ceil?: 0, false)
+            tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.tenure)
             if (element.subheader.isNullOrEmpty())
                 tvInstallmentDescription.gone()
             else {

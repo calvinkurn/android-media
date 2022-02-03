@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -20,7 +18,10 @@ import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
-import com.tokopedia.pdpsimulation.paylater.domain.model.*
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
+import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.ActionHandler
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
@@ -84,14 +85,26 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private fun handleAction(detail: Detail) {
         ActionHandler.handleClickNavigation(context, detail,
-            openHowToUse = { bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it) },
-            openGoPay = { bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it) }
+            openHowToUse = {
+                bottomSheetNavigator.showBottomSheet(
+                    PayLaterActionStepsBottomSheet::class.java,
+                    it
+                )
+            },
+            openGoPay = {
+                bottomSheetNavigator.showBottomSheet(
+                    PayLaterTokopediaGopayBottomsheet::class.java,
+                    it
+                )
+            }
         )
     }
 
     private fun openInstallmentBottomSheet(installment: InstallmentDetails) {
-        bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java,
-            ActionHandler.getInstallmentBundle(installment))
+        bottomSheetNavigator.showBottomSheet(
+            PayLaterInstallmentFeeInfo::class.java,
+            ActionHandler.getInstallmentBundle(installment)
+        )
     }
 
     override fun onCreateView(
