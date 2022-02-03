@@ -50,7 +50,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                                     shippingCourierUiModel.isSelected = true
                                     presenter.setShippingCourierViewModelsState(shippingDurationUiModel.shippingCourierViewModelList, shipmentCartItemModel.orderNumber)
                                     view.renderCourierStateSuccess(generateCourierItemData(shippingCourierUiModel, shippingRecommendationData),
-                                            itemPosition, isTradeInDropOff, isForceReloadRates)
+                                            itemPosition, isTradeInDropOff, isForceReloadRates, shippingDurationUiModel.serviceData.selectedShipperProductId == 0)
                                     return
                                 }
                             }
@@ -68,7 +68,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                         if (shippingCourier != null) {
                             shippingCourier.isSelected = true
                             view.renderCourierStateSuccess(generateCourierItemData(shippingCourier, shippingRecommendationData),
-                                    itemPosition, isTradeInDropOff, isForceReloadRates)
+                                    itemPosition, isTradeInDropOff, isForceReloadRates, shippingDuration.serviceData.selectedShipperProductId == 0)
                             return
                         }
                     }

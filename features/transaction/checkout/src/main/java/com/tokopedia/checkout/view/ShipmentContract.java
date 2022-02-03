@@ -91,7 +91,7 @@ public interface ShipmentContract {
 
         void renderChangeAddressFailed(boolean refreshCheckoutPageIfSuccess);
 
-        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates);
+        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates, boolean isShowChangeCourierCard);
 
         void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff);
 
