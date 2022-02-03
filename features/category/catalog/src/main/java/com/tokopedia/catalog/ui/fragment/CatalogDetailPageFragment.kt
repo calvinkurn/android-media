@@ -178,7 +178,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun setUpBottomSheet(){
         requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId,catalogUrl),
+                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogName,catalogId,catalogUrl),
                 CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG).commit()
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
@@ -198,7 +198,7 @@ class CatalogDetailPageFragment : Fragment(),
                                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                 CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
-                                catalogId,userSession.userId)
+                                "$catalogName - $catalogId",userSession.userId,catalogId)
                     }
                 }
             }
@@ -230,7 +230,7 @@ class CatalogDetailPageFragment : Fragment(),
     private fun setCatalogUrlForTracking() {
         activity?.supportFragmentManager?.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG)?.let { fragment ->
             if(fragment is CatalogPreferredProductsBottomSheet){
-                fragment.setCatalogUrl(catalogUrl)
+                fragment.setCatalogUrl(catalogName,catalogUrl)
             }
         }
     }
@@ -273,10 +273,10 @@ class CatalogDetailPageFragment : Fragment(),
             setBadgeCounter(IconList.ID_CART, getCartCounter())
             setOnBackButtonClickListener {
                 CatalogDetailAnalytics.sendEvent(
-                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                         CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                         CatalogDetailAnalytics.ActionKeys.CLICK_BACK_BUTTON,
-                        catalogId,userSession.userId)
+                        "$catalogName - $catalogId",userSession.userId,catalogId)
                 activity?.onBackPressed()
             }
             show()
@@ -324,7 +324,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun viewMoreClicked(openPage : String) {
-        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalogId,
+        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalogName , catalogId,
                 catalogUiUpdater.productInfoMap?.description ?: "",
                 fullSpecificationDataModel.fullSpecificationsList
                 ,openPage
@@ -343,10 +343,10 @@ class CatalogDetailPageFragment : Fragment(),
             showUniversalShareBottomSheet(catalogImages)
         }else {
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
-                    catalogId, userSession.userId)
+                    "$catalogName - $catalogId", userSession.userId,catalogId)
             CatalogUtil.shareData(requireActivity(), linkerShareData.linkerData.description,
                     linkerShareData.linkerData.uri)
         }
@@ -476,28 +476,28 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
         showImage(position)
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
-                catalogId,userSession.userId)
+                "$catalogName - $catalogId",userSession.userId,catalogId)
     }
 
     override fun onViewMoreSpecificationsClick() {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-                catalogId,userSession.userId)
+                "$catalogName - $catalogId",userSession.userId,catalogId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
     }
 
     override fun playVideo(catalogVideo: VideoComponentData, position: Int) {
         context?.let {
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_VIDEO_WIDGET,
-                    catalogId,userSession.userId)
+                    "$catalogName - $catalogId",userSession.userId,catalogId)
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
                 catalogVideo.url?.let {videoUrl ->
@@ -518,10 +518,10 @@ class CatalogDetailPageFragment : Fragment(),
     override fun comparisionCatalogClicked(comparisionCatalogId: String) {
         context?.let {
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
-                    "origin: $catalogId - destination: $comparisionCatalogId",userSession.userId)
+                    "origin: $catalogName - $catalogId - destination: $comparisionCatalogId",userSession.userId,catalogId)
             RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisionCatalogId}")
         }
     }
@@ -536,10 +536,10 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onViewMoreDescriptionClick() {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
-                catalogId,userSession.userId)
+                "$catalogName - $catalogId",userSession.userId,catalogId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
 

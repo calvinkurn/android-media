@@ -14,13 +14,14 @@ object CatalogDetailAnalytics {
     }
 
     fun sendEvent(event: String, category: String,
-                  action: String, label: String, userId : String) {
+                  action: String, label: String, userId : String, catalogId: String) {
         HashMap<String,Any>().apply {
             put(EventKeys.KEY_EVENT,event)
             put(EventKeys.KEY_EVENT_CATEGORY,category)
             put(EventKeys.KEY_EVENT_ACTION,action)
             put(EventKeys.KEY_EVENT_LABEL,label)
             put(EventKeys.KEY_USER_ID,userId)
+            put(EventKeys.KEY_CATALOG_ID,catalogId)
             put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
             put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
         }.also {
@@ -52,7 +53,7 @@ object CatalogDetailAnalytics {
         }
     }
 
-    fun trackEventImpressionProductCard(catalogId : String, catalogUrl : String, userId : String ,
+    fun trackEventImpressionProductCard(catalogName : String, catalogId : String, catalogUrl : String, userId : String ,
                                         item : CatalogProductItem, position : String,
                                         searchFilterMap : HashMap<String,String>?){
         val list = ArrayList<Map<String, Any>>()
@@ -75,17 +76,18 @@ object CatalogDetailAnalytics {
         map[EventKeys.KEY_EVENT] = EventKeys.EVENT_NAME_PRODUCT_VIEW
         map[EventKeys.KEY_EVENT_CATEGORY] = CategoryKeys.PAGE_EVENT_CATEGORY
         map[EventKeys.KEY_EVENT_ACTION] = ActionKeys.IMPRESSION_PRODUCT
-        map[EventKeys.KEY_EVENT_LABEL] = catalogId
+        map[EventKeys.KEY_EVENT_LABEL] = "$catalogName - $catalogId"
         map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         map[EventKeys.KEY_ECOMMERCE] = eCommerce
         map[EventKeys.KEY_PRODUCT_ID] = item.id
         map[EventKeys.KEY_USER_ID] = userId
+        map[EventKeys.KEY_CATALOG_ID] = catalogId
 
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    fun trackProductCardClick(catalogId : String,  catalogUrl : String, userId : String ,
+    fun trackProductCardClick(catalogName : String, catalogId : String,  catalogUrl : String, userId : String ,
                               item : CatalogProductItem, position : String ,
                               searchFilterMap : HashMap<String,String>?) {
         val list = ArrayList<Map<String, Any>>()
@@ -114,12 +116,13 @@ object CatalogDetailAnalytics {
         map[EventKeys.KEY_EVENT] = EventKeys.EVENT_NAME_PRODUCT_CLICK
         map[EventKeys.KEY_EVENT_CATEGORY] = CategoryKeys.PAGE_EVENT_CATEGORY
         map[EventKeys.KEY_EVENT_ACTION] = ActionKeys.CLICK_PRODUCT
-        map[EventKeys.KEY_EVENT_LABEL] = catalogId
+        map[EventKeys.KEY_EVENT_LABEL] = "$catalogName - $catalogId"
         map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         map[EventKeys.KEY_ECOMMERCE] = eCommerce
         map[EventKeys.KEY_PRODUCT_ID] = item.id
         map[EventKeys.KEY_USER_ID] = userId
+        map[EventKeys.KEY_CATALOG_ID] = catalogId
         map[KEYS.CAMPAIGN_CODE] = ""
 
         getTracker().sendEnhanceEcommerceEvent(map)
@@ -150,6 +153,7 @@ object CatalogDetailAnalytics {
             const val EVENT_NAME_CATALOG_CLICK = "clickCatalog"
             const val EVENT_NAME_VIEW_CATALOG_IRIS = "viewCatalogIris"
             const val EVENT_NAME_PRODUCT_VIEW = "productView"
+            const val EVENT_NAME_CLICK_PG = "clickPG"
         }
     }
 
@@ -180,8 +184,8 @@ object CatalogDetailAnalytics {
             const val ACTION_ADD_WISHLIST = "add wishlist"
             const val ACTION_REMOVE_WISHLIST = "remove wishlist"
 
-            const val CLICK_MORE_DESCRIPTION = "click lihat selengkapnya deskripsi"
-            const val CLICK_MORE_SPECIFICATIONS = "click lihat selengkapnya spesifikasi"
+            const val CLICK_MORE_DESCRIPTION = "click deskripsi lihat selengkapnya"
+            const val CLICK_MORE_SPECIFICATIONS = "click spesifikasi lihat selengkapnya"
             const val CLICK_TAB_SPECIFICATIONS = "click tab spesifikasi lihat selengkapnya"
             const val CLICK_TAB_DESCRIPTION = "click tab deskripsi lihat selengkapnya"
             const val CLICK_VIDEO_WIDGET = "click video widget"
