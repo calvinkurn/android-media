@@ -71,7 +71,7 @@ data class Detail(
 data class Proof(
         @SerializedName("image_id")
         val imageId: String = "",
-        @SerializedName("description")
+        @SerializedName("copy_writing_disclaimer")
         val description: String = ""
 )
 
