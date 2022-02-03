@@ -22,7 +22,7 @@ class CouponMapper @Inject constructor() {
         val isPublic = if (voucher.isPublic) {
             CouponInformation.Target.PUBLIC
         } else {
-            CouponInformation.Target.SPECIAL
+            CouponInformation.Target.PRIVATE
         }
 
         val information = CouponInformation(

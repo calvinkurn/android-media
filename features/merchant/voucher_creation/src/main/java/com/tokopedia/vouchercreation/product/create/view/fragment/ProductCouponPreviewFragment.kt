@@ -308,7 +308,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
 
         val target = when (coupon.target) {
             CouponInformation.Target.PUBLIC -> getString(R.string.mvc_public)
-            CouponInformation.Target.SPECIAL -> getString(R.string.mvc_special)
+            CouponInformation.Target.PRIVATE -> getString(R.string.mvc_special)
         }
         binding.tpgCouponTarget.text = target
 
@@ -333,7 +333,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     private fun handleCouponCodeVisibility(couponCode: String, target: CouponInformation.Target) {
         when (target) {
             CouponInformation.Target.PUBLIC -> binding.groupCouponCode.gone()
-            CouponInformation.Target.SPECIAL -> binding.groupCouponCode.visible()
+            CouponInformation.Target.PRIVATE -> binding.groupCouponCode.visible()
         }
 
         binding.tpgCouponCode.text = couponCode

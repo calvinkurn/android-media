@@ -108,7 +108,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
     }
 
     private fun handleShareToSocialMediaCardVisibility() {
-        if (coupon?.target== CouponInformation.Target.SPECIAL) {
+        if (coupon?.target== CouponInformation.Target.PRIVATE) {
             binding.layoutShareToSocialMedia.visible()
         } else {
             binding.layoutShareToSocialMedia.gone()

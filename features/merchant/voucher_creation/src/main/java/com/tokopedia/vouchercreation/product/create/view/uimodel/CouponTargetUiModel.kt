@@ -21,7 +21,7 @@ internal fun CouponTargetEnum?.convertToCouponInformationTarget() =
     if (this == CouponTargetEnum.PUBLIC) {
         CouponInformation.Target.PUBLIC
     } else {
-        CouponInformation.Target.SPECIAL
+        CouponInformation.Target.PRIVATE
     }
 
 internal fun CouponInformation.Target?.convertToCouponTargetEnum() =

@@ -35,7 +35,7 @@ class GenerateImageParamsBuilder @Inject constructor() {
 
         val couponVisibility = when (couponInformation.target) {
             CouponInformation.Target.PUBLIC -> "public"
-            CouponInformation.Target.SPECIAL -> "private"
+            CouponInformation.Target.PRIVATE -> "private"
         }
 
         val benefitType = when (couponSettings.type) {
