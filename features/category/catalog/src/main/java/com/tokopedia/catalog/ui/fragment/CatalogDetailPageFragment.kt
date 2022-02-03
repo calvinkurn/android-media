@@ -28,6 +28,7 @@ import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
 import com.tokopedia.catalog.adapter.decorators.DividerItemDecorator
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogUniversalShareAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
@@ -49,11 +50,24 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -63,7 +77,10 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CatalogDetailPageFragment : Fragment(),
-        HasComponent<CatalogComponent>, CatalogDetailListener {
+        HasComponent<CatalogComponent>, CatalogDetailListener,
+        ShareBottomsheetListener,
+        ScreenShotListener,
+        PermissionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -76,6 +93,8 @@ class CatalogDetailPageFragment : Fragment(),
 
     private var catalogId: String = ""
     private var catalogUrl: String = ""
+    private var catalogName : String = ""
+    private var catalogImages  =  arrayListOf<CatalogImage>()
 
     private var navToolbar: NavToolbar? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -138,6 +157,7 @@ class CatalogDetailPageFragment : Fragment(),
         if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
             setUpBottomSheet()
         }
+        setUpUniversalShare()
     }
 
     private fun initViews() {
@@ -148,9 +168,21 @@ class CatalogDetailPageFragment : Fragment(),
         initNavToolbar()
     }
 
+    private fun setUpUniversalShare() {
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                    it,
+                    this,
+                    this,
+                    addFragmentLifecycleObserver = true,
+                    permissionListener = this
+            )
+        }
+    }
+
     private fun setUpBottomSheet(){
         requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId,catalogUrl),
+                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogName,catalogId,catalogUrl),
                 CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG).commit()
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
@@ -170,7 +202,7 @@ class CatalogDetailPageFragment : Fragment(),
                                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                 CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
-                                catalogId,userSession.userId)
+                                "$catalogName - $catalogId",userSession.userId,catalogId)
                     }
                 }
             }
@@ -186,6 +218,8 @@ class CatalogDetailPageFragment : Fragment(),
                     }
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
+                    catalogImages = catalogUiUpdater.productInfoMap?.images ?: arrayListOf()
+                    catalogName = catalogUiUpdater.productInfoMap?.productName ?: ""
                     updateUi()
                     setCatalogUrlForTracking()
                 }
@@ -200,7 +234,7 @@ class CatalogDetailPageFragment : Fragment(),
     private fun setCatalogUrlForTracking() {
         activity?.supportFragmentManager?.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG)?.let { fragment ->
             if(fragment is CatalogPreferredProductsBottomSheet){
-                fragment.setCatalogUrl(catalogUrl)
+                fragment.setCatalogUrl(catalogName,catalogUrl)
             }
         }
     }
@@ -234,7 +268,7 @@ class CatalogDetailPageFragment : Fragment(),
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_SHARE) {
-                                generateCatalogShareData(catalogId)
+                                generateCatalogShareData(catalogId,true)
                             }
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
@@ -243,10 +277,10 @@ class CatalogDetailPageFragment : Fragment(),
             setBadgeCounter(IconList.ID_CART, getCartCounter())
             setOnBackButtonClickListener {
                 CatalogDetailAnalytics.sendEvent(
-                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                         CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                         CatalogDetailAnalytics.ActionKeys.CLICK_BACK_BUTTON,
-                        catalogId,userSession.userId)
+                        "$catalogName - $catalogId",userSession.userId,catalogId)
                 activity?.onBackPressed()
             }
             show()
@@ -294,7 +328,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun viewMoreClicked(openPage : String) {
-        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalogId,
+        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalogName , catalogId,
                 catalogUiUpdater.productInfoMap?.description ?: "",
                 fullSpecificationDataModel.fullSpecificationsList
                 ,openPage
@@ -302,22 +336,134 @@ class CatalogDetailPageFragment : Fragment(),
         catalogSpecsAndDetailView.show(childFragmentManager, "")
     }
 
-    private fun generateCatalogShareData(catalogId: String) {
-        CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
-                catalogId,userSession.userId)
+    private fun generateCatalogShareData(catalogId: String, isUniversalShare: Boolean = false) {
+        val linkerShareData = linkerDataMapper(catalogId)
+        onCatalogShareButtonClicked(isUniversalShare,linkerShareData)
+    }
+
+    private fun onCatalogShareButtonClicked(isUniversalShare : Boolean = false, linkerShareData : LinkerShareData) {
+        if(isUniversalShare){
+            CatalogUniversalShareAnalytics.navBarShareButtonClickedGTM(catalogId,userSession.userId)
+            showUniversalShareBottomSheet(catalogImages)
+        }else {
+            CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
+                    "$catalogName - $catalogId", userSession.userId,catalogId)
+            CatalogUtil.shareData(requireActivity(), linkerShareData.linkerData.description,
+                    linkerShareData.linkerData.uri)
+        }
+    }
+
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenshotDetector: ScreenshotDetector? = null
+    private var shareType: Int = 1
+
+    private fun showUniversalShareBottomSheet(catalogImages : ArrayList<CatalogImage>  ) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@CatalogDetailPageFragment)
+            setUtmCampaignData(
+                    CatalogConstant.CATALOG,
+                    if(UserSession(this@CatalogDetailPageFragment.context).userId.isNullOrEmpty()) "0"
+                    else UserSession(this@CatalogDetailPageFragment.context).userId,
+                    catalogId,
+                    CatalogConstant.CATALOG_SHARE
+            )
+            setMetaData(
+                    "${CatalogConstant.KATALOG} $catalogName",
+                    catalogImages.firstOrNull()?.imageURL ?: "",
+                    "",
+                    CatalogUtil.getImagesFromCatalogImages(catalogImages)
+            )
+            setOgImageUrl(catalogImages.firstOrNull()?.imageURL ?: "")
+        }
+        universalShareBottomSheet?.show(requireActivity().supportFragmentManager,
+                this@CatalogDetailPageFragment, screenshotDetector)
+        shareType = UniversalShareBottomSheet.getShareBottomSheetType()
+        if(UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET){
+            CatalogUniversalShareAnalytics.shareBottomSheetAppearGTM(catalogId,userSession.userId)
+        }
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val linkerShareData = linkerDataMapper(catalogId)
+        linkerShareData.linkerData.apply {
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            isThrowOnError = false
+            if (shareModel.ogImgUrl?.isNotEmpty() == true) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        }
+        if(UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET){
+            CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(shareModel.channel ?: "",catalogId,userSession.userId)
+        }else  {
+            CatalogUniversalShareAnalytics.sharingChannelScreenShotSelectedGTM(shareModel.channel ?: "",catalogId,userSession.userId)
+        }
+
+        LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        val shareString = resources.getString(com.tokopedia.catalog.R.string.catalog_share_string,
+                                catalogName,linkerShareData?.url)
+                        SharingUtil.executeShareIntent(
+                                shareModel,
+                                linkerShareData,
+                                activity,
+                                view,
+                                shareString
+                        )
+                        universalShareBottomSheet?.dismiss()
+                    }
+
+                    override fun onError(linkerError: LinkerError?) {
+                        universalShareBottomSheet?.dismiss()
+                        generateCatalogShareData(catalogId,false)
+                    }
+                })
+        )
+    }
+
+    override fun onCloseOptionClicked() {
+        if(UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET){
+            CatalogUniversalShareAnalytics.dismissShareBottomSheetGTM(catalogId,userSession.userId)
+        }else  {
+            CatalogUniversalShareAnalytics.userClosesScreenShotBottomSheetGTM(catalogId,userSession.userId)
+        }
+        universalShareBottomSheet?.dismiss()
+    }
+
+    override fun screenShotTaken() {
+        CatalogUniversalShareAnalytics.userTakenScreenShotGTM(catalogId,userSession.userId)
+        showUniversalShareBottomSheet(catalogImages)
+    }
+
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
+    }
+
+    override fun permissionAction(action: String, label: String) {
+        CatalogUniversalShareAnalytics.allowPopupGTM(label,catalogId,userSession.userId)
+    }
+
+    private fun linkerDataMapper(catalogId: String): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = catalogId
-        linkerData.name = getString(R.string.catalog_message_share_catalog)
-        if(!catalogUrl.contains("www."))
-            linkerData.uri = catalogUrl.replace("https://","https://www.")
-        else
-            linkerData.uri = catalogUrl
-        linkerData.description = getString(R.string.catalog_message_share_catalog)
+        linkerData.type = LinkerData.CATALOG_TYPE
+        linkerData.name = getString(com.tokopedia.catalog.R.string.catalog_share_link_name,catalogName)
+        linkerData.uri  = CatalogUtil.getShareURI(catalogUrl)
+        linkerData.description = getString(com.tokopedia.catalog.R.string.catalog_share_link_description)
         linkerData.isThrowOnError = true
-        CatalogUtil.shareData(requireActivity(), linkerData.description, linkerData.uri)
+        val linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
     }
 
     private fun showImage(currentItem: Int) {
@@ -334,28 +480,28 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
         showImage(position)
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
-                catalogId,userSession.userId)
+                "$catalogName - $catalogId",userSession.userId,catalogId)
     }
 
     override fun onViewMoreSpecificationsClick() {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-                catalogId,userSession.userId)
+                "$catalogName - $catalogId",userSession.userId,catalogId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
     }
 
     override fun playVideo(catalogVideo: VideoComponentData, position: Int) {
         context?.let {
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_VIDEO_WIDGET,
-                    catalogId,userSession.userId)
+                    "$catalogName - $catalogId",userSession.userId,catalogId)
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
                 catalogVideo.url?.let {videoUrl ->
@@ -376,10 +522,10 @@ class CatalogDetailPageFragment : Fragment(),
     override fun comparisionCatalogClicked(comparisionCatalogId: String) {
         context?.let {
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
-                    "origin: $catalogId - destination: $comparisionCatalogId",userSession.userId)
+                    "origin: $catalogName - $catalogId - destination: $comparisionCatalogId",userSession.userId,catalogId)
             RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisionCatalogId}")
         }
     }
@@ -404,10 +550,10 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onViewMoreDescriptionClick() {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
-                catalogId,userSession.userId)
+                "$catalogName - $catalogId",userSession.userId,catalogId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
 
@@ -425,5 +571,4 @@ class CatalogDetailPageFragment : Fragment(),
         } else {
             0
         }
-
 }

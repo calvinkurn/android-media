@@ -44,6 +44,7 @@ class CatalogDetailProductListingViewModel
     var pageCount = 0
     var isPagingAllowed: Boolean = true
     var catalogUrl = ""
+    var catalogName = ""
 
     val list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 

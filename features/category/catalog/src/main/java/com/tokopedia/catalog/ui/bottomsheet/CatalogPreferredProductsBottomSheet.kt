@@ -10,6 +10,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
 
     private var catalogId: String = ""
+    private var catalogName: String = ""
     private var catalogUrl: String = ""
 
     init {
@@ -36,6 +37,7 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
+            catalogName = requireArguments().getString(ARG_EXTRA_CATALOG_NAME, "")
             catalogUrl = requireArguments().getString(ARG_EXTRA_CATALOG_URL, "")
         }
         if(savedInstanceState == null)
@@ -44,9 +46,10 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
 
     }
 
-    fun setCatalogUrl(catalogUrl: String) {
+    fun setCatalogUrl(catalogName : String, catalogUrl: String) {
         childFragmentManager.fragments.firstOrNull()?.let { topFragment ->
             if(topFragment is CatalogDetailProductListingFragment && catalogUrl.isNotEmpty()){
+                topFragment.viewModel.catalogName = catalogName
                 topFragment.viewModel.catalogUrl = catalogUrl
             }
         }
@@ -54,13 +57,15 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
         private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
         const val PREFFERED_PRODUCT_BOTTOMSHEET_TAG = "PREFFERED_PRODUCT_BOTTOMSHEET_TAG"
 
-        fun newInstance(catalogId : String, catalogUrl : String?): CatalogPreferredProductsBottomSheet {
+        fun newInstance(catalogName : String, catalogId : String, catalogUrl : String?): CatalogPreferredProductsBottomSheet {
             return CatalogPreferredProductsBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(ARG_EXTRA_CATALOG_ID, catalogId)
+                    putString(ARG_EXTRA_CATALOG_NAME, catalogName)
                     putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
                 }
             }
