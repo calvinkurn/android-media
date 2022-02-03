@@ -1,8 +1,6 @@
 package com.tokopedia.kyc_centralized.util
 
 import android.content.SharedPreferences
-import com.tokopedia.common.network.util.CommonUtil
-import java.lang.reflect.Type
 import javax.inject.Inject
 
 class KycSharedPreference @Inject constructor(
@@ -16,9 +14,9 @@ class KycSharedPreference @Inject constructor(
             .apply()
     }
 
-    fun getByteArrayCache(key: String): ByteArray {
+    fun getByteArrayCache(key: String): ByteArray? {
         val cacheString = sharedPreferences.getString(key, "")
-        return cacheString!!.toPreservedByteArray //expected to use !!
+        return cacheString?.toPreservedByteArray
     }
 
     fun removeCache(key: String) {

@@ -29,6 +29,9 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     private var openPage : String? = DESCRIPTION
     var catalogId : String = ""
 
+    private var tabLayout : TabLayout? = null
+    private var viewPager : ViewPager2? = null
+
     init {
         isFullpage = true
         isDragable = true
@@ -92,8 +95,8 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun initViews() {
-        val tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_specs)
-        val viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_specs)
+        tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_specs)
+        viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_specs)
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         activity?.let {
             setTitle(it.resources.getString(R.string.catalog_detail_product))
@@ -101,7 +104,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
             val adapter = CatalogDetailsAndSpecsPagerAdapter(it, context, list)
             viewPager?.adapter = adapter
             if(tabLayout != null && viewPager != null){
-                TabLayoutMediator(tabLayout, viewPager) { _, _ ->
+                TabLayoutMediator(tabLayout!!, viewPager!!) { _, _ ->
 
                 }.attach()
             }
@@ -109,12 +112,12 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    tab?.position?.let { position -> adapter.setUnSelectView(tabLayout,position) }
+                    tab?.position?.let { position -> adapter.setUnSelectView(tab) }
                 }
 
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.let { position ->
-                        adapter.setOnSelectView(tabLayout,position)
+                        adapter.setOnSelectView(tab)
                         if(position == PAGE_DESCRIPTION){
                             CatalogDetailAnalytics.sendEvent(
                                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
@@ -153,6 +156,14 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         }
 
         return bottomSheetDialog
+    }
+
+    override fun onDestroyView() {
+        viewPager?.adapter = null
+        tabLayout?.addOnTabSelectedListener(null)
+        viewPager = null
+        tabLayout = null
+        super.onDestroyView()
     }
 
     private fun setCustomTabText(context : Context?, tabLayout: TabLayout?){

@@ -15,7 +15,7 @@ import javax.inject.Inject
 @PlayScope
 class PlayProductTagUiMapper @Inject constructor() {
 
-    fun mapProductTag(input: Product): PlayProductUiModel {
+    fun mapProductTag(input: Product): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
                 id = input.id,
                 shopId = input.shopId,

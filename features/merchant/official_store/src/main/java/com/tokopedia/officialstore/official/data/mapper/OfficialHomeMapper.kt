@@ -121,7 +121,7 @@ class OfficialHomeMapper (
                     DynamicChannelLayout.LAYOUT_FEATURED_SHOP -> {
                         views.add(
                             FeaturedShopDataModel(
-                                channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponentBannerToHeader(
                                     officialStore.channel,
                                     position
                                 ),
@@ -266,6 +266,7 @@ class OfficialHomeMapper (
         listOfficialStore.forEachIndexed {index, it ->
             if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
+                newData.channelModel.channelHeader = it.channelModel.channelHeader
                 listOfficialStore[index] = newData.copy()
             }
         }
