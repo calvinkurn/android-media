@@ -17,7 +17,7 @@
         android:id="@+id/cm_home_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:showShimmer="true" />
+        app:showShimmer="false" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/cm_home_widget_divider_footer"
