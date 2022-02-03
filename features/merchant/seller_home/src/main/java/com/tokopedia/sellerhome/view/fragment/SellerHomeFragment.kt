@@ -1660,12 +1660,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 this.root, message,
                 Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.sah_reload)
             ) {
-                reloadPageOrLoadDataOfErrorWidget()
+                reloadNotUpdatedWidgets()
             }.show()
 
             Handler(Looper.getMainLooper()).postDelayed({
                 isErrorToastShown = false
             }, TOAST_DURATION)
+        }
+    }
+
+    private fun reloadNotUpdatedWidgets() {
+        launchOnViewLifecycleScope(Dispatchers.IO) {
+            val widgets = adapter.data.filter {
+                //filter all widgets that the data still from cache
+                it.data?.isFromCache.orFalse()
+            }
+            withContext(Dispatchers.Main) {
+                getWidgetsData(widgets)
+            }
         }
     }
 
