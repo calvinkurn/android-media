@@ -971,7 +971,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates, boolean isShowChangeCourierCard) {
+    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
         if (shipmentCartItemModel == null) return;
 
@@ -1012,7 +1012,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.doValidateUseLogisticPromo(itemPosition, cartString, validateUsePromoRequest);
             }
             checkCourierPromo(courierItemData, itemPosition);
-            shipmentAdapter.setSelectedCourier(itemPosition, courierItemData, false, isShowChangeCourierCard);
+            shipmentAdapter.setSelectedCourier(itemPosition, courierItemData, false);
         }
         onNeedUpdateViewItem(itemPosition);
         shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
@@ -2025,9 +2025,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentAdapter.updateShipmentCostModel();
                         shipmentAdapter.updateCheckoutButtonData(null);
                     }
-                    shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier, true, serviceData.getSelectedShipperProductId() == 0);
+                    shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier, true);
                     shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-                    shipmentAdapter.setShippingCourierViewModels(shippingCourierUiModels, recommendedCourier, cartItemPosition);
+                    shipmentAdapter.setShippingCourierViewModels(shippingCourierUiModels, recommendedCourier, cartItemPosition, serviceData.getSelectedShipperProductId() == 0);
                     if (!TextUtils.isEmpty(recommendedCourier.getPromoCode()) && isDurationClick) {
                         checkCourierPromo(recommendedCourier, cartItemPosition);
                     }
@@ -2087,7 +2087,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel.getLongitude().equalsIgnoreCase("0")))) {
             setPinpoint(cartItemPosition);
         } else {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData, true, shippingCourierUiModel.getServiceData().getSelectedShipperProductId() == 0);
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData, true);
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                 shipmentCartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierList);
             }
