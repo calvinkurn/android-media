@@ -144,6 +144,7 @@ class SellerHomeViewModelTest {
             { getAnnouncementDataUseCase },
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
+            { remoteConfig },
             coroutineTestRule.dispatchers
         )
 
@@ -265,6 +266,7 @@ class SellerHomeViewModelTest {
         val shopId = "123456"
         val page = "seller-home"
         val widgetHeightInDp = 0f
+        val isCachingEnabled = true
 
         val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
         val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
@@ -329,7 +331,7 @@ class SellerHomeViewModelTest {
 
         coVerify {
             getLayoutUseCase.executeOnBackground()
-            sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp)
+            sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp, isCachingEnabled)
         }
 
         val successLayoutList = layoutList.map {
