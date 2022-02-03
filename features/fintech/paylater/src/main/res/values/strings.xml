@@ -18,5 +18,9 @@
     <string name="paylater_gopay_connect_account">Sambungin Akun</string>
     <string name="paylater_see_more_offers">Lihat %1$d Lainnya</string>
     <string name="paylater_x_tenure">x%1$d</string>
+    <string name="activation_onclick_checkout">Bela Langsung</string>
+    <string name="activation_paylater_breakdown">Lihat Rincian</string>
+    <string name="paylater_activation_change_variant">Ganti Varian</string>
+    <string name="which_paylater_you_want">Mau pakai PayLater yang mana?</string>
 
 </resources>
