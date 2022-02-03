@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.product.voucherlist.view.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.FrameLayout
@@ -24,11 +25,25 @@ import javax.inject.Inject
 
 class CouponListActivity : BaseSimpleActivity() {
 
+    companion object {
+        private const val INTENT_KEY_COUPON = "coupon"
+        @JvmStatic
+        fun start(context: Context, coupon: Coupon) {
+            val bundle = Bundle()
+            bundle.putParcelable(INTENT_KEY_COUPON, coupon)
+            val starter = Intent(context, CouponListActivity::class.java)
+            starter.putExtras(bundle)
+            context.startActivity(starter)
+        }
+    }
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
     override fun getLayoutRes() = R.layout.activity_mvc_coupon_list
     override fun getNewFragment() = couponListFragment
+
+    private val coupon by lazy { intent.extras?.getParcelable<Coupon>(INTENT_KEY_COUPON) }
 
     private val couponListFragment = CouponListFragment.newInstance(
         ::navigateToCreateCouponPage,
@@ -41,6 +56,9 @@ class CouponListActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
+        if (coupon != null) {
+            showBroadCastVoucherBottomSheet(coupon ?: return)
+        }
     }
 
     private fun setupDependencyInjection() {

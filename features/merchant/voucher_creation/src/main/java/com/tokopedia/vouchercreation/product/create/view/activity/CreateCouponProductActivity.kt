@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.NumberConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
@@ -18,6 +19,7 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingF
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
+import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import java.util.*
 import javax.inject.Inject
 
@@ -27,6 +29,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         private const val PRODUCT_ID_SEGMENT_INDEX = 1
         const val BUNDLE_KEY_COUPON = "coupon"
         const val REQUEST_CODE_CREATE_COUPON = 100
+        private const val APP_LINK = "create-voucher-product"
     }
 
     @Inject
@@ -85,8 +88,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
 
     private fun onCreateCouponSuccess(coupon: Coupon) {
-        //finish()
-        notifyCreateCouponSuccessToCouponListPage(coupon)
+        redirectPage(coupon)
     }
 
 
@@ -154,6 +156,15 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
 
+    private fun redirectPage(coupon: Coupon) {
+        if (isLaunchedFromAppLink()) {
+            CouponListActivity.start(this, coupon)
+            finish()
+        } else {
+            notifyCreateCouponSuccessToCouponListPage(coupon)
+        }
+    }
+
     private fun notifyCreateCouponSuccessToCouponListPage(coupon: Coupon) {
         val intent = Intent()
 
@@ -163,5 +174,12 @@ class CreateCouponProductActivity : AppCompatActivity() {
         intent.putExtras(bundle)
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    private fun isLaunchedFromAppLink(): Boolean {
+        val appLinkData = RouteManager.getIntent(this, intent.data.toString()).data
+        val pathSegments = appLinkData?.pathSegments.orEmpty()
+        val path = pathSegments.getOrNull(NumberConstant.ZERO)
+        return path == APP_LINK
     }
 }
