@@ -1,9 +1,0 @@
-query showInterrupt{
-    show_interrupt {
-        popup_2fa
-        interval
-        show_skip
-        error
-    }
-}
-

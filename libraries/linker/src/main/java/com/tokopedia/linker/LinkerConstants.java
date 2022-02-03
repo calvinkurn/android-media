@@ -19,6 +19,7 @@ public interface LinkerConstants {
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
     String PROMO_DETAIL = "tokopedia://promo/{slug}";
+    String PLAY = "tokopedia://play/{channel_id}";
     String APPLINKS = "tokopedia";
     String WEB_DOMAIN = "https://www.tokopedia.com/";
     String MOBILE_DOMAIN = "https://m.tokopedia.com/";
@@ -156,6 +157,6 @@ public interface LinkerConstants {
     String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
     String IOS_BUNDLE_ID="com.tokopedia.Tokopedia";
 
-    String DISCOVERY_PATH = "discovery/";
+    String DISCOVERY_PATH = "/discovery/";
 
 }

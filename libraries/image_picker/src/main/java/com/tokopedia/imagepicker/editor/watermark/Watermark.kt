@@ -83,6 +83,8 @@ data class Watermark(
             bitmap = combinedBitmap,
             config = watermark
         )
+        logoBitmap.recycle()
+        textBitmap.recycle()
     }
 
     /**
@@ -228,11 +230,14 @@ data class Watermark(
 
         if (!backgroundImg!!.isDark()) {
             scaledWatermarkBitmap = scaledWatermarkBitmap!!
-                .changeColor(MethodChecker.getColor(context, R.color.green_neutral_30))
+                .changeColor(MethodChecker.getColor(context, R.color.dms_green_neutral_30))
         }
 
         // merge the main bitmap with scaled watermark bitmap
         outputImage = mapWatermarkType(this.type)
+
+        watermarkBitmap?.recycle()
+        scaledWatermarkBitmap?.recycle()
 
         return outputImage!!
     }
@@ -275,21 +280,26 @@ data class Watermark(
     }
 
     private fun mapWatermarkType(type: Int): Bitmap {
-        val widthMainBitmap = backgroundImg!!.width
-        val heightMainBitmap = backgroundImg!!.height
-        val resultBitmap = createBitmap(
-            widthMainBitmap,
-            heightMainBitmap,
-            backgroundImg!!.config
-        )
-        return when (type) {
-            Constant.TYPE_WATERMARK_TOPED -> {
-                tileWatermarkBitmap(resultBitmap)
+        try {
+            val widthMainBitmap = backgroundImg!!.width
+            val heightMainBitmap = backgroundImg!!.height
+            val resultBitmap = createBitmap(
+                widthMainBitmap,
+                heightMainBitmap,
+                backgroundImg!!.config
+            )
+            return when (type) {
+                Constant.TYPE_WATERMARK_TOPED -> {
+                    tileWatermarkBitmap(resultBitmap)
+                }
+                Constant.TYPE_WATERMARK_CENTER_TOPED -> {
+                    centerWatermarkBitmap(resultBitmap)
+                }
+                else -> throw IllegalArgumentException()
             }
-            Constant.TYPE_WATERMARK_CENTER_TOPED -> {
-                centerWatermarkBitmap(resultBitmap)
-            }
-            else -> throw IllegalArgumentException()
+        } catch(e: OutOfMemoryError) {
+            System.gc()
+            return backgroundImg!!
         }
     }
 }

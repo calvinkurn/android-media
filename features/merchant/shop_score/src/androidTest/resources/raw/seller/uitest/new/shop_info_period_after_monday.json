@@ -1,0 +1,19 @@
+{
+  "shopInfoByID": {
+    "result": [
+      {
+        "createInfo": {
+          "shopCreated": "2021-11-01"
+        }
+      }
+    ],
+    "error": {
+      "message": ""
+    }
+  },
+  "goldGetPMSettingInfo": {
+    "period_type": "final_period",
+    "period_start_date_time": "2021-08-29 23:59:00",
+    "period_end_date_time": ""
+  }
+}

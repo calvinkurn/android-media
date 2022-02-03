@@ -14,12 +14,12 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.fragment.*
-import com.tokopedia.otp.verification.view.fragment.MisscallVerificationFragment
-import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneEmailVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhonePinVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneSmsVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneVerificationMethodFragment
+import com.tokopedia.otp.verification.view.fragment.miscalll.MisscallVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.miscalll.OnboardingMiscallFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

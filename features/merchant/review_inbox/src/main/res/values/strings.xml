@@ -18,8 +18,6 @@
     <string name="review_pending_variant">Varian: %s</string>
     <string name="review_pending_invalid_to_review">Oops, kamu sudah kasih ulasan untuk barang ini. Coba refresh, ya.</string>
     <string name="review_pending_shop_button">Mulai Belanja</string>
-    <string name="review_pending_credibility_coach_mark_title">Lihat kontribusi ulasanmu di sini</string>
-    <string name="review_pending_credibility_coach_mark_subtitle">Temukan berapa banyak rating dan ulasan lengkap yang sudah kamu kumpulkan tahun ini.</string>
 
     <string name="review_history_tab_title">Riwayat</string>
     <string name="review_history_search_bar_hint">Cari produk di sini</string>
@@ -107,8 +105,12 @@
         <item>Belum Dibaca</item>
     </string-array>
     <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
-    <string name="review_create_rating_condition">Kasih ratingnya</string>
-    <string name="review_create_photo_condition">Lanjut foto barang, min. 1</string>
-    <string name="review_create_review_condition">Tulis ulasan min. 40 karakter</string>
+    <string name="review_create_rating_condition_incentive">Kasih ratingnya</string>
+    <string name="review_create_rating_condition_challenge">Kasih rating\nbuat belanjaanmu</string>
+    <string name="review_create_photo_condition">Lanjut foto\nbarang, min. 1</string>
+    <string name="review_create_review_condition">Tulis ulasan\nmin. 40 karakter</string>
+    <string name="review_report_unknown_error">Terjadi kesalahan ketika mengirim laporan ulasan. Ulangi beberapa saat lagi</string>
+    <string name="review_reply_unknown_error">Terjadi kesalahan ketika mengirim balasan ulasan. Ulangi beberapa saat lagi</string>
+    <string name="review_delete_unknown_error">Terjadi kesalahan ketika menghapus balasan ulasan. Ulangi beberapa saat lagi</string>
 
 </resources>

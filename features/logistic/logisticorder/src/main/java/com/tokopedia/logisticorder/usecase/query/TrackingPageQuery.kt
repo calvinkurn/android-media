@@ -44,6 +44,7 @@ object TrackingPageQuery {
                   proof {
                     image_id
                   }
+                  partner_name
                 }
                 change
                 status
@@ -59,6 +60,18 @@ object TrackingPageQuery {
                   notes
                   url_detail
                   url_text
+                }
+              }
+              tipping {
+                status
+                status_title
+                status_subtitle
+                last_driver {
+                  photo
+                  name
+                  phone
+                  license_number
+                  is_changed
                 }
               }
             }
@@ -91,5 +104,33 @@ object TrackingPageQuery {
             availability_retry
           }
         }
+    """.trimIndent()
+
+    val getDriverTip = """
+        mutation mpLogisticDriverTipInfo (${'$'}input: MPLogisticDriverTipInfoInputs! ){
+          mpLogisticDriverTipInfo(input: ${'$'}input) {
+             status
+             last_driver {
+               photo
+               name
+               phone
+               license_number
+               is_changed
+             }
+             prepayment {
+               info
+               preset_amount
+               max_amount
+               min_amount
+               payment_link
+             }
+             payment {
+               amount
+               amount_formatted
+               method
+               method_icon
+             }
+           }
+         }
     """.trimIndent()
 }

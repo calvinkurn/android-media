@@ -101,5 +101,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     CalendarWidgetGrid(R.layout.discovery_calendar_widget_grid_layout, ComponentNames.CalendarWidgetGrid.componentName),
     CalendarWidgetItem(R.layout.discovery_calendar_widget_item_layout, ComponentNames.CalendarWidgetItem.componentName),
     ShimmerCalendarWidget(R.layout.discovery_shimmer_calendar_layout, ComponentNames.ShimmerCalendarWidget.componentName),
+    TopQuestWidget(R.layout.disco_top_quest,ComponentNames.TopQuestWidget.componentName),
 
 }

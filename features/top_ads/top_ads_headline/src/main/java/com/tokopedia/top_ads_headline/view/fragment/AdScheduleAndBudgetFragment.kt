@@ -16,11 +16,11 @@ import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
 import com.tokopedia.top_ads_headline.Constants.HEADLINE_SOURCE
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.sheet.HeadlinePreviewBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.AdScheduleAndBudgetViewModel
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.activity.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate

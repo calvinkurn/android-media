@@ -11,8 +11,13 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="roundedImageViewRounded">
+    <style name="circleImageDisplay">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">49%</item>
+    </style>
+
+    <style name="roundedCornerImageDisplay">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
     </style>
 </resources>

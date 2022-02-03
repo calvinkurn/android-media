@@ -11,6 +11,17 @@ android {
 repositories {
 }
 
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 buildscript {
     repositories {
         google()

@@ -72,7 +72,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
     private var pages: List<StatisticPageUiModel> = emptyList()
     private var viewPagerAdapter: StatisticViewPagerAdapter? = null
-    private val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
+    val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
         StatisticPerformanceMonitoring()
     }
     var pltListener: StatisticIdlingResourceListener? = null
@@ -88,7 +88,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         super.onCreate(savedInstanceState)
         initInjector()
 
-        checkWhiteListStatus()
+        if (savedInstanceState == null) {
+            checkWhiteListStatus()
+        }
+
         binding = ActivityStcStatisticBinding.inflate(layoutInflater).apply {
             root.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setContentView(root)

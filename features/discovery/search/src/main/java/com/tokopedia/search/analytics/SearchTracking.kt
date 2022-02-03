@@ -1,15 +1,23 @@
 package com.tokopedia.search.analytics
 
-import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.remoteconfig.RollenceKey.SEARCH_BROAD_MATCH_TRACKER_UNIFICATION
+import com.tokopedia.search.analytics.SearchEventTracking.Action.Companion.CLICK_BROAD_MATCH_LIHAT_SEMUA
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CLICK
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CURRENCY_CODE
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IDR
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LIST
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -27,15 +35,11 @@ object SearchTracking {
     private const val ORGANIC_ADS = "organic ads"
     private const val ECOMMERCE = "ecommerce"
     private const val EVENT_CATEGORY_EMPTY_SEARCH = "empty search"
-    private const val EVENT_CATEGORY_SEARCH_RESULT = "search result"
-    private const val PROMO_CLICK = "promoClick"
     private const val PROMOTIONS = "promotions"
     const val EVENT_CLICK_SEARCH_RESULT = "clickSearchResult"
     private const val EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru"
-    private const val PROMO_VIEW = "promoView"
-    private const val EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget"
-    private const val EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product"
     private const val CAROUSEL_UNIFICATION_LIST_NAME = " /search - carousel %s - component:%s"
+    private const val BROADMATCH_LIST_NAME = "/search - broad match - %s - component:%s"
 
     @JvmStatic
     fun screenTrackSearchSectionFragment(screen: String?) {
@@ -96,7 +100,7 @@ object SearchTracking {
         )
     }
 
-    fun trackImpressionSearchResultShop(shopItemList: List<Any>, keyword: String?) {
+    fun trackImpressionSearchResultShop(shopItemList: ArrayList<Any>, keyword: String?) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_VIEW,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -104,7 +108,7 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                         "promoView", DataLayer.mapOf(
-                        "promotions", DataLayer.listOf(*shopItemList.toTypedArray())
+                        "promotions", shopItemList
                 )
                 )
                 )
@@ -126,7 +130,7 @@ object SearchTracking {
         )
     }
 
-    fun eventImpressionSearchResultShopProductPreview(shopItemProductList: List<Any>, keyword: String?) {
+    fun eventImpressionSearchResultShopProductPreview(shopItemProductList: ArrayList<Any>, keyword: String?) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -134,9 +138,8 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                         "currencyCode", "IDR",
-                        "impressions", DataLayer.listOf(
-                        *shopItemProductList.toTypedArray()
-                ))
+                        "impressions", shopItemProductList
+                )
                 )
         )
     }
@@ -175,12 +178,9 @@ object SearchTracking {
     @JvmStatic
     fun trackEventClickSearchResultProduct(
         item: Any?,
-        isOrganicAds: Boolean,
-        topadsTag: Int,
         eventLabel: String,
-        filterSortParams: String,
         userId: String,
-        componentId: String,
+        productAnalyticsData: ProductClickAnalyticsData,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -194,12 +194,16 @@ object SearchTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     "click", DataLayer.mapOf(
                         "actionField", DataLayer.mapOf(
-                            "list", getActionFieldString(isOrganicAds, topadsTag, componentId)
+                            "list", getActionFieldString(
+                                productAnalyticsData.isOrganicAds,
+                                productAnalyticsData.topadsTag,
+                                productAnalyticsData.componentId
+                            )
                         ),
                         "products", DataLayer.listOf(item)
                     )
                 ),
-                "searchFilter", filterSortParams
+                "searchFilter", productAnalyticsData.filterSortParams
             )
         )
     }
@@ -221,7 +225,7 @@ object SearchTracking {
     @JvmStatic
     fun eventImpressionSearchResultProduct(
             trackingQueue: TrackingQueue,
-            list: List<Any>,
+            list: ArrayList<Any>,
             eventLabel: String?,
             irisSessionId: String,
             userId: String
@@ -235,9 +239,8 @@ object SearchTracking {
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(
-                *list.toTypedArray()
-        ))
+                "impressions", list
+            )
         ) as HashMap<String, Any>
         if (!TextUtils.isEmpty(irisSessionId)) map[KEY_SESSION_IRIS] = irisSessionId
         trackingQueue.putEETracking(
@@ -256,7 +259,7 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventSearchResultTabClick(context: Context?, tabTitle: String?) {
+    fun eventSearchResultTabClick(tabTitle: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,
                 SearchEventTracking.Category.SEARCH_TAB,
@@ -265,67 +268,11 @@ object SearchTracking {
         ))
     }
 
-    fun eventUserClickNewSearchOnEmptySearch(context: Context?, screenName: String?) {
+    fun eventUserClickNewSearchOnEmptySearch(screenName: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENT_CATEGORY_EMPTY_SEARCH,
-                EVENT_ACTION_CLICK_NEW_SEARCH, String.format("tab: %s", screenName))
-    }
-
-    @JvmStatic
-    fun eventUserClickNewSearchOnEmptySearchProduct(keyword: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENT_CATEGORY_SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_CHANGE_KEYWORD,
-                keyword
-        )
-    }
-
-    @JvmStatic
-    fun eventUserClickSeeAllGlobalNavWidget(keyword: String,
-                                            productName: String,
-                                            applink: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENT_CATEGORY_SEARCH_RESULT,
-                EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET,
-                generateEventLabelGlobalNav(keyword, productName, applink)
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickGlobalNavWidgetItem(item: Any?,
-                                           keyword: String,
-                                           productName: String,
-                                           applink: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_CLICK,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK,
-                        SearchTrackingConstant.EVENT_LABEL, generateEventLabelGlobalNav(keyword, productName, applink),
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(item))))
-        )
-    }
-
-    private fun generateEventLabelGlobalNav(keyword: String, productName: String, applink: String): String {
-        return String.format("keyword: %s - product: %s - applink: %s", keyword, productName, applink)
-    }
-
-    @JvmStatic
-    fun trackEventImpressionGlobalNavWidgetItem(trackingQueue: TrackingQueue,
-                                                list: List<Any>,
-                                                keyword: String?) {
-        trackingQueue.putEETracking(
-                DataLayer.mapOf(
-                        SearchTrackingConstant.EVENT, PROMO_VIEW,
-                        SearchTrackingConstant.EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT,
-                        SearchTrackingConstant.EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(*list.toTypedArray())))
-                ) as HashMap<String, Any>
-        )
+                EVENT_ACTION_CLICK_NEW_SEARCH, String.format(Locale.getDefault(),"tab: %s", screenName))
     }
 
     @JvmStatic
@@ -430,7 +377,7 @@ object SearchTracking {
                 SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, hasProductList
         )
         if (category != null) {
-            value[SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING] = JSONArray(Arrays.asList<Any?>(*category.keys.toTypedArray()))
+            value[SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING] = JSONArray(category.keys)
             value[SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING] = JSONArray(category.values)
         }
         TrackApp.getInstance().moEngage.sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT)
@@ -452,12 +399,13 @@ object SearchTracking {
             SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingModel.relatedKeyword,
             SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingModel.pageSource,
             SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingModel.searchFilter,
-            SearchTrackingConstant.ANDROID_ID, TrackApp.getInstance().appsFlyer.googleAdId
+            SearchTrackingConstant.ANDROID_ID, TrackApp.getInstance().appsFlyer.googleAdId,
+            SearchComponentTrackingConst.COMPONENT, generalSearchTrackingModel.componentId,
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
     }
 
-    fun trackEventImpressionShopRecommendation(shopItem: List<Any>, keyword: String?) {
+    fun trackEventImpressionShopRecommendation(shopItem: ArrayList<Any>, keyword: String?) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_VIEW,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -465,7 +413,7 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                         "promoView", DataLayer.mapOf(
-                        "promotions", DataLayer.listOf(*shopItem.toTypedArray())
+                        "promotions", shopItem
                 )
                 )
                 )
@@ -487,7 +435,7 @@ object SearchTracking {
         )
     }
 
-    fun trackEventImpressionShopRecommendationProductPreview(shopItemProductList: List<Any>, keyword: String?) {
+    fun trackEventImpressionShopRecommendationProductPreview(shopItemProductList: ArrayList<Any>, keyword: String?) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -495,9 +443,7 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                         "currencyCode", "IDR",
-                        "impressions", DataLayer.listOf(
-                        *shopItemProductList.toTypedArray()
-                ))
+                        "impressions", shopItemProductList)
                 )
         )
     }
@@ -519,7 +465,7 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackImpressionInspirationCarouselList(trackingQueue: TrackingQueue, type: String, keyword: String, list: List<Any>) {
+    fun trackImpressionInspirationCarouselList(trackingQueue: TrackingQueue, type: String, keyword: String, list: ArrayList<Any>) {
         val map = DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -527,9 +473,7 @@ object SearchTracking {
                 SearchTrackingConstant.EVENT_LABEL, "$type - $keyword",
                 ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(
-                *list.toTypedArray()
-        )
+                "impressions", list
         )
         ) as HashMap<String, Any>
         trackingQueue.putEETracking(
@@ -538,7 +482,7 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackImpressionInspirationCarouselInfo(trackingQueue: TrackingQueue, type: String, keyword: String, list: List<Any>) {
+    fun trackImpressionInspirationCarouselInfo(trackingQueue: TrackingQueue, type: String, keyword: String, list: ArrayList<Any>) {
         val map = DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_VIEW,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -546,9 +490,7 @@ object SearchTracking {
                 SearchTrackingConstant.EVENT_LABEL, "$type - $keyword",
                 ECOMMERCE, DataLayer.mapOf(
                 SearchEventTracking.Event.PROMO_VIEW, DataLayer.mapOf(
-                "promotions", DataLayer.listOf(
-                *list.toTypedArray()
-        )
+                "promotions", list
         )
         )
         ) as HashMap<String, Any>
@@ -571,7 +513,7 @@ object SearchTracking {
     @JvmStatic
     fun trackEventClickInspirationCarouselListProduct(type: String,
                                                       keyword: String,
-                                                      products: List<Any>) {
+                                                      products: ArrayList<Any>) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -580,9 +522,7 @@ object SearchTracking {
                         ECOMMERCE, DataLayer.mapOf("click",
                         DataLayer.mapOf("actionField",
                                 DataLayer.mapOf("list", "/search - carousel"),
-                                "products", DataLayer.listOf(
-                                *products.toTypedArray()
-                        )
+                                "products", products
                         )
                 )
                 )
@@ -592,7 +532,7 @@ object SearchTracking {
     @JvmStatic
     fun trackEventClickInspirationCarouselInfoProduct(type: String,
                                                       keyword: String,
-                                                      products: List<Any>) {
+                                                      products: ArrayList<Any>) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_CLICK,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -600,9 +540,7 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT_LABEL, "$type - $keyword",
                         ECOMMERCE, DataLayer.mapOf(
                         SearchEventTracking.Event.PROMO_CLICK, DataLayer.mapOf(
-                        "promotions", DataLayer.listOf(
-                        *products.toTypedArray()
-                )
+                        "promotions", products
                 )
                 )
                 )
@@ -633,25 +571,22 @@ object SearchTracking {
     @JvmStatic
     fun trackImpressionInspirationCarouselChips(
             trackingQueue: TrackingQueue,
-            type: String,
             keyword: String,
-            chipsValue: String,
             userId: String?,
-            list: List<Any>
+            list: ArrayList<Any>,
+            carouselAnalyticsData: InspirationCarouselAnalyticsData
     ) {
         val map = DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_INSPIRATION_CAROUSEL_CHIPS_PRODUCT,
-                SearchTrackingConstant.EVENT_LABEL, "$type - $keyword - $chipsValue",
+                SearchTrackingConstant.EVENT_LABEL, "${carouselAnalyticsData.type} - $keyword - ${carouselAnalyticsData.chipsValue}",
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchTrackingConstant.USER_ID, userId,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(
-                *list.toTypedArray()
-        )
+                "impressions", list
         )
         ) as HashMap<String, Any>
         trackingQueue.putEETracking(
@@ -665,7 +600,7 @@ object SearchTracking {
             keyword: String,
             chipsValue: String,
             userId: String?,
-            products: List<Any>
+            products: ArrayList<Any>
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
@@ -678,9 +613,7 @@ object SearchTracking {
                         ECOMMERCE, DataLayer.mapOf("click",
                         DataLayer.mapOf(
                                 "actionField", DataLayer.mapOf("list", "/search - carousel chips"),
-                                "products", DataLayer.listOf(
-                                *products.toTypedArray()
-                        )
+                                "products", products
                         )
                 )
                 )
@@ -716,68 +649,100 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackEventImpressionBroadMatch(trackingQueue: TrackingQueue, keyword: String?, alternativeKeyword: String?, userId: String?, broadMatchItems: List<Any>) {
+    fun trackEventImpressionBroadMatch(
+        trackingQueue: TrackingQueue,
+        keyword: String?,
+        alternativeKeyword: String?,
+        userId: String?,
+        broadMatchItems: ArrayList<Any>,
+    ) {
         val map = DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
+            SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", keyword, alternativeKeyword),
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchTrackingConstant.USER_ID, userId,
+            ECOMMERCE, DataLayer.mapOf(
+                CURRENCY_CODE, IDR,
+                IMPRESSIONS, broadMatchItems
+            )
+        ) as HashMap<String, Any>
+
+        trackingQueue.putEETracking(map)
+    }
+
+    @JvmStatic
+    fun trackEventImpressionBroadMatch(iris: Iris, searchComponentTracking: SearchComponentTracking) {
+        SearchComponentTrackingRollence.impress(
+            iris,
+            listOf(searchComponentTracking),
+            SEARCH_BROAD_MATCH_TRACKER_UNIFICATION
+        )
+    }
+
+    @JvmStatic
+    fun trackEventClickBroadMatchSeeMore(
+        searchComponentTracking: SearchComponentTracking,
+        keyword: String?,
+        alternativeKeyword: String?,
+        pageSource: String,
+    ) {
+        SearchComponentTrackingRollence.click(
+            searchComponentTracking,
+            SEARCH_BROAD_MATCH_TRACKER_UNIFICATION,
+        ) {
+            val eventLabel = String.format(Locale.getDefault(), "%s - %s", keyword, alternativeKeyword)
+
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                    SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+                    SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                    SearchTrackingConstant.EVENT_ACTION, CLICK_BROAD_MATCH_LIHAT_SEMUA,
+                    SearchTrackingConstant.EVENT_LABEL, eventLabel,
+                    SearchTrackingConstant.PAGE_SOURCE, pageSource,
+                )
+            )
+        }
+    }
+
+    @Suppress("LongParameterList")
+    @JvmStatic
+    fun trackEventClickBroadMatchItem(
+        keyword: String,
+        alternativeKeyword: String,
+        userId: String,
+        isOrganicAds: Boolean,
+        componentId: String,
+        broadMatchItems: ArrayList<Any>,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
-                SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH,
+                SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", keyword, alternativeKeyword),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 SearchTrackingConstant.USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
-                "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(
-                *broadMatchItems.toTypedArray()
-        ))
-        ) as HashMap<String, Any>
-        trackingQueue.putEETracking(
-                map
+                    CLICK, DataLayer.mapOf(
+                        ACTION_FIELD, DataLayer.mapOf(
+                            LIST, getBroadMatchListName(isOrganicAds, componentId)
+                        ),
+                        PRODUCTS, broadMatchItems
+                    )
+                )
+            )
         )
     }
 
-    @JvmStatic
-    fun trackEventClickBroadMatchSeeMore(keyword: String?, alternativeKeyword: String?, pageSource: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH_LIHAT_SEMUA,
-                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
-                        SearchTrackingConstant.PAGE_SOURCE, pageSource,
-                )
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickBroadMatchItem(keyword: String?, alternativeKeyword: String?, userId: String?, broadMatchItems: List<Any>) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH,
-                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
-                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                        SearchTrackingConstant.USER_ID, userId,
-                        ECOMMERCE, DataLayer.mapOf("click",
-                        DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/search - broad match"),
-                                "products", DataLayer.listOf(
-                                *broadMatchItems.toTypedArray()
-                            )
-                        )
-                )
-                )
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickInspirationCardOption(label: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_INSPIRATION_CARD,
-                label
+    fun getBroadMatchListName(isOrganicAds: Boolean, componentId: String): String {
+        val organicStatus = if (isOrganicAds) ORGANIC_ADS else ORGANIC
+        return String.format(
+            BROADMATCH_LIST_NAME,
+            organicStatus,
+            componentId
         )
     }
 
@@ -787,19 +752,19 @@ object SearchTracking {
             type: String?,
             keyword: String?,
             userId: String?,
-            broadMatchItems: List<Any>,
+            broadMatchItems: ArrayList<Any>,
     ) {
         val map = DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_DYNAMIC_PRODUCT_CAROUSEL,
-                SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", type, keyword),
+                SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", type, keyword),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 SearchTrackingConstant.USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                     "currencyCode", "IDR",
-                    "impressions", DataLayer.listOf(*broadMatchItems.toTypedArray())
+                    "impressions", broadMatchItems
                 )
         ) as HashMap<String, Any>
 
@@ -811,21 +776,21 @@ object SearchTracking {
             type: String?,
             keyword: String?,
             userId: String?,
-            broadMatchItems: List<Any>,
+            broadMatchItems: ArrayList<Any>,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                         SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DYNAMIC_PRODUCT_CAROUSEL,
-                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", type, keyword),
+                        SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(),"%s - %s", type, keyword),
                         SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                         SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                         SearchTrackingConstant.USER_ID, userId,
                         ECOMMERCE, DataLayer.mapOf(CLICK,
                             DataLayer.mapOf(
                                     SearchEventTracking.ECommerce.ACTION_FIELD, DataLayer.mapOf("list", "/search - carousel dynamic"),
-                                    PRODUCTS, DataLayer.listOf(*broadMatchItems.toTypedArray())
+                                    PRODUCTS, broadMatchItems
                             )
                         )
                 )
@@ -839,7 +804,7 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                         SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DYNAMIC_PRODUCT_CAROUSEL_SEE_MORE,
-                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s - %s", type, keyword, alternativeKeyword),
+                        SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(),"%s - %s - %s", type, keyword, alternativeKeyword),
                         SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                         SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH
                 )
@@ -930,7 +895,7 @@ object SearchTracking {
     fun trackEventImpressionInspirationCarouselUnification(
         trackingQueue: TrackingQueue,
         eventLabel: String,
-        products: List<Any>,
+        products: ArrayList<Any>,
     ) {
         val impressionDataLayer = DataLayer.mapOf(
             SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
@@ -939,7 +904,7 @@ object SearchTracking {
             SearchTrackingConstant.EVENT_LABEL, eventLabel,
             ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(*products.toTypedArray())
+                "impressions", products
             )
         ) as HashMap<String, Any>
 
@@ -950,7 +915,7 @@ object SearchTracking {
         eventLabel: String,
         type: String,
         componentId: String,
-        products: List<Any>,
+        products: ArrayList<Any>,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -963,7 +928,7 @@ object SearchTracking {
                         "actionField", DataLayer.mapOf(
                             "list", getInspirationCarouselUnificationListName(type, componentId)
                         ),
-                        "products", DataLayer.listOf(*products.toTypedArray())
+                        "products", products
                     )
                 )
             )

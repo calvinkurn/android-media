@@ -110,7 +110,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
     }
 
     fun handleBack() {
-        if (recommended_layout.isVisible) (activity as? AffiliateActivity)?.handleBackButton()
+        if (recommended_layout.isVisible) (activity as? AffiliateActivity)?.handleBackButton(false)
         else showDefaultState()
     }
 
@@ -263,7 +263,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         affiliatePromoViewModel = viewModel as AffiliatePromoViewModel
     }
 
-    override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
+    override fun onPromotionClick(productId: String, shopId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int) {
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                 null,null,productId, productName, productImage, productUrl,
                 productIdentifier, AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")

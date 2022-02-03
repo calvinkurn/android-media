@@ -25,14 +25,23 @@ import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
+import com.tokopedia.logisticorder.domain.response.TrackingData
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
+import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.DateUtil
+import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
+import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
+import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.utils.TrackingPageUtil
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
+import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
+import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -169,13 +178,73 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
         setEtaDetail(model.detail.eta)
+        populateTipping(trackingDataModel)
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
-        mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking()
 
+    }
+
+    private fun populateTipping(data: TrackingDataModel) {
+        val tippingData = data.tipping
+        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status ==  SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
+            setTippingData(data)
+            binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
+            binding?.dividerTippingGojek?.visibility = View.VISIBLE
+        } else {
+            binding?.tippingGojekLayout?.root?.visibility = View.GONE
+            binding?.dividerTippingGojek?.visibility = View.GONE
+        }
+    }
+
+    private fun setTippingData(data: TrackingDataModel) {
+        val tippingData = data.tipping
+        binding?.tippingGojekLayout?.apply {
+
+            if (tippingData.lastDriver.name.isEmpty()) {
+                driverLayout.visibility = View.GONE
+                imgFindDriver.visibility = View.VISIBLE
+            } else {
+                driverLayout.visibility = View.VISIBLE
+                imgDriver.setImageUrl(tippingData.lastDriver.photo)
+
+                driverName.text = tippingData.lastDriver.name
+                driverPhone.text = getString(R.string.driver_description_template, tippingData.lastDriver.phone, tippingData.lastDriver.licenseNumber)
+            }
+
+            btnTipping.text = when (tippingData.status) {
+                SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> getString(R.string.btn_tipping_success_text)
+                WAITING_PAYMENT -> getString(R.string.btn_tipping_waiting_payment_text)
+                REFUND_TIP -> getString(R.string.btn_tipping_refund_text)
+                else -> getString(R.string.btn_tipping_open_text)
+            }
+
+            tippingText.text = tippingData.statusTitle
+            tippingDescription.text = tippingData.statusSubtitle
+
+            btnInformation.setOnClickListener {
+                DriverInfoBottomSheet().show(parentFragmentManager)
+            }
+
+            btnTipping.setOnClickListener {
+                when (tippingData.status) {
+                    SUCCESS_PAYMENT, SUCCESS_TO_GOJEK, OPEN -> {
+                        DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
+                    }
+                    WAITING_PAYMENT -> {
+                        RouteManager.route(context, ApplinkConst.PMS)
+                    }
+                    REFUND_TIP -> {
+                        RouteManager.route(context, ApplinkConst.SALDO)
+                    }
+                    else -> {
+                        // no ops
+                    }
+                }
+            }
+        }
     }
 
     private fun showLoading() {
@@ -371,7 +440,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun goToLiveTrackingPage(model: TrackOrderModel) {
-        mAnalytics.eventClickOrderTrackingClickButtonLiveTracking()
         var trackingUrl = mTrackingUrl
         if (trackingUrl.isNullOrEmpty()) {
             trackingUrl = model.detail.trackingUrl
@@ -416,7 +484,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.imgProof?.let { imgProof ->
                 Glide.with(it.context)
                     .load(newUrl)
-                    .centerCrop()
                     .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
                     .error(it.context.getDrawable(R.drawable.ic_image_error))
                     .dontAnimate()

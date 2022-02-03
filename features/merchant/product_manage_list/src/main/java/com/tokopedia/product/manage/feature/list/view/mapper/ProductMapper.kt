@@ -68,14 +68,14 @@ object ProductMapper {
     }
 
     private fun mapProductStatus(product: Product): ProductStatus? {
-        return when(product.status) {
-            PENDING, MODERATED -> VIOLATION
-            else -> product.status
+        return if (product.status == MODERATED) {
+            VIOLATION
+        } else {
+            product.status
         }
     }
 
     fun LiveData<Result<GetFilterTabResult>>?.mapToFilterTabResult(filterTabs: List<Tab>): GetFilterTabResult {
-        var totalProductCount = 0
         val productFilters = mutableListOf<FilterTabUiModel>()
 
         val activeProductFilter = filterTabs.firstOrNull { it.id == FilterId.ACTIVE.name }
@@ -89,25 +89,22 @@ object ProductMapper {
         if(activeFilterCount > 0) {
             val activeFilter = Active(activeFilterCount)
             productFilters.add(activeFilter)
-            totalProductCount += activeFilterCount
         }
 
         if(inActiveFilterCount > 0) {
             val inActiveFilter = InActive(inActiveFilterCount)
             productFilters.add(inActiveFilter)
-            totalProductCount += inActiveFilterCount
         }
 
         if(violationFilterCount > 0) {
             val violationFilter = Violation(violationFilterCount)
             productFilters.add(violationFilter)
-            totalProductCount += violationFilterCount
         }
 
         return if(this?.value == null) {
-            ShowFilterTab(productFilters, totalProductCount)
+            ShowFilterTab(productFilters)
         } else {
-            UpdateFilterTab(productFilters, totalProductCount)
+            UpdateFilterTab(productFilters)
         }
     }
 }

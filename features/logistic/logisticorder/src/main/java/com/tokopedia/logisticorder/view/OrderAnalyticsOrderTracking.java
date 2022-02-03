@@ -18,21 +18,6 @@ public class OrderAnalyticsOrderTracking extends TransactionAnalytics {
 
     }
 
-    public void eventViewOrderTrackingImpressionButtonLiveTracking() {
-        sendEventCategoryAction(
-                EventName.VIEW_ORDER,
-                EventCategory.ORDER_TRACKING,
-                EventAction.IMPRESSION_BUTTON_LIVE_TRACKING
-        );
-    }
-
-    public void eventClickOrderTrackingClickButtonLiveTracking() {
-        sendEventCategoryAction(
-                EventName.CLICK_ORDER,
-                EventCategory.ORDER_TRACKING,
-                EventAction.CLICK_BUTTON_LIVE_TRACKING);
-    }
-
     public void eventViewLabelTungguRetry(String countDownDuration, String orderId) {
         sendEventCategoryActionLabel(
                 EventName.VIEW_SOM,

@@ -1,11 +1,13 @@
 package com.tokopedia.home.beranda.di.module.query
 
-object QuerySuggestedReview {
-    val dismissSuggestedQuery : String = "query productrevDismissSuggestion{\n" +
-            "  productrevDismissSuggestion\n" +
-            "}"
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.SUGGESTED_REVIEW_QUERY
+import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.SUGGESTED_REVIEW_QUERY_NAME
 
-    val suggestedReviewQuery : String = "{\n" +
+@GqlQuery(SUGGESTED_REVIEW_QUERY_NAME, SUGGESTED_REVIEW_QUERY)
+internal object QuerySuggestedReview {
+    const val SUGGESTED_REVIEW_QUERY_NAME = "SuggestedReviewQuery"
+    const val SUGGESTED_REVIEW_QUERY: String = "{ query suggestedProductReview() { \n" +
             "  suggestedProductReview{\n" +
             "    title\n" +
             "    description\n" +
@@ -16,5 +18,6 @@ object QuerySuggestedReview {
             "    orderID\n" +
             "    productID\n" +
             "  }\n" +
+            " }" +
             "}"
 }

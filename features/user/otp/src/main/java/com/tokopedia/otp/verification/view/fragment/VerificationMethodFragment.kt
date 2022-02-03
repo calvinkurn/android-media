@@ -116,7 +116,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun isEnableSilentVerif(): Boolean {
-        return remoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION, true)
+        return remoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class AddToCartOccMultiExternalGqlResponse(
-        @SerializedName("add_to_cart_occ_external")
+        @SerializedName("add_to_cart_occ_multi_external")
         val response: AddToCartOccMultiExternalResponse = AddToCartOccMultiExternalResponse()
 )
 

@@ -44,6 +44,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.workManager
     //for fingerprint model
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 }
 
 project.ext {

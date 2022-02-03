@@ -37,17 +37,5 @@ object HomeMockValueHelper {
                 RollenceKey.BALANCE_VARIANT_NEW
             )
         }
-        if (walletAppRollence) {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.HOME_WALLETAPP,
-                RollenceKey.HOME_WALLETAPP
-            )
-        }
-        if (paymentAbcRollence) {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.HOME_PAYMENT_ABC,
-                RollenceKey.HOME_PAYMENT_ABC
-            )
-        }
     }
 }

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topchat.chatroom.domain.pojo.param.StickerParam
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatListStickerUseCase
@@ -47,7 +46,7 @@ class StickerViewModel @Inject constructor(
     }
 
     private suspend fun getStickerList(stickerGroupUID: String) {
-        val param = StickerParam(stickerGroupUID)
+        val param = ChatListStickerUseCase.Param(stickerGroupUID)
         val response = chatListStickerUseCase(param)
         saveToCache(stickerGroupUID, response)
         saveSuccessRequestState(stickerGroupUID)

@@ -11,26 +11,29 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 
 class GetInspirationCarouselChipsProductsUseCase(
-        private val graphqlUseCase: GraphqlUseCase
+    private val graphqlUseCase: GraphqlUseCase
 ): UseCase<InspirationCarouselChipsProductModel>() {
 
     @GqlQuery("GetInspirationCarouselChipProductsQuery", GQL_QUERY)
-    override fun createObservable(requestParams: RequestParams): Observable<InspirationCarouselChipsProductModel> {
+    override fun createObservable(
+        requestParams: RequestParams
+    ): Observable<InspirationCarouselChipsProductModel> {
         val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
         val graphqlRequest = GraphqlRequest(
-                GetInspirationCarouselChipProductsQuery.GQL_QUERY,
-                InspirationCarouselChipsProductModel::class.java,
-                mapOf(SearchConstant.GQL.KEY_PARAMS to params)
+            GetInspirationCarouselChipProductsQuery(),
+            InspirationCarouselChipsProductModel::class.java,
+            mapOf(SearchConstant.GQL.KEY_PARAMS to params)
         )
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequests(listOf(graphqlRequest))
 
         return graphqlUseCase
-                .createObservable(RequestParams.EMPTY)
-                .map {
-                    it.getData(InspirationCarouselChipsProductModel::class.java) ?: InspirationCarouselChipsProductModel()
-                }
+            .createObservable(RequestParams.EMPTY)
+            .map {
+                it.getData(InspirationCarouselChipsProductModel::class.java)
+                    ?: InspirationCarouselChipsProductModel()
+            }
     }
 
     companion object {
@@ -49,6 +52,7 @@ class GetInspirationCarouselChipsProductsUseCase(
                     applink
                     description
                     rating_average
+                    component_id
                     label_groups {
                         title
                         type

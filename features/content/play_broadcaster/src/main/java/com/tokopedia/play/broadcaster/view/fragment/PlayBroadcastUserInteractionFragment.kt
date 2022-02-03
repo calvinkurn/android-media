@@ -18,11 +18,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
@@ -39,15 +41,11 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoar
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
-import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
-import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveSetupViewComponent
-import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveViewComponent
-import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
-import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
+import com.tokopedia.play.broadcaster.view.partial.*
+import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
@@ -80,7 +78,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
-    private val viewTimer: PlayTimerView by detachableView(R.id.view_timer)
     private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
     private val flProductTag: FrameLayout by detachableView(R.id.fl_product_tag)
@@ -90,18 +87,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
 
-    private val actionBarView by viewComponent {
-        ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
+    private val actionBarLiveView by viewComponent {
+        ActionBarLiveViewComponent(it, object: ActionBarLiveViewComponent.Listener {
             override fun onCameraIconClicked() {
                 parentViewModel.switchCamera()
                 analytic.clickSwitchCameraOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
             }
 
-            override fun onCloseIconClicked() {
+            override fun onEndStreamClicked() {
                 activity?.onBackPressed()
             }
         })
     }
+
     private val chatListView by viewComponent { ChatListViewComponent(it) }
     private val interactiveView by viewComponent {
         BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
@@ -156,6 +154,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+    private val productTagView by viewComponent {
+        ProductTagViewComponent(it, object: ProductTagViewComponent.Listener {
+            override fun impressProductTag(view: ProductTagViewComponent) {
+                analytic.impressProductTag(parentViewModel.channelId)
+            }
+
+            override fun scrollProductTag(
+                view: ProductTagViewComponent,
+                product: ProductContentUiModel,
+                position: Int
+            ) {
+                productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
+            }
+        })
+    }
 
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
@@ -165,6 +178,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val fragmentViewContainer = FragmentViewContainer()
 
     private var toasterBottomMargin = 0
+
+    private lateinit var productTagAnalyticHelper: ProductTagAnalyticHelper
 
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
@@ -179,26 +194,33 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAnalytic()
         setupView()
         setupInsets()
         setupObserve()
 
-        parentViewModel.startLiveCountDownTimer()
+        if((activity as? PlayBroadcastActivity)?.isDialogContinueLiveStreamOpen() == false)
+            parentViewModel.startLiveTimer()
 
         if (GlobalConfig.DEBUG) setupDebugView(view)
     }
 
     override fun onStart() {
         super.onStart()
-        actionBarView.rootView.requestApplyInsetsWhenAttached()
+        actionBarLiveView.rootView.requestApplyInsetsWhenAttached()
         ivShareLink.requestApplyInsetsWhenAttached()
-        viewTimer.requestApplyInsetsWhenAttached()
     }
 
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
 
+    private fun initAnalytic() {
+        productTagAnalyticHelper = ProductTagAnalyticHelper(analytic)
+    }
+
     private fun setupView() {
-        actionBarView.setActionTitle(getString(R.string.play_action_bar_end))
+        actionBarLiveView.setTitle(parentViewModel.channelTitle)
+        actionBarLiveView.setShopIcon(parentViewModel.getShopIconUrl())
+
         ivShareLink.setOnClickListener{
             doCopyShareLink()
             analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
@@ -225,17 +247,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupInsets() {
-        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
+        actionBarLiveView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
             v.updatePadding(top = insets.systemWindowInsetTop)
-        }
-
-        viewTimer.doOnApplyWindowInsets { v, insets, _, margin ->
-            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
-            val newTopMargin = margin.top + insets.systemWindowInsetTop
-            if (marginLayoutParams.topMargin != newTopMargin) {
-                marginLayoutParams.updateMargins(top = newTopMargin)
-                v.parent.requestLayout()
-            }
         }
 
         ivShareLink.doOnApplyWindowInsets { v, insets, _, margin ->
@@ -289,6 +302,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
+        observeProductTag()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        productTagAnalyticHelper.sendTrackingProduct()
     }
 
     override fun onDestroy() {
@@ -322,7 +341,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      * render to ui
      */
     private fun showCounterDuration(remainingInMs: Long) {
-        viewTimer.showCounter(remainingInMs)
+        viewStatInfo.setTimerCounter(remainingInMs)
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {
@@ -560,10 +579,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveCountDownTimerState.observe(viewLifecycleOwner) {
+        parentViewModel.observableLiveTimerState.observe(viewLifecycleOwner) {
             when(it)  {
-                is PlayLiveCountDownTimerState.Active -> showCounterDuration(it.remainingInMs)
-                is PlayLiveCountDownTimerState.Finish -> {
+                is PlayLiveTimerState.Active -> showCounterDuration(it.remainingInMs)
+                is PlayLiveTimerState.Finish -> {
                     analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                     showDialogWhenTimeout()
                 }
@@ -674,6 +693,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                 }
             }
+        }
+    }
+
+    private fun observeProductTag() {
+        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
+            productTagView.setProducts(it)
         }
     }
     //endregion

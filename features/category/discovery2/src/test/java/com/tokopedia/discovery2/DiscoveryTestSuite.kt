@@ -6,6 +6,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bann
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.textcomponent.TextComponentViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.brandrecommendations.BrandRecommendationItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.brandrecommendations.BrandRecommendationViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetCarouselViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetGridViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModelTest
@@ -49,7 +52,10 @@ import org.junit.runners.Suite
         YouTubeViewViewModelTest::class,
         ShimmerViewModelTest::class,
         TextComponentViewModelTest::class,
-        ComingSoonViewModelTest::class
+        ComingSoonViewModelTest::class,
+        CalendarWidgetItemViewModelTest::class,
+        CalendarWidgetGridViewModelTest::class,
+        CalendarWidgetCarouselViewModelTest::class,
 
 )
 

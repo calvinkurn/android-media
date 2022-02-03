@@ -10,6 +10,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -23,9 +24,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isKeyboardShown
+import com.tokopedia.play.extensions.*
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
@@ -46,6 +45,8 @@ import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
+import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
@@ -62,9 +63,9 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val pageMonitoring: PlayPltPerformanceCallback,
-        private val analytic: PlayAnalytic
+    viewModelFactory: PlayViewModel.Factory,
+    private val pageMonitoring: PlayPltPerformanceCallback,
+    private val analytic: PlayAnalytic
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -86,11 +87,17 @@ class PlayFragment @Inject constructor(
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
     }
 
-    private lateinit var playParentViewModel: PlayParentViewModel
-    private lateinit var playViewModel: PlayViewModel
-
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
+    val viewModelProviderFactory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return viewModelFactory.create(channelId) as T
+        }
+    }
+
+    private lateinit var playParentViewModel: PlayParentViewModel
+    private lateinit var playViewModel: PlayViewModel
 
     private val keyboardWatcher = KeyboardWatcher()
 
@@ -110,7 +117,8 @@ class PlayFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(this, viewModelProviderFactory)
+            .get(PlayViewModel::class.java)
 
         val theActivity = requireActivity()
         if (theActivity is PlayActivity) {
@@ -358,6 +366,7 @@ class PlayFragment @Inject constructor(
         ivClose.setOnClickListener { hideKeyboard() }
         fragmentVideoView.safeInit()
         fragmentUserInteractionView.safeInit()
+        fragmentBottomSheetView.safeInit()
 
         invalidateVideoTopBounds()
         hideAllInsets()
@@ -376,11 +385,9 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeStatusInfo()
         observeVideoMeta()
         observeChannelInfo()
         observeBottomInsetsState()
-        observePinned()
         observePiPEvent()
 
         observeUiState()
@@ -390,25 +397,23 @@ class PlayFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observeStatusInfo() {
-        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.statusType.isFreeze) {
-                dismissToaster()
+    private fun handleStatus(status: PlayStatusUiModel) {
+        if (status.channelStatus.statusType.isFreeze) {
+            dismissToaster()
 
-                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && it.shouldAutoSwipeOnFreeze) doAutoSwipe()
-                else if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
+            if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && status.channelStatus.statusSource == PlayStatusSource.Socket) doAutoSwipe()
+            else if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
 
-            } else if (it.statusType.isBanned) {
-                showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
-            }
-            if (it.statusType.isFreeze || it.statusType.isBanned) {
-                unregisterKeyboardListener(requireView())
-            }
+        } else if (status.channelStatus.statusType.isBanned) {
+            showEventDialog(status.config.bannedModel.title, status.config.bannedModel.message, status.config.bannedModel.btnTitle)
+        }
+        if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned) {
+            unregisterKeyboardListener(requireView())
+        }
 
-            fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
-            fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
-            fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
-        })
+        fragmentVideoViewOnStateChanged(isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned)
+        fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned)
+        fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned)
     }
 
     private fun observeVideoMeta() {
@@ -445,12 +450,6 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun observePinned() {
-        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner, DistinctObserver {
-            fragmentBottomSheetView.safeInit()
-        })
-    }
-
     private fun observePiPEvent() {
         playViewModel.observableEventPiPState.observe(viewLifecycleOwner, EventObserver {
             if (it is PiPState.Requesting) onEnterPiPState(it)
@@ -462,10 +461,8 @@ class PlayFragment @Inject constructor(
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
-                if (
-                    prevState?.winnerBadge?.shouldShow != state.winnerBadge.shouldShow &&
-                    state.winnerBadge.shouldShow
-                ) fragmentBottomSheetView.safeInit()
+
+                handleStatus(state.status)
             }
         }
     }
@@ -514,7 +511,7 @@ class PlayFragment @Inject constructor(
         pageMonitoring.stopMonitoring()
     }
 
-    private fun hideKeyboard() {
+    fun hideKeyboard() {
         val view = activity?.currentFocus
         view?.let { v ->
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -529,7 +526,7 @@ class PlayFragment @Inject constructor(
         )
     }
 
-    private fun registerKeyboardListener(view: View) {
+    fun registerKeyboardListener(view: View) {
         keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.onKeyboardShown(estimatedKeyboardHeight)
@@ -542,7 +539,7 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun unregisterKeyboardListener(view: View) {
+    fun unregisterKeyboardListener(view: View) {
         keyboardWatcher.unlisten(view)
     }
 
@@ -601,6 +598,12 @@ class PlayFragment @Inject constructor(
             fragmentBottomSheetView.safeRelease()
             fragmentBottomSheetView.hide()
         }
+
+        if(bottomInsets.isAnyUserReportBottomSheetShown && playViewModel.videoPlayer.isYouTube){
+            fragmentBottomSheetView.rootView.translationZ = 1.0f
+        }else if(playViewModel.videoPlayer.isYouTube){
+            fragmentBottomSheetView.rootView.translationZ = 0.0f
+        }
     }
 
     private fun fragmentYouTubeViewOnStateChanged(
@@ -626,7 +629,7 @@ class PlayFragment @Inject constructor(
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
-        private const val KEYBOARD_REGISTER_DELAY = 200L
+        const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
     }
 }

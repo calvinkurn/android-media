@@ -99,6 +99,12 @@ internal open class FilterCategoryDetailViewModelTestFixtures {
         }
     }
 
+    protected fun `Then assert button reset visibility`(expectedIsVisible: Boolean) {
+        assert(filterCategoryDetailViewModel.isButtonResetVisibleLiveData.value == expectedIsVisible) {
+            "Button Reset should be visible"
+        }
+    }
+
     private fun List<FilterCategoryLevelTwoViewModel>.assertContentViewModelListSize(expectedContentViewModelSize: Int) {
         val actualContentViewModelSize = size
         assert(actualContentViewModelSize == expectedContentViewModelSize) {

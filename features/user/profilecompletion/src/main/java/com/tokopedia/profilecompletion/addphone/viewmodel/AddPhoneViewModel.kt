@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.addphone.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
@@ -13,14 +14,13 @@ import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class AddPhoneViewModel @Inject constructor(
         private val addPhoneGraphQlUseCase: GraphqlUseCase<AddPhonePojo>,
         private val userValidateGraphQlUseCase: GraphqlUseCase<UserValidatePojo>,
         private val rawQueries: Map<String, String>,
-        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
     private val _addPhoneResponse = MutableLiveData<Result<AddPhoneResult>>()
     val addPhoneResponse: LiveData<Result<AddPhoneResult>>
