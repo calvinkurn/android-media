@@ -39,7 +39,7 @@ data class RechargeCatalogProductInput(
     val product: RechargeCatalogProduct = RechargeCatalogProduct(),
     @SerializedName("filterTagComponents")
     @Expose
-    val filterTagComponents: List<TelcoFilterTagComponent> = mutableListOf()
+    var filterTagComponents: List<TelcoFilterTagComponent> = mutableListOf()
 )
 
 

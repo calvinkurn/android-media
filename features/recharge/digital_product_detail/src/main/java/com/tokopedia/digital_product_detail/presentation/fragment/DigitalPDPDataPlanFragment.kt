@@ -435,7 +435,7 @@ class DigitalPDPDataPlanFragment :
                         fragmentManager?.let {
                             FilterPDPBottomsheet(getString(R.string.bottom_sheet_filter_title),
                                 getString(R.string.bottom_sheet_filter_reset),
-                                filterData, this@DigitalPDPDataPlanFragment, it)
+                                filterData, this@DigitalPDPDataPlanFragment)
                                 .show(it, "")
                         }
                     }

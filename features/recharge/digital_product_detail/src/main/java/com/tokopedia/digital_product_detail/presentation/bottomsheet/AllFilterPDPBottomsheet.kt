@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.BottomSheetAllFilterBinding
@@ -18,8 +16,11 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class AllFilterPDPBottomsheet(private val title:String,
+                              private val adapterPosition: Int,
                               private var filterTagComponent : TelcoFilterTagComponent,
-                              private val checkBoxListener: DigitalPDPFilterAllViewHolder.CheckBoxListener) : BottomSheetUnify(){
+                              private var checkBoxFilterListener: OnCheckBoxAllFilterListener
+)
+    : BottomSheetUnify(), DigitalPDPFilterAllViewHolder.CheckBoxListener{
 
     init {
         isFullpage = false
@@ -28,7 +29,7 @@ class AllFilterPDPBottomsheet(private val title:String,
     }
 
     private var binding by autoClearedNullable<BottomSheetAllFilterBinding>()
-    private var adapterAllFilter = DigitalAllFilterAdapter(checkBoxListener)
+    private var adapterAllFilter = DigitalAllFilterAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,18 +45,39 @@ class AllFilterPDPBottomsheet(private val title:String,
         bottomSheetBehaviorKnob(view, true)
     }
 
+    override fun onCheckBoxClicked(
+        tagComponent: TelcoFilterTagComponent,
+        element: FilterTagDataCollection,
+        position: Int
+    ) {
+        filterTagComponent.filterTagDataCollections.get(position).run {
+            isSelected = !isSelected
+        }
+        checkBoxFilterListener.onCheckBoxAllFilterClicked(filterTagComponent, adapterPosition)
+    }
+
     private fun initView(){
         binding = BottomSheetAllFilterBinding.inflate(LayoutInflater.from(context))
         binding?.let {
             adapterAllFilter.setCheckBoxList(filterTagComponent)
             it.rvPdpFilterAll.run {
                 setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                val linearLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                val dividerItemDecoration = DividerItemDecoration(context, linearLayoutManager.orientation).apply {
+                    setUsePaddingLeft(false)
+                }
+                layoutManager = linearLayoutManager
                 adapter = adapterAllFilter
+                addItemDecoration(dividerItemDecoration)
             }
         }
 
         setTitle(title)
         setChild(binding?.root)
+    }
+
+    interface OnCheckBoxAllFilterListener {
+        fun onCheckBoxAllFilterClicked(tagComponent: TelcoFilterTagComponent,
+                                       position: Int)
     }
 }

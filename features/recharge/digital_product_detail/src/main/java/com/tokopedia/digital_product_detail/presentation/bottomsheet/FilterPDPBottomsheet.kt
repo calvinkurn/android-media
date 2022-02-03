@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,13 +21,10 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class FilterPDPBottomsheet(private val title: String, private val action:String,
                            private val filterTagComponents: List<TelcoFilterTagComponent>,
-                           private val listener: FilterBottomSheetListener,
-                           fragmentManager: FragmentManager
-):
-    BottomSheetUnify(),
+                           private val listener: FilterBottomSheetListener): BottomSheetUnify(),
     DigitalPDPChipFilterViewHolder.ChipListener,
     DigitalPDPChipListFilerViewHolder.ListFilterListener,
-        DigitalPDPFilterAllViewHolder.CheckBoxListener
+    AllFilterPDPBottomsheet.OnCheckBoxAllFilterListener
 {
 
     init {
@@ -59,7 +57,6 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
             rvPdpFilter.adapter = adapterFilter
             rvPdpFilter.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             btnPdpFilter.setOnClickListener {
-                listener.onClickSaveFilter(filterTagComponents, initialSelectedCounter(filterTagComponents))
                 dismiss()
             }
         }
@@ -71,6 +68,15 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
         setChild(binding?.root)
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        onSaveFilter()
+        super.onDismiss(dialog)
+    }
+
+    private fun onSaveFilter(){
+        listener.onClickSaveFilter(filterTagComponents, initialSelectedCounter(filterTagComponents))
+    }
+
     override fun onChipClicked(tagComponent: TelcoFilterTagComponent, element: FilterTagDataCollection, position: Int) {
         filterTagComponents.filter {
             it.paramName.equals(tagComponent.paramName)
@@ -79,21 +85,15 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
         }
     }
 
-    override fun onCheckBoxClicked(
-        tagComponent: TelcoFilterTagComponent,
-        element: FilterTagDataCollection,
-        position: Int
-    ) {
-        filterTagComponents.filter {
-            it.paramName.equals(tagComponent.paramName)
-        }.first().filterTagDataCollections.get(position).run {
-            isSelected = !isSelected
-        }
+    override fun onCheckBoxAllFilterClicked(tagComponent: TelcoFilterTagComponent, position: Int) {
+        filterTagComponents.toMutableList()[position] = tagComponent
+        filterTagComponents.toList()
+        adapterFilter.notifyItemChanged(position)
     }
 
     override fun onSeeAllClicked(element: TelcoFilterTagComponent, position: Int) {
         fragmentManager?.let {
-            AllFilterPDPBottomsheet(element.text, element, this).show(it, "")
+            AllFilterPDPBottomsheet(element.text, position, element, this).show(it, "")
         }
     }
 
