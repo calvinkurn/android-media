@@ -26,6 +26,8 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.sortfilter.SortFilter
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
@@ -66,8 +68,10 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.pr
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
 import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
+import com.tokopedia.vouchercreation.product.voucherlist.view.widget.filter.CouponStatusFilterBotomSheet
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.fragment.VoucherListFragment
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.BroadCastVoucherBottomSheet
@@ -153,6 +157,9 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private var shareCouponBottomSheet: ShareVoucherBottomSheet? = null
     private var shopBasicData: ShopBasicDataResult? = null
+    private val filterStatus by lazy { SortFilterItem("Status Aktif") }
+    private val filterType by lazy { SortFilterItem("Gratis Ongkir", ChipsUnify.TYPE_SELECTED) }
+    private val filterTarget by lazy { SortFilterItem("Publik", ChipsUnify.TYPE_SELECTED) }
 
     private var onCreateCouponMenuSelected : () -> Unit = {}
     private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
@@ -178,14 +185,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val chip = view.findViewById<SortFilter>(R.id.sf_voucher_list)
-        chip.setOnClickListener {
-            print("sss")
-        }
-        chip.parentListener = {
-            onCreateCouponMenuSelected()
-        }
-
+        setupFilterChips(view)
         setupObserver()
         getInitialValues()
     }
@@ -225,10 +225,16 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     override fun onGetListError(message: String) {
 
     }
-    
+
     private fun getInitialValues() {
         viewModel.getBroadCastMetaData()
         viewModel.getShopBasicData()
+    }
+
+    private fun onStatusSelected(couponName: String, @VoucherStatus couponStatus: String) {
+        viewModel.setStatusFilter(couponStatus)
+        filterStatus.refChipUnify.chipText = couponName
+        loadInitialData()
     }
 
     private fun onCouponIconCopyClicked(couponCode: String) {
@@ -244,6 +250,22 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             moreBottomSheet?.dismiss()
             clickMoreMenuItem(menu, coupon)
         }
+    }
+
+    private fun setupFilterChips(view: View) {
+        val chip = view.findViewById<SortFilter>(R.id.sf_voucher_list)
+        chip.setOnClickListener {
+            print("sss")
+        }
+        chip.parentListener = {
+            //onCreateCouponMenuSelected()
+        }
+
+        filterStatus.chevronListener = {
+            CouponStatusFilterBotomSheet(::onStatusSelected).show(childFragmentManager, "")
+        }
+
+        chip.addItem(arrayListOf(filterStatus))
     }
 
     private fun setupObserver() {

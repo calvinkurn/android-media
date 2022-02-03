@@ -73,6 +73,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/searchBarMvc"
+                app:sort_filter_relationship="AND"
                 app:sort_filter_type="advanced" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
