@@ -38,7 +38,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
         val bind = ViewRechargeHomeProductCardCustomBannerV2Binding.bind(itemView)
         section = element.section
         if (section.items.isNotEmpty()){
-            hideSimmer(bind)
+            hideShimmer(bind)
             setupInitialView(bind, section)
             setupList(bind, element.digitalUnifyItems)
             setSnapEffect(bind)
@@ -108,7 +108,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
         }
     }
 
-    private fun hideSimmer(bind: ViewRechargeHomeProductCardCustomBannerV2Binding){
+    private fun hideShimmer(bind: ViewRechargeHomeProductCardCustomBannerV2Binding){
         with(bind){
             tvSectionSeeAll.visible()
             tvSectionTitle.visible()
