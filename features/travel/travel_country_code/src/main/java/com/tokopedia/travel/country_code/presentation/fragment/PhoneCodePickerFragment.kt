@@ -54,6 +54,10 @@ class PhoneCodePickerFragment : BaseListFragment<TravelCountryPhoneCode, PhoneCo
         return view
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
