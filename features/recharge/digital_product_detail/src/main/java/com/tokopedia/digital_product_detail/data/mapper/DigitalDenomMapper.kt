@@ -14,7 +14,7 @@ import javax.inject.Inject
 @DigitalPDPScope
 class DigitalDenomMapper @Inject constructor() {
 
-    fun mapMultiTabFullDenom(inputMultiTab: DigitalCatalogProductInputMultiTab): InputMultiTabDenomModel {
+    fun mapMultiTabFullDenom(inputMultiTab: DigitalCatalogProductInputMultiTab, isRefresheedFilter: Boolean): InputMultiTabDenomModel {
         val productsDenom = inputMultiTab.multitabData.productInputs.firstOrNull()?.product
         val (dataCollectionProduct, dataCollectionMCCM) = getMainDataCollections(inputMultiTab)
 
@@ -22,7 +22,8 @@ class DigitalDenomMapper @Inject constructor() {
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
             getDenomFullMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
                 dataCollectionMCCM, true),
-            inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList()
+            inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList(),
+            isRefresheedFilter
         )
     }
 

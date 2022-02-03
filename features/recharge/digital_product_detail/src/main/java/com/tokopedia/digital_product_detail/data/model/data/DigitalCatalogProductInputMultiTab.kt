@@ -2,6 +2,8 @@ package com.tokopedia.digital_product_detail.data.model.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory
 
 data class DigitalCatalogProductInputMultiTab(
     @SerializedName("rechargeCatalogProductInputMultiTab")
@@ -37,7 +39,7 @@ data class RechargeCatalogProductInput(
     val product: RechargeCatalogProduct = RechargeCatalogProduct(),
     @SerializedName("filterTagComponents")
     @Expose
-    val filterTagComponents: List<TelcoFilterTagComponent> = mutableListOf()
+    var filterTagComponents: List<TelcoFilterTagComponent> = mutableListOf()
 )
 
 
@@ -182,7 +184,7 @@ data class TelcoFilterTagComponent(
     val paramName: String = "",
     @SerializedName("data_collections")
     @Expose
-    val filterTagDataCollections: List<FilterTagDataCollection> = mutableListOf()
+    var filterTagDataCollections: List<FilterTagDataCollection> = mutableListOf()
 )
 
 data class FilterTagDataCollection(
@@ -191,5 +193,11 @@ data class FilterTagDataCollection(
     val key: String = "",
     @SerializedName("value")
     @Expose
-    val value: String = ""
-)
+    val value: String = "",
+    var isSelected: Boolean = false
+): Visitable<BaseListCheckableTypeFactory<FilterTagDataCollection>> {
+
+    override fun type(typeFactory: BaseListCheckableTypeFactory<FilterTagDataCollection>): Int {
+        return typeFactory.type(this)
+    }
+}
