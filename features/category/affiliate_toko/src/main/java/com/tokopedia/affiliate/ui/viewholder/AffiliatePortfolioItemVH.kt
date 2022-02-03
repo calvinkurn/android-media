@@ -31,10 +31,10 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
-                    s.toString().lowercase())
+                    s.toString())
 
                 if(s.toString().isNotEmpty()){
-                    element?.portfolioItm?.isError = !isValidUrl(s.toString().lowercase(),element)
+                    element?.portfolioItm?.isError = !isValidUrl(s.toString(),element)
                 }else {
                     element?.portfolioItm?.isError = false
                 }

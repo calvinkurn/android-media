@@ -60,9 +60,9 @@ const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
 
 const val AFFILIATE_INSTAGRAM_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(instagram.com|instagr.am|instagr.com)\\/[\\w-_@.]+"
 
-const val AFFILIATE_YT_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(youtube\\.com)\\/[\\w-_@.]+"
+const val AFFILIATE_YT_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(youtube\\.com)\\/((user|channel|c|id)\\/)?[\\w-_@.]+"
 
-const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(tiktok\\.com)\\/[\\w-_@.]+"
+const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?((www|vt).)?(tiktok\\.com)\\/[\\w-_@.]+"
 
 const val AFFILIATE_TWITTER_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(twitter.com)\\/[\\w-_@.]+"
 
