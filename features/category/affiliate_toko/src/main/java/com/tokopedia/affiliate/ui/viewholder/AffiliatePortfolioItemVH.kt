@@ -31,10 +31,10 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
-                    s.toString())
+                    s.toString().lowercase())
 
                 if(s.toString().isNotEmpty()){
-                    element?.portfolioItm?.isError = !isValidUrl(s.toString(),element)
+                    element?.portfolioItm?.isError = !isValidUrl(s.toString().lowercase(),element)
                 }else {
                     element?.portfolioItm?.isError = false
                 }
@@ -65,7 +65,7 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
 
     private fun isValidUrl(text: String, element: AffiliatePortfolioUrlModel?): Boolean {
         return if(element?.portfolioItm?.regex != null){
-            val regex = Regex(element.portfolioItm.regex!!)
+            val regex = Regex(element.portfolioItm.regex!!, setOf(RegexOption.IGNORE_CASE))
             regex.matches(text) && Patterns.WEB_URL.matcher(text).matches()
         } else{
             Patterns.WEB_URL.matcher(text).matches()
