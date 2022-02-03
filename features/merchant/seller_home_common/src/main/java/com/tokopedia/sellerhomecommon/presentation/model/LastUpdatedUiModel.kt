@@ -6,6 +6,6 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 data class LastUpdatedUiModel(
     var lastUpdatedInMillis: Long = 0L,
-    var isTheLatest: Boolean = false,
-    var shouldShow: Boolean = false
+    var shouldShow: Boolean = false,
+    var isEnabled: Boolean = true
 )

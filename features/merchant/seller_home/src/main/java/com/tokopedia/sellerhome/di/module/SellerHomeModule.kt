@@ -74,4 +74,10 @@ class SellerHomeModule {
     fun provideWidgetLastUpdatePref(@ApplicationContext context: Context): WidgetLastUpdatedSharedPrefInterface {
         return WidgetLastUpdatedSharedPref(context)
     }
+
+    @SellerHomeScope
+    @Provides
+    fun provideLastUpdatedInfoEnabled(): Boolean {
+        return true
+    }
 }

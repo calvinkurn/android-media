@@ -148,10 +148,12 @@ class CardViewHolder(
 
     private fun setupRefreshButton(element: CardWidgetUiModel) {
         with(binding) {
-            val shouldShowRefreshButton = element.data?.lastUpdated?.shouldShow.orFalse()
-            icShcRefreshCard.isVisible = shouldShowRefreshButton
-            icShcRefreshCard.setOnClickListener {
-                refreshWidget(element)
+            element.data?.lastUpdated?.let {
+                val shouldShowRefreshButton = it.shouldShow.orFalse()
+                icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
+                icShcRefreshCard.setOnClickListener {
+                    refreshWidget(element)
+                }
             }
         }
     }

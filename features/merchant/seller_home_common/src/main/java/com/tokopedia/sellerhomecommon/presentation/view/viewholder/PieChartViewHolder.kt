@@ -129,6 +129,7 @@ class PieChartViewHolder(
     private fun setupLastUpdatedInfo(element: PieChartWidgetUiModel) {
         binding.luvShcPieChart.run {
             element.data?.lastUpdated?.let { lastUpdated ->
+                isVisible = lastUpdated.isEnabled
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {

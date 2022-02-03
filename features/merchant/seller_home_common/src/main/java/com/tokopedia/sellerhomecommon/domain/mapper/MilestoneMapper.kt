@@ -11,8 +11,9 @@ import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
 
 class MilestoneMapper @Inject constructor(
-    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
-) : BaseWidgetMapper(lastUpdatedSharedPref),
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetMilestoneDataResponse, List<MilestoneDataUiModel>> {
 
     companion object {

@@ -285,6 +285,7 @@ class MultiLineGraphViewHolder(
             val shouldShowRefreshBtn = element.data?.lastUpdated?.shouldShow.orFalse()
 
             binding.luvShcMultiLineGraph.run {
+                isVisible = lastUpdated.isEnabled
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(shouldShowRefreshBtn)
                 setRefreshButtonClickListener {

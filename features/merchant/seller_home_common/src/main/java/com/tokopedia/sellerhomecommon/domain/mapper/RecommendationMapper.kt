@@ -20,8 +20,9 @@ import javax.inject.Inject
  */
 
 class RecommendationMapper @Inject constructor(
-    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
-) : BaseWidgetMapper(lastUpdatedSharedPref),
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetRecommendationDataResponse, List<RecommendationDataUiModel>> {
 
     companion object {

@@ -15,8 +15,9 @@ import javax.inject.Inject
  */
 
 class PieChartMapper @Inject constructor(
-    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
-) : BaseWidgetMapper(lastUpdatedSharedPref),
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetPieChartDataResponse, List<PieChartDataUiModel>> {
 
     override fun mapRemoteDataToUiData(

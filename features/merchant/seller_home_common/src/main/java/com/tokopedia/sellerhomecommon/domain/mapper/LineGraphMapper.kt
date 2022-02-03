@@ -13,8 +13,9 @@ import javax.inject.Inject
  */
 
 class LineGraphMapper @Inject constructor(
-    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
-) : BaseWidgetMapper(lastUpdatedSharedPref),
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetLineGraphDataResponse, List<LineGraphDataUiModel>> {
 
     override fun mapRemoteDataToUiData(

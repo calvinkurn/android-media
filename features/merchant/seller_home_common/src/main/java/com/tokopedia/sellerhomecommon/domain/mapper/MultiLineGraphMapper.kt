@@ -19,8 +19,9 @@ import javax.inject.Inject
  */
 
 class MultiLineGraphMapper @Inject constructor(
-    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
-) : BaseWidgetMapper(lastUpdatedSharedPref),
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>> {
 
     override fun mapRemoteDataToUiData(

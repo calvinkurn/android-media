@@ -36,4 +36,10 @@ class StatisticModule {
     fun provideWidgetLastUpdatePref(@ApplicationContext context: Context): WidgetLastUpdatedSharedPrefInterface {
         return WidgetLastUpdatedSharedPref(context)
     }
+
+    @StatisticScope
+    @Provides
+    fun provideLastUpdatedInfoEnabled(): Boolean {
+        return false
+    }
 }

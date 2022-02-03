@@ -125,6 +125,7 @@ class RecommendationViewHolder(
     private fun setupLastUpdatedInfo(element: RecommendationWidgetUiModel) {
         with(successStateBinding.luvShcRecommendation) {
             element.data?.lastUpdated?.let { lastUpdated ->
+                isVisible = lastUpdated.isEnabled
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {

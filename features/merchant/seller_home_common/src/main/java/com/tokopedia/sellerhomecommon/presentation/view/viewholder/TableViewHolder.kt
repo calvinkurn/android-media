@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -112,7 +113,7 @@ class TableViewHolder(
     private fun setupLastUpdatedInfo(element: TableWidgetUiModel) {
         binding.luvShcTable.run {
             element.data?.lastUpdated?.let { lastUpdated ->
-                visible()
+                isVisible = lastUpdated.isEnabled
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {

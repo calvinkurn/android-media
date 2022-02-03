@@ -183,6 +183,7 @@ class LineGraphViewHolder(
         element.data?.lastUpdated?.let {
             val shouldShowRefreshBtn = element.data?.lastUpdated?.shouldShow.orFalse()
             binding.luvShcLineGraph.run {
+                isVisible = it.isEnabled
                 setLastUpdated(it.lastUpdatedInMillis)
                 setRefreshButtonVisibility(shouldShowRefreshBtn)
                 setRefreshButtonClickListener {

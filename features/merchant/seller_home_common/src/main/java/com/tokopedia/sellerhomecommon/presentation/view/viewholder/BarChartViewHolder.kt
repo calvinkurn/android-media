@@ -138,7 +138,7 @@ class BarChartViewHolder(
     private fun setupLastUpdatedInfo(element: BarChartWidgetUiModel) {
         binding.luvShcBarChart.run {
             element.data?.lastUpdated?.let { lastUpdated ->
-                visible()
+                isVisible = lastUpdated.isEnabled
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.shouldShow)
                 setRefreshButtonClickListener {

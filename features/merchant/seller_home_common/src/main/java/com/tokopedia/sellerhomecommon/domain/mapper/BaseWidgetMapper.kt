@@ -9,25 +9,33 @@ import java.util.*
  */
 
 abstract class BaseWidgetMapper(
-    private val lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface
+    private val lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    private val isEnabled: Boolean
 ) {
 
     protected fun getLastUpdatedMillis(dataKey: String, isFromCache: Boolean): LastUpdatedUiModel {
-        val nowMillis = Date().time
-        val lastUpdated = if (isFromCache) {
-            lastUpdatedSharedPref.getLastUpdateInfoInMillis(dataKey, nowMillis)
+        return if (isEnabled) {
+            val nowMillis = Date().time
+            val lastUpdated = if (isFromCache) {
+                lastUpdatedSharedPref.getLastUpdateInfoInMillis(dataKey, nowMillis)
+            } else {
+                saveLastUpdated(dataKey, nowMillis)
+                nowMillis
+            }
+
+            LastUpdatedUiModel(
+                lastUpdatedInMillis = lastUpdated,
+                shouldShow = isFromCache,
+                isEnabled = isEnabled
+            )
         } else {
-            saveLastUpdated(dataKey, nowMillis)
-            nowMillis
+            LastUpdatedUiModel(isEnabled = isEnabled)
         }
-        return LastUpdatedUiModel(
-            lastUpdatedInMillis = lastUpdated,
-            isTheLatest = !isFromCache,
-            shouldShow = isFromCache
-        )
     }
 
     private fun saveLastUpdated(dataKey: String, timeInMillis: Long) {
-        lastUpdatedSharedPref.saveLastUpdateInfo(dataKey, timeInMillis)
+        if (isEnabled) {
+            lastUpdatedSharedPref.saveLastUpdateInfo(dataKey, timeInMillis)
+        }
     }
 }
