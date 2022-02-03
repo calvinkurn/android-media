@@ -52,7 +52,6 @@ class CouponListActivity : BaseSimpleActivity() {
         ::navigateToCouponDetail
     )
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
