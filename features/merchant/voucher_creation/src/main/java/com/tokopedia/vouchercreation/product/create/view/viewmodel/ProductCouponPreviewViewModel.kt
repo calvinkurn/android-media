@@ -1,13 +1,13 @@
 package com.tokopedia.vouchercreation.product.create.view.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
@@ -27,15 +27,15 @@ class ProductCouponPreviewViewModel @Inject constructor(
         private const val NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE = 3
     }
 
-    private val _areInputValid = MutableLiveData<Boolean>()
+    private val _areInputValid = SingleLiveEvent<Boolean>()
     val areInputValid: LiveData<Boolean>
         get() = _areInputValid
 
-    private val _createCoupon = MutableLiveData<Result<Int>>()
+    private val _createCoupon = SingleLiveEvent<Result<Int>>()
     val createCoupon: LiveData<Result<Int>>
         get() = _createCoupon
 
-    private val _updateCouponResult = MutableLiveData<Result<Boolean>>()
+    private val _updateCouponResult = SingleLiveEvent<Result<Boolean>>()
     val updateCouponResult: LiveData<Result<Boolean>> = _updateCouponResult
 
     fun validateCoupon(
