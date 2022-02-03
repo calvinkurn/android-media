@@ -21,6 +21,8 @@ class ProductDetailDevActivity : BaseActivity() {
     companion object {
         const val PDP_LAYOUT_ID_TEST_SHARED_PREF_KEY = "layoutIdSharedPref"
         const val PDP_LAYOUT_ID_STRING_KEY = "layoutIdTest"
+        const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
+        const val KEY_SAVE_AFTER_CLOSE = "save_after_close"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +53,8 @@ class ProductDetailDevActivity : BaseActivity() {
         val productIdVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_productid_vbs)
         val shopIdVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_shopid_vbs)
         val pageSourceVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_pagesource_vbs)
+        val saveAfterCloseEditText = findViewById<TextFieldUnify>(R.id.pdp_save_after_close_atc_vbs)
+        val dismissAfterAtc = findViewById<TextFieldUnify>(R.id.pdp_dismiss_after_atc_vbs)
         val toggleTokoNow = findViewById<CheckBox>(R.id.toggle_is_tokonow)
 
         findViewById<UnifyButton>(R.id.pdp_vbs_btn).setOnClickListener {
@@ -63,6 +67,12 @@ class ProductDetailDevActivity : BaseActivity() {
                     pageSourceVbsEditText.textFieldInput.text.toString(),
                     isTokonow.toString(),
                     "")
+
+            intent.putExtra(KEY_DISMISS_AFTER_ATC,
+                    dismissAfterAtc.textFieldInput.text.toString().toBoolean())
+            intent.putExtra(KEY_SAVE_AFTER_CLOSE,
+                    saveAfterCloseEditText.textFieldInput.text.toString().toBoolean())
+
 
             startActivityForResult(intent, 19202)
         }

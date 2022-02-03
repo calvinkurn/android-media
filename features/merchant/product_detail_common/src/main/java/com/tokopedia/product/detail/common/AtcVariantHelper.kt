@@ -30,6 +30,8 @@ object AtcVariantHelper {
     const val ATC_VARIANT_CACHE_ID = "atc_variant_cache_id"
 
     const val ATC_VARIANT_RESULT_CODE = 19202
+    const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
+    const val KEY_SAVE_AFTER_CLOSE = "save_after_close"
 
     const val WISHLIST_PAGESOURCE = "wishlist"
     const val PDP_PAGESOURCE = "product detail page"
@@ -65,6 +67,8 @@ object AtcVariantHelper {
                         restrictionData: RestrictionInfoResponse?,
                         isFavorite: Boolean = false,
                         uspImageUrl: String = "",
+                        dismissAfterTransaction: Boolean = false,
+                        saveAfterClose: Boolean = true,
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -77,6 +81,8 @@ object AtcVariantHelper {
                 pdpSession = pdpSession,
                 isTokoNow = isTokoNow,
                 isShopOwner = isShopOwner,
+                dismissAfterTransaction = dismissAfterTransaction,
+                saveAfterClose = saveAfterClose,
                 variantAggregator = ProductVariantAggregatorUiData(
                         variantData = productVariant,
                         cardRedirection = cartRedirection,
@@ -123,8 +129,17 @@ object AtcVariantHelper {
                        isTokoNow: Boolean = false,
                        shopId: String,
                        trackerCdListName: String = "",
+                       dismissAfterTransaction: Boolean = false,
+                       saveAfterClose: Boolean = true,
                        startActivitResult: (Intent, Int) -> Unit) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, shopId, pageSource, isTokoNow.toString(), trackerCdListName)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT,
+                productId,
+                shopId,
+                pageSource,
+                isTokoNow.toString(),
+                trackerCdListName)
+        intent.putExtra(KEY_DISMISS_AFTER_ATC, dismissAfterTransaction)
+        intent.putExtra(KEY_SAVE_AFTER_CLOSE, saveAfterClose)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 

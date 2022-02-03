@@ -30,7 +30,8 @@ object AtcVariantNavigation {
             boData = null,
             rates = null,
             restrictionData = null,
-            pageSource = AtcVariantHelper.BUNDLING_PAGESOURCE
+            pageSource = AtcVariantHelper.BUNDLING_PAGESOURCE,
+            saveAfterClose = false
         ) { intent, resultCode ->
             when (resultCode) {
                 AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
