@@ -88,7 +88,7 @@
     <string name="tokopedianow_date_filter_item_start_date_bottomshet">Mulai dari</string>
     <string name="tokopedianow_date_filter_item_end_date_bottomshet">Sampai</string>
 
-    <string name="tokopedianow_repurchase_sort_chip_title">Paling sering dibeli</string>
+    <string name="tokopedianow_repurchase_sort_chip_title">Sering Kamu Beli</string>
     <string name="tokopedianow_repurchase_all_category_filter_chip_title">Semua Kategori</string>
     <string name="tokopedianow_repurchase_category_filter_chip_format">%1$d Kategori</string>
     <string name="tokopedianow_repurchase_date_filter_chip_title">Semua Tanggal</string>
