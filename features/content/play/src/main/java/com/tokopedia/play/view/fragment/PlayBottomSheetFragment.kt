@@ -255,8 +255,7 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning) {
         unlistenKeyboard()
 
-        val cal = Calendar.getInstance().time
-        userReportTimeMillis = cal
+        userReportTimeMillis = Calendar.getInstance().time
         playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
         userReportSubmissionSheetView.setView(item)
     }
