@@ -1,11 +1,11 @@
-package com.tokopedia.purchase_platform.common.feature.gifting.addon.view.di
+package com.tokopedia.addongifting.view.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.purchase_platform.common.feature.gifting.addon.view.AddOnViewModel
+import com.tokopedia.addongifting.view.AddOnViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

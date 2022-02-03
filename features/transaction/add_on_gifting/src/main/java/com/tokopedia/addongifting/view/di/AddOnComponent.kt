@@ -1,8 +1,8 @@
-package com.tokopedia.purchase_platform.common.feature.gifting.addon.view.di
+package com.tokopedia.addongifting.view.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.purchase_platform.common.feature.gifting.addon.view.AddOnBottomSheet
+import com.tokopedia.addongifting.view.AddOnBottomSheet
 import dagger.Component
 
 @ActivityScope
