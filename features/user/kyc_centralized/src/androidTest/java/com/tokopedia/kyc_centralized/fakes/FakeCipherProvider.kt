@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.di
+package com.tokopedia.kyc_centralized.fakes
 
 import com.tokopedia.kyc_centralized.util.CipherProvider
 import javax.crypto.Cipher

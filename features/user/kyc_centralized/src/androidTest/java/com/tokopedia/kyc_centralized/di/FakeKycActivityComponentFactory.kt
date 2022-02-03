@@ -5,6 +5,9 @@ import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kyc_centralized.data.network.KycUploadApi
+import com.tokopedia.kyc_centralized.fakes.FakeGraphqlRepository
+import com.tokopedia.kyc_centralized.fakes.FakeKycPreferences
+import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceInterface
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

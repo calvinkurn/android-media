@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.di
+package com.tokopedia.kyc_centralized.fakes
 
 import androidx.test.core.app.ApplicationProvider
 import com.google.gson.Gson
