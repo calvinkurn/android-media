@@ -232,5 +232,7 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_PRODUCT_CARD_DGU = "PRODUCT_CARD_DGU"
         const val SECTION_3_ICONS = "3_ICONS"
         const val SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2 = "PRODUCT_CARD_CUSTOM_BANNER_V2"
+        const val SECTION_RECOMMENDATION_BANNER = "2X2_BANNER"
+        const val SECTION_PRODUCT_CARD_CUSTOM_LAST_ITEM = "PRODUCT_CARD_CUSTOM_LAST_ITEM"
     }
 }

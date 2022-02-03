@@ -138,7 +138,9 @@ object RechargeHomepageSectionMapper {
                     SECTION_SWIPE_BANNER -> RechargeHomepageSwipeBannerModel(it)
                     SECTION_PRODUCT_CARD_DGU -> RechargeProductCardUnifyModel(it)
                     SECTION_3_ICONS -> RechargeHomepageThreeIconsModel(it)
-                    SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2 -> RechargeHomePageProductCardCustomBannerV2Model(it)
+                    SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2 -> RechargeHomepageProductCardCustomBannerV2Model(it)
+                    SECTION_RECOMMENDATION_BANNER -> RechargeHomepageRecommendationBannerModel(it)
+                    SECTION_PRODUCT_CARD_CUSTOM_LAST_ITEM -> RechargeHomepageProductCardCustomLastItemModel(it)
                     else -> null
                 }
             }

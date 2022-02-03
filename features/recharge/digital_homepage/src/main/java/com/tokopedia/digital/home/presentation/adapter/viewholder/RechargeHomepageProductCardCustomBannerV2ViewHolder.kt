@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomBannerV2Binding
-import com.tokopedia.digital.home.model.RechargeHomePageProductCardCustomBannerV2Model
+import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.util.ParallaxScrollEffectListener
@@ -24,7 +24,7 @@ import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalU
 class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     val view: View,
     val listener: RechargeHomepageItemListener
-): AbstractViewHolder<RechargeHomePageProductCardCustomBannerV2Model>(view) {
+): AbstractViewHolder<RechargeHomepageProductCardCustomBannerV2Model>(view) {
 
     companion object{
         @LayoutRes
@@ -34,7 +34,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     private lateinit var section: RechargeHomepageSections.Section
     private val rvPool = RecyclerView.RecycledViewPool()
 
-    override fun bind(element: RechargeHomePageProductCardCustomBannerV2Model) {
+    override fun bind(element: RechargeHomepageProductCardCustomBannerV2Model) {
         val bind = ViewRechargeHomeProductCardCustomBannerV2Binding.bind(itemView)
         section = element.section
         if (section.items.isNotEmpty()){
