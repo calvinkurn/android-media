@@ -9,7 +9,8 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.paylater_simulation_tenure_item.view.*
 
-class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (Int) -> Unit) : RecyclerView.ViewHolder(view) {
+class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (Int) -> Unit) :
+    RecyclerView.ViewHolder(view) {
 
     fun bindData(simulationUiModel: SimulationUiModel) {
         setCardType(simulationUiModel)
@@ -26,15 +27,22 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
     }
 
     private fun setCardType(simulationUiModel: SimulationUiModel) {
-        view.payLaterSimulationCard.cardType = if (simulationUiModel.isSelected) CardUnify.TYPE_BORDER_ACTIVE else CardUnify.TYPE_BORDER
+        view.payLaterSimulationCard.changeTypeWithTransition(
+            if (simulationUiModel.isSelected) CardUnify.TYPE_BORDER_ACTIVE
+            else CardUnify.TYPE_BORDER
+        )
     }
 
     companion object {
         val LAYOUT_ID = R.layout.paylater_simulation_tenure_item
 
-        fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup, onTenureSelected: (Int) -> Unit) =
+        fun getViewHolder(
+            inflater: LayoutInflater,
+            parent: ViewGroup,
+            onTenureSelected: (Int) -> Unit
+        ) =
             PayLaterSimulationTenureViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false)
-            , onTenureSelected)
+                inflater.inflate(LAYOUT_ID, parent, false), onTenureSelected
+            )
     }
 }
