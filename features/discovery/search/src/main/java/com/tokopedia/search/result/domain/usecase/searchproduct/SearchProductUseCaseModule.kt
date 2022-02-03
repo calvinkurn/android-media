@@ -1,13 +1,11 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
-import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.data.mapper.searchproduct.SearchProductMapperModule
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -24,13 +22,6 @@ import javax.inject.Named
 
 @Module(includes = [SearchProductMapperModule::class])
 class SearchProductUseCaseModule {
-
-    @SearchScope
-    @Provides
-    fun provideTopAdsIrisSession(@SearchContext context: Context) : TopAdsIrisSession{
-        return TopAdsIrisSession(context)
-    }
-
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
@@ -41,16 +32,16 @@ class SearchProductUseCaseModule {
             topAdsIrisSession: TopAdsIrisSession
     ): UseCase<SearchProductModel> {
         val topAdsImageViewUseCase = TopAdsImageViewUseCase(
-                userSession.userId,
-                TopAdsRepository()
+            userSession.userId,
+            TopAdsRepository(),
+            topAdsIrisSession.getSessionId()
         )
         return SearchProductFirstPageGqlUseCase(
                 GraphqlUseCase(),
                 searchProductModelMapper,
                 topAdsImageViewUseCase,
                 coroutineDispatchers,
-                SearchLogger(),
-                topAdsIrisSession
+                SearchLogger()
         )
     }
 

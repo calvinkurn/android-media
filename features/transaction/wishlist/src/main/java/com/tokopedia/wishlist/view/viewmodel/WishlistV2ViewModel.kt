@@ -13,7 +13,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,16 +37,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class WishlistV2ViewModel @Inject constructor(
-    dispatcher: CoroutineDispatchers,
-    private val wishlistV2UseCase: WishlistV2UseCase,
-    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-    private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
-    private val atcUseCase: AddToCartUseCase,
-    private val irisSession: TopAdsIrisSession
-) : BaseViewModel(dispatcher.main) {
+class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
+                                            private val wishlistV2UseCase: WishlistV2UseCase,
+                                            private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+                                            private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
+                                            private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+                                            private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
+                                            private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _wishlistV2 = MutableLiveData<Result<WishlistV2Response.Data.WishlistV2>>()
     val wishlistV2: LiveData<Result<WishlistV2Response.Data.WishlistV2>>
@@ -314,9 +310,7 @@ class WishlistV2ViewModel @Inject constructor(
 
     suspend fun getTopAdsData(): TopAdsImageViewModel?  {
         return topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap("",
-                WISHLIST_TOPADS_SOURCE, "", WISHLIST_TOPADS_ADS_COUNT, WISHLIST_TOPADS_DIMENS, ""),
-            irisSession.getSessionId()
-        ).firstOrNull()
+                WISHLIST_TOPADS_SOURCE, "", WISHLIST_TOPADS_ADS_COUNT, WISHLIST_TOPADS_DIMENS, "")).firstOrNull()
     }
 
     companion object {

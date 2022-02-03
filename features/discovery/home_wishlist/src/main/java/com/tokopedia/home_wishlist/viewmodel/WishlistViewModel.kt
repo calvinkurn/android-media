@@ -22,7 +22,6 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRec
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.smart_recycler_helper.SmartVisitable
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -65,8 +64,7 @@ open class WishlistViewModel @Inject constructor(
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-        private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-        private val irisSession: TopAdsIrisSession
+        private val updateCartCounterUseCase: UpdateCartCounterUseCase
 ) : ViewModel(), CoroutineScope{
 
     private val masterJob = SupervisorJob()
@@ -372,7 +370,7 @@ open class WishlistViewModel @Inject constructor(
                                         WISHLIST_TOPADS_ADS_COUNT,
                                         WISHLIST_TOPADS_DIMENS,
                                         ""
-                                ),irisSession.getSessionId()
+                                )
                         )
 
                         val recommendationResult = getRecommendationUseCase.getData(
@@ -463,7 +461,7 @@ open class WishlistViewModel @Inject constructor(
                                     WISHLIST_TOPADS_ADS_COUNT,
                                     WISHLIST_TOPADS_DIMENS,
                                     ""
-                            ),irisSession.getSessionId()
+                            )
                     )
                     if (results.isNotEmpty()) {
                         return@withContext wishlistVisitable.mappingTopadsBannerToWishlist(

@@ -19,7 +19,6 @@ import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import kotlinx.coroutines.CoroutineScope
@@ -43,8 +42,7 @@ class SearchProductFirstPageGqlUseCase(
         private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
         private val coroutineDispatchers: CoroutineDispatchers,
-        private val searchLogger: SearchLogger,
-        private val irisSession: TopAdsIrisSession
+        private val searchLogger: SearchLogger
 ): UseCase<SearchProductModel>(), CoroutineScope {
 
     private val masterJob = SupervisorJob()
@@ -178,7 +176,7 @@ class SearchProductFirstPageGqlUseCase(
         withContext(coroutineDispatchers.io) {
             try {
                 val topAdsImageViewModelList = topAdsImageViewUseCase.getImageData(
-                        topAdsImageViewUseCase.getQueryMapSearch(query),irisSession.getSessionId()
+                        topAdsImageViewUseCase.getQueryMapSearch(query)
                 )
                 emitter.onNext(topAdsImageViewModelList)
                 emitter.onCompleted()

@@ -87,7 +87,6 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
-import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -131,7 +130,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
                                                              private val addToCartUseCase: Lazy<AddToCartUseCase>,
-                                                             private val topAdsIrisSession: TopAdsIrisSession,
                                                              private val addToCartOcsUseCase: Lazy<AddToCartOcsUseCase>,
                                                              private val addToCartOccUseCase: Lazy<AddToCartOccMultiUseCase>,
                                                              private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
@@ -649,7 +647,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     DIMEN_ID,
                     "",
                     productID
-            ),topAdsIrisSession.getSessionId())
+            ))
             _topAdsImageView.postValue(result.asSuccess())
         }) {
             _topAdsImageView.postValue(it.asFail())

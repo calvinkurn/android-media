@@ -5,14 +5,12 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class ThankYouTopAdsViewModelUseCase @Inject constructor(
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val irisSession: TopAdsIrisSession
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase
 ) : UseCase<List<TopAdsUIModel>>() {
 
     private val KEY_TOP_ADS_PARAM = "TOP_ADS_PARAM"
@@ -54,7 +52,7 @@ class ThankYouTopAdsViewModelUseCase @Inject constructor(
                 params.itemCount.toInt(),
                 params.dimen.toInt(), "",
                 productId
-            ),irisSession.getSessionId()
+            )
         )
         return topAdsViewModelList.map {
             TopAdsUIModel(it)
