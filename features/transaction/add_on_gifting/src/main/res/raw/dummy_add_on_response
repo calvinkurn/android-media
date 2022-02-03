@@ -1,0 +1,74 @@
+{
+  "data": {
+    "GetAddOnByProductResponse": {
+      "error": {
+        "messages": "",
+        "reason": [],
+        "errorCode": ""
+      },
+      "StaticInfo": {
+        "InfoURL": "URL_TO_INFO_BOTTOM_SHEET"
+      },
+      "AddOnByProductResponse": [
+        {
+          "ProductID": "1234",
+          "WarehouseID": "5678",
+          "AddOnType": "PRODUCT_ADDON",
+          "HasAddOns": true,
+          "CouponText": "Some campaign text",
+          "Addons": [
+            {
+              "Basic": {
+                "ID": "898",
+                "ShopID": "123",
+                "Name": "name of addon",
+                "Rules": {
+                  "MaxOrder": 10,
+                  "CustomNotes": true
+                },
+                "Metadata": {
+                  "Pictures": [
+                    {
+                      "FilePath": "/filepath",
+                      "FileName": "Filename.jpg",
+                      "URL": "http://urlto/image",
+                      "URL100": "http://urlto/image",
+                      "URL200": "http://urlto/image"
+                    }
+                  ],
+                  "NotesTemplate": "some template"
+                },
+                "ProductAddOnType": "GREETING_CARD_TYPE",
+                "Status": "ADD_ON_ACTIVE"
+              },
+              "Pictures": [
+                {
+                  "FilePath": "/filepath",
+                  "FileName": "Filename.jpg",
+                  "URL": "http://urlto/image",
+                  "URL100": "http://urlto/image",
+                  "URL200": "http://urlto/image"
+                }
+              ],
+              "Inventory": {
+                "WarehouseID": "1234",
+                "Price": 123.12,
+                "Stock": "100",
+                "UnlimitedStock": true
+              },
+              "Warehouse": {
+                "WarehouseName": "warehouse name",
+                "CityName": "city name"
+              },
+              "Shop": {
+                "Name": "Some Shop",
+                "ShopTier": 1,
+                "ShopType": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
