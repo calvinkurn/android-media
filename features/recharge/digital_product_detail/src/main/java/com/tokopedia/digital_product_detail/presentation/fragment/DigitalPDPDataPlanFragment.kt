@@ -325,8 +325,12 @@ class DigitalPDPDataPlanFragment :
         viewModel.getPrefixOperator(menuId)
     }
 
-    private fun getFavoriteNumber(categoryId: Int = this.categoryId) {
-        viewModel.getFavoriteNumber(listOf(categoryId))
+    private fun getFavoriteNumber() {
+        viewModel.getFavoriteNumber(listOf(
+            TelcoCategoryType.CATEGORY_PULSA,
+            TelcoCategoryType.CATEGORY_PAKET_DATA,
+            TelcoCategoryType.CATEGORY_ROAMING
+        ))
     }
 
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
@@ -767,7 +771,11 @@ class DigitalPDPDataPlanFragment :
     override fun onClickContact() {
         binding?.run {
             val clientNumber = rechargePdpPaketDataClientNumberWidget.getInputNumber()
-            val dgCategoryIds = arrayListOf(categoryId.toString())
+            val dgCategoryIds = arrayListOf(
+                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                TelcoCategoryType.CATEGORY_ROAMING.toString()
+            )
             navigateToContact(
                 clientNumber, dgCategoryIds,
                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
@@ -830,7 +838,11 @@ class DigitalPDPDataPlanFragment :
     override fun onClickIcon(isSwitchChecked: Boolean) {
         binding?.run {
             val clientNumber = rechargePdpPaketDataClientNumberWidget.getInputNumber()
-            val dgCategoryIds = arrayListOf(categoryId.toString())
+            val dgCategoryIds = arrayListOf(
+                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                TelcoCategoryType.CATEGORY_ROAMING.toString()
+            )
             navigateToContact(
                 clientNumber, dgCategoryIds,
                 DigitalPDPTelcoUtil.getCategoryName(categoryId),

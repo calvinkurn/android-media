@@ -300,8 +300,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.getPrefixOperator(menuId)
     }
 
-    private fun getFavoriteNumber(categoryId: Int = this.categoryId) {
-        viewModel.getFavoriteNumber(listOf(categoryId))
+    private fun getFavoriteNumber() {
+        viewModel.getFavoriteNumber(listOf(
+            TelcoCategoryType.CATEGORY_PULSA,
+            TelcoCategoryType.CATEGORY_PAKET_DATA,
+            TelcoCategoryType.CATEGORY_ROAMING
+        ))
     }
 
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
@@ -407,7 +411,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     override fun onClickContact() {
                         binding?.run {
                             val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
-                            val dgCategoryIds = arrayListOf(categoryId.toString())
+                            val dgCategoryIds = arrayListOf(
+                                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                                TelcoCategoryType.CATEGORY_ROAMING.toString()
+                            )
                             navigateToContact(
                                 clientNumber, dgCategoryIds,
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
@@ -490,7 +498,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     override fun onClickIcon(isSwitchChecked: Boolean) {
                         binding?.run {
                             val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
-                            val dgCategoryIds = arrayListOf(categoryId.toString())
+                            val dgCategoryIds = arrayListOf(
+                                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                                TelcoCategoryType.CATEGORY_ROAMING.toString()
+                            )
                             navigateToContact(
                                 clientNumber, dgCategoryIds,
                                 DigitalPDPTelcoUtil.getCategoryName(categoryId),
