@@ -109,9 +109,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
-    private val generalErrorMessage: String
-        get() = getString(R.string.play_general_err_message)
-
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
@@ -298,14 +295,14 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
-            val startTimeInSecond : Date = try {
+            val startTimeInMiliSecond : Date = try {
                 startTime.toDate(
-                    DateUtil.HH_MM
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS
                 )
             }catch (e: Exception){
                 Date()
             }
-            val duration = userReportTimeMillis.time - startTimeInSecond.time
+            val duration = userReportTimeMillis.time - startTimeInMiliSecond.time
             TimeUnit.MILLISECONDS.toSeconds(duration)
         }else{
             TimeUnit.MILLISECONDS.toSeconds(playViewModel.getVideoTimestamp())
