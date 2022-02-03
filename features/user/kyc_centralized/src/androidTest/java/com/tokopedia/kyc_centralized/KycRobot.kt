@@ -21,12 +21,12 @@ class KycRobot {
     }
 
     fun atCameraClickCapture() {
-        Thread.sleep(1_000)
+        Thread.sleep(500)
         onView(withId(R.id.image_button_shutter)).perform(click())
     }
 
     fun atCameraClickNext() {
-        Thread.sleep(1_000)
+        Thread.sleep(1000)
         onView(withId(R.id.next_button)).perform(click())
     }
 
@@ -36,7 +36,7 @@ class KycRobot {
     }
 
     fun atFinalPressCta() {
-        Thread.sleep(3_000)
+        Thread.sleep(2_500)
         onView(withId(R.id.upload_button)).perform(click())
     }
 
@@ -55,6 +55,7 @@ fun kycRobot(func: KycRobot.() -> Unit): KycRobot {
 }
 
 infix fun KycRobot.upload(func: KycResultRobot.() -> Unit): KycResultRobot {
-    Thread.sleep(1500)
+    // in KYC, there is no manual CTA Button to upload, so we just wait
+    Thread.sleep(2500)
     return KycResultRobot().apply(func)
 }
