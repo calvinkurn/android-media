@@ -2208,10 +2208,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     )
 
                     val p2Data = viewModel.p2Data.value
-                    val cartTypeData = if (customCartRedirection != null)
-                        customCartRedirection
-                    else
-                        p2Data?.cartRedirection
+                    var saveAfterClose = true
+                    var cartTypeData = p2Data?.cartRedirection
+                    if (customCartRedirection != null) {
+                        saveAfterClose = false
+                        cartTypeData = customCartRedirection
+                    }
 
                     viewModel.clearCacheP2Data()
 
@@ -2233,7 +2235,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             rates = p2Data?.ratesEstimate ?: listOf(),
                             restrictionData = p2Data?.restrictionInfo,
                             isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
-                            uspImageUrl = p2Data?.uspImageUrl ?: ""
+                            uspImageUrl = p2Data?.uspImageUrl ?: "",
+                            saveAfterClose = saveAfterClose
                     ) { data, code ->
                         startActivityForResult(data, code)
                     }
