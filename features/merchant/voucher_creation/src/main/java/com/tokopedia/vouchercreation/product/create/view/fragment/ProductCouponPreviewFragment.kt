@@ -40,7 +40,6 @@ import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCou
 import com.tokopedia.vouchercreation.product.create.view.dialog.UpdateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
-import timber.log.Timber
 import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
@@ -176,7 +175,6 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         observeValidCoupon()
         observeCreateCouponResult()
         observeUpdateCouponResult()
-        Timber.d("Preview: Lifecycle app is OnViewCreated")
     }
 
 

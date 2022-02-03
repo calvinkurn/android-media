@@ -343,7 +343,7 @@
     <string name="coupon_target">Target Kupon</string>
     <string name="coupon_name">Nama Kupon</string>
     <string name="coupon_code">Kode Kupon</string>
-    <string name="coupon_period">Periode Kupon</string>
+    <string name="coupon_period">Periode</string>
     <string name="learn_more">Mau tau lebih lanjut?</string>
     <string name="read_article">Baca artikel</string>
     <string name="coupon_product_usage_information">Pembeli dapat menukarkan kupon ini di halaman toko dan halaman produk-produk kamu.</string>

@@ -520,7 +520,7 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
 
     private fun setupDiscountTypeChips() {
         binding.chipDiscountTypeNominal.selectedChangeListener = { isSelected ->
-            val label = if (isSelected) getString(R.string.in_nominal) else getString(R.string.nominal)
+            val label = if (isSelected) getString(R.string.in_rupiah) else getString(R.string.nominal)
             binding.chipDiscountTypeNominal.chipText = label
         }
 
