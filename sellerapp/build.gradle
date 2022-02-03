@@ -6,6 +6,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'newrelic'
+apply plugin: 'embrace-swazzler'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -39,6 +40,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
@@ -304,6 +306,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.miscDependencies.newRelic
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
