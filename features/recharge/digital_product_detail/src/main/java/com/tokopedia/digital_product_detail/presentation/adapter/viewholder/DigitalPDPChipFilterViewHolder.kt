@@ -6,12 +6,13 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipBinding
 import com.tokopedia.unifycomponents.ChipsUnify
 
-class DigitalPDPChipFilterViewHolder(private val binding: ViewPdpFilterChipBinding,
-                                     private val chipListener: ChipListener
-): RecyclerView.ViewHolder(binding.root) {
+class DigitalPDPChipFilterViewHolder(
+    private val binding: ViewPdpFilterChipBinding,
+    private val chipListener: ChipListener
+) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(tagComponent: TelcoFilterTagComponent, element: FilterTagDataCollection){
-        with(binding){
+    fun bind(tagComponent: TelcoFilterTagComponent, element: FilterTagDataCollection) {
+        with(binding) {
             chipPdpItem.run {
                 chipText = element.value
                 chipType = if (element.isSelected) ChipsUnify.TYPE_SELECTED
@@ -27,7 +28,9 @@ class DigitalPDPChipFilterViewHolder(private val binding: ViewPdpFilterChipBindi
     }
 
     interface ChipListener {
-        fun onChipClicked(tagComponent: TelcoFilterTagComponent,
-                          element: FilterTagDataCollection, position: Int)
+        fun onChipClicked(
+            tagComponent: TelcoFilterTagComponent,
+            element: FilterTagDataCollection, position: Int
+        )
     }
 }

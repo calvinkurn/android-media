@@ -35,7 +35,7 @@ class DigitalDenomMapper @Inject constructor() {
         return DenomMCCMModel(
             getDenomGridMapper(productsDenom?.text, dataCollectionProduct),
             getDenomGridMapper(mappingMCCMTitle(dataCollectionMCCM?.firstOrNull()?.clusterType),
-                dataCollectionProduct, true)
+                dataCollectionMCCM, true)
         )
     }
 

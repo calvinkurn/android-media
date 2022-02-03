@@ -8,7 +8,9 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipFilterViewHolder
 
-class DigitalChipsAdapter(private val chipListener: DigitalPDPChipFilterViewHolder.ChipListener): RecyclerView.Adapter<DigitalPDPChipFilterViewHolder>() {
+class DigitalChipsAdapter(private val chipListener: DigitalPDPChipFilterViewHolder.ChipListener,
+                          private val limitFilterDataCollection: Int
+): RecyclerView.Adapter<DigitalPDPChipFilterViewHolder>() {
     private var filterTagComponent = TelcoFilterTagComponent()
     private var listFilterDataCollection = mutableListOf<FilterTagDataCollection>()
 
@@ -34,11 +36,7 @@ class DigitalChipsAdapter(private val chipListener: DigitalPDPChipFilterViewHold
 
     fun setChipList(filterTagComponent: TelcoFilterTagComponent){
         this.filterTagComponent = filterTagComponent
-        this.listFilterDataCollection = filterTagComponent.filterTagDataCollections.take(LIMIT_FILTER_DATA_COLLECTION).toMutableList()
+        this.listFilterDataCollection = filterTagComponent.filterTagDataCollections.take(limitFilterDataCollection).toMutableList()
         notifyDataSetChanged()
-    }
-
-    companion object {
-        const val LIMIT_FILTER_DATA_COLLECTION = 5
     }
 }

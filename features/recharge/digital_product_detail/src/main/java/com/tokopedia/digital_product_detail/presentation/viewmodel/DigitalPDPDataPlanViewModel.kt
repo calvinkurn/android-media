@@ -223,7 +223,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         selectedFullProduct = SelectedProduct()
     }
 
-    fun updateFilterData(filterTagComponents: List<TelcoFilterTagComponent>){
+    fun updateFilterData(filterTagComponents: List<TelcoFilterTagComponent>) {
         filterData = filterTagComponents
         updateFilterData()
     }

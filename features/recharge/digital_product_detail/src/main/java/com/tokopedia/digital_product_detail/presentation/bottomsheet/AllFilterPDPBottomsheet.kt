@@ -15,12 +15,12 @@ import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.Digi
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class AllFilterPDPBottomsheet(private val title:String,
-                              private val adapterPosition: Int,
-                              private var filterTagComponent : TelcoFilterTagComponent,
-                              private var checkBoxFilterListener: OnCheckBoxAllFilterListener
-)
-    : BottomSheetUnify(), DigitalPDPFilterAllViewHolder.CheckBoxListener{
+class AllFilterPDPBottomsheet(
+    private val title: String,
+    private val adapterPosition: Int,
+    private var filterTagComponent: TelcoFilterTagComponent,
+    private var checkBoxFilterListener: OnCheckBoxAllFilterListener
+) : BottomSheetUnify(), DigitalPDPFilterAllViewHolder.CheckBoxListener {
 
     init {
         isFullpage = false
@@ -56,16 +56,17 @@ class AllFilterPDPBottomsheet(private val title:String,
         checkBoxFilterListener.onCheckBoxAllFilterClicked(filterTagComponent, adapterPosition)
     }
 
-    private fun initView(){
+    private fun initView() {
         binding = BottomSheetAllFilterBinding.inflate(LayoutInflater.from(context))
         binding?.let {
             adapterAllFilter.setCheckBoxList(filterTagComponent)
             it.rvPdpFilterAll.run {
                 setHasFixedSize(true)
                 val linearLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                val dividerItemDecoration = DividerItemDecoration(context, linearLayoutManager.orientation).apply {
-                    setUsePaddingLeft(false)
-                }
+                val dividerItemDecoration =
+                    DividerItemDecoration(context, linearLayoutManager.orientation).apply {
+                        setUsePaddingLeft(false)
+                    }
                 layoutManager = linearLayoutManager
                 adapter = adapterAllFilter
                 addItemDecoration(dividerItemDecoration)
@@ -77,7 +78,9 @@ class AllFilterPDPBottomsheet(private val title:String,
     }
 
     interface OnCheckBoxAllFilterListener {
-        fun onCheckBoxAllFilterClicked(tagComponent: TelcoFilterTagComponent,
-                                       position: Int)
+        fun onCheckBoxAllFilterClicked(
+            tagComponent: TelcoFilterTagComponent,
+            position: Int
+        )
     }
 }

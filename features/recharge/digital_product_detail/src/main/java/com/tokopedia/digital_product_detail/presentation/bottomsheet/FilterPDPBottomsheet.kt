@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
@@ -13,19 +12,19 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.databinding.BottomSheetFilterBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.DigitalFilterAdapter
 import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipFilterViewHolder
-import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipListFilerViewHolder
-import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPFilterAllViewHolder
+import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipListFilterViewHolder
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class FilterPDPBottomsheet(private val title: String, private val action:String,
-                           private val filterTagComponents: List<TelcoFilterTagComponent>,
-                           private val listener: FilterBottomSheetListener): BottomSheetUnify(),
+class FilterPDPBottomsheet(
+    private val title: String, private val action: String,
+    private val filterTagComponents: List<TelcoFilterTagComponent>,
+    private val listener: FilterBottomSheetListener
+) : BottomSheetUnify(),
     DigitalPDPChipFilterViewHolder.ChipListener,
-    DigitalPDPChipListFilerViewHolder.ListFilterListener,
-    AllFilterPDPBottomsheet.OnCheckBoxAllFilterListener
-{
+    DigitalPDPChipListFilterViewHolder.ListFilterListener,
+    AllFilterPDPBottomsheet.OnCheckBoxAllFilterListener {
 
     init {
         isFullpage = false
@@ -34,7 +33,8 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
     }
 
     private var binding by autoClearedNullable<BottomSheetFilterBinding>()
-    private val adapterFilter = DigitalFilterAdapter(this@FilterPDPBottomsheet, this@FilterPDPBottomsheet)
+    private val adapterFilter =
+        DigitalFilterAdapter(this@FilterPDPBottomsheet, this@FilterPDPBottomsheet)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +50,7 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
         bottomSheetBehaviorKnob(view, true)
     }
 
-    private fun initView(){
+    private fun initView() {
         binding = BottomSheetFilterBinding.inflate(LayoutInflater.from(context))
         binding?.run {
             adapterFilter.setChipList(filterTagComponents)
@@ -73,11 +73,15 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
         super.onDismiss(dialog)
     }
 
-    private fun onSaveFilter(){
+    private fun onSaveFilter() {
         listener.onClickSaveFilter(filterTagComponents, initialSelectedCounter(filterTagComponents))
     }
 
-    override fun onChipClicked(tagComponent: TelcoFilterTagComponent, element: FilterTagDataCollection, position: Int) {
+    override fun onChipClicked(
+        tagComponent: TelcoFilterTagComponent,
+        element: FilterTagDataCollection,
+        position: Int
+    ) {
         filterTagComponents.filter {
             it.paramName.equals(tagComponent.paramName)
         }.first().filterTagDataCollections.get(position).run {
@@ -98,7 +102,7 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
         }
     }
 
-    private fun resetFilter(){
+    private fun resetFilter() {
         filterTagComponents.forEach {
             it.filterTagDataCollections.forEach {
                 it.isSelected = false
@@ -109,11 +113,11 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
 
     private fun initialSelectedCounter(filterTagComponents: List<TelcoFilterTagComponent>): Int {
         var initialSelectedCounter = 0
-        if (!filterTagComponents.isNullOrEmpty()){
+        if (!filterTagComponents.isNullOrEmpty()) {
             filterTagComponents.forEachIndexed { index, tagComponent ->
-                if (!index.isZero()){
+                if (!index.isZero()) {
                     tagComponent.filterTagDataCollections.forEach {
-                        if (it.isSelected){
+                        if (it.isSelected) {
                             initialSelectedCounter++
                         }
                     }
@@ -125,7 +129,11 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
     }
 
     interface FilterBottomSheetListener {
-        fun onClickSaveFilter(filterTagComponents: List<TelcoFilterTagComponent>, initialSelectedCounter: Int)
+        fun onClickSaveFilter(
+            filterTagComponents: List<TelcoFilterTagComponent>,
+            initialSelectedCounter: Int
+        )
+
         fun onChipClicked(chipName: String)
     }
 }

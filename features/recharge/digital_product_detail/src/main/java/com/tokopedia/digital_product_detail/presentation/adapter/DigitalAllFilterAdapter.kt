@@ -8,7 +8,8 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterCheckboxBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPFilterAllViewHolder
 
-class DigitalAllFilterAdapter(private val checkBoxListener: DigitalPDPFilterAllViewHolder.CheckBoxListener): RecyclerView.Adapter<DigitalPDPFilterAllViewHolder>()  {
+class DigitalAllFilterAdapter(private val checkBoxListener: DigitalPDPFilterAllViewHolder.CheckBoxListener) :
+    RecyclerView.Adapter<DigitalPDPFilterAllViewHolder>() {
     private var filterTagComponent = TelcoFilterTagComponent()
 
     override fun getItemCount(): Int {
@@ -26,11 +27,12 @@ class DigitalAllFilterAdapter(private val checkBoxListener: DigitalPDPFilterAllV
         val binding = ViewPdpFilterCheckboxBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
-            false)
+            false
+        )
         return DigitalPDPFilterAllViewHolder(binding, checkBoxListener)
     }
 
-    fun setCheckBoxList(filterTagComponent: TelcoFilterTagComponent){
+    fun setCheckBoxList(filterTagComponent: TelcoFilterTagComponent) {
         this.filterTagComponent = filterTagComponent
         notifyDataSetChanged()
     }

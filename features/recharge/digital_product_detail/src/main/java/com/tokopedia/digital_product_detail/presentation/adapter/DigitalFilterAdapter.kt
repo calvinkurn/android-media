@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.databinding.ViewPdpFilterChipListBinding
 import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipFilterViewHolder
-import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipListFilerViewHolder
+import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPChipListFilterViewHolder
 
 class DigitalFilterAdapter(
     private val chipListener: DigitalPDPChipFilterViewHolder.ChipListener,
-    private val listListener: DigitalPDPChipListFilerViewHolder.ListFilterListener
-): RecyclerView.Adapter<DigitalPDPChipListFilerViewHolder>() {
+    private val listListener: DigitalPDPChipListFilterViewHolder.ListFilterListener
+): RecyclerView.Adapter<DigitalPDPChipListFilterViewHolder>() {
 
     private var listFilterDataComponent = mutableListOf<TelcoFilterTagComponent>()
 
@@ -19,20 +19,20 @@ class DigitalFilterAdapter(
         return listFilterDataComponent.size
     }
 
-    override fun onBindViewHolder(holder: DigitalPDPChipListFilerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DigitalPDPChipListFilterViewHolder, position: Int) {
         holder.bind(listFilterDataComponent[position])
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): DigitalPDPChipListFilerViewHolder {
+    ): DigitalPDPChipListFilterViewHolder {
         val binding = ViewPdpFilterChipListBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return DigitalPDPChipListFilerViewHolder(binding, chipListener, listListener)
+        return DigitalPDPChipListFilterViewHolder(binding, chipListener, listListener)
     }
 
     fun setChipList(listFilterDataComponent: List<TelcoFilterTagComponent>){

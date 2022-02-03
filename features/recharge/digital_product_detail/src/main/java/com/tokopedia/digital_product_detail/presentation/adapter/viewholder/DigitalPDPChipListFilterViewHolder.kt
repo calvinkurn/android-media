@@ -9,12 +9,12 @@ import com.tokopedia.digital_product_detail.presentation.adapter.DigitalChipsAda
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
-class DigitalPDPChipListFilerViewHolder (private val binding: ViewPdpFilterChipListBinding,
-                                         private val chipListener: DigitalPDPChipFilterViewHolder.ChipListener,
-                                         private val listListener: ListFilterListener): RecyclerView.ViewHolder(binding.root){
+class DigitalPDPChipListFilterViewHolder (private val binding: ViewPdpFilterChipListBinding,
+                                          private val chipListener: DigitalPDPChipFilterViewHolder.ChipListener,
+                                          private val listListener: ListFilterListener): RecyclerView.ViewHolder(binding.root){
 
     fun bind(element: TelcoFilterTagComponent){
-        val chipsAdapter = DigitalChipsAdapter(chipListener)
+        val chipsAdapter = DigitalChipsAdapter(chipListener, MAX_FILTER_SIZE)
         with(binding){
             chipsAdapter.setChipList(element)
             tgTitleChipsList.text = element.text
