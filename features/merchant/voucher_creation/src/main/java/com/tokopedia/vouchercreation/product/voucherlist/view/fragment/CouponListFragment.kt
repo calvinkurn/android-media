@@ -597,7 +597,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
                 Toaster.TYPE_NORMAL,
                 actionText
             ) {
-                /* waiting navigation detail coupon */
+                onViewCouponDetailMenuSelected(couponId.toLong())
             }.show()
         }
     }
