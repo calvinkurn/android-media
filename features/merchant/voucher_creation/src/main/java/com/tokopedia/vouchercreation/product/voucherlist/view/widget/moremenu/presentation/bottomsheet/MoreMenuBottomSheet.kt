@@ -66,7 +66,8 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() {
-        val menuItem = dummyVoucherMenu()
+        //val menuItem = dummyVoucherMenu()
+        val menuItem = getMenuListByStatusVoucher(status)
         moreMenuAdapter?.submitList(menuItem)
 
         binding?.rvMvcBottomSheetMenu?.run {
