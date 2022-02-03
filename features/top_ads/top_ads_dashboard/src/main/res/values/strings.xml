@@ -408,7 +408,7 @@
     <string name="topads_dash_from_last_week">dari minggu lalu</string>
     <string name="topads_dash_text_bacaan_terbaru_untukmu">Bacaan terbaru untukmu</string>
     <string name="topads_dash_read_more">Selengkapnya</string>
-    <string name="topads_dashboard_last_update_text">Update terakhir %s</string>
+    <string name="topads_dashboard_last_update_text">Update terakhir %s WIB</string>
     <string name="topads_dashboard_information_title">Info statistik ringkasan iklan</string>
 
     <string name="topads_dashboard_efektivitas_iklan">Efektivitas Iklan</string>

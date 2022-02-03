@@ -27,10 +27,11 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.model.beranda.Chip
-import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
-import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils
+import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.getSummaryAdTypes
+import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.mapToSummary
+import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.showDialogWithCoachMark
 import com.tokopedia.topads.dashboard.data.utils.Utils.asString
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
@@ -86,7 +87,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private var insightCallBack: GoToInsight? = null
     private var currentDateText: String = ""
 
-    private val summaryAdTypeList by lazy { TopAdsDashboardBerandaUtils.getSummaryAdTypes(resources) }
+    private val summaryAdTypeList by lazy { resources.getSummaryAdTypes() }
     private var lastSelectedAdType: Chip? = null
     private val summaryAdTypesBottomSheet by lazy {
         SummaryAdTypesBottomSheet.createInstance(summaryAdTypeList, ::adTypeChanged)
@@ -164,7 +165,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
             checkResponse.summaryStats = true
             when (it) {
                 is Success -> {
-                    updateSummaryItems(it.data)
+                    summaryRvAdapter.addItems(it.data.mapToSummary(resources))
                     txtLastUpdated.text = String.format(
                         resources.getString(R.string.topads_dashboard_last_update_text),
                         it.data.lastUpdate
@@ -181,10 +182,6 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
                 is Fail -> {}
             }
         }
-    }
-
-    private fun updateSummaryItems(data: TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Summary) {
-
     }
 
     //method to be invoked when ad type is changed from ringkasan dropdown section
@@ -234,6 +231,8 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         ivSummaryInformation.setOnClickListener {
             showInformationBottomSheet()
         }
+        btnRefreshCredits.setOnClickListener { topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess) }
+        btnReadMore.setOnClickListener { (requireActivity() as? TopAdsDashboardActivity)?.switchTab(TopAdsDashboardActivity.INSIGHT_PAGE) }
     }
 
     private fun showInformationBottomSheet() {
@@ -418,8 +417,8 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     private fun showDialog() {
-        TopAdsDashboardBerandaUtils.showDialogWithCoachMark(
-            requireContext(), rvSummary,
+        requireContext().showDialogWithCoachMark(
+            rvSummary,
             requireView().findViewById(R.id.topads_content_statistics),
             rvLatestReading
         )

@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
+import com.tokopedia.topads.dashboard.data.model.beranda.SummaryBeranda
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class TopAdsBerandaSummaryRvAdapter :
     RecyclerView.Adapter<TopAdsBerandaSummaryRvAdapter.RingkasanViewHolder>() {
 
-    private val list = mutableListOf<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Cell>()
+    private val list = mutableListOf<SummaryBeranda>()
     var infoClicked: (() -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RingkasanViewHolder {
@@ -25,11 +25,13 @@ class TopAdsBerandaSummaryRvAdapter :
     override fun onBindViewHolder(holder: RingkasanViewHolder, position: Int) {
         val item = list[holder.adapterPosition]
         with(holder) {
-
+            title.text = item.title
+            txtValue.text = item.count.toString()
+            txtPercentageChange.text = item.percentCount
         }
     }
 
-    fun addItems(items: List<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Cell>) {
+    fun addItems(items: List<SummaryBeranda>) {
         list.addAll(items)
         notifyDataSetChanged()
     }
@@ -37,11 +39,10 @@ class TopAdsBerandaSummaryRvAdapter :
     override fun getItemCount() = list.size
 
     inner class RingkasanViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val title = view.findViewById<Typography>(R.id.txtTitle)
-        val ivInformation: ImageUnify = view.findViewById<ImageUnify>(R.id.ivInformation)
-        val txtValue = view.findViewById<Typography>(R.id.txtValue)
-        val txtPercentageChange = view.findViewById<Typography>(R.id.txtPercentageChange)
-        val txtFromLastWeek = view.findViewById<Typography>(R.id.txtFromLastWeek)
+        val title: Typography = view.findViewById(R.id.txtTitle)
+        val ivInformation: ImageUnify = view.findViewById(R.id.ivInformation)
+        val txtValue: Typography = view.findViewById(R.id.txtValue)
+        val txtPercentageChange: Typography = view.findViewById(R.id.txtPercentageChange)
     }
 
     companion object {

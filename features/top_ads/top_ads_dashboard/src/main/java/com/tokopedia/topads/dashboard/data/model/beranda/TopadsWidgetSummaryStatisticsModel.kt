@@ -56,7 +56,7 @@ data class TopadsWidgetSummaryStatisticsModel(
 
             data class Summary(
                 @SerializedName("click_percent")
-                val clickPercent: Int,
+                var clickPercent: Int,
                 @SerializedName("click_sum")
                 val clickSum: Int,
                 @SerializedName("impression_percent")
@@ -70,7 +70,7 @@ data class TopadsWidgetSummaryStatisticsModel(
                 @SerializedName("last_update")
                 val lastUpdate: String,
                 @SerializedName("roas")
-                val roas: Int,
+                val roasSum: Int,
                 @SerializedName("roas_percent")
                 val roasPercent: Int,
                 @SerializedName("spending_percent")

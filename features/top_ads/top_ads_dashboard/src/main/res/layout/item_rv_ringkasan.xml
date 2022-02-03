@@ -61,7 +61,6 @@
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toBottomOf="@id/txtPercentageChange"
             app:layout_constraintStart_toEndOf="@id/txtPercentageChange"
-            app:layout_constraintTop_toTopOf="@id/txtPercentageChange"
             app:typographyType="body_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

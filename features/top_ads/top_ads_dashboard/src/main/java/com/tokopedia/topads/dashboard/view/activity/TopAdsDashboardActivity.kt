@@ -81,13 +81,16 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline {
 
     private var tracker: TopAdsDashboardTracking? = null
-    private val INSIGHT_PAGE = 3
-    private val HEADLINE_ADS_TAB = 2
-    private val IKLANKAN_PRODUK_TAB = 1
     private var adType = "-1"
     private var isNoProduct = false
     var redirectToTab = 0
     var redirectToTabInsight = 0
+
+    companion object {
+        const val INSIGHT_PAGE = 3
+        const val HEADLINE_ADS_TAB = 2
+        const val IKLANKAN_PRODUK_TAB = 1
+    }
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -140,7 +143,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                     }
                 }
             }
-
         }
         setPadding()
         tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -415,6 +417,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
             startActivityForResult(intent, AUTO_ADS_DISABLED)
         }
+    }
+
+    fun switchTab(index: Int) {
+        tab_layout?.getUnifyTabLayout()?.getTabAt(index)?.select()
     }
 
     fun toggleMultiActionButton(show: Boolean) {
