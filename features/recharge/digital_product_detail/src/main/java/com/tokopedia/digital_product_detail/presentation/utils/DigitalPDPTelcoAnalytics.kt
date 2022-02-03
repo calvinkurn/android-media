@@ -348,6 +348,33 @@ class DigitalPDPTelcoAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
+    fun impressionFilterChip(
+        categoryName: String,
+        operatorName: String,
+        userId: String,
+    ){
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.IMPRESSION_FILTER_CHIP,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}"
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickFilterChip(
+        categoryName: String,
+        operatorName: String,
+        filterChipName: String,
+        userId: String,
+    ){
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_FILTER_CHIP,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${filterChipName}"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
     /** Common Tracking Methods*/
 
     fun Bundle.viewItemList(userId: String): Bundle {

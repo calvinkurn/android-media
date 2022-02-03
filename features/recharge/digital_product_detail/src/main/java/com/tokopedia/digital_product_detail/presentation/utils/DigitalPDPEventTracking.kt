@@ -67,6 +67,8 @@ interface DigitalPDPEventTracking {
             const val IMPRESSION_PRODUCT_CLUSTER = "impression product cluster"
             const val IMPRESSION_LAST_TRANSACTION_ICON = "impression last transaction icon"
             const val IMPRESSION_PDP_BANNER = "impression pdp banner"
+            const val IMPRESSION_FILTER_CHIP = "impression filter chip"
+            const val CLICK_FILTER_CHIP = "click filter chip"
         }
     }
 }

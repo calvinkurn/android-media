@@ -255,6 +255,11 @@ class DigitalPDPDataPlanFragment :
                     val selectedPositionMCCM = viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
 
                     if (denomData.data.isFilterRefreshed) {
+                        digitalPDPTelcoAnalytics.impressionFilterChip(
+                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                            operator.attributes.name,
+                            userSession.userId,
+                        )
                         onSuccessSortFilter()
                     }
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
@@ -415,7 +420,12 @@ class DigitalPDPDataPlanFragment :
 
                         sortFilterItem.listener = {
                             sortFilterItem.toggle()
-
+                            digitalPDPTelcoAnalytics.clickFilterChip(
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                operator.attributes.name,
+                                sortFilterItem.title.toString(),
+                                userSession.userId,
+                            )
                             if (filterItems[index].type == ChipsUnify.TYPE_SELECTED){
                                 chipItems.get(index).isSelected = true
                                 selectedChipsCounter++
@@ -432,6 +442,12 @@ class DigitalPDPDataPlanFragment :
                     addItem(filterItems)
                     val filterData = viewModel.filterData
                     sortFilterPrefix.setOnClickListener {
+                        digitalPDPTelcoAnalytics.clickFilterChip(
+                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                            operator.attributes.name,
+                            getString(R.string.bottom_sheet_filter_title),
+                            userSession.userId,
+                        )
                         fragmentManager?.let {
                             FilterPDPBottomsheet(getString(R.string.bottom_sheet_filter_title),
                                 getString(R.string.bottom_sheet_filter_reset),
@@ -1052,6 +1068,15 @@ class DigitalPDPDataPlanFragment :
         viewModel.updateFilterData(filterTagComponents)
         onSuccessSortFilter(initialSelectedCounter)
         viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
+    }
+
+    override fun onChipClicked(chipName: String) {
+        digitalPDPTelcoAnalytics.clickFilterChip(
+            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            chipName,
+            userSession.userId,
+        )
     }
 
     override fun onRequestPermissionsResult(

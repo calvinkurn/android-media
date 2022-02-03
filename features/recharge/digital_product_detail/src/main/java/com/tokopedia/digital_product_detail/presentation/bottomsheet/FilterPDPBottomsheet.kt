@@ -82,6 +82,7 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
             it.paramName.equals(tagComponent.paramName)
         }.first().filterTagDataCollections.get(position).run {
             isSelected = !isSelected
+            listener.onChipClicked(value)
         }
     }
 
@@ -125,5 +126,6 @@ class FilterPDPBottomsheet(private val title: String, private val action:String,
 
     interface FilterBottomSheetListener {
         fun onClickSaveFilter(filterTagComponents: List<TelcoFilterTagComponent>, initialSelectedCounter: Int)
+        fun onChipClicked(chipName: String)
     }
 }
