@@ -56,10 +56,10 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collectLatest
+import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -116,7 +116,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
 
-    private var userReportTimeMillis: Long = 0L
+    private var userReportTimeMillis: Date = Date()
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
@@ -257,8 +257,8 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning) {
         unlistenKeyboard()
 
-        val cal = Calendar.getInstance().timeInMillis
-        userReportTimeMillis = TimeUnit.MILLISECONDS.toSeconds(cal)
+        val cal = Calendar.getInstance().time
+        userReportTimeMillis = cal
         playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
         userReportSubmissionSheetView.setView(item)
     }
@@ -298,16 +298,15 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
-            val startTimeInSecond = try {
-                val dt: Date = startTime.toDate(
+            val startTimeInSecond : Date = try {
+                startTime.toDate(
                     DateUtil.HH_MM
                 )
-                TimeUnit.MILLISECONDS.toSeconds(dt.time)
             }catch (e: Exception){
-                0
+                Date()
             }
-            val duration = TimeUnit.MILLISECONDS.toSeconds(userReportTimeMillis) - startTimeInSecond
-            duration
+            val duration = userReportTimeMillis.time - startTimeInSecond.time
+            TimeUnit.MILLISECONDS.toSeconds(duration)
         }else{
             TimeUnit.MILLISECONDS.toSeconds(playViewModel.getVideoTimestamp())
         }
