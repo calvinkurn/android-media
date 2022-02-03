@@ -12,7 +12,6 @@ import com.tokopedia.vouchercreation.common.consts.NumberConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
@@ -20,7 +19,6 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDe
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
-import java.util.*
 import javax.inject.Inject
 
 class CreateCouponProductActivity : AppCompatActivity() {
@@ -94,19 +92,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun saveCouponSettingsData(couponSettings: CouponSettings) {
         couponSettingFragment.setCouponSettings(couponSettings)
-
-        //Stub the coupon preview data for testing purpose
-        val startDate = Calendar.getInstance().apply { set(2022, 1, 5, 20, 30, 0) }
-        val endDate = Calendar.getInstance().apply {  set(2022, 1, 10, 23, 59, 0) }
-        val period = CouponInformation.Period(startDate.time, endDate.time)
-        couponPreviewFragment.setCouponInformationData(
-            CouponInformation(
-                CouponInformation.Target.PUBLIC,
-                "Kupon Kopi Kenangan",
-                "KOPKEN",
-                period
-            )
-        )
 
         //Stub the products data for testing purpose
         couponPreviewFragment.setCouponProductsData(
