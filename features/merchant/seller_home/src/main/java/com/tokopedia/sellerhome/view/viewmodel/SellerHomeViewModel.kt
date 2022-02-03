@@ -493,8 +493,7 @@ class SellerHomeViewModel @Inject constructor(
         useCase: BaseGqlUseCase<T>,
         liveData: MutableLiveData<Result<T>>
     ) {
-        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
-            useCase.isFirstLoad = false
+        if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
             try {
                 useCase.setUseCache(true)
                 liveData.value = Success(useCase.executeUseCase())

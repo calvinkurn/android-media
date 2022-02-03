@@ -1546,19 +1546,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 requestVisibleWidgetsData()
             }
         }
-        showWidgetSuccessToaster()
+        if (!isFromCache) {
+            showWidgetSuccessToaster()
+        }
     }
 
     private fun showWidgetSuccessToaster() {
         if (shouldShowSuccessToaster) {
-            shouldShowSuccessToaster = false
-
             binding?.let {
                 val message = getString(R.string.sah_widget_success_toaster)
                 Toaster.build(it.root, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                     .show()
             }
         }
+        shouldShowSuccessToaster = false
     }
 
     private fun <D : BaseDataUiModel> handleShopShareMilestoneWidget(widget: BaseWidgetUiModel<D>) {
