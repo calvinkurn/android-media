@@ -37,6 +37,8 @@ data class MerchantVoucherModel(
         @Expose
         @SerializedName("voucher_discount_type_formatted")
         val discountTypeFormatted: String = "",
+        @SerializedName("voucher_discount_type")
+        val discountType: Int = 0,
         @Expose
         @SerializedName("voucher_finish_time")
         val finishTime: String = "",

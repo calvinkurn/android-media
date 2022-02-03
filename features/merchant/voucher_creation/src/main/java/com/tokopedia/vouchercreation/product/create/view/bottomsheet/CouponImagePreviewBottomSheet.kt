@@ -52,8 +52,8 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
             productImageUrls: ArrayList<String>
         ): CouponImagePreviewBottomSheet {
             val args = Bundle()
-            args.putSerializable(BUNDLE_KEY_COUPON_INFORMATION, couponInformation)
-            args.putSerializable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+            args.putParcelable(BUNDLE_KEY_COUPON_INFORMATION, couponInformation)
+            args.putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
             args.putInt(BUNDLE_KEY_PRODUCT_COUNT, productCount)
             args.putStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL, productImageUrls)
             val fragment = CouponImagePreviewBottomSheet()
@@ -171,10 +171,10 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
         binding.loader.visible()
 
         val couponInformation =
-            arguments?.getSerializable(BUNDLE_KEY_COUPON_INFORMATION) as? CouponInformation
+            arguments?.getParcelable(BUNDLE_KEY_COUPON_INFORMATION) as? CouponInformation
                 ?: return
         val couponSettings =
-            arguments?.getSerializable(BUNDLE_KEY_COUPON_SETTINGS) as? CouponSettings ?: return
+            arguments?.getParcelable(BUNDLE_KEY_COUPON_SETTINGS) as? CouponSettings ?: return
         val productCount = arguments?.getInt(BUNDLE_KEY_PRODUCT_COUNT).orZero()
         val productImageUrls = arguments?.getStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL) ?: arrayListOf()
 

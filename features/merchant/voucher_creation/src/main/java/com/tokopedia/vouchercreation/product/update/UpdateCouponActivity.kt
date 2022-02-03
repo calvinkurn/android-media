@@ -1,14 +1,13 @@
-package com.tokopedia.vouchercreation.product.create.view.activity
+package com.tokopedia.vouchercreation.product.update
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.consts.NumberConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
@@ -18,45 +17,44 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingF
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
-import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import javax.inject.Inject
 
-class CreateCouponProductActivity : AppCompatActivity() {
-
-    companion object {
-        private const val PRODUCT_ID_SEGMENT_INDEX = 1
-        const val BUNDLE_KEY_COUPON = "coupon"
-        const val REQUEST_CODE_CREATE_COUPON = 100
-        private const val APP_LINK = "create-voucher-product"
-    }
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
+class UpdateCouponActivity : AppCompatActivity() {
 
     @Inject
     lateinit var router: FragmentRouter
 
-    private val couponPreviewFragment = ProductCouponPreviewFragment.newInstance(
-        ::navigateToCouponInformationPage,
-        ::navigateToCouponSettingPage,
-        ::navigateToProductListPage,
-        ::onCreateCouponSuccess,
-        {},
-        {},
-        null,
-        ProductCouponPreviewFragment.Mode.CREATE
-    )
+    companion object {
+        private const val BUNDLE_KEY_COUPON= "coupon"
+        @JvmStatic
+        fun start(context: Context, coupon: Coupon) {
+            val starter = Intent(context, UpdateCouponActivity::class.java)
+                .putExtra(BUNDLE_KEY_COUPON, coupon)
+            context.startActivity(starter)
+        }
+    }
+    private val coupon by lazy { intent.extras?.getParcelable(BUNDLE_KEY_COUPON) as? Coupon }
+
+    private val couponPreviewFragment by lazy {
+        ProductCouponPreviewFragment.newInstance(
+            ::navigateToCouponInformationPage,
+            ::navigateToCouponSettingPage,
+            ::navigateToProductListPage,
+            {},
+            ::onUpdateCouponSuccess,
+            {},
+            coupon,
+            ProductCouponPreviewFragment.Mode.UPDATE
+        )
+    }
 
     private val couponSettingFragment = CouponSettingFragment.newInstance(::saveCouponSettingsData)
-
-    private val productId: String? by lazy { getProductIdDataFromApplink() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
-        setContentView(R.layout.activity_mvc_create_coupon)
-        router.replace(supportFragmentManager, R.id.parent_view, couponPreviewFragment)
-        println(productId)
+        setContentView(R.layout.activity_mvc_coupon_list)
+        displayPage()
     }
 
     private fun setupDependencyInjection() {
@@ -66,11 +64,24 @@ class CreateCouponProductActivity : AppCompatActivity() {
             .inject(this)
     }
 
-    private fun getProductIdDataFromApplink(): String? {
-        val applinkData = RouteManager.getIntent(this, intent.data.toString()).data
-        val pathSegments = applinkData?.pathSegments.orEmpty()
-        return pathSegments.getOrNull(PRODUCT_ID_SEGMENT_INDEX)
+    private fun displayPage() {
+        couponSettingFragment.setCouponSettings(coupon?.settings)
+        router.replace(supportFragmentManager, R.id.parent_view, couponPreviewFragment)
     }
+
+
+    private fun onUpdateCouponSuccess() {
+        showToaster(getString(R.string.coupon_updated))
+        finish()
+    }
+
+
+    private fun showToaster(text: String) {
+        if (text.isEmpty()) return
+        val view = findViewById<FrameLayout>(R.id.parent_view)
+        Toaster.build(view, text).show()
+    }
+
 
     private fun navigateToCouponInformationPage() {
         router.replaceAndAddToBackstack(supportFragmentManager, R.id.parent_view, setupCreateCouponDetailFragment())
@@ -83,12 +94,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
     private fun navigateToProductListPage() {
         startActivity(Intent(this, ProductListActivity::class.java))
     }
-
-
-    private fun onCreateCouponSuccess(coupon: Coupon) {
-        redirectPage(coupon)
-    }
-
 
     private fun saveCouponSettingsData(couponSettings: CouponSettings) {
         couponSettingFragment.setCouponSettings(couponSettings)
@@ -138,33 +143,5 @@ class CreateCouponProductActivity : AppCompatActivity() {
             couponPreviewFragment.setCouponInformationData(coupon)
         }
         return couponInfoFragment
-    }
-
-
-    private fun redirectPage(coupon: Coupon) {
-        if (isLaunchedFromAppLink()) {
-            CouponListActivity.start(this, coupon)
-            finish()
-        } else {
-            notifyCreateCouponSuccessToCouponListPage(coupon)
-        }
-    }
-
-    private fun notifyCreateCouponSuccessToCouponListPage(coupon: Coupon) {
-        val intent = Intent()
-
-        val bundle = Bundle()
-        bundle.putParcelable(BUNDLE_KEY_COUPON, coupon)
-
-        intent.putExtras(bundle)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-    }
-
-    private fun isLaunchedFromAppLink(): Boolean {
-        val appLinkData = RouteManager.getIntent(this, intent.data.toString()).data
-        val pathSegments = appLinkData?.pathSegments.orEmpty()
-        val path = pathSegments.getOrNull(NumberConstant.ZERO)
-        return path == APP_LINK
     }
 }

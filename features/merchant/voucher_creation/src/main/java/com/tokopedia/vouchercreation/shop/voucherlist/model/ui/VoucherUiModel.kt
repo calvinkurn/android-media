@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.shop.voucherlist.model.ui
 
 import android.os.Parcelable
+import com.tokopedia.vouchercreation.common.consts.VoucherDiscountTypeConst
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.shop.voucherlist.view.adapter.factory.VoucherListAdapterFactory

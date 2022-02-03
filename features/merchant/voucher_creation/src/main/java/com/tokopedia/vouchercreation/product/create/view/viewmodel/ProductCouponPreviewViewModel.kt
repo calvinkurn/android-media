@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
@@ -32,7 +31,7 @@ class ProductCouponPreviewViewModel @Inject constructor(
     val areInputValid: LiveData<Boolean>
         get() = _areInputValid
 
-    private val _createCoupon = SingleLiveEvent<Result<Int>>()
+    private val _createCoupon = MutableLiveData<Result<Int>>()
     val createCoupon: LiveData<Result<Int>>
         get() = _createCoupon
 
@@ -88,7 +87,7 @@ class ProductCouponPreviewViewModel @Inject constructor(
     }
 
     fun updateCoupon(
-        couponId : Long,
+        couponId: Long,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>
@@ -105,14 +104,13 @@ class ProductCouponPreviewViewModel @Inject constructor(
                         couponProducts
                     )
                 }
-                _updateCouponResult.setValue(Success(result))
+                _updateCouponResult.value = Success(result)
             },
             onError = {
-                _updateCouponResult.setValue(Fail(it))
+                _updateCouponResult.value = Fail(it)
             }
         )
     }
-
 
 
     fun findMostSoldProductImageUrls(couponProducts: List<CouponProduct>): ArrayList<String> {

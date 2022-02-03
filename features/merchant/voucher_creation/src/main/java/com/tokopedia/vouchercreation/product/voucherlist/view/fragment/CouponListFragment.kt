@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.toZeroIfNull
@@ -36,17 +37,19 @@ import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherUiModel
+import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
+import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.common.utils.shareVoucher
 import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
-import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditQuotaCoupon
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.EditPeriodCoupon
@@ -68,6 +71,7 @@ import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.fragment.VoucherListFragment
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.BroadCastVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
+import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 import java.util.*
@@ -79,7 +83,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         fun newInstance(
             onCreateCouponMenuSelected: () -> Unit,
             onEditCouponMenuSelected: (Coupon) -> Unit,
-            onDuplicateCouponMenuSelected: (Coupon) -> Unit
+            onDuplicateCouponMenuSelected: (Coupon) -> Unit,
+            onViewCouponDetailMenuSelected : (Long) -> Unit = {}
         ): CouponListFragment {
             val args = Bundle()
             val fragment = CouponListFragment().apply {
@@ -87,6 +92,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
                 this.onCreateCouponMenuSelected = onCreateCouponMenuSelected
                 this.onEditCouponMenuSelected = onEditCouponMenuSelected
                 this.onDuplicateCouponMenuSelected = onDuplicateCouponMenuSelected
+                this.onViewCouponDetailMenuSelected = onViewCouponDetailMenuSelected
             }
             return fragment
         }
@@ -120,6 +126,9 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
+    @Inject
+    lateinit var couponMapper: CouponMapper
+
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
             .get(CouponListViewModel::class.java)
@@ -144,10 +153,10 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private var shareCouponBottomSheet: ShareVoucherBottomSheet? = null
     private var shopBasicData: ShopBasicDataResult? = null
 
-    private var onRedirectToCouponPreview : (Coupon, ProductCouponPreviewFragment.Mode) -> Unit = { _, _ -> }
     private var onCreateCouponMenuSelected : () -> Unit = {}
     private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
     private var onDuplicateCouponMenuSelected : (Coupon) -> Unit = {}
+    private var onViewCouponDetailMenuSelected : (Long) -> Unit = {}
 
     override fun getScreenName(): String = CouponListFragment::class.java.simpleName
 
@@ -214,8 +223,10 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     }
 
-    fun setOnRedirectToCouponPreview(onRedirectToCouponPreview : (Coupon, ProductCouponPreviewFragment.Mode) -> Unit) {
-        this.onRedirectToCouponPreview = onRedirectToCouponPreview
+    private fun loadInitialData() {
+        this.clearAdapterData()
+        this.onShowLoading()
+        this.loadData(1)
     }
 
     private fun onCouponIconCopyClicked(couponCode: String) {
@@ -437,30 +448,30 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private fun clickMoreMenuItem(menu: MoreMenuUiModel, coupon: VoucherUiModel) {
         when (menu) {
-            is EditQuotaCoupon -> editQuotaCoupon()
-            is ViewDetailCoupon -> viewDetailCoupon()
-            is EditCoupon -> editCoupon()
+            is EditQuotaCoupon -> editQuotaCoupon(coupon)
+            is ViewDetailCoupon -> viewDetailCoupon(coupon)
+            is EditCoupon -> editCoupon(coupon)
             is BroadCastChat -> broadCastChat(coupon)
             is ShareCoupon -> shareCoupon(coupon)
-            is EditPeriodCoupon -> editPeriodCoupon()
+            is EditPeriodCoupon -> editPeriodCoupon(coupon)
             is DownloadCoupon -> downloadCoupon(coupon)
             is CancelCoupon -> cancelCoupon(coupon)
             is StopCoupon -> stopCoupon(coupon)
-            is DuplicateCoupon -> duplicateCoupon()
+            is DuplicateCoupon -> duplicateCoupon(coupon)
             else -> { /* do nothing */ }
         }
     }
 
-    private fun editQuotaCoupon() {
-        /* waiting quota coupon BottomSheet revamp */
+    private fun editQuotaCoupon(coupon: VoucherUiModel) {
+        showEditQuotaBottomSheet(coupon)
     }
 
-    private fun editCoupon() {
-        onEditCouponMenuSelected(populateDummyCoupon())
+    private fun editCoupon(coupon: VoucherUiModel) {
+        onEditCouponMenuSelected(couponMapper.map(coupon))
     }
 
-    private fun viewDetailCoupon() {
-        /* waiting navigation detail coupon */
+    private fun viewDetailCoupon(coupon: VoucherUiModel) {
+        onViewCouponDetailMenuSelected(coupon.id.toLong())
     }
 
     private fun broadCastChat(coupon: VoucherUiModel) {
@@ -481,8 +492,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
-    private fun editPeriodCoupon() {
-        /* waiting edit period coupon BottomSheet revamp */
+    private fun editPeriodCoupon(coupon: VoucherUiModel) {
+        showEditPeriodBottomSheet(coupon)
     }
 
     private fun downloadCoupon(coupon: VoucherUiModel) {
@@ -513,69 +524,66 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }.show(coupon)
     }
 
-    private fun duplicateCoupon() {
-        onDuplicateCouponMenuSelected(populateDummyCoupon())
+    private fun duplicateCoupon(coupon: VoucherUiModel) {
+        onDuplicateCouponMenuSelected(couponMapper.map(coupon))
     }
 
-    private fun populateDummyCoupon(): Coupon {
-        //Stub the coupon preview data for testing purpose
-        val startDate = Calendar.getInstance().apply { set(2022, 0, 28, 22, 30, 0) }
-        val endDate = Calendar.getInstance().apply { set(2022, 0, 30, 22, 0, 0) }
-        val period = CouponInformation.Period(startDate.time, endDate.time)
+    private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
+        if (!isAdded) return
+        VoucherPeriodBottomSheet.createInstance(voucher)
+            .setOnSuccessClickListener {
+                onSuccessUpdateVoucherPeriod()
+            }
+            .setOnFailClickListener { message ->
+                val errorMessage =
+                    if (message.isNotBlank()) {
+                        message
+                    } else {
+                        context?.getString(R.string.mvc_general_error).toBlankOrString()
+                    }
+                view?.showErrorToaster(errorMessage)
+            }
+            .show(childFragmentManager)
+    }
 
-        val information = CouponInformation(
-            CouponInformation.Target.PUBLIC,
-            "Kupon Kopi Soe",
-            "KOPSOE",
-            period
+    private fun onSuccessUpdateVoucherPeriod() {
+        loadInitialData()
+        view?.run {
+            Toaster.build(
+                this,
+                context?.getString(R.string.mvc_success_update_period).toBlankOrString(),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                context?.getString(R.string.mvc_oke).toBlankOrString()
+            ).show()
+        }
+    }
 
-        )
+    private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
+        if (!isAdded) return
 
-        val setting = CouponSettings(
-            CouponType.FREE_SHIPPING,
-            DiscountType.NOMINAL,
-            MinimumPurchaseType.NOMINAL,
-            10000,
-            100,
-            10000,
-            10,
-            5000,
-            1000000
-        )
-
-        val products =
-            listOf(
-                CouponProduct(
-                    "2147956088",
-                    18000,
-                    5.0F,
-                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                    19
-                ),
-                CouponProduct(
-                    "15455652",
-                    18000,
-                    4.7F,
-                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                    1000
-                ),
-                CouponProduct(
-                    "15429644",
-                    18000,
-                    5.0F,
-                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                    2100
-                ),
-                CouponProduct(
-                    "15409031",
-                    25000,
-                    4.0F,
-                    "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
-                    31000
-                )
-            )
-
-        return Coupon(9094, information, setting, products)
+        EditQuotaBottomSheet.createInstance(voucher)
+            .setOnSuccessUpdateVoucher {
+                loadInitialData()
+                view?.run {
+                    Toaster.build(
+                        this,
+                        context?.getString(R.string.mvc_quota_success).toBlankOrString(),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        context?.getString(R.string.mvc_oke).toBlankOrString()
+                    ).show()
+                }
+            }
+            .setOnFailUpdateVoucher { message ->
+                val errorMessage =
+                    if (message.isNotBlank()) {
+                        message
+                    } else {
+                        context?.getString(R.string.mvc_general_error).toBlankOrString()
+                    }
+                view?.showErrorToaster(errorMessage)
+            }.show(childFragmentManager)
     }
 
     private fun showCancellationSuccessToaster(successMessageRes: Int, couponId: Int) {
