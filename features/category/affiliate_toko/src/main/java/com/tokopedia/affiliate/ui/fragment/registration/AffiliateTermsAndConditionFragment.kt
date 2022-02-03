@@ -69,9 +69,21 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registrationSharedViewModel = viewModelFragmentProvider.get(AffiliateRegistrationSharedViewModel::class.java)
-        channels = registrationSharedViewModel.listOfChannels
+        getChannel(savedInstanceState)
         initObserver()
     }
+
+    private fun getChannel(savedInstanceState: Bundle?) {
+        if(registrationSharedViewModel.listOfChannels.isNullOrEmpty()){
+            savedInstanceState?.getSerializable(CHANNEL_LIST)?.let {
+                channels = it as ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>
+            }
+        }
+        else{
+            channels = registrationSharedViewModel.listOfChannels
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -183,9 +195,15 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build()
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable(CHANNEL_LIST,registrationSharedViewModel.listOfChannels)
+        super.onSaveInstanceState(outState)
+    }
+
     companion object {
         const val TAG = "AffiliateTermsAndConditionFragment"
         const val REGISTRATION_SUCCESS = 1
+        const val CHANNEL_LIST = "channel_list"
         fun getFragmentInstance(): AffiliateTermsAndConditionFragment {
             return AffiliateTermsAndConditionFragment()
         }
