@@ -71,6 +71,8 @@ dependencies {
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.network)
+
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -87,7 +89,6 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.features.wishlistCommon)
     androidTestImplementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
-    androidTestimplementation projectOrAar(rootProject.ext.libraries.network)
     androidTestImplementation rootProject.ext.debugToolsDependencies.chuck
     androidTestImplementation projectOrAar(rootProject.ext.features.shopCommon)
     androidTestImplementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
