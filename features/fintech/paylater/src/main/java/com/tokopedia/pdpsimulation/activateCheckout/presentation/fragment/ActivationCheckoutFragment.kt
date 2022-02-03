@@ -112,6 +112,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     productInfoActivationShimmer.visibility = View.GONE
                     detailHeader.visibility = View.VISIBLE
                     setProductData(it.data)
+                    amountBottomDetailLoader.visibility = View.VISIBLE
                     payLaterActivationViewModel.getOptimizedCheckoutDetail(
                         productId,
                         payLaterActivationViewModel.price * quantity, gatewayId
@@ -132,6 +133,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.payLaterActivationDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    amountBottomDetailLoader.visibility = View.GONE
                     if (it.data.checkoutData.isNotEmpty()) {
                         checkDisableLogic(it.data.checkoutData[selectedGateway].disable)
                         listOfGateway = it.data
@@ -274,6 +276,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
         detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
             quantity = newValue
+            amountBottomDetailLoader.visibility = View.VISIBLE
             payLaterActivationViewModel.getOptimizedCheckoutDetail(
                 productId,
                 payLaterActivationViewModel.price * quantity,
