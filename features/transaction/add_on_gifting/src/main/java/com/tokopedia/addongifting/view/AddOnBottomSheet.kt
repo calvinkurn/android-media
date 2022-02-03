@@ -1,25 +1,29 @@
 package com.tokopedia.addongifting.view
 
-import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.addongifting.databinding.LayoutAddOnBottomSheetBinding
+import com.tokopedia.addongifting.view.adapter.AddOnListAdapter
+import com.tokopedia.addongifting.view.adapter.AddOnListAdapterTypeFactory
 import com.tokopedia.addongifting.view.di.AddOnComponent
 import com.tokopedia.addongifting.view.di.DaggerAddOnComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
-class AddOnBottomSheet : BottomSheetUnify(), HasComponent<AddOnComponent> {
+class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private var adapter: AddOnListAdapter? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AddOnViewModel::class.java)
@@ -27,36 +31,33 @@ class AddOnBottomSheet : BottomSheetUnify(), HasComponent<AddOnComponent> {
 
     private var viewBinding: LayoutAddOnBottomSheetBinding? = null
 
+    override fun getComponent(): AddOnComponent {
+        return DaggerAddOnComponent
+                .builder()
+                .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
     }
 
-//    fun show(fragmentManager: FragmentManager) {
-//        initializeInjector(fragment)
-//        initializeViewModel(fragment)
-//        initializeView(it, fragment.parentFragmentManager)
-//    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initializeView()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-//    private fun initializeViewModel(fragment: Fragment) {
-//        viewModel = ViewModelProvider(fragment, viewModelFactory).get(AddOnViewModel::class.java)
-//    }
+    private fun initializeView() {
+        val viewBinding = LayoutAddOnBottomSheetBinding.inflate(LayoutInflater.from(context))
+        this.viewBinding = viewBinding
 
-//    fun dismiss() {
-//        bottomSheet?.dismiss()
-//    }
+        initializeBottomSheet(viewBinding)
+        initializeRecyclerView(viewBinding)
+    }
 
-//    private fun initializeInjector(fragment: Fragment) {
-//        val application = fragment.activity?.application
-//        if (application is BaseMainApplication) {
-//            DaggerAddOnComponent.builder()
-//                    .baseAppComponent(application.baseAppComponent)
-//                    .build()
-//                    .inject(this)
-//        }
-//    }
-
-    private fun initializeBottomSheet(viewBinding: LayoutAddOnBottomSheetBinding, fragmentManager: FragmentManager) {
+    private fun initializeBottomSheet(viewBinding: LayoutAddOnBottomSheetBinding) {
+        setTitle("Atur pelengkap barang")
         showCloseIcon = true
         showHeader = true
         isDragable = true
@@ -69,24 +70,16 @@ class AddOnBottomSheet : BottomSheetUnify(), HasComponent<AddOnComponent> {
         setChild(viewBinding.root)
     }
 
+    private fun initializeRecyclerView(viewBinding: LayoutAddOnBottomSheetBinding) {
+        val adapterTypeFactory = AddOnListAdapterTypeFactory(this)
+        adapter = AddOnListAdapter(adapterTypeFactory)
+        viewBinding.rvMiniCartList.adapter = adapter
+        viewBinding.rvMiniCartList.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         activity?.finish()
         super.onDismiss(dialog)
-    }
-
-
-//    private fun initializeView(context: Context, fragmentManager: FragmentManager) {
-//        val viewBinding = LayoutAddOnBottomSheetBinding.inflate(LayoutInflater.from(context))
-//        this.viewBinding = viewBinding
-//
-//        initializeBottomSheet(viewBinding, fragmentManager)
-//    }
-
-    override fun getComponent(): AddOnComponent {
-        return DaggerAddOnComponent
-                .builder()
-                .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
     }
 
 }
