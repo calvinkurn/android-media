@@ -47,7 +47,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(BroadcastCouponViewModel::class.java) }
-    private val coupon by lazy { arguments?.getSerializable(BUNDLE_KEY_COUPON_INFORMATION) as CouponInformation }
+    private val coupon by lazy { arguments?.getParcelable(BUNDLE_KEY_COUPON_INFORMATION) as? CouponInformation }
 
     companion object {
         private const val BUNDLE_KEY_COUPON_INFORMATION = "coupon-information"
@@ -58,7 +58,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
 
         fun newInstance(couponId: Long, couponInformation: CouponInformation): BroadcastCouponBottomSheet {
             val args = Bundle()
-            args.putSerializable(BUNDLE_KEY_COUPON_INFORMATION, couponInformation)
+            args.putParcelable(BUNDLE_KEY_COUPON_INFORMATION, couponInformation)
             args.putLong(BUNDLE_KEY_COUPON_ID, couponId)
 
             val fragment = BroadcastCouponBottomSheet()
@@ -97,7 +97,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() {
-        displayCouponPeriod(coupon)
+        displayCouponPeriod(coupon ?: return)
         binding.imgVoucher.loadImage(TPD_VOUCHER_IMAGE_URL)
         binding.layoutBroadcastCoupon.setOnClickListener {
             val couponId = arguments?.getLong(BUNDLE_KEY_COUPON_ID).orZero()
@@ -108,7 +108,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
     }
 
     private fun handleShareToSocialMediaCardVisibility() {
-        if (coupon.target== CouponInformation.Target.SPECIAL) {
+        if (coupon?.target== CouponInformation.Target.SPECIAL) {
             binding.layoutShareToSocialMedia.visible()
         } else {
             binding.layoutShareToSocialMedia.gone()
@@ -136,7 +136,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         viewModel.shop.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    displayShareBottomSheet(result.data.shopName, coupon)
+                    displayShareBottomSheet(result.data.shopName, coupon ?: return@observe)
                 }
                 is Fail -> {
                    showError(result.throwable)
