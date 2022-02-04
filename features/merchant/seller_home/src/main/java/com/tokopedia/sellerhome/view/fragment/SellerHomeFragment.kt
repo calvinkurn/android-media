@@ -684,8 +684,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         launchOnViewLifecycleScope(Dispatchers.Unconfined) {
             val similarWidget = adapter.data.filter {
                 val isSameWidget = it.widgetType == widget.widgetType
-                val isDataFromCache = it.data?.isFromCache.orFalse()
-                isSameWidget && isDataFromCache
+                isSameWidget
             }
             withContext(Dispatchers.Main) {
                 getWidgetsData(similarWidget)
