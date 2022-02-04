@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.product.model
 
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -12,7 +13,7 @@ import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
  */
 data class PlayBroProductChooserUiState(
     val campaignAndEtalase: CampaignAndEtalaseUiModel,
-    val focusedProductList: List<ProductUiModel>,
+    val focusedProductList: ProductListPaging,
     val selectedProductList: EtalaseProductListMap,
     val sort: SortUiModel?,
 ) {
@@ -21,7 +22,7 @@ data class PlayBroProductChooserUiState(
         val Empty: PlayBroProductChooserUiState
             get() = PlayBroProductChooserUiState(
                 campaignAndEtalase = CampaignAndEtalaseUiModel.Empty,
-                focusedProductList = emptyList(),
+                focusedProductList = ProductListPaging.Empty,
                 selectedProductList = emptyMap(),
                 sort = null,
             )

@@ -9,18 +9,25 @@ import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiMo
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -35,11 +42,11 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
     private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(emptyMap())
-
-    private val _productInEtalaseMap = MutableStateFlow<Map<SelectedEtalaseModel, ProductPagingMap>>(emptyMap())
-    private val _focusedEtalase = MutableStateFlow<SelectedEtalaseModel>(SelectedEtalaseModel.None)
+    private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
 
     private val _sort = MutableStateFlow<SortUiModel?>(null)
+
+    private var getProductListJob: Job? = null
 
     private val _campaignAndEtalase = combine(
         _selectedEtalase,
@@ -51,13 +58,6 @@ class PlayBroProductSetupViewModel @Inject constructor(
             campaignList = campaignList,
             etalaseList = etalaseList,
         )
-    }
-
-    private val _focusedProductList = combine(
-        _productInEtalaseMap,
-        _focusedEtalase
-    ) { productInEtalase, focusedEtalase ->
-        productInEtalase[focusedEtalase]?.productMap?.values?.flatten().orEmpty()
     }
 
     val uiState = combine(
@@ -81,34 +81,12 @@ class PlayBroProductSetupViewModel @Inject constructor(
     init {
         getCampaignList()
         getEtalaseList()
-        getProductsInEtalase(
-            SelectedEtalaseModel.None
-        )
 
-//        _selectedProductList.value = mapOf(
-//            SelectedEtalaseModel.Campaign(
-//                CampaignUiModel(
-//                    id = "1",
-//                    title = "12.12",
-//                    imageUrl = "",
-//                    startDateFmt = "abc",
-//                    endDateFmt = "def",
-//                    status = CampaignStatusUiModel(
-//                        status = CampaignStatus.Ongoing,
-//                        text = "Berlangsung"
-//                    ),
-//                    totalProduct = 5,
-//                )
-//            ) to listOf(
-//                ProductUiModel(
-//                    id = "1",
-//                    name = "Product 1",
-//                    imageUrl = "",
-//                    stock = 5,
-//                    price = OriginalPrice("Rp1250", 1250.0)
-//                )
-//            )
-//        )
+        viewModelScope.launch {
+            _selectedEtalase.collectLatest {
+                getProductListJob?.cancel()
+            }
+        }
     }
 
     fun submitAction(action: PlayBroProductChooserAction) {
@@ -117,11 +95,26 @@ class PlayBroProductSetupViewModel @Inject constructor(
             is PlayBroProductChooserAction.SelectEtalase -> handleSelectEtalase(action.etalase)
             is PlayBroProductChooserAction.SelectCampaign -> handleSelectCampaign(action.campaign)
             is PlayBroProductChooserAction.SelectProduct -> handleSelectProduct(action.product)
+            is PlayBroProductChooserAction.LoadProductList -> handleLoadProductList(
+                keyword = action.keyword,
+                sort = action.sort,
+                page = action.page,
+                resetList = action.resetList,
+            )
         }
     }
 
-    private fun getProductsInEtalase(model: SelectedEtalaseModel, keyword: String = "") {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+    private suspend fun getProductsInEtalase(
+        etalaseId: String,
+        page: Int,
+        keyword: String,
+    ) = withContext(dispatchers.io) {
+        return@withContext repo.getProductsInEtalase(
+            etalaseId = etalaseId,
+            page = page,
+            keyword = keyword,
+        )
+        /*viewModelScope.launchCatchError(dispatchers.io, block = {
             val map = _productInEtalaseMap.value
             val page = map[model]?.productMap?.keys?.maxOrNull() ?: 0
 
@@ -149,7 +142,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
         }) {
             println(it)
-        }
+        }*/
+
     }
 
     private fun getEtalaseList() {
@@ -181,24 +175,79 @@ class PlayBroProductSetupViewModel @Inject constructor(
     }
 
     private fun handleSelectProduct(product: ProductUiModel) {
-        viewModelScope.launch(dispatchers.computation) {
-            val theEtalase = _productInEtalaseMap.value.entries.firstOrNull { entry ->
-                entry.value.productMap.values.flatten().any { it.id == product.id }
-            }?.key ?: return@launch
+        //when select product, we can just treat it as no etalase/campaign
+        val etalase = SelectedEtalaseModel.None
+        _selectedProductMap.update {
+            val prevSelectedProducts = it[etalase].orEmpty()
+            val newSelectedProducts = if (prevSelectedProducts.contains(product)) {
+                prevSelectedProducts - product
+            } else prevSelectedProducts + product
+            it + mapOf(etalase to newSelectedProducts)
+        }
+    }
 
-            _selectedProductMap.update {
-                val prevSelectedProducts = it[theEtalase].orEmpty()
-                val newSelectedProducts = if (prevSelectedProducts.contains(product)) {
-                    prevSelectedProducts - product
-                } else prevSelectedProducts + product
-                it + mapOf(theEtalase to newSelectedProducts)
+    private fun handleLoadProductList(
+        keyword: String,
+        sort: SortUiModel,
+        page: Int,
+        resetList: Boolean,
+    ) {
+        _focusedProductList.update {
+            it.copy(
+                productList = if (resetList) emptyList() else it.productList,
+                resultState = PageResultState.Loading,
+            )
+        }
+        getProductListJob = viewModelScope.launchCatchError(dispatchers.io, block = {
+            when (val selectedEtalase = _selectedEtalase.value) {
+                is SelectedEtalaseModel.Campaign -> return@launchCatchError
+                is SelectedEtalaseModel.Etalase,
+                SelectedEtalaseModel.None -> {
+                    val productList = repo.getProductsInEtalase(
+                        etalaseId = if (selectedEtalase is SelectedEtalaseModel.Etalase) {
+                            selectedEtalase.etalase.id
+                        } else "",
+                        page = page,
+                        keyword = keyword,
+                    )
+
+                    _focusedProductList.update {
+                        it.copy(
+                            productList = it.productList + productList,
+                            resultState = PageResultState.Success(productList.isNotEmpty()),
+                        )
+                    }
+                }
+            }
+        }) { err ->
+            _focusedProductList.update {
+                it.copy(
+                    resultState = PageResultState.Fail(err),
+                )
+            }
+        }
+
+        getProductListJob?.invokeOnCompletion { cause ->
+            if (cause is CancellationException) {
+                _focusedProductList.update {
+                    it.copy(resultState = PageResultState.Fail(cause))
+                }
             }
         }
     }
 
-
-    private data class ProductPagingMap(
-        val productMap: Map<Int, List<ProductUiModel>>,
-        val hasMore: Boolean,
-    )
+    data class Param(
+        val etalase: SelectedEtalaseModel,
+        val page: Int,
+        val keyword: String,
+    ) {
+        companion object {
+            val Empty: Param
+                get() = Param(
+                    etalase = SelectedEtalaseModel.None,
+                    page = 0,
+                    keyword = "",
+                )
+        }
+    }
 }

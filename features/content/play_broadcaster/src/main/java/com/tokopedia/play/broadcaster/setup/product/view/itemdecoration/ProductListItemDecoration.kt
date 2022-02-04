@@ -5,6 +5,10 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifyprinciples.R as unifyR
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+
+
+
 
 /**
  * Created by kenny.hadisaputra on 28/01/22
@@ -21,8 +25,10 @@ class ProductListItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        val position = parent.getChildAdapterPosition(view)
-        if (position % 2 == 0) {
+        val lp = view.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        val spanIndex = lp.spanIndex
+
+        if (spanIndex == 0) {
             outRect.right = offset8
         } else super.getItemOffsets(outRect, view, parent, state)
 

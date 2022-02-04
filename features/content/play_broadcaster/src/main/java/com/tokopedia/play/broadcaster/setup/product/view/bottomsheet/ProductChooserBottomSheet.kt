@@ -15,12 +15,14 @@ import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiMo
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
@@ -30,6 +32,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -60,6 +63,8 @@ class ProductChooserBottomSheet @Inject constructor(
         EtalaseChipsViewComponent(binding.chipsEtalase, eventBus)
     }
 
+    private var hasLoadProduct: Boolean = false
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             dialogCustomizer.customize(this)
@@ -78,6 +83,15 @@ class ProductChooserBottomSheet @Inject constructor(
 
         setupView()
         setupObserve()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (!hasLoadProduct) {
+            productListView.loadNextPage()
+            hasLoadProduct = true
+        }
     }
 
     override fun onDestroyView() {
@@ -134,7 +148,7 @@ class ProductChooserBottomSheet @Inject constructor(
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             eventBus.subscribe().collect {
                 when (it) {
                     is SortChipsViewComponent.Event -> handleSortChipsEvent(it)
@@ -146,16 +160,20 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderProductList(
-        prevProductList: List<ProductUiModel>?,
-        productList: List<ProductUiModel>,
+        prevProductListPaging: ProductListPaging?,
+        productListPaging: ProductListPaging,
         prevSelectedMap: EtalaseProductListMap?,
         selectedMap: EtalaseProductListMap,
     ) {
-        if (prevProductList == productList && prevSelectedMap == selectedMap) return
+        if (prevProductListPaging == productListPaging && prevSelectedMap == selectedMap) return
 
         productListView.setProductList(
-            productList = productList,
+            productList = productListPaging.productList,
             selectedList = selectedMap.values.flatten(),
+            isSuccess = productListPaging.resultState is PageResultState.Success &&
+                    prevProductListPaging?.productList.orEmpty().size < productListPaging.productList.size,
+            hasNextPage = productListPaging.resultState is PageResultState.Success &&
+                    productListPaging.resultState.hasNextPage,
         )
     }
 
@@ -234,6 +252,16 @@ class ProductChooserBottomSheet @Inject constructor(
         when (event) {
             is ProductListViewComponent.Event.OnSelected -> {
                 viewModel.submitAction(PlayBroProductChooserAction.SelectProduct(event.product))
+            }
+            is ProductListViewComponent.Event.OnLoadMore -> {
+                viewModel.submitAction(
+                    PlayBroProductChooserAction.LoadProductList(
+                        keyword = "",
+                        sort = SortUiModel.Empty,
+                        page = event.page,
+                        resetList = false,
+                    )
+                )
             }
         }
     }
