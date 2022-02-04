@@ -240,7 +240,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 it
             }
 
-            setupButtonAbility(it)
+            setupButtonAbility(data)
             viewModel.decideInitialValue(data, userSessionInterface.isLoggedIn)
         })
     }
