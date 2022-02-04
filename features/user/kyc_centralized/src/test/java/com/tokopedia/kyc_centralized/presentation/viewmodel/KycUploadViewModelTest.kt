@@ -5,7 +5,7 @@ import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.kyc_centralized.util.CipherProviderImpl
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
-import com.tokopedia.kyc_centralized.util.KycSharedPreference
+import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
@@ -30,7 +30,7 @@ class KycUploadViewModelTest {
     private lateinit var useCase: KycUploadUseCase
 
     @RelaxedMockK
-    private lateinit var sharedPreference: KycSharedPreference
+    private lateinit var sharedPreference: KycSharedPreferenceImpl
 
     private lateinit var viewModel : KycUploadViewModel
 

@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kyc_centralized.util.CipherProvider
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
-import com.tokopedia.kyc_centralized.util.KycSharedPreferenceInterface
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
@@ -17,7 +16,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -27,7 +25,7 @@ import javax.inject.Inject
 class KycUploadViewModel @Inject constructor(
     private val kycUploadUseCase: KycUploadUseCase,
     private val dispatcher: CoroutineDispatchers,
-    private val kycSharedPreference: KycSharedPreferenceInterface,
+    private val kycSharedPreference: KycSharedPreference,
     private val cryptoFactory: CipherProvider,
 ) : BaseViewModel(dispatcher.main) {
 

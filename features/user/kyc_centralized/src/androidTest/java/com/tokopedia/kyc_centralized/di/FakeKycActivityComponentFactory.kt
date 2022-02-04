@@ -8,7 +8,7 @@ import com.tokopedia.kyc_centralized.data.network.KycUploadApi
 import com.tokopedia.kyc_centralized.fakes.FakeGraphqlRepository
 import com.tokopedia.kyc_centralized.fakes.FakeKycPreferences
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
-import com.tokopedia.kyc_centralized.util.KycSharedPreferenceInterface
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
@@ -47,7 +47,7 @@ class FakeKycActivityComponentFactorySimulateNullPref : ActivityComponentFactory
                 }
             })
             .userIdentificationCommonModule(object : UserIdentificationCommonModule() {
-                override fun provideKycPrefInterface(pref: SharedPreferences): KycSharedPreferenceInterface {
+                override fun provideKycPrefInterface(pref: SharedPreferences): KycSharedPreference {
                     return FakeKycPreferences()
                 }
                 override fun provideGraphQlRepository(): GraphqlRepository {

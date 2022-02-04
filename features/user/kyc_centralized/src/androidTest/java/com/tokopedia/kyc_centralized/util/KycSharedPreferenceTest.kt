@@ -1,6 +1,5 @@
 package com.tokopedia.kyc_centralized.util
 
-import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
@@ -15,11 +14,11 @@ class KycSharedPreferenceTest {
     private val ctx = ApplicationProvider.getApplicationContext<Context>()
     private val pref = ctx.getSharedPreferences("kyc_centralized", Context.MODE_PRIVATE)
     private val cipherProvider = CipherProviderImpl()
-    lateinit var sut: KycSharedPreference
+    lateinit var sut: KycSharedPreferenceImpl
 
     @Before
     fun setup() {
-        sut = KycSharedPreference(pref)
+        sut = KycSharedPreferenceImpl(pref)
     }
 
     @Test

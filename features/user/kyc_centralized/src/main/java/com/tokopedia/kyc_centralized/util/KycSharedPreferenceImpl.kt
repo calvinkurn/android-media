@@ -5,9 +5,9 @@ import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_T
 import timber.log.Timber
 import javax.inject.Inject
 
-class KycSharedPreference @Inject constructor(
+class KycSharedPreferenceImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences
-): KycSharedPreferenceInterface {
+): KycSharedPreference {
 
     override fun saveByteArrayCache(key: String, data: ByteArray) {
         val cacheString = data.toPreservedString
@@ -37,7 +37,7 @@ class KycSharedPreference @Inject constructor(
         }
 }
 
-interface KycSharedPreferenceInterface {
+interface KycSharedPreference {
     fun saveByteArrayCache(key: String, data: ByteArray)
     fun getByteArrayCache(key: String): ByteArray?
     fun removeCache(key: String)
