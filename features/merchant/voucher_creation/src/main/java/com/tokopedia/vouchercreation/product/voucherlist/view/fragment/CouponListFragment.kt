@@ -18,9 +18,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.toZeroIfNull
-import com.tokopedia.kotlin.extensions.view.getBooleanArgs
-import com.tokopedia.kotlin.extensions.view.getIntArgs
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -52,7 +51,22 @@ import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.CANCEL_VOUCHER_ERROR
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.GET_SHOP_BASIC_DATA_ERROR
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.GET_VOUCHER_DETAIL_ERROR
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_SUCCESS_VOUCHER
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_SUCCESS_VOUCHER_DEFAULT_VALUE
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_UPDATE_VOUCHER
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_UPDATE_VOUCHER_DEFAULT_VALUE
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.STOP_VOUCHER_ERROR
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.SUCCESS_VOUCHER_DEFAULT_VALUE
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_CANCEL_VOUCHER_ERROR
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_GET_SHOP_BASIC_DATA_ERROR
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_GET_VOUCHER_DETAIL_ERROR
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_STOP_VOUCHER_ERROR
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TYPE_MESSAGE_KEY
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.VOUCHER_ID_KEY
 import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.filter.CouponStatusFilterBotomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
@@ -90,25 +104,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             }
             return fragment
         }
-
-        const val IS_SUCCESS_VOUCHER = "is_success"
-        const val IS_UPDATE_VOUCHER = "is_update"
-        const val VOUCHER_ID_KEY = "voucher_id"
-
-        private const val CANCEL_VOUCHER_ERROR = "Cancel voucher error - voucher list"
-        private const val STOP_VOUCHER_ERROR = "Stop voucher error - voucher list"
-        private const val GET_VOUCHER_DETAIL_ERROR = "Get voucher list error"
-        private const val GET_SHOP_BASIC_DATA_ERROR = "Get shop basic data error - voucher list"
-
-        private const val TAG_SCALYR_MVC_CANCEL_VOUCHER_ERROR = "MVC_CANCEL_VOUCHER_ERROR"
-        private const val TAG_SCALYR_MVC_STOP_VOUCHER_ERROR = "MVC_STOP_VOUCHER_ERROR"
-        private const val TAG_SCALYR_MVC_GET_VOUCHER_DETAIL_ERROR = "MVC_GET_VOUCHER_DETAIL_ERROR"
-        private const val TAG_SCALYR_MVC_GET_SHOP_BASIC_DATA_ERROR = "MVC_GET_SHOP_BASIC_DATA_ERROR"
-
-        private const val TYPE_MESSAGE_KEY = "type"
-        private const val SUCCESS_VOUCHER_DEFAULT_VALUE = 0
-        private const val IS_SUCCESS_VOUCHER_DEFAULT_VALUE = false
-        private const val IS_UPDATE_VOUCHER_DEFAULT_VALUE = false
     }
 
     @Inject
@@ -147,8 +142,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private var shareCouponBottomSheet: ShareVoucherBottomSheet? = null
     private var shopBasicData: ShopBasicDataResult? = null
     private val filterStatus by lazy { SortFilterItem("Status Aktif") }
-    private val filterType by lazy { SortFilterItem("Gratis Ongkir", ChipsUnify.TYPE_SELECTED) }
-    private val filterTarget by lazy { SortFilterItem("Publik", ChipsUnify.TYPE_SELECTED) }
+    private val filterType by lazy { SortFilterItem("Gratis Ongkir") }
+    private val filterTarget by lazy { SortFilterItem("Publik") }
 
     private var onCreateCouponMenuSelected : () -> Unit = {}
     private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
@@ -175,6 +170,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
+        setupBackButton(view)
         setupSearchField(view)
         setupFilterChips(view)
         setupObserver()
@@ -243,6 +239,14 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
+    private fun setupBackButton(view: View) {
+        val toolbar = view.findViewById<HeaderUnify>(R.id.toolbarMvcList)
+        toolbar.headerTitle = getString(R.string.mvc_coupon_list_title)
+        toolbar.setNavigationOnClickListener {
+            activity?.finish()
+        }
+    }
+
     private fun setupSearchField(view: View) {
         val searchField = view.findViewById<SearchBarUnify>(R.id.searchBarMvc)
         searchField.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
@@ -257,9 +261,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private fun setupFilterChips(view: View) {
         val chip = view.findViewById<SortFilter>(R.id.sf_voucher_list)
-        chip.setOnClickListener {
-            print("sss")
-        }
         chip.parentListener = {
             //onCreateCouponMenuSelected()
         }
@@ -267,8 +268,10 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         filterStatus.chevronListener = {
             CouponStatusFilterBotomSheet(::onStatusSelected).show(childFragmentManager, "")
         }
+        filterTarget.initRemovableFilterItem()
+        filterType.initRemovableFilterItem()
 
-        chip.addItem(arrayListOf(filterStatus))
+        chip.addItem(arrayListOf(filterStatus, filterTarget, filterType))
     }
 
     private fun setupObserver() {
@@ -426,6 +429,18 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
                 )
             }
         }
+    }
+
+    private fun activateFilterTarget() {
+        filterTarget.type = ChipsUnify.TYPE_SELECTED
+        filterTarget.refChipUnify.show()
+        view?.post { filterTarget.refChipUnify.displayRemoveIcon() }
+    }
+
+    private fun activateFilterType() {
+        filterType.type = ChipsUnify.TYPE_SELECTED
+        filterTarget.refChipUnify.show()
+        view?.post { filterType.refChipUnify.displayRemoveIcon() }
     }
 
     private fun showBroadCastCouponBottomSheet(coupon: VoucherUiModel) {
@@ -740,6 +755,16 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private fun downloadHelperListenerImpl() = object : DownloadHelper.DownloadHelperListener {
         override fun onDownloadComplete() {
             view?.showDownloadActionTicker(true)
+        }
+    }
+
+    private fun SortFilterItem.initRemovableFilterItem() {
+        view?.post {
+            refChipUnify.setOnRemoveListener {
+                type = ChipsUnify.TYPE_NORMAL
+                refChipUnify.gone()
+            }
+            refChipUnify.gone()
         }
     }
 }
