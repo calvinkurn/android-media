@@ -119,6 +119,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     productInfoActivationShimmer.visibility = View.GONE
                     detailHeader.visibility = View.VISIBLE
                     setProductData(it.data)
+                    it.data.stock?.let { productStock->
+                        detailHeader.quantityEditor.maxValue = productStock
+                    }
+
                     payLaterActivationViewModel.getOptimizedCheckoutDetail(
                         productId,
                         payLaterActivationViewModel.price * quantity, gatewayId
@@ -126,7 +130,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
                 }
                 is Fail -> {
-
+                    loaderhideOnCheckoutApi()
+                    fullPageGLobalError.visibility = View.VISIBLE
+                    nestedScrollView.visibility  = View.GONE
                 }
             }
 
@@ -139,24 +145,32 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.payLaterActivationDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    amountBottomDetailLoader.visibility = View.GONE
                     if (it.data.checkoutData.isNotEmpty()) {
-                        gatewayDetailShimmer.visibility = View.GONE
-                        gatewayDetailLayout.visibility = View.VISIBLE
-                        amountBottomDetailLoader.visibility = View.GONE
+                        loaderhideOnCheckoutApi()
                         checkDisableLogic(it.data.checkoutData[selectedGateway].disable)
                         listOfGateway = it.data
                         setSelectedTenure(it.data)
                         setTenureOptionsData(it.data)
                     } else {
-
+                        TODO()
                     }
                 }
                 is Fail -> {
-
+                    loaderhideOnCheckoutApi()
+                    gatewayDetailLayout.globalErrorHandlerGroup.visibility = View.GONE
+                    gatewayDetailLayout.tenureDetailGlobalError.visibility = View.VISIBLE
+                    proceedToCheckout.isEnabled = false
+                    amountToPay.text = "Rp"
                 }
             }
         }
+    }
+
+    private fun loaderhideOnCheckoutApi() {
+        amountBottomDetailLoader.visibility = View.GONE
+        gatewayDetailShimmer.visibility = View.GONE
+        gatewayDetailLayout.visibility = View.VISIBLE
+        amountBottomDetailLoader.visibility = View.GONE
     }
 
     private fun checkDisableLogic(disable: Boolean) {
@@ -250,11 +264,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         break
                     }
                 }
-                if (combination != -1)
+                if (combination != -1) {
+                    detailHeader.showVariantBottomSheet.visibility = View.VISIBLE
                     detailHeader.productDetailWidget.productVariant.text =
                         variant.selections[0].options[combination]?.value ?: ""
+                }
             } else {
                 detailHeader.productDetailWidget.productVariant.gone()
+                detailHeader.showVariantBottomSheet.visibility = View.GONE
             }
         }
     }

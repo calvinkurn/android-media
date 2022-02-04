@@ -79,6 +79,24 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recyclerTenureDetail"
         app:typographyType="body_2" />
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/tenureDetailGlobalError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/globalErrorHandlerGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="gatewayImg,getwayBrandName,
+        subheaderGateway,subheaderGatewayDetail,changePayLaterPartner,recyclerTenureDetail,
+        additionalDetail"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

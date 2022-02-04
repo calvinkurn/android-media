@@ -135,6 +135,7 @@ const val GQL_GET_PRODUCT_DETAIL =
   getProductV3(productID: ${'$'}productID, options: ${'$'}options) {
     productName
     url
+    stock
     price
     variant{
    selections{
