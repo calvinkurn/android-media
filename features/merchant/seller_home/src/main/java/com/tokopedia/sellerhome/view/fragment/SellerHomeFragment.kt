@@ -682,14 +682,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
         isReloading = true
         shouldShowSuccessToaster = true
-        launchOnViewLifecycleScope(Dispatchers.Unconfined) {
-            val similarWidget = adapter.data.filter {
-                it.widgetType == widget.widgetType
-            }
-            withContext(Dispatchers.Main) {
-                getWidgetsData(similarWidget)
-            }
-        }
+        refreshSimilarWidgets(widget)
     }
 
     fun setNavigationOtherMenuView(view: View?) {
@@ -1978,6 +1971,30 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (requestCode == REQ_CODE_MILESTONE_WIDGET) {
                 val milestoneWidgets = adapter.data.filterIsInstance<MilestoneWidgetUiModel>()
                 getMilestoneData(milestoneWidgets)
+            }
+        }
+    }
+
+    private fun refreshSimilarWidgets(widget: BaseWidgetUiModel<*>) {
+        launchOnViewLifecycleScope(Dispatchers.Unconfined) {
+            val similarWidget = adapter.data.filter {
+                it.widgetType == widget.widgetType
+            }
+            val widgets = adapter.data.map {
+                val isTheSameWidget = it.widgetType == widget.widgetType
+                val tempWidget = if (isTheSameWidget) {
+                    it.copyWidget().apply {
+                        //set data to null to show loading state
+                        data = null
+                    }
+                } else {
+                    it
+                }
+                return@map tempWidget as BaseWidgetUiModel<BaseDataUiModel>
+            }
+            withContext(Dispatchers.Main) {
+                updateWidgets(widgets)
+                getWidgetsData(similarWidget)
             }
         }
     }
