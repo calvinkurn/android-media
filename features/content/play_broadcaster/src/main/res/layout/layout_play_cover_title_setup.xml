@@ -25,7 +25,9 @@
     <ScrollView
         android:id="@+id/sl_crop_parent"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/play_dp_18"
+        app:layout_constraintDimensionRatio="W, 9:16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cl_crop_button"

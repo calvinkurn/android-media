@@ -22,11 +22,6 @@ abstract class PlayBroadcastFragmentModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayBroadcastPrepareFragment::class)
-    abstract fun getPlayPrepareBroadcastFragment(fragment: PlayBroadcastPrepareFragment): Fragment
-
-    @Binds
-    @IntoMap
     @FragmentKey(PlayBroadcastPreparationFragment::class)
     abstract fun getPlayBroadcastPreparationFragment(fragment: PlayBroadcastPreparationFragment): Fragment
 
@@ -44,11 +39,6 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayProductLiveBottomSheet::class)
     abstract fun getProductLiveBottomSheet(fragment: PlayProductLiveBottomSheet): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayBeforeLiveFragment::class)
-    abstract fun getBeforeLiveFragment(fragment: PlayBeforeLiveFragment): Fragment
 
     @Binds
     @IntoMap

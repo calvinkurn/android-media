@@ -141,8 +141,10 @@ class TitleFormView : ConstraintLayout {
                 delay(DELAY_SHOW_KEYBOARD)
 
                 withContext(dispatchers.main) {
-                    binding.textFieldTitle.editText.requestFocus()
-                    binding.textFieldTitle.editText.showKeyboard()
+                    if(visibility == View.VISIBLE) {
+                        binding.textFieldTitle.editText.requestFocus()
+                        binding.textFieldTitle.editText.showKeyboard()
+                    }
                 }
             }
         }
