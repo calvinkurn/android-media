@@ -46,7 +46,6 @@ import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.anr.AnrActivityLifecycleCallback;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -59,7 +58,6 @@ import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.utils.permission.SlicePermission;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -73,8 +71,6 @@ import javax.crypto.SecretKey;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
-
-import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -136,7 +132,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
         TokoPatch.init(this);
-        initSlicePermission();
 
         Loader.init(this);
     }
@@ -326,18 +321,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         AppNotificationReceiver appNotificationReceiver = new AppNotificationReceiver();
         String tag = appNotificationReceiver.getClass().getSimpleName();
         Log.d("Init %s", tag);
-    }
-
-    private void initSlicePermission() {
-        if (getSliceRemoteConfig()) {
-            SlicePermission slicePermission = new SlicePermission();
-            slicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
-        }
-    }
-
-    private Boolean getSliceRemoteConfig() {
-        return remoteConfig != null
-                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
     }
 
     @SuppressLint("RestrictedApi")

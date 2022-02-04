@@ -62,7 +62,6 @@
 /features/merchant/statistic/                           @tokopedia/android-minionstuart-dev
 /features/merchant/gallery/                             @tokopedia/android-minionstuart-dev
 /features/merchant/seller_search/                       @tokopedia/android-minionstuart-dev
-/features/merchant/seller_action/                       @tokopedia/android-minionstuart-dev
 /features/ordermanagement/buyer_order_detail            @tokopedia/android-minionstuart-dev
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionstuart-dev
 /features/ordermanagement/buyercancellationorder/       @tokopedia/android-minionstuart-dev
