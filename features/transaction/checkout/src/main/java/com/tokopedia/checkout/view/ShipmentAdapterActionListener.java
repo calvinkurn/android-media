@@ -126,4 +126,6 @@ public interface ShipmentAdapterActionListener {
     void onViewErrorInCourierSection(String errorMessage);
 
     void onClickSetPinpoint(int position);
+
+    void onOpenAddOnBottomSheet(CartItemModel cartItemModel);
 }

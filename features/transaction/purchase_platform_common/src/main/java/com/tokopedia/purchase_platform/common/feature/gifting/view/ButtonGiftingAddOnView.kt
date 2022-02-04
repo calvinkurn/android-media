@@ -52,12 +52,12 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
         leftIcon = findViewById(R.id.icon_addon_product)
         titleLabel = findViewById(R.id.title_addon)
 
-        val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.GiftingAddonButtonView)
+        val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.GiftingButtonView)
         try {
-            state = State.fromId(styledAttributes.getInteger(R.styleable.GiftingAddonButtonView_stateButton, 1))
-            title = styledAttributes.getString(R.styleable.GiftingAddonButtonView_title) ?: ""
-            desc = styledAttributes.getString(R.styleable.GiftingAddonButtonView_desc) ?: ""
-            chevronIcon = styledAttributes.getString(R.styleable.GiftingAddonButtonView_icon_right) ?: ""
+            state = State.fromId(styledAttributes.getInteger(R.styleable.GiftingButtonView_stateAddon, 1))
+            title = styledAttributes.getString(R.styleable.GiftingButtonView_title) ?: ""
+            desc = styledAttributes.getString(R.styleable.GiftingButtonView_desc) ?: ""
+            chevronIcon = styledAttributes.getString(R.styleable.GiftingButtonView_icon_right) ?: ""
 
         } finally {
             styledAttributes.recycle()
@@ -94,8 +94,7 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
     }
 
     private fun setViewActive() {
-
-        titleLabel?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N75))
+        /*titleLabel?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N75))
         titleLabel?.text = title
         if (desc.isEmpty()) {
             descLabel?.gone()
@@ -103,7 +102,10 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
             descLabel?.visible()
             descLabel?.text = desc
             titleLabel?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700_68))
-        }
+        }*/
+
+        titleLabel?.visible()
+        descLabel?.visible()
     }
 
     private fun setViewInactive() {

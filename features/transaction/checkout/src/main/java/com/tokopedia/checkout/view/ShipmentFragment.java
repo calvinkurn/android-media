@@ -3226,6 +3226,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    @Override
+    public void onOpenAddOnBottomSheet(CartItemModel cartItemModel) {
+        // internal applink to new bottomsheet
+    }
+
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
         Activity activity = getActivity();
         if (activity != null) {
