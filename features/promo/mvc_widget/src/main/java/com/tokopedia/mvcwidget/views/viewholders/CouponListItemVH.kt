@@ -22,9 +22,12 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val tv2: Typography = itemView.findViewById(R.id.tv2)
     val tv3: Typography = itemView.findViewById(R.id.tv3)
     val tv4: Typography = itemView.findViewById(R.id.tv4)
+    val tv_info: Typography = itemView.findViewById(R.id.tv_info)
     val rel_cta: RelativeLayout = itemView.findViewById(R.id.rel_cta)
+    val rel_info: RelativeLayout = itemView.findViewById(R.id.rel_info)
     val divider: View = itemView.findViewById(R.id.divider)
     private val REDIRECT_CHECK = "redirect"
+    private val INFO_CHECK = "info"
 
     init {
         rvImage.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -34,21 +37,31 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tv1.text = data.title1
         tv2.text = data.title2
         tv3.text = data.title3
-        if(data.ctaCatalog.type.isNullOrEmpty().not() && data.ctaCatalog.type == REDIRECT_CHECK) {
-            rel_cta.show()
-            if(data.ctaCatalog.text.isNullOrEmpty().not()) {
-                tv4.text = data.ctaCatalog.text
-            }
-            else{
-                rel_cta.hide()
-            }
-            if(data.ctaCatalog.appLink.isNullOrEmpty().not()) {
-                rel_cta.setOnClickListener {
-                    RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+        if(data.ctaCatalog.type.isNullOrEmpty().not()) {
+            when (data.ctaCatalog.type) {
+                REDIRECT_CHECK -> {
+                    rel_cta.show()
+                    if (data.ctaCatalog.text.isNullOrEmpty().not()) {
+                        tv4.text = data.ctaCatalog.text
+                    } else {
+                        rel_cta.hide()
+                    }
+                    if (data.ctaCatalog.appLink.isNullOrEmpty().not()) {
+                        rel_cta.setOnClickListener {
+                            RouteManager.route(itemView.context, data.ctaCatalog.appLink)
+                        }
+                    } else {
+                        rel_cta.hide()
+                    }
                 }
-            }
-            else{
-                rel_cta.hide()
+                INFO_CHECK -> {
+                    rel_info.show()
+                    if (data.ctaCatalog.text.isNullOrEmpty().not()) {
+                        tv_info.text = data.ctaCatalog.text
+                    } else {
+                        rel_info.hide()
+                    }
+                }
             }
         }
 

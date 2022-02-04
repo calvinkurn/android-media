@@ -79,6 +79,43 @@
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_arrow_right_default"/>
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rel_info"
+        android:visibility="gone"
+        android:padding="@dimen/mvc_dp_10"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/mvc_dp_17"
+        android:background="@drawable/mvc_bg_info"
+        android:orientation="horizontal">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_check_info"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/mvc_ic_check_circle"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_info"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/mvc_dp_5"
+            android:layout_marginEnd="@dimen/mvc_dp_44"
+            android:layout_toEndOf="@id/iv_check_info"
+            android:textColor="@color/Unify_GN500"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:tint="@color/Unify_GN500"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_done_green_24dp"/>
+    </RelativeLayout>
 
     <View
         android:id="@+id/divider"
