@@ -16,23 +16,27 @@ import com.tokopedia.play_common.view.loadImage
 /**
  * Created by kenny.hadisaputra on 28/01/22
  */
-internal class ProductListAdapter : BaseDiffUtilAdapter<ProductUiModel>() {
+internal class ProductListAdapter(
+    onSelected: (ProductUiModel) -> Unit,
+) : BaseDiffUtilAdapter<ProductListAdapter.Model>() {
 
     init {
-        delegatesManager.addDelegate(Delegate())
+        delegatesManager.addDelegate(Delegate(onSelected))
     }
 
-    override fun areItemsTheSame(oldItem: ProductUiModel, newItem: ProductUiModel): Boolean {
-        return oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
+        return oldItem.product.id == newItem.product.id
     }
 
-    override fun areContentsTheSame(oldItem: ProductUiModel, newItem: ProductUiModel): Boolean {
+    override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
         return oldItem == newItem
     }
 
-    private class Delegate : TypedAdapterDelegate<ProductUiModel, ProductUiModel, ViewHolder>(R.layout.view_empty) {
+    private class Delegate(
+        private val onSelected: (ProductUiModel) -> Unit,
+    ) : TypedAdapterDelegate<Model, Model, ViewHolder>(R.layout.view_empty) {
 
-        override fun onBindViewHolder(item: ProductUiModel, holder: ViewHolder) {
+        override fun onBindViewHolder(item: Model, holder: ViewHolder) {
             holder.bind(item)
         }
 
@@ -42,34 +46,44 @@ internal class ProductListAdapter : BaseDiffUtilAdapter<ProductUiModel>() {
                     LayoutInflater.from(parent.context),
                     parent,
                     false,
-                )
+                ),
+                onSelected,
             )
         }
     }
 
     private class ViewHolder(
         private val binding: ItemProductListBinding,
+        private val onSelected: (ProductUiModel) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ProductUiModel) {
-            binding.imgProduct.loadImage(item.imageUrl)
-            binding.tvName.text = item.name
+        init {
+            itemView.setOnClickListener {
+                binding.checkboxProduct.isChecked = !binding.checkboxProduct.isChecked
+            }
+        }
+
+        fun bind(item: Model) {
+            binding.imgProduct.loadImage(item.product.imageUrl)
+            binding.tvName.text = item.product.name
             binding.tvStock.text = itemView.context.getString(
-                R.string.play_bro_etalase_product_stock, item.stock
+                R.string.play_bro_product_chooser_stock, item.product.stock
             )
 
-            when(item.price) {
+            setCheckboxManually(item)
+
+            when(item.product.price) {
                 is OriginalPrice -> {
-                    binding.tvPrice.text = item.price.price
+                    binding.tvPrice.text = item.product.price.price
                     binding.llDiscount.visibility = View.GONE
                 }
                 is DiscountedPrice -> {
-                    binding.tvPrice.text = item.price.originalPrice
+                    binding.tvPrice.text = item.product.price.originalPrice
                     binding.labelDiscountPercentage.text = itemView.context.getString(
                         R.string.play_bro_product_discount_template,
-                        item.price.discountPercent
+                        item.product.price.discountPercent
                     )
-                    binding.tvDiscountPrice.text = item.price.discountedPrice
+                    binding.tvDiscountPrice.text = item.product.price.discountedPrice
                     binding.llDiscount.visibility = View.VISIBLE
                 }
                 else -> {
@@ -78,5 +92,16 @@ internal class ProductListAdapter : BaseDiffUtilAdapter<ProductUiModel>() {
                 }
             }
         }
+
+        private fun setCheckboxManually(item: Model) {
+            binding.checkboxProduct.setOnCheckedChangeListener(null)
+            binding.checkboxProduct.isChecked = item.isSelected
+            binding.checkboxProduct.setOnCheckedChangeListener { _, _ -> onSelected(item.product) }
+        }
     }
+
+    data class Model(
+        val product: ProductUiModel,
+        val isSelected: Boolean,
+    )
 }

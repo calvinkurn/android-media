@@ -50,7 +50,9 @@ class ProductChooserBottomSheet @Inject constructor(
         creator = { EventBus<Any>() },
     )
 
-    private val productListView by viewComponent { ProductListViewComponent(binding.rvProducts) }
+    private val productListView by viewComponent {
+        ProductListViewComponent(binding.rvProducts, eventBus)
+    }
     private val sortChipsView by viewComponent(isEagerInit = true) {
         SortChipsViewComponent(binding.chipsSort, eventBus)
     }
@@ -120,7 +122,12 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderProductList(prevState?.focusedProductList, state.focusedProductList)
+                renderProductList(
+                    prevState?.focusedProductList,
+                    state.focusedProductList,
+                    prevState?.selectedProductList,
+                    state.selectedProductList,
+                )
                 renderSortChips(prevState?.sort, state.sort, state.campaignAndEtalase)
                 renderEtalaseChips(prevState?.campaignAndEtalase, state.campaignAndEtalase)
                 renderBottomSheetTitle(state.selectedProductList)
@@ -132,6 +139,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 when (it) {
                     is SortChipsViewComponent.Event -> handleSortChipsEvent(it)
                     is EtalaseChipsViewComponent.Event -> handleEtalaseChipsEvent(it)
+                    is ProductListViewComponent.Event -> handleProductListEvent(it)
                 }
             }
         }
@@ -140,10 +148,15 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun renderProductList(
         prevProductList: List<ProductUiModel>?,
         productList: List<ProductUiModel>,
+        prevSelectedMap: EtalaseProductListMap?,
+        selectedMap: EtalaseProductListMap,
     ) {
-        if (prevProductList == productList) return
+        if (prevProductList == productList && prevSelectedMap == selectedMap) return
 
-        productListView.setProductList(productList)
+        productListView.setProductList(
+            productList = productList,
+            selectedList = selectedMap.values.flatten(),
+        )
     }
 
     private fun renderSortChips(
@@ -213,6 +226,14 @@ class ProductChooserBottomSheet @Inject constructor(
             EtalaseChipsViewComponent.Event.OnClicked -> {
                 (parentFragment as? ProductSetupFragment)
                     ?.openCampaignAndEtalaseList()
+            }
+        }
+    }
+
+    private fun handleProductListEvent(event: ProductListViewComponent.Event) {
+        when (event) {
+            is ProductListViewComponent.Event.OnSelected -> {
+                viewModel.submitAction(PlayBroProductChooserAction.SelectProduct(event.product))
             }
         }
     }

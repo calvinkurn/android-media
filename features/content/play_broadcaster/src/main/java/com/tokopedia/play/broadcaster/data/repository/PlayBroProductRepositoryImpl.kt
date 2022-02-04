@@ -49,48 +49,48 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         page: Int,
         keyword: String,
     ): List<ProductUiModel> = withContext(dispatchers.io) {
-//        if (userSession.shopId.isBlank()) error("User does not has shop")
-//
-//        val response = getShopProductsUseCase.apply {
-//            setRequestParams(
-//                GetShopProductsUseCase.createParams(
-//                    shopId = userSession.shopId,
-//                    page = page,
-//                    perPage = PRODUCTS_IN_ETALASE_PER_PAGE,
-//                    etalaseId = etalaseId,
-//                    keyword = keyword,
-//                    sort = 0,
-//                )
-//            )
-//        }.executeOnBackground()
-//
-//        return@withContext productMapper.mapProductsInEtalase(response)
+        if (userSession.shopId.isBlank()) error("User does not has shop")
 
-        return@withContext List(10) {
-            if (it % 2 == 0) {
-                ProductUiModel(
-                    id = it.toString(),
-                    name = "Test A",
-                    imageUrl = "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/12/29/3e1c930b-8f4d-429d-9e0c-8cc09b2a1dc2.png",
-                    stock = 10,
-                    price = OriginalPrice("Rp123.000", 123.0)
+        val response = getShopProductsUseCase.apply {
+            setRequestParams(
+                GetShopProductsUseCase.createParams(
+                    shopId = userSession.shopId,
+                    page = page,
+                    perPage = PRODUCTS_IN_ETALASE_PER_PAGE,
+                    etalaseId = etalaseId,
+                    keyword = keyword,
+                    sort = 0,
                 )
-            } else {
-                ProductUiModel(
-                    id = it.toString(),
-                    name = "Test B",
-                    imageUrl = "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/1/4/8d05640e-c272-4835-b4cd-a75b7c5e98c3.png",
-                    stock = 5,
-                    price = DiscountedPrice(
-                        "Rp456.000",
-                        456.0,
-                        30,
-                        "Rp123.000",
-                        123.0
-                    )
-                )
-            }
-        }
+            )
+        }.executeOnBackground()
+
+        return@withContext productMapper.mapProductsInEtalase(response)
+//
+//        return@withContext List(10) {
+//            if (it % 2 == 0) {
+//                ProductUiModel(
+//                    id = it.toString(),
+//                    name = "Test A",
+//                    imageUrl = "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/12/29/3e1c930b-8f4d-429d-9e0c-8cc09b2a1dc2.png",
+//                    stock = 10,
+//                    price = OriginalPrice("Rp123.000", 123.0)
+//                )
+//            } else {
+//                ProductUiModel(
+//                    id = it.toString(),
+//                    name = "Test B",
+//                    imageUrl = "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/1/4/8d05640e-c272-4835-b4cd-a75b7c5e98c3.png",
+//                    stock = 5,
+//                    price = DiscountedPrice(
+//                        "Rp456.000",
+//                        456.0,
+//                        30,
+//                        "Rp123.000",
+//                        123.0
+//                    )
+//                )
+//            }
+//        }
     }
 
     companion object {

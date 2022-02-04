@@ -237,4 +237,5 @@
     <string name="play_bro_campaign_date_start_end">%s s.d. %s</string>
     <string name="play_bro_etalase_sort">Urutkan</string>
     <string name="play_bro_selected_product_title">Pilih produk (%d/%d)</string>
+    <string name="play_bro_product_chooser_stock">Stok %d</string>
 </resources>
