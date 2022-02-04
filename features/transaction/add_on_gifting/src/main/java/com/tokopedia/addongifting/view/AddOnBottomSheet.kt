@@ -10,15 +10,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.databinding.LayoutAddOnBottomSheetBinding
 import com.tokopedia.addongifting.view.adapter.AddOnListAdapter
 import com.tokopedia.addongifting.view.adapter.AddOnListAdapterTypeFactory
 import com.tokopedia.addongifting.view.di.AddOnComponent
 import com.tokopedia.addongifting.view.di.DaggerAddOnComponent
+import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
-class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
+class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -46,7 +49,7 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         initializeView()
-        initializeData()
+        initializeData(addOnProductData)
         return view
     }
 
@@ -79,8 +82,10 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
         viewBinding.rvAddOn.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
     }
 
-    private fun initializeData() {
-
+    private fun initializeData(addOnProductData: AddOnProductData) {
+        val mockAddOnResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_response)
+        val mockAddOnSavedStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_saved_state_response)
+        viewModel.loadAddOnData(addOnProductData, mockAddOnResponse, mockAddOnSavedStateResponse)
     }
 
     override fun onDismiss(dialog: DialogInterface) {

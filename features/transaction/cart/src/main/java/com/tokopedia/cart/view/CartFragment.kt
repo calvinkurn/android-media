@@ -94,6 +94,8 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.addongifting.data.Product
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -518,7 +520,32 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun initViewListener() {
         binding?.apply {
             goToCourierPageButton.setOnClickListener {
-                RouteManager.route(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+                val addOnProductData = AddOnProductData().apply {
+                    val product1 = Product().apply {
+                        productId = "10001"
+                        productName = "Product 1"
+                        productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
+                        productPrice = 10000
+                        productQuantity = 1
+                    }
+                    val product2 = Product().apply {
+                        productId = "10002"
+                        productName = "Product 2"
+                        productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
+                        productPrice = 20000
+                        productQuantity = 2
+                    }
+                    val product3 = Product().apply {
+                        productId = "10003"
+                        productName = "Product 3"
+                        productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"
+                        productPrice = 30000
+                        productQuantity = 3
+                    }
+                    products = listOf(product1, product2, product3)
+                }
+                intent.putExtra("ADD_ON_PRODUCT_DATA", addOnProductData)
             }
 //            goToCourierPageButton.setOnClickListener { checkGoToShipment("") }
             imgChevronSummary.setOnClickListener { onClickChevronSummaryTransaction() }

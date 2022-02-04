@@ -8,6 +8,7 @@ import com.tokopedia.addongifting.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.domain.usecase.GetAddOnSavedStateUseCase
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.ProductUiModel
+import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import javax.inject.Inject
 
 class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatchers,
@@ -25,12 +26,27 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
     val addOnData: LiveData<AddOnUiModel>
         get() = _addOnData
 
-    fun loadAddOnData() {
+    fun loadAddOnData(addOnProductData: AddOnProductData, mockAddOnResponse: String = "", mockAddOnSavedStateResponse: String = "") {
+        getAddOnByProductUseCase.mockResponse = mockAddOnResponse
+        getAddOnByProductUseCase.execute(
+                onSuccess = {
+                    loadSavedStateData()
+                },
+                onError = {
 
+                }
+        )
     }
 
     fun loadSavedStateData() {
+        getAddOnSavedStateUseCase.execute(
+                onSuccess = {
 
+                },
+                onError = {
+
+                }
+        )
     }
 
 }
