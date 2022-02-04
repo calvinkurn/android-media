@@ -24,6 +24,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteracti
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.ActionHandler
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
+import com.tokopedia.pdpsimulation.paylater.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationTenureAdapter
@@ -142,7 +143,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> setSimulationView(it.data)
-                is Fail -> simulationFailed()
+                is Fail -> simulationFailed(it.throwable)
             }
         }
     }
@@ -170,18 +171,29 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         sendEvent(event)
     }
 
-    private fun simulationFailed() {
+    private fun simulationFailed(throwable: Throwable) {
         // show product detail only after simulation has been done
         if (isProductDetailShown)
             productDetail.visible()
+        else productDetailFail(throwable)
     }
 
     private fun productDetailFail(throwable: Throwable) {
         hideSimulationViews()
         when (throwable) {
+            is PdpSimulationException.PayLaterEmptyDataException,
+            is PdpSimulationException.PayLaterNullDataException -> showEmptyInstallmentView()
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
             else -> setGlobalErrors(GlobalError.SERVER_ERROR)
+        }
+    }
+
+    private fun showEmptyInstallmentView() {
+        emptyStateInstallment.visible()
+        emptyStateInstallment.setSecondaryCTAClickListener {
+            emptyStateInstallment.gone()
+            payLaterViewModel.getProductDetail(productId)
         }
     }
 

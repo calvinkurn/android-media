@@ -12,7 +12,7 @@
     <!-- Application Status -->
     <string name="pay_later_action_find_more">Cari Tahu Lebih Lanjut</string>
 
-    <string name="pay_later_something_went_wrong">Ada yang salah</string>
+    <string name="pay_later_something_went_wrong">Maaf, ada gangguan saat nampilin pilihan cicilan. Coba lagi, ya.</string>
     <string name="pay_later_connect_gopay">Sambungin Gojek dulu, ya</string>
     <string name="paylater_to_use_gopay">Buat pakai GoPayLater Cicil, kamu perlu sambungin akun Gojek ke Tokopedia dulu. Cuma sebentar, kok!</string>
     <string name="paylater_gopay_connect_account">Sambungin Akun</string>

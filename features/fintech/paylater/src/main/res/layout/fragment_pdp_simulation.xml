@@ -48,6 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:itemCount="6"
+        android:visibility="visible"
         tools:listitem="@layout/paylater_partner_card_item" />
 
     <com.tokopedia.globalerror.GlobalError
@@ -58,18 +59,20 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
 
-  <!--  <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/emptyStateError"
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyStateInstallment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        tools:visibility="gone"
         android:visibility="gone"
+        android:layout_marginStart="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation"
-        app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched"
-        app:unifyEmptyStatePrimaryCTAText="@string/title_try_again"
-        app:unifyEmptyStateTitle="@string/pay_later_something_went_wrong" />
--->
+        app:unifyEmptyStateImageDrawable="@drawable/bg_installment_not_available"
+        app:unifyEmptyStateSecondaryCTAText="@string/title_try_again"
+        app:unifyEmptyStateDescription="@string/pay_later_something_went_wrong" />
  </androidx.constraintlayout.widget.ConstraintLayout>
 
 

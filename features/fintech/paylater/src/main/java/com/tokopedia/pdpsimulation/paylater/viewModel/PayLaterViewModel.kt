@@ -7,11 +7,12 @@ import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
-import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
+import com.tokopedia.pdpsimulation.paylater.helper.PdpSimulationException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -85,6 +86,9 @@ class PayLaterViewModel @Inject constructor(
                 // set selection
                 defaultSelectedSimulation = tenureMap[defaultTenure] ?: data.size - 1
                 _payLaterOptionsDetailLiveData.value = Success(data)
+            } else {
+                _payLaterOptionsDetailLiveData.value =
+                    Fail(PdpSimulationException.PayLaterEmptyDataException(DATA_EMPTY))
             }
         }, { _payLaterOptionsDetailLiveData.value = Fail(it) },
             paylaterGetSimulation, defaultTenure
@@ -101,6 +105,7 @@ class PayLaterViewModel @Inject constructor(
 
     companion object {
         const val DATA_FAILURE = "NULL DATA"
+        const val DATA_EMPTY = "EMPTY DATA"
         const val PAY_LATER_NOT_APPLICABLE = "Pay Later Not Applicable"
     }
 }
