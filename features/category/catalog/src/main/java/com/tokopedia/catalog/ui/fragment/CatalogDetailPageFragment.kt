@@ -42,6 +42,7 @@ import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.activity.CatalogYoutubePlayerActivity
+import com.tokopedia.catalog.ui.bottomsheet.CatalogAllReviewBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
@@ -116,6 +117,7 @@ class CatalogDetailPageFragment : Fragment(),
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         var isBottomSheetOpen = false
+        const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
@@ -152,7 +154,9 @@ class CatalogDetailPageFragment : Fragment(),
 
         setupRecyclerView(view)
         setObservers()
-        setUpBottomSheet()
+        if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
+            setUpBottomSheet()
+        }
         setUpUniversalShare()
     }
 
@@ -466,7 +470,7 @@ class CatalogDetailPageFragment : Fragment(),
         catalogUiUpdater.run {
             productInfoMap?.let {
                 if(catalogUiUpdater.productInfoMap?.images?.isNotEmpty() == true){
-                    context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogId , currentItem, catalogUiUpdater.productInfoMap!!.images!!))
+                    context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogName,catalogId , currentItem, catalogUiUpdater.productInfoMap!!.images!!))
                 }
             }
         }
@@ -524,6 +528,39 @@ class CatalogDetailPageFragment : Fragment(),
                     "origin: $catalogName - $catalogId - destination: $comparisionCatalogId",userSession.userId,catalogId)
             RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisionCatalogId}")
         }
+    }
+
+    override fun readMoreReviewsClicked(catalogId: String) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_ON_LIHAT_SEMUA_REVIEW,
+            "$catalogName - $catalogId",userSession.userId,catalogId)
+        val catalogAllReviewBottomSheet = CatalogAllReviewBottomSheet.newInstance(catalogName,catalogId,this)
+        catalogAllReviewBottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun onReviewImageClicked(
+        position: Int,
+        items: ArrayList<CatalogImage>,
+        reviewId : String,
+        isFromBottomSheet: Boolean
+    ) {
+        if(isFromBottomSheet){
+            CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_IMAGE_ON_LIST_REVIEW,
+                "$catalogName - $catalogId - $reviewId",userSession.userId,catalogId)
+        }else {
+            CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_IMAGE_ON_REVIEW,
+                "$catalogName - $catalogId - $reviewId",userSession.userId,catalogId)
+        }
+        context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogName, catalogId , position, items,
+            showBottomGallery = false,showNumbering = true, reviewId))
     }
 
     override fun hideFloatingLayout() {
