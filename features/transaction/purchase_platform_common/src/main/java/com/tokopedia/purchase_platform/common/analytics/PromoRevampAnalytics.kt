@@ -11,7 +11,6 @@ import com.tokopedia.track.TrackAppUtils
 object PromoRevampAnalytics {
     private const val VIEW_ATC_IRIS = "viewATCIris"
     private const val VIEW_COURIER_IRIS = "viewCourierIris"
-    private const val VIEW_BGP_IRIS = "viewBGPIris"
     private const val CLICK_ATC = "clickATC"
     private const val CLICK_COURIER = "clickCourier"
     private const val CATEGORY_CART = "cart"
@@ -30,7 +29,6 @@ object PromoRevampAnalytics {
     private const val VIEW_BOTTOMSHEET_PROMO_ERROR = "view bottom sheet promo error"
     private const val CLICK_LANJUT_BAYAR_ON_BOTTOMSHEET_PROMO_ERROR = "click lanjut bayar on bottom sheet promo error"
     private const val CLICK_PILIH_PROMO_LAIN_ON_BOTTOMSHEET_PROMO_ERROR = "click pilih promo lain on bottom sheet promo error"
-    private const val VIEW_AUTO_APPLY_PROMO_TOASTER = "view autoapply promo toaster"
 
 
     private fun sendEventCategoryAction(event: String, eventCategory: String,
