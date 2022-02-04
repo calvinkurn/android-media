@@ -7,6 +7,9 @@ object DigitalPDPConstant {
     const val PARAM_CATEGORY_ID = "category_id"
     const val PARAM_OPERATOR_ID = "operator_id"
     const val EXTRA_PARAM = "extra_param"
+    const val EXTRA_QR_PARAM = "scanResult"
+    const val EXTRA_IS_FROM_TOKEN_LISTRIK = "IS_FROM_TOKEN_LISTRIK"
+    const val PARAM_NEED_RESULT = "1"
 
     const val INPUT_ACTION_TRACKING_DELAY = 1000L
 
@@ -21,4 +24,5 @@ object DigitalPDPConstant {
 
     const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
     const val REQUEST_CODE_LOGIN = 1010
+    const val RESULT_CODE_QR_SCAN = 101
 }

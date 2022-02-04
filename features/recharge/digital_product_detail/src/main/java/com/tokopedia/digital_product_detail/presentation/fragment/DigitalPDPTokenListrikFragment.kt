@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
@@ -35,6 +36,10 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_IS_FROM_TOKEN_LISTRIK
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_QR_PARAM
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_NEED_RESULT
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.RESULT_CODE_QR_SCAN
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTokenListrikBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
@@ -47,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -660,21 +666,15 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
                     override fun onClickNavigationIcon() {
                         binding?.run {
-                            val clientNumber = rechargePdpTokenListrikClientNumberWidget.getInputNumber()
-                            val dgCategoryIds = arrayListOf(
-                                TelcoCategoryType.CATEGORY_PULSA.toString(),
-                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                                TelcoCategoryType.CATEGORY_ROAMING.toString()
-                            )
-                            navigateToContact(
-                                clientNumber, dgCategoryIds,
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                false
-                            )
                             digitalPDPTelcoAnalytics.clickOnContactIcon(
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 userSession.userId
                             )
+
+                            val intent = RouteManager.getIntent(context,
+                                ApplinkConstInternalMarketplace.QR_SCANNEER, PARAM_NEED_RESULT)
+                            intent.putExtra(EXTRA_IS_FROM_TOKEN_LISTRIK, true)
+                            startActivityForResult(intent, RESULT_CODE_QR_SCAN)
                         }
                     }
 
@@ -952,8 +952,18 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     handleCallbackAnySavedNumberCancel()
                 }
                 getFavoriteNumber()
-            } else if( requestCode == DigitalPDPConstant.REQUEST_CODE_LOGIN) {
+            } else if (requestCode == DigitalPDPConstant.REQUEST_CODE_LOGIN) {
                 addToCart()
+            } else if (requestCode == DigitalPDPConstant.RESULT_CODE_QR_SCAN) {
+                if (data != null){
+                    val scanResult = data.getStringExtra(EXTRA_QR_PARAM)
+                    if (!scanResult.isNullOrEmpty()) {
+                        binding?.rechargePdpTokenListrikClientNumberWidget?.run {
+                            setInputNumber(scanResult, true)
+                        }
+                        getFavoriteNumber()
+                    }
+                }
             }
         }
     }
