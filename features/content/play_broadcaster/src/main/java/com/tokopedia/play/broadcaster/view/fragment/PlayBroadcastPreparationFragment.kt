@@ -293,6 +293,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Callback Preparation Menu */
     override fun onClickSetTitle() {
+        analytic.clickEditTitleMenu()
+
         showTitleForm(true)
     }
 
@@ -311,6 +313,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onTitleSaved(view: TitleFormView, title: String) {
+        analytic.clickSubmitTitle()
+
         hideKeyboard()
         binding.formTitle.setLoading(true)
         viewModel.uploadTitle(title)

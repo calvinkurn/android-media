@@ -3,6 +3,27 @@
   "mode": "exact",
   "query": [
     {
+      "event": "clickPG",
+      "eventAction": "click - simpan",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - edit title",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+
+    {
       "eventAction": "view widget broadcast",
       "event": "clickShopPage",
       "eventCategory": "shop page - seller",
