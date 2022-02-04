@@ -167,9 +167,18 @@ class OfficialHomeMapper (
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
-    fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
-        productRecommendation.recommendationItemList.forEach {
-            listOfficialStore.add(ProductRecommendationDataModel(it, listener))
+    fun mappingProductRecommendation(
+        productRecommendationWithTopAdsHeadline: ProductRecommendationWithTopAdsHeadline,
+        adapter: OfficialHomeAdapter?,
+        listener: RecommendationListener
+    ) {
+        val headlineIndex =
+            productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel?.topAdsHeadlineResponse?.displayAds?.data?.firstOrNull()?.cpm?.position
+        productRecommendationWithTopAdsHeadline.recommendationWidget.recommendationItemList.forEachIndexed { index, recommendationItem ->
+            if (index == headlineIndex) productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel.let {
+                listOfficialStore.add(it)
+            }
+            listOfficialStore.add(ProductRecommendationDataModel(recommendationItem, listener))
         }
         listOfficialStore.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
         adapter?.submitList(listOfficialStore.toMutableList())
