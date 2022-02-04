@@ -133,6 +133,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     loaderhideOnCheckoutApi()
                     fullPageGLobalError.visibility = View.VISIBLE
                     nestedScrollView.visibility  = View.GONE
+                    amountToPay.text = "Rp"
+                    proceedToCheckout.isEnabled = false
                 }
             }
 
