@@ -16,7 +16,7 @@ open class BuyerOrderDetailTypeFactory(
     private val digitalRecommendationData: DigitalRecommendationData,
     private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
-    protected val productViewListener: ProductViewHolder.ProductViewListener,
+    protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val  buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BaseAdapterTypeFactory() {
@@ -95,7 +95,7 @@ open class BuyerOrderDetailTypeFactory(
         return DriverTippingInfoViewHolder.LAYOUT
     }
 
-    fun type(addonsUiModel: AddonsUiModel): Int {
+    fun type(addonsListUiModel: AddonsListUiModel): Int {
         return AddonsViewHolder.LAYOUT
     }
 

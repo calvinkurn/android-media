@@ -278,6 +278,140 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     link
                   }
                 }
+                details {
+                  total_products
+                  bundle_icon
+                  bundles {
+                    bundle_id
+                    bundle_variant_id
+                    bundle_name
+                    bundle_price
+                    bundle_quantity
+                    bundle_subtotal_price
+                    order_detail {
+                      order_detail_id
+                      product_id
+                      product_name
+                      product_url
+                      snapshot_url
+                      thumbnail
+                      price
+                      price_text
+                      quantity
+                      total_price
+                      total_price_text
+                      notes
+                      category_id
+                      button {
+                        key
+                        display_name
+                        type
+                        variant
+                        url
+                        popup {
+                          title
+                          body
+                          action_button {
+                            key
+                            display_name
+                            color
+                            type
+                            uri
+                          }
+                        }
+                      }
+                    }
+                  }
+                  non_bundles {
+                    order_detail_id
+                    product_id
+                    product_name
+                    product_url
+                    snapshot_url
+                    thumbnail
+                    price
+                    price_text
+                    quantity
+                    total_price
+                    total_price_text
+                    notes
+                    category_id
+                    button {
+                      key
+                      display_name
+                      type
+                      variant
+                      url
+                      popup {
+                        title
+                        body
+                        action_button {
+                          key
+                          display_name
+                          color
+                          type
+                          uri
+                        }
+                      }
+                    }
+                    addon_summary {
+                      addons {
+                        order_id
+                        id
+                        reference_id
+                        level
+                        name
+                        price
+                        price_str
+                        subtotal_price
+                        subtotal_price_str
+                        quantity
+                        type
+                        image_url
+                        metadata {
+                          from
+                          message
+                          to
+                        }
+                        create_time
+                      }
+                      total
+                      total_price
+                      total_price_str
+                      total_quantity
+                    }
+                  }
+                }
+                addon_info {
+                  label
+                  icon_url
+                  order_level {
+                    addons {
+                      order_id
+                      id
+                      reference_id
+                      level
+                      name
+                      price
+                      price_str
+                      subtotal_price
+                      subtotal_price_str
+                      quantity
+                      type
+                      image_url
+                      metadata {
+                        from
+                        message
+                        to
+                      }
+                      create_time
+                    }
+                    total
+                    total_price
+                    total_price_str
+                    total_quantity
+                  }
+                }
               }
             }
         """.trimIndent()

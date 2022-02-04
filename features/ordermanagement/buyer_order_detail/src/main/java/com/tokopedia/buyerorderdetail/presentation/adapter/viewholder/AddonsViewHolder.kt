@@ -4,52 +4,34 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailAddonsListBinding
-import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAddonsBinding
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsUiModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailAddonsSectionBinding
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 
-class AddonsViewHolder(itemView: View) : AbstractViewHolder<AddonsUiModel>(itemView) {
+class AddonsViewHolder(itemView: View) : AbstractViewHolder<AddonsListUiModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_buyer_order_detail_addons_list
+        val LAYOUT = R.layout.item_buyer_order_detail_addons_section
     }
 
-    private val binding = ItemBuyerOrderDetailAddonsListBinding.bind(this.itemView)
+    private val binding = ItemBuyerOrderDetailAddonsSectionBinding.bind(this.itemView)
 
-    override fun bind(element: AddonsUiModel?) {
+    override fun bind(element: AddonsListUiModel?) {
         if (element == null) return
         with(binding) {
-            itemBomDetailAddonsSection.run {
-                ivBomDetailAddonsIcon.setImageUrl(element.addonsLogoUrl)
-                tvBomDetailAddonsTitle.text = element.addonsTitle
-                tvBomDetailAddonsName.text = element.addOnsName
-                ivBomDetailAddonsThumbnail.setImageUrl(element.addOnsThumbnailUrl)
-                setupToPerson(element.toPerson)
-                setupFromMessage(element.fromPerson)
-            }
+            setupViews(element)
         }
     }
 
-    private fun PartialItemBuyerOrderDetailAddonsBinding.setupToPerson(toPerson: String) {
-        if (toPerson.isBlank()) {
-            tvBomDetailAddonsToValue.hide()
-            tvBomDetailAddonsToLabel.hide()
-        } else {
-            tvBomDetailAddonsToValue.show()
-            tvBomDetailAddonsToLabel.show()
+    private fun ItemBuyerOrderDetailAddonsSectionBinding.setupViews(element: AddonsListUiModel) {
+        itemBomDetailAddonsSection.run {
+            tvBomDetailAddonsTitle.text = element.addonsTitle
+            ivBomDetailAddonsIcon.setImageUrl(element.addonsLogoUrl)
+            tvBomDetailAddonsTotalPriceValue.text = element.totalPriceText
         }
     }
 
-    private fun PartialItemBuyerOrderDetailAddonsBinding.setupFromMessage(fromPerson: String) {
-        if (fromPerson.isBlank()) {
-            tvBomDetailAddonsFromLabel.hide()
-            tvBomDetailAddonsToValue.hide()
-        } else {
-            tvBomDetailAddonsFromLabel.show()
-            tvBomDetailAddonsToValue.show()
-        }
+    private fun ItemBuyerOrderDetailAddonsSectionBinding.setupRecyclerviewAddonList() {
+        itemBomDetailAddonsSection
     }
 }

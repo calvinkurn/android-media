@@ -48,7 +48,8 @@ data class ProductListUiModel(
             val quantity: Int,
             val totalPrice: String,
             val totalPriceText: String,
-            val isProcessing: Boolean = false
+            val isProcessing: Boolean = false,
+            val addonsListUiModel: AddonsListUiModel
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

@@ -14,8 +14,31 @@
         android:animateLayoutChanges="true"
         android:background="?android:attr/selectableItemBackground">
 
-        <include layout="@layout/partial_item_buyer_order_detail_product_list"/>
+        <include
+            android:id="@+id/itemBomDetailProductSection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            layout="@layout/partial_item_buyer_order_detail_product_list"/>
 
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/dividerBomDetailProduct"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itemBomDetailProductSection"/>
+
+        <include
+            android:id="@+id/itemBomDetailAddonsSection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerBomDetailProduct"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
