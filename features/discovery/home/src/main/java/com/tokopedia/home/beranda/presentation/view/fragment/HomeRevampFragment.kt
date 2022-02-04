@@ -649,7 +649,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun ArrayList<CoachMark2Item>.buildTokonowCoachmark(tokonowIcon: View?) {
         context?.let { currentContext ->
-            if (!isHomeTokonowCoachmarkShown(currentContext)) {
+            if (isHomeTokonowCoachmarkShown(currentContext)) {
                  tokonowIcon?.let {
                     this.add(
                             CoachMark2Item(
@@ -668,13 +668,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
         context?.let { ctx ->
-            if (!isNewWalletAppCoachmarkShown(ctx)) {
-                showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
-                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
-                showTokonowCoachmark()
-            }
+            showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
+//            if (!isNewWalletAppCoachmarkShown(ctx)) {
+//                showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
+//            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
+//                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
+//            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
+//                showTokonowCoachmark()
+//            }
         }
     }
 
@@ -690,11 +691,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 try {
                     if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
                         gopayCoachmark.onDismissListener = {
-                            if (!isNewTokopointCoachmarkShown(it) && tokopointsBalanceCoachmark != null) {
-                                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
-                            } else {
-                                showTokonowCoachmark()
-                            }
+                            showTokonowCoachmark()
+//                            if (!isNewTokopointCoachmarkShown(it) && tokopointsBalanceCoachmark != null) {
+//                                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
+//                            } else {
+//                                showTokonowCoachmark()
+//                            }
                             setNewWalletAppCoachmarkShown(it)
                         }
                         gopayCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
@@ -852,10 +854,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
 
     private fun isValidToShowCoachMark(): Boolean {
-        activity?.let {
-            return !it.isFinishing
-        }
-        return false
+//        activity?.let {
+//            return !it.isFinishing
+//        }
+//        return false
+        return true
     }
 
     private fun setupHomeRecyclerView() {
@@ -863,7 +866,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                evaluateHomeComponentOnScroll(recyclerView)
+                evaluateHomeComponentOnScroll(recyclerView, dy)
             }
         })
     }
@@ -886,7 +889,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setStatusBarAlpha(STATUS_BAR_DEFAULT_ALPHA)
     }
 
-    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
+    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) { //set refresh layout to only enabled when reach 0 offset
 //because later we will disable scroll up for this parent recyclerview
 //and makes refresh layout think we can't scroll up (which actually can! we only disable
 //scroll so that feed recommendation section can scroll its content)
@@ -906,6 +909,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         if (tokonowCoachmarkIsShowing) coachmarkTokonow?.dismissCoachMark()
+
+//        if(recyclerView.y > getGopayNewBalanceWidgetView()?.y.toIntSafely())
+//            coachmarkGopay?.dismissCoachMark()
+//        else
+//            coachmarkGopay?.animateShow()
+        val item = homeRecyclerView?.getChildAt(1)
+        if(item?.isVisible?: false)
+            coachmarkGopay?.dismissCoachMark()
+        else
+            coachmarkGopay?.animateShow()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
