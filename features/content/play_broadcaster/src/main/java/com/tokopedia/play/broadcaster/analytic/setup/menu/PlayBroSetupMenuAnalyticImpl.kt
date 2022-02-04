@@ -33,6 +33,14 @@ class PlayBroSetupMenuAnalyticImpl @Inject constructor(
         sendEvent("click - add product tag")
     }
 
+    override fun clickSwitchCameraOnPreparation() {
+        sendEvent("click - camera switch on preparation page")
+    }
+
+    override fun clickCloseOnPreparation() {
+        sendEvent("click - x on preparation page")
+    }
+
     private fun sendEvent(
         eventAction: String,
     ) {

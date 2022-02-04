@@ -10,4 +10,8 @@ interface PlayBroSetupMenuAnalytic {
     fun clickSetupCoverMenu()
 
     fun clickSetupProductMenu()
+
+    fun clickSwitchCameraOnPreparation()
+
+    fun clickCloseOnPreparation()
 }

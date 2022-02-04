@@ -163,8 +163,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             icBroPreparationSwitchCamera.setOnClickListener {
+                analytic.clickSwitchCameraOnPreparation()
+
                 parentViewModel.switchCamera()
-                analytic.clickSwitchCameraOnSetupPage()
             }
         }
     }
@@ -287,7 +288,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Callback Action Bar */
     override fun onClickClosePreparation() {
-        analytic.clickCloseOnSetupPage()
+        analytic.clickCloseOnPreparation()
+
         activity?.onBackPressed()
     }
 
