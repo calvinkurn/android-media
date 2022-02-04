@@ -69,20 +69,17 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
                     dotTrail.visibility = View.VISIBLE
                     dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                 }
-//                todo to be reverted
-//                if (data.proof.imageId.isEmpty()) {
-//                    imgProof.visibility = View.GONE
-//                } else {
+                if (data.proof.imageId.isEmpty()) {
+                    imgProof.visibility = View.GONE
+                } else {
                     if (orderId != null) {
                         imgProof.visibility = View.VISIBLE
-//                        todo to be reverted
-//                        val url: String = TrackingPageUtil.getDeliveryImage(data.proof.imageId, orderId, "small",
-//                                userSession.userId, 1, userSession.deviceId)
-//                        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
-//                        val newUrl = GlideUrl(url, LazyHeaders.Builder()
-//                                .addHeader(TrackingPageUtil.HEADER_KEY_AUTH, authKey)
-//                                .build())
-                        val newUrl = "https://1.bp.blogspot.com/-x_3z-B3eDCQ/XQ8qZh_l-2I/AAAAAAAAC2k/7tlk8ILLbqcdhDdeKMC4xjD2oNwUcr3QwCLcBGAs/s1600/foto%2Bkecil.jpg"
+                        val url: String = TrackingPageUtil.getDeliveryImage(data.proof.imageId, orderId, "small",
+                                userSession.userId, 1, userSession.deviceId)
+                        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
+                        val newUrl = GlideUrl(url, LazyHeaders.Builder()
+                                .addHeader(TrackingPageUtil.HEADER_KEY_AUTH, authKey)
+                                .build())
                         Glide.with(itemView.context)
                                 .load(newUrl)
                                 .centerCrop()
@@ -92,7 +89,7 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
                                 .into(imgProof)
                         imgProof.setOnClickListener { view: View? -> listener.onImageItemClicked(data.proof.imageId, orderId, data.proof.description) }
                     }
-//                }
+                }
             }
         }
     }

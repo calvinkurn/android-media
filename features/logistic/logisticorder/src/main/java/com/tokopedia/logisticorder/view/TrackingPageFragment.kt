@@ -468,18 +468,15 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     override fun onImageItemClicked(imageId: String, orderId: Long, description: String) {
-        // todo TO BE REVERTED, TESTING ONLY
-//        val url = getDeliveryImage(imageId, orderId, "large",
-//                userSession.userId, 1, userSession.deviceId)
-//        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
-//        val newUrl = GlideUrl(
-//            url, LazyHeaders.Builder()
-//                .addHeader(HEADER_KEY_AUTH, authKey)
-//                .build()
-//        )
+        val url = getDeliveryImage(imageId, orderId, "large",
+                userSession.userId, 1, userSession.deviceId)
+        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
+        val newUrl = GlideUrl(
+            url, LazyHeaders.Builder()
+                .addHeader(HEADER_KEY_AUTH, authKey)
+                .build()
+        )
 
-        val newUrl =
-            "https://1.bp.blogspot.com/-x_3z-B3eDCQ/XQ8qZh_l-2I/AAAAAAAAC2k/7tlk8ILLbqcdhDdeKMC4xjD2oNwUcr3QwCLcBGAs/s1600/foto%2Bkecil.jpg"
         binding?.root?.let {
             binding?.imgProof?.let { imgProof ->
                 Glide.with(it.context)
@@ -492,7 +489,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         }
 
         binding?.run {
-//            proofDescription.text = description
+            proofDescription.text = description
             imagePreviewLarge.visibility = View.VISIBLE
             iconClose.setOnClickListener {
                 binding?.imagePreviewLarge?.visibility = View.GONE
