@@ -169,7 +169,7 @@ open class CameraFragment : BaseDaggerFragment()
     override fun hasVideoAddedOnMediaSelection(): Boolean {
         return listener?.mediaSelected()?.filter {
             it.isVideo()
-        }?.size == param.maxVideoCount()
+        }?.size?: 0 >= param.maxVideoCount()
     }
 
     override fun onShowToastMediaLimit() {

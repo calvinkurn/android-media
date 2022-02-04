@@ -117,7 +117,7 @@ class DrawerSelectionAdapter(
     }
 
     fun containsVideoMaxOf(count: Int): Boolean {
-        return this.medias.filter { it.isVideo() }.size == count
+        return this.medias.filter { it.isVideo() }.size >= count
     }
 
     fun getData(): List<MediaUiModel> {

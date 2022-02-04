@@ -6,8 +6,8 @@ import java.io.File
 
 @SuppressLint("ResponseFieldAnnotation")
 data class PickerParam(
-    private var maxPhoto: Int = 4,
-    private var maxVideo: Int = 1,
+    private var maxMediaSize: Int = 4,
+    private var maxVideo: Int = 2,
     private var maxVideoDuration: Int = 30000, // in interval, 30 sec
     private var isIncludeVideo: Boolean = true,
     private var isOnlyVideo: Boolean = false,
@@ -30,7 +30,7 @@ data class PickerParam(
 
     fun maxVideoCount() = maxVideo
 
-    fun limitOfMedia() = maxPhoto + maxVideo
+    fun limitOfMedia() = maxMediaSize + maxVideo
 
     fun maxVideoDuration() = maxVideoDuration
 

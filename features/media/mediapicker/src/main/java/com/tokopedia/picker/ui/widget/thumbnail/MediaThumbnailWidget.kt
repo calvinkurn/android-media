@@ -3,8 +3,8 @@ package com.tokopedia.picker.ui.widget.thumbnail
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.databinding.WidgetMediaThumbnailBinding
@@ -43,12 +43,9 @@ class MediaThumbnailWidget @JvmOverloads constructor(
         if (element == null) return
         binding.container.show()
         binding.imgPreview.pickerLoadImage(element.path)
-
-        if (element.isVideo()) {
+        binding.bgVideoShadow.showWithCondition(element.isVideo())
+        binding.txtDuration.shouldShowWithAction(element.isVideo()) {
             videoDuration(element.path)
-
-            binding.bgVideoShadow.show()
-            binding.txtDuration.show()
         }
     }
 

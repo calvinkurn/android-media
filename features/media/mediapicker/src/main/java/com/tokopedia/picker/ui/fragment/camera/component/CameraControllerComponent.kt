@@ -205,7 +205,7 @@ class CameraControllerComponent(
 
     private fun onTakeCamera() {
         if (isVideoMode() && listener.hasVideoAddedOnMediaSelection()) {
-            listener.onShowToastVideoLimit()
+            listener.onShowToastMediaLimit()
             return
         }
 
