@@ -75,7 +75,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var voucherId: String = ""
     private var shopId: String = ""
-    private var previousPage: String = ""
+    private var previousPage: String = "NULL"
     private var selectedSortData: MvcLockedToProductSortUiModel =
         MvcLockedToProductSortListFactory.getDefaultSortData()
     private val isUserLogin: Boolean
@@ -103,7 +103,9 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             if (shopIdSegmentData.toIntOrNull() != null) {
                 shopId = shopIdSegmentData
             }
-            previousPage = it.getQueryParameter(PAGE_SOURCE_KEY).orEmpty()
+            previousPage = it.getQueryParameter(PAGE_SOURCE_KEY)?.takeIf { queryParamValue ->
+                queryParamValue.isNotEmpty()
+            } ?: previousPage
             voucherId = it.pathSegments.getOrNull(5).orEmpty()
         }
     }
@@ -410,7 +412,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             voucherId,
             shopId,
             userId,
-            adapter.getVoucherName()
+            adapter.getVoucherName(),
+            isSellerView
         )
     }
 

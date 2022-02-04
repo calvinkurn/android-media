@@ -82,14 +82,15 @@ class MvcLockedToProductTracking @Inject constructor() {
         voucherId: String,
         shopId: String,
         userId: String,
-        voucherName: String
+        voucherName: String,
+        isSeller: Boolean
     ) {
         val eventLabel = "$productId - $voucherId - $voucherName"
         val itemList = String.format(MVC_PRODUCT_ITEM_LIST, voucherName)
         val eventBundle = Bundle().apply {
             putString(KEY_EVENT, SELECT_CONTENT)
             putString(KEY_EVENT_ACTION, CLICK_MVC_PRODUCT_CARD)
-            putString(KEY_EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(KEY_EVENT_CATEGORY, getShopPageEventCategory(isSeller))
             putString(KEY_EVENT_LABEL, eventLabel)
             putString(KEY_BUSINESS_UNIT, PHYSICAL_GOODS)
             putString(KEY_CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -117,12 +118,12 @@ class MvcLockedToProductTracking @Inject constructor() {
         selectedSortName: String,
         shopId: String,
         userId: String,
-        isOwner: Boolean
+        isSeller: Boolean
     ) {
         val eventMap = mapOf(
             KEY_EVENT to CLICK_PG,
             KEY_EVENT_ACTION to CLICK_MVC_SORT_OPTION,
-            KEY_EVENT_CATEGORY to getShopPageEventCategory(isOwner),
+            KEY_EVENT_CATEGORY to getShopPageEventCategory(isSeller),
             KEY_EVENT_LABEL to selectedSortName,
             KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
             KEY_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
@@ -132,8 +133,8 @@ class MvcLockedToProductTracking @Inject constructor() {
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
-    private fun getShopPageEventCategory(isOwner: Boolean): String {
-        return if (isOwner) {
+    private fun getShopPageEventCategory(isSeller: Boolean): String {
+        return if (isSeller) {
             SHOP_PAGE_SELLER
         } else {
             SHOP_PAGE_BUYER
