@@ -11,7 +11,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPTokenListrikFragment
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.header.HeaderUnify
 
 /**
@@ -36,7 +36,7 @@ class DigitalPDPTokenListrikActivity: BaseSimpleActivity(), HasComponent<Digital
     override fun getNewFragment(): Fragment? {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
         val bundle = intent.extras
-        digitalTelcoExtraParam.menuId = bundle?.getString(DigitalPDPConstant.PARAM_MENU_ID) ?: DigitalPDPTelcoUtil.DEFAULT_MENU_ID_TELCO
+        digitalTelcoExtraParam.menuId = bundle?.getString(DigitalPDPConstant.PARAM_MENU_ID) ?: DigitalPDPCategoryUtil.DEFAULT_MENU_ID_TELCO
         digitalTelcoExtraParam.categoryId = bundle?.getString(DigitalPDPConstant.PARAM_CATEGORY_ID) ?: ""
         digitalTelcoExtraParam.productId = bundle?.getString(DigitalPDPConstant.PARAM_PRODUCT_ID) ?: ""
         digitalTelcoExtraParam.clientNumber = bundle?.getString(DigitalPDPConstant.PARAM_CLIENT_NUMBER) ?: ""
