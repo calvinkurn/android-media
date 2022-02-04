@@ -13,7 +13,7 @@ import javax.inject.Inject
 class GetPromoSuggestionUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) : UseCase<GetPromoSuggestionResponse>() {
 
     override suspend fun executeOnBackground(): GetPromoSuggestionResponse {
-        val request = GraphqlRequest(GetPromoSuggestionQuery().getQuery(), GetPromoSuggestionResponse::class.java)
+        val request = GraphqlRequest(GetPromoSuggestionQuery.GQL_QUERY, GetPromoSuggestionResponse::class.java)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 
