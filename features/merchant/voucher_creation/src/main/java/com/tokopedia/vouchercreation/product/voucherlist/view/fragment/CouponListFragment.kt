@@ -83,7 +83,6 @@ import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherD
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -225,51 +224,40 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         selectedTarget: CouponFilterBottomSheet.FilterTarget
     ) {
         if (viewModel.selectedFilterType.value != selectedType) {
-            activateFilterType()
             viewModel.setSelectedFilterType(selectedType)
         }
         if (viewModel.selectedFilterTarget.value != selectedTarget) {
-            activateFilterTarget()
             viewModel.setSelectedFilterTarget(selectedTarget)
         }
     }
 
-    /*private fun refreshChipTypeSelectionState(selectedType: CouponFilterBottomSheet.FilterType) {
-        when (selectedType) {
+    private fun getTypeSelectionText(selectedType: CouponFilterBottomSheet.FilterType): String {
+        return when (selectedType) {
             CouponFilterBottomSheet.FilterType.CASHBACK -> {
-                filterType.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
-                filterType.refChipUnify.chipText = getString(R.string.mvc_cashback)
-
+                getString(R.string.mvc_cashback)
             }
             CouponFilterBottomSheet.FilterType.FREE_SHIPPING -> {
-                filterType.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
-                filterType.refChipUnify.chipText = getString(R.string.mvc_free_shipping)
-
+                getString(R.string.mvc_free_shipping)
             }
             CouponFilterBottomSheet.FilterType.NOT_SELECTED -> {
-                filterType.refChipUnify.chipType = ChipsUnify.TYPE_NORMAL
-                filterType.refChipUnify.chipText = getString(R.string.mvc_free_shipping)
+                getString(R.string.mvc_free_shipping)
             }
         }
     }
 
-    private fun refreshChipTargetSelectionState(selectedTarget: CouponFilterBottomSheet.FilterTarget) {
-        when (selectedTarget) {
+    private fun getTargetSelectionText(selectedTarget: CouponFilterBottomSheet.FilterTarget): String {
+        return when (selectedTarget) {
             CouponFilterBottomSheet.FilterTarget.PUBLIC -> {
-                filterTarget.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
-                filterTarget.refChipUnify.chipText = getString(R.string.mvc_public)
+                getString(R.string.mvc_public)
             }
             CouponFilterBottomSheet.FilterTarget.PRIVATE -> {
-                filterTarget.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
-                filterTarget.refChipUnify.chipText = getString(R.string.mvc_special)
+                getString(R.string.mvc_special)
             }
             CouponFilterBottomSheet.FilterTarget.NOT_SELECTED -> {
-                filterTarget.refChipUnify.chipType = ChipsUnify.TYPE_NORMAL
-                filterTarget.refChipUnify.chipText = getString(R.string.mvc_public)
+                getString(R.string.mvc_public)
             }
         }
-
-    }*/
+    }
 
     private fun onResetFilter(
         selectedType: CouponFilterBottomSheet.FilterType,
@@ -277,7 +265,12 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     ) {
         viewModel.setSelectedFilterType(selectedType)
         viewModel.setSelectedFilterTarget(selectedTarget)
-        Timber.d("Selected filter after reset : Type ${selectedType.name} Target ${selectedTarget.name}")
+        view?.post {
+            filterTarget.type = ChipsUnify.TYPE_NORMAL
+            filterTarget.refChipUnify.gone()
+            filterType.type = ChipsUnify.TYPE_NORMAL
+            filterType.refChipUnify.gone()
+        }
     }
 
     private fun onStatusSelected(couponName: String, @VoucherStatus couponStatus: String) {
@@ -339,8 +332,12 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
         val sortFilterItems = arrayListOf(filterStatus, filterType, filterTarget)
         chip.addItem(sortFilterItems)
-        filterTarget.initRemovableFilterItem()
-        filterType.initRemovableFilterItem()
+        filterTarget.initRemovableFilterItem {
+            viewModel.setSelectedFilterTarget(CouponFilterBottomSheet.FilterTarget.NOT_SELECTED)
+        }
+        filterType.initRemovableFilterItem {
+            viewModel.setSelectedFilterType(CouponFilterBottomSheet.FilterType.NOT_SELECTED)
+        }
     }
 
     private fun setupObserver() {
@@ -350,12 +347,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         observeBroadCastMetadata()
         observeDetailCoupon()
         observeShopBasicData()
-        viewModel.selectedFilterType.observe(viewLifecycleOwner) {
-
-        }
-        viewModel.selectedFilterTarget.observe(viewLifecycleOwner) {
-
-        }
+        observeSelectedFilterType()
+        observeSelectedFilterTarget()
     }
 
     private fun observeCouponList() = viewModel.couponList.observe(viewLifecycleOwner) {
@@ -503,6 +496,26 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
                     message = mapOf(TYPE_MESSAGE_KEY to errorMessage)
                 )
             }
+        }
+    }
+
+    private fun observeSelectedFilterTarget() {
+        viewModel.selectedFilterTarget.observe(viewLifecycleOwner) {
+            if (it != CouponFilterBottomSheet.FilterTarget.NOT_SELECTED) {
+                activateFilterTarget()
+                view?.post { filterTarget.refChipUnify.chipText = getTargetSelectionText(it) }
+            }
+            loadInitialData()
+        }
+    }
+
+    private fun observeSelectedFilterType() {
+        viewModel.selectedFilterType.observe(viewLifecycleOwner) {
+            if (it != CouponFilterBottomSheet.FilterType.NOT_SELECTED) {
+                activateFilterType()
+                view?.post { filterType.refChipUnify.chipText = getTypeSelectionText(it) }
+            }
+            loadInitialData()
         }
     }
 
@@ -833,11 +846,12 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
-    private fun SortFilterItem.initRemovableFilterItem() {
+    private fun SortFilterItem.initRemovableFilterItem(onRemoveIconClicked: () -> Unit) {
         view?.post {
             refChipUnify.setOnRemoveListener {
                 type = ChipsUnify.TYPE_NORMAL
                 refChipUnify.gone()
+                onRemoveIconClicked()
             }
             refChipUnify.gone()
         }
