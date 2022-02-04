@@ -524,7 +524,7 @@
             android:layout_height="wrap_content"
             android:background="@color/dms_proof_description_static_black"
             android:textAlignment="center"
-            android:text="Foto sepenuhnya diambil dan merupakan tanggung jawab kurir."
+            tools:text="Foto sepenuhnya diambil dan merupakan tanggung jawab kurir."
             android:textColor="@color/Unify_Background"
             android:paddingHorizontal="62dp"
             android:paddingVertical="10dp"
