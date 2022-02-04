@@ -78,7 +78,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
-        setInsets(view)
         setObserve()
     }
 
@@ -90,24 +89,14 @@ class PlayMoreActionBottomSheet @Inject constructor(
         userReportSubmissionSheetView.hide()
     }
 
-    private fun setInsets(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-
-            if (childView != null) {
-                val lpMargin = childView!!.layoutParams as ViewGroup.MarginLayoutParams
-                lpMargin.bottomMargin = insets.systemWindowInsetBottom
-            }
-
-            insets
-        }
-    }
-
     fun show(manager: FragmentManager) {
         show(manager, TAG)
     }
 
     private fun initBottomSheet() {
+        this.clearContentPadding = true
         this.isFullpage = true
+        this.showHeader = false
         this.listener = listener //TODO = setup listener
         this.childView =
             View.inflate(requireContext(), R.layout.bottom_sheet_play_more_action, null)
@@ -187,10 +176,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onCloseButtonClicked(view: PlayUserReportSheetViewComponent) {
-        kebabMenuSheetView.show()
-        userReportSheetView.hide()
-        kebabMenuSheetView.showWithHeight(height = userReportSheetHeight)
-        userReportSubmissionSheetView.hide()
+       playViewModel.hideUserReportSheet()
     }
 
     override fun onItemReportClick(

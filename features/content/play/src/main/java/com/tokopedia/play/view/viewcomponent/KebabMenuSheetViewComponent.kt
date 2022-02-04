@@ -28,7 +28,6 @@ class KebabMenuSheetViewComponent(
     private val listener: Listener
 ) : ViewComponent(container, R.id.cl_kebab_menu_sheet) {
 
-    private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
     private val clContent: ConstraintLayout = findViewById(R.id.cl_user_kebab_menu_sheet_content)
     private val rvActionList: RecyclerView = findViewById(R.id.rv_action_list)
     private val moreActionAdapter = PlayMoreActionAdapter()
@@ -53,17 +52,6 @@ class KebabMenuSheetViewComponent(
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = moreActionAdapter
         }
-
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
-
-            vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
-                height = insets.systemWindowInsetBottom
-            }
-            clContent.setPadding(clContent.paddingLeft, clContent.paddingTop, clContent.paddingRight, insets.systemWindowInsetBottom)
-
-            insets
-        }
-
     }
 
     fun showWithHeight(height: Int) {
