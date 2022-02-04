@@ -82,9 +82,13 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             keyImeChangeListener = object : TextField3.KeyImeChange {
                 override fun onPreKeyIme(event: KeyEvent) {
                    if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-                        clearFocus()
-                        hideIndicatorIcon()
-                        showClearIcon()
+                       if(isLoading){
+                           isClearableState = true
+                       } else {
+                           clearFocus()
+                           hideIndicatorIcon()
+                           showClearIcon()
+                       }
                     }
                 }
             }
@@ -114,11 +118,15 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 })
 
                 setOnEditorActionListener { _, actionId, keyEvent ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.keyCode == KEYCODE_BACK) {
-                        clearFocus()
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        if(isLoading){
+                            isClearableState = true
+                        } else {
+                            clearFocus()
+                            hideIndicatorIcon()
+                            showClearIcon()
+                        }
                         hideSoftKeyboard()
-                        hideIndicatorIcon()
-                        showClearIcon()
                     }
                     true
                 }
