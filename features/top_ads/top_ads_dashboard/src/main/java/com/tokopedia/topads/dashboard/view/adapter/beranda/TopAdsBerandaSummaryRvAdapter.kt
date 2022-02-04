@@ -3,6 +3,8 @@ package com.tokopedia.topads.dashboard.view.adapter.beranda
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.beranda.SummaryBeranda
@@ -28,6 +30,30 @@ class TopAdsBerandaSummaryRvAdapter :
             title.text = item.title
             txtValue.text = item.count.toString()
             txtPercentageChange.text = item.percentCount
+            rootLayout.setOnClickListener {
+                item.isSelected = !item.isSelected
+                if (item.isSelected) selectView(holder, item) else unSelectView(holder, item)
+            }
+        }
+    }
+
+    private fun selectView(holder: RingkasanViewHolder, item: SummaryBeranda) {
+        with(holder) {
+            rootLayout.setBackgroundColor(
+                ContextCompat.getColor(holder.rootLayout.context, selectedBackgroundColor)
+            )
+            bottomView.setBackgroundColor(item.selectedColor)
+        }
+    }
+
+    private fun unSelectView(holder: RingkasanViewHolder, item: SummaryBeranda) {
+        with(holder) {
+            rootLayout.setBackgroundColor(
+                ContextCompat.getColor(holder.rootLayout.context, unSelectedBackgroundColor)
+            )
+            bottomView.setBackgroundColor(
+                ContextCompat.getColor(holder.rootLayout.context, unSelectedBackgroundColor)
+            )
         }
     }
 
@@ -44,9 +70,14 @@ class TopAdsBerandaSummaryRvAdapter :
         val ivInformation: ImageUnify = view.findViewById(R.id.ivInformation)
         val txtValue: Typography = view.findViewById(R.id.txtValue)
         val txtPercentageChange: Typography = view.findViewById(R.id.txtPercentageChange)
+        val rootLayout: ConstraintLayout = view.findViewById(R.id.root_layout)
+        val bottomView: View = view.findViewById(R.id.bottomView)
     }
 
     companion object {
+        private val selectedBackgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_B100_44
+        private val unSelectedBackgroundColor =
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         private val layout = R.layout.item_rv_ringkasan
         fun createInstance() = TopAdsBerandaSummaryRvAdapter()
     }

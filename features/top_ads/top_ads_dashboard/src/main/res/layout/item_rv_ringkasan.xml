@@ -2,22 +2,22 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:card_type="shadow"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/unify_space_12"
-        android:paddingVertical="@dimen/spacing_lvl3">
+        android:paddingTop="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_68"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/leftGuide"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6"
             tools:text="tampil" />
@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/unify_space_12"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_system_action_information_16"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,8 +37,7 @@
             android:id="@+id/txtValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/leftGuide"
             app:layout_constraintTop_toBottomOf="@id/ivInformation"
             app:typographyType="heading_5"
             tools:text="1000.00" />
@@ -46,8 +46,10 @@
             android:id="@+id/txtPercentageChange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             android:textColor="@color/Unify_G500"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/leftGuide"
             app:layout_constraintTop_toBottomOf="@id/txtValue"
             app:typographyType="heading_5"
             tools:text="+16%" />
@@ -62,5 +64,18 @@
             app:layout_constraintBottom_toBottomOf="@id/txtPercentageChange"
             app:layout_constraintStart_toEndOf="@id/txtPercentageChange"
             app:typographyType="body_3" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/leftGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/unify_space_12" />
+
+        <View
+            android:id="@+id/bottomView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/unify_space_4"
+            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

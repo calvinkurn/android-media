@@ -152,7 +152,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
             checkResponse.summaryStats = true
             when (it) {
                 is Success -> {
-                    summaryRvAdapter.addItems(it.data.mapToSummary(resources))
+                    summaryRvAdapter.addItems(it.data.mapToSummary(requireContext()))
                     txtLastUpdated.text = String.format(
                         resources.getString(R.string.topads_dashboard_last_update_text),
                         it.data.lastUpdate

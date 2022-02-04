@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.data.utils
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
@@ -16,31 +17,37 @@ import com.tokopedia.topads.dashboard.data.utils.Utils.asPercentage
 object TopAdsDashboardBerandaUtils {
 
     fun TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Summary.mapToSummary(
-        resources: Resources
+        context: Context
     ) = listOf(
         SummaryBeranda(
-            resources.getString(R.string.label_top_ads_impression),
-            impressionSum, impressionPercent.asPercentage()
+            context.resources.getString(R.string.label_top_ads_impression),
+            impressionSum, impressionPercent.asPercentage(),
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_P400)
         ),
         SummaryBeranda(
-            resources.getString(R.string.label_top_ads_click),
-            clickSum, clickPercent.asPercentage()
+            context.resources.getString(R.string.label_top_ads_click),
+            clickSum, clickPercent.asPercentage(),
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
         ),
         SummaryBeranda(
-            resources.getString(R.string.label_top_ads_sold),
-            totalSoldSum, totalSoldPercent.asPercentage()
+            context.resources.getString(R.string.label_top_ads_sold),
+            totalSoldSum, totalSoldPercent.asPercentage(),
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_B400)
         ),
         SummaryBeranda(
-            resources.getString(com.tokopedia.topads.common.R.string.topads_common_pendapatan),
-            incomeSum, incomePercent.asPercentage()
+            context.resources.getString(com.tokopedia.topads.common.R.string.topads_common_pendapatan),
+            incomeSum, incomePercent.asPercentage(),
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
         ),
         SummaryBeranda(
-            resources.getString(com.tokopedia.topads.common.R.string.topads_common_pengeluaran),
-            spendingSum, spendingPercent.asPercentage()
+            context.resources.getString(com.tokopedia.topads.common.R.string.topads_common_pengeluaran),
+            spendingSum, spendingPercent.asPercentage(),
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R400)
         ),
         SummaryBeranda(
-            resources.getString(R.string.topads_dashboard_efektivitas_iklan),
-            roasSum, roasPercent.asPercentage()
+            context.resources.getString(R.string.topads_dashboard_efektivitas_iklan),
+            roasSum, roasPercent.asPercentage(),
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_T500)
         ),
     )
 
