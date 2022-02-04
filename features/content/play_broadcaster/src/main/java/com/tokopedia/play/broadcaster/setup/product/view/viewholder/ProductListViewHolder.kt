@@ -67,7 +67,6 @@ internal class ProductListViewHolder private constructor() {
 
     internal class Loading(
         binding: ItemLoadingBinding,
-        private val onLoading: () -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -75,10 +74,6 @@ internal class ProductListViewHolder private constructor() {
             if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
                 layoutParams.isFullSpan = true
             }
-        }
-
-        fun bind() {
-            onLoading()
         }
     }
 }

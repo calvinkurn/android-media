@@ -19,19 +19,29 @@ import com.tokopedia.play_common.view.loadImage
  */
 internal class ProductListAdapter(
     onSelected: (ProductUiModel) -> Unit,
-    onLoading: () -> Unit,
+    private val onLoading: () -> Unit,
 ) : BaseDiffUtilAdapter<ProductListAdapter.Model>() {
 
     init {
         delegatesManager
             .addDelegate(ProductListAdapterDelegate.Product(onSelected))
-            .addDelegate(ProductListAdapterDelegate.Loading(onLoading))
+            .addDelegate(ProductListAdapterDelegate.Loading())
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: List<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+        if (position == (itemCount - 1)) onLoading()
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return if (oldItem is Model.Product && newItem is Model.Product) {
             oldItem.product.id == newItem.product.id
-        } else oldItem == newItem
+        } else if (oldItem is Model.Loading && newItem is Model.Loading) false
+        else oldItem == newItem
     }
 
     override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {

@@ -48,6 +48,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         etalaseId: String,
         page: Int,
         keyword: String,
+        sort: Int,
     ): List<ProductUiModel> = withContext(dispatchers.io) {
         if (userSession.shopId.isBlank()) error("User does not has shop")
 
@@ -59,7 +60,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
                     perPage = PRODUCTS_IN_ETALASE_PER_PAGE,
                     etalaseId = etalaseId,
                     keyword = keyword,
-                    sort = 0,
+                    sort = sort,
                 )
             )
         }.executeOnBackground()

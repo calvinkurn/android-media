@@ -15,7 +15,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  * Created by kenny.hadisaputra on 28/01/22
  */
 internal class ProductListViewComponent(
-    view: RecyclerView,
+    private val view: RecyclerView,
     eventBus: EventBus<in Event>,
 ) : ViewComponent(view) {
 
@@ -36,7 +36,7 @@ internal class ProductListViewComponent(
     fun setProductList(
         productList: List<ProductUiModel>,
         selectedList: List<ProductUiModel>,
-        hasNextPage: Boolean,
+        showLoading: Boolean,
     ) {
         adapter.setItemsAndAnimateChanges(
             productList.map { product ->
@@ -44,8 +44,10 @@ internal class ProductListViewComponent(
                     product = product,
                     isSelected = selectedList.any { it.id == product.id }
                 )
-            } + if (hasNextPage) listOf(ProductListAdapter.Model.Loading) else emptyList()
+            } + if (showLoading) listOf(ProductListAdapter.Model.Loading) else emptyList()
         )
+
+        view.invalidateItemDecorations()
     }
 
     sealed class Event {

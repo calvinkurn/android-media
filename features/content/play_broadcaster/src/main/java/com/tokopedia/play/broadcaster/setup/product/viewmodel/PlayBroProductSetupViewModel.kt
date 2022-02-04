@@ -16,18 +16,15 @@ import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -174,6 +171,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
                         } else "",
                         page = page,
                         keyword = param.keyword,
+                        sort = param.sort.id,
                     )
 
                     _focusedProductList.update {

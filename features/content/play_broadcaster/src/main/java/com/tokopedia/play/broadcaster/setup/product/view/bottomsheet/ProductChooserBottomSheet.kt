@@ -140,7 +140,7 @@ class ProductChooserBottomSheet @Inject constructor(
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             eventBus.subscribe().collect {
                 when (it) {
                     is SortChipsViewComponent.Event -> handleSortChipsEvent(it)
@@ -163,7 +163,7 @@ class ProductChooserBottomSheet @Inject constructor(
             productListView.setProductList(
                 productList = productListPaging.productList,
                 selectedList = selectedMap.values.flatten(),
-                hasNextPage = productListPaging.resultState is PageResultState.Success &&
+                showLoading = productListPaging.resultState !is PageResultState.Success ||
                         productListPaging.resultState.hasNextPage,
             )
         }

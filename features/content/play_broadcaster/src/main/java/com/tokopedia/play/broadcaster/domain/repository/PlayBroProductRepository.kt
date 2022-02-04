@@ -17,5 +17,6 @@ interface PlayBroProductRepository {
         etalaseId: String,
         page: Int,
         keyword: String,
+        sort: Int,
     ): List<ProductUiModel>
 }

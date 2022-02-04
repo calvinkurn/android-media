@@ -45,9 +45,7 @@ internal class ProductListAdapterDelegate private constructor() {
         }
     }
 
-    internal class Loading(
-        private val onLoading: () -> Unit,
-    ) : TypedAdapterDelegate<
+    internal class Loading : TypedAdapterDelegate<
             ProductListAdapter.Model.Loading,
             ProductListAdapter.Model,
             ProductListViewHolder.Loading>(
@@ -56,9 +54,7 @@ internal class ProductListAdapterDelegate private constructor() {
         override fun onBindViewHolder(
             item: ProductListAdapter.Model.Loading,
             holder: ProductListViewHolder.Loading
-        ) {
-            holder.bind()
-        }
+        ) {}
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
@@ -70,7 +66,6 @@ internal class ProductListAdapterDelegate private constructor() {
                     parent,
                     false,
                 ),
-                onLoading,
             )
         }
     }
