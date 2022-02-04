@@ -11,7 +11,6 @@ import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -27,6 +26,7 @@ import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R.color as unifyRColor
 
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
@@ -197,17 +197,18 @@ private fun Label.setCustomLabelType(labelGroupType: String) {
 private fun Label.trySetCustomLabelType(labelGroupType: String) {
     unlockFeature = true
 
-    val colorRes = labelGroupType.toUnifyLabelColor()
-    val colorHexInt = ContextCompat.getColor(context, colorRes)
-    val colorHexString = "#${Integer.toHexString(colorHexInt)}"
-    setLabelType(colorHexString)
+    val (backgroundColorRes, textColorRes) = labelGroupType.toUnifyLabelColor()
+    val backgroundColorHexInt = ContextCompat.getColor(context, backgroundColorRes)
+    val backgroundColorHexString = "#${Integer.toHexString(backgroundColorHexInt)}"
+
+    setLabelType(backgroundColorHexString)
+    setTextColor(ContextCompat.getColor(context, textColorRes))
 }
 
-@ColorRes
-private fun String?.toUnifyLabelColor(): Int {
+private fun String?.toUnifyLabelColor(): Pair<Int, Int> {
     return when (this) {
-        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-        else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        TRANSPARENT_BLACK -> unifyRColor.Unify_N700_68 to unifyRColor.Unify_NN0
+        else -> unifyRColor.Unify_N700_68 to unifyRColor.Unify_NN0
     }
 }
 
@@ -228,29 +229,29 @@ private fun String?.toUnifyTextColor(context: Context): Int {
         when (this) {
             TEXT_DARK_ORANGE -> ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Y400
+                unifyRColor.Unify_Y400
             )
             TEXT_DARK_RED -> ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_R500
+                unifyRColor.Unify_R500
             )
             TEXT_DARK_GREY -> ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                unifyRColor.Unify_N700_68
             )
             TEXT_LIGHT_GREY -> ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                unifyRColor.Unify_N700_44
             )
             TEXT_GREEN -> ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
+                unifyRColor.Unify_G500
             )
             else -> Color.parseColor(this)
         }
     } catch (throwable: Throwable) {
         throwable.printStackTrace()
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        ContextCompat.getColor(context, unifyRColor.Unify_N700)
     }
 }
 
@@ -430,9 +431,9 @@ private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typograph
                 productCardModel.stockBarLabelColor,
                 ContextCompat.getColor(
                     it.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    unifyRColor.Unify_N700_68
                 )
             )
         else ->
-            MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            MethodChecker.getColor(it.context, unifyRColor.Unify_N700_68)
     }
