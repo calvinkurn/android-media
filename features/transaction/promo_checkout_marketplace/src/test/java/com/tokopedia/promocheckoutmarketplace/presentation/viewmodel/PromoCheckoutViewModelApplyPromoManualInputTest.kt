@@ -186,6 +186,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(PromoRequest(), "PROMO_CODE")
@@ -203,6 +204,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(PromoRequest(), "PROMO_CODE")
