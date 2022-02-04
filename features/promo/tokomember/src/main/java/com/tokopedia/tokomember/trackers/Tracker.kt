@@ -44,20 +44,10 @@ object Tracker {
         const val CLICK_TM_BS_CLOSE_CLOSE = "open membership - click bottom sheet - close"
 
     }
-        object Label {
-            const val PDP_VIEW = "pdp view"
-            const val SHOP_PAGE = "shop page"
-            const val MVC_CLOSE_VIEW_SELEGKAPANYA = "mvc_closed_lihat_selengkapnya"
-            const val MVC_CLOSE_VIEW_MULAIBELANJA = "mvc_closed_mulai_belanja"
-            const val MVC_CLOSE_CEK_INFO = "mvc_closed_cek_info"
-        }
 
-        fun fillCommonItems(map: MutableMap<String, Any>, userId: String?, businessUnit: String) {
+    fun fillCommonItems(map: MutableMap<String, Any>, businessUnit: String) {
             map[Constants.BUSINESS_UNIT] = businessUnit
             map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
-            userId?.let {
-                map[Constants.USER_ID] = userId
-            }
         }
     }
 

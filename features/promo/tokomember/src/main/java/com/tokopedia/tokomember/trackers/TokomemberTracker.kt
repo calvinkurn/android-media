@@ -1,20 +1,20 @@
 package com.tokopedia.tokomember.trackers
 
-import com.tokopedia.tokomember.util.FollowWidgetType
+import com.tokopedia.tokomember.util.MembershipWidgetType
 
-class TokomemberTracker{
+class TokomemberTracker {
     var trackerImpl:TokomemberTrackerImpl = DefaultTmTrackerImpl()
 
-    fun userClickBottomSheetButton(@FollowWidgetType widgetType: String,shopId: String, paymentId: String, userId: String?, @TokomemberSource source: Int, isTokomember:Boolean){
-        trackerImpl.userClickBottomSheetButton(widgetType,shopId,paymentId,userId,source,isTokomember)
+    fun userClickBottomSheetButton(@MembershipWidgetType widgetType: Int,shopId: String, paymentId: String, @TokomemberSource source: Int){
+        trackerImpl.userClickBottomSheetButton(widgetType,shopId,paymentId,source)
     }
 
-    fun viewBottomSheetImpression(@FollowWidgetType widgetType: String, shopId: String, paymentId:String, userId: String?, @TokomemberSource source: Int){
-        trackerImpl.viewBottomSheetImpression(widgetType,shopId,paymentId,userId, source)
+    fun viewBottomSheetImpression(@MembershipWidgetType widgetType: Int, shopId: String, paymentId:String, @TokomemberSource source: Int){
+        trackerImpl.viewBottomSheetImpression(widgetType,shopId,paymentId, source)
     }
 
-    fun closeMainBottomSheet(@FollowWidgetType widgetType: String,shopId: String, paymentId:String, userId: String?, @TokomemberSource source: Int) {
-        trackerImpl.closeMainBottomSheet(widgetType,shopId,paymentId,userId, source)
+    fun closeMainBottomSheet(@MembershipWidgetType widgetType: Int,shopId: String, paymentId:String, @TokomemberSource source: Int) {
+        trackerImpl.closeMainBottomSheet(widgetType,shopId,paymentId, source)
     }
 
 }

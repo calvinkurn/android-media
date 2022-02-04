@@ -4,13 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
-import com.tokopedia.thankyou_native.data.mapper.PageType
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
+import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
@@ -56,7 +56,7 @@ class ThanksPageDataViewModel @Inject constructor(
 
     fun getFeatureEngine(thanksPageData: ThanksPageData) {
         gyroEngineRequestUseCase.cancelJobs()
-        var queryParamTokomember : Pair<Int,Float> ? = null
+        var queryParamTokomember : TokoMemberRequestParam ? = null
         gyroEngineRequestUseCase.getFeatureEngineData(
             thanksPageData
         ) {
@@ -74,7 +74,7 @@ class ThanksPageDataViewModel @Inject constructor(
                     }
                     val triple = Triple(480244,50000F, PaymentPageMapper.getPaymentPageType(thanksPageData.pageType))
                     PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)
-                    postGyroRecommendation(it.engineData , triple)
+                    postGyroRecommendation(it.engineData , queryParamTokomember)
                 }
             }
         }
@@ -101,13 +101,13 @@ class ThanksPageDataViewModel @Inject constructor(
         return FeatureRecommendationMapper.isTokomemberWidgetShow(engineData)
     }
 
-    private fun getTokomemberRequestParams(engineData: ThanksPageData): Pair<Int,Float> {
+    private fun getTokomemberRequestParams(engineData: ThanksPageData): TokoMemberRequestParam {
         return FeatureRecommendationMapper.getTokomemberRequestParams(engineData)
     }
 
     private fun postGyroRecommendation(
         engineData: FeatureEngineData?,
-        queryParamTokomember: Triple<Int, Float, PageType?>
+        queryParamTokomember: TokoMemberRequestParam?
     ) {
         gyroEngineMapperUseCase.cancelJobs()
         gyroEngineMapperUseCase.getFeatureListData(engineData,queryParamTokomember, {

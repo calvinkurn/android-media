@@ -1,8 +1,8 @@
 package com.tokopedia.tokomember.util
 
-import androidx.annotation.StringDef
-import com.tokopedia.tokomember.util.FollowWidgetType.Companion.MEMBERSHIP_CLOSE
-import com.tokopedia.tokomember.util.FollowWidgetType.Companion.MEMBERSHIP_OPEN
+import androidx.annotation.IntDef
+import com.tokopedia.tokomember.util.MembershipWidgetType.Companion.MEMBERSHIP_CLOSE
+import com.tokopedia.tokomember.util.MembershipWidgetType.Companion.MEMBERSHIP_OPEN
 
 const val IO = "IO"
 
@@ -66,11 +66,11 @@ const val MEMBERSHIP_REGISTER ="""
 
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(MEMBERSHIP_OPEN, MEMBERSHIP_CLOSE)
-annotation class FollowWidgetType {
+@IntDef(MEMBERSHIP_OPEN, MEMBERSHIP_CLOSE)
+annotation class MembershipWidgetType {
 
     companion object {
-        const val MEMBERSHIP_OPEN = "membership_open"
-        const val MEMBERSHIP_CLOSE = "membership_close"
+        const val MEMBERSHIP_OPEN = 1
+        const val MEMBERSHIP_CLOSE = 2
     }
 }

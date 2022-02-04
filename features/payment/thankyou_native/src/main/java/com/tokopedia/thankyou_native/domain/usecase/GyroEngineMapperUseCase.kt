@@ -2,8 +2,7 @@ package com.tokopedia.thankyou_native.domain.usecase
 
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
-import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
-import com.tokopedia.thankyou_native.presentation.adapter.model.TokomemberModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.tokomember.model.MembershipShopResponse
 import com.tokopedia.tokomember.usecase.TokomemberUsecase
 import com.tokopedia.usecase.coroutines.UseCase
@@ -17,13 +16,13 @@ class GyroEngineMapperUseCase @Inject constructor(
     private val tokomemberUsecase: TokomemberUsecase,
     ) : UseCase<GyroRecommendation>() {
     private lateinit var featureEngineData: FeatureEngineData
-    private var queryParamTokomember: Triple<Int, Float , PageType?>? = null
+    private var queryParamTokomember: TokoMemberRequestParam? = null
     private var deferredTokomemberData: Deferred<MembershipShopResponse>? = null
     private var tokomemberModel: TokomemberModel ? = null
 
     fun getFeatureListData(
         featureEngineData: FeatureEngineData?,
-        queryParamTokomember: Triple<Int, Float, PageType?>,
+        queryParamTokomember: TokoMemberRequestParam?,
         onSuccess: (GyroRecommendation) -> Unit,
         onError: (Throwable) -> Unit
     ) {
@@ -49,28 +48,29 @@ class GyroEngineMapperUseCase @Inject constructor(
     }
 
     private fun setTokomemberData(gyroRecommendationListItem: GyroRecommendation?) {
-        tokomemberModel?.also {
-            when (queryParamTokomember?.third) {
+        tokomemberModel?.also { tokomemberModel ->
+            when (queryParamTokomember?.pageType) {
                 is WaitingPaymentPage -> gyroRecommendationListItem?.gyroVisitable?.addAll(
-                    listOf(it.listOfTokomemberItem[0])
+                    listOf(tokomemberModel.listOfTokomemberItem[TOKOMEMBER_WAITING_WIDGET])
                 )
                 is InstantPaymentPage -> gyroRecommendationListItem?.gyroVisitable?.addAll(
-                    listOf(it.listOfTokomemberItem[1])
+                    listOf(tokomemberModel.listOfTokomemberItem[TOKOMEMBER_INSTANT_WIDGET])
                 )
                 else -> {
                 }
             }
-            gyroRecommendationListItem?.gyroMembershipSuccessWidget = it.listOfTokomemberItem[2]
+            gyroRecommendationListItem?.gyroMembershipSuccessWidget = tokomemberModel.listOfTokomemberItem[TOKOMEMBER_SUCCESS_WIDGET]
         }
     }
 
     suspend fun getTokomemberData() {
-        queryParamTokomember?.let {
-            tokomemberUsecase.setGqlParams(it)
+        queryParamTokomember?.let { tokomemberRequestParam->
+            tokomemberUsecase.setGqlParams(tokomemberRequestParam.shopID , tokomemberRequestParam.amount )
             deferredTokomemberData = fetchTokomemberData()
-            tokomemberModel = deferredTokomemberData?.await()?.let { it1 ->
+            tokomemberModel = deferredTokomemberData?.await()?.let { it ->
                 TokomemberMapper.getGyroTokomemberItem(
-                    it1.membershipGetShopRegistrationWidget
+                    it.membershipGetShopRegistrationWidget ,
+                    tokomemberRequestParam
                 )
             }
         }

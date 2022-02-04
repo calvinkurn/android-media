@@ -70,32 +70,20 @@ class GyroEngineRequestUseCase @Inject constructor(
         return false
     }
 
-    private fun isMarketplace(thanksPageData: ThanksPageData): Boolean {
-        thanksPageData.shopOrder?.forEach {
-            when (it.storeType) {
-                StoreItemKey.MARKETPLACE -> return true
-            }
+    private fun isMarketplace(thanksPageData: ThanksPageData) =
+        thanksPageData.shopOrder.any {
+            it.storeType == StoreItemKey.MARKETPLACE
         }
-        return false
-    }
 
-    private fun isGoldMerchant(thanksPageData: ThanksPageData): Boolean {
-        thanksPageData.shopOrder?.forEach {
-            when (it.storeType) {
-                StoreItemKey.GOLD_MERCHANT -> return true
-            }
+    private fun isGoldMerchant(thanksPageData: ThanksPageData) =
+        thanksPageData.shopOrder.any {
+            it.storeType == StoreItemKey.GOLD_MERCHANT
         }
-        return false
-    }
 
-    private fun isOfficialStore(thanksPageData: ThanksPageData): Boolean {
-        thanksPageData.shopOrder?.forEach {
-            when (it.storeType) {
-                StoreItemKey.OFFICIAL_STORE -> return true
-            }
+    private fun isOfficialStore(thanksPageData: ThanksPageData) =
+        thanksPageData.shopOrder.any {
+            it.storeType == StoreItemKey.OFFICIAL_STORE
         }
-        return false
-    }
 
     companion object {
         const val PARAM_REQUEST = "request"

@@ -16,9 +16,12 @@ class TokomemberUsecase @Inject constructor(private val tokomemberRepository: To
         return tokomemberRepository.getTokomemberData(shopId, amount)
     }
 
-    fun setGqlParams(queryParamTokomember: Triple<Int, Float, Any?>) {
-       this.shopId = queryParamTokomember.first
-        this.amount = queryParamTokomember.second
+    fun setGqlParams(
+        shopId: Int ,
+        amount: Float
+    ) {
+       this.shopId = shopId
+        this.amount = amount
     }
 }
 

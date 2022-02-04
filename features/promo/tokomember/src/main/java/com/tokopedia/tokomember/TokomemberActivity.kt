@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.tokomember.model.BottomSheetContentItem
+import com.tokopedia.tokomember.trackers.TokomemberTracker
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 
@@ -39,9 +40,15 @@ class TokomemberActivity : BaseActivity() , TokomemberBottomSheetView.OnFinished
     }
 
     private fun showTmBottomSheetDetail() {
+        val bottomSheetContentItem = intent?.getParcelableExtra<BottomSheetContentItem>(KEY_MEMBERSHIP)
         val bottomSheet = TokomemberBottomSheetView.newInstance(intent?.extras?:Bundle())
         bottomSheet.setOnFinishedListener(this)
         bottomSheet.setShowListener {
+            TokomemberTracker().viewBottomSheetImpression(
+                bottomSheetContentItem?.membershipType ?: 0,
+                bottomSheetContentItem?.shopID?.toString() ?: "",
+                bottomSheetContentItem?.paymentID ?: "", bottomSheetContentItem?.source ?: 0
+            )
             val titleMargin = dpToPx(16).toInt()
             bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
             bottomSheet.bottomSheetTitle.setMargin(titleMargin, 0, 0, 0)

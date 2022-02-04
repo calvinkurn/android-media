@@ -7,7 +7,9 @@ import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
+import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.tokomember.trackers.TokomemberSource
 import org.json.JSONObject
 
 object FeatureRecommendationMapper {
@@ -48,7 +50,7 @@ object FeatureRecommendationMapper {
         return false
     }
 
-    fun getTokomemberRequestParams(thanksPageData: ThanksPageData): Pair<Int,Float>{
+    fun getTokomemberRequestParams(thanksPageData: ThanksPageData): TokoMemberRequestParam{
         var totalPrice= 0F
         val storeId = 0
         thanksPageData.shopOrder.forEach {
@@ -57,7 +59,12 @@ object FeatureRecommendationMapper {
             }
         }
         //TODO get shopid
-        return Pair(storeId, totalPrice)
+        return TokoMemberRequestParam(
+            pageType = PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+            source = TokomemberSource.THANK_YOU,
+            paymentID = thanksPageData.paymentID,
+            amount = totalPrice
+        )
     }
 
     fun getFeatureList(engineData: FeatureEngineData?): GyroRecommendation? {

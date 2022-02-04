@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokomember.TokomemberActivity.Companion.KEY_MEMBERSHIP
 import com.tokopedia.tokomember.di.DaggerTokomemberComponent
 import com.tokopedia.tokomember.model.BottomSheetContentItem
+import com.tokopedia.tokomember.trackers.TokomemberTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
@@ -16,7 +17,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TokomemberBottomSheetView : BottomSheetUnify() {
 
-    private var onFinishedListener: TokomemberBottomSheetView.OnFinishedListener? = null
+    private var onFinishedListener: OnFinishedListener? = null
     private var textTitle: Typography? = null
     private var textDesc: Typography? = null
     private var button: UnifyButton? = null
@@ -46,7 +47,7 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
         textDesc = view.findViewById(R.id.tvSubtitle)
         button = view?.findViewById(R.id.tokoButton)
         setUpBottomSheet()
-        setBottomSheet()
+        setBottomSheetData()
         setChild(view)
 
         DaggerTokomemberComponent.builder()
@@ -63,21 +64,31 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
             bottomSheet.isGestureInsetBottomIgnored = true
             customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels / 2).toDp()
 
+            bottomSheetData = arguments?.getParcelable(KEY_MEMBERSHIP)
+
             setCloseClickListener {
+                TokomemberTracker().closeMainBottomSheet(
+                    bottomSheetData?.membershipType ?: 0,
+                    bottomSheetData?.shopID?.toString() ?: "",
+                    bottomSheetData?.paymentID ?: "", bottomSheetData?.source ?: 0
+                )
                 dismiss()
                 onFinishedListener?.onFinish()
             }
         }
     }
 
-    private fun setBottomSheet() {
-        bottomSheetData = arguments?.getParcelable(KEY_MEMBERSHIP)
-
+    private fun setBottomSheetData() {
         textTitle?.text = bottomSheetData?.title
         textDesc?.text = bottomSheetData?.description
         button?.text = bottomSheetData?.cta?.text
 
         button?.setOnClickListener {
+            TokomemberTracker().userClickBottomSheetButton(
+                bottomSheetData?.membershipType ?: 0,
+                bottomSheetData?.shopID?.toString() ?: "",
+                bottomSheetData?.paymentID ?: "", bottomSheetData?.source ?: 0
+            )
             RouteManager.route(context, bottomSheetData?.cta?.appLink)
         }
     }

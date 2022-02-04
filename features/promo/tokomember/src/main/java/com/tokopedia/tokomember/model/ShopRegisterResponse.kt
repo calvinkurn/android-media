@@ -23,8 +23,20 @@ data class BottomSheetContentItem (
 	val description: String? = "",
 
 	@SerializedName("title")
-	val title: String? = ""
-) : Parcelable
+	val title: String? = "" ,
+
+	@SerializedName("source")
+	var source: Int? = 0 ,
+
+	@SerializedName("shopID")
+	var shopID: Int? = 0 ,
+
+	@SerializedName("membershipType")
+	var membershipType: Int? = 0 ,
+
+	@SerializedName("paymentID")
+	var paymentID: String? = ""
+	) : Parcelable
 
 @Parcelize
 data class CtaShopRegister(

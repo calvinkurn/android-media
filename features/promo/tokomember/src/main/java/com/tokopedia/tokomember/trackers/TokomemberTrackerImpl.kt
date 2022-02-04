@@ -1,13 +1,13 @@
 package com.tokopedia.tokomember.trackers
 
-import com.tokopedia.tokomember.util.FollowWidgetType
+import com.tokopedia.tokomember.util.MembershipWidgetType
 
 interface TokomemberTrackerImpl {
 
-    fun userClickBottomSheetButton(@FollowWidgetType widgetType: String,shopId: String, paymentId:String, userId: String?, @TokomemberSource source: Int, isTokomember:Boolean)
+    fun userClickBottomSheetButton(@MembershipWidgetType widgetType: Int,shopId: String, paymentId:String, @TokomemberSource source: Int)
 
-    fun viewBottomSheetImpression(@FollowWidgetType widgetType: String, shopId: String, paymentId:String, userId: String?, @TokomemberSource source: Int)
+    fun viewBottomSheetImpression(@MembershipWidgetType widgetType: Int, shopId: String, paymentId:String, @TokomemberSource source: Int)
 
-    fun closeMainBottomSheet(@FollowWidgetType widgetType: String, shopId: String, paymentId:String, userId: String?, @TokomemberSource source: Int)
+    fun closeMainBottomSheet(@MembershipWidgetType widgetType: Int, shopId: String, paymentId:String, @TokomemberSource source: Int)
 
 }

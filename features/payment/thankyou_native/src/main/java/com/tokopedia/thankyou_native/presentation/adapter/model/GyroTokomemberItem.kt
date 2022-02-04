@@ -38,3 +38,7 @@ data class GyroTokomemberItem(
 data class TokomemberModel(
     val listOfTokomemberItem: List<GyroTokomemberItem> = arrayListOf(),
 )
+
+const val TOKOMEMBER_WAITING_WIDGET = 0
+const val TOKOMEMBER_INSTANT_WIDGET = 1
+const val TOKOMEMBER_SUCCESS_WIDGET = 2

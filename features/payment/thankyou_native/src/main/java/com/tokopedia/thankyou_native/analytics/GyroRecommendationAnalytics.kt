@@ -3,7 +3,9 @@ package com.tokopedia.thankyou_native.analytics
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.BUSINESS_UNIT_TOKOPOINTS
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLICK_GYRO_RECOM
-import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLICK_TOKOMEMBER_ACION
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLICK_TOKOMEMBER_ACION_CLOSE
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLICK_TOKOMEMBER_ACION_OPEN
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLOSE_MEMBERSHIP
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_BUSINESS_UNIT
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_EVENT
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_EVENT_ACTION
@@ -12,6 +14,7 @@ import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_EVENT_LABEL
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_PAYMENT_ID
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_PROFILE_ID
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_USER_ID
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.OPEN_MEMBERSHIP
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_CLICK
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_CLICK_TOKOMEMBER
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_KEY_CATEGORY
@@ -25,7 +28,8 @@ import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_VIEW
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.PROMO_VIEW_TOKOMEMBER
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VALUE_ORDER_COMPLETE
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_GYRO_RECOM
-import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_ACION
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_ACION_CLOSE
+import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_ACION_OPEN
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_TOKOMEMBER_CATEGORY
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
@@ -70,7 +74,7 @@ class GyroRecommendationAnalytics @Inject constructor(
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
                 val data = getParentTrackingNodeTokoMember(
-                    PROMO_VIEW_TOKOMEMBER, VIEW_TOKOMEMBER_ACION,
+                    PROMO_VIEW_TOKOMEMBER, getEventActionView(gyroRecommendationItem.membershipType),
                     thanksPageData, gyroRecommendationItem)
                 analyticTracker.sendGeneralEvent(data)
             }
@@ -94,13 +98,13 @@ class GyroRecommendationAnalytics @Inject constructor(
                                       thanksPageData: ThanksPageData, position: Int) {
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
-                val data = getParentTrackingNodeTokoMember(PROMO_CLICK_TOKOMEMBER, CLICK_TOKOMEMBER_ACION,
+                val data = getParentTrackingNodeTokoMember(
+                    PROMO_CLICK_TOKOMEMBER, getEventActionClick(gyroRecommendationItem.membershipType),
                     thanksPageData, gyroRecommendationItem)
                 analyticTracker.sendGeneralEvent(data)
             }
         }, onError = {})
     }
-
 
     private fun getEnhancedECommerceNode(key: String, item: GyroRecommendationListItem,
                                          position: Int): Map<String, Any> {
@@ -142,6 +146,26 @@ class GyroRecommendationAnalytics @Inject constructor(
 
         )
     }
+
+    private fun getEventActionView(membershipType: Int): String {
+        return when (membershipType) {
+            OPEN_MEMBERSHIP -> VIEW_TOKOMEMBER_ACION_OPEN
+            CLOSE_MEMBERSHIP -> VIEW_TOKOMEMBER_ACION_CLOSE
+            else -> {
+                ""
+            }
+        }
+    }
+
+    private fun getEventActionClick(membershipType: Int): String {
+        return when (membershipType) {
+            OPEN_MEMBERSHIP -> CLICK_TOKOMEMBER_ACION_OPEN
+            CLOSE_MEMBERSHIP -> CLICK_TOKOMEMBER_ACION_CLOSE
+            else -> {
+                ""
+            }
+        }
+    }
 }
 
 object GyroTrackingKeys {
@@ -161,11 +185,15 @@ object GyroTrackingKeys {
     val PROMO_CLICK_TOKOMEMBER = "clickBGP"
     val VIEW_GYRO_RECOM = "view gyro recommendation"
     val CLICK_GYRO_RECOM = "click gyro recommendation"
-    val VIEW_TOKOMEMBER_ACION = "open membership - view widget"
-    val CLICK_TOKOMEMBER_ACION = "open membership - click widget"
+    val VIEW_TOKOMEMBER_ACION_OPEN = "open membership - view widget"
+    val CLICK_TOKOMEMBER_ACION_OPEN = "open membership - click widget"
+    val VIEW_TOKOMEMBER_ACION_CLOSE = "close membership - view widget"
+    val CLICK_TOKOMEMBER_ACION_CLOSE = "close membership - click widget"
     val VIEW_TOKOMEMBER_CATEGORY = "tokomember - thank you page"
     val BUSINESS_UNIT_TOKOPOINTS = "tokopoints"
 
+    const val OPEN_MEMBERSHIP = 1
+    const val CLOSE_MEMBERSHIP = 2
 
     val PROMO_KEY_ID = "id"
     val PROMO_KEY_PROMOTIONS = "promotions"
