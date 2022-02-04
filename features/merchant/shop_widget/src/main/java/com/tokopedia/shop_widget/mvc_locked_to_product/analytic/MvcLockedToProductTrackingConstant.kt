@@ -41,7 +41,7 @@ object MvcLockedToProductTrackingConstant {
         const val CLICK_PG = "clickPG"
         const val CLICK_MVC_SORT_OPTION = "click filter chip settings on mvc product page"
         const val MVC_LOCKED_TO_PRODUCT_PAGE_TYPE = "/shopmvcproductpage"
-        const val MVC_LOCKED_TO_PRODUCT_PAGE_SOURCE = "mvc product page - %1s - %2s"
+        const val MVC_LOCKED_TO_PRODUCT_PAGE_SOURCE = "shop mvc product page - %1s - %2s"
         const val MVC_LOCKED_TO_PRODUCT_SCREEN_NAME = "$MVC_LOCKED_TO_PRODUCT_PAGE_TYPE - %1s"
     }
 
