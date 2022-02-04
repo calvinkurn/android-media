@@ -23,7 +23,7 @@ class DrawerSelectionWidget : FrameLayout {
     private var canReorder: Boolean = false
     private var maxVideo: Int = 1
 
-    private var binding: WidgetSelectionBottomNavBinding =
+    private var binding: WidgetSelectionBottomNavBinding? =
         WidgetSelectionBottomNavBinding.inflate(
             LayoutInflater.from(context)
         )
@@ -49,12 +49,12 @@ class DrawerSelectionWidget : FrameLayout {
 
     private fun setupView(attrs: AttributeSet?) {
         if (attrs != null) setAttribute(attrs)
-        addView(binding.root)
+        addView(binding?.root)
 
         setupRecyclerView()
         widgetProperties()
 
-        binding.rvThumbnail.itemAnimator?.let {
+        binding?.rvThumbnail?.itemAnimator?.let {
             if (it is SimpleItemAnimator) {
                 it.supportsChangeAnimations = false
             }
@@ -63,14 +63,14 @@ class DrawerSelectionWidget : FrameLayout {
 
     private fun setupRecyclerView() {
         adapter = DrawerSelectionAdapter(arrayListOf())
-        binding.rvThumbnail.layoutManager = LinearLayoutManager(
+        binding?.rvThumbnail?.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
 
-        binding.rvThumbnail.setHasFixedSize(true)
-        binding.rvThumbnail.adapter = adapter
+        binding?.rvThumbnail?.setHasFixedSize(true)
+        binding?.rvThumbnail?.adapter = adapter
     }
 
     private fun widgetProperties() {

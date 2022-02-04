@@ -110,16 +110,13 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/img_preview"
+    <com.tokopedia.picker.ui.widget.thumbnail.MediaThumbnailWidget
+        android:id="@+id/img_thumbnail"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
-        android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/action_container"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/action_container"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="@+id/action_container"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

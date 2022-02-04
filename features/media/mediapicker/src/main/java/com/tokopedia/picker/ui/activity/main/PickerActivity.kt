@@ -1,8 +1,14 @@
 package com.tokopedia.picker.ui.activity.main
 
+import android.annotation.SuppressLint
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
+import android.view.WindowInsetsController
+import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -29,6 +35,7 @@ import com.tokopedia.picker.utils.*
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -112,9 +119,9 @@ open class PickerActivity : BaseActivity()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
+        setStatusBarColor()
         setupQueryAndUIConfigBuilder()
         restoreDataState(savedInstanceState)
-
         initInjector()
         initView()
         initObservable()
@@ -162,6 +169,21 @@ open class PickerActivity : BaseActivity()
 
     override fun mediaSelected(): List<MediaUiModel> {
         return medias
+    }
+
+    @SuppressLint("ObsoleteSdkInt")
+    private fun setStatusBarColor() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (!isDarkMode()) {
+//                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+//                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+//            }
+//        }
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+//        }
     }
 
     private fun setupQueryAndUIConfigBuilder() {

@@ -114,11 +114,10 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     private fun initObservable() {
         viewModel.mediaFiles.observe(viewLifecycleOwner) {
+            hasMediaList(it.isNotEmpty())
+
             if (it.isNotEmpty()) {
                 adapter.setData(it)
-                hasMediaList()
-            } else {
-                hasNotMediaList()
             }
         }
 
@@ -149,16 +148,10 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         viewModel.fetch(RECENT_ALBUM_ID, param)
     }
 
-    private fun hasMediaList() {
-        setupWidgetAlbumSelector(true)
-        setupSelectionDrawerWidget(true)
-        binding?.emptyState?.root?.hide()
-    }
-
-    private fun hasNotMediaList() {
-        setupWidgetAlbumSelector(false)
-        setupSelectionDrawerWidget(false)
-        binding?.emptyState?.root?.show()
+    private fun hasMediaList(isShown: Boolean) {
+        setupWidgetAlbumSelector(isShown)
+        setupSelectionDrawerWidget(isShown)
+        binding?.emptyState?.root?.showWithCondition(!isShown)
     }
 
     private fun setupSelectionDrawerWidget(isShown: Boolean) {

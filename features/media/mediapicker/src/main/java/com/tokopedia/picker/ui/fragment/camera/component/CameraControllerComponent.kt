@@ -18,16 +18,14 @@ import com.tokopedia.picker.R
 import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.ui.fragment.camera.recyclers.adapter.CameraSliderAdapter
 import com.tokopedia.picker.ui.fragment.camera.recyclers.managers.SliderLayoutManager
+import com.tokopedia.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.picker.ui.uimodel.internal.CameraSelectionMode
-import com.tokopedia.picker.utils.DEFAULT_DURATION_LABEL
+import com.tokopedia.picker.ui.widget.thumbnail.MediaThumbnailWidget
 import com.tokopedia.picker.utils.anim.CameraButton.animStartRecording
 import com.tokopedia.picker.utils.anim.CameraButton.animStopRecording
-import com.tokopedia.picker.utils.pickerLoadImage
 import com.tokopedia.picker.utils.toVideoDurationFormat
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
-import java.io.File
-import java.util.*
 
 class CameraControllerComponent(
     private val param: PickerParam,
@@ -52,8 +50,8 @@ class CameraControllerComponent(
     private val txtMaxDuration = findViewById<Typography>(R.id.txt_max_duration)
     private val videoDurationContainer = findViewById<LinearLayout>(R.id.video_duration)
 
-    // image preview
-    private val imgPreview = findViewById<ImageView>(R.id.img_preview)
+    // image thumbnail
+    private val imgThumbnail = findViewById<MediaThumbnailWidget>(R.id.img_thumbnail)
 
     // action button
     private val btnTakeCamera = findViewById<View>(R.id.btn_take_camera)
@@ -136,15 +134,13 @@ class CameraControllerComponent(
         lstCameraMode.smoothScrollToPosition(VIDEO_MODE)
     }
 
-    fun setThumbnailPreview(file: File) {
+    fun setThumbnailPreview(model: MediaUiModel) {
         if (!param.isMultipleSelectionType()) return
-
-        imgPreview.pickerLoadImage(file.path)
-        imgPreview.show()
+        imgThumbnail.smallThumbnail(model)
     }
 
     fun removeThumbnailPreview() {
-        imgPreview.hide()
+        imgThumbnail.removeWidget()
     }
 
     fun startRecording() {

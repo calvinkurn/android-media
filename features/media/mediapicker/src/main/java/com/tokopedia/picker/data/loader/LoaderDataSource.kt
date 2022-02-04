@@ -62,7 +62,6 @@ open class LoaderDataSource(private val context: Context) {
         val file = makeSafeFile(path) ?: return null
 
         if (param.excludeMedias().contains(file)) return null
-        if (!file.exists()) return null
 
         // Exclude GIF when we don't want it
         if (!param.isIncludeGifFile()) {

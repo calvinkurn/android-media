@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.databinding.ViewItemGalleryPickerBinding
@@ -16,9 +14,6 @@ import com.tokopedia.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.MediaDiffUtil
 import com.tokopedia.picker.ui.uimodel.MediaUiModel
-import com.tokopedia.picker.utils.extractVideoDuration
-import com.tokopedia.picker.utils.pickerLoadImage
-import com.tokopedia.picker.utils.toVideoDurationFormat
 import com.tokopedia.utils.view.binding.viewBinding
 
 class GalleryAdapter(
@@ -120,30 +115,14 @@ class GalleryAdapter(
     ) : RecyclerView.ViewHolder(view) {
 
         private val binding: ViewItemGalleryPickerBinding? by viewBinding()
-        private val context by lazy { itemView.context }
 
         fun bind(element: MediaUiModel, isSelected: Boolean, click: () -> Unit) {
-            videoDurationLabel(element)
-
             binding?.icCheck?.showWithCondition(isSelected)
             binding?.viewSelected?.alpha = if (isSelected) 0.5f else 0f
-
-            binding?.imgPreview?.pickerLoadImage(element.uri.toString())
+            binding?.imgThumbnail?.regularThumbnail(element)
 
             itemView.setOnClickListener {
                 click()
-            }
-        }
-
-        private fun videoDurationLabel(element: MediaUiModel) {
-            binding?.bgVideoShadow?.showWithCondition(element.isVideo())
-
-            if (element.isVideo()) {
-                val duration = extractVideoDuration(context, element.path)
-                binding?.viewLabel?.text = duration.toVideoDurationFormat()
-                binding?.viewLabel?.show()
-            } else {
-                binding?.viewLabel?.hide()
             }
         }
 

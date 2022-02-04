@@ -6,6 +6,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.picker.R
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
@@ -36,8 +37,8 @@ fun Context.dimensionOf(dimen: Int)
     = resources.getDimension(dimen)
 
 fun ImageView.pickerLoadImage(path: String) {
-    val thumbnailSize = context.dimensionPixelOffsetOf(DP_72)
-    val roundedSize = context.dimensionOf(DP_4)
+    val thumbnailSize = context.dimensionPixelOffsetOf(R.dimen.picker_thumbnail_size)
+    val roundedSize = context.dimensionOf(R.dimen.picker_thumbnail_rounded)
 
     val isFitCenter = File(path).let {
         if (it.exists()) {
@@ -50,6 +51,7 @@ fun ImageView.pickerLoadImage(path: String) {
     loadImage(path) {
         overrideSize(Resize(thumbnailSize, thumbnailSize))
         setRoundedRadius(roundedSize)
+        isAnimate(true)
         setPlaceHolder(-1)
 
         if (isFitCenter) {

@@ -24,21 +24,35 @@ class AlbumRepositoryImpl constructor(
         if (cursor.moveToFirst()) {
             do {
                 val media = medias(cursor, param) ?: continue
+
+                // get first album media for thumbnail
                 if (recentPreviewUri == null) recentPreviewUri = media.uri
 
+                // directory id
                 val bucketId = cursor.getLong(projection[4])
-                var bucket = cursor.getString(projection[3])
 
-                if (bucket == null) {
-                    bucket = File(media.path).parentFile.let {
+                // directory name
+                var bucketName = cursor.getString(projection[3])
+
+                if (bucketName == null) {
+                    bucketName = File(media.path).parentFile.let {
                         it?.name
                     }?: DEFAULT_ALBUM_NAME
                 }
 
-                val album = albumMap[bucket]
+                val album = albumMap[bucketName]
 
-                if (album == null) albumMap[bucket] = Album(bucketId, bucket, media.uri, 0)
-                if (album != null) album.count++
+                if (album == null) {
+                    albumMap[bucketName] = Album(
+                        bucketId,
+                        bucketName,
+                        media.uri
+                    )
+                }
+
+                if (album != null) {
+                    album.count++
+                }
             } while (cursor.moveToNext())
         }
 
@@ -69,7 +83,7 @@ class AlbumRepositoryImpl constructor(
                     id = RECENT_ALBUM_ID,
                     name = RECENT_ALBUM_NAME,
                     preview = firstMediaPreviewUri,
-                    count = recentMediaSize + 1
+                    count = recentMediaSize++
                 ))
             }
     }

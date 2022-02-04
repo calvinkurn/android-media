@@ -7,21 +7,10 @@
     android:layout_height="wrap_content"
     android:foregroundGravity="center">
 
-    <ImageView
-        android:id="@+id/img_preview"
+    <com.tokopedia.picker.ui.widget.thumbnail.MediaThumbnailWidget
+        android:id="@+id/img_thumbnail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"/>
-
-    <View
-        android:id="@+id/bg_video_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_gravity="bottom"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:alpha="0.6"
-        android:background="@drawable/bg_picker_video_thumbnail"/>
+        android:layout_height="match_parent"/>
 
     <View
         android:id="@+id/view_selected"
@@ -42,19 +31,6 @@
         app:icon_color_night_enable="@color/Unify_G500"
         app:icon_name="CHECK_CIRCLE"
         android:visibility="gone"
-        tools:visibility="visible"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/view_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        android:textColor="@android:color/white"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        tools:text="Label"
         tools:visibility="visible"/>
 
 </com.tokopedia.picker.ui.widget.layout.SquareFrameLayout>

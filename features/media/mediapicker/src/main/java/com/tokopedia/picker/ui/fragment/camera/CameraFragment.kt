@@ -157,7 +157,7 @@ open class CameraFragment : BaseDaggerFragment()
                 preview.onStartTakePicture()
             } else {
                 preview.onStartTakeVideo()
-                controller.onVideoDurationChanged()
+//                controller.onVideoDurationChanged()
             }
         }
     }
@@ -255,8 +255,8 @@ open class CameraFragment : BaseDaggerFragment()
 
                 // update the thumbnail
                 if (currentMediaList.isNotEmpty()) {
-                    val file = File(currentMediaList.last().path)
-                    controller.setThumbnailPreview(file)
+                    val lastMediaToPreview = currentMediaList.last()
+                    controller.setThumbnailPreview(lastMediaToPreview)
                 } else {
                     controller.removeThumbnailPreview()
                 }
