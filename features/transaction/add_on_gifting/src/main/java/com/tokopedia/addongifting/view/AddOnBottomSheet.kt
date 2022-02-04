@@ -44,8 +44,10 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
         initializeView()
-        return super.onCreateView(inflater, container, savedInstanceState)
+        initializeData()
+        return view
     }
 
     private fun initializeView() {
@@ -73,8 +75,12 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
     private fun initializeRecyclerView(viewBinding: LayoutAddOnBottomSheetBinding) {
         val adapterTypeFactory = AddOnListAdapterTypeFactory(this)
         adapter = AddOnListAdapter(adapterTypeFactory)
-        viewBinding.rvMiniCartList.adapter = adapter
-        viewBinding.rvMiniCartList.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
+        viewBinding.rvAddOn.adapter = adapter
+        viewBinding.rvAddOn.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private fun initializeData() {
+
     }
 
     override fun onDismiss(dialog: DialogInterface) {

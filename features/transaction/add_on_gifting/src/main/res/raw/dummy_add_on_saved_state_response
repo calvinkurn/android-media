@@ -1,0 +1,40 @@
+{
+  "add_ons": [
+    {
+      "add_on_key": "12345",
+      "add_on_level": "product",
+      "add_on_data": [
+        {
+          "add_on_id": 1,
+          "add_on_qty": 1,
+          "add_on_price": 1,
+          "add_on_metadata": "{\"add_on_note\":{\"is_custom_note\":true,\"to\":\"budi\",\"from\":\"tono\",\"notes\":\"Selamat Hari Raya\"}}"
+        },
+        {
+          "add_on_id": 2,
+          "add_on_qty": 1,
+          "add_on_price": 1,
+          "add_on_metadata": "{\"add_on_note\":{\"is_custom_note\":false}}"
+        }
+      ]
+    },
+    {
+      "add_on_key": "12345-111-5-75",
+      "add_on_level": "order",
+      "add_on_data": [
+        {
+          "add_on_id": 1,
+          "add_on_qty": 1,
+          "add_on_price": 1,
+          "add_on_metadata": "{\"add_on_note\":{\"is_custom_note\":true,\"to\":\"budi\",\"from\":\"tono\",\"notes\":\"Selamat Hari Raya\"}}"
+        },
+        {
+          "add_on_id": 2,
+          "add_on_qty": 1,
+          "add_on_price": 1,
+          "add_on_metadata": "{\"add_on_note\":{\"is_custom_note\":false}}"
+        }
+      ]
+    }
+  ]
+}
