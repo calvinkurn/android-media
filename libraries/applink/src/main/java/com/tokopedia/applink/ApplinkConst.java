@@ -462,6 +462,7 @@ public interface ApplinkConst {
     String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";
 
     String MEDIA_PICKER = "tokopedia://media-picker";
+    String MEDIA_PICKER_PREVIEW = "tokopedia://media-picker-preview";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";

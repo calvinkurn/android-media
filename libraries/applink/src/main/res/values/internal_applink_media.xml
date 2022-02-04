@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="host_universal_media_picker" translatable="false">/media-picker</string>
+    <string name="host_media_picker" translatable="false">/media-picker</string>
+    <string name="host_media_picker_preview" translatable="false">/media-picker-preview</string>
 </resources>

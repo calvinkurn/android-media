@@ -9,7 +9,7 @@
 
     <application>
         <activity
-            android:name=".ui.activity.main.PickerActivity"
+            android:name="com.tokopedia.picker.ui.activity.main.PickerActivity"
             android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
@@ -19,12 +19,29 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:path="@string/host_universal_media_picker"
+                    android:path="@string/host_media_picker"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".ui.activity.album.AlbumActivity"
+            android:name="com.tokopedia.preview.ui.activity.PickerPreviewActivity"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:path="@string/host_media_picker_preview"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.picker.ui.activity.album.AlbumActivity"
             android:exported="false"/>
     </application>
 
