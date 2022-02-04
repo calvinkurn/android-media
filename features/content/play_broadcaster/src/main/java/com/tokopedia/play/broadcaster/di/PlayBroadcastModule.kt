@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
@@ -97,8 +98,9 @@ class PlayBroadcastModule {
         setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         setupTitleAnalytic: PlayBroSetupTitleAnalytic,
         setupCoverAnalytic: PlayBroSetupCoverAnalytic,
+        setupProductAnalytic: PlayBroSetupProductAnalytic,
     ): PlayBroadcastAnalytic {
-        return PlayBroadcastAnalytic(userSession, contentTaggingAnalytic, interactiveAnalytic, setupMenuAnalytic, setupTitleAnalytic, setupCoverAnalytic)
+        return PlayBroadcastAnalytic(userSession, contentTaggingAnalytic, interactiveAnalytic, setupMenuAnalytic, setupTitleAnalytic, setupCoverAnalytic, setupProductAnalytic)
     }
 
     @ActivityRetainedScope

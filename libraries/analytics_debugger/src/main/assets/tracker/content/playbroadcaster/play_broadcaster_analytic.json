@@ -102,7 +102,66 @@
       "sessionIris": ".*",
       "userId": ".*"
     },
-
+    {
+      "event": "clickPG",
+      "eventAction": "click - search bar",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - save product card",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - add product card",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - product card",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - delete a product tagged",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - save product tag",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
 
 
     {

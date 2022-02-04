@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.analytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
@@ -24,11 +25,13 @@ class PlayBroadcastAnalytic(
         private val setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         private val setupTitleAnalytic: PlayBroSetupTitleAnalytic,
         private val setupCoverAnalytic: PlayBroSetupCoverAnalytic,
+        private val setupProductAnalytic: PlayBroSetupProductAnalytic,
 ) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic,
     PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
-    PlayBroSetupCoverAnalytic by setupCoverAnalytic {
+    PlayBroSetupCoverAnalytic by setupCoverAnalytic,
+    PlayBroSetupProductAnalytic by setupProductAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
