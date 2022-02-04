@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterBottomSheetImpression
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
@@ -21,6 +23,7 @@ object ActionHandler {
     fun handleClickNavigation(
         context: Context?,
         detail: Detail,
+        productId: String,
         openHowToUse: (Bundle) -> Unit,
         openGoPay: (Bundle) -> Unit
     ) {
@@ -28,7 +31,7 @@ object ActionHandler {
             TYPE_APP_LINK -> routeToAppLink(context, detail.cta.android_url)
             TYPE_WEB_VIEW -> {
                 if (shouldShowGoPayBottomSheet(detail))
-                    openGoPay(getGoPayBundle(detail.cta))
+                    openGoPay(getGoPayBundle(productId, detail))
                 else routeToWebView(context, detail.cta.android_url)
             }
             TYPE_HOW_TO_USE, TYPE_HOW_TO_USE_II -> {
@@ -59,14 +62,27 @@ object ActionHandler {
         putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, detail)
     }
 
-    private fun getGoPayBundle(cta: Cta) =
+    private fun getGoPayBundle(productId: String, detail: Detail) =
         Bundle().apply {
-            putParcelable(PayLaterTokopediaGopayBottomsheet.GOPAY_BOTTOMSHEET_DETAIL, cta)
+            putParcelable(PayLaterTokopediaGopayBottomsheet.GOPAY_BOTTOMSHEET_DETAIL, detail.cta)
+            putString(PayLaterTokopediaGopayBottomsheet.PARTER_NAME, detail.gatewayDetail?.name?:"")
+            putInt(PayLaterTokopediaGopayBottomsheet.TENURE, detail.tenure?:0)
+            putString(PayLaterTokopediaGopayBottomsheet.PRODUCT_ID, productId)
+            putInt(PayLaterTokopediaGopayBottomsheet.EMI_AMOUNT, detail.installment_per_month_ceil ?:0)
         }
 
-    fun getInstallmentBundle(installment: InstallmentDetails) =
-        Bundle().apply {
-            putParcelable(PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL, installment)
+    fun getInstallmentBundle(detail: Detail): Bundle {
+        val eventImpression = PayLaterBottomSheetImpression().apply {
+            tenureOption = detail.tenure?:0
+            payLaterPartnerName = detail.gatewayDetail?.name ?:""
+            action = PdpSimulationAnalytics.IMPRESSION_BOTTOMSHEET
+            emiAmount = detail.installment_per_month_ceil?.toString() ?:""
+            // TODO userStatus, limit and redirectLink
         }
+        return Bundle().apply {
+            putParcelable(PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL, detail.installementDetails)
+            putParcelable(PayLaterInstallmentFeeInfo.IMPRESSION_DETAIL, eventImpression)
+        }
+    }
 
 }

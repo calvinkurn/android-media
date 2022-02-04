@@ -9,6 +9,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterCtaClick
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.unifycomponents.UnifyButton
@@ -56,8 +58,18 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         itemView.payLaterActionCta.text = element.cta.name
         itemView.payLaterActionCta.buttonVariant = if (element.cta.button_color == TYPE_FILLED) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
         itemView.payLaterActionCta.setOnClickListener {
+            interaction.invokeAnalytics(getCTAClickEvent(element))
             interaction.onCtaClicked(element)
         }
+    }
+
+    private fun getCTAClickEvent(detail: Detail) = PayLaterCtaClick().apply {
+        tenureOption = detail.tenure ?: 0
+        payLaterPartnerName = detail.gatewayDetail?.name ?: ""
+        emiAmount = detail.installment_per_month_ceil.toString()
+        redirectLink = ""
+        ctaWording = detail.cta.name ?: ""
+        action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
     }
 
     private fun setUpFooter(element: Detail) {
@@ -112,8 +124,18 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             }
             partnerTenureInfo.setOnClickListener {
                 if (element.installementDetails != null)
-                interaction.installementDetails(element.installementDetails)
+                    interaction.invokeAnalytics(getInstallmentInfoEvent(element))
+                    interaction.installementDetails(element)
             }
         }
+    }
+
+    private fun getInstallmentInfoEvent(detail: Detail) = PayLaterCtaClick().apply {
+        tenureOption = detail.tenure ?: 0
+        payLaterPartnerName = detail.gatewayDetail?.name ?: ""
+        emiAmount = detail.installment_per_month_ceil.toString()
+        redirectLink = ""
+        ctaWording = detail.cta.name ?: ""
+        action = PdpSimulationAnalytics.CLICK_INSTALLMENT_INFO
     }
 }

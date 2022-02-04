@@ -9,7 +9,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.*
 
 class PayLaterAdapterFactoryImpl(
-    private val interaction: PayLaterOptionInteraction,
+    val interaction: PayLaterOptionInteraction,
 ) : BaseAdapterTypeFactory(), PayLaterAdapterFactory {
 
     override fun type(detail: Detail) = PayLaterDetailViewHolder.LAYOUT

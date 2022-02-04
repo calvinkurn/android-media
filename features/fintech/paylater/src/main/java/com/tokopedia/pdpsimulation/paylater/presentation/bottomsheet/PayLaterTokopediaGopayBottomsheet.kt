@@ -11,6 +11,7 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.paylater_gopay_activation_bottomsheet.*
@@ -19,17 +20,12 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private lateinit var cta: Cta
     private var isWebLink = true
-
-
     private var parterName: String? = ""
     private var tenure: Int? = 0
-    private var montlyInstallment: Double? = 0.0
+    private var montlyInstallment: Int? = 0
     private var productId: String? = ""
-    private var redirectPosition = 0
-
 
     private val childLayoutRes = R.layout.paylater_gopay_activation_bottomsheet
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +38,10 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     private fun getArgumentData() {
         arguments?.let {
             cta = it.getParcelable<Cta>(GOPAY_BOTTOMSHEET_DETAIL) as Cta
-            //parterName = it.getString(PARTER_NAME) ?: ""
-            //tenure = it.getInt(TENURE)
-            //montlyInstallment = it.getDouble(EMI_AMOUNT)
-            //productId = it.getString(PRODUCT_ID)
-            //redirectPosition = it.getInt(PAYLATER_PARTNER_POSITION)
-
+            parterName = it.getString(PARTER_NAME) ?: ""
+            tenure = it.getInt(TENURE)
+            montlyInstallment = it.getInt(EMI_AMOUNT)
+            productId = it.getString(PRODUCT_ID)
         }
     }
 
@@ -90,12 +84,6 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private fun openRouteView(androidUrl: String?) {
         if (isWebLink) {
-            // @Todo update by rohan
-            /*pdpSimulationCallback?.setViewModelData(Utils.UpdateViewModelVariable.RefreshType, true)
-            pdpSimulationCallback?.setViewModelData(
-                Utils.UpdateViewModelVariable.PartnerPosition,
-                redirectPosition
-            )*/
             val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + androidUrl
             RouteManager.route(context, webViewAppLink)
         } else {

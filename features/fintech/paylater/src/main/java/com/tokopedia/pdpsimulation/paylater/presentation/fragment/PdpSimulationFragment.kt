@@ -12,14 +12,14 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
-import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.ActionHandler
@@ -57,18 +57,18 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         BottomSheetNavigator(childFragmentManager)
     }
 
-    private val productId: String by lazy {
+    private val productId: String by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString(PARAM_PRODUCT_ID) ?: ""
     }
 
-    private val defaultTenure: Int by lazy {
+    private val defaultTenure: Int by lazy(LazyThreadSafetyMode.NONE) {
         (arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0").toInt()
     }
 
-    private val simulationAdapter: PayLaterSimulationAdapter by lazy {
+    private val simulationAdapter: PayLaterSimulationAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
     }
-    private val tenureAdapter: PayLaterSimulationTenureAdapter by lazy {
+    private val tenureAdapter: PayLaterSimulationTenureAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PayLaterSimulationTenureAdapter { payLaterList ->
             simulationAdapter.addAllElements(payLaterList)
             rvPayLaterOption.scrollToPosition(0)
@@ -79,31 +79,22 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         interaction = PayLaterOptionInteraction(
             onCtaClicked = { handleAction(it) },
             installementDetails = { openInstallmentBottomSheet(it) },
-            seeMoreOptions = { simulationAdapter.updateOptionList(it) }
+            seeMoreOptions = { simulationAdapter.updateOptionList(it) },
+            invokeAnalytics = { sendEvent(it) }
         )
     )
 
     private fun handleAction(detail: Detail) {
-        ActionHandler.handleClickNavigation(context, detail,
-            openHowToUse = {
-                bottomSheetNavigator.showBottomSheet(
-                    PayLaterActionStepsBottomSheet::class.java,
-                    it
-                )
-            },
-            openGoPay = {
-                bottomSheetNavigator.showBottomSheet(
-                    PayLaterTokopediaGopayBottomsheet::class.java,
-                    it
-                )
-            }
+        ActionHandler.handleClickNavigation(context, detail, productId,
+            openHowToUse = { bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it) },
+            openGoPay = { bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it) }
         )
     }
 
-    private fun openInstallmentBottomSheet(installment: InstallmentDetails) {
+    private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
             PayLaterInstallmentFeeInfo::class.java,
-            ActionHandler.getInstallmentBundle(installment)
+            ActionHandler.getInstallmentBundle(detail)
         )
     }
 
@@ -156,7 +147,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         }
     }
 
-
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
         showSimulationViews()
         setSimulationAdapter(data)
@@ -172,6 +162,12 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 data[defaultSelectedSimulation].simulationList ?: arrayListOf()
             )
         }
+        val event = PayLaterAnalyticsBase().apply {
+            tenureOption = defaultSelectedSimulation
+            action = PdpSimulationAnalytics.IMPRESSION_PAYLATER
+            //Todo partner name, userstatus
+        }
+        sendEvent(event)
     }
 
     private fun simulationFailed() {
@@ -272,10 +268,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     }
 
-    private fun sendEvent(event: PdpSimulationEvent) {
-        activity?.let {
-            (it as PdpSimulationCallback).sendAnalytics(event)
-        }
+    private fun sendEvent(event: PayLaterAnalyticsBase) = activity?.let {
+        (it as PdpSimulationCallback).sendAnalytics(event)
     }
 
     override fun getScreenName() = "PayLater & Cicilan"

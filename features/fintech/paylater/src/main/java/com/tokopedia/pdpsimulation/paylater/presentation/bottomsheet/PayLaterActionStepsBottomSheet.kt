@@ -10,7 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.analytics.*
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterActionStepsAdapter
@@ -72,7 +72,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (!noteData.isEmpty())
+        if (noteData.isNotEmpty())
             tickerPaylaterRegister.setTextDescription(noteData)
         else
             tickerPaylaterRegister.gone()
@@ -131,29 +131,36 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     }
 
     private fun sendClickEventAnalytics() {
-        sendEvent(
-            PdpSimulationEvent.PayLater.MainBottomSheetClickEvent(
-                partnerName ?: "",
-                tenure,
-                actionUrl
-            )
-        )
+        val event = PayLaterCtaClick().apply {
+            productId = ""
+            userStatus = ""
+            tenureOption = tenure
+            payLaterPartnerName = partnerName ?: ""
+            action = PdpSimulationAnalytics.CLICK_CTA_HOW_TO_USE
+            emiAmount = ""
+            limit = ""
+            redirectLink = actionUrl
+            ctaWording = btnRegister.text.toString()
+        }
+        sendEvent(event)
     }
 
     private fun sendImpressionAnalytics() {
-        sendEvent(
-            PdpSimulationEvent.PayLater.MainBottomSheetImpression(
-                partnerName
-                    ?: "",
-                tenure
-            )
-        )
+        val event = PayLaterBottomSheetImpression().apply {
+            productId = ""
+            userStatus = ""
+            tenureOption = tenure
+            payLaterPartnerName = partnerName ?: ""
+            action = PdpSimulationAnalytics.IMPRESSION_HOW_TO_USE
+            emiAmount = ""
+            limit = ""
+            redirectLink = actionUrl
+        }
+        sendEvent(event)
     }
 
-    private fun sendEvent(event: PdpSimulationEvent) {
-        activity?.let {
-            (it as PdpSimulationCallback).sendAnalytics(event)
-        }
+    private fun sendEvent(event: PayLaterAnalyticsBase) {
+        activity?.let { (it as PdpSimulationCallback).sendAnalytics(event) }
     }
 
     companion object {

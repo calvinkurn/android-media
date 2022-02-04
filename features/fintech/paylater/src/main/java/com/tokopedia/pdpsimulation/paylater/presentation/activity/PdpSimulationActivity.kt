@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
@@ -23,18 +24,15 @@ import javax.inject.Inject
 
 class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>, PdpSimulationCallback {
 
-    private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
+    private val pdpSimulationComponent: PdpSimulationComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
+
     private val REQUEST_CODE_LOGIN = 123
     @Inject
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-
-    override fun getScreenName(): String {
-        return SCREEN_NAME
-    }
+    private var productId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         pdpSimulationComponent.inject(this)
@@ -43,9 +41,7 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     }
 
     override fun getLayoutRes() = R.layout.activity_pdp_simulation
-
     override fun getToolbarResourceID() = R.id.pdpSimulationHeader
-
     override fun getParentViewResourceID(): Int = R.id.pdpSimulationParentView
 
     override fun getNewFragment(): Fragment? {
@@ -59,17 +55,12 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
         } else {
             val bundle = Bundle()
             intent.extras?.let {
+                productId = it.getString(PARAM_PRODUCT_ID) ?: ""
                 bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
-                //bundle.putString(PARAM_PRODUCT_URL, it.getString(PARAM_PRODUCT_URL))
                 bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
             }
             PdpSimulationFragment.newInstance(bundle)
         }
-    }
-
-
-    companion object {
-        const val SCREEN_NAME = "PayLater & Cicilan"
     }
 
     private fun initInjector() =
@@ -102,8 +93,19 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     }
 
     override fun getComponent() = pdpSimulationComponent
+    override fun getScreenName() = SCREEN_NAME
+
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {}
     override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
         pdpSimulationAnalytics.get().sendPdpSimulationEvent(pdpSimulationEvent)
+    }
+    override fun sendAnalytics(pdpSimulationEvent: PayLaterAnalyticsBase) {
+        pdpSimulationEvent.productId = productId
+        //send
+        pdpSimulationAnalytics.get().sendPayLaterSimulationEvent(pdpSimulationEvent)
+    }
+
+    companion object {
+        const val SCREEN_NAME = "PayLater & Cicilan"
     }
 }
