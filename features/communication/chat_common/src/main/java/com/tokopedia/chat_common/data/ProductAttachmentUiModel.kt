@@ -337,7 +337,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var categoryId: Long = 0
         internal var playStoreData: PlayStoreData = PlayStoreData()
         internal var minOrder: Int = 1
-        internal var remainingStock: Int = 1
+        internal var remainingStock: Int = 0
         internal var status: Int = 0
         internal var rating: TopchatProductRating = TopchatProductRating()
         internal var variants: List<AttachmentVariant> = emptyList()
