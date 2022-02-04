@@ -38,8 +38,8 @@ class ProductHighlightComponentViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_product_highlight
-        const val TITLE_LENGTH = 22
-        const val START_INDEX = 0
+        private const val TITLE_LENGTH = 22
+        private const val START_INDEX = 0
     }
 
     override fun bind(element: ProductHighlightDataModel?) {
