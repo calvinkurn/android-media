@@ -62,7 +62,26 @@
       "sessionIris": ".*",
       "userId": ".*"
     },
-
+    {
+      "event": "clickPG",
+      "eventAction": "click - batalkan livestream",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - .*",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - mulai live streaming",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
 
 
 

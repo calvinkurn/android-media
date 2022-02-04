@@ -21,6 +21,8 @@ class PlayBroSetupMenuAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
 ) : PlayBroSetupMenuAnalytic{
 
+    private val shopId = userSession.shopId
+
     override fun clickSetupTitleMenu() {
         sendEvent("click - edit title")
     }
@@ -41,15 +43,30 @@ class PlayBroSetupMenuAnalyticImpl @Inject constructor(
         sendEvent("click - x on preparation page")
     }
 
+    override fun clickCancelStreaming(channelId: String, title: String) {
+        sendEvent(
+            "click - batalkan livestream",
+            "$shopId - $channelId - $title"
+        )
+    }
+
+    override fun clickStartStreaming(channelId: String) {
+        sendEvent(
+            "click - mulai live streaming",
+            "$shopId - $channelId"
+        )
+    }
+
     private fun sendEvent(
         eventAction: String,
+        eventLabel: String = shopId,
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to "clickPG",
                 KEY_EVENT_ACTION to eventAction,
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to userSession.shopId,
+                KEY_EVENT_LABEL to eventLabel,
                 KEY_CURRENT_SITE to currentSite,
                 KEY_USER_ID to userSession.userId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT

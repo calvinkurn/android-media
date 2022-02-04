@@ -14,4 +14,8 @@ interface PlayBroSetupMenuAnalytic {
     fun clickSwitchCameraOnPreparation()
 
     fun clickCloseOnPreparation()
+
+    fun clickCancelStreaming(channelId: String, title: String)
+
+    fun clickStartStreaming(channelId: String)
 }

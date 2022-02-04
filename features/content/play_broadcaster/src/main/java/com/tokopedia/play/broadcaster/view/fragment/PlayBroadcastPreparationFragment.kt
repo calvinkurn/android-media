@@ -146,7 +146,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             formCover.setListener(this@PlayBroadcastPreparationFragment)
 
             flBroStartLivestream.setOnClickListener {
-                analytic.clickStartStreamingOnFinalSetupPage()
+                analytic.clickStartStreaming(parentViewModel.channelId)
 
                 /** TODO: comment this first because we havent revamped the schedule functionality yet */
 //                val schedule = scheduleViewModel.schedule
@@ -438,8 +438,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             override fun onCancelLiveStream() {
+                analytic.clickCancelStreaming(parentViewModel.channelId, parentViewModel.channelTitle)
+
                 showCountdown(false)
-                analytic.clickCancelOnCountDown(parentViewModel.channelId, parentViewModel.channelTitle)
             }
         })
     }
