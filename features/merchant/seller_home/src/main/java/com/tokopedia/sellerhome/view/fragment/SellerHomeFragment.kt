@@ -128,6 +128,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
+        private const val SHORT_TOAST_DURATION = 2000L
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
@@ -683,8 +684,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         shouldShowSuccessToaster = true
         launchOnViewLifecycleScope(Dispatchers.Unconfined) {
             val similarWidget = adapter.data.filter {
-                val isSameWidget = it.widgetType == widget.widgetType
-                isSameWidget
+                it.widgetType == widget.widgetType
             }
             withContext(Dispatchers.Main) {
                 getWidgetsData(similarWidget)
@@ -1664,7 +1664,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
             Handler(Looper.getMainLooper()).postDelayed({
                 isErrorToastShown = false
-            }, TOAST_DURATION)
+            }, SHORT_TOAST_DURATION)
         }
     }
 
