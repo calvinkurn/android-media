@@ -5,7 +5,7 @@ package com.tokopedia.play.broadcaster.analytic.setup.cover
  */
 interface PlayBroSetupCoverAnalytic {
 
-    fun clickAddCover()
+    fun clickAddNewCover()
 
     fun clickEditCover()
 }

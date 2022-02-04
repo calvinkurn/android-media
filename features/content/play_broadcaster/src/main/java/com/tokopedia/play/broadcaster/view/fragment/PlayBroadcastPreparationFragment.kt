@@ -330,7 +330,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onClickCoverPreview(isEditCover: Boolean) {
-        if(isEditCover) analytic.clickEditCover() else analytic.clickAddCover()
+        if(isEditCover) analytic.clickEditCover() else analytic.clickAddNewCover()
         openCoverSetupFragment()
     }
 

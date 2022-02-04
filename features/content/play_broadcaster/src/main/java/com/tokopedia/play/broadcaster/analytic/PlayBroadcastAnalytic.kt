@@ -198,11 +198,11 @@ class PlayBroadcastAnalytic(
     /**
      * Click Add Cover
      */
-//    fun clickAddCover() {
-//        clickGeneralEvent(
-//                action = "add cover"
-//        )
-//    }
+    fun clickAddCover() {
+        clickGeneralEvent(
+                action = "add cover"
+        )
+    }
 
     /**
      * Click Add Title

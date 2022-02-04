@@ -21,7 +21,7 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
 ) : PlayBroSetupCoverAnalytic {
 
-    override fun clickAddCover() {
+    override fun clickAddNewCover() {
         sendEvent("click - cover thumbnail to add cover")
     }
 
