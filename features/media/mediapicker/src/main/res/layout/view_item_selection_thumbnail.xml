@@ -13,7 +13,7 @@
         android:layout_height="72dp"
         android:layout_gravity="center">
 
-        <com.tokopedia.picker.ui.widget.thumbnail.MediaThumbnailWidget
+        <com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
             android:id="@+id/img_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

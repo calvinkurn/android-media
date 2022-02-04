@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.picker">
+    package="com.tokopedia.media">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -9,7 +9,10 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.picker.ui.activity.main.PickerActivity"
+            android:name=".picker.ui.activity.album.AlbumActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".picker.ui.activity.main.PickerActivity"
             android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
@@ -20,12 +23,13 @@
 
                 <data
                     android:path="@string/host_media_picker"
+                    android:host="@string/host_global"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name="com.tokopedia.preview.ui.activity.PickerPreviewActivity"
+            android:name=".preview.ui.activity.PickerPreviewActivity"
             android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
@@ -36,13 +40,10 @@
 
                 <data
                     android:path="@string/host_media_picker_preview"
+                    android:host="@string/host_global"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.tokopedia.picker.ui.activity.album.AlbumActivity"
-            android:exported="false"/>
     </application>
 
 </manifest>

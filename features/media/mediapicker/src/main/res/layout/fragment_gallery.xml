@@ -31,7 +31,7 @@
         tools:listitem="@layout/widget_media_thumbnail"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
 
-    <com.tokopedia.picker.ui.widget.drawerselector.DrawerSelectionWidget
+    <com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
         android:id="@+id/drawer_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
