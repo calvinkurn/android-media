@@ -172,6 +172,7 @@ class TableViewHolder(
         tvShcTableEmptyDescription.gone()
         btnShcTableEmpty.gone()
         luvShcTable.gone()
+        btnTableCta.gone()
     }
 
     private fun showErrorState() = with(binding) {
@@ -185,6 +186,7 @@ class TableViewHolder(
         tvShcTableEmptyDescription.gone()
         btnShcTableEmpty.gone()
         luvShcTable.gone()
+        btnTableCta.gone()
 
         errorStateBinding.imgWidgetOnError.loadImage(
             com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
