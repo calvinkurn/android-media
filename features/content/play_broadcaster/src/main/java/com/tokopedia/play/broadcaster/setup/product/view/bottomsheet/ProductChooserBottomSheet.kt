@@ -102,12 +102,18 @@ class ProductChooserBottomSheet @Inject constructor(
         _binding = BottomSheetPlayBroProductChooserBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
+        clearContentPadding = true
         setChild(binding.root)
     }
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
+        }
+
+        binding.btnNext.setOnClickListener {
+            (parentFragment as? ProductSetupFragment)
+                ?.openProductSummary()
         }
     }
 

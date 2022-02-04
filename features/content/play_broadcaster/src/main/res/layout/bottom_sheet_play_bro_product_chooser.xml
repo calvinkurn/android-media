@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/cl_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -11,6 +12,8 @@
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,9 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_dp_12"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/search_bar"
         app:layout_constraintTop_toBottomOf="@id/search_bar"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/search_bar"
         >
 
         <com.tokopedia.unifycomponents.ChipsUnify
@@ -53,10 +56,36 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fl_next_btn_container"
+        app:layout_constraintEnd_toEndOf="@id/search_bar"
         app:layout_constraintStart_toStartOf="@id/search_bar"
         app:layout_constraintTop_toBottomOf="@id/container_chips"
         />
+
+    <FrameLayout
+        android:id="@+id/fl_next_btn_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:elevation="@dimen/play_bro_product_chooser_btn_container_elevation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:text="@string/play_next"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
