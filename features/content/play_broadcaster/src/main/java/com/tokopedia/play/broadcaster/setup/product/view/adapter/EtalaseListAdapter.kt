@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -11,7 +10,7 @@ import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
  */
 internal class EtalaseListAdapter(
     etalaseBodyListener: EtalaseListViewHolder.Body.Listener,
-) : BaseDiffUtilAdapter<EtalaseListModel>() {
+) : BaseDiffUtilAdapter<EtalaseListAdapter.Model>() {
 
     init {
         delegatesManager
@@ -21,20 +20,26 @@ internal class EtalaseListAdapter(
     }
 
     override fun areItemsTheSame(
-        oldItem: EtalaseListModel,
-        newItem: EtalaseListModel
+        oldItem: Model,
+        newItem: Model
     ): Boolean {
-        return if (oldItem is EtalaseListModel.Campaign && newItem is EtalaseListModel.Campaign) {
+        return if (oldItem is Model.Campaign && newItem is Model.Campaign) {
             oldItem.campaignUiModel.id == newItem.campaignUiModel.id
-        } else if (oldItem is EtalaseListModel.Etalase && newItem is EtalaseListModel.Etalase) {
+        } else if (oldItem is Model.Etalase && newItem is Model.Etalase) {
             oldItem.etalaseUiModel.id == newItem.etalaseUiModel.id
         } else oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: EtalaseListModel,
-        newItem: EtalaseListModel
+        oldItem: Model,
+        newItem: Model
     ): Boolean {
         return oldItem == newItem
+    }
+
+    sealed class Model {
+        data class Header(val text: String) : Model()
+        data class Campaign(val campaignUiModel: CampaignUiModel) : Model()
+        data class Etalase(val etalaseUiModel: EtalaseUiModel) : Model()
     }
 }

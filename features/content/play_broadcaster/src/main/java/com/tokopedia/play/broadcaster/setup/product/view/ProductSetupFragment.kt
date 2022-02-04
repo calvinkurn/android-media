@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import javax.inject.Inject
 
 /**
@@ -16,6 +17,7 @@ class ProductSetupFragment @Inject constructor() : Fragment() {
         super.onCreate(savedInstanceState)
 
         openProductChooser()
+//        openProductSummary()
     }
 
     fun openCampaignAndEtalaseList() {
@@ -36,5 +38,12 @@ class ProductSetupFragment @Inject constructor() : Fragment() {
                 .commit()
         }
         productChooser.show(childFragmentManager)
+    }
+
+    fun openProductSummary() {
+        ProductSummaryBottomSheet.getFragment(
+            childFragmentManager,
+            requireActivity().classLoader,
+        ).show(childFragmentManager)
     }
 }

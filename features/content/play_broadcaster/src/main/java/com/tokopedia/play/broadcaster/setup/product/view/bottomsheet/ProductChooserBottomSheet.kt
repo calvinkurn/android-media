@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChoos
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
@@ -175,12 +176,12 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderBottomSheetTitle(
-        selectedProductList: List<ProductUiModel>
+        selectedProductList: EtalaseProductListMap,
     ) {
         setTitle(
             getString(
                 R.string.play_bro_selected_product_title,
-                selectedProductList.size,
+                selectedProductList.values.sumOf { it.size },
                 30
             )
         )

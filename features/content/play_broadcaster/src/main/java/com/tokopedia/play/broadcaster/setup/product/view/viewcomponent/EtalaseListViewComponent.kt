@@ -2,8 +2,8 @@ package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdapter
-import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.EtalaseListViewHolder
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -33,8 +33,24 @@ internal class EtalaseListViewComponent(
         view.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
     }
 
-    fun setEtalaseList(etalaseList: List<EtalaseListModel>) {
-        adapter.setItemsAndAnimateChanges(etalaseList)
+    @OptIn(ExperimentalStdlibApi::class)
+    fun setCampaignAndEtalaseList(
+        campaignList: List<CampaignUiModel>,
+        etalaseList: List<EtalaseUiModel>,
+    ) {
+        val combinedEtalaseList = buildList {
+            if (campaignList.isNotEmpty()) {
+                add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_campaign)))
+                addAll(campaignList.map(EtalaseListAdapter.Model::Campaign))
+            }
+
+            if (etalaseList.isNotEmpty()) {
+                add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_etalase)))
+                addAll(etalaseList.map(EtalaseListAdapter.Model::Etalase))
+            }
+        }
+
+        adapter.setItemsAndAnimateChanges(combinedEtalaseList)
     }
 
     sealed class Event {

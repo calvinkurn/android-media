@@ -12,11 +12,8 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
-import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
@@ -124,7 +121,6 @@ class EtalaseListBottomSheet @Inject constructor(
         setTitle(title)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun renderEtalaseList(
         prevModel: CampaignAndEtalaseUiModel?,
         model: CampaignAndEtalaseUiModel,
@@ -132,19 +128,10 @@ class EtalaseListBottomSheet @Inject constructor(
         if (prevModel?.campaignList == model.campaignList &&
             prevModel.etalaseList == model.etalaseList) return
 
-        val combinedEtalaseList = buildList {
-            if (model.campaignList.isNotEmpty()) {
-                add(EtalaseListModel.Header(getString(R.string.play_bro_campaign)))
-                addAll(model.campaignList.map(EtalaseListModel::Campaign))
-            }
-
-            if (model.etalaseList.isNotEmpty()) {
-                add(EtalaseListModel.Header(getString(R.string.play_bro_etalase)))
-                addAll(model.etalaseList.map(EtalaseListModel::Etalase))
-            }
-        }
-
-        etalaseListView.setEtalaseList(combinedEtalaseList)
+        etalaseListView.setCampaignAndEtalaseList(
+            campaignList = model.campaignList,
+            etalaseList = model.etalaseList
+        )
     }
 
     /**

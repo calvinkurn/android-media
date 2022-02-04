@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListBodyBinding
 import com.tokopedia.play.broadcaster.databinding.ItemEtalaseListHeaderBinding
-import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseListModel
+import com.tokopedia.play.broadcaster.setup.product.view.adapter.EtalaseListAdapter
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -23,7 +23,7 @@ internal class EtalaseListViewHolder private constructor() {
         private val binding: ItemEtalaseListHeaderBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: EtalaseListModel.Header) {
+        fun bind(item: EtalaseListAdapter.Model.Header) {
             binding.root.text = item.text
         }
 
@@ -42,7 +42,7 @@ internal class EtalaseListViewHolder private constructor() {
         private val listener: Listener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: EtalaseListModel.Campaign) {
+        fun bind(item: EtalaseListAdapter.Model.Campaign) {
             binding.ivEtalase.loadImage(item.campaignUiModel.imageUrl)
             binding.tvEtalaseTitle.text = item.campaignUiModel.title
             binding.tvTotalProduct.text = itemView.context.getString(
@@ -81,7 +81,7 @@ internal class EtalaseListViewHolder private constructor() {
             }
         }
 
-        fun bind(item: EtalaseListModel.Etalase) {
+        fun bind(item: EtalaseListAdapter.Model.Etalase) {
             binding.ivEtalase.loadImage(item.etalaseUiModel.imageUrl)
             binding.tvEtalaseTitle.text = item.etalaseUiModel.title
             binding.tvTotalProduct.text = itemView.context.getString(

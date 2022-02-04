@@ -8,7 +8,11 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
+import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.type.OriginalPrice
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -31,7 +35,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
     private val _focusedProductList = MutableStateFlow(emptyList<ProductUiModel>())
-    private val _selectedProductList = MutableStateFlow(emptyList<ProductUiModel>())
+    private val _selectedProductList = MutableStateFlow<EtalaseProductListMap>(emptyMap())
 
     private val _sort = MutableStateFlow<SortUiModel?>(null)
 
@@ -69,6 +73,31 @@ class PlayBroProductSetupViewModel @Inject constructor(
         getCampaignList()
         getEtalaseList()
         getProductsInEtalase("0")
+
+        _selectedProductList.value = mapOf(
+            SelectedEtalaseModel.Campaign(
+                CampaignUiModel(
+                    id = "1",
+                    title = "12.12",
+                    imageUrl = "",
+                    startDateFmt = "abc",
+                    endDateFmt = "def",
+                    status = CampaignStatusUiModel(
+                        status = CampaignStatus.Ongoing,
+                        text = "Berlangsung"
+                    ),
+                    totalProduct = 5,
+                )
+            ) to listOf(
+                ProductUiModel(
+                    id = "1",
+                    name = "Product 1",
+                    imageUrl = "",
+                    stock = 5,
+                    price = OriginalPrice("Rp1250", 1250.0)
+                )
+            )
+        )
     }
 
     fun submitAction(action: PlayBroProductChooserAction) {
