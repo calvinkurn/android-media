@@ -35,7 +35,6 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
-    private val _selectedEtalase = MutableStateFlow<SelectedEtalaseModel>(SelectedEtalaseModel.None)
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
     private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(emptyMap())
@@ -46,12 +45,12 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private var getProductListJob: Job? = null
 
     private val _campaignAndEtalase = combine(
-        _selectedEtalase,
+        _loadParam,
         _campaignList,
         _etalaseList
-    ) { selectedEtalase, campaignList, etalaseList ->
+    ) { loadParam, campaignList, etalaseList ->
         CampaignAndEtalaseUiModel(
-            selected = selectedEtalase,
+            selected = loadParam.etalase,
             campaignList = campaignList,
             etalaseList = etalaseList,
         )
@@ -78,12 +77,6 @@ class PlayBroProductSetupViewModel @Inject constructor(
     init {
         getCampaignList()
         getEtalaseList()
-
-        viewModelScope.launch {
-            _selectedEtalase.collectLatest {
-                getProductListJob?.cancel()
-            }
-        }
 
         viewModelScope.launch {
             _loadParam.collectLatest {
@@ -128,11 +121,19 @@ class PlayBroProductSetupViewModel @Inject constructor(
     }
 
     private fun handleSelectEtalase(etalase: EtalaseUiModel) {
-        _selectedEtalase.value = SelectedEtalaseModel.Etalase(etalase)
+        _loadParam.update {
+            it.copy(
+                etalase = SelectedEtalaseModel.Etalase(etalase)
+            )
+        }
     }
 
     private fun handleSelectCampaign(campaign: CampaignUiModel) {
-        _selectedEtalase.value = SelectedEtalaseModel.Campaign(campaign)
+        _loadParam.update {
+            it.copy(
+                etalase = SelectedEtalaseModel.Campaign(campaign)
+            )
+        }
     }
 
     private fun handleSelectProduct(product: ProductUiModel) {
@@ -161,7 +162,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
         }
         getProductListJob = viewModelScope.launchCatchError(dispatchers.io, block = {
             val page = if (resetList) 0 else _focusedProductList.value.page + 1
-            when (val selectedEtalase = _selectedEtalase.value) {
+            when (val selectedEtalase = _loadParam.value.etalase) {
                 is SelectedEtalaseModel.Campaign -> return@launchCatchError
                 is SelectedEtalaseModel.Etalase,
                 SelectedEtalaseModel.None -> {
