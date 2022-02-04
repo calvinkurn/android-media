@@ -46,8 +46,6 @@ internal class ProductListViewComponent(
                 )
             } + if (showLoading) listOf(ProductListAdapter.Model.Loading) else emptyList()
         )
-
-        view.invalidateItemDecorations()
     }
 
     sealed class Event {
