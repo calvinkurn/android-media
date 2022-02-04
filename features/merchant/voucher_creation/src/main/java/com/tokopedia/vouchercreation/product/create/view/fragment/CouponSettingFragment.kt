@@ -24,6 +24,7 @@ import com.tokopedia.vouchercreation.common.extension.DECIMAL_FORMAT_PATTERN
 import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.textwatcher.NumberThousandSeparatorTextWatcher
+import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
@@ -92,6 +93,7 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         setupViews()
         setupChipsClickListener()
         setupTextAreaListener()
