@@ -55,6 +55,7 @@ import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
+import com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet.CouponFilterBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
 import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.filter.CouponStatusFilterBotomSheet
@@ -71,6 +72,7 @@ import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherD
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -150,13 +152,15 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private var shareCouponBottomSheet: ShareVoucherBottomSheet? = null
     private var shopBasicData: ShopBasicDataResult? = null
     private val filterStatus by lazy { SortFilterItem("Status Aktif") }
-    private val filterType by lazy { SortFilterItem("Gratis Ongkir", ChipsUnify.TYPE_SELECTED) }
-    private val filterTarget by lazy { SortFilterItem("Publik", ChipsUnify.TYPE_SELECTED) }
+    private val filterType by lazy { SortFilterItem("Gratis Ongkir") }
+    private val filterTarget by lazy { SortFilterItem("Publik") }
 
     private var onCreateCouponMenuSelected : () -> Unit = {}
     private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
     private var onDuplicateCouponMenuSelected : (Coupon) -> Unit = {}
     private var onViewCouponDetailMenuSelected : (Long) -> Unit = {}
+    private var selectedFilterType = CouponFilterBottomSheet.FilterType.NOT_SELECTED
+    private var selectedFilterTarget = CouponFilterBottomSheet.FilterTarget.NOT_SELECTED
 
     override fun getScreenName(): String = CouponListFragment::class.java.simpleName
 
@@ -224,6 +228,61 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         viewModel.getShopBasicData()
     }
 
+    private fun onFilterSelected(
+        selectedType: CouponFilterBottomSheet.FilterType,
+        selectedTarget: CouponFilterBottomSheet.FilterTarget
+    ) {
+        this.selectedFilterType = selectedType
+        this.selectedFilterTarget = selectedTarget
+        refreshChipTypeSelectionState(selectedType)
+        refreshChipTargetSelectionState(selectedTarget)
+    }
+
+    private fun refreshChipTypeSelectionState(selectedType: CouponFilterBottomSheet.FilterType) {
+        when (selectedType) {
+            CouponFilterBottomSheet.FilterType.CASHBACK -> {
+                filterType.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
+                filterType.refChipUnify.chipText = getString(R.string.mvc_cashback)
+
+            }
+            CouponFilterBottomSheet.FilterType.FREE_SHIPPING -> {
+                filterType.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
+                filterType.refChipUnify.chipText = getString(R.string.mvc_free_shipping)
+
+            }
+            CouponFilterBottomSheet.FilterType.NOT_SELECTED -> {
+                filterType.refChipUnify.chipType = ChipsUnify.TYPE_NORMAL
+                filterType.refChipUnify.chipText = getString(R.string.mvc_free_shipping)
+            }
+        }
+    }
+
+    private fun refreshChipTargetSelectionState(selectedTarget: CouponFilterBottomSheet.FilterTarget) {
+        when (selectedTarget) {
+            CouponFilterBottomSheet.FilterTarget.PUBLIC -> {
+                filterTarget.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
+                filterTarget.refChipUnify.chipText = getString(R.string.mvc_public)
+            }
+            CouponFilterBottomSheet.FilterTarget.PRIVATE -> {
+                filterTarget.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
+                filterTarget.refChipUnify.chipText = getString(R.string.mvc_special)
+            }
+            CouponFilterBottomSheet.FilterTarget.NOT_SELECTED -> {
+                filterTarget.refChipUnify.chipType = ChipsUnify.TYPE_NORMAL
+                filterTarget.refChipUnify.chipText = getString(R.string.mvc_public)
+            }
+        }
+
+    }
+    private fun onResetFilter(
+        selectedType: CouponFilterBottomSheet.FilterType,
+        selectedTarget: CouponFilterBottomSheet.FilterTarget
+    ) {
+        this.selectedFilterType = selectedType
+        this.selectedFilterTarget = selectedTarget
+        Timber.d("Selected filter after reset : Type ${selectedType.name} Target ${selectedTarget.name}")
+    }
+
     private fun onStatusSelected(couponName: String, @VoucherStatus couponStatus: String) {
         viewModel.setStatusFilter(couponStatus)
         filterStatus.refChipUnify.chipText = couponName
@@ -266,11 +325,32 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             //onCreateCouponMenuSelected()
         }
 
+        filterType.chevronListener = {
+            val bottomSheet = CouponFilterBottomSheet.newInstance(
+                selectedFilterType,
+                selectedFilterTarget,
+                ::onFilterSelected,
+                ::onResetFilter
+            )
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+
+        filterTarget.chevronListener = {
+            val bottomSheet = CouponFilterBottomSheet.newInstance(
+                selectedFilterType,
+                selectedFilterTarget,
+                ::onFilterSelected,
+                ::onResetFilter
+            )
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+
         filterStatus.chevronListener = {
             CouponStatusFilterBotomSheet(::onStatusSelected).show(childFragmentManager, "")
         }
 
-        chip.addItem(arrayListOf(filterStatus))
+        val sortFilterItems = arrayListOf(filterType, filterTarget, filterStatus)
+        chip.addItem(sortFilterItems)
     }
 
     private fun setupObserver() {

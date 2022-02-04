@@ -435,6 +435,9 @@
     <string name="error_message_failed_get_coupon_detail">Terjadi kesalahan dalam menampilkan detail kupon. Mohon coba lagi</string>
     <string name="placeholder_quota_usage">Kupon yang sedang menunggu pembayaran dari pembeli: &lt;b>%s Kupon&lt;/b></string>
     <string name="view_coupon_detail">Lihat Detil Kupon</string>
+    <string name="type">Tipe</string>
+    <string name="target">Target</string>
+
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
