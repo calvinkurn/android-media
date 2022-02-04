@@ -408,7 +408,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         )
                     }
 
-                    override fun onClickContact() {
+                    override fun onClickNavigationIcon() {
                         binding?.run {
                             val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
                             val dgCategoryIds = arrayListOf(

@@ -1,6 +1,7 @@
 <resources>
 
     <string name="qr_scanner_title_scan_qr">Scan Kode QR</string>
+    <string name="qr_scanner_title_scan_barcode">Scan Barcode</string>
     <string name="qr_scanner_title_dialog_wrong_scan">Oops!</string>
     <string name="qr_scanner_msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
     <string name="qr_scanner_btn_dialog_wrong_scan">OK</string>
