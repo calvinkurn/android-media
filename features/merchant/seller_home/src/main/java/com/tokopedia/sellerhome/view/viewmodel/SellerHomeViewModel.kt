@@ -505,6 +505,8 @@ class SellerHomeViewModel @Inject constructor(
                     // ignore exception from cache
                     throw networkException
                 }
+            } else {
+                throw networkException
             }
         }
     }
