@@ -12,7 +12,8 @@ class MvcLockedToProductGridProductUiModel(
     val minimumOrder: Int = 0,
     val stock: Int = 0,
     val productInCart: Int = 0,
-    val productCardModel: ProductCardModel = ProductCardModel()
+    val isVariant: Boolean = false,
+    var productCardModel: ProductCardModel = ProductCardModel()
 ) : Visitable<MvcLockedToProductTypeFactory>, ImpressHolder() {
 
     override fun type(typeFactory: MvcLockedToProductTypeFactory): Int {

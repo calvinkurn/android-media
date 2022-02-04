@@ -94,6 +94,7 @@ object MvcLockedToProductMapper {
             productResponse.minimumOrder,
             productResponse.stock,
             productResponse.productInCart,
+            productResponse.isVariant(),
             mapToProductCardModel(productResponse)
         )
     }
@@ -101,6 +102,62 @@ object MvcLockedToProductMapper {
     private fun mapToProductCardModel(
         productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data
     ): ProductCardModel {
+        return if(false){
+            createProductCardModelPhase1(productResponse)
+        } else {
+            if (productResponse.isVariant()) {
+                createVariantProductCardModel(productResponse)
+            } else {
+                createNonVariantProductCardModel(productResponse)
+            }
+        }
+    }
+
+    private fun createNonVariantProductCardModel(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
+        return ProductCardModel(
+            productName = productResponse.name,
+            productImageUrl = productResponse.imageUrl,
+            formattedPrice = productResponse.displayPrice,
+            slashedPrice = productResponse.originalPrice,
+            discountPercentage = getProductCardDiscountPercentage(productResponse.discountPercentage),
+            freeOngkir = ProductCardModel.FreeOngkir(
+                productResponse.isShowFreeOngkir,
+                productResponse.freeOngkirPromoIcon
+            ),
+            isOutOfStock = productResponse.isSoldOut,
+            ratingCount = productResponse.rating,
+            countSoldRating = getProductCardRating(productResponse.averageRating),
+            reviewCount = productResponse.totalReview.toIntOrZero(),
+            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) },
+            nonVariant = ProductCardModel.NonVariant(
+                quantity = 0,
+                minQuantity = 0,
+                maxQuantity = productResponse.stock
+            )
+        )
+    }
+
+    private fun createVariantProductCardModel(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
+        return ProductCardModel(
+            productName = productResponse.name,
+            productImageUrl = productResponse.imageUrl,
+            formattedPrice = productResponse.displayPrice,
+            slashedPrice = productResponse.originalPrice,
+            discountPercentage = getProductCardDiscountPercentage(productResponse.discountPercentage),
+            freeOngkir = ProductCardModel.FreeOngkir(
+                productResponse.isShowFreeOngkir,
+                productResponse.freeOngkirPromoIcon
+            ),
+            isOutOfStock = productResponse.isSoldOut,
+            ratingCount = productResponse.rating,
+            countSoldRating = getProductCardRating(productResponse.averageRating),
+            reviewCount = productResponse.totalReview.toIntOrZero(),
+            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) },
+            hasAddToCartButton = true
+        )
+    }
+
+    private fun createProductCardModelPhase1(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
         return ProductCardModel(
             productName = productResponse.name,
             productImageUrl = productResponse.imageUrl,
@@ -118,6 +175,7 @@ object MvcLockedToProductMapper {
             labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) }
         )
     }
+
 
     private fun getProductCardRating(averageRating: Double): String {
         return averageRating.toString().takeIf { averageRating != 0.0 }.orEmpty()

@@ -38,4 +38,9 @@
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     </com.tokopedia.shop_widget.customview.StickySingleHeaderView>
+
+    <com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidget
+        android:id="@+id/mini_cart_simplified_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

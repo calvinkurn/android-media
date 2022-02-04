@@ -70,6 +70,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.minicart)
+    implementation projectOrAar(rootProject.ext.features.cart_common)
 
     //unit test
     testImplementation rootProject.ext.testDependencies.mockk

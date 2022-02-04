@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop_widget.customview.OnStickySingleHeaderListener
 import com.tokopedia.shop_widget.customview.StickySingleHeaderView
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductGridViewHolder
@@ -166,4 +167,31 @@ class MvcLockedToProductAdapter(
         }
     }
 
+    fun updateProductCardMvcVariantAtc(productId: String) {
+        val ggz = visitables.filterIsInstance<MvcLockedToProductGridProductUiModel>().first {
+            it.productID ==  productId
+        }.apply {
+            productCardModel = productCardModel.copy(
+                hasAddToCartButton = false,
+                nonVariant = ProductCardModel.NonVariant(
+                    quantity = 1,
+                    minQuantity = 0,
+                    maxQuantity = 10
+                )
+            )
+        }
+        notifyItemChanged(visitables.indexOf(ggz))
+    }
+
+    fun updateProductCardMvcVariantAtcToDefault(productId: String) {
+        val ggz = visitables.filterIsInstance<MvcLockedToProductGridProductUiModel>().first {
+            it.productID ==  productId
+        }.apply {
+            productCardModel = productCardModel.copy(
+                hasAddToCartButton = true,
+                nonVariant = null
+            )
+        }
+        notifyItemChanged(visitables.indexOf(ggz))
+    }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.shop_widget.mvc_locked_to_product.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 data class MvcLockedToProductResponse(
     @SerializedName("shopPageGetMVCLockToProduct")
@@ -122,6 +123,10 @@ data class MvcLockedToProductResponse(
                 @Expose
                 var productInCart: Int = 0
             ) {
+                fun isVariant(): Boolean {
+                    return childIDs.isNotEmpty()
+                }
+
                 data class LabelGroups(
                     @SerializedName("position")
                     @Expose

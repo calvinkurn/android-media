@@ -1,6 +1,7 @@
 package com.tokopedia.shop_widget.mvc_locked_to_product.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +20,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shop_widget.R
@@ -51,7 +57,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     MvcLockedToProductGlobalErrorViewHolder.Listener,
     MvcLockedToProductSortSectionViewHolder.Listener,
     MvcLockedToProductSortListBottomSheet.Callback,
-    MvcLockedToProductGridViewHolder.Listener {
+    MvcLockedToProductGridViewHolder.Listener,
+    MiniCartWidgetListener {
 
     companion object {
         private const val CART_LOCAL_CACHE_NAME = "CART"
@@ -72,6 +79,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     lateinit var tracking: MvcLockedToProductTracking
     private var viewModel: MvcLockedToProductViewModel? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
+    private var chooseAddressLocalCacheModel: LocalCacheModel? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var voucherId: String = ""
     private var shopId: String = ""
@@ -129,9 +137,20 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         sendOpenScreenTracker()
     }
 
+    private fun setupMiniCart(voucherUiModel: MvcLockedToProductVoucherUiModel) {
+        viewBinding?.miniCartSimplifiedWidget?.initialize(
+            shopIds= listOf(shopId),
+            fragment = this,
+            listener = this,
+            promoId = voucherId,
+            promoCode = voucherUiModel.baseCode
+        )
+    }
+
     override fun onResume() {
         super.onResume()
         refreshCartCounterData()
+        getMiniCart()
     }
 
     private fun refreshCartCounterData() {
@@ -242,6 +261,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             MvcLockedToProductViewModel::class.java
         )
         cartLocalCacheHandler = LocalCacheHandler(context, CART_LOCAL_CACHE_NAME)
+        chooseAddressLocalCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
         endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
     }
 
@@ -399,6 +419,32 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         redirectToPdp(uiModel.productID)
     }
 
+    override fun onOpenVariantBottomSheet(uiModel: MvcLockedToProductGridProductUiModel) {
+        AtcVariantHelper.goToAtcVariant(
+            context = requireContext(),
+            productId = uiModel.productID,
+            pageSource = "SOURCE",
+            isTokoNow = true,
+            shopId = shopId,
+            startActivitResult = this::startActivityForResult
+        )
+    }
+
+    override fun onProductVariantQuantityZero(productId: String) {
+        adapter.updateProductCardMvcVariantAtcToDefault(productId)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
+                adapter.updateProductCardMvcVariantAtc("2148252387")
+            }
+            else -> {
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
+    }
+
     private fun sendProductClickTracker(index: Int, uiModel: MvcLockedToProductGridProductUiModel) {
         tracking.clickProductCard(
             MvcLockedToProductUtil.getActualPositionFromIndex(index),
@@ -421,6 +467,16 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             )
             startActivity(intent)
         }
+    }
+
+    private fun getMiniCart() {
+        val shopId = listOf(shopId)
+        val warehouseId =chooseAddressLocalCacheModel?.warehouse_id
+        viewModel?.getMiniCart(shopId, warehouseId)
+    }
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        TODO("Not yet implemented")
     }
 
 }

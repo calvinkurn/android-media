@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductRequest
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.model.MvcLockedToProductResponse
 import com.tokopedia.shop_widget.mvc_locked_to_product.domain.usecase.MvcLockedToProductUseCase
@@ -21,6 +24,7 @@ import javax.inject.Inject
 class MvcLockedToProductViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val mvcLockedToProductUseCase: MvcLockedToProductUseCase,
+    private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val dispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(dispatcherProvider.main) {
     val isUserLogin: Boolean
@@ -41,6 +45,8 @@ class MvcLockedToProductViewModel @Inject constructor(
         get() = _productListData
     private val _productListData =
         MutableLiveData<Result<List<MvcLockedToProductGridProductUiModel>>>()
+
+    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
     fun getMvcLockedToProductData(mvcLockedToProductRequestUiModel: MvcLockedToProductRequestUiModel) {
         launchCatchError(dispatcherProvider.io, block = {
@@ -94,5 +100,22 @@ class MvcLockedToProductViewModel @Inject constructor(
 
     private fun checkHasNextPage(nextPage: Int): Boolean {
         return nextPage.isMoreThanZero()
+    }
+
+    fun getMiniCart(shopId: List<String>, warehouseId: String?) {
+        if (!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+            launchCatchError(block = {
+                getMiniCartUseCase.setParams(shopId)
+                getMiniCartUseCase.execute({
+                    val ggz = -1
+//                    setMiniCartAndProductQuantity(it)
+//                    _miniCart.postValue(Success(it))
+                }, {
+//                    _miniCart.postValue(Fail(it))
+                })
+            }) {
+//                _miniCart.postValue(Fail(it))
+            }
+        }
     }
 }
