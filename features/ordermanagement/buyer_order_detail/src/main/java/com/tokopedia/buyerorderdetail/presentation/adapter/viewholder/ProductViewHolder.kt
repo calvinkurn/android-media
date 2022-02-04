@@ -4,11 +4,11 @@ import android.view.View
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
-import com.tokopedia.buyerorderdetail.common.utils.Utils.composeItalicNote
+import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAddonsBinding
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -30,10 +30,15 @@ open class ProductViewHolder(
 
     private var partialProductItemViewHolder: PartialProductItemViewHolder? = null
 
+    private var partialProductAddonViewHolder: PartialProductAddonViewHolder? = null
+    private val partialItemBuyerOrderDetailAddonsBinding =
+        PartialItemBuyerOrderDetailAddonsBinding.bind(this.itemView)
+
     override fun bind(element: ProductListUiModel.ProductUiModel?) {
         element?.let {
             this.element = it
             partialProductItemViewHolder = PartialProductItemViewHolder(itemView, listener, navigator, element)
+            setupAddonSection(element.addonsListUiModel)
             setupProductThumbnail(it.productThumbnailUrl)
             setupButton(it.button, it.isProcessing)
         }
@@ -56,6 +61,11 @@ open class ProductViewHolder(
             }
         }
         super.bind(element, payloads)
+    }
+
+    private fun setupAddonSection(addonsListUiModel: AddonsListUiModel) {
+        partialProductAddonViewHolder = PartialProductAddonViewHolder(partialItemBuyerOrderDetailAddonsBinding)
+        partialProductAddonViewHolder?.bindViews(addonsListUiModel)
     }
 
     protected open fun setupProductThumbnail(productThumbnailUrl: String) {

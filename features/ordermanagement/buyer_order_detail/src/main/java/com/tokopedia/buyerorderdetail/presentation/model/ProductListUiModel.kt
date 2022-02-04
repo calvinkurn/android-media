@@ -9,7 +9,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 data class ProductListUiModel(
         val productList: List<ProductUiModel>,
         val productBundlingList: List<ProductBundlingUiModel>,
-        val productListHeaderUiModel: ProductListHeaderUiModel
+        val productListHeaderUiModel: ProductListHeaderUiModel,
+        val addonsListUiModel: AddonsListUiModel
 ) {
     data class ProductListHeaderUiModel(
             val shopBadgeUrl: String,

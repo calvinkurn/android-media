@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
@@ -49,6 +50,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 buyerOrderDetail.orderId,
                 buyerOrderDetail.orderStatus.id
             ),
+            addonsListUiModel = getAddonsSectionTemp(),
             shipmentInfoUiModel = mapShipmentInfoUiModel(
                 buyerOrderDetail.shipment,
                 buyerOrderDetail.meta,
@@ -60,6 +62,26 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             pgRecommendationWidgetUiModel = mapToRecommendationWidgetUiModel(
                 buyerOrderDetail.adsPageName,
                 buyerOrderDetail.products
+            )
+        )
+    }
+
+    private fun getAddonsSectionTemp(): AddonsListUiModel {
+        return AddonsListUiModel(
+            addonsTitle = "Pelengkap",
+            addonsLogoUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
+            totalPriceText = "total_price_str",
+            addonsItemList = listOf(
+                AddonsListUiModel.AddonItemUiModel(
+                    priceText = "Rp2.000",
+                    addOnsName = "Happy Birthday",
+                    addonsId = 1.toString(),
+                    quantity = 2,
+                    addOnsThumbnailUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
+                    toStr = "Adam",
+                    fromStr = "John",
+                    message = "happy birthday boss"
+                )
             )
         )
     }
@@ -147,7 +169,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         return ProductListUiModel(
             productList = productList,
             productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),
-            productBundlingList = productBundlingList
+            productBundlingList = productBundlingList,
+            addonsListUiModel = getAddonsSectionTemp()
         )
     }
 
@@ -385,7 +408,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             productThumbnailUrl = product.thumbnail,
             quantity = product.quantity,
             totalPrice = product.totalPrice,
-            totalPriceText = product.totalPriceText
+            totalPriceText = product.totalPriceText,
+            addonsListUiModel = getAddonsSectionTemp()
         )
     }
 
