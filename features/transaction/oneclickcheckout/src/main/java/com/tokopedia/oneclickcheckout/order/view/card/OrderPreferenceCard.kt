@@ -246,6 +246,51 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     }
 
     @SuppressLint("SetTextI18n")
+    private fun renderNormalShippingWithoutChooseCourierCard(shipping: OrderShipment) {
+        binding.apply {
+            tvShippingCourier.text = root.context.getString(
+                R.string.lbl_shipping_with_name_and_price,
+                "${shipping.serviceName}",
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    shipping.shippingPrice
+                        ?: 0, false
+                ).removeDecimalSuffix()
+            )
+            tvShippingDuration.gone()
+            btnChangeDuration.gone()
+            tvShippingCourierNotes.gone()
+            tvShippingPrice.gone()
+            // todo eta get from which field?
+//            if (logisticPromoViewModel.etaData.errorCode == 0 && !logisticPromoViewModel.isBebasOngkirExtra) {
+//                if (logisticPromoViewModel.etaData.textEta.isEmpty()) {
+//                    tvShippingCourierEta.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
+//                } else {
+//                    tvShippingCourierEta.text = logisticPromoViewModel.etaData.textEta
+//                }
+//                tvShippingCourierEta.visible()
+//            } else {
+//                tvShippingCourierEta.gone()
+//            }
+            setMultiViewsOnClickListener(tvShippingCourier, tvShippingCourierEta, btnChangeCourier) {
+                if (profile.enable) {
+                    val shippingRecommendationData = shipment.shippingRecommendationData
+                    if (shippingRecommendationData != null) {
+                        val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
+                        val logisticPromo = shippingRecommendationData.logisticPromo
+                        if (logisticPromo != null) {
+                            list.add(0, logisticPromo)
+                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                            }
+                        }
+                        listener.chooseDuration(false, shipping.getSelectedShipperProductId().toString(), list)
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun renderShippingCourierWithEta(shipping: OrderShipment, eta: String) {
         binding.apply {
             tvShippingCourier.text = "${shipping.shipperName} (${

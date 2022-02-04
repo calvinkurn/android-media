@@ -39,6 +39,7 @@
 
     <string name="lbl_shipping">Pengiriman</string>
     <string name="lbl_shipping_with_name">Pengiriman %1$s</string>
+    <string name="lbl_shipping_with_name_and_price">Pengiriman %1$s (%2$s)</string>
 
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="lbl_installment_type">Jenis Pembayaran</string>
