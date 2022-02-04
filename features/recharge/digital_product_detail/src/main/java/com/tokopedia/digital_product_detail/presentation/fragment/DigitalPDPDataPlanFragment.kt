@@ -39,7 +39,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.I
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.TELCO_PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
@@ -135,7 +135,7 @@ class DigitalPDPDataPlanFragment :
         super.onCreate(savedInstanceState)
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModel = viewModelProvider.get(DigitalPDPDataPlanViewModel::class.java)
-        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
+        localCacheHandler = LocalCacheHandler(context, TELCO_PREFERENCES_NAME)
     }
 
     override fun onCreateView(
