@@ -13,6 +13,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -301,7 +302,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onClickSetProduct() {
-        TODO("Not yet implemented")
+        childFragmentManager.beginTransaction()
+            .add(ProductSetupFragment::class.java, null, null)
+            .commit()
     }
 
     /** Callback Title Form */
