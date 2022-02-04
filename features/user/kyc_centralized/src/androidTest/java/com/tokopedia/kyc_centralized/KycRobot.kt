@@ -3,9 +3,14 @@ package com.tokopedia.kyc_centralized
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.VerificationModes.times
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.test.R
-import kotlinx.android.synthetic.main.layout_kyc_upload_error.*
+import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity
 
 class KycRobot {
 
@@ -52,6 +57,14 @@ class KycResultRobot {
 
     fun shouldShowPendingPage() {
         onView(withText(R.string.kyc_pending_title)).check(matches(isDisplayed()))
+    }
+
+    fun hasCameraIntent(count: Int = 1) {
+        intended(hasComponent(UserIdentificationCameraActivity::class.java.name), times(count))
+    }
+
+    fun hasLivenessIntent(count: Int = 1) {
+        intended(hasData(ApplinkConstInternalGlobal.LIVENESS_DETECTION), times(count))
     }
 
 }

@@ -7,7 +7,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
@@ -16,7 +19,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 
 fun stubLiveness() {
     val ctx = ApplicationProvider.getApplicationContext<Context>()
-    Intents.intending(IntentMatchers.hasData(ApplinkConstInternalGlobal.LIVENESS_DETECTION)).respondWithFunction {
+    intending(hasData(ApplinkConstInternalGlobal.LIVENESS_DETECTION)).respondWithFunction {
         val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(
             Bitmap.CompressFormat.JPEG,
             UserIdentificationFormActivity.FILE_NAME_KYC
@@ -34,7 +37,7 @@ fun stubLiveness() {
 
 fun stubKtpCamera() {
     val ctx = ApplicationProvider.getApplicationContext<Context>()
-    Intents.intending(IntentMatchers.hasComponent(UserIdentificationCameraActivity::class.java.name))
+    intending(hasComponent(UserIdentificationCameraActivity::class.java.name))
         .respondWithFunction {
         val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(
             Bitmap.CompressFormat.JPEG,

@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 
 @UiTest
 @RunWith(AndroidJUnit4::class)
-class UserIdentificationInfoActivityTest {
+class KycFlowUiTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
@@ -44,6 +44,8 @@ class UserIdentificationInfoActivityTest {
             // Liveness is stubbed here
         } upload {
             shouldShowPendingPage()
+            hasCameraIntent()
+            hasLivenessIntent()
         }
     }
 
@@ -68,6 +70,34 @@ class UserIdentificationInfoActivityTest {
 
         } upload {
             shouldShowPendingPage()
+            hasCameraIntent()
+            hasLivenessIntent(2)
+        }
+    }
+
+    @Test
+    fun retakeKtpOnlyTest() {
+        ActivityComponentFactory.instance = FakeKycActivityComponentFactory(
+            case = FakeKycUploadApi.Case.Retake(
+                arrayListOf(1)
+            )
+        )
+        activityTestRule.launchActivity(null)
+        stubSampleForKtpAndLivenessPictures()
+
+        kycRobot {
+            checkTermsAndCondition()
+            atInfoClickNext()
+            atKtpIntroClickNext()
+            // KTP Camera is stubbed here
+            atFaceIntroClickNext()
+
+            atFinalPressCta()
+            // KTP Camera and Liveness is stubbed here
+        } upload {
+            shouldShowPendingPage()
+            hasCameraIntent(2)
+            hasLivenessIntent(2)
         }
     }
 
@@ -89,9 +119,11 @@ class UserIdentificationInfoActivityTest {
             atFaceIntroClickNext()
 
             atFinalPressCta()
-            // KTP Camera is stubbed here
+            // KTP Camera and Liveness is stubbed here
         } upload {
             shouldShowPendingPage()
+            hasCameraIntent(2)
+            hasLivenessIntent(2)
         }
     }
 
@@ -113,15 +145,17 @@ class UserIdentificationInfoActivityTest {
             atFinalPressErrorButton()
         } upload {
             shouldShowPendingPage()
+            hasCameraIntent()
+            hasLivenessIntent(2)
         }
     }
 
     /**
-     * In this scenario, we also stub the intent for requesting KTP Camera even though the
+     * In this scenario, we also stub the intent for KTP Camera request even though the
      * [UserIdentificationCameraActivity] is also part of this module, we avoid testing it
-     * because capturing picture with CameraView requires physical device
+     * because capturing picture with CameraView always failed on emulator devices
      *
-     * To test the camera, you can use [IssueSimulatorUserIdentification]
+     * To simulate the real camera, you can use [IssueSimulatorUserIdentification]
      * */
     private fun stubSampleForKtpAndLivenessPictures() {
         stubLiveness()
