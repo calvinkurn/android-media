@@ -10,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
@@ -95,8 +96,9 @@ class PlayBroadcastModule {
         interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
         setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         setupTitleAnalytic: PlayBroSetupTitleAnalytic,
+        setupCoverAnalytic: PlayBroSetupCoverAnalytic,
     ): PlayBroadcastAnalytic {
-        return PlayBroadcastAnalytic(userSession, contentTaggingAnalytic, interactiveAnalytic, setupMenuAnalytic, setupTitleAnalytic)
+        return PlayBroadcastAnalytic(userSession, contentTaggingAnalytic, interactiveAnalytic, setupMenuAnalytic, setupTitleAnalytic, setupCoverAnalytic)
     }
 
     @ActivityRetainedScope

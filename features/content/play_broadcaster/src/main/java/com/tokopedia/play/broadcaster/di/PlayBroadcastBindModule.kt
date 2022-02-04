@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.di
 
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
+import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
@@ -56,6 +58,10 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @ActivityRetainedScope
     abstract fun bindSetupTitleAnalytic(setupTitleAnalytic: PlayBroSetupTitleAnalyticImpl): PlayBroSetupTitleAnalytic
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindSetupCoverAnalytic(setupCoverAnalytic: PlayBroSetupCoverAnalyticImpl): PlayBroSetupCoverAnalytic
 
 
     @ActivityRetainedScope

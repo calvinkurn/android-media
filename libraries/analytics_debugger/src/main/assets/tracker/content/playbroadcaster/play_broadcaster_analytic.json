@@ -82,6 +82,26 @@
       "sessionIris": ".*",
       "userId": ".*"
     },
+    {
+      "event": "clickPG",
+      "eventAction": "click - cover thumbnail to add cover",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - edit cover",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
 
 
 

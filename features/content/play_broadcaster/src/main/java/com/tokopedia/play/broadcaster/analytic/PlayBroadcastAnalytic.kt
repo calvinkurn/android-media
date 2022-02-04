@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.analytic
 
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
@@ -22,10 +23,12 @@ class PlayBroadcastAnalytic(
         private val interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
         private val setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         private val setupTitleAnalytic: PlayBroSetupTitleAnalytic,
+        private val setupCoverAnalytic: PlayBroSetupCoverAnalytic,
 ) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic,
     PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
-    PlayBroSetupTitleAnalytic by setupTitleAnalytic {
+    PlayBroSetupTitleAnalytic by setupTitleAnalytic,
+    PlayBroSetupCoverAnalytic by setupCoverAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
@@ -195,11 +198,11 @@ class PlayBroadcastAnalytic(
     /**
      * Click Add Cover
      */
-    fun clickAddCover() {
-        clickGeneralEvent(
-                action = "add cover"
-        )
-    }
+//    fun clickAddCover() {
+//        clickGeneralEvent(
+//                action = "add cover"
+//        )
+//    }
 
     /**
      * Click Add Title
