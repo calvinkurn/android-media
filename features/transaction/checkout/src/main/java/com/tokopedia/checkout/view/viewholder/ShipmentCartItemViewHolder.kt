@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -55,6 +56,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private val mLayoutProductInfo: FlexboxLayout = itemView.findViewById(R.id.layout_product_info)
     private val mIconTooltip: IconUnify = itemView.findViewById(R.id.icon_tooltip)
     private val mPricePerProduct: Typography = itemView.findViewById(R.id.text_item_per_product)
+    private val buttonGiftingAddOn: ButtonGiftingAddOnView = itemView.findViewById(R.id.button_gifting_addon)
 
     fun bindViewHolder(cartItem: CartItemModel, listener: ShipmentItemListener?) {
         shipmentItemListener = listener
@@ -80,6 +82,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         renderProductTicker(cartItem)
         renderProductProperties(cartItem)
         renderBundlingInfo(cartItem)
+        renderGiftingAddonInfo(cartItem)
     }
 
     private fun renderProductProperties(cartItemModel: CartItemModel) {
@@ -240,9 +243,14 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         }
     }
 
+    private fun renderGiftingAddonInfo(cartItemModel: CartItemModel) {
+        buttonGiftingAddOn.setOnClickListener { shipmentItemListener?.openAddOnBottomSheet(cartItemModel) }
+    }
+
     interface ShipmentItemListener {
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
         fun navigateToWebView(cartItem: CartItemModel)
+        fun openAddOnBottomSheet(cartItem: CartItemModel)
     }
 
     companion object {

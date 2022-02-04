@@ -30,7 +30,9 @@ data class CartShopHolderData(
         var clickedCollapsedProductIndex: Int = -1,
         var isNeedToRefreshWeight: Boolean = false,
         var isError: Boolean = false,
-        var promoCodes: List<String> = emptyList()
+        var promoCodes: List<String> = emptyList(),
+        var addOnText: String = "",
+        var addOnImgUrl: String = ""
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()

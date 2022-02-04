@@ -5,6 +5,7 @@
     android:id="@+id/cl_cart_gifting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
     android:background="@drawable/bg_gifting_addon_rounded_grey">
 
     <com.tokopedia.iconunify.IconUnify
@@ -23,6 +24,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/icon_addon_product"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -31,8 +36,6 @@
             android:layout_height="wrap_content"
             app:typographyWeight="bold"
             app:typographyType="heading_5"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="8dp"
             android:text="Pelengkap Pesanan (Rp5.000)"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -41,8 +44,6 @@
             android:layout_height="wrap_content"
             app:typographyWeight="reguler"
             app:typographyType="body_3"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="8dp"
             android:text="Kemasan dan Kartu Ucapan"/>
 
     </LinearLayout>

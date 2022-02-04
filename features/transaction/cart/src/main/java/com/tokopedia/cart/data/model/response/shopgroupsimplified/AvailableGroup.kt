@@ -13,6 +13,8 @@ data class AvailableGroup(
         val cartString: String = "",
         @SerializedName("pinned")
         val pinned: Pinned = Pinned(),
+        @SerializedName("add_on")
+        val giftingAddOn: GiftingAddOn = GiftingAddOn(),
         @SerializedName("shop")
         val shop: Shop = Shop(),
         @SerializedName("is_fulfillment_service")

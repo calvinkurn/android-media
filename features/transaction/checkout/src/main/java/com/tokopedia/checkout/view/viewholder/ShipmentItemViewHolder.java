@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -387,6 +388,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     @Override
     public void navigateToWebView(CartItemModel cartItemModel) {
         mActionListener.navigateToProtectionMore(cartItemModel);
+    }
+
+    @Override
+    public void openAddOnBottomSheet(@NonNull CartItemModel cartItem) {
+        mActionListener.onOpenAddOnBottomSheet(cartItem);
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,

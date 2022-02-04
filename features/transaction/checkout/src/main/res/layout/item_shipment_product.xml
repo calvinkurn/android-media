@@ -345,6 +345,11 @@
             </LinearLayout>
         </RelativeLayout>
 
+        <com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
+            android:id="@+id/button_gifting_addon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 </LinearLayout>
