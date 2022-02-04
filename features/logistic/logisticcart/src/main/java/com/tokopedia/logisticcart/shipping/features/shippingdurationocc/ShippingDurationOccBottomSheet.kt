@@ -12,6 +12,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
@@ -40,7 +41,7 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
 
     private fun setupChild(child: View, list: List<RatesViewModelType>) {
         val rvShipping: RecyclerView = child.findViewById(R.id.rv_shipping)
-        val mutableList = list.toMutableList()
+        val mutableList = list.filterNot { item -> item is ShippingDurationUiModel && item.serviceData.isUiRatesHidden }.toMutableList()
         mutableList.add(0, NotifierModel())
 
         rvShipping.layoutManager = LinearLayoutManager(child.context, LinearLayoutManager.VERTICAL, false)
