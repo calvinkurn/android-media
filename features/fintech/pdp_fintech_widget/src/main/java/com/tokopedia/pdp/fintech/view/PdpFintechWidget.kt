@@ -40,6 +40,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     private lateinit var productID: String
     private lateinit var productPrice: String
 
+    @Inject
+    lateinit var pdpWidgetAnalytics: dagger.Lazy<PdpFintechWidgetAnalytics>
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
