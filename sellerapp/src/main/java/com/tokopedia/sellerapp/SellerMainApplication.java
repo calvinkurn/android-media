@@ -2,20 +2,15 @@ package com.tokopedia.sellerapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
-import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.work.Configuration;
-import androidx.work.InitializationExceptionHandler;
+
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 
@@ -30,8 +25,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
@@ -70,9 +63,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
+import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
-import timber.log.Timber;
 
 import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
 
@@ -86,6 +79,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
+    private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace";
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
 
     static {
@@ -117,6 +111,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         TokopediaUrl.Companion.init(this);
         initRemoteConfig();
         initCacheManager();
+        initEmbrace();
 
         TrackApp.initTrackApp(this);
 
@@ -139,6 +134,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initSlicePermission();
 
         Loader.init(this);
+        setEmbraceUserId();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -236,10 +232,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             @NotNull
             @Override
             public String getEmbraceConfig() {
-                //no op because embrace for now not yet implemented in sellerapp
-                return "";
+                return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
             }
         });
+    }
+
+    private void initEmbrace() {
+        Embrace.getInstance().start(this);
     }
 
     private void setVersionName() {
@@ -332,6 +331,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         if (getSliceRemoteConfig()) {
             SlicePermission slicePermission = new SlicePermission();
             slicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+        }
+    }
+
+    private void setEmbraceUserId() {
+        if (getUserSession().isLoggedIn()) {
+            Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
     }
 
