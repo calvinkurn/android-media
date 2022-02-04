@@ -42,7 +42,6 @@ class PlaySearchBar : ConstraintLayout {
     private val clSearch: ConstraintLayout = view.findViewById(R.id.cl_search)
     private val etSearch: EditText = view.findViewById(R.id.et_search)
     private val ivClear: ImageView = view.findViewById(R.id.iv_clear)
-//    private val tvCancel: TextView = view.findViewById(R.id.tv_cancel)
 
     private var mListener: Listener? = null
 
@@ -66,7 +65,6 @@ class PlaySearchBar : ConstraintLayout {
     }
 
     fun cancel() {
-//        tvCancel.performClick()
     }
 
     fun forceFocus() {
@@ -77,7 +75,6 @@ class PlaySearchBar : ConstraintLayout {
     override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         val newState = SavedState(superState)
-//        newState.cancelBtnVisibility = tvCancel.visibility
         newState.clearBtnVisibility = ivClear.visibility
         return newState
     }
@@ -85,7 +82,6 @@ class PlaySearchBar : ConstraintLayout {
     override fun onRestoreInstanceState(state: Parcelable?) {
         val savedState = state as SavedState
         super.onRestoreInstanceState(savedState.superState)
-//        tvCancel.visibility = savedState.cancelBtnVisibility
         ivClear.visibility = savedState.clearBtnVisibility
     }
 
@@ -115,16 +111,6 @@ class PlaySearchBar : ConstraintLayout {
             clearText()
             etSearch.requestFocus()
         }
-
-//        tvCancel.setOnClickListener {
-//            onChangeFocusTransition()
-//
-//            clearText()
-//            tvCancel.gone()
-//            etSearch.clearFocus()
-//            updateClearButton()
-//            mListener?.onCanceled(this@PlaySearchBar)
-//        }
     }
 
     private fun clearText() {
@@ -155,7 +141,6 @@ class PlaySearchBar : ConstraintLayout {
 
     private fun getCancelButtonTransition(): Transition {
         return Slide(Gravity.END)
-//                .addTarget(tvCancel)
                 .setDuration(300)
     }
 
