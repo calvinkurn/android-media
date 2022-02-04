@@ -3,11 +3,14 @@ package com.tokopedia.logisticorder.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.AdapterTrackingHistoryViewHolderBinding
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
@@ -57,18 +60,19 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
                 } else {
                     courierNameHistory.visibility = View.GONE
                 }
+                var dotColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
                 if (position == 0) {
-                    dotImage.setColorFilter(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                    dotColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
                     dotTrail.visibility = View.VISIBLE
                     dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                 } else if (position == trackingHistoryData.size - 1) {
-                    dotImage.setColorFilter(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                     dotTrail.visibility = View.GONE
                 } else {
-                    dotImage.setColorFilter(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                     dotTrail.visibility = View.VISIBLE
                     dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                 }
+                dotImage.setImageDrawable(getIconUnifyDrawable(itemView.context,
+                    IconUnify.CHECK_CIRCLE, dotColor))
                 if (data.proof.imageId.isEmpty()) {
                     imgProof.visibility = View.GONE
                 } else {
