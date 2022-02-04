@@ -126,7 +126,7 @@ abstract class BaseTopChatViewModelTest {
     lateinit var uploadImageUseCase: TopchatUploadImageUseCase
 
     @RelaxedMockK
-    lateinit var compressImageUseCase: CompressImageUseCase
+    lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
 
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -179,7 +179,7 @@ abstract class BaseTopChatViewModelTest {
             topChatRoomWebSocketMessageMapper,
             payloadGenerator,
             uploadImageUseCase,
-            compressImageUseCase
+            getTemplateChatRoomUseCase
         )
     }
 

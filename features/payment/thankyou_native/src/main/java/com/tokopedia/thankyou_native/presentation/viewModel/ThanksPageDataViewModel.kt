@@ -1,5 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.viewModel
 
+import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
@@ -33,16 +35,27 @@ class ThanksPageDataViewModel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-    val thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
-    val gyroRecommendationLiveData = MutableLiveData<GyroRecommendation>()
-    val topTickerLiveData = MutableLiveData<Result<List<TickerData>>>()
-    val defaultAddressLiveData = MutableLiveData<Result<GetDefaultChosenAddressResponse>>()
+    private val _thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
+    val thanksPageDataResultLiveData: LiveData<Result<ThanksPageData>> =
+        _thanksPageDataResultLiveData
+
+    private val _gyroRecommendationLiveData = MutableLiveData<GyroRecommendation>()
+    val gyroRecommendationLiveData: LiveData<GyroRecommendation> = _gyroRecommendationLiveData
+
+    private val _topTickerLiveData = MutableLiveData<Result<List<TickerData>>>()
+    val topTickerLiveData: LiveData<Result<List<TickerData>>> = _topTickerLiveData
+
+    private val _defaultAddressLiveData = MutableLiveData<Result<GetDefaultChosenAddressResponse>>()
+    val defaultAddressLiveData: LiveData<Result<GetDefaultChosenAddressResponse>> =
+        _defaultAddressLiveData
+
+    private val _topAdsDataLiveData = MutableLiveData<TopAdsRequestParams>()
+    val topAdsDataLiveData: LiveData<TopAdsRequestParams> = _topAdsDataLiveData
+
+    private val _gyroResponseLiveData = MutableLiveData<FeatureEngineData>()
+    val gyroResponseLiveData: LiveData<FeatureEngineData> = _gyroResponseLiveData
+
     val membershipRegisterData = MutableLiveData<Result<MembershipRegister>>()
-
-    val topAdsDataLiveData = MutableLiveData<TopAdsRequestParams>()
-
-    private val gyroResponseLiveData = MutableLiveData<FeatureEngineData>()
-
 
     fun getThanksPageData(paymentId: String, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
@@ -62,7 +75,7 @@ class ThanksPageDataViewModel @Inject constructor(
         ) {
             if (it.success) {
                 it.engineData?.let { featureEngineData ->
-                    gyroResponseLiveData.value = featureEngineData
+                    _gyroResponseLiveData.value = featureEngineData
 
                     val topAdsRequestParams = getTopAdsRequestParams(it.engineData)
                     if (topAdsRequestParams != null) {
@@ -80,7 +93,8 @@ class ThanksPageDataViewModel @Inject constructor(
         }
     }
 
-    private fun loadTopAdsViewModelData(
+    @VisibleForTesting
+     fun loadTopAdsViewModelData(
         topAdsRequestParams: TopAdsRequestParams,
         thanksPageData: ThanksPageData
     ) {
@@ -88,7 +102,7 @@ class ThanksPageDataViewModel @Inject constructor(
         thankYouTopAdsViewModelUseCase.getTopAdsData(topAdsRequestParams, thanksPageData, {
             if (it.isNotEmpty()) {
                 topAdsRequestParams.topAdsUIModelList = it
-                topAdsDataLiveData.postValue(topAdsRequestParams)
+                _topAdsDataLiveData.postValue(topAdsRequestParams)
             }
         }, { it.printStackTrace() })
     }
@@ -105,42 +119,43 @@ class ThanksPageDataViewModel @Inject constructor(
         return FeatureRecommendationMapper.getTokomemberRequestParams(engineData)
     }
 
-    private fun postGyroRecommendation(
+    @VisibleForTesting
+     fun postGyroRecommendation(
         engineData: FeatureEngineData?,
         queryParamTokomember: TokoMemberRequestParam?
     ) {
         gyroEngineMapperUseCase.cancelJobs()
         gyroEngineMapperUseCase.getFeatureListData(engineData,queryParamTokomember, {
-            gyroRecommendationLiveData.postValue(it)
-        }) { it.printStackTrace() }
+            _gyroRecommendationLiveData.postValue(it)
+        }, { it.printStackTrace() })
     }
 
     private fun onThanksPageDataSuccess(thanksPageData: ThanksPageData) {
         thanksPageMapperUseCase.cancelJobs()
         thanksPageMapperUseCase.populateThanksPageDataFields(thanksPageData, {
-            thanksPageDataResultLiveData.postValue(Success(it))
+            _thanksPageDataResultLiveData.postValue(Success(it))
         }, {
-            thanksPageDataResultLiveData.postValue(Fail(it))
+            _thanksPageDataResultLiveData.postValue(Fail(it))
         })
     }
 
     private fun onThanksPageDataError(throwable: Throwable) {
-        thanksPageDataResultLiveData.value = Fail(throwable)
+        _thanksPageDataResultLiveData.value = Fail(throwable)
     }
 
     fun getThanksPageTicker(configList: String?) {
         topTickerDataUseCase.getTopTickerData(configList, {
-            topTickerLiveData.postValue(Success(it))
+            _topTickerLiveData.postValue(Success(it))
         }, {
-            topTickerLiveData.postValue(Fail(it))
+            _topTickerLiveData.postValue(Fail(it))
         })
     }
 
     fun resetAddressToDefault() {
         getDefaultAddressUseCase.getDefaultChosenAddress({
-            defaultAddressLiveData.postValue(Success(it))
+            _defaultAddressLiveData.postValue(Success(it))
         }, {
-            defaultAddressLiveData.postValue(Fail(it))
+            _defaultAddressLiveData.postValue(Fail(it))
         })
     }
 

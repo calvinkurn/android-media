@@ -20,6 +20,8 @@ data class CreatePostViewModel(
     val relatedProducts: MutableList<RelatedProductItem> = arrayListOf(),
     var defaultPlaceholder: String = "",
     var currentCorouselIndex: Int = 0,
+    var mediaWidth: Int = 0,
+    var mediaHeight: Int = 0,
     var shopName: String = ""
 ) : Parcelable {
     val isEditState: Boolean

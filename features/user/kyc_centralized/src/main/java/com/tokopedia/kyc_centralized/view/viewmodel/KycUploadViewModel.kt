@@ -8,6 +8,9 @@ import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
+import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
+import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
+import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -36,13 +39,33 @@ class KycUploadViewModel @Inject constructor(
                 var finalKtp = ktpPath
                 var finalFace = facePath
                 if(isUsingEncrypt) {
-                    val ivKtp = kycSharedPreference.getByteArrayCache(KYC_IV_KTP_CACHE)
-                    finalKtp = decryptImage(ktpPath, ivKtp, KYC_IV_KTP_CACHE)
-                    val ivFace = kycSharedPreference.getByteArrayCache(KYC_IV_FACE_CACHE)
-                    finalFace = decryptImage(facePath, ivFace, KYC_IV_FACE_CACHE)
+                    try {
+                        kycSharedPreference.getByteArrayCache(KYC_IV_KTP_CACHE)?.let {
+                            finalKtp = decryptImage(ktpPath, it, KYC_IV_KTP_CACHE)
+                        }
+                    } catch (e: Exception) {
+                        _kycResponse.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on decrypt file KTP; error: ${e.message}")))
+                        return@withContext
+                    }
+
+                    try {
+                        kycSharedPreference.getByteArrayCache(KYC_IV_FACE_CACHE)?.let {
+                            finalFace = decryptImage(facePath, it, KYC_IV_FACE_CACHE)
+                        }
+                    } catch (e: Exception) {
+                        _kycResponse.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on decrypt file Selfie/Liveness; error: ${e.message}")))
+                        return@withContext
+                    }
                 }
-                val kycUploadResult = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
-                _kycResponse.postValue(Success(kycUploadResult))
+
+                when {
+                    finalKtp.isEmpty() -> _kycResponse.postValue(Fail(Throwable(FILE_PATH_KTP_EMPTY)))
+                    finalFace.isEmpty() -> _kycResponse.postValue(Fail(Throwable(FILE_PATH_FACE_EMPTY)))
+                    else -> {
+                        val kycUploadResult = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
+                        _kycResponse.postValue(Success(kycUploadResult))
+                    }
+                }
             }
         }) {
             _kycResponse.postValue(Fail(it))
@@ -60,8 +83,7 @@ class KycUploadViewModel @Inject constructor(
                 _encryptImage.postValue(Success(createdFile))
             }
         }, onError = {
-            it.printStackTrace()
-            _encryptImage.postValue(Fail(it))
+            _encryptImage.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on encrypt $originalFilePath; error: ${it.message}")))
         })
     }
 
@@ -77,7 +99,7 @@ class KycUploadViewModel @Inject constructor(
         return ImageEncryptionUtil.renameImageToOriginalFileName(resultFilePath)
     }
 
-    private fun decryptImage(originalFilePath: String, iv: ByteArray, ivCache: String): String {
+    fun decryptImage(originalFilePath: String, iv: ByteArray, ivCache: String): String {
         val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
         val aes = ImageEncryptionUtil.initAesDecrypt(iv)
         val resultPath = writeDecryptedResult(originalFilePath, decryptedFilePath, aes)

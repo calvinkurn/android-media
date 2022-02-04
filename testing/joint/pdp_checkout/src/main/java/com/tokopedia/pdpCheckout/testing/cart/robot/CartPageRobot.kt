@@ -16,9 +16,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.google.gson.Gson
 import com.google.gson.JsonArray
-import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.bundle.view.mapper.CartUiModelMapper
-import com.tokopedia.cart.bundle.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
+import com.tokopedia.cart.view.mapper.CartUiModelMapper
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.viewholder.CartItemViewHolder
+import com.tokopedia.cart.view.viewholder.CartShopViewHolder
+import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.CommonUtils
@@ -48,13 +52,13 @@ class CartPageRobot {
     }
 
     fun initData(context: Context) {
-        val jsonString = InstrumentationMockHelper.getRawString(context, R.raw.cart_bundle_happy_flow_response)
+        val jsonString = InstrumentationMockHelper.getRawString(context, R.raw.cart_happy_flow_response)
         val jsonArray: JsonArray = CommonUtils.fromJson(
                 jsonString,
                 JsonArray::class.java
         )
         val jsonObject = jsonArray.asJsonArray[0].asJsonObject.getAsJsonObject("data")
-        cartData = Gson().fromJson(jsonObject, com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
+        cartData = Gson().fromJson(jsonObject, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
         availableCartList = CartUiModelMapper.mapAvailableShopUiModel(cartData!!)
     }
 
@@ -91,7 +95,7 @@ class CartPageRobot {
     }
 
     fun assertCartTickerErrorViewHolder(position: Int, message: String) {
-        onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<com.tokopedia.cart.bundle.view.viewholder.CartTickerErrorViewHolder>(position, object : ViewAction {
+        onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartTickerErrorViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "performing assertion action on CartTickerErrorViewHolder"
 
             override fun getConstraints(): Matcher<View>? = null
@@ -105,7 +109,7 @@ class CartPageRobot {
     fun assertFirstCartShopViewHolder(view: View,
                                       position: Int,
                                       shopIndex: Int) {
-        onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<com.tokopedia.cart.bundle.view.viewholder.CartShopViewHolder>(position, object : ViewAction {
+        onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartShopViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
 
             override fun getConstraints(): Matcher<View>? = null
@@ -138,7 +142,7 @@ class CartPageRobot {
         for (i in 0 until childItemCount) {
             try {
                 onView(allOf(withId(recyclerViewId), withContentDescription(CommonActions.UNDER_TEST_TAG)))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<com.tokopedia.cart.bundle.view.viewholder.CartItemViewHolder>(i, object : ViewAction {
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<CartItemViewHolder>(i, object : ViewAction {
                             override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
 
                             override fun getConstraints(): Matcher<View>? = null
@@ -156,7 +160,7 @@ class CartPageRobot {
     }
 
     fun assertCartShopViewHolderOnPosition(position: Int, func: CartShopViewHolderRobot.() -> Unit) {
-        onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<com.tokopedia.cart.bundle.view.viewholder.CartShopViewHolder>(position, object : ViewAction {
+        onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartShopViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "performing assertion action on CartShopViewHolder position $position"
 
             override fun getConstraints(): Matcher<View>? = null
