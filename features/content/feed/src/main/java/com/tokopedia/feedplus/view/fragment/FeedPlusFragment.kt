@@ -2372,7 +2372,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedXCard.id,
             feedXCard.media.first(),
             positionInFeed,
-            feedXCard.type,
+            feedXCard.typename,
             feedXCard.followers.isFollowed,
             feedXCard.author.id,
             (feedXCard.media.firstOrNull()?.type != TYPE_IMAGE)
