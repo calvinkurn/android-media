@@ -1,6 +1,8 @@
 package com.tokopedia.addongifting.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.addongifting.data.response.GetAddOnByProductResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -12,7 +14,13 @@ import javax.inject.Inject
 @GqlQuery(GetAddOnByProductUseCase.QUERY_NAME, GetAddOnByProductUseCase.QUERY)
 class GetAddOnByProductUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) : UseCase<GetAddOnByProductResponse>() {
 
+    var mockResponse: String = ""
+
     override suspend fun executeOnBackground(): GetAddOnByProductResponse {
+        if (mockResponse.isNotBlank()) {
+            return Gson().fromJson(mockResponse, GetAddOnByProductResponse::class.java)
+        }
+
         val request = GraphqlRequest(GetAddOnByProductQuery(), GetAddOnByProductResponse::class.java)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
