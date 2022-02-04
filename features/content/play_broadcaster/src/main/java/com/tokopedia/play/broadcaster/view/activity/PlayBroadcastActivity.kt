@@ -313,8 +313,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
                 openBroadcastActivePage()
                 showDialogContinueLiveStreaming()
             }
-            /** TODO: this should be removed soon */
-//            ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
             else -> openBroadcastSetupPage()
         }
     }
@@ -357,10 +355,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     private fun openBroadcastSetupPage() {
         navigateToFragment(PlayBroadcastPreparationFragment::class.java)
         analytic.openSetupScreen()
-    }
-
-    private fun openBroadcastFinalSetupPage() {
-        navigateToFragment(PlayBeforeLiveFragment::class.java)
     }
 
     private fun openBroadcastActivePage() {
