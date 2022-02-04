@@ -13,14 +13,7 @@
         android:animateLayoutChanges="true"
         android:background="?android:attr/selectableItemBackground">
 
-        <include
-            android:id="@+id/itemBomDetailAddonsSection"
-            layout="@layout/partial_item_buyer_order_detail_addons"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+        <include layout="@layout/partial_item_buyer_order_detail_addons" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

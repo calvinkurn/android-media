@@ -9,7 +9,7 @@
         android:id="@+id/ivBomDetailAddonsThumbnail"
         android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
         android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@id/ivBomDetailAddonsThumbnail"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="@string/order_addons_to_label" />
+        android:text="@string/order_addons_to_label" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailAddonsFromLabel"
@@ -68,7 +68,7 @@
         app:layout_constraintStart_toStartOf="@id/ivBomDetailAddonsThumbnail"
         app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsToLabel"
         app:typographyType="body_3"
-        tools:text="@string/order_addons_from_label" />
+        android:text="@string/order_addons_from_label" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailAddonsToValue"

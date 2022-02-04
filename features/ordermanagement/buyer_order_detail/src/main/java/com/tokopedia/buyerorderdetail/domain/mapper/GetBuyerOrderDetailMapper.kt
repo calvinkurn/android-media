@@ -70,7 +70,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         return AddonsListUiModel(
             addonsTitle = "Pelengkap",
             addonsLogoUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
-            totalPriceText = "total_price_str",
+            totalPriceText = "Rp5.000",
             addonsItemList = listOf(
                 AddonsListUiModel.AddonItemUiModel(
                     priceText = "Rp2.000",
@@ -80,7 +80,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                     addOnsThumbnailUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
                     toStr = "Adam",
                     fromStr = "John",
-                    message = "happy birthday boss"
+                    message = "happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss,happy birthday boss"
                 )
             )
         )

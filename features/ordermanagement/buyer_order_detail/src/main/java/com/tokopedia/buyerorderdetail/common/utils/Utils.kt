@@ -8,16 +8,27 @@ import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.text.style.StyleSpan
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
+import com.tokopedia.buyerorderdetail.common.utils.Utils.setAddonMessageFormatted
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import java.lang.StringBuilder
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -32,6 +43,11 @@ object Utils {
 
     private const val CURRENCY_RUPIAH = "Rp"
 
+    const val MAX_CHAR_MESSAGE = 250
+    private const val MAX_LINE_MESSAGE = 2
+    private const val READ_MORE = "Selengkapnya"
+    private const val CLOSE_MESSAGE = "Tutup"
+
     fun parseColorHex(context: Context, colorHex: String, defaultColor: Int): Int {
         return try {
             Color.parseColor(colorHex)
@@ -42,14 +58,21 @@ object Utils {
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
         val color = parseColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        val drawable = MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
-        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        val drawable =
+            MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
+        val filter: ColorFilter = LightingColorFilter(
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+            ), color
+        )
         drawable.colorFilter = filter
         return drawable
     }
 
     fun copyText(context: Context, label: String, text: CharSequence) {
-        val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, text))
     }
 
@@ -88,10 +111,45 @@ object Utils {
     }
 
     fun Double.toCurrencyFormatted(): String {
-        val value =  BigDecimal(this).apply {
+        val value = BigDecimal(this).apply {
             setScale(0, RoundingMode.HALF_UP)
         }
         val values = CurrencyFormatHelper.convertToRupiah(value.toString())
         return "$CURRENCY_RUPIAH$values"
+    }
+
+    private fun Typography.isHasEllipsize(): Boolean {
+        if (layout != null) {
+            val lines: Int = layout.lineCount
+            if (lines > Int.ONE) {
+                val ellipsisCount: Int = layout.getEllipsisCount(lines - Int.ONE)
+                if (ellipsisCount.isMoreThanZero()) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun Typography.setAddonMessageFormatted(message: String, context: Context) {
+        val hyperLinkText: String
+        val htmlString: HtmlLinkHelper
+        text = message
+        if(layout?.lineCount.orZero() > Int.ONE) {
+            maxLines = MAX_LINE_MESSAGE
+            hyperLinkText = context.getString(R.string.order_addons_read_more)
+            htmlString = HtmlLinkHelper(context, StringBuilder(text.dropLast(READ_MORE.length)).append(hyperLinkText).toString())
+            text = htmlString.spannedString
+        } else {
+            maxLines = Integer.MAX_VALUE
+            hyperLinkText = context.getString(R.string.order_addons_close)
+            htmlString = HtmlLinkHelper(context, StringBuilder(text.dropLast(CLOSE_MESSAGE.length)).append(hyperLinkText).toString())
+            text = htmlString.spannedString
+        }
+        this.movementMethod = LinkMovementMethod.getInstance()
+        this.highlightColor = Color.TRANSPARENT
+        htmlString.urlList.getOrNull(Int.ZERO)?.setOnClickListener {
+            setAddonMessageFormatted(message, context)
+        }
     }
 }

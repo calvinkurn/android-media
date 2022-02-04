@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.utils.Utils.setAddonMessageFormatted
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailAddonsListBinding
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>) :
     RecyclerView.Adapter<AddonsItemAdapter.ViewHolder>() {
@@ -58,6 +58,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                 tvBomDetailAddonsToValue.hide()
                 tvBomDetailAddonsToLabel.hide()
             } else {
+                tvBomDetailAddonsToValue.text = itemView.context.getString(R.string.order_addons_to_value, toStr)
                 tvBomDetailAddonsToValue.show()
                 tvBomDetailAddonsToLabel.show()
             }
@@ -66,15 +67,23 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
         private fun ItemBuyerOrderDetailAddonsListBinding.setupFromMetadata(fromStr: String) {
             if (fromStr.isBlank()) {
                 tvBomDetailAddonsFromLabel.hide()
-                tvBomDetailAddonsToValue.hide()
+                tvBomDetailAddonsFromValue.hide()
             } else {
+                tvBomDetailAddonsFromValue.text = itemView.context.getString(R.string.order_addons_to_value, fromStr)
                 tvBomDetailAddonsFromLabel.show()
-                tvBomDetailAddonsToValue.show()
+                tvBomDetailAddonsFromValue.show()
             }
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setupMessageMetadata(message: String) {
-            tvBomDetailAddonsMessageValue.showWithCondition(message.isNotBlank())
+            if (message.isBlank()) {
+                tvBomDetailAddonsMessageValue.hide()
+            } else {
+                tvBomDetailAddonsMessageValue.show()
+                tvBomDetailAddonsMessageValue.apply {
+                    setAddonMessageFormatted(message, context)
+                }
+            }
         }
     }
 }

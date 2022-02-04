@@ -93,7 +93,6 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="16dp"
         android:textColor="@color/Unify_N700_96"
-        android:translationY="-1.97dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintHorizontal_bias="0"

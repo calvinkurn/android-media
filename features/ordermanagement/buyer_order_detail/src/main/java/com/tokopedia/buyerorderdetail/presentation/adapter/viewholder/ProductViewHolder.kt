@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
+import android.view.ViewStub
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
@@ -8,6 +9,8 @@ import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAdd
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -22,9 +25,11 @@ open class ProductViewHolder(
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
     }
 
-    private val ivBuyerOrderDetailProductThumbnail = itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailProductThumbnail)
+    private val ivBuyerOrderDetailProductThumbnail =
+        itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailProductThumbnail)
 
-    protected val btnBuyerOrderDetailBuyProductAgain = itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
+    protected val btnBuyerOrderDetailBuyProductAgain =
+        itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
 
     private var element: ProductListUiModel.ProductUiModel? = null
 
@@ -37,10 +42,8 @@ open class ProductViewHolder(
     override fun bind(element: ProductListUiModel.ProductUiModel?) {
         element?.let {
             this.element = it
-            partialProductItemViewHolder = PartialProductItemViewHolder(itemView, listener, navigator, element)
+            setupProductList(element)
             setupAddonSection(element.addonsListUiModel)
-            setupProductThumbnail(it.productThumbnailUrl)
-            setupButton(it.button, it.isProcessing)
         }
     }
 
@@ -63,9 +66,22 @@ open class ProductViewHolder(
         super.bind(element, payloads)
     }
 
+    private fun setupProductList(element: ProductListUiModel.ProductUiModel) {
+        partialProductItemViewHolder =
+            PartialProductItemViewHolder(itemView, listener, navigator, element)
+        setupProductThumbnail(element.productThumbnailUrl)
+        setupButton(element.button, element.isProcessing)
+    }
+
     private fun setupAddonSection(addonsListUiModel: AddonsListUiModel) {
-        partialProductAddonViewHolder = PartialProductAddonViewHolder(partialItemBuyerOrderDetailAddonsBinding)
-        partialProductAddonViewHolder?.bindViews(addonsListUiModel)
+        partialProductAddonViewHolder =
+            PartialProductAddonViewHolder(partialItemBuyerOrderDetailAddonsBinding)
+        if (addonsListUiModel.addonsItemList.isNotEmpty()) {
+            partialProductAddonViewHolder?.bindViews(addonsListUiModel)
+            partialItemBuyerOrderDetailAddonsBinding.root.show()
+        } else {
+            partialItemBuyerOrderDetailAddonsBinding.root.hide()
+        }
     }
 
     protected open fun setupProductThumbnail(productThumbnailUrl: String) {
@@ -74,7 +90,10 @@ open class ProductViewHolder(
         }
     }
 
-    protected open fun setupButton(showBuyAgainButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
+    protected open fun setupButton(
+        showBuyAgainButton: ActionButtonsUiModel.ActionButton,
+        processing: Boolean
+    ) {
         btnBuyerOrderDetailBuyProductAgain?.apply {
             isLoading = processing
             text = showBuyAgainButton.label
