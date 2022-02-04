@@ -1,6 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.uimodel
 
-data class PromoLastSeenItemUiModel(
+data class PromoSuggestionItemUiModel(
         var uiData: UiData
 ) {
 
