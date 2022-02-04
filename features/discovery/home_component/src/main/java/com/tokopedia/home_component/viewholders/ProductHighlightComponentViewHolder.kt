@@ -1,9 +1,7 @@
 package com.tokopedia.home_component.viewholders
 
-import android.content.Context
 import android.graphics.Color
 import android.view.View
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
