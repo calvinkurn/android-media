@@ -13,11 +13,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 
 class ShippingDurationOccAdapter(private val list: List<RatesViewModelType>, private val shippingDurationAdapterListener: ShippingDurationAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    init {
-        // todo todo
-        this.list.filterNot { item -> (item is ShippingDurationUiModel && item.serviceData.isUiRatesHidden)  }
-    }
-
     companion object {
         private const val SHIPPING_DURATION_VIEW_HOLDER_TYPE = 1
         private const val ARMY_VIEW_HOLDER_TYPE = 3
