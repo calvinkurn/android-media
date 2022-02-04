@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
@@ -40,6 +42,7 @@ import javax.inject.Inject
  */
 class ProductChooserBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
+    private val dispatchers: CoroutineDispatchers,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
 ) : BottomSheetUnify(), ProductSortBottomSheet.Listener {
 
@@ -63,8 +66,6 @@ class ProductChooserBottomSheet @Inject constructor(
         EtalaseChipsViewComponent(binding.chipsEtalase, eventBus)
     }
 
-    private var hasLoadProduct: Boolean = false
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             dialogCustomizer.customize(this)
@@ -83,15 +84,6 @@ class ProductChooserBottomSheet @Inject constructor(
 
         setupView()
         setupObserve()
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        if (!hasLoadProduct) {
-            productListView.loadNextPage()
-            hasLoadProduct = true
-        }
     }
 
     override fun onDestroyView() {
@@ -167,14 +159,14 @@ class ProductChooserBottomSheet @Inject constructor(
     ) {
         if (prevProductListPaging == productListPaging && prevSelectedMap == selectedMap) return
 
-        productListView.setProductList(
-            productList = productListPaging.productList,
-            selectedList = selectedMap.values.flatten(),
-            isSuccess = productListPaging.resultState is PageResultState.Success &&
-                    prevProductListPaging?.productList.orEmpty().size < productListPaging.productList.size,
-            hasNextPage = productListPaging.resultState is PageResultState.Success &&
-                    productListPaging.resultState.hasNextPage,
-        )
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
+            productListView.setProductList(
+                productList = productListPaging.productList,
+                selectedList = selectedMap.values.flatten(),
+                hasNextPage = productListPaging.resultState is PageResultState.Success &&
+                        productListPaging.resultState.hasNextPage,
+            )
+        }
     }
 
     private fun renderSortChips(
@@ -255,12 +247,7 @@ class ProductChooserBottomSheet @Inject constructor(
             }
             is ProductListViewComponent.Event.OnLoadMore -> {
                 viewModel.submitAction(
-                    PlayBroProductChooserAction.LoadProductList(
-                        keyword = "",
-                        sort = SortUiModel.Empty,
-                        page = event.page,
-                        resetList = false,
-                    )
+                    PlayBroProductChooserAction.LoadProductList(keyword = "")
                 )
             }
         }

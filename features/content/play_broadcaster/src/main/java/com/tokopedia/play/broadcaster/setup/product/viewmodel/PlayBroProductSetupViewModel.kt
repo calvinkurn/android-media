@@ -44,7 +44,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(emptyMap())
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
 
-    private val _sort = MutableStateFlow<SortUiModel?>(null)
+    private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
 
     private var getProductListJob: Job? = null
 
@@ -64,13 +64,13 @@ class PlayBroProductSetupViewModel @Inject constructor(
         _campaignAndEtalase,
         _focusedProductList,
         _selectedProductMap,
-        _sort,
-    ) { campaignAndEtalase, focusedProductList, selectedProductList, sort ->
+        _loadParam,
+    ) { campaignAndEtalase, focusedProductList, selectedProductList, loadParam ->
         PlayBroProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
             selectedProductList = selectedProductList,
-            sort = sort,
+            sort = loadParam.sort,
         )
     }.stateIn(
         viewModelScope,
@@ -87,6 +87,12 @@ class PlayBroProductSetupViewModel @Inject constructor(
                 getProductListJob?.cancel()
             }
         }
+
+        viewModelScope.launch {
+            _loadParam.collectLatest {
+                handleLoadProductList(it, true)
+            }
+        }
     }
 
     fun submitAction(action: PlayBroProductChooserAction) {
@@ -96,54 +102,10 @@ class PlayBroProductSetupViewModel @Inject constructor(
             is PlayBroProductChooserAction.SelectCampaign -> handleSelectCampaign(action.campaign)
             is PlayBroProductChooserAction.SelectProduct -> handleSelectProduct(action.product)
             is PlayBroProductChooserAction.LoadProductList -> handleLoadProductList(
-                keyword = action.keyword,
-                sort = action.sort,
-                page = action.page,
-                resetList = action.resetList,
+                param = _loadParam.value,
+                resetList = false,
             )
         }
-    }
-
-    private suspend fun getProductsInEtalase(
-        etalaseId: String,
-        page: Int,
-        keyword: String,
-    ) = withContext(dispatchers.io) {
-        return@withContext repo.getProductsInEtalase(
-            etalaseId = etalaseId,
-            page = page,
-            keyword = keyword,
-        )
-        /*viewModelScope.launchCatchError(dispatchers.io, block = {
-            val map = _productInEtalaseMap.value
-            val page = map[model]?.productMap?.keys?.maxOrNull() ?: 0
-
-            if (model is SelectedEtalaseModel.Campaign) {
-                //TODO("Campaign")
-            } else {
-                val etalaseId = when (model) {
-                    is SelectedEtalaseModel.Etalase -> model.etalase.id
-                    else -> ""
-                }
-                val productList = repo.getProductsInEtalase(etalaseId, page, keyword)
-                _productInEtalaseMap.update {
-                    val prevProductPagingMap = it[model] ?: ProductPagingMap(
-                        productMap = emptyMap(),
-                        hasMore = false,
-                    )
-                    val newProductPagingMap = ProductPagingMap(
-                        productMap = prevProductPagingMap.productMap + mapOf(page to productList),
-                        hasMore = false,
-                    )
-
-                    it + mapOf(model to newProductPagingMap)
-                }
-            }
-
-        }) {
-            println(it)
-        }*/
-
     }
 
     private fun getEtalaseList() {
@@ -163,7 +125,9 @@ class PlayBroProductSetupViewModel @Inject constructor(
     }
 
     private fun handleSetSort(sort: SortUiModel) {
-        _sort.value = sort
+        _loadParam.update {
+            it.copy(sort = sort)
+        }
     }
 
     private fun handleSelectEtalase(etalase: EtalaseUiModel) {
@@ -187,11 +151,11 @@ class PlayBroProductSetupViewModel @Inject constructor(
     }
 
     private fun handleLoadProductList(
-        keyword: String,
-        sort: SortUiModel,
-        page: Int,
+        param: ProductListPaging.Param,
         resetList: Boolean,
     ) {
+        if (!resetList && _focusedProductList.value.resultState == PageResultState.Loading) return
+
         _focusedProductList.update {
             it.copy(
                 productList = if (resetList) emptyList() else it.productList,
@@ -199,6 +163,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
             )
         }
         getProductListJob = viewModelScope.launchCatchError(dispatchers.io, block = {
+            val page = if (resetList) 0 else _focusedProductList.value.page + 1
             when (val selectedEtalase = _selectedEtalase.value) {
                 is SelectedEtalaseModel.Campaign -> return@launchCatchError
                 is SelectedEtalaseModel.Etalase,
@@ -208,13 +173,14 @@ class PlayBroProductSetupViewModel @Inject constructor(
                             selectedEtalase.etalase.id
                         } else "",
                         page = page,
-                        keyword = keyword,
+                        keyword = param.keyword,
                     )
 
                     _focusedProductList.update {
                         it.copy(
                             productList = it.productList + productList,
                             resultState = PageResultState.Success(productList.isNotEmpty()),
+                            page = page,
                         )
                     }
                 }
@@ -233,21 +199,6 @@ class PlayBroProductSetupViewModel @Inject constructor(
                     it.copy(resultState = PageResultState.Fail(cause))
                 }
             }
-        }
-    }
-
-    data class Param(
-        val etalase: SelectedEtalaseModel,
-        val page: Int,
-        val keyword: String,
-    ) {
-        companion object {
-            val Empty: Param
-                get() = Param(
-                    etalase = SelectedEtalaseModel.None,
-                    page = 0,
-                    keyword = "",
-                )
         }
     }
 }
