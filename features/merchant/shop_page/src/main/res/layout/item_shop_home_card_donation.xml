@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,9 +11,10 @@
     app:card_background_color="@color/Unify_Background"
     app:card_type="border">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="horizontal"
         android:paddingLeft="@dimen/unify_space_12"
         android:paddingTop="@dimen/unify_space_8"
         android:paddingRight="@dimen/unify_space_12"
@@ -23,27 +24,22 @@
             android:id="@+id/shop_home_card_donation_image"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitXY" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_home_card_donation_description"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/unify_space_12"
             android:ellipsize="end"
             android:maxLines="2"
             android:textSize="@dimen/unify_font_12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/shop_home_card_donation_image"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
             tools:text="Selama Ramadan, sebagian keuntungan toko akan didonasikan. Selengkapnya" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
-</com.tokopedia.unifycomponents.CardUnify2>
+</com.tokopedia.unifycomponents.CardUnify>
