@@ -22,6 +22,26 @@
       "sessionIris": ".*",
       "userId": ".*"
     },
+    {
+      "event": "clickPG",
+      "eventAction": "click - add cover on preparation page",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - add product tag",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
 
     {
       "eventAction": "view widget broadcast",

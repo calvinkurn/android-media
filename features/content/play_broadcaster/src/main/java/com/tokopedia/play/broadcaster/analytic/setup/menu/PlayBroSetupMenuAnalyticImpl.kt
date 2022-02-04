@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.analytic.setup.title
+package com.tokopedia.play.broadcaster.analytic.setup.menu
 
 import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
@@ -17,12 +17,20 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on February 04, 2022
  */
-class PlayBroSetupTitleAnalyticImpl @Inject constructor(
+class PlayBroSetupMenuAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
-) : PlayBroSetupTitleAnalytic {
+) : PlayBroSetupMenuAnalytic{
 
-    override fun clickSubmitTitle() {
-        sendEvent("click - simpan")
+    override fun clickSetupTitleMenu() {
+        sendEvent("click - edit title")
+    }
+
+    override fun clickSetupCoverMenu() {
+        sendEvent("click - add cover on preparation page")
+    }
+
+    override fun clickSetupProductMenu() {
+        sendEvent("click - add product tag")
     }
 
     private fun sendEvent(

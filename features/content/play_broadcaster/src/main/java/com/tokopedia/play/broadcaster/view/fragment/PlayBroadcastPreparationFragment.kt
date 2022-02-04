@@ -293,17 +293,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Callback Preparation Menu */
     override fun onClickSetTitle() {
-        analytic.clickEditTitleMenu()
+        analytic.clickSetupTitleMenu()
 
         showTitleForm(true)
     }
 
     override fun onClickSetCover() {
+        analytic.clickSetupCoverMenu()
+
         showCoverForm(true)
     }
 
     override fun onClickSetProduct() {
-        TODO("Not yet implemented")
+        analytic.clickSetupProductMenu()
     }
 
     /** Callback Title Form */
