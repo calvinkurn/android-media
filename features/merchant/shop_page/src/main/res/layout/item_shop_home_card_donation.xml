@@ -1,47 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/unify_space_16"
-    android:layout_marginTop="@dimen/unify_space_8"
-    android:id="@+id/shop_home_card_donation_card_container"
-    android:layout_marginRight="@dimen/unify_space_16"
-    android:layout_marginBottom="@dimen/unify_space_8"
-    app:card_background_color="@color/Unify_Background"
-    app:card_type="border">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/shop_home_card_donation_card_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/shop_home_card_donation_linear_container"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/unify_space_12"
-        android:paddingTop="@dimen/unify_space_8"
-        android:paddingRight="@dimen/unify_space_12"
-        android:paddingBottom="@dimen/unify_space_8">
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        app:card_background_color="@color/Unify_Background"
+        app:card_type="border">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/shop_home_card_donation_image"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_gravity="center_vertical"
-            android:scaleType="fitXY" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/shop_home_card_donation_description"
+        <LinearLayout
+            android:id="@+id/shop_home_card_donation_linear_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/unify_space_12"
-            android:layout_marginEnd="@dimen/unify_space_12"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textSize="@dimen/unify_font_12"
-            app:typographyType="small"
-            tools:text="Selama Ramadan, sebagian keuntungan toko akan didonasikan. Selengkapnya" />
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/unify_space_12"
+            android:paddingTop="@dimen/unify_space_8"
+            android:paddingRight="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_8">
 
-    </LinearLayout>
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/shop_home_card_donation_image"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY" />
 
-</com.tokopedia.unifycomponents.CardUnify>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/shop_home_card_donation_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_12"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textSize="@dimen/unify_font_12"
+                app:typographyType="small"
+                tools:text="Selama Ramadan, sebagian keuntungan toko akan didonasikan. Selengkapnya" />
+
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+</RelativeLayout>
