@@ -5,6 +5,8 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.KeyEvent.KEYCODE_BACK
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -77,6 +79,15 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     private fun initAutoComplete() {
         binding.clientNumberWidgetInputField.run {
+            keyImeChangeListener = object : TextField3.KeyImeChange {
+                override fun onPreKeyIme(event: KeyEvent) {
+                   if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+                        clearFocus()
+                        hideIndicatorIcon()
+                        showClearIcon()
+                    }
+                }
+            }
             editText.run {
                 threshold = AUTOCOMPLETE_THRESHOLD
                 dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
@@ -102,8 +113,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                     }
                 })
 
-                setOnEditorActionListener { _, actionId, _ ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                setOnEditorActionListener { _, actionId, keyEvent ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.keyCode == KEYCODE_BACK) {
                         clearFocus()
                         hideSoftKeyboard()
                         hideIndicatorIcon()
