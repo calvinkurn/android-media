@@ -8,6 +8,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.RECHARGE_SUBHOMEPAGE_PLATFORM_ID
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_GENERAL_OPERATOR_DIGITAL_PDP
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
@@ -127,6 +128,9 @@ object DeeplinkMapperDigital {
                 }
                 TEMPLATE_ROAMING_DIGITAL_PDP -> {
                     ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA
+                }
+                TEMPLATE_GENERAL_OPERATOR_DIGITAL_PDP -> {
+                    ApplinkConsInternalDigital.DIGITAL_TOKEN_LISTRIK
                 }
                 else -> deeplink
             }

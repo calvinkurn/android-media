@@ -5,6 +5,7 @@ object DigitalPDPConstant {
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_CLIENT_NUMBER = "client_number"
     const val PARAM_CATEGORY_ID = "category_id"
+    const val PARAM_OPERATOR_ID = "operator_id"
     const val EXTRA_PARAM = "extra_param"
 
     const val INPUT_ACTION_TRACKING_DELAY = 1000L

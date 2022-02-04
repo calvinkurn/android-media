@@ -24,7 +24,7 @@ import com.tokopedia.header.HeaderUnify
 import java.lang.ref.WeakReference
 
 /**
- * @author by firmanda on 04/01/21
+ * @author by firmanda on 04/01/22
  * access applink tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2
  * access internal applink tokopedia-android-internal://digital/pdp_paket_data
  */

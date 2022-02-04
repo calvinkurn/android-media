@@ -15,6 +15,7 @@ object DeeplinkMapperDigitalConst {
     const val TEMPLATE_PULSA_DIGITAL_PDP = "pulsav2"
     const val TEMPLATE_PAKET_DATA_DIGITAL_PDP = "paketdatav2"
     const val TEMPLATE_ROAMING_DIGITAL_PDP = "roamingv2"
+    const val TEMPLATE_GENERAL_OPERATOR_DIGITAL_PDP = "tokenplnv2"
     /**
      * End Template
      */
