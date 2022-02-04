@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/layout_lvl6"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/unify_space_16"
     android:layout_marginTop="@dimen/unify_space_8"
+    android:id="@+id/shop_home_card_donation_card_container"
     android:layout_marginRight="@dimen/unify_space_16"
     android:layout_marginBottom="@dimen/unify_space_8"
     app:card_background_color="@color/Unify_Background"
@@ -13,7 +14,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/shop_home_card_donation_linear_container"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/unify_space_12"
         android:paddingTop="@dimen/unify_space_8"
