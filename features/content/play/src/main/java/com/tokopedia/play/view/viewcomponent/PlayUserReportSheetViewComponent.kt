@@ -94,16 +94,6 @@ class PlayUserReportSheetViewComponent(
         }
     }
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
-
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
     fun showWithHeight(height: Int) {
         if (rootView.height != height) {
             val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams

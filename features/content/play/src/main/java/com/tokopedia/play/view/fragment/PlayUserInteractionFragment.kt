@@ -813,6 +813,8 @@ class PlayUserInteractionFragment @Inject constructor(
             immersiveBoxViewOnStateChanged(bottomInsets = map)
             pipViewOnStateChanged(bottomInsets = map)
             castViewOnStateChanged(bottomInsets = map)
+
+            if(map.isAnyUserReportBottomSheetShown) showMoreActionBottomSheet()
         })
     }
 
@@ -1128,7 +1130,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun getBottomSheetInstance() : PlayMoreActionBottomSheet {
         if (!::bottomSheet.isInitialized) {
-            bottomSheet = PlayMoreActionBottomSheet.newInstance(requireContext(), this)
+            bottomSheet = childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
         }
         return bottomSheet
     }

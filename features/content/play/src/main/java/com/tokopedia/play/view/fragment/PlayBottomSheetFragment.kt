@@ -82,6 +82,8 @@ class PlayBottomSheetFragment @Inject constructor(
         ShopCouponSheetViewComponent.Listener
 {
 
+    //TODO = remove user report component
+    
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
 
@@ -631,21 +633,6 @@ class PlayBottomSheetFragment @Inject constructor(
                     playViewModel.submitAction(RefreshLeaderboard)
                 }
                 else leaderboardSheetView.hide()
-            }
-
-            it[BottomInsetsType.KebabMenuSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) kebabMenuSheetView.showWithHeight(state.estimatedInsetsHeight)
-                else kebabMenuSheetView.hide()
-            }
-
-            it[BottomInsetsType.UserReportSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) userReportSheetView.showWithHeight(state.estimatedInsetsHeight)
-                else userReportSheetView.hide()
-            }
-
-            it[BottomInsetsType.UserReportSubmissionSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) userReportSubmissionSheetView.showWithHeight(state.estimatedInsetsHeight)
-                else userReportSubmissionSheetView.hide()
             }
         })
     }

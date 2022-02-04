@@ -28,7 +28,6 @@ class KebabMenuSheetViewComponent(
     private val listener: Listener
 ) : ViewComponent(container, R.id.cl_kebab_menu_sheet) {
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
     private val clContent: ConstraintLayout = findViewById(R.id.cl_user_kebab_menu_sheet_content)
     private val rvActionList: RecyclerView = findViewById(R.id.rv_action_list)
@@ -65,14 +64,6 @@ class KebabMenuSheetViewComponent(
             insets
         }
 
-    }
-
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     fun showWithHeight(height: Int) {

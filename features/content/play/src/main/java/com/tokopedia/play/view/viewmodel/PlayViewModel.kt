@@ -30,7 +30,6 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -54,6 +53,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
+import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -136,6 +136,12 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableOnboarding
     val observableCastState: LiveData<PlayCastUiModel>
         get() = _observableCastState
+    val observableUserReportReasoning : LiveData<PlayResult<PlayUserReportUiModel.Loaded>>
+        get() = _observableUserReportReasoning
+    val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>>
+        get() = _observableUserReportSubmission
+
+
 
     /**
      * Remote Config for bubble like
@@ -242,7 +248,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _kebabMenuUiState = _bottomInsets.map {
         PlayKebabMenuUiState(
-            shouldShow = !isFreezeOrBanned && !it.isKeyboardShown
+            shouldShow = !isFreezeOrBanned
         )
     }.flowOn(dispatchers.computation)
 
@@ -420,6 +426,8 @@ class PlayViewModel @AssistedInject constructor(
             }
         }
     }
+    private val _observableUserReportReasoning = MutableLiveData<PlayResult<PlayUserReportUiModel.Loaded>>()
+    private val _observableUserReportSubmission = MutableLiveData<PlayResult<Event<Unit>>>()
 
     //region helper
     private val hasWordsOrDotsRegex = Regex("(\\.+|[a-z]+)")
@@ -2017,6 +2025,53 @@ class PlayViewModel @AssistedInject constructor(
             metaTitle = shareInfo.metaTitle,
             metaDescription = shareInfo.metaDescription,
         )
+    }
+
+    fun getUserReportList(){
+        _observableUserReportReasoning.value = PlayResult.Loading(true)
+
+        viewModelScope.launchCatchError(block = {
+            val userReportUiModel = withContext(dispatchers.io){
+                repo.getReasoningList()
+            }
+            val data = PlayUserReportUiModel.Loaded(
+                reasoningList = userReportUiModel
+            )
+            _observableUserReportReasoning.value = PlayResult.Success(data = data)
+
+        }){
+            _observableUserReportReasoning.value = PlayResult.Failure(it){
+                getUserReportList()
+            }
+        }
+    }
+
+    fun submitUserReport(channelId: Long,
+                         mediaUrl: String,
+                         shopId: Long,
+                         reasonId: Int,
+                         timestamp: Long,
+                         reportDesc: String){
+        viewModelScope.launchCatchError(block = {
+            val isSuccess = withContext(dispatchers.io) {
+                repo.submitReport(
+                    channelId = channelId,
+                    mediaUrl = mediaUrl,
+                    shopId = shopId,
+                    reasonId = reasonId,
+                    timestamp = timestamp,
+                    reportDesc = reportDesc
+                )
+            }
+            if(isSuccess){
+                _observableUserReportSubmission.value = PlayResult.Success(Event(Unit))
+            }else{
+                throw Throwable()
+            }
+        }){
+            _observableUserReportSubmission.value = PlayResult.Failure(it)
+        }
+
     }
 
     companion object {

@@ -24,8 +24,6 @@ class PlayUserReportSubmissionViewComponent(
     private val listener: Listener
 ) : ViewComponent(container, R.id.cl_user_report_submission_sheet) {
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
-
     private val btnBack: IconUnify = findViewById(com.tokopedia.play_common.R.id.iv_sheet_close)
 
     private val tvTitle: TextView = findViewById(R.id.tv_user_report_title)
@@ -64,15 +62,6 @@ class PlayUserReportSubmissionViewComponent(
         tvFooter.setOnClickListener {
             listener.onFooterClicked(this@PlayUserReportSubmissionViewComponent)
         }
-    }
-
-
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     fun showWithHeight(height: Int) {
