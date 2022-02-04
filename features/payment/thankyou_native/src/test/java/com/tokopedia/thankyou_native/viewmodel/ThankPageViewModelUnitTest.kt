@@ -8,8 +8,12 @@ import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.thankyou_native.domain.model.ValidateEngineResponse
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
+import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.tokomember.model.MembershipRegister
+import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
+import com.tokopedia.tokomember.usecase.TokomemberUsecase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -40,6 +44,7 @@ class ThankPageViewModelUnitTest {
     private val defaultAddressUseCase = mockk<GetDefaultAddressUseCase>(relaxed = true)
     private val thankYouTopAdsViewModelUseCase =
         mockk<ThankYouTopAdsViewModelUseCase>(relaxed = true)
+    private val membershipRegisterUseCase = mockk<MembershipRegisterUseCase>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -51,6 +56,7 @@ class ThankPageViewModelUnitTest {
             topTickerUseCase,
             defaultAddressUseCase,
             thankYouTopAdsViewModelUseCase,
+            membershipRegisterUseCase,
             dispatcher
         )
     }
@@ -107,16 +113,30 @@ class ThankPageViewModelUnitTest {
     {
         val gyroRecommendation = mockk<GyroRecommendation>(relaxed = true)
         val featureEngineData = mockk<FeatureEngineData>(relaxed = true)
+        val tokoMemberRequestParam = mockk<TokoMemberRequestParam>(relaxed = true)
+
         coEvery {
-            gyroEngineMapperUseCase.getFeatureListData(featureEngineData,any(),any())
+            gyroEngineMapperUseCase.getFeatureListData(featureEngineData,tokoMemberRequestParam,any(),any())
         }coAnswers {
-            secondArg<(GyroRecommendation) -> Unit>().invoke(gyroRecommendation)
+            thirdArg<(GyroRecommendation) -> Unit>().invoke(gyroRecommendation)
         }
 
-        viewModel.postGyroRecommendation(featureEngineData)
+        viewModel.postGyroRecommendation(featureEngineData,tokoMemberRequestParam)
         Assert.assertEquals(viewModel.gyroRecommendationLiveData.value,gyroRecommendation)
     }
 
+    @Test
+    fun successMembershipRegisterLiveData()
+    {
+        val membershipRegisterData = mockk<MembershipRegister>(relaxed = true)
+        coEvery {
+            membershipRegisterUseCase.registerMembership("",any(),any())
+        }coAnswers {
+            secondArg<(MembershipRegister) -> Unit>().invoke(membershipRegisterData)
+        }
+        viewModel.registerTokomember("")
+        Assert.assertEquals((viewModel.membershipRegisterData.value as Success).data,membershipRegisterData)
+    }
 
     @Test
     fun successTopTickerLiveData()

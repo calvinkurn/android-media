@@ -55,7 +55,9 @@ class ThanksPageDataViewModel @Inject constructor(
     private val _gyroResponseLiveData = MutableLiveData<FeatureEngineData>()
     val gyroResponseLiveData: LiveData<FeatureEngineData> = _gyroResponseLiveData
 
-    val membershipRegisterData = MutableLiveData<Result<MembershipRegister>>()
+    private val _membershipRegisterData = MutableLiveData<Result<MembershipRegister>>()
+    val membershipRegisterData : LiveData<Result<MembershipRegister>> = _membershipRegisterData
+
 
     fun getThanksPageData(paymentId: String, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
@@ -159,13 +161,14 @@ class ThanksPageDataViewModel @Inject constructor(
         })
     }
 
+    @VisibleForTesting
     fun registerTokomember(membershipCardID:String) {
         membershipRegisterUseCase.registerMembership(membershipCardID ,{
             it?.let {
-                membershipRegisterData.postValue(Success(it))
+                _membershipRegisterData.postValue(Success(it))
             }
         },{
-            membershipRegisterData.postValue(Fail(it))
+            _membershipRegisterData.postValue(Fail(it))
         })
     }
 
