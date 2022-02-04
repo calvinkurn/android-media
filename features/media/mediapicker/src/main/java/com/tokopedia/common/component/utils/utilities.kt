@@ -8,12 +8,12 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.common.component.BaseUiComponent
 
-fun LifecycleOwner.getSafeLifecycleOwner(): LifecycleOwner {
+fun LifecycleOwner.safeLifecycleOwner(): LifecycleOwner {
     if (this is Fragment) return this.viewLifecycleOwner
     return this
 }
 
-fun <Ui: BaseUiComponent> LifecycleOwner.createComponentView(
+fun <Ui: BaseUiComponent> LifecycleOwner.createUiComponent(
     creation: (ViewGroup) -> Ui,
     viewGroup: ViewGroup
 ): Ui {
@@ -23,21 +23,19 @@ fun <Ui: BaseUiComponent> LifecycleOwner.createComponentView(
 }
 
 fun LifecycleOwner.addSafeObserver(observer: LifecycleObserver) {
-    if (this is Fragment) {
-        viewLifecycleOwnerLiveData.observe(this, {
-            viewLifecycleOwner.lifecycle.addObserver(observer)
-        })
-    } else {
-        lifecycle.addObserver(observer)
-    }
+    if (this is Fragment) return viewLifecycleOwnerLiveData.observe(this, {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
+    })
+
+    return lifecycle.addObserver(observer)
 }
 
-fun LifecycleOwner.getRootCurrentView(): ViewGroup {
+fun LifecycleOwner.rootCurrentView(): ViewGroup {
     val rootView = when (this) {
+        is Fragment -> this.requireView()
         is Activity -> (this.findViewById(android.R.id.content) as ViewGroup)
             .children
             .first()
-        is Fragment -> this.requireView()
         else -> error("The type of this owner is not supported yet.")
     }
 

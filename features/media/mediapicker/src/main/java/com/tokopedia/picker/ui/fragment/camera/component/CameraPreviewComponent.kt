@@ -33,7 +33,7 @@ class CameraPreviewComponent(
 
     private val cameraView = findViewById<CameraView>(R.id.cameraView).apply {
         if (param.ratioIsSquare()) {
-            squareRatioCameraView()
+            customRatioCameraView(SQUARE_RATIO)
             squareRatioOfCameraSize()
         } else {
             fullScreenCameraView()
@@ -129,14 +129,15 @@ class CameraPreviewComponent(
         }.applyTo(parent)
     }
 
-    private fun squareRatioCameraView() {
+    @Suppress("SameParameterValue") // for now
+    private fun customRatioCameraView(ratio: String) {
         spaceToolBar.show()
 
         val parent = componentView() as ConstraintLayout
 
         ConstraintSet().apply {
             clone(parent)
-            setDimensionRatio(R.id.cameraView, CONSTRAINT_SQUARE_RATIO)
+            setDimensionRatio(R.id.cameraView, ratio)
         }.applyTo(parent)
     }
 
@@ -203,7 +204,7 @@ class CameraPreviewComponent(
     }
 
     companion object {
-        private const val CONSTRAINT_SQUARE_RATIO = "1:1"
+        private const val SQUARE_RATIO = "1:1"
     }
 
 }

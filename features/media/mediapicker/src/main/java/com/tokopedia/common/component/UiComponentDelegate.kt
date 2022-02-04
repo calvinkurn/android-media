@@ -6,9 +6,9 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.common.component.observers.ImmediateLifecycleObserver
 import com.tokopedia.common.component.observers.UiComponentLifecycleObserver
 import com.tokopedia.common.component.utils.addSafeObserver
-import com.tokopedia.common.component.utils.createComponentView
-import com.tokopedia.common.component.utils.getRootCurrentView
-import com.tokopedia.common.component.utils.getSafeLifecycleOwner
+import com.tokopedia.common.component.utils.createUiComponent
+import com.tokopedia.common.component.utils.rootCurrentView
+import com.tokopedia.common.component.utils.safeLifecycleOwner
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -37,7 +37,7 @@ class UiComponentDelegate<Ui: BaseUiComponent>(
             return it
         }
 
-        val safeLifecycleOwner = owner.getSafeLifecycleOwner().apply {
+        val safeLifecycleOwner = owner.safeLifecycleOwner().apply {
             addSafeObserver(buildUiComponentLifecycleObserver(owner))
         }.also {
             if (!it.lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
@@ -45,9 +45,9 @@ class UiComponentDelegate<Ui: BaseUiComponent>(
             }
         }
 
-        return safeLifecycleOwner.createComponentView(
+        return safeLifecycleOwner.createUiComponent(
             componentCreation,
-            owner.getRootCurrentView()
+            owner.rootCurrentView()
         )
     }
 

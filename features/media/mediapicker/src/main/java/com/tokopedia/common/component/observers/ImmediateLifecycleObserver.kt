@@ -4,7 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import com.tokopedia.common.component.utils.getSafeLifecycleOwner
+import com.tokopedia.common.component.utils.safeLifecycleOwner
 
 class ImmediateLifecycleObserver(
     private val owner: LifecycleOwner,
@@ -22,7 +22,7 @@ class ImmediateLifecycleObserver(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroyed() {
-        owner.getSafeLifecycleOwner()
+        owner.safeLifecycleOwner()
             .lifecycle
             .removeObserver(this)
     }

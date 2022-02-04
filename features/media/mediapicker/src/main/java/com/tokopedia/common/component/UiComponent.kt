@@ -13,6 +13,8 @@ abstract class UiComponent constructor(
     @IdRes private val componentId: Int,
 ) : BaseUiComponent {
 
+    abstract fun release()
+
     protected val context: Context by lazy {
         container.context
     }
@@ -22,8 +24,6 @@ abstract class UiComponent constructor(
     ) = lazy(LazyThreadSafetyMode.NONE) {
         componentView().findViewById(id) as V
     }.value
-
-    abstract fun release()
 
     override fun componentView(): View {
         return container.findViewById(componentId)
