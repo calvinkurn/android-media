@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.KycUrl
+import com.tokopedia.kyc_centralized.KycUrl.KYC_TYPE_KTP_WITH_SELFIE
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
@@ -48,8 +49,8 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected var layoutSecurity: LinearLayout? = null
     protected var analytics: UserIdentificationCommonAnalytics? = null
     protected var projectId = 0
-    protected var kycType = ""
     protected var stepperModel: T? = null
+    private var kycType = ""
     private var stepperListener: StepperListener? = null
     private var allowedSelfie = false
 
@@ -218,6 +219,5 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         private const val DP_8 = 8
         private const val DP_12 = 12
         const val EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model"
-        private const val KYC_TYPE_KTP_WITH_SELFIE = "ktpWithSelfie"
     }
 }

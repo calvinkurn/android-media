@@ -89,7 +89,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
             if (fragmentList.isEmpty()) {
                 fragmentList.add(UserIdentificationFormKtpFragment.createInstance(kycType))
                 fragmentList.add(UserIdentificationFormFaceFragment.createInstance(kycType))
-                fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId))
+                fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId, kycType))
             }
             fragmentList
         }
@@ -109,7 +109,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
                     UserIdentificationFormFaceFragment.createInstance(kycType)
                 }
                 is UserIdentificationFormFinalFragment -> {
-                    UserIdentificationFormFinalFragment.createInstance(projectId)
+                    UserIdentificationFormFinalFragment.createInstance(projectId, kycType)
                 }
                 is NotFoundFragment -> {
                     NotFoundFragment.createInstance()
