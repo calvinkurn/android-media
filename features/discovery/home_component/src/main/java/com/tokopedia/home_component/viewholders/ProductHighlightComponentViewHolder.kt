@@ -120,12 +120,12 @@ class ProductHighlightComponentViewHolder(
     }
 
     private fun setDealsChannelTitle(it: ChannelHeader) {
-        val title = if (it.name.length > TITLE_LENGTH) "${
-            it.name.substring(
+        val title = if (it.name.length > TITLE_LENGTH) getString(
+            R.string.discovery_home_product_highlight_title_with_ellipsize_format, it.name.substring(
                 START_INDEX,
                 TITLE_LENGTH
             )
-        }${getString(R.string.discovery_home_product_highlight_ellipsize_character)}" else it.name
+        ) else it.name
         binding?.dealsChannelTitle?.text = title
         if (it.textColor.isNotEmpty()) {
             val textColor = Color.parseColor(it.textColor)
