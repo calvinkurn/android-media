@@ -961,7 +961,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
                             setInputNumber(scanResult, true)
                         }
-                        getFavoriteNumber()
                     }
                 }
             }
