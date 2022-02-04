@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
@@ -88,18 +89,18 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         renderProductCardFooter(productCardModel, isProductCardList = false)
 
-        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
+        imageThreeDots?.shouldShowWithAction(productCardModel.hasThreeDots) {
+            constraintLayoutProductCard?.post {
+                imageThreeDots?.expandTouchArea(
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+                )
+            }
+        }
 
         cartExtension.setProductModel(productCardModel)
-
-        constraintLayoutProductCard?.post {
-            imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-            )
-        }
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
