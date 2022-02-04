@@ -137,5 +137,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.activity.TopAdsEducationActivity"
+            android:exported="false"
+            android:label="@string/topads_education_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 </manifest>

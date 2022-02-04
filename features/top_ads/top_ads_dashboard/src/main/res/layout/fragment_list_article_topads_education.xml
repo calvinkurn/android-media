@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="@dimen/spacing_lvl4"
+    android:paddingVertical="@dimen/unify_space_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtTitleArticleTopAdsEducation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/topads_dashboard_dp_6"
+        android:text="@string/topads_education_article_frag_title"
+        android:textSize="@dimen/fontSize_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvArticleArticleTopAdsEducation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_goneMarginTop="0dp"
+        app:layout_constraintBottom_toTopOf="@id/btnReadMoreArticleTopAdsEducation"
+        app:layout_constraintTop_toBottomOf="@id/txtTitleArticleTopAdsEducation"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_rv_education" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnReadMoreArticleTopAdsEducation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_40"
+        android:text="@string/topads_dash_read_more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+</androidx.constraintlayout.widget.ConstraintLayout>

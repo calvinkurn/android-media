@@ -16,8 +16,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -59,6 +59,7 @@ import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendation
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
@@ -80,6 +81,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight,
         TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline {
 
+    private lateinit var headerToolbar : HeaderUnify
+    lateinit var ivEducationTopAdsActionBar: ImageUnify
+
+    private val headerToolbarRight by lazy { layoutInflater.inflate(R.layout.layout_topads_dashboard_actionbar, null, false) }
     private var tracker: TopAdsDashboardTracking? = null
     private var adType = "-1"
     private var isNoProduct = false
@@ -105,14 +110,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
         setContentView(R.layout.topads_dash_activity_base_layout)
         renderTabAndViewPager()
-        header_toolbar?.actionTextView?.setOnClickListener {
-            if (GlobalConfig.isSellerApp()) {
-                navigateToAdTypeSelection()
-            }
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(CLICK_BUAT_IKLAN_1, "")
-        }
-        header_toolbar?.setNavigationOnClickListener {
+        initView()
+        setUpClick()
+        headerToolbar.setNavigationOnClickListener {
             onBackPressed()
         }
         tracker = TopAdsDashboardTracking()
@@ -187,6 +187,30 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         })
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
         setToast()
+    }
+
+    private fun setUpClick() {
+        val ivCalendarTopAdsActionBar : ImageUnify = headerToolbarRight.findViewById(R.id.ivCalendarTopAdsActionBar)
+        ivEducationTopAdsActionBar = headerToolbarRight.findViewById(R.id.ivEducationTopAdsActionBar)
+
+        ivCalendarTopAdsActionBar.setOnClickListener {
+
+        }
+
+        ivEducationTopAdsActionBar.setOnClickListener {
+            startActivity(Intent(this, TopAdsEducationActivity::class.java))
+        }
+    }
+
+    private fun initView() {
+        headerToolbar = findViewById(R.id.header_toolbar)
+        headerToolbar.addCustomRightContent(headerToolbarRight)
+        /*headerToolbarRight.findViewById<ImageUnify>(R.id.ivEducationTopAdsActionBar)
+            .setImageDrawable(
+                ContextCompat.getDrawable(
+                    this, com.tokopedia.unifycomponents.R.drawable.iconunify_education
+                )
+            )*/
     }
 
     private fun removeBtn() {

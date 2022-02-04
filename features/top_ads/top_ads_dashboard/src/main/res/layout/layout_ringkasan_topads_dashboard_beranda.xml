@@ -9,8 +9,8 @@
         android:id="@+id/txtRingkasan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/topads_dash_text_ringkasan"
         android:layout_marginStart="@dimen/topads_dashboard_dp_6"
+        android:text="@string/topads_dash_text_ringkasan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,9 +39,9 @@
         android:id="@+id/txtLastUpdated"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/topads_dashboard_dp_6"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:text="@string/topads_dashboard_last_update_text"
-        android:layout_marginStart="@dimen/topads_dashboard_dp_6"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtRingkasan"
@@ -50,10 +50,11 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSummaryInformation"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/top_ads_common_dp_20"
+        android:layout_height="@dimen/top_ads_common_dp_20"
         android:padding="@dimen/spacing_lvl1"
-        android:src="@drawable/ic_system_action_information_16"
+        android:src="@drawable/iconunify_information"
+        android:tint="@color/Unify_Static_Black"
         app:layout_constraintBottom_toBottomOf="@id/txtLastUpdated"
         app:layout_constraintStart_toEndOf="@id/txtLastUpdated"
         app:layout_constraintTop_toTopOf="@id/txtLastUpdated" />
@@ -80,10 +81,10 @@
 
             <include
                 android:id="@+id/statistic_graph"
-                android:layout_marginTop="@dimen/spacing_lvl3"
                 layout="@layout/partial_top_ads_dashboard_statistics"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3" />
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 </androidx.constraintlayout.widget.ConstraintLayout>

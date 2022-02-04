@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
@@ -51,7 +52,7 @@ object TopAdsDashboardBerandaUtils {
         ),
     )
 
-    fun Context.showDialogWithCoachMark(cmv1: View, cmv2: View, cmv3: View) {
+    fun Context.showDialogWithCoachMark(scrollView: NestedScrollView, vararg views: View) {
         DialogUnify(
             this, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION
         ).apply {
@@ -61,34 +62,47 @@ object TopAdsDashboardBerandaUtils {
             setImageDrawable(R.drawable.topads_dashboard_dialog_img)
             setPrimaryCTAClickListener {
                 dismiss()
-                showCoachMark(context, cmv1, cmv2, cmv3)
+                showCoachMark(scrollView, *views)
             }
         }.show()
     }
 
-    private fun Context.showCoachMark(context: Context, view1: View, view2: View, view3: View) {
+    private fun Context.showCoachMark(scrollView: NestedScrollView, vararg views: View) {
         val coachMarkItems = arrayListOf(
             CoachMark2Item(
-                view1,
+                views[0],
                 resources.getString(R.string.topads_dashboard_home_coachmark_1_title),
                 resources.getString(R.string.topads_dashboard_home_coachmark_1_desc),
                 CoachMark2.POSITION_TOP
             ), CoachMark2Item(
-                view2,
+                views[1],
                 resources.getString(R.string.topads_dashboard_home_coachmark_2_title),
                 resources.getString(R.string.topads_dashboard_home_coachmark_2_desc),
                 CoachMark2.POSITION_TOP
             ),
             CoachMark2Item(
-                view3,
+                views[2],
                 resources.getString(R.string.topads_dashboard_home_coachmark_4_title),
                 resources.getString(R.string.topads_dashboard_home_coachmark_4_desc),
                 CoachMark2.POSITION_TOP
+            ),
+            CoachMark2Item(
+                views[3],
+                resources.getString(R.string.topads_dashboard_home_coachmark_5_title),
+                resources.getString(R.string.topads_dashboard_home_coachmark_5_desc),
+                CoachMark2.POSITION_BOTTOM
             )
         )
 
-        val coachMark = CoachMark2(context)
+        val coachMark = CoachMark2(this)
         coachMark.showCoachMark(coachMarkItems)
+        coachMark.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                val coord = IntArray(2)
+                views[currentIndex].getLocationInWindow(coord)
+                scrollView.smoothScrollTo(coord[0], coord[1] - coachMark.height)
+            }
+        })
     }
 
     fun Resources.getSummaryAdTypes() = listOf(

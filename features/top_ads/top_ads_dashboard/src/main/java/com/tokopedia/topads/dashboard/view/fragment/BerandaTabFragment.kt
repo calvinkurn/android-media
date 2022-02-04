@@ -351,9 +351,9 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private fun showFirstTimeDialog() {
         if (!requireActivity().showBerandaDialog()) return
         requireContext().showDialogWithCoachMark(
-            rvSummary,
-            requireView().findViewById(R.id.topads_content_statistics),
-            rvLatestReading
+            scrollView,
+            rvSummary, requireView().findViewById(R.id.topads_content_statistics),
+            rvLatestReading, (requireActivity() as TopAdsDashboardActivity).ivEducationTopAdsActionBar
         )
         requireActivity().berandaDialogShown()
     }

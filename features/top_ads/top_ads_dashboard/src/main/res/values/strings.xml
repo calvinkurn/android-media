@@ -436,5 +436,13 @@
     <string name="topads_dashboard_iklan_google">Iklan Google</string>
     <string name="topads_dashboard_iklan_banner">Iklan Banner</string>
     <string name="topads_dashboard_iklan_tanpa_modal">Iklan Tanpa Modal</string>
+    <string name="topads_education_title">Pusat Edukasi TopAds</string>
+    <string name="topads_education_pengenalan_topads">Pengenalan TopAds</string>
+    <string name="topads_education_tipe_tipe_topads">Tipe-tipe Iklan TopAds</string>
+    <string name="topads_education_seputar_topads">Seputar Kredit TopAds</string>
+    <string name="topads_education_tingkatkan_topads">Tingkatkan Performa Iklan</string>
+    <string name="topads_education_kisah_sukses_topads">Kisah Sukses Penjual</string>
+    <string name="topads_education_tips_lainnya_topads">Tips Lainnya</string>
+    <string name="topads_education_article_frag_title">Ayo kenalan lebih dekat dengan TopAds dan pelajari cara beriklan yang efektif di TopAds.</string>
 </resources>
 

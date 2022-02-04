@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/topAdsDashboardRight"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivCalendarTopAdsActionBar"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:tint="@color/Unify_B900"
+        android:src="@drawable/iconunify_calendar" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivEducationTopAdsActionBar"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:tint="@color/Unify_B900" />
+
+</LinearLayout>
