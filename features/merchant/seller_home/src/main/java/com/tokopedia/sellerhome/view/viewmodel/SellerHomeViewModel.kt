@@ -493,16 +493,20 @@ class SellerHomeViewModel @Inject constructor(
         useCase: BaseGqlUseCase<T>,
         liveData: MutableLiveData<Result<T>>
     ) {
-        if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
-            try {
-                useCase.setUseCache(true)
-                liveData.value = Success(useCase.executeUseCase())
-            } catch (_: Exception) {
-                // ignore exception from cache
+        try {
+            useCase.setUseCache(false)
+            liveData.value = Success(useCase.executeUseCase())
+        } catch (networkException: Exception) {
+            if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
+                try {
+                    useCase.setUseCache(true)
+                    liveData.value = Success(useCase.executeUseCase())
+                } catch (_: Exception) {
+                    // ignore exception from cache
+                    throw networkException
+                }
             }
         }
-        useCase.setUseCache(false)
-        liveData.value = Success(useCase.executeUseCase())
     }
 
     private suspend fun <T : Any> getDataFromUseCase(
