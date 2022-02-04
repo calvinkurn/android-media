@@ -639,6 +639,7 @@ class DigitalPDPDataPlanFragment :
                 )
                 rechargePdpPaketDataEmptyStateWidget.show()
                 rechargePdpPaketDataPromoWidget.hide()
+                sortFilterPaketData.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
                 rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
@@ -850,7 +851,7 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
-    override fun onClickContact() {
+    override fun onClickNavigationIcon() {
         binding?.run {
             val clientNumber = rechargePdpPaketDataClientNumberWidget.getInputNumber()
             val dgCategoryIds = arrayListOf(

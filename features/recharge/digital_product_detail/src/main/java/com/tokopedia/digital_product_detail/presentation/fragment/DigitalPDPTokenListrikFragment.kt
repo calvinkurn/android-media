@@ -658,7 +658,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                         )
                     }
 
-                    override fun onClickContact() {
+                    override fun onClickNavigationIcon() {
                         binding?.run {
                             val clientNumber = rechargePdpTokenListrikClientNumberWidget.getInputNumber()
                             val dgCategoryIds = arrayListOf(
