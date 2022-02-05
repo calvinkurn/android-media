@@ -1521,8 +1521,33 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isFromCache = firstOrNull()?.isFromCache == true
         stopSellerHomeFragmentWidgetPerformanceMonitoring(widgetType, isFromCache)
         stopPltMonitoringIfNotCompleted(isFromCache)
+
+        launchOnViewLifecycleScope(Dispatchers.IO) {
+            val newWidgetList = getMergedWidgetAndDataList(this, widgetType)
+            withContext(Dispatchers.Main) {
+                notifyWidgetWithSdkChecking {
+                    updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+                }
+                binding?.root?.addOneTimeGlobalLayoutListener {
+                    recyclerView?.post {
+                        checkLoadingWidgets()
+                        requestVisibleWidgetsData()
+                    }
+                }
+                if (!isFromCache) {
+                    showWidgetSuccessToaster()
+                }
+            }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> getMergedWidgetAndDataList(
+        widgetDataList: List<D>,
+        widgetType: String
+    ): List<BaseWidgetUiModel<D>> {
         val newWidgetList = adapter.data.toMutableList()
-        forEach { widgetData ->
+        widgetDataList.forEach { widgetData ->
             newWidgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType
             }.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
@@ -1544,18 +1569,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
-        notifyWidgetWithSdkChecking {
-            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
-        }
-        binding?.root?.addOneTimeGlobalLayoutListener {
-            recyclerView?.post {
-                checkLoadingWidgets()
-                requestVisibleWidgetsData()
-            }
-        }
-        if (!isFromCache) {
-            showWidgetSuccessToaster()
-        }
+        return newWidgetList as List<BaseWidgetUiModel<D>>
     }
 
     private fun showWidgetSuccessToaster() {
@@ -1668,7 +1682,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun reloadNotUpdatedWidgets() {
-        launchOnViewLifecycleScope(Dispatchers.IO) {
+        launchOnViewLifecycleScope(Dispatchers.Default) {
             val widgets = adapter.data.filter {
                 //filter all widgets that the data still from cache
                 it.data?.isFromCache.orFalse()
@@ -1986,12 +2000,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         launchOnViewLifecycleScope(Dispatchers.Default) {
             val similarWidget = adapter.data.filter {
                 val isTheSameWidget = it.widgetType == widget.widgetType
-                val isCacheData = (it.data as? LastUpdatedDataInterface)?.lastUpdated?.needToUpdated.orFalse()
+                val isCacheData = (it.data as? LastUpdatedDataInterface)
+                    ?.lastUpdated?.needToUpdated.orFalse()
                 isTheSameWidget && isCacheData
             }
             val widgets = adapter.data.map {
                 val isTheSameWidget = it.widgetType == widget.widgetType
-                val isCacheData = (it.data as? LastUpdatedDataInterface)?.lastUpdated?.needToUpdated.orFalse()
+                val isCacheData = (it.data as? LastUpdatedDataInterface)
+                    ?.lastUpdated?.needToUpdated.orFalse()
                 val tempWidget = if (isTheSameWidget && isCacheData) {
                     it.copyWidget().apply {
                         //set data to null to show loading state
