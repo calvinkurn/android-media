@@ -127,7 +127,7 @@ class RecommendationViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 isVisible = lastUpdated.isEnabled
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
-                setRefreshButtonVisibility(lastUpdated.shouldShow)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
                 setRefreshButtonClickListener {
                     refreshWidget(element)
                 }

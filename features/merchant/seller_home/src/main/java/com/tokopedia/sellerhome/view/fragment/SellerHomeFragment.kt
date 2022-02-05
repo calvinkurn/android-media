@@ -1251,10 +1251,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun showWidgetRefreshButton() {
         val widgets = adapter.data.map { widget ->
             val copiedWidget = widget.copyWidget() as BaseWidgetUiModel<BaseDataUiModel>
-            (copiedWidget.data as? LastUpdatedDataInterface)?.lastUpdated?.shouldShow = true
+            (copiedWidget.data as? LastUpdatedDataInterface)?.lastUpdated?.needToUpdated = true
             copiedWidget
         }
         notifyWidgetWithSdkChecking {
@@ -1683,7 +1684,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widget.data = null
         val widgetData = tempWidget.data
         if (widgetData is LastUpdatedDataInterface) {
-            widgetData.lastUpdated.shouldShow = true
+            widgetData.lastUpdated.needToUpdated = true
         }
         return tempWidget
     }
@@ -1980,16 +1981,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun refreshSimilarWidgets(widget: BaseWidgetUiModel<*>) {
         launchOnViewLifecycleScope(Dispatchers.Default) {
             val similarWidget = adapter.data.filter {
                 val isTheSameWidget = it.widgetType == widget.widgetType
-                val isCacheData = (it.data as? LastUpdatedDataInterface)?.lastUpdated?.shouldShow.orFalse()
+                val isCacheData = (it.data as? LastUpdatedDataInterface)?.lastUpdated?.needToUpdated.orFalse()
                 isTheSameWidget && isCacheData
             }
             val widgets = adapter.data.map {
                 val isTheSameWidget = it.widgetType == widget.widgetType
-                val isCacheData = (it.data as? LastUpdatedDataInterface)?.lastUpdated?.shouldShow.orFalse()
+                val isCacheData = (it.data as? LastUpdatedDataInterface)?.lastUpdated?.needToUpdated.orFalse()
                 val tempWidget = if (isTheSameWidget && isCacheData) {
                     it.copyWidget().apply {
                         //set data to null to show loading state

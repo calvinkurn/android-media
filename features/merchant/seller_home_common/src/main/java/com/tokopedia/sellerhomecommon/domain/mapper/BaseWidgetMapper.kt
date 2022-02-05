@@ -25,7 +25,7 @@ abstract class BaseWidgetMapper(
 
             LastUpdatedUiModel(
                 lastUpdatedInMillis = lastUpdated,
-                shouldShow = isFromCache,
+                needToUpdated = isFromCache,
                 isEnabled = isEnabled
             )
         } else {

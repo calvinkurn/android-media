@@ -110,7 +110,7 @@ class PostListViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 isVisible = lastUpdated.isEnabled
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
-                setRefreshButtonVisibility(lastUpdated.shouldShow)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
                 setRefreshButtonClickListener {
                     refreshWidget(element)
                 }
@@ -239,11 +239,11 @@ class PostListViewHolder(
     }
 
     private fun showListLayout() {
-        binding.shcPostListSuccessView.sahPostListOnSuccessLayout.visible()
+        binding.shcPostListSuccessView.root.visible()
     }
 
     private fun hideListLayout() {
-        binding.shcPostListSuccessView.sahPostListOnSuccessLayout.gone()
+        binding.shcPostListSuccessView.root.gone()
     }
 
     private fun hideErrorLayout() {

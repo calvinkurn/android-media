@@ -131,7 +131,7 @@ class PieChartViewHolder(
             element.data?.lastUpdated?.let { lastUpdated ->
                 isVisible = lastUpdated.isEnabled
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
-                setRefreshButtonVisibility(lastUpdated.shouldShow)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
                 setRefreshButtonClickListener {
                     listener.onReloadWidget(element)
                 }

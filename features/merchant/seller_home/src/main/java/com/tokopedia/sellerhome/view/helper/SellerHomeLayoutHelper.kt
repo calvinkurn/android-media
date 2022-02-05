@@ -323,7 +323,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     }
 
     private fun <D> hideLastUpdatedRefreshButton(widgetData: D) {
-        (widgetData as? LastUpdatedDataInterface)?.lastUpdated?.shouldShow = false
+        (widgetData as? LastUpdatedDataInterface)?.lastUpdated?.needToUpdated = false
     }
 
     /**
