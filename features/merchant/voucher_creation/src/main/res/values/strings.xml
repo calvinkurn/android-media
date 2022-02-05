@@ -397,6 +397,8 @@
     <string name="placeholder_coupon_period">%s, %s WIB - %s, %s WIB</string>
     <string name="placeholder_scheduled_coupon_period">Kupon \"%s\" aktif pada %s, %s WIB - %s, %s WIB</string>
     <string name="placeholder_max_product">Maks. %s Produk</string>
+    <string name="placeholder_minimum_quota">Minimal %s Kupon</string>
+    <string name="placeholder_maximum_quota">Maks. %s Kupon</string>
     <string name="cashback_percentage">Persentase cashback</string>
     <string name="error_message_discount_percentage_range">Diskon minimal 2%, maksimal 100%</string>
     <string name="error_message_discount_percentage_below_minimum">Min. 2%</string>
@@ -437,6 +439,9 @@
     <string name="view_coupon_detail">Lihat Detil Kupon</string>
     <string name="type">Tipe</string>
     <string name="target">Target</string>
+    <string name="coupon_quota">Kuota Kupon</string>
+    <string name="update_quota_rule">Kamu hanya dapat <b>menambah kuota kupon</b> selama masa kupon berlangsung.</string>
+    <string name="update_quota_success">Kuota kupon berhasil ditambahkan</string>
 
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>

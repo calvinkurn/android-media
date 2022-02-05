@@ -20,6 +20,7 @@ import com.tokopedia.vouchercreation.product.duplicate.DuplicateCouponActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import com.tokopedia.vouchercreation.product.list.view.fragment.AddProductFragment
 import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity
+import com.tokopedia.vouchercreation.product.update.bottomsheet.UpdateCouponQuotaBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet.CreatePromoCodeBottomSheetFragment
@@ -75,4 +76,5 @@ interface VoucherCreationComponent {
     fun inject(broadcastCouponBottomSheet: BroadcastCouponBottomSheet)
     fun inject(createCouponProductActivity: CreateCouponProductActivity)
     fun inject(couponDetailFragment: CouponDetailFragment)
+    fun inject(updateCouponQuotaBottomSheet: UpdateCouponQuotaBottomSheet)
 }

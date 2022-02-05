@@ -54,6 +54,7 @@ import com.tokopedia.vouchercreation.common.utils.shareVoucher
 import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.update.bottomsheet.UpdateCouponQuotaBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
 import com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet.CouponFilterBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
@@ -69,7 +70,6 @@ import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.fragment.VoucherListFragment
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.BroadCastVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
-import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 import timber.log.Timber
@@ -671,28 +671,28 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
 
-        EditQuotaBottomSheet.createInstance(voucher)
-            .setOnSuccessUpdateVoucher {
-                loadInitialData()
-                view?.run {
-                    Toaster.build(
-                        this,
-                        context?.getString(R.string.mvc_quota_success).toBlankOrString(),
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        context?.getString(R.string.mvc_oke).toBlankOrString()
-                    ).show()
-                }
+        val bottomSheet = UpdateCouponQuotaBottomSheet.newInstance(voucher)
+        bottomSheet.setOnUpdateQuotaSuccess {
+            loadInitialData()
+            view?.run {
+                Toaster.build(
+                    this,
+                    getString(R.string.update_quota_success).toBlankOrString(),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    context?.getString(R.string.mvc_oke).toBlankOrString()
+                ).show()
             }
-            .setOnFailUpdateVoucher { message ->
-                val errorMessage =
-                    if (message.isNotBlank()) {
-                        message
-                    } else {
-                        context?.getString(R.string.mvc_general_error).toBlankOrString()
-                    }
-                view?.showErrorToaster(errorMessage)
-            }.show(childFragmentManager)
+        }
+        bottomSheet.setOnUpdateQuotaError { message ->
+            val errorMessage = if (message.isNotBlank()) {
+                message
+            } else {
+                getString(R.string.mvc_general_error).toBlankOrString()
+            }
+            view?.showErrorToaster(errorMessage)
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun showCancellationSuccessToaster(successMessageRes: Int, couponId: Int) {
