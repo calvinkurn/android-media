@@ -58,7 +58,7 @@ class RecommendationViewHolder(
     override fun bind(element: RecommendationWidgetUiModel) {
         val data = element.data
         when {
-            data == null -> showLoadingState()
+            data == null || element.showLoadingState -> showLoadingState()
             data.error.isNotBlank() -> showErrorState(element)
             else -> setOnSuccess(element)
         }
@@ -136,7 +136,6 @@ class RecommendationViewHolder(
     }
 
     private fun refreshWidget(element: RecommendationWidgetUiModel) {
-        showLoadingState()
         listener.onReloadWidget(element)
     }
 

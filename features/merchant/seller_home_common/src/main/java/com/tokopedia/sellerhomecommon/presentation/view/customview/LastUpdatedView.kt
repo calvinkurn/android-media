@@ -45,7 +45,10 @@ class LastUpdatedView : LinearLayout {
     }
 
     fun setRefreshButtonVisibility(shouldShow: Boolean) {
-        binding?.icShcRefreshLastUpdated?.isVisible = shouldShow
+        this.viewTreeObserver.addOnPreDrawListener {
+            binding?.icShcRefreshLastUpdated?.isVisible = shouldShow
+            return@addOnPreDrawListener true
+        }
     }
 
     fun setRefreshButtonClickListener(callback: () -> Unit) {

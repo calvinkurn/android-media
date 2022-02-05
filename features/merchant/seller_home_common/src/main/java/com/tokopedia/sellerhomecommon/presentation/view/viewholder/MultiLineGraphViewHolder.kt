@@ -71,7 +71,7 @@ class MultiLineGraphViewHolder(
 
         val data = element.data
         when {
-            data == null -> setOnLoadingState()
+            data == null || element.showLoadingState -> setOnLoadingState()
             data.error.isNotBlank() -> setOnErrorState(element)
             else -> setOnSuccessState(element)
         }
@@ -296,7 +296,6 @@ class MultiLineGraphViewHolder(
     }
 
     private fun reloadWidget(element: MultiLineGraphWidgetUiModel) {
-        setOnLoadingState()
         listener.onReloadWidget(element)
     }
 

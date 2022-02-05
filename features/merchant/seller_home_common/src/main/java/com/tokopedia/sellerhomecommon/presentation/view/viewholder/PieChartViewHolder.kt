@@ -56,7 +56,7 @@ class PieChartViewHolder(
         val data = element.data
 
         when {
-            data == null -> setOnLoading()
+            data == null || element.showLoadingState -> setOnLoading()
             data.error.isNotBlank() -> {
                 setOnError()
                 listener.setOnErrorWidget(adapterPosition, element, data.error)

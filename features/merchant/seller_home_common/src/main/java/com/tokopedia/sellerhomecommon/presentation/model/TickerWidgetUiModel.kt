@@ -26,6 +26,7 @@ data class TickerWidgetUiModel(
         override var isLoading: Boolean = false,
         override var isFromCache: Boolean = false,
         override var isNeedToBeRemoved: Boolean = false,
+        override var showLoadingState: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel()
 ) : BaseWidgetUiModel<TickerDataUiModel> {
 

@@ -68,7 +68,7 @@ class PostListViewHolder(
     private fun observeState(postListWidgetUiModel: PostListWidgetUiModel) {
         val data = postListWidgetUiModel.data
         when {
-            data == null -> showLoadingState()
+            data == null || postListWidgetUiModel.showLoadingState -> showLoadingState()
             data.error.isNotEmpty() -> {
                 onError(postListWidgetUiModel.title)
                 listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel, data.error)
@@ -119,7 +119,6 @@ class PostListViewHolder(
     }
 
     private fun refreshWidget(element: PostListWidgetUiModel) {
-        showLoadingState()
         listener.onReloadWidget(element)
     }
 

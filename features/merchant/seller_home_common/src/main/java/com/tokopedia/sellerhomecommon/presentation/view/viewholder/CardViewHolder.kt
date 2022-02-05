@@ -59,7 +59,7 @@ class CardViewHolder(
     private fun observeState(element: CardWidgetUiModel) {
         val data = element.data
         when {
-            null == data -> showLoadingState(element)
+            null == data || element.showLoadingState -> showLoadingState(element)
             data.error.isNotBlank() -> {
                 showShimmer(false)
                 showOnError(true)
@@ -148,18 +148,20 @@ class CardViewHolder(
 
     private fun setupRefreshButton(element: CardWidgetUiModel) {
         with(binding) {
-            element.data?.lastUpdated?.let {
-                val shouldShowRefreshButton = it.shouldShow.orFalse()
-                icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
-                icShcRefreshCard.setOnClickListener {
-                    refreshWidget(element)
+            root.viewTreeObserver.addOnPreDrawListener {
+                element.data?.lastUpdated?.let {
+                    val shouldShowRefreshButton = it.shouldShow.orFalse()
+                    icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
+                    icShcRefreshCard.setOnClickListener {
+                        refreshWidget(element)
+                    }
                 }
+                return@addOnPreDrawListener true
             }
         }
     }
 
     private fun refreshWidget(element: CardWidgetUiModel) {
-        showLoadingState(element)
         listener.onReloadWidget(element)
     }
 

@@ -1534,6 +1534,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         val copiedWidget = widget.copyWidget()
                         copiedWidget.data = widgetData
                         copiedWidget.isLoading = widget.data?.isFromCache.orFalse()
+                        copiedWidget.showLoadingState = false
 
                         handleShopShareMilestoneWidget(copiedWidget)
 
@@ -1608,7 +1609,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             val isSameWidgetType = widget.widgetType == widgetType
             val shouldShowErrorState = widget.data == null && widget.isLoaded && isSameWidgetType
             val shouldShowExistingData = widget is W && widget.data != null && isSameWidgetType
-            return@map if (widget is W && shouldShowErrorState) {
+            val newWidget = if (widget is W && shouldShowErrorState) {
                 widget.copyWidget().apply {
                     data = D::class.java.newInstance().apply {
                         error = errorMessage
@@ -1620,6 +1621,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 copyExistingWidget(widget)
             } else {
                 widget
+            }
+
+            return@map newWidget.apply {
+                showLoadingState = false
             }
         }
 
@@ -1976,16 +1981,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun refreshSimilarWidgets(widget: BaseWidgetUiModel<*>) {
-        launchOnViewLifecycleScope(Dispatchers.Unconfined) {
+        launchOnViewLifecycleScope(Dispatchers.Default) {
             val similarWidget = adapter.data.filter {
-                it.widgetType == widget.widgetType
+                val isTheSameWidget = it.widgetType == widget.widgetType
+                val isCacheData = (it.data as? LastUpdatedDataInterface)?.lastUpdated?.shouldShow.orFalse()
+                isTheSameWidget && isCacheData
             }
             val widgets = adapter.data.map {
                 val isTheSameWidget = it.widgetType == widget.widgetType
-                val tempWidget = if (isTheSameWidget) {
+                val isCacheData = (it.data as? LastUpdatedDataInterface)?.lastUpdated?.shouldShow.orFalse()
+                val tempWidget = if (isTheSameWidget && isCacheData) {
                     it.copyWidget().apply {
                         //set data to null to show loading state
-                        data = null
+                        showLoadingState = true
                     }
                 } else {
                     it

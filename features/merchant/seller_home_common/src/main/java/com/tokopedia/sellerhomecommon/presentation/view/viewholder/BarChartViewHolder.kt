@@ -67,7 +67,7 @@ class BarChartViewHolder(
         val data = element.data
 
         when {
-            data == null -> setOnLoading()
+            data == null || element.showLoadingState -> setOnLoading()
             data.error.isNotBlank() -> {
                 setonError(element)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
@@ -149,7 +149,6 @@ class BarChartViewHolder(
     }
 
     private fun refreshWidget(element: BarChartWidgetUiModel) {
-        setOnLoading()
         listener.onReloadWidget(element)
     }
 

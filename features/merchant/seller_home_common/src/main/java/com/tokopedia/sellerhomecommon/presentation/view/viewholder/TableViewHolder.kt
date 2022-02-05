@@ -53,7 +53,7 @@ class TableViewHolder(
 
         val data: TableDataUiModel? = element.data
         when {
-            data == null -> showLoadingState()
+            data == null || element.showLoadingState -> showLoadingState()
             data.error.isNotBlank() -> {
                 showErrorState()
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
@@ -124,7 +124,6 @@ class TableViewHolder(
     }
 
     private fun refreshWidget(element: TableWidgetUiModel) {
-        showLoadingState()
         listener.onReloadWidget(element)
     }
 

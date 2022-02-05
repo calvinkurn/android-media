@@ -28,6 +28,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     var isFromCache: Boolean
     var isNeedToBeRemoved: Boolean
     var emptyState: WidgetEmptyStateUiModel
+    var showLoadingState: Boolean
 
     fun copyWidget(): BaseWidgetUiModel<T>
 

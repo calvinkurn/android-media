@@ -82,7 +82,7 @@ class LineGraphViewHolder(
         val data: LineGraphDataUiModel? = element.data
         itemView.show()
         when {
-            null == data -> showLoadingState(element)
+            null == data || element.showLoadingState -> showLoadingState(element)
             data.error.isNotBlank() -> {
                 onStateLoading(false)
                 showViewComponent(false, element)
@@ -194,7 +194,6 @@ class LineGraphViewHolder(
     }
 
     private fun refreshWidget(element: LineGraphWidgetUiModel) {
-        showLoadingState(element)
         listener.onReloadWidget(element)
     }
 

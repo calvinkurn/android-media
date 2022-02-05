@@ -68,7 +68,7 @@ class MilestoneViewHolder(
     override fun bind(element: MilestoneWidgetUiModel) {
         val data = element.data
         when {
-            data == null -> showLoadingState(element)
+            data == null || element.showLoadingState -> showLoadingState(element)
             data.error.isNotBlank() -> showErrorState(element)
             else -> setOnSuccess(element)
         }
@@ -123,7 +123,6 @@ class MilestoneViewHolder(
     }
 
     private fun refreshWidget(element: MilestoneWidgetUiModel) {
-        showLoadingState(element)
         listener.onReloadWidget(element)
     }
 
