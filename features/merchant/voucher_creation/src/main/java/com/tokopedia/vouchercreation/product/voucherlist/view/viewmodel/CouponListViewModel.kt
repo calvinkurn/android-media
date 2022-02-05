@@ -13,6 +13,8 @@ import com.tokopedia.vouchercreation.common.NonNullLiveData
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet.CouponFilterBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
+import com.tokopedia.vouchercreation.product.voucherlist.view.mapper.CouponModelMapper.mapToTarget
+import com.tokopedia.vouchercreation.product.voucherlist.view.mapper.CouponModelMapper.mapToType
 import com.tokopedia.vouchercreation.shop.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherListParam
@@ -95,6 +97,8 @@ class CouponListViewModel @Inject constructor(
     fun getCouponList(page: Int) {
         launchCatchError(block = {
             val ongoingVoucherRequestParam = VoucherListParam.createParamCouponList(
+                type = mapToType(_selectedFilterType.value),
+                target = mapToTarget(_selectedFilterTarget.value),
                 status = _couponStatusFilter,
                 page = page,
                 perPage = LIST_COUPON_PER_PAGE,

@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
