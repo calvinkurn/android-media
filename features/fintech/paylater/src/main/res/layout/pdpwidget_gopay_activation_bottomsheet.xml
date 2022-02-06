@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageDisplayer"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="95dp"
         app:layout_constraintLeft_toLeftOf="@id/tokoToGoPayHeader"
         app:layout_constraintRight_toRightOf="@id/tokoToGoPayHeader"

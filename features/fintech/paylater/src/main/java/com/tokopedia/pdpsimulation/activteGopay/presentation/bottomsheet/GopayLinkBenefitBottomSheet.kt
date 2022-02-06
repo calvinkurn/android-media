@@ -16,10 +16,16 @@ class GopayLinkBenefitBottomSheet:BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+        this.isFullpage = true
+        this.isDragable = true
+        this.isHideable = true
     }
-    fun showBottomSheet(supportFragmentManager: FragmentManager)
+    fun showBottomSheet(supportFragmentManager: FragmentManager):GopayLinkBenefitBottomSheet
     {
-       show(supportFragmentManager,"GoPay_Activation_BottomSheet")
+        val gopayLinkBenefitBottomSheet = GopayLinkBenefitBottomSheet()
+        gopayLinkBenefitBottomSheet.show(supportFragmentManager,"GopayLinkBenefitBottomSheet")
+        return gopayLinkBenefitBottomSheet
+
     }
     private fun initView() {
         val childView = LayoutInflater.from(context).inflate(
