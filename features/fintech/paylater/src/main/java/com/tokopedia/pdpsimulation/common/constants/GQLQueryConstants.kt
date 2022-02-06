@@ -187,3 +187,43 @@ const val GQL_PAYLATER_ACTIVATION = """
     }
 }
 """
+
+val GQL_ADD_TO_CART_OCC_MULTI = """
+    mutation add_to_cart_occ_multi(${"$"}param : OneClickCheckoutMultiATCParam) {
+        add_to_cart_occ_multi(param: ${"$"}param) {
+            error_message
+            status
+            data {
+                message
+                success
+                out_of_service {
+                    id
+                    code
+                    image
+                    title
+                    description
+                    buttons {
+                        id
+                        code
+                        message
+                        color
+                    }
+                }
+                toaster_action {
+                    text
+                    show_cta
+                }
+                carts {
+                    cart_id
+                    customer_id
+                    is_trade_in
+                    notes
+                    product_id
+                    quantity
+                    shop_id
+                    warehouse_id
+                }
+            }
+        }
+    }
+""".trimIndent()

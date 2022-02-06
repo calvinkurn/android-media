@@ -333,6 +333,12 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             }
 
         }
+
+        proceedToCheckout.setOnClickListener {
+
+        }
+
+
     }
 
     override fun getScreenName(): String {
