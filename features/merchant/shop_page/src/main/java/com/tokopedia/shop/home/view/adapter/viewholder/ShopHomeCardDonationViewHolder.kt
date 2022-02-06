@@ -20,7 +20,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeCardDonationBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
-import com.tokopedia.shop.home.view.model.WidgetState
 
 class ShopHomeCardDonationViewHolder(
     itemView: View,
@@ -35,7 +34,7 @@ class ShopHomeCardDonationViewHolder(
 
     override fun bind(element: ShopHomeCardDonationUiModel) {
         with(binding) {
-            if (element.widgetState == WidgetState.FINISH) {
+            if (element.header.title.isNotEmpty()) {
                 hideLoading()
 
                 // render image
