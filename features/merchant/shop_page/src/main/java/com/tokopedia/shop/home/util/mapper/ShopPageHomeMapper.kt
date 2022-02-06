@@ -736,20 +736,6 @@ object ShopPageHomeMapper {
                     add(resModel)
                 }
             }
-
-            // testing data for donation
-            add(
-                0, mapToWidgetUiModel(
-                    ShopLayoutWidget.Widget(
-                        widgetID = "99",
-                        type = CARD,
-                        name = INFO_CARD,
-                        widgetMasterID = "34"
-                    ),
-                    myShop,
-                    isLoggedIn
-                )!!
-            )
         }
     }
 
