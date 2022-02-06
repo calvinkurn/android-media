@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
+import com.tokopedia.shop.home.WidgetName.INFO_CARD
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.home.WidgetName.PRODUCT
@@ -648,7 +649,7 @@ object ShopPageHomeMapper {
                 it.data.isNotEmpty() || it.type.equals(
                     DYNAMIC,
                     ignoreCase = true
-                ) || it.name == VOUCHER_STATIC
+                ) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true)
             }.onEach {
                 val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn)
                 widgetUiModel?.let { model ->
