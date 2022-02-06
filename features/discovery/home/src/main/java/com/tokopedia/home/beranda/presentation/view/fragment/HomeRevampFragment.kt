@@ -279,6 +279,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var isGopayActivated: Boolean? = null
     private var isNeedToRotateTokopoints: Boolean = true
     private var errorToaster: Snackbar? = null
+    private val coachMarkItemGopay = ArrayList<CoachMark2Item>()
     override val eggListener: HomeEggListener
         get() = this
     override val childsFragmentManager: FragmentManager
@@ -684,12 +685,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
         context?.let {
-            val coachMarkItem = ArrayList<CoachMark2Item>()
             coachmarkGopay = CoachMark2(it)
-            coachMarkItem.buildGopayNewCoachmark()
+            coachMarkItemGopay.buildGopayNewCoachmark()
             coachmarkGopay?.let { gopayCoachmark ->
                 try {
-                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
+                    if (coachMarkItemGopay.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
                         gopayCoachmark.onDismissListener = {
                             showTokonowCoachmark()
 //                            if (!isNewTokopointCoachmarkShown(it) && tokopointsBalanceCoachmark != null) {
@@ -699,7 +699,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 //                            }
                             setNewWalletAppCoachmarkShown(it)
                         }
-                        gopayCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
+                        gopayCoachmark.showCoachMark(step = coachMarkItemGopay, index = COACHMARK_FIRST_INDEX)
                         gopayCoachmarkIsShowing = true
                     }
                 } catch (e: Exception) {
@@ -914,11 +914,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 //            coachmarkGopay?.dismissCoachMark()
 //        else
 //            coachmarkGopay?.animateShow()
-        val item = homeRecyclerView?.getChildAt(1)
-        if(item?.isVisible?: false)
-            coachmarkGopay?.dismissCoachMark()
-        else
-            coachmarkGopay?.animateShow()
+
+//        val item = homeRecyclerView?.getChildAt(1)
+//        if(item?.isVisible?: false)
+//            coachmarkGopay?.dismissCoachMark()
+//        else
+//        coachmarkGopay?.animateShow()
+            coachmarkGopay?.showCoachMark(step = coachMarkItemGopay, index = COACHMARK_FIRST_INDEX)
+
+
+        val items = (homeRecyclerView?.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+        val x = 1
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -1713,7 +1719,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             RouteManager.route(requireActivity(), ApplinkConstInternalPromo.PROMO_LIST)
         } else {
             if (activity != null) {
-                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(R.string.title_activity_promo))
+                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(com.tokopedia.loyalty.R.string.title_activity_promo))
             }
         }
     }
