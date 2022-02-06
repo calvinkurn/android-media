@@ -685,17 +685,36 @@ object ShopPageHomeMapper {
     }
 
     fun mapToShopHomeWidgetLayoutData(response: ShopPageGetHomeType.HomeLayoutData): ShopPageHomeWidgetLayoutUiModel {
+        val listWidget: ArrayList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout> = arrayListOf()
+        listWidget.add(
+            ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                "99",
+                "34",
+                CARD,
+                INFO_CARD
+            )
+        )
+        listWidget.addAll(response.widgetIdList.map {
+            ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                it.widgetId,
+                it.widgetMasterId,
+                it.widgetType,
+                it.widgetName
+            )
+        })
+
         return ShopPageHomeWidgetLayoutUiModel(
             layoutId = response.layoutId,
             masterLayoutId = response.masterLayoutId.toIntOrZero().toString(),
-            listWidgetLayout = response.widgetIdList.map {
-                ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
-                    it.widgetId,
-                    it.widgetMasterId,
-                    it.widgetType,
-                    it.widgetName
-                )
-            }
+            listWidgetLayout = listWidget
+//            listWidgetLayout = response.widgetIdList.map {
+//                ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+//                    it.widgetId,
+//                    it.widgetMasterId,
+//                    it.widgetType,
+//                    it.widgetName
+//                )
+//            }
         )
     }
 
