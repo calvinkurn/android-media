@@ -657,6 +657,30 @@ object ShopPageHomeMapper {
                     add(model)
                 }
             }
+
+            // testing donation
+            add(
+                0,
+                mapToWidgetUiModel(
+                    ShopLayoutWidget.Widget(
+                        widgetID = "99",
+                        widgetMasterID = "34",
+                        layoutOrder = 0,
+                        name = INFO_CARD,
+                        type = CARD,
+                        header = ShopLayoutWidget.Widget.Header(
+                            title = "Selama Ramadan, sebagian keuntungan toko akan didonasikan.",
+                            ctaText = "Selengkapnya",
+                            ctaLink = "tokopedia://recharge/home?platform_id=30",
+                            cover = "https://images.tokopedia.net/img/jJtrdn/2021/12/20/22a0f0ad-20e9-438d-b3e8-eec2ca3cb01e.jpg?b=UBO4%3BzI%3Bys%24%25Q%2CR%2AtSniClxFVDWqpdniR5o%7D",
+                            ratio = "2:1",
+                            isShowEtalaseName = 0
+                        )
+                    ),
+                    myShop,
+                    isLoggedIn
+                )!!
+            )
         }
     }
 
@@ -693,6 +717,20 @@ object ShopPageHomeMapper {
                     add(resModel)
                 }
             }
+
+            // testing data for donation
+            add(
+                0, mapToWidgetUiModel(
+                    ShopLayoutWidget.Widget(
+                        widgetID = "99",
+                        type = CARD,
+                        name = INFO_CARD,
+                        widgetMasterID = "34"
+                    ),
+                    myShop,
+                    isLoggedIn
+                )!!
+            )
         }
     }
 
