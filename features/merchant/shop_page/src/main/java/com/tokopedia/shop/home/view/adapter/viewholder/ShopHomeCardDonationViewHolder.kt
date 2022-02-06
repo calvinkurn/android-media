@@ -4,7 +4,6 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -52,20 +51,14 @@ class ShopHomeCardDonationViewHolder(
             ctaDescription.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        // set cta action
-        ctaDescription.setSpan(
-            object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    listener.onCardDonationClick(element.header.ctaLink)
-                }
-            },
-            0,
-            ctaDescription.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+
         // render description
         shopHomeCardDonationDescription.text =
             TextUtils.concat(element.header.title, " ", ctaDescription)
+
+        itemView.setOnClickListener {
+            listener.onCardDonationClick(element.header.ctaLink)
+        }
     }
 
     companion object {
