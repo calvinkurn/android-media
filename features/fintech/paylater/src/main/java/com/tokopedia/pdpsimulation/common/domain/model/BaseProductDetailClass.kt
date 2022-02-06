@@ -13,11 +13,17 @@ data class BaseProductDetailClass(
 data class GetProductV3(
     @SerializedName("productName") val productName: String?,
     @SerializedName("url") val url: String?,
+    @SerializedName("shop") val shopDetail:ShopDetail?,
     @SerializedName("price") val price: Double?,
     @SerializedName("pictures") val pictures: List<Pictures?>?,
     @SerializedName("variant") val variant: Variant?,
     @SerializedName("stock") val stock:Int?
 ) : Parcelable
+
+@Parcelize
+data class  ShopDetail (
+    @SerializedName("id") val shopId:String?
+        ) : Parcelable
 
 @Parcelize
 data class Variant(

@@ -136,6 +136,9 @@ const val GQL_GET_PRODUCT_DETAIL =
     productName
     url
     stock
+    shop{
+    id
+    }
     price
     variant{
    selections{
@@ -188,9 +191,9 @@ const val GQL_PAYLATER_ACTIVATION = """
 }
 """
 
-val GQL_ADD_TO_CART_OCC_MULTI = """
-    mutation add_to_cart_occ_multi(${"$"}param : OneClickCheckoutMultiATCParam) {
-        add_to_cart_occ_multi(param: ${"$"}param) {
+const val GQL_ADD_TO_CART_OCC_MULTI = """
+    mutation add_to_cart_occ_multi(${"$"}request : OneClickCheckoutMultiATCParam) {
+        add_to_cart_occ_multi(request: ${"$"}request) {
             error_message
             status
             data {
@@ -209,10 +212,6 @@ val GQL_ADD_TO_CART_OCC_MULTI = """
                         color
                     }
                 }
-                toaster_action {
-                    text
-                    show_cta
-                }
                 carts {
                     cart_id
                     customer_id
@@ -226,4 +225,4 @@ val GQL_ADD_TO_CART_OCC_MULTI = """
             }
         }
     }
-""".trimIndent()
+"""
