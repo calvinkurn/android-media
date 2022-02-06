@@ -7,7 +7,9 @@ import android.text.TextUtils
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -18,9 +20,15 @@ import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 
 class ShopHomeCardDonationViewHolder(
-    private val binding: ItemShopHomeCardDonationBinding,
+    itemView: View,
     private val listener: ShopHomeCardDonationListener
-) : AbstractViewHolder<ShopHomeCardDonationUiModel>(binding.root) {
+) : AbstractViewHolder<ShopHomeCardDonationUiModel>(itemView) {
+
+    val binding = ItemShopHomeCardDonationBinding.inflate(
+        LayoutInflater.from(itemView.context),
+        itemView as ViewGroup,
+        false
+    )
 
     override fun bind(element: ShopHomeCardDonationUiModel) {
         with(binding) {

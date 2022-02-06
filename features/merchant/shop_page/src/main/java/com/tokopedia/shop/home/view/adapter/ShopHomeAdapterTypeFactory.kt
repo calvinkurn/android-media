@@ -1,8 +1,6 @@
 package com.tokopedia.shop.home.view.adapter
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -11,7 +9,6 @@ import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
-import com.tokopedia.shop.databinding.ItemShopHomeCardDonationBinding
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -33,9 +30,46 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
-import com.tokopedia.shop.home.view.adapter.viewholder.*
-import com.tokopedia.shop.home.view.listener.*
-import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.home.view.adapter.viewholder.CarouselPlayWidgetViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ProductGridListPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCardDonationViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarouselProductPersonalizationViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeLoadingShimmerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeNplCampaignPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeNplCampaignViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductChangeGridSectionViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductEtalaseTitleViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquarePlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquareViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVideoViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
+import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
+import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ProductGridListPlaceholderUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.home.view.model.WidgetState
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 
@@ -242,14 +276,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderBannerPlaceholderViewHolder(parent)
             ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderSquarePlaceholderViewHolder(parent)
             ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnPlaceholderViewHolder(parent)
-            ShopHomeCardDonationViewHolder.LAYOUT -> {
-                val binding = ItemShopHomeCardDonationBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent as ViewGroup,
-                    false
-                )
-                return ShopHomeCardDonationViewHolder(binding, shopHomeCardDonationListener)
-            }
+            ShopHomeCardDonationViewHolder.LAYOUT -> ShopHomeCardDonationViewHolder(parent, shopHomeCardDonationListener)
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder
