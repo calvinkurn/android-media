@@ -13,14 +13,11 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeCardDonationBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
-import com.tokopedia.shop.home.view.model.WidgetState
 
 class ShopHomeCardDonationViewHolder(
     itemView: View,
@@ -35,63 +32,43 @@ class ShopHomeCardDonationViewHolder(
 
     override fun bind(element: ShopHomeCardDonationUiModel) {
         with(binding) {
-            if (element.widgetState == WidgetState.FINISH) {
-                hideLoading()
+            // render image
+            shopHomeCardDonationImage.loadImage(element.header.cover)
 
-                // render image
-                shopHomeCardDonationImage.loadImage(element.header.cover)
-
-                val ctaDescription = SpannableString(element.header.ctaText)
-                // set cta color to green
-                ctaDescription.setSpan(
-                    ForegroundColorSpan(
-                        MethodChecker.getColor(
-                            root.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                        )
-                    ),
-                    0,
-                    ctaDescription.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                // set cta typeface to bold
-                ctaDescription.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    0,
-                    ctaDescription.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                // set cta action
-                ctaDescription.setSpan(
-                    object : ClickableSpan() {
-                        override fun onClick(widget: View) {
-                            listener.onCardDonationClick(element.header.ctaLink)
-                        }
-                    },
-                    0,
-                    ctaDescription.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                // render description
-                shopHomeCardDonationDescription.text =
-                    TextUtils.concat(element.header.title, " ", ctaDescription)
-            } else {
-                showLoading()
-            }
-        }
-    }
-
-    private fun showLoading() {
-        with(binding) {
-            shopHomeCardDonationLoading.show()
-            shopHomeCardDonationLinearContainer.hide()
-        }
-    }
-
-    private fun hideLoading() {
-        with(binding) {
-            shopHomeCardDonationLoading.hide()
-            shopHomeCardDonationLinearContainer.show()
+            val ctaDescription = SpannableString(element.header.ctaText)
+            // set cta color to green
+            ctaDescription.setSpan(
+                ForegroundColorSpan(
+                    MethodChecker.getColor(
+                        root.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                ),
+                0,
+                ctaDescription.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            // set cta typeface to bold
+            ctaDescription.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                ctaDescription.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            // set cta action
+            ctaDescription.setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        listener.onCardDonationClick(element.header.ctaLink)
+                    }
+                },
+                0,
+                ctaDescription.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            // render description
+            shopHomeCardDonationDescription.text =
+                TextUtils.concat(element.header.title, " ", ctaDescription)
         }
     }
 

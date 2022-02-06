@@ -11,71 +11,36 @@
     app:card_type="border">
 
     <LinearLayout
+        android:id="@+id/shop_home_card_donation_linear_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/unify_space_12"
+        android:paddingTop="@dimen/unify_space_8"
+        android:paddingRight="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_8">
 
-        <LinearLayout
-            android:id="@+id/shop_home_card_donation_linear_container"
-            android:layout_width="match_parent"
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shop_home_card_donation_image"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitXY" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shop_home_card_donation_description"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/unify_space_12"
-            android:paddingTop="@dimen/unify_space_8"
-            android:paddingRight="@dimen/unify_space_12"
-            android:paddingBottom="@dimen/unify_space_8"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textSize="@dimen/unify_font_12"
+            app:typographyType="small"
+            tools:text="Selama Ramadan, sebagian keuntungan toko akan didonasikan. Selengkapnya" />
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/shop_home_card_donation_image"
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
-                android:layout_gravity="center_vertical"
-                android:scaleType="fitXY" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/shop_home_card_donation_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/unify_space_12"
-                android:layout_marginEnd="@dimen/unify_space_12"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textSize="@dimen/unify_font_12"
-                app:typographyType="small"
-                tools:text="Selama Ramadan, sebagian keuntungan toko akan didonasikan. Selengkapnya" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/shop_home_card_donation_loading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/unify_space_12"
-            android:paddingTop="@dimen/unify_space_8"
-            android:paddingRight="@dimen/unify_space_12"
-            android:paddingBottom="@dimen/unify_space_8">
-
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
-                android:layout_gravity="center_vertical"
-                app:use_gradient="true" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/unify_space_12"
-                android:layout_marginEnd="@dimen/unify_space_12"
-                android:layout_weight="1"
-                app:corners="16"
-                app:use_gradient="true" />
-
-        </LinearLayout>
     </LinearLayout>
+
 </com.tokopedia.unifycomponents.CardUnify>
