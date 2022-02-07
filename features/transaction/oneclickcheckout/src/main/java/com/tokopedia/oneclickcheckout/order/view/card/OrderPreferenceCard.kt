@@ -523,10 +523,12 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                 }
                             }
                         }
+                        btnChangePayment.invisible()
+                    } else {
+                        btnChangePayment.visible()
                     }
                     tvPaymentErrorMessage.text = span
                     tvPaymentErrorMessage.visible()
-                    btnChangePayment.invisible()
                     tvPaymentOvoErrorAction.gone()
                     setPaymentErrorAlpha()
                 } else if (payment.walletErrorData != null) {
