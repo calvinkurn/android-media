@@ -75,6 +75,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
               total_product_price
               available_section {
                 available_group {
+                  cart_string
                   shop {
                     shop_id
                     shop_name

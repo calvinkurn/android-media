@@ -64,15 +64,17 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
 
     private fun generateValidateUseMvcParam(miniCartItems: List<MiniCartItem>, isMoveToCart: Boolean = false): ValidateUseMvcParam {
         val cartString = miniCartItems.first { !it.isError }.cartString
+        val shopId = miniCartItems.first { !it.isError }.shopId
         return ValidateUseMvcParam(
             apply = isMoveToCart,
             codes = listOf(currentPromoCode),
             promoIds = listOf(currentPromoId),
             promoType = PROMO_TYPE_MVC,
-            state = CartConstant.CART,
+            state = CartConstant.PARAM_CART,
             cartType = CartConstant.PARAM_DEFAULT,
             orders = listOf(ValidateUseMvcOrderParam(
                 uniqueId = cartString,
+                shopId = shopId,
                 productDetails = miniCartItems.mapNotNull {
                     if (!it.isError) {
                         ValidateUseMvcProductParam(it.productId, it.quantity)
