@@ -61,6 +61,10 @@ object ConstantTransactionAnalytics {
         const val CART = "Cart"
         const val CLICK_WISHLIST = "clickWishlist"
         const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
+        const val VIEW_CHECKOUT_IRIS = "viewCheckoutIris"
+        const val VIEW_ORDER_IRIS = "viewOrderIris"
+        const val CLICK_ORDER = "clickOrder"
+        const val VIEW_ITEM = "view_item"
         const val CLICK_PP = "clickPP"
         const val VIEW_PP_IRIS = "viewPPIris"
     }
@@ -271,30 +275,7 @@ object ConstantTransactionAnalytics {
         const val CLICK_BELANJA_LAGI_ON_POP_UP = "click belanja lagi on pop up message payment time expired"
 
         // Promo checkout revamp
-        const val CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP promo page"
-        const val VIEW_AVAILABLE_PROMO_LIST = "view available promo list"
-        const val CLICK_PILIH_PROMO_RECOMMENDATION = "click pilih promo recommendation"
-        const val SELECT_KUPON = "select kupon"
-        const val DESELECT_KUPON = "deselect kupon"
-        const val CLICK_LIHAT_DETAIL_KUPON = "click lihat detail kupon"
-        const val CLICK_EXPAND_PROMO_LIST = "click expand promo list"
-        const val CLICK_REMOVE_PROMO_CODE = "click remove promo code"
-        const val CLICK_TERAPKAN_PROMO = "click terapkan promo"
-        const val SELECT_PROMO = "select promo"
-        const val DESELECT_PROMO = "deselect promo"
-        const val VIEW_POP_UP_SAVE_PROMO = "view pop up save promo"
-        const val CLICK_PAKAI_PROMO = "click pakai promo"
-        const val VIEW_ERROR_POP_UP = "view error pop up"
-        const val CLICK_COBA_LAGI = "click coba lagi"
-        const val CLICK_SIMPAN_PROMO_BARU = "click simpan promo baru"
-        const val CLICK_KELUAR_HALAMAN = "click keluar halaman"
-        const val CLICK_RESET_PROMO = "click reset promo"
-        const val CLICK_BELI_TANPA_PROMO = "click beli tanpa promo"
         const val VIEW_PROMO_MESSAGE = "view promo message"
-        const val SELECT_PROMO_CODE_FROM_LAST_SEEN = "select promo code from Last Seen"
-        const val DISMISS_LAST_SEEN = "dismiss Last Seen"
-        const val CLICK_INPUT_FIELD = "click input field"
-        const val SHOW_LAST_SEEN_POP_UP = "show Last Seen pop-up"
 
         //OCC
         const val CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT = "click back in pilih metode bayar"
@@ -461,5 +442,6 @@ object ConstantTransactionAnalytics {
         const val DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
         const val DIMENSION_BUSINESS_UNIT_HOME_BROWSE = "home & browse"
         const val DIMENSION_BUSINESS_UNIT_FINTECH = "fintech"
+        const val DIMENSION_BUSINESS_UNIT_PROMO = "promo"
     }
 }

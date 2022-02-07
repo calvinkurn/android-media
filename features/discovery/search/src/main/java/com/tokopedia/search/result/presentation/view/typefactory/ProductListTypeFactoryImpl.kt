@@ -12,7 +12,6 @@ import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -35,7 +34,6 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.LastFilterViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductEmptySearchViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductCountViewHolder
@@ -49,7 +47,6 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
-import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
@@ -57,6 +54,9 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationCl
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateListener
+import com.tokopedia.search.result.product.emptystate.EmptyStateViewHolder
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
@@ -73,7 +73,6 @@ import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaVi
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.violation.ViolationListener
 import com.tokopedia.search.result.product.violation.ViolationViewHolder
-import com.tokopedia.topads.sdk.base.Config
 
 @Suppress("LongParameterList")
 class ProductListTypeFactoryImpl(
@@ -93,7 +92,6 @@ class ProductListTypeFactoryImpl(
     private val chooseAddressListener: ChooseAddressListener,
     private val bannerListener: BannerListener,
     private val lastFilterListener: LastFilterListener,
-    private val topAdsConfig: Config,
     private val inspirationSizeListener: InspirationSizeListener,
     private val violationListener: ViolationListener,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
@@ -124,8 +122,8 @@ class ProductListTypeFactoryImpl(
         }
     }
 
-    override fun type(emptySearchProductDataView: EmptySearchProductDataView): Int {
-        return ProductEmptySearchViewHolder.LAYOUT
+    override fun type(emptySearchProductDataView: EmptyStateDataView): Int {
+        return EmptyStateViewHolder.LAYOUT
     }
 
     override fun type(globalNavDataView: GlobalNavDataView): Int {
@@ -221,13 +219,7 @@ class ProductListTypeFactoryImpl(
             CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener)
             TickerViewHolder.LAYOUT -> TickerViewHolder(view, tickerListener)
             SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(view, suggestionListener)
-            ProductEmptySearchViewHolder.LAYOUT ->
-                ProductEmptySearchViewHolder(
-                    view,
-                    emptyStateListener,
-                    bannerAdsListener,
-                    topAdsConfig,
-                )
+            EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view, emptyStateListener)
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
                 InspirationCarouselViewHolder(view, inspirationCarouselListener)

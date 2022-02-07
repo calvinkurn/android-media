@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.shouldBe
@@ -12,13 +13,14 @@ import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import rx.Subscriber
 
 internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
 
-    private val violationProductsVisitableListSlot = slot<List<Visitable<*>>>()
-    private val violationProductsVisitableList by lazy { violationProductsVisitableListSlot.captured }
+    private val visitableListSlot = slot<List<Visitable<*>>>()
+    private val visitableList by lazy { visitableListSlot.captured }
 
     @Test
     fun `Show violation products message`() {
@@ -45,14 +47,14 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
     private fun `Then verify view interaction for violation products`() {
         verify {
             productListView.removeLoading()
-            productListView.addProductList(capture(violationProductsVisitableListSlot))
+            productListView.addProductList(capture(visitableListSlot))
         }
     }
 
     private fun `Then verify violation products view model`(searchProductModel: SearchProductModel) {
-        violationProductsVisitableList.size shouldBe 2
+        visitableList.size shouldBe 2
 
-        val violationProductsViewModel = violationProductsVisitableList[0] as ViolationDataView
+        val violationProductsViewModel = visitableList[0] as ViolationDataView
 
         val violation = searchProductModel.searchProduct.data.violation
 
@@ -78,11 +80,11 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
     private fun `Then verify visitable list contains global nav and violation products`(
         searchProductModel: SearchProductModel
     ) {
-        val globalNavWidgetDataView = violationProductsVisitableList[0]
+        val globalNavWidgetDataView = visitableList[0]
         globalNavWidgetDataView.shouldBeInstanceOf<GlobalNavDataView>()
 
         val violationProductsViewModel =
-            violationProductsVisitableList[1] as ViolationDataView
+            visitableList[1] as ViolationDataView
         val violation = searchProductModel.searchProduct.data.violation
 
         violationProductsViewModel.headerText shouldBe violation.headerText
@@ -101,12 +103,17 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
         `When load data`("asdgasdfasdf")
 
         `Then verify view interaction for empty products search`()
+        `Then assert visitable list contains empty state`()
     }
 
     private fun `Then verify view interaction for empty products search`() {
         verify {
             productListView.removeLoading()
-            productListView.setEmptyProduct(any(), any())
+            productListView.setProductList(capture(visitableListSlot))
         }
+    }
+
+    private fun `Then assert visitable list contains empty state`() {
+        assertTrue(visitableList.any { it is EmptyStateDataView })
     }
 }

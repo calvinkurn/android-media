@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="@id/video_thumbnail_iv"
         app:layout_constraintEnd_toEndOf="@id/video_thumbnail_iv"
         app:layout_constraintBottom_toBottomOf="@id/video_thumbnail_iv"
-        app:srcCompat="@drawable/ic_catalog_btn_play"
+        app:srcCompat="@drawable/catalog_ic_catalog_btn_play"
         />
 
     <com.tokopedia.unifyprinciples.Typography
