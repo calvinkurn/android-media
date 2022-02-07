@@ -32,6 +32,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
@@ -888,7 +889,7 @@ class TokoNowRepurchaseFragment:
         AtcVariantHelper.goToAtcVariant(
             context = context,
             productId = productId,
-            pageSource = SOURCE,
+            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
             isTokoNow = true,
             shopId = shopId,
             trackerCdListName = "",

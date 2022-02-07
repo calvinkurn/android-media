@@ -679,7 +679,7 @@ abstract class BaseSearchCategoryFragment:
         AtcVariantHelper.goToAtcVariant(
                 context = context,
                 productId = productId,
-                pageSource = "tokonow",
+                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                 isTokoNow = true,
                 shopId = shopId,
                 trackerCdListName = getCDListName(),

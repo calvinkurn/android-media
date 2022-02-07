@@ -48,6 +48,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -161,7 +162,6 @@ class TokoNowHomeFragment: Fragment(),
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val ITEM_VIEW_CACHE_SIZE = 20
         const val CATEGORY_LEVEL_DEPTH = 1
-        const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
         const val SHARE_URL = "https://www.tokopedia.com/now"
@@ -479,7 +479,7 @@ class TokoNowHomeFragment: Fragment(),
         AtcVariantHelper.goToAtcVariant(
             context = requireContext(),
             productId = data.productId,
-            pageSource = SOURCE,
+            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
             isTokoNow = true,
             shopId = data.shopId,
             startActivitResult = this::startActivityForResult
