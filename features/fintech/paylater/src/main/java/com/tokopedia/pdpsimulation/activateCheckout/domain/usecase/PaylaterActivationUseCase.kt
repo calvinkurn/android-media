@@ -44,7 +44,7 @@ class PaylaterActivationUseCase @Inject constructor(graphqlRepository: GraphqlRe
         return mutableMapOf(
             "request" to mutableMapOf(
                 PARAM_PRODUCT_PRICE to amount,
-                PARAM_PRODUCT_ID to productId.toInt(),
+                PARAM_PRODUCT_ID to productId,
                 PARAM_REQUEST_GATEWAY_ID to 0
 
             )

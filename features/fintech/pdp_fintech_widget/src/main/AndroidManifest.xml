@@ -3,12 +3,6 @@
     package="com.tokopedia.pdp_fintech">
 
     <application>
-        <activity
-            android:name="com.tokopedia.pdp.fintech.FullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="false"
-            android:label="@string/title_activity_fullscreen"
-            android:theme="@style/Theme.Androidtokopediacore.Fullscreen" />
     </application>
 
 </manifest>
