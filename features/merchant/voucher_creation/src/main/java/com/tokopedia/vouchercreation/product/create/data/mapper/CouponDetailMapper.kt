@@ -1,43 +1,46 @@
 package com.tokopedia.vouchercreation.product.create.data.mapper
 
 import com.tokopedia.vouchercreation.product.create.data.response.Voucher
-import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import javax.inject.Inject
 
 class CouponDetailMapper @Inject constructor() {
 
-    fun map(merchantVoucherModel: Voucher): VoucherUiModel {
-        return merchantVoucherModel.let {
-            VoucherUiModel(
-                id = it.voucherId,
-                name = it.voucherName,
-                type = it.voucherType,
-                typeFormatted = it.voucherTypeFormatted,
-                image = it.voucherImage,
-                imageSquare = it.imageSquare,
-                status = it.voucherStatus,
-                discountTypeFormatted = it.discountTypeFormatted,
-                discountAmt = it.discountAmt,
-                discountAmtFormatted = it.discountAmtFormatted,
-                discountAmtMax = it.discountAmtMax,
-                minimumAmt = it.voucherMinimumAmt,
-                quota = it.voucherQuota,
-                confirmedQuota = it.confirmedQuota,
-                bookedQuota = it.bookedQuota,
-                startTime = it.startTime,
-                finishTime = it.finishTime,
-                code = it.voucherCode,
-                createdTime = it.createTime,
-                updatedTime = it.updateTime,
-                isPublic = it.isPublic == 1,
-                isVps = it.isVps == 1,
-                packageName = it.packageName,
-                isSubsidy = it.isSubsidy == 1,
-                tnc = it.tnc,
-                productIds = it.productIds
-            )
-        }
-    }
+    fun map(voucher: Voucher): CouponUiModel {
+        val products = mutableListOf<Long>()
 
+        voucher.productIds.forEach {
+            it.childProductId.forEach { productId ->
+                products.add(productId)
+            }
+        }
+
+        return CouponUiModel(
+            id = voucher.voucherId,
+            name = voucher.voucherName,
+            type = voucher.voucherType,
+            typeFormatted = voucher.voucherTypeFormatted,
+            image = voucher.voucherImage,
+            imageSquare = voucher.imageSquare,
+            status = voucher.voucherStatus,
+            discountTypeFormatted = voucher.discountTypeFormatted,
+            discountAmt = voucher.discountAmt,
+            discountAmtFormatted = voucher.discountAmtFormatted,
+            discountAmtMax = voucher.discountAmtMax,
+            minimumAmt = voucher.voucherMinimumAmt,
+            quota = voucher.voucherQuota,
+            confirmedQuota = voucher.confirmedQuota,
+            bookedQuota = voucher.bookedQuota,
+            startTime = voucher.startTime,
+            finishTime = voucher.finishTime,
+            code = voucher.voucherCode,
+            createdTime = voucher.createTime,
+            updatedTime = voucher.updateTime,
+            isPublic = voucher.isPublic == 1,
+            tnc = voucher.tnc,
+            productIds = products
+        )
+
+    }
 
 }

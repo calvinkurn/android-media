@@ -40,8 +40,7 @@ data class VoucherUiModel(
         var isVps: Boolean = false,
         var packageName: String = "",
         var isSubsidy: Boolean = false,
-        var tnc: String = "",
-        val productIds : List<ProductId> = emptyList()
+        var tnc: String = ""
 ) : BaseVoucherListUiModel, Parcelable {
 
     override fun type(typeFactory: VoucherListAdapterFactory): Int {

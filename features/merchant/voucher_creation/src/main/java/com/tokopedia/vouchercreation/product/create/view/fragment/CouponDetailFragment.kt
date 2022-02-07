@@ -16,7 +16,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.consts.VoucherDiscountTypeConst
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -25,14 +24,13 @@ import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.Timer
 import com.tokopedia.vouchercreation.databinding.FragmentCouponDetailBinding
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponDetailViewModel
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
-import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
 
 class CouponDetailFragment : BaseDaggerFragment() {
@@ -136,7 +134,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 )
                 displayCouponSettingsSection(coupon)
                 displayQuotaUsage(coupon)
-                //refreshProductsSection()
+                refreshProductsSection(coupon.productIds.size)
             } else {
                 hideLoading()
                 hideContent()
@@ -155,8 +153,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     private fun displayCountdown(couponStatus: Int, finishTime: String) {
         if (couponStatus == VoucherStatusConst.ONGOING) {
-            //val timerIcon = ContextCompat.getDrawable(requireActivity(), R.drawable.ic_timer) ?: return
-            //binding.labelCountdown.setLabelImage(timerIcon, timerIcon.intrinsicWidth, timerIcon.intrinsicHeight)
             binding.groupCountdown.isVisible = couponStatus == VoucherStatusConst.ONGOING
             startTimer(finishTime)
         }
@@ -200,7 +196,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         binding.tpgCouponPeriod.text = period
     }
 
-    private fun displayCouponSettingsSection(coupon: VoucherUiModel) {
+    private fun displayCouponSettingsSection(coupon: CouponUiModel) {
         binding.tpgCouponType.text = coupon.typeFormatted
         binding.tpgCouponQouta.text = coupon.quota.splitByThousand()
 
@@ -235,11 +231,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun refreshProductsSection(products: List<CouponProduct>) {
-        if (products.isNotEmpty()) {
-
+    private fun refreshProductsSection(productCount : Int) {
+        if (productCount > ZERO) {
             binding.tpgProductCount.text =
-                String.format(getString(R.string.placeholder_registered_product), products.size)
+                String.format(getString(R.string.placeholder_registered_product), productCount, "100")
         } else {
 
             binding.tpgProductCount.text = getString(R.string.no_products)
@@ -371,7 +366,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     }
 
-    private fun displayCouponStatus(coupon: VoucherUiModel) {
+    private fun displayCouponStatus(coupon: CouponUiModel) {
         when (coupon.status) {
             VoucherStatusConst.ONGOING -> {
                 binding.labelCountdown.visible()
@@ -413,7 +408,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         timer?.startCountdown()
     }
 
-    private fun displayQuotaUsage(coupon: VoucherUiModel) {
+    private fun displayQuotaUsage(coupon: CouponUiModel) {
         val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
         binding.progressBarQuotaUsage.setValue(progressBarValue, true)
         binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(6).toInt()
