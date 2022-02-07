@@ -26,7 +26,7 @@ internal class ShopListTypeFactoryImpl(
     private val shopListener: ShopListener,
     private val emptyStateListener: EmptyStateListener,
     private val bannerAdsListener: BannerAdsListener,
-    private val chooseAddressListener: ChooseAddressListener
+    private val chooseAddressListener: ChooseAddressListener,
 ) : BaseAdapterTypeFactory(), ShopListTypeFactory {
 
     override fun type(shopCpmDataView: ShopCpmDataView): Int {
