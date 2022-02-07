@@ -75,7 +75,8 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 
         val couponVisibility = when (couponInformation.target) {
             CouponInformation.Target.PUBLIC -> "public"
-            CouponInformation.Target.SPECIAL -> "private"
+            CouponInformation.Target.PRIVATE -> "private"
+            CouponInformation.Target.NOT_SELECTED -> EMPTY_STRING
         }
 
         val benefitType = when (couponSettings.type) {

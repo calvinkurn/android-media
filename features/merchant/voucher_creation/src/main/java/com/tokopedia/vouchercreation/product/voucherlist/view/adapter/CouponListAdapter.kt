@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.viewholder.CouponListViewHolder
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
@@ -14,6 +15,7 @@ class CouponListAdapter(
 ) : RecyclerView.Adapter<CouponListViewHolder>() {
 
     private var items: MutableList<VoucherUiModel> = mutableListOf()
+    private var isLoading = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_mvc_coupon_list, parent, false)
@@ -26,7 +28,8 @@ class CouponListAdapter(
 
     override fun onBindViewHolder(holder: CouponListViewHolder, position: Int) {
         items.getOrNull(position)?.let { coupon ->
-            holder.bindData(coupon)
+            val isItemLoading = isLoading && (position == items.lastIndex)
+            holder.bindData(coupon, isItemLoading)
             holder.moreButton?.setOnClickListener {
                 onCouponOptionClicked.invoke(coupon)
             }
@@ -42,7 +45,20 @@ class CouponListAdapter(
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
-        this.items.clear()
+        this.items = mutableListOf()
+        notifyDataSetChanged()
+    }
+
+    fun showLoading() {
+        if (itemCount.isMoreThanZero()) {
+            isLoading = true
+            notifyItemChanged(items.lastIndex)
+        }
+    }
+
+    fun hideLoading() {
+        isLoading = false
     }
 }

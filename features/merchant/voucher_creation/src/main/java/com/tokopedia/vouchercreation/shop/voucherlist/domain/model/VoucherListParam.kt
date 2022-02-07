@@ -4,6 +4,7 @@ import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 
 data class VoucherListParam (
@@ -75,25 +76,23 @@ data class VoucherListParam (
         @JvmStatic
         fun createParamCouponList(@VoucherTypeConst type: Int? = null,
                                   @VoucherStatus status: String,
-                                  targetList: List<Int>? = null,
                                   @VoucherSort sort: String? = null,
+                                  @VoucherTarget target: String? = null,
                                   page: Int? = null,
-                                  isInverted: Boolean = false,
-                                  @VoucherSubsidy includeSubsidy: Int = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
-                                  @VoucherVps isVps: String = VoucherVps.ALL,
-                                  voucherName: String? = null,
-                                  targetBuyer: String? = null) : VoucherListParam {
+                                  perPage: Int? = Int.ZERO,
+                                  voucherName: String? = null) : VoucherListParam {
             return VoucherListParam(
                 voucherType = type,
                 voucherStatus = status,
-                isPublic = targetList?.joinToString(separator = ","),
+                isPublic = target,
                 page = page,
+                perPage = perPage,
                 sortBy = sort,
-                isInverted = isInverted,
-                includeSubsidy = includeSubsidy,
-                isVps = isVps,
+                isInverted = false,
+                includeSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
+                isVps = VoucherVps.ALL,
                 voucherName = voucherName,
-                targetBuyer = targetBuyer,
+                targetBuyer = null,
                 isLockToProduct = "1"
             )
         }
@@ -121,8 +120,8 @@ annotation class VoucherStatus {
 @StringDef(VoucherTarget.PUBLIC, VoucherTarget.PRIVATE)
 annotation class VoucherTarget {
     companion object {
-        const val PUBLIC = "0"
-        const val PRIVATE = "1"
+        const val PUBLIC = "1"
+        const val PRIVATE = "0"
     }
 }
 

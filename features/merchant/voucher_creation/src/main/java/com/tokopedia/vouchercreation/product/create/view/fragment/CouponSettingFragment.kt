@@ -24,6 +24,7 @@ import com.tokopedia.vouchercreation.common.extension.DECIMAL_FORMAT_PATTERN
 import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.textwatcher.NumberThousandSeparatorTextWatcher
+import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
@@ -36,17 +37,20 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 
-class CouponSettingFragment : BaseDaggerFragment() {
+class CouponSettingFragment private constructor(): BaseDaggerFragment() {
 
     companion object {
         private const val SCREEN_NAME = "Coupon Setting Page"
         private const val EMPTY_STRING = ""
         private const val ZERO = 0
 
-        fun newInstance(): CouponSettingFragment {
+        fun newInstance(onCouponSaved: (CouponSettings) -> Unit): CouponSettingFragment {
             val args = Bundle()
-            val fragment = CouponSettingFragment()
-            fragment.arguments = args
+            val fragment = CouponSettingFragment().apply {
+                arguments = args
+                this.onCouponSaved = onCouponSaved
+            }
+
             return fragment
         }
 
@@ -89,6 +93,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         setupViews()
         setupChipsClickListener()
         setupTextAreaListener()
@@ -517,7 +522,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     private fun setupDiscountTypeChips() {
         binding.chipDiscountTypeNominal.selectedChangeListener = { isSelected ->
-            val label = if (isSelected) getString(R.string.in_nominal) else getString(R.string.nominal)
+            val label = if (isSelected) getString(R.string.in_rupiah) else getString(R.string.nominal)
             binding.chipDiscountTypeNominal.chipText = label
         }
 
@@ -802,12 +807,12 @@ class CouponSettingFragment : BaseDaggerFragment() {
         binding.groupPercentageDiscountType.gone()
     }
 
-    fun setOnCouponSaved(onCouponSaved: (CouponSettings) -> Unit) {
-        this.onCouponSaved = onCouponSaved
-    }
-
     fun setCouponSettings(couponSettings: CouponSettings?) {
         this.couponSettings = couponSettings
+    }
+
+    fun clear() {
+        this.couponSettings = null
     }
 
     private fun displayExpenseEstimationDescription() {

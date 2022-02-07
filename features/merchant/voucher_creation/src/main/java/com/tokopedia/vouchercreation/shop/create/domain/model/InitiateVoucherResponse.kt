@@ -41,5 +41,7 @@ data class InitiateVoucherPageData(
         @SerializedName("prefix_voucher_code")
         val voucherCodePrefix: String = "",
         @SerializedName("is_eligible")
-        val isEligible: Int = 0
+        val isEligible: Int = 0,
+        @SerializedName("max_product")
+        val maxProduct: Int = 0
 )

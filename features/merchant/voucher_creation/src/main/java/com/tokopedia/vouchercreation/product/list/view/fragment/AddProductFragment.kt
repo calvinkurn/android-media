@@ -21,6 +21,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentMvcAddProductBinding
 import com.tokopedia.vouchercreation.product.list.view.adapter.ProductListAdapter
 import com.tokopedia.vouchercreation.product.list.view.bottomsheet.CategoryBottomSheet
@@ -98,6 +99,7 @@ class AddProductFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         setupView(binding)
         observeLiveData()
         val shopId = userSession.shopId

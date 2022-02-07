@@ -2,12 +2,14 @@ package com.tokopedia.vouchercreation.product.create.data.service
 
 import okhttp3.ResponseBody
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ImageGeneratorService {
     @GET("v2/preview/{sourceId}")
     suspend fun previewImage(
+        @Header("Authorization") accessToken : String,
         @Path("sourceId") sourceId: String,
         @Query("platform") platform: String,
         @Query("is_public") isPublic: String,

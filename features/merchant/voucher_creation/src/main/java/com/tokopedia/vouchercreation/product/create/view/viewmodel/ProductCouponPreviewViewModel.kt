@@ -9,26 +9,30 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
+import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
+import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductCouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val createCouponUseCase: CreateCouponFacadeUseCase,
-    private val updateCouponUseCase: UpdateCouponFacadeUseCase
+    private val updateCouponUseCase: UpdateCouponFacadeUseCase,
+    private val initiateVoucherUseCase: InitiateVoucherUseCase,
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
         private const val NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE = 3
     }
 
-    private val _areInputValid = MutableLiveData<Boolean>()
+    private val _areInputValid = SingleLiveEvent<Boolean>()
     val areInputValid: LiveData<Boolean>
         get() = _areInputValid
 
@@ -36,8 +40,14 @@ class ProductCouponPreviewViewModel @Inject constructor(
     val createCoupon: LiveData<Result<Int>>
         get() = _createCoupon
 
-    private val _updateCouponResult = MutableLiveData<Result<Boolean>>()
-    val updateCouponResult: LiveData<Result<Boolean>> = _updateCouponResult
+    private val _updateCouponResult = SingleLiveEvent<Result<Boolean>>()
+    val updateCouponResult: LiveData<Result<Boolean>>
+        get() = _updateCouponResult
+
+    private val _maxAllowedProductCount = MutableLiveData<Result<Int>>()
+    val maxAllowedProductCount: LiveData<Result<Int>>
+        get() = _maxAllowedProductCount
+
 
     fun validateCoupon(
         couponSettings: CouponSettings?,
@@ -88,7 +98,7 @@ class ProductCouponPreviewViewModel @Inject constructor(
     }
 
     fun updateCoupon(
-        couponId : Long,
+        couponId: Long,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>
@@ -105,14 +115,13 @@ class ProductCouponPreviewViewModel @Inject constructor(
                         couponProducts
                     )
                 }
-                _updateCouponResult.setValue(Success(result))
+                _updateCouponResult.value = Success(result)
             },
             onError = {
-                _updateCouponResult.setValue(Fail(it))
+                _updateCouponResult.value = Fail(it)
             }
         )
     }
-
 
 
     fun findMostSoldProductImageUrls(couponProducts: List<CouponProduct>): ArrayList<String> {
@@ -127,5 +136,36 @@ class ProductCouponPreviewViewModel @Inject constructor(
         }
 
         return imageUrls
+    }
+
+    fun getMaxAllowedProducts(mode : ProductCouponPreviewFragment.Mode) {
+        val isUpdateMode = mode == ProductCouponPreviewFragment.Mode.UPDATE
+
+        launchCatchError(block = {
+            initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
+            initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(isUpdateMode)
+            val result = withContext(dispatchers.io) {
+                initiateVoucherUseCase.executeOnBackground()
+            }
+            _maxAllowedProductCount.value = Success(result.maxProducts)
+        }, onError = {
+            _maxAllowedProductCount.value = Fail(it)
+        })
+    }
+
+    fun isCouponInformationValid(couponInformation: CouponInformation): Boolean {
+        if (couponInformation.target == CouponInformation.Target.NOT_SELECTED) {
+            return false
+        }
+
+        if (couponInformation.target == CouponInformation.Target.PRIVATE && couponInformation.code.isEmpty()) {
+            return false
+        }
+
+        if (couponInformation.name.isEmpty()) {
+            return false
+        }
+
+        return true
     }
 }

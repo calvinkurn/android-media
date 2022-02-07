@@ -80,6 +80,7 @@ class CreateCouponDetailFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
 
         setupRecyclerViewTarget()
         setupDateInput()
@@ -113,7 +114,9 @@ class CreateCouponDetailFragment(
         viewModel.selectedCouponTarget.observe(viewLifecycleOwner) {
             if (it == CouponTargetEnum.PUBLIC) tfuFillCouponCode?.textFieldInput?.setText("")
             tfuFillCouponCode?.isVisible = it == CouponTargetEnum.PRIVATE
-            btnCouponCreateNext?.isButtonEnabled = true
+            if (it != CouponTargetEnum.NOT_SELECTED) {
+                btnCouponCreateNext?.isButtonEnabled = true
+            }
         }
     }
 

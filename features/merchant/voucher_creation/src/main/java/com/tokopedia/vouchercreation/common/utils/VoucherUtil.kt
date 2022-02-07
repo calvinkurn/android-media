@@ -6,6 +6,7 @@ import android.text.InputType
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DimenRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -121,6 +122,14 @@ fun Fragment.getStartDateTimePicker(
 fun ImageView.tintDrawableToBlack() {
     setColorFilter(MethodChecker.getColor(context,
         com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+}
+
+fun Fragment.setFragmentToUnifyBgColor() {
+    if (activity != null && context != null) {
+        activity!!.window.decorView.setBackgroundColor(
+            ContextCompat.getColor(
+            context!!, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+    }
 }
 
 fun TextFieldUnify.setFieldOnClickListener(onClick: () -> Unit) {

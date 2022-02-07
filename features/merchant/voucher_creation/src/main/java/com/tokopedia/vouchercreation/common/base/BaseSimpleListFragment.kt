@@ -28,6 +28,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     abstract fun createAdapter(): T?
     abstract fun getRecyclerView(view: View): RecyclerView?
     abstract fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout?
+    abstract fun getPerPage(): Int
     abstract fun addElementToAdapter(list: List<F>)
     abstract fun loadData(page: Int)
     abstract fun clearAdapterData()
@@ -65,8 +66,8 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         loadInitialData()
     }
 
-    private fun loadInitialData() {
-        clearAdapterData()
+    fun loadInitialData() {
+        clearAllData()
         showLoading()
         loadData(1)
     }
@@ -153,7 +154,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
 
         // load next page data if adapter data less than minimum scrollable data
         // when the list has next page and auto load next page is enabled
-        if (adapter?.itemCount.orZero() < 10 && hasNextPage && endlessRecyclerViewScrollListener != null) {
+        if (adapter?.itemCount.orZero() < getPerPage() && hasNextPage && endlessRecyclerViewScrollListener != null) {
             endlessRecyclerViewScrollListener?.loadMoreNextPage()
         }
     }
@@ -172,10 +173,5 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         } else {
             onGetListErrorWithEmptyData(throwable)
         }
-    }
-
-    fun onRetryClicked() {
-        showLoading()
-        loadInitialData()
     }
 }
