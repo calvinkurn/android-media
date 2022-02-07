@@ -64,6 +64,7 @@
     <string name="common_topup_fav_number_error_state_title">Maaf, Nomor Favorit gagal ditampilkan</string>
     <string name="common_topup_fav_number_error_state_desc">Coba refresh atau masukkan nomor manual dulu, ya.</string>
     <string name="common_topup_fav_number_error_state_button">Refresh</string>
+    <string name="common_topup_fav_number_searchbar_placeholder">Cari nama atau nomor pelanggan</string>
 
     <string name="common_topup_saved_number_title">Nomor Tersimpan</string>
     <string name="common_topup_saved_number_tab_contact">Kontak HP</string>

@@ -19,7 +19,8 @@ object DigitalPDPConstant {
     const val DEFAULT_ICON_RES = 0
     const val DEFAULT_SPACE_HEIGHT = 81
 
-    const val PREFERENCES_NAME = "pdp_pulsa_preferences"
+    const val TELCO_PREFERENCES_NAME = "telco_preferences"
+    const val TOKEN_LISTRIK_PREFERENCES_NAME = "token_listrik_preferences"
     const val FAVNUM_PERMISSION_CHECKER_IS_DENIED = "favnum_permission_checker_is_denied"
 
     const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
