@@ -10,18 +10,15 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.topchat.chattemplate.di.ActivityComponentFactory
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment
 import com.tokopedia.topchat.common.InboxMessageConstant
-import com.tokopedia.topchat.stub.chattemplate.di.DaggerTemplateChatComponentStub
-import com.tokopedia.topchat.stub.chattemplate.di.TemplateChatComponentStub
-import com.tokopedia.topchat.stub.chattemplate.usecase.*
+import com.tokopedia.topchat.stub.chattemplate.di.FakeTemplateActivityComponentFactory
+import com.tokopedia.topchat.stub.chattemplate.usecase.api.ChatTemplateApiStub
 import com.tokopedia.topchat.stub.chattemplate.view.activity.EditTemplateChatActivityStub
-import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
-import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import org.junit.Before
 import org.junit.Rule
-import javax.inject.Inject
 
 abstract class BaseEditTemplateTest {
 
@@ -36,14 +33,8 @@ abstract class BaseEditTemplateTest {
             .getInstrumentation().context.applicationContext
     protected open lateinit var activity: EditTemplateChatActivityStub
 
-    @Inject
-    lateinit var createTemplateUseCase: CreateTemplateUseCaseStub
-
-    @Inject
-    lateinit var editTemplateUseCase: EditTemplateUseCaseStub
-
-    @Inject
-    lateinit var deleteTemplateUseCase: DeleteTemplateUseCaseStub
+    protected lateinit var chatTemplateApi: ChatTemplateApiStub
+    private val fakeTemplateActivityComponentFactory = FakeTemplateActivityComponentFactory()
 
     protected val testTemplateList = arrayListOf(
         "Test template 1",
@@ -56,16 +47,15 @@ abstract class BaseEditTemplateTest {
     @Before
     open fun before() {
         setupDaggerComponent()
+        setupResponse()
     }
 
     private fun setupDaggerComponent() {
-        val baseComponent = DaggerFakeBaseAppComponent.builder()
-            .fakeAppModule(FakeAppModule(applicationContext))
-            .build()
-        chatTemplateComponentStub = DaggerTemplateChatComponentStub.builder()
-            .fakeBaseAppComponent(baseComponent)
-            .build()
-        chatTemplateComponentStub!!.inject(this)
+        ActivityComponentFactory.instance = fakeTemplateActivityComponentFactory
+    }
+
+    private fun setupResponse() {
+        chatTemplateApi = fakeTemplateActivityComponentFactory.chatTemplateApiStub
     }
 
     protected fun launchActivity(
@@ -108,9 +98,5 @@ abstract class BaseEditTemplateTest {
 
     protected fun assertWithSubText(msg: String) {
         onView(withSubstring(msg)).check(matches(isDisplayed()))
-    }
-
-    companion object {
-        var chatTemplateComponentStub: TemplateChatComponentStub? = null
     }
 }

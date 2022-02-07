@@ -25,7 +25,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
     @Test
     fun should_show_template_list_when_success_get_list() {
         //Given
-        getTemplateUseCase.response = successGetTemplateResponseBuyer
+        chatTemplateApi.templateResponse = successGetTemplateResponseBuyer
 
         //When
         launchActivity()
@@ -40,7 +40,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
     fun should_not_show_template_list_and_switch_when_disabled() {
         //Given
         successGetTemplateResponseBuyer.isIsEnable = false
-        getTemplateUseCase.response = successGetTemplateResponseBuyer
+        chatTemplateApi.templateResponse = successGetTemplateResponseBuyer
 
         //When
         launchActivity()
@@ -52,7 +52,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
     @Test
     fun should_disabled_add_template_when_full_list() {
         //Given
-        getTemplateUseCase.response = successGetTemplateResponseBuyer
+        chatTemplateApi.templateResponse = successGetTemplateResponseBuyer
 
         //When
         launchActivity()
@@ -72,7 +72,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
     fun should_enable_add_template_when_not_full_list() {
         //Given
         successGetTemplateResponseBuyer.templates = listOf()
-        getTemplateUseCase.response = successGetTemplateResponseBuyer
+        chatTemplateApi.templateResponse = successGetTemplateResponseBuyer
 
         //When
         launchActivity()
@@ -91,7 +91,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
     @Test
     fun should_show_toaster_when_click_disabled_add_button() {
         //Given
-        getTemplateUseCase.response = successGetTemplateResponseBuyer
+        chatTemplateApi.templateResponse = successGetTemplateResponseBuyer
 
         //When
         launchActivity()
@@ -105,7 +105,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
     fun should_go_to_edit_template_when_click_enabled_add_button() {
         //Given
         successGetTemplateResponseBuyer.templates = listOf()
-        getTemplateUseCase.response = successGetTemplateResponseBuyer
+        chatTemplateApi.templateResponse = successGetTemplateResponseBuyer
 
         //When
         launchActivity()
@@ -119,7 +119,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
     @Test
     fun should_show_bottomsheet_when_click_info_button() {
         //Given
-        getTemplateUseCase.response = successGetTemplateResponseBuyer
+        chatTemplateApi.templateResponse = successGetTemplateResponseBuyer
 
         //When
         launchActivity()

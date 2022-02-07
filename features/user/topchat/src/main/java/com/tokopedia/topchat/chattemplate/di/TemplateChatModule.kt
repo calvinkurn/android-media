@@ -35,7 +35,7 @@ import dagger.Provides
 import java.util.concurrent.TimeUnit
 
 @Module
-class TemplateChatModule {
+open class TemplateChatModule {
 
     @ActivityScope
     @Provides
@@ -136,7 +136,7 @@ class TemplateChatModule {
 
     @ActivityScope
     @Provides
-    fun provideChatApiKt(@InboxQualifier retrofit: Retrofit): ChatTemplateApi {
+    open fun provideChatApiKt(@InboxQualifier retrofit: Retrofit): ChatTemplateApi {
         return retrofit.create(ChatTemplateApi::class.java)
     }
 

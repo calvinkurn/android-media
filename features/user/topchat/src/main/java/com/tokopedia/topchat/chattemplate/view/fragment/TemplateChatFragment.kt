@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
+import com.tokopedia.topchat.chattemplate.di.ActivityComponentFactory
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
 import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity
@@ -154,11 +154,7 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
     }
 
     protected open fun initializeComponent(): TemplateChatComponent {
-        val appComponent = (requireActivity().application as BaseMainApplication)
-            .baseAppComponent
-        return DaggerTemplateChatComponent.builder()
-            .baseAppComponent(appComponent)
-            .build() as DaggerTemplateChatComponent
+        return ActivityComponentFactory.instance.createActivityComponent(requireActivity())
     }
 
     override fun setTemplate(listTemplate: List<Visitable<*>>?) {

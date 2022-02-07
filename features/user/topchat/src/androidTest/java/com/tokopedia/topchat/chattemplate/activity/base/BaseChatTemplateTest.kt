@@ -10,17 +10,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
+import com.tokopedia.topchat.chattemplate.di.ActivityComponentFactory
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
-import com.tokopedia.topchat.stub.chattemplate.di.DaggerTemplateChatComponentStub
-import com.tokopedia.topchat.stub.chattemplate.di.TemplateChatComponentStub
-import com.tokopedia.topchat.stub.chattemplate.usecase.*
+import com.tokopedia.topchat.stub.chattemplate.di.FakeTemplateActivityComponentFactory
+import com.tokopedia.topchat.stub.chattemplate.usecase.api.ChatTemplateApiStub
 import com.tokopedia.topchat.stub.chattemplate.view.activity.TemplateChatActivityStub
-import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
-import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import org.junit.Before
 import org.junit.Rule
-import javax.inject.Inject
 
 abstract class BaseChatTemplateTest {
 
@@ -35,13 +32,9 @@ abstract class BaseChatTemplateTest {
             .getInstrumentation().context.applicationContext
     protected open lateinit var activity: TemplateChatActivityStub
 
-    @Inject
-    lateinit var getTemplateUseCase: GetTemplateUseCaseStub
-
-    @Inject
-    lateinit var setAvailabilityTemplateUseCase: SetAvailabilityTemplateUseCaseStub
-
     protected var successGetTemplateResponseBuyer: TemplateData = TemplateData()
+    protected lateinit var chatTemplateApi: ChatTemplateApiStub
+    private val fakeTemplateActivityComponentFactory = FakeTemplateActivityComponentFactory()
 
     @Before
     open fun before() {
@@ -51,13 +44,7 @@ abstract class BaseChatTemplateTest {
     }
 
     private fun setupDaggerComponent() {
-        val baseComponent = DaggerFakeBaseAppComponent.builder()
-            .fakeAppModule(FakeAppModule(applicationContext))
-            .build()
-        chatTemplateComponentStub = DaggerTemplateChatComponentStub.builder()
-            .fakeBaseAppComponent(baseComponent)
-            .build()
-        chatTemplateComponentStub!!.inject(this)
+        ActivityComponentFactory.instance = fakeTemplateActivityComponentFactory
     }
 
     protected fun launchActivity(
@@ -76,6 +63,7 @@ abstract class BaseChatTemplateTest {
     }
 
     private fun setupResponse() {
+        chatTemplateApi = fakeTemplateActivityComponentFactory.chatTemplateApiStub
         successGetTemplateResponseBuyer = AndroidFileUtil.parse(
             "template/success_get_template_buyer.json",
             TemplateData::class.java
@@ -84,9 +72,5 @@ abstract class BaseChatTemplateTest {
 
     protected fun assertSnackBarWithSubText(msg: String) {
         onView(withSubstring(msg)).check(matches(isDisplayed()))
-    }
-
-    companion object {
-        var chatTemplateComponentStub: TemplateChatComponentStub? = null
     }
 }
