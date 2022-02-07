@@ -12,4 +12,5 @@
     <string name="bottom_sheet_filter_title">Filter</string>
     <string name="bottom_sheet_filter_reset">Reset</string>
     <string name="bottom_sheet_filter_see_all">Lihat Semua</string>
+    <string name="bottom_sheet_more_info">Info penting buat kamu</string>
 </resources>

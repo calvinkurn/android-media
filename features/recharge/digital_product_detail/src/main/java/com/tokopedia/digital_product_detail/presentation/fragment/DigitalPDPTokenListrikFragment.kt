@@ -43,6 +43,7 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTokenListrikBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
@@ -140,6 +141,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
         getCatalogMenuDetail()
         getPrefixOperatorData()
+        onShowGreenBox()
     }
 
 
@@ -299,6 +301,26 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         renderPrefill(data.userPerso)
         renderRecommendation(data.recommendations)
         renderTicker(data.tickers)
+    }
+
+    private fun onShowGreenBox(){
+        binding?.let {
+            //TODO Firman change to real data
+            val dummyInfo = "Transaksi selama 23:40-00:20 WIB baru akan diproses pada 00:45 WIB. Selengkapnya"
+            val clickableInfo = "Selengkapnya"
+            val dummyListInfo = listOf<String>(
+                "Transaksi selama 23:40-00:20 WIB baru akan <b> diproses pada 00:45 WIB.</b>",
+                "Proses verifikasi transaksi membutuhkan maksimal 2x24 jam hari kerja",
+                "Harap cek limit kWh anda sebelum membeli token listrik ya"
+            )
+            it.rechargePdpTickerWidgetProductDesc.apply {
+                setText(dummyInfo)
+                setLinks(clickableInfo, View.OnClickListener {
+                    showMoreInfoBottomSheet(dummyListInfo, dummyInfo)
+                })
+            }
+
+        }
     }
 
     private fun onFailedGetMenuDetail(throwable: Throwable) {
@@ -751,6 +773,12 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
             startActivityForResult(intent, requestCode)
+        }
+    }
+
+    private fun showMoreInfoBottomSheet(listInfo: List<String>, tickerInfo: String){
+        fragmentManager?.let {
+            MoreInfoPDPBottomsheet(tickerInfo, listInfo).show(it, "")
         }
     }
 

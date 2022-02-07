@@ -88,11 +88,21 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
+                <com.tokopedia.recharge_component.widget.RechargeTickerWidget
+                    android:id="@+id/recharge_pdp_ticker_widget_product_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <com.tokopedia.recharge_component.widget.RechargeRecommendationCardWidget
                     android:id="@+id/recharge_pdp_token_listrik_recommendation_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recharge_pdp_ticker_widget_product_desc"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
