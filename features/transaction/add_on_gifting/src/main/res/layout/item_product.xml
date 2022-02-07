@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iconUnify"
+        android:id="@+id/icon_shop_badge"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginStart="16dp"
@@ -15,29 +15,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography"
+        android:id="@+id/label_header_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iconUnify"
+        app:layout_constraintStart_toEndOf="@+id/icon_shop_badge"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         tools:text="Disediakan oleh Tokopedia" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imageUnify"
+        android:id="@+id/image_product"
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography" />
+        app:layout_constraintTop_toBottomOf="@+id/label_header_message" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography2"
+        android:id="@+id/label_product_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
@@ -45,27 +45,28 @@
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageUnify"
-        app:layout_constraintTop_toTopOf="@+id/imageUnify"
+        app:layout_constraintStart_toEndOf="@+id/image_product"
+        app:layout_constraintTop_toTopOf="@+id/image_product"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Hampers Spesial Ucapan Selamat Ulang Tahun Tokopedia" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography3"
+        android:id="@+id/label_product_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/typography2"
-        app:layout_constraintTop_toBottomOf="@+id/typography2"
+        app:layout_constraintStart_toStartOf="@+id/label_product_name"
+        app:layout_constraintTop_toBottomOf="@+id/label_product_name"
         app:typographyType="body_3"
         tools:text="Rp10.000" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_other_products"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="@+id/imageUnify"
-        app:layout_constraintTop_toBottomOf="@+id/typography3"
+        app:layout_constraintStart_toStartOf="@+id/image_product"
+        app:layout_constraintTop_toBottomOf="@+id/label_product_price"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="+3 barang lainnya" />
