@@ -2,6 +2,8 @@ package com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -299,6 +301,29 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 bottomSheetNavigator.showBottomSheet(SelectGateWayBottomSheet::class.java, bundle)
             }
         }
+        detailHeader.quantityEditor.editText.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if(!s.isNullOrBlank()) {
+                    if (s.toString().replace("[^0-9]".toRegex(), "")
+                            .toInt() > detailHeader.quantityEditor.maxValue
+                    ) {
+                        detailHeader.limiterMessage.visibility = View.VISIBLE
+                        detailHeader.limiterMessage.text =
+                            "Oops, stoknya tinggal ${detailHeader.quantityEditor.maxValue}"
+
+                    } else if (s.toString().replace("[^0-9]".toRegex(), "").toInt() < 1) {
+                        detailHeader.limiterMessage.visibility = View.VISIBLE
+                        detailHeader.limiterMessage.text = "Min. beli 1 barang"
+
+                    }
+                    else
+                        detailHeader.limiterMessage.visibility = View.GONE
+                }
+            }
+
+        })
 
         detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
             quantity = newValue
@@ -310,6 +335,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 payLaterActivationViewModel.price * quantity,
                 gatewayId
             )
+
         }
 
         activationTenureAdapter = ActivationTenureAdapter(listOf(), this)
