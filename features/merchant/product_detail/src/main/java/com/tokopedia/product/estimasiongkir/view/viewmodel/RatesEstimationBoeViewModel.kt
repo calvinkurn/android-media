@@ -56,8 +56,14 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
                         request.shopId, request.isFulfillment,
                         request.destination, request.boType,
                         request.poTime,
-                        request.shopTier),
+                        request.shopTier,
+                        generateUniqueId(request),
+                        request.orderValue),
                 request.forceRefresh)
+    }
+
+    private fun generateUniqueId(request: RatesEstimateRequest): String {
+        return "${request.addressId}-${request.shopId}-${request.poTime}-${request.warehouseId}"
     }
 
     private fun logRateEstimate(throwable: Throwable) {
