@@ -46,7 +46,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.track)
