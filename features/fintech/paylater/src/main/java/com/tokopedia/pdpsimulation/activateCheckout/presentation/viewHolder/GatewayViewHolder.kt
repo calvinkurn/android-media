@@ -9,11 +9,13 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.GateWayCardClicked
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
 import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.gateway_activation_individual_item.view.*
 import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view.*
 
-class GatewayViewHolder(itemView: View) :
+class GatewayViewHolder(itemView: View, val gatewayCardClicked: GateWayCardClicked) :
     RecyclerView.ViewHolder(itemView) {
 
     fun bindData(checkoutData: CheckoutData) {
@@ -33,6 +35,7 @@ class GatewayViewHolder(itemView: View) :
                 gatewaySubHeader2.text = checkoutData.subtitle2
             else
                 gatewaySubHeader2.visibility = View.GONE
+
         }
     }
 
@@ -44,10 +47,11 @@ class GatewayViewHolder(itemView: View) :
         fun getViewHolder(
             inflater: LayoutInflater,
             parent: ViewGroup,
+            gatewayCardClicked: GateWayCardClicked
 
         ) =
             GatewayViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false)
+                inflater.inflate(LAYOUT_ID, parent, false),gatewayCardClicked
             )
     }
 }

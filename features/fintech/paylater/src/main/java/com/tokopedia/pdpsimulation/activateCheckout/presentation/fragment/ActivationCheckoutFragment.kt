@@ -174,12 +174,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         showBottomDetail()
                         loaderhideOnCheckoutApi()
                         removeErrorInTenure()
-                        checkDisableLogic(it.data.checkoutData[selectedGateway].disable)
-                        listOfGateway = it.data
-                        setSelectedTenure(it.data)
-                        setTenureOptionsData(it.data)
-
-
+                        setTenureDetailData(it.data)
                     } else {
                         loaderhideOnCheckoutApi()
                         showEmptyErrorInTenureDetail()
@@ -195,6 +190,19 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 }
             }
         }
+    }
+
+    private fun setTenureDetailData(data: PaylaterGetOptimizedModel)
+    {
+        checkDisableLogic(data.checkoutData[selectedGateway].disable)
+        listOfGateway = data
+        setSelectedTenure(data)
+        setTenureOptionsData(data)
+        if(isDisabled)
+        {
+            gatewayDetailLayout.errorTicker.tickerTitle = data.checkoutData[selectedGateway].reason_long
+        }
+
     }
 
     private fun showBottomDetail() {

@@ -10,8 +10,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.Tenu
 
 class ActivationTenureAdapter(
     var tenureDetailList: List<TenureDetail>,
-    private val listner: ActivationListner,
-    private val isDisabled:Boolean = false
+    private val listener: ActivationListner,
 ) : RecyclerView.Adapter<TenureViewHolder>() {
 
 
@@ -20,7 +19,7 @@ class ActivationTenureAdapter(
         viewType: Int
     ): TenureViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return TenureViewHolder.getViewHolder(inflater, parent, listner)
+        return TenureViewHolder.getViewHolder(inflater, parent, listener)
     }
 
 
