@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.ItemProductListLayoutBinding
-import com.tokopedia.vouchercreation.product.list.view.adapter.ProductVariantListAdapter
+import com.tokopedia.vouchercreation.product.list.view.adapter.VariantListAdapter
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 
 class ProductItemViewHolder(
@@ -19,11 +19,11 @@ class ProductItemViewHolder(
 
     interface OnProductItemClickListener {
         fun onProductCheckBoxClicked(isSelected: Boolean, productUiModel: ProductUiModel, adapterPosition: Int)
-        fun onVariantAccordionClicked(isVariantEmpty: Boolean, productId: String)
+        fun onVariantAccordionClicked(isVariantEmpty: Boolean, productId: String, adapterPosition: Int)
     }
 
     private var context: Context? = null
-    private var variantListAdapter = ProductVariantListAdapter(variantItemClickListener)
+    private var variantListAdapter = VariantListAdapter(variantItemClickListener)
 
     init {
         context = binding.root.context
@@ -33,7 +33,7 @@ class ProductItemViewHolder(
         }
         binding.productVariantLayout.setOnClickListener {
             val product = binding.root.getTag(R.id.product) as ProductUiModel
-            productItemClickListener.onVariantAccordionClicked(product.variants.isEmpty(), product.id)
+            productItemClickListener.onVariantAccordionClicked(product.variants.isEmpty(), product.id, adapterPosition)
         }
         binding.rvProductVariants.apply {
             adapter = variantListAdapter
@@ -55,9 +55,14 @@ class ProductItemViewHolder(
         if (productUiModel.hasVariant) {
             variantListAdapter.setVariantList(productUiModel.variants)
             binding.variantHeader.visible()
-            if (productUiModel.isVariantsEmpty) binding.variantDivider.gone()
-            else binding.variantDivider.visible()
-            binding.rvProductVariants.visible()
+            if (productUiModel.variants.isEmpty()) {
+                binding.variantDivider.gone()
+                context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_down)) }
+            } else {
+                binding.variantDivider.visible()
+                binding.rvProductVariants.visible()
+                context?.run { binding.iuChevron.setImageDrawable(getDrawable(R.drawable.ic_mvc_chevron_up)) }
+            }
         } else {
             binding.variantHeader.gone()
             binding.variantDivider.gone()

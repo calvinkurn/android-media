@@ -453,10 +453,13 @@
     <string name="coupon_code_copied_to_clipboard">Kode kupon berhasil disalin</string>
 
     <!--coupon list-->
+    <string name="mvc_coupon_list_title">Daftar Kupon Produk</string>
+    <string name="mvc_coupon_filter_status_title">Status</string>
     <string name="mvc_coupon_product_sold">Produk Terjual</string>
     <string name="mvc_coupon_product_min_payment">Min. pembelian Rp. %s</string>
     <string name="mvc_coupon_product_max_benefit">hingga Rp. %s</string>
-
+    <string name="dmvc_coupon_status_active">Status Aktif</string>
+    <string name="dmvc_coupon_status_inactive">Status Tidak Aktif</string>
 
     <!-- add product -->
     <string name="mvc_search_product">Cari Produk</string>
@@ -466,6 +469,7 @@
     <string name="mvc_showcase">Etalase</string>
     <string name="mvc_select_all">Pilih semua</string>
     <string name="mvc_product_variant">Varian produk</string>
+    <string name="mvc_location">Lokasi</string>
 
     <!-- id tag -->
     <item name="product" type="id"/>

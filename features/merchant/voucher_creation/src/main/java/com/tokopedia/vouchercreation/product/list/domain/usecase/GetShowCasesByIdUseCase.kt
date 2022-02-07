@@ -37,14 +37,6 @@ class GetShowCasesByIdUseCase @Inject constructor(@ApplicationContext repository
                 result {
                     id
                     name
-                    count
-                    type
-                    highlighted
-                    alias
-                    uri
-                    useAce
-                    badge
-                    aceDefaultSort
                 }
                 error {
                     message

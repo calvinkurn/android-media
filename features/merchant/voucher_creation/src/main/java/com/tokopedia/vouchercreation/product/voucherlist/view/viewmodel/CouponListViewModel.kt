@@ -4,12 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.common.NonNullLiveData
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet.CouponFilterBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
+import com.tokopedia.vouchercreation.product.voucherlist.view.mapper.CouponModelMapper.mapToTarget
+import com.tokopedia.vouchercreation.product.voucherlist.view.mapper.CouponModelMapper.mapToType
 import com.tokopedia.vouchercreation.shop.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherListParam
@@ -37,6 +42,12 @@ class CouponListViewModel @Inject constructor(
     private val _broadCastMetaData = MutableLiveData<Result<ChatBlastSellerMetadata>>()
     private val _detailCoupon = MutableLiveData<Result<VoucherUiModel>>()
     private val _shopBasicData = MutableLiveData<Result<ShopBasicDataResult>>()
+    private val _selectedFilterType = NonNullLiveData(CouponFilterBottomSheet.FilterType.NOT_SELECTED)
+    private val _selectedFilterTarget = NonNullLiveData(CouponFilterBottomSheet.FilterTarget.NOT_SELECTED)
+    private var _isFreeBroadCastIconVisible: Boolean = false
+    private var _isSuccessDialogDisplayed: Boolean = false
+    private var _couponStatusFilter: String = VoucherStatus.NOT_STARTED_AND_ONGOING
+    private var _couponSearchKeyword: String? = null
 
     val couponList: LiveData<Result<List<VoucherUiModel>>>
         get() = _couponList
@@ -50,39 +61,48 @@ class CouponListViewModel @Inject constructor(
         get() = _detailCoupon
     val shopBasicData: LiveData<Result<ShopBasicDataResult>>
         get() = _shopBasicData
-
-    private var isFreeBroadCastIconVisible: Boolean = false
-    private var isSuccessDialogDisplayed: Boolean = false
-    private var couponStatusFilter: String = VoucherStatus.NOT_STARTED_AND_ONGOING
-    private var couponSearchKeyword: String? = null
+    val selectedFilterType: LiveData<CouponFilterBottomSheet.FilterType>
+        get() = _selectedFilterType
+    val selectedFilterTarget: LiveData<CouponFilterBottomSheet.FilterTarget>
+        get() = _selectedFilterTarget
+    val isFreeBroadCastIconVisible: Boolean
+        get() = _isFreeBroadCastIconVisible
+    val isSuccessDialogDisplayed: Boolean
+        get() = _isSuccessDialogDisplayed
 
     fun setIsFreeBroadCastIconVisible(broadCastQuota: Int) {
-        isFreeBroadCastIconVisible = (broadCastQuota > 0)
+        _isFreeBroadCastIconVisible = broadCastQuota.isMoreThanZero()
     }
 
     fun setIsSuccessDialogDisplayed(isDisplayed: Boolean) {
-        this.isSuccessDialogDisplayed = isDisplayed
+        _isSuccessDialogDisplayed = isDisplayed
     }
 
-    fun getIsFreeBroadCastIconVisible(): Boolean = isFreeBroadCastIconVisible
-
-    fun getIsSuccessDialogDisplayed(): Boolean = isSuccessDialogDisplayed
-
     fun setStatusFilter(@VoucherStatus couponStatus: String) {
-        couponStatusFilter = couponStatus
+        _couponStatusFilter = couponStatus
     }
 
     fun setCouponSearchKeyword(keyword: String) {
-        couponSearchKeyword = keyword
+        _couponSearchKeyword = keyword
     }
 
-    fun getVoucherList(page: Int) {
+    fun setSelectedFilterType(selectedType: CouponFilterBottomSheet.FilterType) {
+        _selectedFilterType.value = selectedType
+    }
+
+    fun setSelectedFilterTarget(selectedTarget: CouponFilterBottomSheet.FilterTarget) {
+        _selectedFilterTarget.value = selectedTarget
+    }
+
+    fun getCouponList(page: Int) {
         launchCatchError(block = {
             val ongoingVoucherRequestParam = VoucherListParam.createParamCouponList(
-                status = couponStatusFilter,
+                type = mapToType(_selectedFilterType.value),
+                target = mapToTarget(_selectedFilterTarget.value),
+                status = _couponStatusFilter,
                 page = page,
                 perPage = LIST_COUPON_PER_PAGE,
-                voucherName = couponSearchKeyword
+                voucherName = _couponSearchKeyword
             )
             _couponList.value = Success(withContext(dispatchers.io) {
                 getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)

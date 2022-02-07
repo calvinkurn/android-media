@@ -16,12 +16,12 @@ class CouponStatusFilterBotomSheet(
 ): BottomSheetUnify() {
 
     init {
-        setTitle("Status")
         clearContentPadding = true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
+        setTitle(getString(R.string.mvc_coupon_filter_status_title))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -30,8 +30,8 @@ class CouponStatusFilterBotomSheet(
         val rvCouponStatus: RecyclerView? = contentView?.findViewById(R.id.rvCouponStatus)
         val adapter = CouponStatusFilterAdapter(::onCouponStatusClicked)
         val adapterItems = mutableListOf(
-            Pair("Status Aktif", VoucherStatus.NOT_STARTED_AND_ONGOING),
-            Pair("Status Tidak Aktif", VoucherStatus.HISTORY)
+            Pair(getString(R.string.dmvc_coupon_status_active), VoucherStatus.NOT_STARTED_AND_ONGOING),
+            Pair(getString(R.string.dmvc_coupon_status_inactive), VoucherStatus.HISTORY)
         )
 
         adapter.setItems(adapterItems)

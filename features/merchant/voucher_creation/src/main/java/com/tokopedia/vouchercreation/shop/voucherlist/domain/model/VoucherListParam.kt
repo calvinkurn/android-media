@@ -76,25 +76,23 @@ data class VoucherListParam (
         @JvmStatic
         fun createParamCouponList(@VoucherTypeConst type: Int? = null,
                                   @VoucherStatus status: String,
-                                  targetList: List<Int>? = null,
                                   @VoucherSort sort: String? = null,
+                                  @VoucherTarget target: String? = null,
                                   page: Int? = null,
                                   perPage: Int? = Int.ZERO,
-                                  isInverted: Boolean = false,
-                                  voucherName: String? = null,
-                                  targetBuyer: String? = null) : VoucherListParam {
+                                  voucherName: String? = null) : VoucherListParam {
             return VoucherListParam(
                 voucherType = type,
                 voucherStatus = status,
-                isPublic = targetList?.joinToString(separator = ","),
+                isPublic = target,
                 page = page,
                 perPage = perPage,
                 sortBy = sort,
-                isInverted = isInverted,
+                isInverted = false,
                 includeSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
                 isVps = VoucherVps.ALL,
                 voucherName = voucherName,
-                targetBuyer = targetBuyer,
+                targetBuyer = null,
                 isLockToProduct = "1"
             )
         }
@@ -122,8 +120,8 @@ annotation class VoucherStatus {
 @StringDef(VoucherTarget.PUBLIC, VoucherTarget.PRIVATE)
 annotation class VoucherTarget {
     companion object {
-        const val PUBLIC = "0"
-        const val PRIVATE = "1"
+        const val PUBLIC = "1"
+        const val PRIVATE = "0"
     }
 }
 

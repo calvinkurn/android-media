@@ -24,6 +24,7 @@ import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.Timer
+import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponDetailBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
@@ -105,6 +106,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         setupViews()
         observeCouponDetail()
         viewModel.getCouponDetail(couponId)

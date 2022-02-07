@@ -4,8 +4,8 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class ShopShowcasesByShopIdResponse(
-        @SerializedName("ShopShowcasesByShopID")
-        @Expose val shopShowcasesByShopID: ShopShowcasesByShopID
+        @SerializedName("shopShowcasesByShopID")
+        @Expose val shopShowcasesByShopId: ShopShowcasesByShopID
 )
 
 data class ShopShowcasesByShopID(
@@ -24,21 +24,5 @@ data class ShopShowcase(
         @SerializedName("id")
         @Expose val id: String,
         @SerializedName("name")
-        @Expose val name: String,
-        @SerializedName("count")
-        @Expose val count: Long,
-        @SerializedName("type")
-        @Expose val type: Long,
-        @SerializedName("highlighted")
-        @Expose val highlighted: Boolean,
-        @SerializedName("alias")
-        @Expose val alias: String,
-        @SerializedName("uri")
-        @Expose val uri: String,
-        @SerializedName("useAce")
-        @Expose val useAce: Boolean,
-        @SerializedName("badge")
-        @Expose val badge: String,
-        @SerializedName("aceDefaultSort")
-        @Expose val aceDefaultSort: Long
+        @Expose val name: String
 )
