@@ -273,8 +273,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    fun hideIndicatorIcon() {
-        hideClearIcon()
+    fun hideIndicatorIcon(shouldShowClearIcon: Boolean = false) {
+        if (shouldShowClearIcon && isClearableState) showClearIcon() else hideClearIcon()
         hideCheckIcon()
     }
 

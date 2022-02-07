@@ -279,7 +279,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon()
+                    hideIndicatorIcon(shouldShowClearIcon = true)
                     setErrorInputField(msg)
                     onHideBuyWidget()
                 }
