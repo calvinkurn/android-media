@@ -22,12 +22,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -36,7 +33,6 @@ import com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL
 import com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_NETWORK
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.data.model.response.KycData
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
@@ -58,6 +54,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
@@ -65,11 +62,9 @@ import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_T
 import com.tokopedia.user_identification_common.KycCommonUrl
 import com.tokopedia.user_identification_common.KycUrl
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
-import kotlinx.android.synthetic.main.layout_kyc_upload_error.*
 import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * @author by alvinatin on 15/11/18.
@@ -562,7 +557,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             }
         }
 
-        kyc_upload_error_button?.setOnClickListener {
+        view?.findViewById<UnifyButton>(R.id.kyc_upload_error_button)?.setOnClickListener {
             when {
                 message.contains(FAILED_ENCRYPTION) || message.contains(FILE_PATH_KTP_EMPTY) -> {
                     deleteTmpFile(deleteKtp = true, deleteFace = true)
@@ -570,7 +565,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 }
                 message.contains(FILE_PATH_FACE_EMPTY) -> {
                     goToLivenessOrSelfie()
-                }   
+                }
                 !isKycSelfie -> {
                     openLivenessView()
                 }
@@ -582,8 +577,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun setViews(failedReasonTitle: String, failedReason: String, failedImage: String) {
-        kyc_upload_error_title?.text = failedReasonTitle
-        kyc_upload_error_subtitle?.text = failedReason
+        view?.findViewById<Typography>(R.id.kyc_upload_error_title)?.text = failedReasonTitle
+        view?.findViewById<Typography>(R.id.kyc_upload_error_subtitle)?.text = failedReason
         mainImage?.loadImage(failedImage)
     }
 
