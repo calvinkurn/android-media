@@ -6,6 +6,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyConst
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,6 +28,238 @@ class DigitalRecommendationUseCaseTest {
     private val userSession: UserSessionInterface = mockk()
 
     private lateinit var usecase: DigitalRecommendationUseCase
+
+    private companion object{
+        const val DUMMY_BG = "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2021/7/29/148831929/148831929_109ef2c3-c536-406a-80ba-9a86ef03477a.jpg"
+        const val ASSERT_DELTA = 0.0
+    }
+
+    private val mockResponse = DigitalRecommendationResponse(
+        personalizedItems = PersonalizedItems(
+            trackingData = UserTrackingData(
+                userType = "non login"
+            ),
+            appLink = "tokopediatest://dummy-applink",
+            mediaUrlType = "square",
+            bannerAppLink = "",
+            bannerWebLink = "",
+            recommendationItems = arrayListOf(RecommendationItem(
+                appLink = "tokopediatest://dummy_product_applink",
+                backgroundColor = "",
+
+                campaignLabelText ="Campaign Label",
+                campaignLabelTextColor ="#FFFFFF",
+                campaignLabelBackgroundUrl= DUMMY_BG,
+                productInfo1 = ProductInfo(
+                    text = "20 Sep",
+                    color = "#009F92"
+                ),
+                productInfo2 = ProductInfo(
+                    text = "&#8226; Kartu Prakerja",
+                    color = "#6D7588"
+                ),
+                ratingType = "star",
+                rating = 4.7,
+                review = "125 ulasan",
+                soldPercentageValue= 70,
+                soldPercentageLabel= "Segera Habis",
+                soldPercentageLabelColor="#F94D63",
+                showSoldPercentage=true,
+                slashedPrice="Rp150.000",
+                discount="20%",
+                cashback="",
+                specialDiscount="",
+                price="Rp120.000",
+                pricePrefix="Mulai dari",
+                priceSuffix="/pc",
+                specialInfoText="Special Info",
+                specialInfoColor="#0094CF",
+
+                id = "1234567890",
+                label1 = "Discount 20%",
+                label1Mode = "",
+                label2 = "Rp100.000",
+                label3 = "Rp80.000",
+                mediaURL = "www.mediaurl.com/gambar.png",
+                mediaUrlType = "",
+                subtitle = "Subtitle",
+                subtitleMode = "",
+                title = "product title",
+                trackingData = TrackingData(
+                    __typename = "",
+                    businessUnit = "dummy business unit",
+                    categoryID = "cat id",
+                    categoryName = "cat name",
+                    itemLabel = "product",
+                    itemType = "type",
+                    operatorID = "123",
+                    productID = "456"
+                ),
+                webLink = ""
+            ), RecommendationItem(
+                appLink = "tokopediatest://dummy_product_applink",
+                backgroundColor = "",
+                campaignLabelText ="Campaign Label",
+                campaignLabelTextColor ="#FFFFFF",
+                campaignLabelBackgroundUrl= DUMMY_BG,
+                productInfo1 = ProductInfo(
+                    text = "20 Sep",
+                    color = "#009F92"
+                ),
+                productInfo2 = ProductInfo(
+                    text = "&#8226; Kartu Prakerja",
+                    color = "#6D7588"
+                ),
+                ratingType = "star",
+                rating = 4.7,
+                review = "125 ulasan",
+                soldPercentageValue= 70,
+                soldPercentageLabel= "Segera Habis",
+                soldPercentageLabelColor="#F94D63",
+                showSoldPercentage=true,
+                slashedPrice="Rp150.000",
+                discount="20%",
+                cashback="",
+                specialDiscount="",
+                price="Rp120.000",
+                pricePrefix="Mulai dari",
+                priceSuffix="/pc",
+                specialInfoText="Special Info",
+                specialInfoColor="#0094CF",
+                id = "1234567890",
+                label1 = "",
+                label1Mode = "",
+                label2 = "",
+                label3 = "",
+                mediaURL = "www.mediaurl.com/gambar.png",
+                mediaUrlType = "",
+                subtitle = "Subtitle",
+                subtitleMode = "",
+                title = "title",
+                trackingData = TrackingData(
+                    __typename = "",
+                    businessUnit = "dummy business unit",
+                    categoryID = "cat id",
+                    categoryName = "category name",
+                    itemLabel = "category",
+                    itemType = "type",
+                    operatorID = "123",
+                    productID = "456"
+                ),
+                webLink = ""
+            ), RecommendationItem(
+                appLink = "tokopediatest://dummy_product_applink",
+                backgroundColor = "",
+                campaignLabelText ="",
+                campaignLabelTextColor ="",
+                campaignLabelBackgroundUrl="",
+                productInfo1 = ProductInfo(
+                    text = "",
+                    color = ""
+                ),
+                productInfo2 = ProductInfo(
+                    text = "",
+                    color = ""
+                ),
+                ratingType = "",
+                rating = 0.0,
+                review = "",
+                soldPercentageValue= 0,
+                soldPercentageLabel= "",
+                soldPercentageLabelColor="",
+                showSoldPercentage=false,
+                slashedPrice="",
+                discount="",
+                cashback="",
+                specialDiscount="",
+                price="",
+                pricePrefix="",
+                priceSuffix="",
+                specialInfoText="",
+                specialInfoColor="",
+                id = "1234567890",
+                label1 = "Discount 30%",
+                label1Mode = "",
+                label2 = "Rp100.000",
+                label3 = "Rp70.000",
+                mediaURL = "www.mediaurl.com/gambar.png",
+                mediaUrlType = "",
+                subtitle = "Subtitle",
+                subtitleMode = "",
+                title = "product title",
+                trackingData = TrackingData(
+                    __typename = "",
+                    businessUnit = "dummy business unit",
+                    categoryID = "cat id",
+                    categoryName = "category name",
+                    itemLabel = "somelabel",
+                    itemType = "type",
+                    operatorID = "123",
+                    productID = "456"
+                ),
+                webLink = ""
+            ), RecommendationItem(
+                appLink = "tokopediatest://dummy_product_applink",
+                backgroundColor = "",
+                campaignLabelText ="",
+                campaignLabelTextColor ="",
+                campaignLabelBackgroundUrl="",
+                productInfo1 = ProductInfo(
+                    text = "",
+                    color = ""
+                ),
+                productInfo2 = ProductInfo(
+                    text = "",
+                    color = ""
+                ),
+                ratingType = "",
+                rating = 0.0,
+                review = "",
+                soldPercentageValue= 0,
+                soldPercentageLabel= "",
+                soldPercentageLabelColor="",
+                showSoldPercentage=false,
+                slashedPrice="",
+                discount="",
+                cashback="",
+                specialDiscount="",
+                price="",
+                pricePrefix="",
+                priceSuffix="",
+                specialInfoText="",
+                specialInfoColor="",
+                id = "1234567890",
+                label1 = "",
+                label1Mode = "",
+                label2 = "",
+                label3 = "Rp10.000",
+                mediaURL = "www.mediaurl.com/gambar.png",
+                mediaUrlType = "",
+                subtitle = "Subtitle",
+                subtitleMode = "",
+                title = "product title",
+                trackingData = TrackingData(
+                    __typename = "",
+                    businessUnit = "dummy business unit",
+                    categoryID = "cat id",
+                    categoryName = "category name",
+                    itemLabel = "",
+                    itemType = "type",
+                    operatorID = "123",
+                    productID = "456"
+                ),
+                webLink = ""
+            )),
+            mediaURL = "",
+            option1 = "",
+            option2 = "",
+            option3 = "",
+            textLink = "",
+            title = "",
+            tracking = emptyList(),
+            webLink = ""
+        )
+    )
 
     @Before
     fun setUp() {
@@ -133,123 +367,7 @@ class DigitalRecommendationUseCaseTest {
         coEvery {
             multiRequestUseCase.executeOnBackground()
         } returns GraphqlResponse(
-                mapOf(
-                        DigitalRecommendationResponse::class.java to DigitalRecommendationResponse(
-                                personalizedItems = PersonalizedItems(
-                                        trackingData = UserTrackingData(
-                                                userType = "non login"
-                                        ),
-                                        appLink = "tokopediatest://dummy-applink",
-                                        bannerAppLink = "",
-                                        bannerWebLink = "",
-                                        recommendationItems = arrayListOf(RecommendationItem(
-                                                appLink = "tokopediatest://dummy_product_applink",
-                                                backgroundColor = "",
-                                                id = "1234567890",
-                                                label1 = "Discount 20%",
-                                                label1Mode = "",
-                                                label2 = "Rp100.000",
-                                                label3 = "Rp80.000",
-                                                mediaURL = "www.mediaurl.com/gambar.png",
-                                                mediaUrlType = "",
-                                                subtitle = "Subtitle",
-                                                subtitleMode = "",
-                                                title = "product title",
-                                                trackingData = TrackingData(
-                                                        __typename = "",
-                                                        businessUnit = "dummy business unit",
-                                                        categoryID = "cat id",
-                                                        categoryName = "cat name",
-                                                        itemLabel = "product",
-                                                        itemType = "type",
-                                                        operatorID = "123",
-                                                        productID = "456"
-                                                ),
-                                                webLink = ""
-                                        ), RecommendationItem(
-                                                appLink = "tokopediatest://dummy_product_applink",
-                                                backgroundColor = "",
-                                                id = "1234567890",
-                                                label1 = "",
-                                                label1Mode = "",
-                                                label2 = "",
-                                                label3 = "",
-                                                mediaURL = "www.mediaurl.com/gambar.png",
-                                                mediaUrlType = "",
-                                                subtitle = "Subtitle",
-                                                subtitleMode = "",
-                                                title = "title",
-                                                trackingData = TrackingData(
-                                                        __typename = "",
-                                                        businessUnit = "dummy business unit",
-                                                        categoryID = "cat id",
-                                                        categoryName = "category name",
-                                                        itemLabel = "category",
-                                                        itemType = "type",
-                                                        operatorID = "123",
-                                                        productID = "456"
-                                                ),
-                                                webLink = ""
-                                        ), RecommendationItem(
-                                                appLink = "tokopediatest://dummy_product_applink",
-                                                backgroundColor = "",
-                                                id = "1234567890",
-                                                label1 = "Discount 30%",
-                                                label1Mode = "",
-                                                label2 = "Rp100.000",
-                                                label3 = "Rp70.000",
-                                                mediaURL = "www.mediaurl.com/gambar.png",
-                                                mediaUrlType = "",
-                                                subtitle = "Subtitle",
-                                                subtitleMode = "",
-                                                title = "product title",
-                                                trackingData = TrackingData(
-                                                        __typename = "",
-                                                        businessUnit = "dummy business unit",
-                                                        categoryID = "cat id",
-                                                        categoryName = "category name",
-                                                        itemLabel = "somelabel",
-                                                        itemType = "type",
-                                                        operatorID = "123",
-                                                        productID = "456"
-                                                ),
-                                                webLink = ""
-                                        ), RecommendationItem(
-                                                appLink = "tokopediatest://dummy_product_applink",
-                                                backgroundColor = "",
-                                                id = "1234567890",
-                                                label1 = "",
-                                                label1Mode = "",
-                                                label2 = "",
-                                                label3 = "Rp10.000",
-                                                mediaURL = "www.mediaurl.com/gambar.png",
-                                                mediaUrlType = "",
-                                                subtitle = "Subtitle",
-                                                subtitleMode = "",
-                                                title = "product title",
-                                                trackingData = TrackingData(
-                                                        __typename = "",
-                                                        businessUnit = "dummy business unit",
-                                                        categoryID = "cat id",
-                                                        categoryName = "category name",
-                                                        itemLabel = "",
-                                                        itemType = "type",
-                                                        operatorID = "123",
-                                                        productID = "456"
-                                                ),
-                                                webLink = ""
-                                        )),
-                                        mediaURL = "",
-                                        option1 = "",
-                                        option2 = "",
-                                        option3 = "",
-                                        textLink = "",
-                                        title = "",
-                                        tracking = emptyList(),
-                                        webLink = ""
-                                )
-                        )
-                ),
+                mapOf( DigitalRecommendationResponse::class.java to mockResponse ),
                 mapOf(),
                 false
         )
@@ -267,48 +385,48 @@ class DigitalRecommendationUseCaseTest {
             assert(data is Success)
             assertEquals((data as Success).data.userType, "non login")
 
-            val successData = (data as Success).data.items
+            val successData = data.data.items
             assertEquals(successData.size, 4)
 
-            // first data
-            val firstData = successData[0]
-            assertEquals(firstData.iconUrl, "www.mediaurl.com/gambar.png")
-            assertEquals(firstData.productName, "Subtitle")
-            assertEquals(firstData.discountTag, "Discount 20%")
-            assertEquals(firstData.beforePrice, "Rp100.000")
-            assertEquals(firstData.price, "Rp80.000")
-            assertEquals(firstData.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(firstData.categoryName, "product title")
+            // DG data
+            val DGActualData = successData[0].unify
+            val DGExpectedData = mockResponse.personalizedItems.recommendationItems[0]
 
-            // second data
-            val secondData = successData[1]
-            assertEquals(secondData.iconUrl, "www.mediaurl.com/gambar.png")
-            assertEquals(secondData.productName, "Subtitle")
-            assertEquals(secondData.discountTag, "")
-            assertEquals(secondData.beforePrice, "")
-            assertEquals(secondData.price, "")
-            assertEquals(secondData.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(secondData.categoryName, "category name")
-
-            // third data
-            val thirdData = successData[2]
-            assertEquals(thirdData.iconUrl, "www.mediaurl.com/gambar.png")
-            assertEquals(thirdData.productName, "Subtitle")
-            assertEquals(thirdData.discountTag, "Discount 30%")
-            assertEquals(thirdData.beforePrice, "Rp100.000")
-            assertEquals(thirdData.price, "Rp70.000")
-            assertEquals(thirdData.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(thirdData.categoryName, "product title")
-
-            // fourth data
-            val fourthData = successData[3]
-            assertEquals(fourthData.iconUrl, "www.mediaurl.com/gambar.png")
-            assertEquals(fourthData.productName, "Subtitle")
-            assertEquals(fourthData.discountTag, "")
-            assertEquals(fourthData.beforePrice, "")
-            assertEquals(fourthData.price, "Rp10.000")
-            assertEquals(fourthData.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(fourthData.categoryName, "product title")
+            assertEquals(DGExpectedData.appLink, DGActualData.actionButton.applink)
+            assertEquals(DGExpectedData.title, DGActualData.title)
+            assertEquals(DGExpectedData.mediaURL, DGActualData.mediaUrl)
+            assertEquals(mockResponse.personalizedItems.mediaUrlType, DGActualData.mediaType)
+            assertEquals(DGExpectedData.iconURL, DGActualData.iconUrl)
+            assertEquals(DGExpectedData.backgroundColor, DGActualData.iconBackgroundColor)
+            assertEquals(DGExpectedData.campaignLabelText, DGActualData.campaign.text)
+            assertEquals(DGExpectedData.campaignLabelTextColor, DGActualData.campaign.textColor)
+            assertEquals(DGExpectedData.campaignLabelBackgroundUrl, DGActualData.campaign.backgroundUrl)
+            assertEquals(DGExpectedData.productInfo1.text, DGActualData.productInfoLeft.text)
+            assertEquals(DGExpectedData.productInfo1.color, DGActualData.productInfoLeft.textColor)
+            assertEquals(DGExpectedData.productInfo2.color, DGActualData.productInfoRight.textColor)
+            assertEquals(DGExpectedData.productInfo2.text, DGActualData.productInfoRight.text)
+            assertEquals(DGExpectedData.title, DGActualData.title)
+            assertEquals(DGExpectedData.ratingType, DGActualData.rating.ratingType)
+            assertEquals(DGExpectedData.rating, DGActualData.rating.rating, ASSERT_DELTA)
+            assertEquals(DGExpectedData.review, DGActualData.rating.review)
+            assertEquals(DGExpectedData.specialInfoText, DGActualData.specialInfo.text)
+            assertEquals(DGExpectedData.specialInfoColor, DGActualData.specialInfo.textColor)
+            assertEquals(DGExpectedData.price, DGActualData.priceData.price)
+            assertEquals(DGExpectedData.label3, DGActualData.priceData.discountLabel)
+            assertEquals(DigitalUnifyConst.DISCOUNT_CASHBACK, DGActualData.priceData.discountType)
+            assertEquals(Label.HIGHLIGHT_LIGHT_GREEN, DGActualData.priceData.discountLabelType)
+            assertEquals(DGExpectedData.slashedPrice, DGActualData.priceData.slashedPrice)
+            assertEquals(DGExpectedData.pricePrefix, DGActualData.priceData.pricePrefix)
+            assertEquals(DGExpectedData.priceSuffix, DGActualData.priceData.priceSuffix)
+            assertEquals(DGExpectedData.cashback, DGActualData.cashback)
+            assertEquals(DGExpectedData.subtitle, DGActualData.subtitle)
+            assertEquals(DGExpectedData.showSoldPercentage, DGActualData.soldPercentage.showPercentage)
+            assertEquals(DGExpectedData.soldPercentageValue, DGActualData.soldPercentage.value)
+            assertEquals(DGExpectedData.soldPercentageLabel, DGActualData.soldPercentage.label)
+            assertEquals(DGExpectedData.soldPercentageLabelColor, DGActualData.soldPercentage.labelColor)
+            assertEquals(DGExpectedData.textLink, DGActualData.actionButton.text)
+            assertEquals(DGExpectedData.appLink, DGActualData.actionButton.applink)
+            assertEquals("", DGActualData.actionButton.buttonType)
 
             // when
             val data1 = usecase.execute(
@@ -323,45 +441,46 @@ class DigitalRecommendationUseCaseTest {
             val successData1 = (data1 as Success).data.items
             assertEquals(successData1.size, 4)
 
-            // first data
-            val firstData1 = successData1[0]
-            assertEquals(firstData1.iconUrl, "www.mediaurl.com/gambar.png")
-            assertEquals(firstData1.productName, "Subtitle")
-            assertEquals(firstData1.discountTag, "Discount 20%")
-            assertEquals(firstData1.beforePrice, "Rp100.000")
-            assertEquals(firstData1.price, "Rp80.000")
-            assertEquals(firstData1.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(firstData1.categoryName, "product title")
+            // PG data
+            val PGActualData = successData[0].unify
+            val PGExpectedData = mockResponse.personalizedItems.recommendationItems[0]
 
-            // second data
-            val secondData1 = successData1[1]
-            assertEquals(secondData1.iconUrl, "www.mediaurl.com/gambar.png")
-            assertEquals(secondData1.productName, "Subtitle")
-            assertEquals(secondData1.discountTag, "")
-            assertEquals(secondData1.beforePrice, "")
-            assertEquals(secondData1.price, "")
-            assertEquals(secondData1.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(secondData1.categoryName, "category name")
+            assertEquals(PGExpectedData.appLink, PGActualData.actionButton.applink)
+            assertEquals(PGExpectedData.title, PGActualData.title)
+            assertEquals(PGExpectedData.mediaURL, PGActualData.mediaUrl)
+            assertEquals(mockResponse.personalizedItems.mediaUrlType, PGActualData.mediaType)
+            assertEquals(PGExpectedData.iconURL, PGActualData.iconUrl)
+            assertEquals(PGExpectedData.backgroundColor, PGActualData.iconBackgroundColor)
+            assertEquals(PGExpectedData.campaignLabelText, PGActualData.campaign.text)
+            assertEquals(PGExpectedData.campaignLabelTextColor, PGActualData.campaign.textColor)
+            assertEquals(PGExpectedData.campaignLabelBackgroundUrl, PGActualData.campaign.backgroundUrl)
+            assertEquals(PGExpectedData.productInfo1.text, PGActualData.productInfoLeft.text)
+            assertEquals(PGExpectedData.productInfo1.color, PGActualData.productInfoLeft.textColor)
+            assertEquals(PGExpectedData.productInfo2.color, PGActualData.productInfoRight.textColor)
+            assertEquals(PGExpectedData.productInfo2.text, PGActualData.productInfoRight.text)
+            assertEquals(PGExpectedData.title, PGActualData.title)
+            assertEquals(PGExpectedData.ratingType, PGActualData.rating.ratingType)
+            assertEquals(PGExpectedData.rating, PGActualData.rating.rating, ASSERT_DELTA)
+            assertEquals(PGExpectedData.review, PGActualData.rating.review)
+            assertEquals(PGExpectedData.specialInfoText, PGActualData.specialInfo.text)
+            assertEquals(PGExpectedData.specialInfoColor, PGActualData.specialInfo.textColor)
+            assertEquals(PGExpectedData.price, PGActualData.priceData.price)
+            assertEquals(PGExpectedData.label3, PGActualData.priceData.discountLabel)
+            assertEquals(DigitalUnifyConst.DISCOUNT_CASHBACK, PGActualData.priceData.discountType)
+            assertEquals(Label.HIGHLIGHT_LIGHT_GREEN, PGActualData.priceData.discountLabelType)
+            assertEquals(PGExpectedData.slashedPrice, PGActualData.priceData.slashedPrice)
+            assertEquals(PGExpectedData.pricePrefix, PGActualData.priceData.pricePrefix)
+            assertEquals(PGExpectedData.priceSuffix, PGActualData.priceData.priceSuffix)
+            assertEquals(PGExpectedData.cashback, PGActualData.cashback)
+            assertEquals(PGExpectedData.subtitle, PGActualData.subtitle)
+            assertEquals(PGExpectedData.showSoldPercentage, PGActualData.soldPercentage.showPercentage)
+            assertEquals(PGExpectedData.soldPercentageValue, PGActualData.soldPercentage.value)
+            assertEquals(PGExpectedData.soldPercentageLabel, PGActualData.soldPercentage.label)
+            assertEquals(PGExpectedData.soldPercentageLabelColor, PGActualData.soldPercentage.labelColor)
+            assertEquals(PGExpectedData.textLink, PGActualData.actionButton.text)
+            assertEquals(PGExpectedData.appLink, PGActualData.actionButton.applink)
+            assertEquals("", PGActualData.actionButton.buttonType)
 
-            // third data
-            val thirdData1 = successData1[2]
-            assertEquals(thirdData1.iconUrl, "www.mediaurl.com/gambar.png")
-            assertEquals(thirdData1.productName, "Subtitle")
-            assertEquals(thirdData1.discountTag, "Discount 30%")
-            assertEquals(thirdData1.beforePrice, "Rp100.000")
-            assertEquals(thirdData1.price, "Rp70.000")
-            assertEquals(thirdData1.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(thirdData1.categoryName, "product title")
-
-            // fourth data
-            val fourthData1 = successData1[3]
-            assertEquals(fourthData1.iconUrl, "www.mediaurl.com/gambar.png")
-            assertEquals(fourthData1.productName, "Subtitle")
-            assertEquals(fourthData1.discountTag, "")
-            assertEquals(fourthData1.beforePrice, "")
-            assertEquals(fourthData1.price, "Rp10.000")
-            assertEquals(fourthData1.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(fourthData1.categoryName, "product title")
         }
     }
 }
