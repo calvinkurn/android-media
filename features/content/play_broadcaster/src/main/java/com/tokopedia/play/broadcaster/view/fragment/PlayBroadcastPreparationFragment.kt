@@ -147,7 +147,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             formCover.setListener(this@PlayBroadcastPreparationFragment)
 
             flBroStartLivestream.setOnClickListener {
-                analytic.clickStartStreamingOnFinalSetupPage()
+                analytic.clickStartStreaming(parentViewModel.channelId)
 
                 /** TODO: comment this first because we havent revamped the schedule functionality yet */
 //                val schedule = scheduleViewModel.schedule
@@ -164,8 +164,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             icBroPreparationSwitchCamera.setOnClickListener {
+                analytic.clickSwitchCameraOnPreparation()
+
                 parentViewModel.switchCamera()
-                analytic.clickSwitchCameraOnSetupPage()
             }
         }
     }
@@ -288,20 +289,27 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Callback Action Bar */
     override fun onClickClosePreparation() {
-        analytic.clickCloseOnSetupPage()
+        analytic.clickCloseOnPreparation()
+
         activity?.onBackPressed()
     }
 
     /** Callback Preparation Menu */
     override fun onClickSetTitle() {
+        analytic.clickSetupTitleMenu()
+
         showTitleForm(true)
     }
 
     override fun onClickSetCover() {
+        analytic.clickSetupCoverMenu()
+
         showCoverForm(true)
     }
 
     override fun onClickSetProduct() {
+        analytic.clickSetupProductMenu()
+        
         childFragmentManager.beginTransaction()
             .add(ProductSetupFragment::class.java, null, null)
             .commit()
@@ -314,6 +322,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onTitleSaved(view: TitleFormView, title: String) {
+        analytic.clickSubmitTitle()
+
         hideKeyboard()
         binding.formTitle.setLoading(true)
         viewModel.uploadTitle(title)
@@ -324,7 +334,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         activity?.onBackPressed()
     }
 
-    override fun onClickCoverPreview() {
+    override fun onClickCoverPreview(isEditCover: Boolean) {
+        if(isEditCover) analytic.clickEditCover() else analytic.clickAddNewCover()
         openCoverSetupFragment()
     }
 
@@ -433,8 +444,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             override fun onCancelLiveStream() {
+                analytic.clickCancelStreaming(parentViewModel.channelId, parentViewModel.channelTitle)
+
                 showCountdown(false)
-                analytic.clickCancelOnCountDown(parentViewModel.channelId, parentViewModel.channelTitle)
             }
         })
     }
