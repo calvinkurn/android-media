@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
-import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
 import com.tokopedia.media.loader.loadImage
 
 /**
@@ -25,7 +24,7 @@ class ImageViewPagerAdapter(private val images: MutableList<String>, private val
             if (clickListener != null) holder.bannerImage.setOnClickListener { clickListener.onImageClicked(position) }
         }
         holder.bannerImage.loadImage(images[position]){
-            setPlaceHolder(PLACEHOLDER_RES_UNIFY)
+            setPlaceHolder(R.drawable.ic_hotel_loading_image)
         }
     }
 

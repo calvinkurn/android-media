@@ -3,10 +3,10 @@
     <item>
         <inset
             android:drawable="@drawable/imagestate_placeholder"
-            android:insetBottom="@dimen/hotel_10dp"
-            android:insetLeft="@dimen/hotel_10dp"
-            android:insetRight="@dimen/hotel_10dp"
-            android:insetTop="@dimen/hotel_10dp"
+            android:insetBottom="@dimen/hotel_34dp"
+            android:insetLeft="@dimen/hotel_34dp"
+            android:insetRight="@dimen/hotel_34dp"
+            android:insetTop="@dimen/hotel_34dp"
             />
     </item>
 </layer-list>
