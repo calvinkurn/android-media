@@ -16,6 +16,8 @@ class TopAdsBerandaSummaryRvAdapter :
 
     private val list = mutableListOf<SummaryBeranda>()
     var infoClicked: (() -> Unit)? = null
+    var itemClicked: (() -> Unit)? = null
+    val selectedItems = mutableSetOf<SummaryBeranda>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RingkasanViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -33,11 +35,13 @@ class TopAdsBerandaSummaryRvAdapter :
             rootLayout.setOnClickListener {
                 item.isSelected = !item.isSelected
                 if (item.isSelected) selectView(holder, item) else unSelectView(holder, item)
+                itemClicked?.invoke()
             }
         }
     }
 
     private fun selectView(holder: RingkasanViewHolder, item: SummaryBeranda) {
+        selectedItems.add(item)
         with(holder) {
             rootLayout.setBackgroundColor(
                 ContextCompat.getColor(holder.rootLayout.context, selectedBackgroundColor)
@@ -47,6 +51,7 @@ class TopAdsBerandaSummaryRvAdapter :
     }
 
     private fun unSelectView(holder: RingkasanViewHolder, item: SummaryBeranda) {
+        selectedItems.remove(item)
         with(holder) {
             rootLayout.setBackgroundColor(
                 ContextCompat.getColor(holder.rootLayout.context, unSelectedBackgroundColor)

@@ -79,12 +79,18 @@
                 tools:itemCount="3"
                 tools:listitem="@layout/item_rv_ringkasan" />
 
-            <include
-                android:id="@+id/statistic_graph"
-                layout="@layout/partial_top_ads_dashboard_statistics"
+            <FrameLayout
+                android:id="@+id/graph_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3" />
+
+            <include
+                layout="@layout/partial_top_ads_dashboard_statistics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:visibility="gone" />
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 </androidx.constraintlayout.widget.ConstraintLayout>

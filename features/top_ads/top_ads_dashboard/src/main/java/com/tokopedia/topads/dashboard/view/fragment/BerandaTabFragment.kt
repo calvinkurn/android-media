@@ -73,7 +73,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private lateinit var imgAutoDebit: ImageUnify
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var creditHistory: CardUnify
-    private lateinit var statisticsPager: ViewPager
+    private val graphLayout by lazy { BerandaGraphFragment.createInstance() }
 
     private val checkResponse by lazy { CheckResponse() }
     private var dataStatistic: DataStatistic? = null
@@ -140,11 +140,19 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         setUpClick()
         loadData()
         loadStatisticsData()
+        initializeGraph()
         swipeRefreshLayout.setOnRefreshListener {
             showShimmer()
             loadData()
             loadStatisticsData()
         }
+    }
+
+    private fun initializeGraph() {
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.graph_layout, graphLayout, "a")
+            .commit()
     }
 
     private fun observeLiveData() {
@@ -201,6 +209,9 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         rvLatestReading.adapter = latestReadingRvAdapter
 
         summaryRvAdapter.infoClicked = { showInformationBottomSheet() }
+        summaryRvAdapter.itemClicked = {
+
+        }
     }
 
     private fun setUpClick() {
@@ -258,12 +269,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
                 resources.getStringArray(R.array.top_ads_tab_statistics_labels)
             )
         }
-        val fragment = statisticsPager.adapter?.instantiateItem(
-            statisticsPager, statisticsPager.currentItem
-        ) as? Fragment
-        if (fragment != null && fragment is TopAdsDashStatisticFragment) {
-            fragment.showLineGraph(this.dataStatistic)
-        }
+        graphLayout.showLineGraph(this.dataStatistic)
     }
 
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
@@ -345,15 +351,16 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         imgAutoDebit = view.findViewById(R.id.imgAutoDebit)
         addCredit = view.findViewById(R.id.addCredit)
         autoTopUp = view.findViewById(R.id.autoTopUp)
-        statisticsPager = view.findViewById(R.id.pager)
     }
 
     private fun showFirstTimeDialog() {
         if (!requireActivity().showBerandaDialog()) return
         requireContext().showDialogWithCoachMark(
             scrollView,
-            rvSummary, requireView().findViewById(R.id.topads_content_statistics),
-            rvLatestReading, (requireActivity() as TopAdsDashboardActivity).ivEducationTopAdsActionBar
+            rvSummary,
+            requireView().findViewById(R.id.topads_content_statistics),
+            rvLatestReading,
+            (requireActivity() as TopAdsDashboardActivity).ivEducationTopAdsActionBar
         )
         requireActivity().berandaDialogShown()
     }
@@ -390,4 +397,12 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
                 hideShimmer()
             }
     }
+}
+
+class BerandaGraphFragment : TopAdsDashStatisticFragment() {
+    companion object {
+        fun createInstance() = BerandaGraphFragment()
+    }
+
+    override fun getIndex() = 0
 }

@@ -33,6 +33,7 @@
 
                 <include
                     android:id="@+id/hari_ini"
+                    android:visibility="gone"
                     layout="@layout/topads_dash_layout_hari_ini"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
