@@ -68,6 +68,51 @@ class DigitalRecommendationUseCase @Inject constructor(
 
     }
 
+    suspend fun getRecommendationPosition(
+        page: DigitalRecommendationPage,
+        dgCategories: List<Int>,
+        pgCategories: List<Int>
+    ): Result<List<String>>{
+        val params = mapOf(
+            PARAM_INPUT to mapOf(
+                PARAM_CHANNEL_NAME to when (page) {
+                    DigitalRecommendationPage.DIGITAL_GOODS -> DG_PERSO_CHANNEL_NAME
+                    DigitalRecommendationPage.PHYSICAL_GOODS -> PG_PERSO_CHANNEL_NAME
+                    DigitalRecommendationPage.RECOMMENDATION_SKELETON -> OD_SKELETON_CHANNEL_NAME
+                },
+                PARAM_CLIENT_NUMBERS to arrayListOf(userSession.phoneNumber),
+                PARAM_DG_CATEGORY_IDS to dgCategories,
+                PARAM_PG_CATEGORY_IDS to pgCategories
+            )
+        )
+
+        multiRequestGraphqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                .setSessionIncluded(true)
+                .build()
+        )
+        multiRequestGraphqlUseCase.clearRequest()
+
+        return try {
+            val graphqlRequest = GraphqlRequest(DigitalRecommendationQuery.DG_RECOMMENDATION,
+                DigitalRecommendationResponse::class.java, params)
+            multiRequestGraphqlUseCase.addRequest(graphqlRequest)
+            val graphqlResponse = multiRequestGraphqlUseCase.executeOnBackground()
+            val errors = graphqlResponse.getError(DigitalRecommendationResponse::class.java)
+
+            if (errors != null && errors.isNotEmpty() && errors[0].extensions != null) {
+                Fail(MessageErrorException(errors[0].message, errors[0].extensions.code.toString()))
+            } else {
+                val response = graphqlResponse.getData<DigitalRecommendationResponse>(DigitalRecommendationResponse::class.java)
+                val digitalRecommendationItems = response.personalizedItems.recommendationItems.map { it.title }
+                Success(digitalRecommendationItems)
+            }
+        } catch (t: Throwable) {
+            Fail(t)
+        }
+    }
+
     companion object {
         const val DG_RECOM_NAME = "dg_order_detail"
         const val PG_RECOM_NAME = "pg_top_ads"

@@ -17,7 +17,7 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
 
     fun updateItems(data: RechargeOrderDetailModel?,
                     topAdsData: BestSellerDataModel?,
-                    recommendationWidgetPosition: DigitalRecommendationModel?) {
+                    recommendationWidgetPosition: List<String>?) {
         data?.let {
             val newItems = setupItems(it, topAdsData, recommendationWidgetPosition)
             visitables.clear()
@@ -29,17 +29,17 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
     private fun setupItems(
             data: RechargeOrderDetailModel,
             topAdsData: BestSellerDataModel?,
-            recommendationWidgetPosition: DigitalRecommendationModel?
+            recommendationWidgetPosition: List<String>?
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             setupTopSection(data.topSectionModel)
             setupDetailSection(data.detailsSection)
             setupPaymentSection(data.paymentSectionModel)
             recommendationWidgetPosition?.let {
-                for (item in it.items) {
-                    if (item.categoryName == DigitalRecommendationUseCase.DG_RECOM_NAME)
+                for (title in it) {
+                    if (title == DigitalRecommendationUseCase.DG_RECOM_NAME)
                         setupDigitalRecommendationWidget()
-                    else if (item.categoryName == DigitalRecommendationUseCase.PG_RECOM_NAME)
+                    else if (title == DigitalRecommendationUseCase.PG_RECOM_NAME)
                         topAdsData?.let { topAds ->
                             setupTopAdsWidget(topAds)
                         }

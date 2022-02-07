@@ -8,7 +8,6 @@ import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailModel
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -39,8 +38,8 @@ class RechargeOrderDetailViewModel @Inject constructor(
     val topadsData: LiveData<Result<BestSellerDataModel>>
         get() = _topadsData
 
-    private val _recommendationPosition = MutableLiveData<Result<DigitalRecommendationModel>>()
-    val recommendationPosition: LiveData<Result<DigitalRecommendationModel>>
+    private val _recommendationPosition = MutableLiveData<Result<List<String>>>()
+    val recommendationPosition: LiveData<Result<List<String>>>
         get() = _recommendationPosition
 
     fun fetchData(requestParams: RechargeOrderDetailRequest) {
@@ -48,7 +47,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
             val orderDetailValue = orderDetailUseCase.execute(requestParams)
             _orderDetailData.postValue(orderDetailValue)
 
-            val skeletonData = recommendationUseCase.execute(
+            val skeletonData = recommendationUseCase.getRecommendationPosition(
                     DigitalRecommendationPage.RECOMMENDATION_SKELETON,
                     emptyList(),
                     emptyList()
@@ -62,8 +61,8 @@ class RechargeOrderDetailViewModel @Inject constructor(
     fun getDigitalRecommendationPosition(): Int =
             if (recommendationPosition.value != null &&
                     (recommendationPosition.value is Success) &&
-                    (recommendationPosition.value as Success).data.items.isNotEmpty()) {
-                if ((recommendationPosition.value as Success).data.items[0].categoryName == DigitalRecommendationUseCase.DG_PERSO_CHANNEL_NAME) {
+                    (recommendationPosition.value as Success).data.isNotEmpty()) {
+                if ((recommendationPosition.value as Success).data[0] == DigitalRecommendationUseCase.DG_PERSO_CHANNEL_NAME) {
                     FIRST_POSITION
                 } else {
                     SECOND_POSITION
@@ -90,7 +89,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
                 }
             }
 
-    fun getRecommendationWidgetPositionData(): DigitalRecommendationModel? =
+    fun getRecommendationWidgetPositionData(): List<String>? =
             recommendationPosition.value?.let {
                 if (it is Success) {
                     it.data
