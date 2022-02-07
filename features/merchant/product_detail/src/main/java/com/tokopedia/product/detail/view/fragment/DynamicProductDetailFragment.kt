@@ -95,6 +95,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -1002,7 +1003,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = recomItem.productId.toString(),
-                    pageSource = "tokonow",
+                    pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                     isTokoNow = true,
                     shopId = recomItem.shopId.toString(),
                     startActivitResult = { data, _ ->
@@ -2219,7 +2220,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
                     AtcVariantHelper.pdpToAtcVariant(
                             context = ctx,
-                            pageSource = AtcVariantHelper.PDP_PAGESOURCE,
+                            pageSource = VariantPageSource.PDP_PAGESOURCE,
                             productId = p1.basic.productID,
                             productInfoP1 = p1,
                             warehouseId = warehouseId ?: "",
