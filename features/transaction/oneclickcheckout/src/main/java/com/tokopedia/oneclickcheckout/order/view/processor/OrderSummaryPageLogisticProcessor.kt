@@ -585,7 +585,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     logisticPromoTickerMessage = null,
                     logisticPromoViewModel = null,
                     logisticPromoShipping = null,
-                    isApplyLogisticPromo = false)
+                    isApplyLogisticPromo = false,
+                    isHideChangeCourierCard = selectedShippingCourierUiModel.serviceData.selectedShipperProductId > 0)
 
             if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo

@@ -73,6 +73,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     renderBboTicker(shipping)
                     if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
                         renderBboShipping(shipping, shipping.logisticPromoViewModel)
+                    } else if (shipping.isHideChangeCourierCard) {
+                        renderNormalShippingWithoutChooseCourierCard(shipping)
                     } else if (shipping.shippingEta != null) {
                         renderShippingCourierWithEta(shipping, shipping.shippingEta)
                     } else {
