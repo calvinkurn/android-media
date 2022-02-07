@@ -1,13 +1,12 @@
 package com.tokopedia.play.view.bottomsheet
 
-import android.os.Build
+import android.app.Activity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -16,17 +15,21 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSubmissionViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.view.wrapper.InteractionEvent
+import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 
 /**
@@ -38,16 +41,15 @@ class PlayMoreActionBottomSheet @Inject constructor(
     PlayUserReportSheetViewComponent.Listener,
     PlayUserReportSubmissionViewComponent.Listener {
 
-    //TODO = handle login event
-
     private val userReportSheetHeight: Int
         get() = (requireView().height * 0.9).toInt()
+
+    private var displayMetrix = DisplayMetrics()
 
     companion object {
         private const val TAG = "PlayMoreActionBottomSheet"
     }
 
-    private var listener: Listener? = null
     private var childView: View? = null
 
     private val kebabMenuSheetView by viewComponent { KebabMenuSheetViewComponent(it, this) }
@@ -79,6 +81,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setObserve()
+        (requireContext() as Activity).windowManager.defaultDisplay.getMetrics(displayMetrix)
     }
 
     fun setState(isFreeze: Boolean) {}
@@ -95,9 +98,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private fun initBottomSheet() {
         this.clearContentPadding = true
-        this.isFullpage = true
         this.showHeader = false
-        this.listener = listener //TODO = setup listener
         this.childView =
             View.inflate(requireContext(), R.layout.bottom_sheet_play_more_action, null)
         setChild(this.childView)
@@ -108,24 +109,31 @@ class PlayMoreActionBottomSheet @Inject constructor(
         observeBottomInsets()
         observeUserReport()
         observeUserReportSubmission()
+        observeLoginState()
     }
 
     private fun observeBottomInsets() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             it[BottomInsetsType.KebabMenuSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) kebabMenuSheetView.showWithHeight(state.estimatedInsetsHeight)
+                if (state is BottomInsetsState.Shown) {
+                    kebabMenuSheetView.showWithHeight(state.estimatedInsetsHeight)
+                }
                 else kebabMenuSheetView.hide()
             }
 
             it[BottomInsetsType.UserReportSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) userReportSheetView.showWithHeight(state.estimatedInsetsHeight)
+                if (state is BottomInsetsState.Shown) {
+                    customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
+                    userReportSheetView.showWithHeight(customPeekHeight)
+                }
                 else userReportSheetView.hide()
             }
 
             it[BottomInsetsType.UserReportSubmissionSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) userReportSubmissionSheetView.showWithHeight(
-                    state.estimatedInsetsHeight
-                )
+                if (state is BottomInsetsState.Shown) {
+                    customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
+                    userReportSubmissionSheetView.showWithHeight(customPeekHeight)
+                }
                 else userReportSubmissionSheetView.hide()
             }
         })
@@ -161,14 +169,66 @@ class PlayMoreActionBottomSheet @Inject constructor(
         })
     }
 
+    private fun observeLoginState(){
+        playViewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
+    }
+
+    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
+        if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
+            playViewModel.requestPiPBrowsingPage(
+                OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
+            )
+        } else {
+            openApplink(applink, *params, requestCode = requestCode, shouldFinish = shouldFinish)
+        }
+    }
+
+    private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
+        if (requestCode == null) {
+            RouteManager.route(requireContext(), applink, *params)
+        } else {
+            val intent = RouteManager.getIntent(requireContext(), applink, *params)
+            startActivityForResult(intent, requestCode)
+        }
+        requireActivity().overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
+
+        if (shouldFinish) requireActivity().finish()
+    }
+
+    private fun handleInteractionEvent(event: InteractionEvent) {
+        when (event) {
+            is InteractionEvent.OpenUserReport -> doActionUserReport()
+        }
+    }
+
+    private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {
+        when (loginInteractionEvent) {
+            is LoginStateEvent.InteractionAllowed -> handleInteractionEvent(loginInteractionEvent.event)
+            is LoginStateEvent.NeedLoggedIn -> openLoginPage()
+        }
+    }
+
+    private fun doActionUserReport(){
+        analytic.clickUserReport()
+        playViewModel.onShowUserReportSheet(userReportSheetHeight)
+        playViewModel.getUserReportList()
+    }
+
+    private fun shouldOpenUserReport() {
+        playViewModel.doInteractionEvent(InteractionEvent.OpenUserReport)
+    }
+
+    private fun openLoginPage() {
+        openPageByApplink(ApplinkConst.LOGIN, requestCode = 911)
+    }
+
     interface Listener {
         fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet)
         fun onNoAction(bottomSheet: PlayMoreActionBottomSheet)
     }
 
     override fun onReportClick(view: KebabMenuSheetViewComponent) {
-        playViewModel.onShowUserReportSheet(userReportSheetHeight)
-        playViewModel.getUserReportList()
+        shouldOpenUserReport()
     }
 
     override fun onCloseButtonClicked(view: KebabMenuSheetViewComponent) {
@@ -189,8 +249,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onFooterClicked(view: PlayUserReportSheetViewComponent) {
-        //TODO = need to improve code
-        RouteManager.route(context, getString(R.string.play_user_report_footer_weblink))
+        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
     }
 
     override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
@@ -198,8 +257,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
-        //TODO = need to improve code
-        RouteManager.route(context, getString(R.string.play_user_report_footer_weblink))
+        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
     }
 
     override fun onShowVerificationDialog(

@@ -53,6 +53,8 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
+import com.tokopedia.play.view.wrapper.InteractionEvent
+import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -140,7 +142,8 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableUserReportReasoning
     val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>>
         get() = _observableUserReportSubmission
-
+    val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>>
+        get() = _observableLoggedInInteractionEvent
 
 
     /**
@@ -428,6 +431,7 @@ class PlayViewModel @AssistedInject constructor(
     }
     private val _observableUserReportReasoning = MutableLiveData<PlayResult<PlayUserReportUiModel.Loaded>>()
     private val _observableUserReportSubmission = MutableLiveData<PlayResult<Event<Unit>>>()
+    private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
 
     //region helper
     private val hasWordsOrDotsRegex = Regex("(\\.+|[a-z]+)")
@@ -2072,6 +2076,13 @@ class PlayViewModel @AssistedInject constructor(
             _observableUserReportSubmission.value = PlayResult.Failure(it)
         }
 
+    }
+
+    fun doInteractionEvent(event: InteractionEvent) {
+        _observableLoggedInInteractionEvent.value = Event(
+            if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn(event)
+            else LoginStateEvent.InteractionAllowed(event)
+        )
     }
 
     companion object {
