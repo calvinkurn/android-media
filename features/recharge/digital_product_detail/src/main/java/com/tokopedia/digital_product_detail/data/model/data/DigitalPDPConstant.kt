@@ -5,7 +5,11 @@ object DigitalPDPConstant {
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_CLIENT_NUMBER = "client_number"
     const val PARAM_CATEGORY_ID = "category_id"
+    const val PARAM_OPERATOR_ID = "operator_id"
     const val EXTRA_PARAM = "extra_param"
+    const val EXTRA_QR_PARAM = "scanResult"
+    const val EXTRA_IS_FROM_TOKEN_LISTRIK = "IS_FROM_TOKEN_LISTRIK"
+    const val PARAM_NEED_RESULT = "1"
 
     const val INPUT_ACTION_TRACKING_DELAY = 1000L
 
@@ -15,9 +19,11 @@ object DigitalPDPConstant {
     const val DEFAULT_ICON_RES = 0
     const val DEFAULT_SPACE_HEIGHT = 81
 
-    const val PREFERENCES_NAME = "pdp_pulsa_preferences"
+    const val TELCO_PREFERENCES_NAME = "telco_preferences"
+    const val TOKEN_LISTRIK_PREFERENCES_NAME = "token_listrik_preferences"
     const val FAVNUM_PERMISSION_CHECKER_IS_DENIED = "favnum_permission_checker_is_denied"
 
     const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
     const val REQUEST_CODE_LOGIN = 1010
+    const val RESULT_CODE_QR_SCAN = 101
 }

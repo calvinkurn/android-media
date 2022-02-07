@@ -31,6 +31,7 @@ import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
+import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
@@ -73,7 +74,8 @@ class TopupBillsFavoriteNumberFragment:
     FavoriteNumberMenuListener,
     FavoriteNumberEmptyStateListener,
     FavoriteNumberModifyListener,
-    FavoriteNumberErrorStateListener
+    FavoriteNumberErrorStateListener,
+    TopupBillsFavoriteNumberActivity.OnSearchBarListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -106,6 +108,8 @@ class TopupBillsFavoriteNumberFragment:
     private var operatorData: TelcoCatalogPrefixSelect? = null
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
     private var clientNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
+
+    private var emptyResultListener: TopupBillsFavoriteNumberActivity.OnEmptyResultListener? = null
 
     override fun initInjector() {
         getComponent(CommonTopupBillsComponent::class.java).inject(this)
@@ -146,6 +150,9 @@ class TopupBillsFavoriteNumberFragment:
         setupArguments(arguments)
         localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
         isHideCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
+        if (activity is TopupBillsFavoriteNumberActivity) {
+            (activity as TopupBillsFavoriteNumberActivity).searchBarListener = this
+        }
     }
 
     fun initView() {
@@ -319,7 +326,11 @@ class TopupBillsFavoriteNumberFragment:
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
-            if (isVisible) savedNumberViewModel.setClueVisibility(true)
+            if (isVisible) {
+                savedNumberViewModel.setClueVisibility(true)
+                // additional, will be improved later
+                emptyResultListener?.setClueVisibility(true)
+            }
         } else {
             if (topUpBillsViewModel.seamlessFavNumberData.value is Success) {
                 if (clientNumbers.isNotEmpty()) {
@@ -328,7 +339,11 @@ class TopupBillsFavoriteNumberFragment:
                     numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
                 }
             }
-            if (isVisible) savedNumberViewModel.setClueVisibility(false)
+            if (isVisible) {
+                savedNumberViewModel.setClueVisibility(false)
+                // additional, will be improved later
+                emptyResultListener?.setClueVisibility(false)
+            }
         }
     }
 
@@ -605,6 +620,10 @@ class TopupBillsFavoriteNumberFragment:
         getSeamlessFavoriteNumber()
     }
 
+    override fun setSearchKeyword(keyword: String) {
+        filterData(keyword)
+    }
+
     enum class FavoriteNumberActionType {
         UPDATE, DELETE, UNDO_DELETE
     }
@@ -648,6 +667,10 @@ class TopupBillsFavoriteNumberFragment:
         }?.operator?.attributes?.name ?: ""
     }
 
+    fun setOnEmptyResultListener(listener: TopupBillsFavoriteNumberActivity.OnEmptyResultListener?) {
+        emptyResultListener = listener
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -681,9 +704,12 @@ class TopupBillsFavoriteNumberFragment:
 
         fun newInstance(clientNumberType: String, number: String,
                         operatorData: TelcoCatalogPrefixSelect?,
-                        categoryName: String, digitalCategoryIds: ArrayList<String>
+                        categoryName: String, digitalCategoryIds: ArrayList<String>,
+                        emptyResultListener: TopupBillsFavoriteNumberActivity.OnEmptyResultListener? = null
         ): Fragment {
-            val fragment = TopupBillsFavoriteNumberFragment()
+            val fragment = TopupBillsFavoriteNumberFragment().apply {
+                setOnEmptyResultListener(emptyResultListener)
+            }
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)

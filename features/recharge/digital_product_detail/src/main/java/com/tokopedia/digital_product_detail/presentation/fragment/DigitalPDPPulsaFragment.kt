@@ -41,13 +41,13 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.I
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.TELCO_PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
@@ -127,7 +127,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModel = viewModelProvider.get(DigitalPDPPulsaViewModel::class.java)
-        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
+        localCacheHandler = LocalCacheHandler(context, TELCO_PREFERENCES_NAME)
     }
 
     override fun onCreateView(
@@ -165,7 +165,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     /* validate client number */
                     viewModel.validateClientNumber(rechargePdpPulsaClientNumberWidget.getInputNumber())
                     hitTrackingForInputNumber(
-                        DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         selectedOperator.operator.attributes.name
                     )
 
@@ -403,12 +403,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         operator = TelcoOperator()
                         showEmptyState()
                         digitalPDPTelcoAnalytics.eventClearInputNumber(
-                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
                             userSession.userId
                         )
                     }
 
-                    override fun onClickContact() {
+                    override fun onClickNavigationIcon() {
                         binding?.run {
                             val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
                             val dgCategoryIds = arrayListOf(
@@ -418,11 +418,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             )
                             navigateToContact(
                                 clientNumber, dgCategoryIds,
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 false
                             )
                             digitalPDPTelcoAnalytics.clickOnContactIcon(
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 userSession.userId
                             )
                         }
@@ -442,14 +442,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
                         if (isFavoriteContact) {
                             digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
                                 loyaltyStatus,
                                 userSession.userId
                             )
                         } else {
                             digitalPDPTelcoAnalytics.clickFavoriteNumberAutoComplete(
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
                                 loyaltyStatus,
                                 userSession.userId
@@ -462,13 +462,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     override fun onShowFilterChip(isLabeled: Boolean) {
                         if (isLabeled) {
                             digitalPDPTelcoAnalytics.impressionFavoriteContactChips(
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 loyaltyStatus,
                                 userSession.userId
                             )
                         } else {
                             digitalPDPTelcoAnalytics.impressionFavoriteNumberChips(
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 loyaltyStatus,
                                 userSession.userId
                             )
@@ -480,14 +480,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         if (isLabeled) {
                             onHideBuyWidget()
                             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
                                 loyaltyStatus,
                                 userSession.userId,
                             )
                         } else {
                             digitalPDPTelcoAnalytics.clickFavoriteNumberChips(
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
                                 loyaltyStatus,
                                 userSession.userId
@@ -505,7 +505,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             )
                             navigateToContact(
                                 clientNumber, dgCategoryIds,
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 isSwitchChecked
                             )
                         }
@@ -696,7 +696,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 digitalPDPTelcoAnalytics.impressionBannerEmptyState(
                     "TODO Creative Link",
                     categoryId.toString(),
-                    DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     loyaltyStatus,
                     userSession.userId
                 )
@@ -875,7 +875,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             onClearSelectedDenomGrid()
             digitalPDPTelcoAnalytics.clickMCCMProduct(
                 productListTitle,
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
@@ -886,7 +886,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
             digitalPDPTelcoAnalytics.clickProductCluster(
                 productListTitle,
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
@@ -909,7 +909,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
             digitalPDPTelcoAnalytics.impressionProductMCCM(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
@@ -919,7 +919,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             )
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
             digitalPDPTelcoAnalytics.impressionProductCluster(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
@@ -948,7 +948,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     override fun onClickedChevron(denom: DenomData) {
         digitalPDPTelcoAnalytics.clickChevronBuyWidget(
-            DigitalPDPTelcoUtil.getCategoryName(denom.categoryId.toInt()),
+            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
             operator.attributes.name,
             denom.price,
             denom.slashPrice,
@@ -966,7 +966,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     override fun onProductRecommendationCardClicked(recommendation: RecommendationCardWidgetModel, position: Int) {
         digitalPDPTelcoAnalytics.clickLastTransactionIcon(
             getString(R.string.digital_pdp_recommendation_title),
-            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
             userSession.userId,
@@ -980,7 +980,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     override fun onProductRecommendationCardImpression(recommendation: RecommendationCardWidgetModel, position: Int) {
         digitalPDPTelcoAnalytics.impressionLastTransactionIcon(
-            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
             userSession.userId,

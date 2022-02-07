@@ -483,7 +483,7 @@ class DigitalPDPTelcoAnalytics {
                     putString(ITEM_BRAND, operatorName)
                     putString(
                         ITEM_CATEGORY,
-                        DigitalPDPTelcoUtil.getCategoryName(denomData.categoryId.toInt())
+                        DigitalPDPCategoryUtil.getCategoryName(denomData.categoryId.toInt())
                     )
                     putString(ITEM_ID, denomData.id)
                     putString(ITEM_NAME, denomData.title)
@@ -508,7 +508,7 @@ class DigitalPDPTelcoAnalytics {
                     putString(ITEM_BRAND, operatorName)
                     putString(
                         ITEM_CATEGORY,
-                        DigitalPDPTelcoUtil.getCategoryName(recomData.categoryId.toInt())
+                        DigitalPDPCategoryUtil.getCategoryName(recomData.categoryId.toInt())
                     )
                     putString(ITEM_ID, recomData.id)
                     putString(ITEM_NAME, recomData.title)

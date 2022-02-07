@@ -5,6 +5,8 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.KeyEvent.KEYCODE_BACK
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -77,6 +79,19 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     private fun initAutoComplete() {
         binding.clientNumberWidgetInputField.run {
+            keyImeChangeListener = object : TextField3.KeyImeChange {
+                override fun onPreKeyIme(event: KeyEvent) {
+                   if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+                       if(isLoading){
+                           isClearableState = true
+                       } else {
+                           clearFocus()
+                           hideIndicatorIcon()
+                           showClearIcon()
+                       }
+                    }
+                }
+            }
             editText.run {
                 threshold = AUTOCOMPLETE_THRESHOLD
                 dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
@@ -102,12 +117,16 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                     }
                 })
 
-                setOnEditorActionListener { _, actionId, _ ->
+                setOnEditorActionListener { _, actionId, keyEvent ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        clearFocus()
+                        if(isLoading){
+                            isClearableState = true
+                        } else {
+                            clearFocus()
+                            hideIndicatorIcon()
+                            showClearIcon()
+                        }
                         hideSoftKeyboard()
-                        hideIndicatorIcon()
-                        showClearIcon()
                     }
                     true
                 }
@@ -212,7 +231,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 }
                 icon2.run {
                     setImageDrawable(getIconUnifyDrawable(context, type.iconUnifyId))
-                    setOnClickListener { mInputFieldListener?.onClickContact() }
+                    setOnClickListener { mInputFieldListener?.onClickNavigationIcon() }
                     show()
                 }
             }
@@ -382,7 +401,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     interface ClientNumberInputFieldListener {
         fun onRenderOperator(isDelayed: Boolean)
         fun onClearInput()
-        fun onClickContact()
+        fun onClickNavigationIcon()
         fun isKeyboardShown(): Boolean
     }
 

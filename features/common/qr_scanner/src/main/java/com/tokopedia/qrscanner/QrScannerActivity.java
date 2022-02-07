@@ -54,6 +54,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
     private static final String QR_RESPONSE = "QR_RESPONSE";
+    private static final String EXTRA_IS_FROM_TOKEN_LISTRIK = "IS_FROM_TOKEN_LISTRIK";
     @Inject
     QrScannerPresenter presenter;
     private QRComponent qrComponent;
@@ -61,6 +62,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private ProgressBar progressBar;
     private PermissionCheckerHelper permissionCheckerHelper;
     private boolean mNeedResult = false;
+    private boolean isFromTokenListrik = false;
 
     @Override
     protected Fragment getNewFragment() {
@@ -81,6 +83,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
             if (!paths.isEmpty()) {
                 String param = paths.get(0);
                 mNeedResult = param.equals(PARAM_NEED_RESULT);
+            }
+        }
+
+        if (getIntent().getExtras() != null){
+            isFromTokenListrik = getIntent().getExtras().getBoolean(EXTRA_IS_FROM_TOKEN_LISTRIK, false);
+            if (isFromTokenListrik){
+                updateTitle(getString(R.string.qr_scanner_title_scan_barcode));
             }
         }
 

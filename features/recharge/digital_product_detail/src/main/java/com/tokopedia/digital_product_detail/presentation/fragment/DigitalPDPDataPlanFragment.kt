@@ -39,20 +39,18 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.I
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PREFERENCES_NAME
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.TELCO_PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
-import com.tokopedia.digital_product_detail.data.model.data.FilterTagDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.presentation.adapter.viewholder.DigitalPDPFilterAllViewHolder
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
@@ -137,7 +135,7 @@ class DigitalPDPDataPlanFragment :
         super.onCreate(savedInstanceState)
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModel = viewModelProvider.get(DigitalPDPDataPlanViewModel::class.java)
-        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
+        localCacheHandler = LocalCacheHandler(context, TELCO_PREFERENCES_NAME)
     }
 
     override fun onCreateView(
@@ -196,7 +194,7 @@ class DigitalPDPDataPlanFragment :
                     /* validate client number */
                     viewModel.validateClientNumber(selectedClientNumber)
                     hitTrackingForInputNumber(
-                        DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         selectedOperator.operator.attributes.name
                     )
 
@@ -267,7 +265,7 @@ class DigitalPDPDataPlanFragment :
 
                     if (denomData.data.isFilterRefreshed) {
                         digitalPDPTelcoAnalytics.impressionFilterChip(
-                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
                             operator.attributes.name,
                             userSession.userId,
                         )
@@ -436,7 +434,7 @@ class DigitalPDPDataPlanFragment :
                         sortFilterItem.listener = {
                             sortFilterItem.toggle()
                             digitalPDPTelcoAnalytics.clickFilterChip(
-                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
                                 sortFilterItem.title.toString(),
                                 userSession.userId,
@@ -458,7 +456,7 @@ class DigitalPDPDataPlanFragment :
                     val filterData = viewModel.filterData
                     sortFilterPrefix.setOnClickListener {
                         digitalPDPTelcoAnalytics.clickFilterChip(
-                            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
                             operator.attributes.name,
                             getString(R.string.bottom_sheet_filter_title),
                             userSession.userId,
@@ -635,12 +633,13 @@ class DigitalPDPDataPlanFragment :
                 digitalPDPTelcoAnalytics.impressionBannerEmptyState(
                     "TODO Creative Link",
                     categoryId.toString(),
-                    DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
                     loyaltyStatus,
                     userSession.userId
                 )
                 rechargePdpPaketDataEmptyStateWidget.show()
                 rechargePdpPaketDataPromoWidget.hide()
+                sortFilterPaketData.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
                 rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
@@ -847,12 +846,12 @@ class DigitalPDPDataPlanFragment :
         operator = TelcoOperator()
         showEmptyState()
         digitalPDPTelcoAnalytics.eventClearInputNumber(
-            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
             userSession.userId
         )
     }
 
-    override fun onClickContact() {
+    override fun onClickNavigationIcon() {
         binding?.run {
             val clientNumber = rechargePdpPaketDataClientNumberWidget.getInputNumber()
             val dgCategoryIds = arrayListOf(
@@ -862,11 +861,11 @@ class DigitalPDPDataPlanFragment :
             )
             navigateToContact(
                 clientNumber, dgCategoryIds,
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 false
             )
             digitalPDPTelcoAnalytics.clickOnContactIcon(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 userSession.userId
             )
         }
@@ -886,13 +885,13 @@ class DigitalPDPDataPlanFragment :
     override fun onShowFilterChip(isLabeled: Boolean) {
         if (isLabeled) {
             digitalPDPTelcoAnalytics.impressionFavoriteContactChips(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 loyaltyStatus,
                 userSession.userId
             )
         } else {
             digitalPDPTelcoAnalytics.impressionFavoriteNumberChips(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 loyaltyStatus,
                 userSession.userId
             )
@@ -904,14 +903,14 @@ class DigitalPDPDataPlanFragment :
         if (isLabeled) {
             onHideBuyWidget()
             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
             )
         } else {
             digitalPDPTelcoAnalytics.clickFavoriteNumberChips(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId
@@ -929,7 +928,7 @@ class DigitalPDPDataPlanFragment :
             )
             navigateToContact(
                 clientNumber, dgCategoryIds,
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 isSwitchChecked
             )
         }
@@ -942,14 +941,14 @@ class DigitalPDPDataPlanFragment :
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
         if (isFavoriteContact) {
             digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId
             )
         } else {
             digitalPDPTelcoAnalytics.clickFavoriteNumberAutoComplete(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId
@@ -976,7 +975,7 @@ class DigitalPDPDataPlanFragment :
 
     override fun onClickedChevron(denom: DenomData) {
         digitalPDPTelcoAnalytics.clickChevronBuyWidget(
-            DigitalPDPTelcoUtil.getCategoryName(denom.categoryId.toInt()),
+            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
             operator.attributes.name,
             denom.price,
             denom.slashPrice,
@@ -994,7 +993,7 @@ class DigitalPDPDataPlanFragment :
     override fun onProductRecommendationCardClicked(recommendation: RecommendationCardWidgetModel, position: Int) {
         digitalPDPTelcoAnalytics.clickLastTransactionIcon(
             getString(R.string.digital_pdp_recommendation_title),
-            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
             userSession.userId,
@@ -1008,7 +1007,7 @@ class DigitalPDPDataPlanFragment :
 
     override fun onProductRecommendationCardImpression(recommendation: RecommendationCardWidgetModel, position: Int) {
         digitalPDPTelcoAnalytics.impressionLastTransactionIcon(
-            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
             userSession.userId,
@@ -1029,7 +1028,7 @@ class DigitalPDPDataPlanFragment :
             onClearSelectedDenomFull()
             digitalPDPTelcoAnalytics.clickMCCMProduct(
                 productListTitle,
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
@@ -1040,7 +1039,7 @@ class DigitalPDPDataPlanFragment :
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE){
             digitalPDPTelcoAnalytics.clickProductCluster(
                 productListTitle,
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
@@ -1067,7 +1066,7 @@ class DigitalPDPDataPlanFragment :
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE){
             digitalPDPTelcoAnalytics.impressionProductMCCM(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
@@ -1077,7 +1076,7 @@ class DigitalPDPDataPlanFragment :
             )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE){
             digitalPDPTelcoAnalytics.impressionProductCluster(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
@@ -1093,14 +1092,14 @@ class DigitalPDPDataPlanFragment :
         }
         if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPTelcoAnalytics.clickFullDenomChevron(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
             )
         } else {
             digitalPDPTelcoAnalytics.clickPromoFullDenomChevron(
-                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
@@ -1119,7 +1118,7 @@ class DigitalPDPDataPlanFragment :
 
     override fun onChipClicked(chipName: String) {
         digitalPDPTelcoAnalytics.clickFilterChip(
-            DigitalPDPTelcoUtil.getCategoryName(categoryId),
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             chipName,
             userSession.userId,
