@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcCalendarStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="@+id/tvShcCalendarStartMonth"
+        app:layout_constraintStart_toStartOf="@+id/tvShcCalendarStartMonth"
+        app:layout_constraintTop_toTopOf="@+id/tvShcCalendarEventTitle"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="12" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcCalendarStartMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarStartDate"
+        app:typographyType="body_3"
+        tools:text="Jan" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcCalendarEndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toTopOf="@+id/tvShcCalendarEndMonth"
+        app:layout_constraintEnd_toEndOf="@+id/tvShcCalendarEndMonth"
+        app:layout_constraintStart_toStartOf="@+id/tvShcCalendarEndMonth"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="12" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcCalendarEndMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_3"
+        tools:text="Jan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcCalendarEventTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvShcCalendarEndDate"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcCalendarEventDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toStartOf="@+id/iconUnify"
+        app:layout_constraintStart_toStartOf="@+id/tvShcCalendarEventTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarEventTitle"
+        app:typographyType="body_3"
+        tools:text="Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji." />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconUnify"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/lblShcCalendarEventLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:labelTitle="Sample Label"
+        app:labelType="general_light_grey"
+        app:layout_constraintStart_toStartOf="@+id/tvShcCalendarEventTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarEventDesc" />
+
+    <View
+        android:id="@+id/horLineShcCalendarEvent"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblShcCalendarEventLabel"
+        tools:layout_editor_absoluteX="20dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
