@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.ListArticle
+import com.tokopedia.topads.dashboard.data.raw.articlesJson
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEducationActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopadsEducationRvAdapter
 import com.tokopedia.unifycomponents.UnifyButton
@@ -17,8 +20,9 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TopAdsEducationFragment : TkpdBaseV4Fragment() {
 
+    private val articles by lazy { Gson().fromJson(articlesJson, ListArticle::class.java) }
     private lateinit var recyclerView: RecyclerView
-    private val adapter by lazy { TopadsEducationRvAdapter.createInstance(getItems()) }
+    private val adapter by lazy { TopadsEducationRvAdapter.createInstance(articles) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -41,14 +45,10 @@ class TopAdsEducationFragment : TkpdBaseV4Fragment() {
     }
 
     private fun initListeners() {
-        adapter.itemClick = { posi ->
-            when (posi) {
-                0 -> {
-                    (requireActivity() as? TopAdsEducationActivity)?.addFragment(
-                        ListArticleTopAdsEducationFragment.createInstance()
-                    )
-                }
-            }
+        adapter.itemClick = {
+            (requireActivity() as? TopAdsEducationActivity)?.addFragment(
+                ListArticleTopAdsEducationFragment.createInstance(it)
+            )
         }
     }
 

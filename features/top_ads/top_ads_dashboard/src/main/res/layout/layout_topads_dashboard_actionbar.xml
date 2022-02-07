@@ -17,8 +17,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivEducationTopAdsActionBar"
-        android:layout_width="@dimen/spacing_lvl5"
-        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_width="@dimen/topads_dashboard_dp_25"
+        android:layout_height="@dimen/topads_dashboard_dp_25"
+        android:padding="@dimen/top_ads_common_dp_1"
         android:src="@drawable/education_icon" />
 
 </LinearLayout>

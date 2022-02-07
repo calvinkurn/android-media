@@ -6,14 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.ListArticle
 import com.tokopedia.topads.dashboard.view.adapter.ListArticleRvAdapter
-import com.tokopedia.topads.dashboard.view.adapter.beranda.LatestReadingTopAdsDashboardRvAdapter
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
 
+    private lateinit var txtDescription: Typography
     private lateinit var recyclerView: RecyclerView
     private lateinit var btnReadMore: UnifyButton
     private val adapter by lazy { ListArticleRvAdapter.createInstance() }
@@ -24,6 +30,7 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
         val view = inflater.inflate(
             R.layout.fragment_list_article_topads_education, container, false
         )
+        txtDescription = view.findViewById(R.id.txtTitleArticleTopAdsEducation)
         recyclerView = view.findViewById(R.id.rvArticleArticleTopAdsEducation)
         btnReadMore = view.findViewById(R.id.btnReadMoreArticleTopAdsEducation)
         return view
@@ -32,9 +39,37 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val raw = arguments?.getString(ARTICLES)
+        val data = Gson().fromJson(raw, ListArticle.ListArticleItem::class.java)
+
+        if (data != null) {
+            initView(data)
+        }
+
+        initClicks()
+
+    }
+
+    private fun initClicks() {
+        adapter.itemClick = { openWebView(it) }
+
+        btnReadMore.setOnClickListener {
+            openWebView(READ_MORE_URL)
+        }
+    }
+
+    private fun initView(data: ListArticle.ListArticleItem) {
+        if (data.description.isEmpty()) txtDescription.hide()
+        else txtDescription.text = data.description
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 
+        adapter.addItems(data.articles)
+    }
+
+    private fun openWebView(url: String) {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
     }
 
     override fun getScreenName(): String {
@@ -42,6 +77,15 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
     }
 
     companion object {
-        fun createInstance() = ListArticleTopAdsEducationFragment()
+        private const val READ_MORE_URL =
+            "https://seller.tokopedia.com/edu/topic/fitur-kembangkan-toko-promosi/topads/"
+        private const val ARTICLES = "articles"
+        fun createInstance(listArticleItem: ListArticle.ListArticleItem): ListArticleTopAdsEducationFragment {
+            val bundle = Bundle()
+            bundle.putString(ARTICLES, Gson().toJson(listArticleItem))
+            val fragment = ListArticleTopAdsEducationFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
