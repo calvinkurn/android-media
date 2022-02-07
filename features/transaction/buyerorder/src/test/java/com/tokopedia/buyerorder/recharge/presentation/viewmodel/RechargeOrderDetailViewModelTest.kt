@@ -5,10 +5,6 @@ import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationType
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -74,7 +70,7 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
             Fail(Throwable())
         }
@@ -96,9 +92,9 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(DigitalRecommendationModel("", "", emptyList()))
+            Success(emptyList())
         }
 
         // when
@@ -118,35 +114,11 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(DigitalRecommendationModel(
-                    "",
-                    "",
-                    listOf(
-                            DigitalRecommendationItemModel(
-                                    categoryName = "dg_order_detail",
-                                    iconUrl = "",
-                                    productName = "",
-                                    applink = "",
-                                    tracking = DigitalRecommendationTrackingModel(),
-                                    type = DigitalRecommendationType.CATEGORY,
-                                    price = "",
-                                    beforePrice = "",
-                                    discountTag = ""
-                            ),
-                            DigitalRecommendationItemModel(
-                                    categoryName = "pg_order_detail",
-                                    iconUrl = "",
-                                    productName = "",
-                                    applink = "",
-                                    tracking = DigitalRecommendationTrackingModel(),
-                                    type = DigitalRecommendationType.CATEGORY,
-                                    price = "",
-                                    beforePrice = "",
-                                    discountTag = ""
-                            ),
-                    )
+            Success(listOf(
+                "dg_order_detail",
+                "pg_order_detail"
             ))
         }
 
@@ -167,35 +139,11 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(DigitalRecommendationModel(
-                    "",
-                    "",
-                    listOf(
-                            DigitalRecommendationItemModel(
-                                    categoryName = "pg_order_detail",
-                                    iconUrl = "",
-                                    productName = "",
-                                    applink = "",
-                                    tracking = DigitalRecommendationTrackingModel(),
-                                    type = DigitalRecommendationType.CATEGORY,
-                                    price = "",
-                                    beforePrice = "",
-                                    discountTag = ""
-                            ),
-                            DigitalRecommendationItemModel(
-                                    categoryName = "dg_order_detail",
-                                    iconUrl = "",
-                                    productName = "",
-                                    applink = "",
-                                    tracking = DigitalRecommendationTrackingModel(),
-                                    type = DigitalRecommendationType.CATEGORY,
-                                    price = "",
-                                    beforePrice = "",
-                                    discountTag = ""
-                            ),
-                    )
+            Success(listOf(
+                "pg_order_detail",
+                "dg_order_detail"
             ))
         }
 
@@ -227,7 +175,7 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
             Fail(Throwable())
         }
@@ -241,35 +189,11 @@ class RechargeOrderDetailViewModelTest {
     }
 
     @Test
-    fun getDigitalRecommendationPositionData_whenValueSuccess_shouldReturnRecommendationWidgetModel() {
+    fun getDigitalRecommendationPositionData_whenValueSuccess_shouldReturnListOfString() {
         // given
-        val recommendationWidgetData = DigitalRecommendationModel(
-                "",
-                "",
-                listOf(
-                        DigitalRecommendationItemModel(
-                                categoryName = "dg_order_detail",
-                                iconUrl = "",
-                                productName = "",
-                                applink = "",
-                                tracking = DigitalRecommendationTrackingModel(),
-                                type = DigitalRecommendationType.CATEGORY,
-                                price = "",
-                                beforePrice = "",
-                                discountTag = ""
-                        ),
-                        DigitalRecommendationItemModel(
-                                categoryName = "pg_order_detail",
-                                iconUrl = "",
-                                productName = "",
-                                applink = "",
-                                tracking = DigitalRecommendationTrackingModel(),
-                                type = DigitalRecommendationType.CATEGORY,
-                                price = "",
-                                beforePrice = "",
-                                discountTag = ""
-                        ),
-                )
+        val expectedRecommendationList = listOf(
+            "dg_order_detail",
+            "pg_order_detail"
         )
         coEvery {
             orderDetailUseCase.execute(any())
@@ -277,17 +201,17 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(recommendationWidgetData)
+            Success(expectedRecommendationList)
         }
 
         // when
         viewModel.fetchData(RechargeOrderDetailRequest("", ""))
-        val digitalRecommendationWidgetData = viewModel.getRecommendationWidgetPositionData()
+        val actualResult = viewModel.getRecommendationWidgetPositionData()
 
         // then
-        assertEquals(digitalRecommendationWidgetData, recommendationWidgetData)
+        assertEquals(expectedRecommendationList, actualResult)
     }
 
     @Test
