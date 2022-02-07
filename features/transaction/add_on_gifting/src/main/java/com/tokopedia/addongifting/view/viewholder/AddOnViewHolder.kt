@@ -5,6 +5,7 @@ import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.databinding.ItemAddOnBinding
 import com.tokopedia.addongifting.view.AddOnActionListener
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
+import timber.log.Timber
 
 class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val listener: AddOnActionListener)
     : AbstractViewHolder<AddOnUiModel>(viewBinding.root) {
@@ -14,7 +15,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
     }
 
     override fun bind(element: AddOnUiModel) {
-
+        Timber.d("Here")
     }
 
 }

@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.addongifting.R
@@ -47,10 +49,10 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
         initializeView()
+        initializeObserver()
         initializeData(addOnProductData)
-        return view
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initializeView() {
@@ -68,10 +70,8 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         isDragable = true
         isHideable = true
         clearContentPadding = true
+//        isFullpage = true
         customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-        setOnDismissListener {
-            this@AddOnBottomSheet.viewBinding = null
-        }
         setChild(viewBinding.root)
     }
 
@@ -88,7 +88,47 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         viewModel.loadAddOnData(addOnProductData, mockAddOnResponse, mockAddOnSavedStateResponse)
     }
 
+    private fun initializeObserver() {
+        observeGlobalEvent()
+        observeProductData()
+        observeAddOnData()
+    }
+
+    private fun observeGlobalEvent() {
+        viewModel.globalEvent.observe(this, {
+            when (it.state) {
+                GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA -> {
+                    // ?
+                }
+                GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA -> {
+                    // Todo : show global error
+                }
+            }
+        })
+    }
+
+    private fun observeProductData() {
+        viewModel.productData.observe(this, {
+            addOrModify(it)
+        })
+    }
+
+    private fun observeAddOnData() {
+        viewModel.addOnData.observe(this, {
+            addOrModify(it)
+        })
+    }
+
+    private fun addOrModify(it: Visitable<*>) {
+        if (adapter?.data?.contains(it) == true) {
+            adapter?.modifyData(adapter?.data?.indexOf(it) ?: RecyclerView.NO_POSITION)
+        } else {
+            adapter?.addVisitable(it)
+        }
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
+        viewBinding = null
         activity?.finish()
         super.onDismiss(dialog)
     }

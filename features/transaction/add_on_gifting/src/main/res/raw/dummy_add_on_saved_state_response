@@ -8,13 +8,24 @@
           "add_on_id": 1,
           "add_on_qty": 1,
           "add_on_price": 1,
-          "add_on_metadata": "{\"add_on_note\":{\"is_custom_note\":true,\"to\":\"budi\",\"from\":\"tono\",\"notes\":\"Selamat Hari Raya\"}}"
+          "add_on_metadata": {
+            "add_on_note": {
+              "is_custom_note": true,
+              "to": "budi",
+              "from": "tono",
+              "notes": "Selamat Hari Raya"
+            }
+          }
         },
         {
           "add_on_id": 2,
           "add_on_qty": 1,
           "add_on_price": 1,
-          "add_on_metadata": "{\"add_on_note\":{\"is_custom_note\":false}}"
+          "add_on_metadata": {
+            "add_on_note": {
+              "is_custom_note": false
+            }
+          }
         }
       ]
     },
@@ -26,13 +37,24 @@
           "add_on_id": 1,
           "add_on_qty": 1,
           "add_on_price": 1,
-          "add_on_metadata": "{\"add_on_note\":{\"is_custom_note\":true,\"to\":\"budi\",\"from\":\"tono\",\"notes\":\"Selamat Hari Raya\"}}"
+          "add_on_metadata": {
+            "add_on_note": {
+              "is_custom_note": true,
+              "to": "budi",
+              "from": "tono",
+              "notes": "Selamat Hari Raya"
+            }
+          }
         },
         {
           "add_on_id": 2,
           "add_on_qty": 1,
           "add_on_price": 1,
-          "add_on_metadata": "{\"add_on_note\":{\"is_custom_note\":false}}"
+          "add_on_metadata": {
+            "add_on_note": {
+              "is_custom_note": false
+            }
+          }
         }
       ]
     }

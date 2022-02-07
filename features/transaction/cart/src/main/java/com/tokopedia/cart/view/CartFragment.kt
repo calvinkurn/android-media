@@ -546,6 +546,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     products = listOf(product1, product2, product3)
                 }
                 intent.putExtra("ADD_ON_PRODUCT_DATA", addOnProductData)
+                startActivity(intent)
             }
 //            goToCourierPageButton.setOnClickListener { checkGoToShipment("") }
             imgChevronSummary.setOnClickListener { onClickChevronSummaryTransaction() }
