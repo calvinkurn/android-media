@@ -95,6 +95,7 @@
 /features/top_ads/top_ads_widget/                       @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_headline/                     @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_edit/                         @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_on_boarding/                  @tokopedia/android-minionsolo-dev
 
 /features/merchant/talk/                            	@tokopedia/android-minionstuart-dev
 /features/merchant/variant_common/                      @tokopedia/android-minionstuart-dev

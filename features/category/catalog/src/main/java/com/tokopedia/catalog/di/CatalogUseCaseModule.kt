@@ -3,7 +3,9 @@ package com.tokopedia.catalog.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.catalog.repository.CatalogAllReviewRepository
 import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
+import com.tokopedia.catalog.usecase.detail.CatalogAllReviewUseCase
 import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
 import com.tokopedia.catalog.usecase.listing.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -38,6 +40,12 @@ class CatalogUseCaseModule {
     @Provides
     fun provideCatalogDetailRepository(): CatalogDetailRepository {
         return CatalogDetailRepository()
+    }
+
+    @CatalogScope
+    @Provides
+    fun provideCatalogAllReviewRepository(): CatalogAllReviewRepository {
+        return CatalogAllReviewRepository()
     }
 
     @CatalogScope
@@ -83,6 +91,12 @@ class CatalogUseCaseModule {
     fun getRemoveWishListUseCase(context: Context)
             : RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @CatalogScope
+    @Provides
+    fun getCatalogAllReviewUseCase(catalogAllReviewRepository: CatalogAllReviewRepository): CatalogAllReviewUseCase {
+        return CatalogAllReviewUseCase(catalogAllReviewRepository)
     }
 
 }

@@ -3,7 +3,6 @@ package com.tokopedia.catalog.model.util
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.util.CatalogConstant.CATALOG_URL
 
 object CatalogUtil {
 
@@ -42,5 +41,18 @@ object CatalogUtil {
                 imagesArray.add(it.imageURL)
         }
         return imagesArray
+    }
+
+    fun getRatingString(rating : String?) : String {
+        if(rating.isNullOrBlank()){
+            return ""
+        }
+        return if(rating.length >= 3){
+            rating.replace(".",",").substring(0,3)
+        }else if(rating.length <= 2 && rating.isNotBlank()) {
+            rating.substring(0,1)
+        }else {
+            ""
+        }
     }
 }
