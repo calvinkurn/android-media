@@ -41,7 +41,6 @@ import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherUiModel
-import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
@@ -54,6 +53,7 @@ import com.tokopedia.vouchercreation.common.utils.shareVoucher
 import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.update.bottomsheet.UpdateCouponPeriodBottomSheet
 import com.tokopedia.vouchercreation.product.update.bottomsheet.UpdateCouponQuotaBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
 import com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet.CouponFilterBottomSheet
@@ -72,7 +72,6 @@ import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.BroadCastVouch
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -280,7 +279,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     ) {
         this.selectedFilterType = selectedType
         this.selectedFilterTarget = selectedTarget
-        Timber.d("Selected filter after reset : Type ${selectedType.name} Target ${selectedTarget.name}")
     }
 
     private fun onStatusSelected(couponName: String, @VoucherStatus couponStatus: String) {
@@ -322,7 +320,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             print("sss")
         }
         chip.parentListener = {
-            //onCreateCouponMenuSelected()
+            onCreateCouponMenuSelected()
         }
 
         filterType.chevronListener = {
@@ -602,7 +600,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun editPeriodCoupon(coupon: VoucherUiModel) {
-        showEditPeriodBottomSheet(coupon)
+        showUpdateCouponPeriodBottomSheet(coupon)
     }
 
     private fun downloadCoupon(coupon: VoucherUiModel) {
@@ -637,22 +635,19 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         onDuplicateCouponMenuSelected(couponMapper.map(coupon))
     }
 
-    private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
+    private fun showUpdateCouponPeriodBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        VoucherPeriodBottomSheet.createInstance(voucher)
-            .setOnSuccessClickListener {
-                onSuccessUpdateVoucherPeriod()
+        val bottomSheet = UpdateCouponPeriodBottomSheet.newInstance(couponMapper.map(voucher))
+        bottomSheet.setOnSuccessClickListener { onSuccessUpdateVoucherPeriod() }
+        bottomSheet.setOnFailClickListener { message ->
+            val errorMessage = if (message.isNotBlank()) {
+                message
+            } else {
+                context?.getString(R.string.mvc_general_error).toBlankOrString()
             }
-            .setOnFailClickListener { message ->
-                val errorMessage =
-                    if (message.isNotBlank()) {
-                        message
-                    } else {
-                        context?.getString(R.string.mvc_general_error).toBlankOrString()
-                    }
-                view?.showErrorToaster(errorMessage)
-            }
-            .show(childFragmentManager)
+            view?.showErrorToaster(errorMessage)
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun onSuccessUpdateVoucherPeriod() {

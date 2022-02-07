@@ -98,6 +98,7 @@ class CouponListActivity : BaseSimpleActivity() {
                     ?: return
                 showBroadCastVoucherBottomSheet(coupon)
             }
+            couponListFragment.loadInitialData()
         }
     }
 

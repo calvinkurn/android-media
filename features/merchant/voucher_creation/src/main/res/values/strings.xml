@@ -442,6 +442,9 @@
     <string name="coupon_quota">Kuota Kupon</string>
     <string name="update_quota_rule">Kamu hanya dapat <b>menambah kuota kupon</b> selama masa kupon berlangsung.</string>
     <string name="update_quota_success">Kuota kupon berhasil ditambahkan</string>
+    <string name="update_active_coupon_period">Ubah periode kupon aktif</string>
+    <string name="start">Mulai</string>
+    <string name="end">Selesai</string>
 
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
