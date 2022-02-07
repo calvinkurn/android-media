@@ -17,6 +17,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.adapter.FirstVoucherAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.CentralizedPromoFirstVoucherBottomsheetLayoutBinding
@@ -111,6 +112,7 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
         setupCloseClickListener()
         setupBottomSheetText()
         setupRecyclerView()
+        setupTicker()
         setupButtonClick()
     }
 
@@ -149,6 +151,11 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
                 }
             adapter = FirstVoucherAdapter(itemList)
         }
+    }
+
+    private fun setupTicker() {
+        val isProductCoupon = voucherType == SellerHomeApplinkConst.TYPE_PRODUCT
+        binding?.firstVoucherTicker?.showWithCondition(!isProductCoupon)
     }
 
     private fun setupButtonClick() {
