@@ -28,7 +28,7 @@
             tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/iv_product_summary_stock"
+            android:id="@+id/tv_product_summary_stock"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
@@ -41,26 +41,26 @@
             tools:text="Stok 10" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/iv_product_summary_name"
+            android:id="@+id/tv_product_summary_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="2"
             android:ellipsize="end"
-            app:layout_constraintStart_toStartOf="@id/iv_product_summary_stock"
-            app:layout_constraintEnd_toEndOf="@id/iv_product_summary_stock"
-            app:layout_constraintTop_toBottomOf="@id/iv_product_summary_stock"
+            app:layout_constraintStart_toStartOf="@id/tv_product_summary_stock"
+            app:layout_constraintEnd_toEndOf="@id/tv_product_summary_stock"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_summary_stock"
             app:typographyType="body_3"
             tools:text="2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/iv_product_summary_price"
+            android:id="@+id/tv_product_summary_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="1"
-            app:layout_constraintStart_toStartOf="@id/iv_product_summary_name"
-            app:layout_constraintTop_toBottomOf="@id/iv_product_summary_name"
+            app:layout_constraintStart_toStartOf="@id/tv_product_summary_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_summary_name"
             app:typographyType="body_1"
             app:typographyWeight="bold"
             android:text="Rp 370.000"
@@ -78,9 +78,9 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:paddingBottom="@dimen/spacing_lvl1"
             android:layout_marginBottom="@dimen/spacing_lvl1"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_product_summary_price"
-            app:layout_constraintStart_toEndOf="@+id/iv_product_summary_price"
-            app:layout_constraintTop_toTopOf="@+id/iv_product_summary_price"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_product_summary_price"
+            app:layout_constraintStart_toEndOf="@+id/tv_product_summary_price"
+            app:layout_constraintTop_toTopOf="@+id/tv_product_summary_price"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:ignore="TextContrastCheck,TextContrastCheck"
@@ -108,12 +108,11 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:icon_name="DELETE"
-            app:layout_constraintTop_toBottomOf="@id/iv_product_summary_price"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_summary_price"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/iv_product_summary_stock"
+            app:layout_constraintEnd_toEndOf="@id/tv_product_summary_stock"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.cardview.widget.CardView>
