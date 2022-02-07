@@ -688,6 +688,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         spannableString.setSpan(
                             cs,
                             0,
+
                             MethodChecker.fromHtml(caption.author.name).length - 1 ,
                             Spannable.SPAN_INCLUSIVE_INCLUSIVE
                         )
@@ -888,88 +889,58 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         )
                                 )
 
-                                if (feedXCard.isTopAds) {
-                                    likedText.hide()
-                                    captionText.hide()
-                                    commentButton.invisible()
-                                    likeButton.invisible()
-                                    timestampText.hide()
-                                    seeAllCommentText.hide()
-                                    shopMenuIcon.hide()
-                                    val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
-                                    val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
-                                    val textViewPrice = findViewById<Typography>(R.id.top_ads_price)
-                                    val textViewSlashedPrice =
-                                            findViewById<Typography>(R.id.top_ads_slashed_price)
-                                    val labelDiscount = findViewById<Label>(R.id.top_ads_label_discount)
-                                    val labelCashback = findViewById<Label>(R.id.top_ads_label_cashback)
+                            if (feedXCard.isTopAds) {
+                                likedText.hide()
+                                captionText.hide()
+                                commentButton.invisible()
+                                likeButton.invisible()
+                                timestampText.hide()
+                                seeAllCommentText.hide()
+                                shopMenuIcon.hide()
+                                val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
+                                val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
+                                val textViewPrice = findViewById<Typography>(R.id.top_ads_price)
+                                val textViewSlashedPrice =
+                                        findViewById<Typography>(R.id.top_ads_slashed_price)
+                                val labelDiscount = findViewById<Label>(R.id.top_ads_label_discount)
+                                val labelCashback = findViewById<Label>(R.id.top_ads_label_cashback)
 
-                                    topAdsCard.show()
-                                    topAdsCard.setOnClickListener {
-                                        RouteManager.route(context, feedMedia.appLink)
-                                        listener?.onClickSekSekarang(feedXCard.id, feedXCard.shopId, TYPE_TOPADS_HEADLINE_NEW, feedXCard.followers.isFollowed, positionInFeed, feedXCard)
-                                    }
-                                    if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_CLEAN) {
-                                        textViewPrice.hide()
-                                        textViewSlashedPrice.hide()
-                                        labelDiscount.hide()
-                                        labelCashback.hide()
-
-                                        topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
-                                        topAdsProductName.setTypeface(null, Typeface.BOLD)
-                                        topAdsProductName.setTextColor(
-                                                MethodChecker.getColor(
-                                                        context,
-                                                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                                                )
-                                        )
-                                        topAdsProductName.show()
-                                        val constraintSet = ConstraintSet()
-                                        constraintSet.clone(topAdsCard)
-                                        constraintSet.connect(
-                                                topAdsProductName.id,
-                                                ConstraintSet.TOP,
-                                                topAdsCard.id,
-                                                ConstraintSet.TOP
-                                        )
-                                        constraintSet.connect(
-                                                topAdsProductName.id,
-                                                ConstraintSet.BOTTOM,
-                                                topAdsCard.id,
-                                                ConstraintSet.BOTTOM
-                                        )
-                                        constraintSet.applyTo(topAdsCard)
-                                    } else if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_INFO) {
-                                        val prioOne = feedMedia.slashedPrice.isNotEmpty()
-                                        val prioTwo = feedMedia.cashBackFmt.isNotEmpty()
-
-                                        topAdsProductName.weightType = Typography.REGULAR
-                                        topAdsProductName.displayTextOrHide(feedMedia.productName)
-                                        textViewPrice.displayTextOrHide(feedMedia.price)
-                                        if ((prioOne && prioTwo) || prioOne) {
-                                            textViewSlashedPrice.show()
-                                            textViewSlashedPrice.text = feedMedia.slashedPrice
-                                            textViewSlashedPrice.paintFlags = textViewSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-
-                                            if (feedMedia.discountPercentage.isNotEmpty()) {
-                                                labelDiscount.show()
-                                                labelDiscount.text = feedMedia.discountPercentage
-                                            } else {
-                                                labelDiscount.hide()
-                                            }
-                                            labelCashback.hide()
-                                        } else {
-                                            if (prioTwo) {
-                                                labelCashback.show()
-                                                labelCashback.text = feedMedia.cashBackFmt
-                                            } else {
-                                                textViewSlashedPrice.hide()
-                                                labelDiscount.hide()
-                                                labelCashback.hide()
-                                            }
-                                        }
-                                    }
+                                topAdsCard.show()
+                                topAdsCard.setOnClickListener {
+                                    RouteManager.route(context,feedMedia.appLink)
+                                    listener?.onClickSekSekarang(feedXCard.id,feedXCard.shopId, TYPE_TOPADS_HEADLINE_NEW,feedXCard.followers.isFollowed, positionInFeed, feedXCard)
                                 }
+                                    textViewPrice.hide()
+                                    textViewSlashedPrice.hide()
+                                    labelDiscount.hide()
+                                    labelCashback.hide()
+
+                                    topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
+                                    topAdsProductName.setTypeface(null,Typeface.BOLD)
+                                    topAdsProductName.setTextColor(
+                                            MethodChecker.getColor(
+                                                    context,
+                                                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                                            )
+                                    )
+                                    topAdsProductName.show()
+                                    val constraintSet = ConstraintSet()
+                                    constraintSet.clone(topAdsCard)
+                                    constraintSet.connect(
+                                            topAdsProductName.id,
+                                            ConstraintSet.TOP,
+                                            topAdsCard.id,
+                                            ConstraintSet.TOP
+                                    )
+                                    constraintSet.connect(
+                                            topAdsProductName.id,
+                                            ConstraintSet.BOTTOM,
+                                            topAdsCard.id,
+                                            ConstraintSet.BOTTOM
+                                    )
+                                    constraintSet.applyTo(topAdsCard)
+
+                            }
 
                                 doOnLayout {
                                     imageWidth = width

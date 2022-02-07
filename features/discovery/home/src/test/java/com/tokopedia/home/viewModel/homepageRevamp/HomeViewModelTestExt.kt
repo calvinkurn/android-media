@@ -346,19 +346,19 @@ fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
 }
 
 fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(
-    data: List<Visitable<*>>
+    data: HomeDynamicChannelModel
 ) {
     coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_TRUE
 }
 
 fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnFalse(
-    data: List<Visitable<*>>
+    data: HomeDynamicChannelModel
 ) {
     coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_FALSE
 }
 
 fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnNotSet(
-    data: List<Visitable<*>>
+    data: HomeDynamicChannelModel
 ) {
     coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_NOT_SET
 }
