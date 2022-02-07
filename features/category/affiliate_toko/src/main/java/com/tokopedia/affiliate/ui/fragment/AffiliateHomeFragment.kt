@@ -110,6 +110,16 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            "${AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_FRAGMENT}register",
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
     }
 
     private fun afterViewCreated() {

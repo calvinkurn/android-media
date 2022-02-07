@@ -212,7 +212,12 @@ object AffiliateAnalytics {
     interface ScreenKeys{
         companion object{
             const val AFFILIATE_HOME_SCREEN_NAME = "/affiliate portal - home page"
-            const val AFFILIATE_LOGIN_SCREEN_NAME = "/affiliate portal - registration page - "
+            const val AFFILIATE_LOGIN_SCREEN_NAME = "/affiliate portal - affiliate registration page - "
+            const val AFFILIATE_PORTFOLIO_NAME = "/affiliate portal - affiliate registration page - promotion channel input - "
+            const val AFFILIATE_TERMS_AND_CONDITION = "/affiliate portal - affiliate registration page - terms and condition - "
+            const val AFFILIATE_HOME_FRAGMENT = "/affiliate portal - affiliate home page - "
+            const val AFFILIATE_PROMOSIKAN_PAGE = "/affiliate portal - affiliate promosikan page"
+            const val AFFILIATE_PENDAPATAN_PAGE = "/affiliate portal - affiliate pendapatan page"
         }
     }
 

@@ -139,7 +139,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
-        pushOpenScreenEvent()
     }
 
     private val coachMarkItemList = ArrayList<CoachMark2Item>()
@@ -232,15 +231,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             return (fragment as? AffiliateHomeFragment)?.view?.findViewById<Typography>(R.id.user_name)
         }
         return null
-    }
-
-    private fun pushOpenScreenEvent() {
-        AffiliateAnalytics.sendOpenScreenEvent(
-            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
-            AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_SCREEN_NAME,
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
-        )
     }
 
     private fun clearBackStack() {

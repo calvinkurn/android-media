@@ -78,6 +78,16 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            AffiliateAnalytics.ScreenKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
     }
 
     private fun afterViewCreated() {
@@ -299,9 +309,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
     override fun onEditState(state: Boolean) {
         AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+                AffiliateAnalytics.EventKeys.CLICK_PG,
                 AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
-                AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
                 "", userSessionInterface.userId)
     }
 

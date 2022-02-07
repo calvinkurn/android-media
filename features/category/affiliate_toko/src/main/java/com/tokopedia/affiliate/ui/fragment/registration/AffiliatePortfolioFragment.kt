@@ -97,6 +97,17 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             adapter = affiliateAdapter
         }
         affiliatePortfolioViewModel.createDefaultListForSm()
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        val loginText = if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            "${AffiliateAnalytics.ScreenKeys.AFFILIATE_PORTFOLIO_NAME}$loginText",
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
     }
 
     private fun initButton() {

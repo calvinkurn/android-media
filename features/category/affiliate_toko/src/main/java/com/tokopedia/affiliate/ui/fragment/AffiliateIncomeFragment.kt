@@ -86,6 +86,19 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        context?.let {
+            AffiliateAnalytics.sendOpenScreenEvent(
+                AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+                AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE,
+                UserSession(it).isLoggedIn,
+                UserSession(it).userId
+            )
+        }
+
     }
 
     override fun getScreenName(): String {

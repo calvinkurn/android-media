@@ -90,6 +90,17 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             adapter = affiliateAdapter
         }
         setDataToRV(createListForTermsAndCondition(context))
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        val loginText = if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            "${AffiliateAnalytics.ScreenKeys.AFFILIATE_TERMS_AND_CONDITION}$loginText",
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
     }
 
     private fun sendButtonClick(eventAction: String) {
