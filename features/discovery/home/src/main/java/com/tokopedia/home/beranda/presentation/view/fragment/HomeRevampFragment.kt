@@ -702,16 +702,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
         context?.let { ctx ->
-            showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
-//            showTokopointsEligibleCoachmark(BalanceCoachmark("Test", "Description"))
-//            showTokonowCoachmark()
-//            if (!isNewWalletAppCoachmarkShown(ctx)) {
-//                showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
-//            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
-//                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
-//            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
-//                showTokonowCoachmark()
-//            }
+            if (!isNewWalletAppCoachmarkShown(ctx)) {
+                showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
+            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
+                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
+            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
+                showTokonowCoachmark()
+            }
         }
     }
 
