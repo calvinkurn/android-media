@@ -547,7 +547,7 @@ class DigitalPDPDataPlanFragment :
                 CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber) }
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number
+                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
                 )
             )
             setInputFieldType(RechargeClientNumberWidget.InputFieldType.Telco)

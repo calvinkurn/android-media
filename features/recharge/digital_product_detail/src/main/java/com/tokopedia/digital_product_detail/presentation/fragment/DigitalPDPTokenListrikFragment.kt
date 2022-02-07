@@ -572,7 +572,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number
+                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_token_listrik
                 )
             )
             setInputFieldType(RechargeClientNumberWidget.InputFieldType.Listrik)

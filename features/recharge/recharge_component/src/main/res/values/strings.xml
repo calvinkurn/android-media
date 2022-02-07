@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="content_desc_recharge_bu_parallax_image">Background Image</string>
-    <string name="label_recharge_client_number">Nama Kontak atau Nomor HP</string>
+    <string name="label_recharge_client_number_telco">Nama Kontak atau Nomor HP</string>
+    <string name="label_recharge_client_number_token_listrik">No. Meter atau ID Pelanggan</string>
     <string name="buy_widget_total_price">Total Bayar</string>
     <string name="buy_widget_total_price_btn">Lanjutkan</string>
     <string name="client_number_prefix_error">Hmm, nggak ketemu provider-nya. Cek lagi, ya.</string>
