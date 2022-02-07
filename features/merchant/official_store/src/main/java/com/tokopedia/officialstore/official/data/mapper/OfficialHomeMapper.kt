@@ -268,7 +268,7 @@ class OfficialHomeMapper (
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
                 newData.channelModel.channelHeader = it.channelModel.channelHeader
                 try {
-                    if (listOfficialStore.size > index && it.channelModel.id == newData.channelModel.id) {
+                    if (listOfficialStore.size > index) {
                         listOfficialStore[index] = newData.copy()
                     }
                 } catch (e: Exception) {
