@@ -88,9 +88,9 @@ class PlayBottomSheetViewModelTest {
         coEvery { mockRepo.addItemToCart(any(), any(), any(), any(), any()) } returns modelBuilder.buildAddToCartModelResponseSuccess()
 
         val expectedModel = modelBuilder.buildCartUiModel(
-                action = ProductAction.AddToCart,
-                product = productModelBuilder.buildProductLine(),
-                bottomInsetsType = BottomInsetsType.VariantSheet
+            action = ProductAction.AddToCart,
+            product = productModelBuilder.buildProductLine(),
+            bottomInsetsType = BottomInsetsType.VariantSheet,
         )
         val expectedResult = PlayResult.Success(
                 Event(expectedModel)

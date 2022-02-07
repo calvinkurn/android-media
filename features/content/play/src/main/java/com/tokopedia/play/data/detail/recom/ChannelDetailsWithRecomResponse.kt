@@ -163,7 +163,7 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("pinned_product_config")
         val pinnedProductConfig: PinnedProductConfig = PinnedProductConfig(),
 
-            @SerializedName("room_background")
+        @SerializedName("room_background")
         val roomBackground: RoomBackground = RoomBackground(),
 
         @SerializedName("reminder")
