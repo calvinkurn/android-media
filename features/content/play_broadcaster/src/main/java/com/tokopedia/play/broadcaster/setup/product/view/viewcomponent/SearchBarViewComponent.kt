@@ -10,19 +10,30 @@ import com.tokopedia.unifycomponents.ChipsUnify
  */
 class SearchBarViewComponent(
     private val view: PlaySearchBar,
-    eventBus: EventBus<in Any>,
+    eventBus: EventBus<in Event>,
 ) : ViewComponent(view) {
 
     init {
+        view.setListener(object : PlaySearchBar.Listener {
+            override fun onNewKeyword(view: PlaySearchBar, keyword: String) {
+                eventBus.emit(Event.OnSearched(keyword))
+            }
 
-    }
+            override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
 
-    fun setState(text: String, isSelected: Boolean) {
-//        view.chipText = text
-//        view.chipType = if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+            }
+
+            override fun onCleared(view: PlaySearchBar) {
+                eventBus.emit(Event.OnSearched(""))
+            }
+        })
     }
 
     fun setPlaceholder(placeholder: String) {
         view.setHint(placeholder)
+    }
+
+    sealed class Event {
+        data class OnSearched(val keyword: String) : Event()
     }
 }

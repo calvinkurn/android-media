@@ -21,8 +21,11 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,6 +46,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
 
     private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
+
+    private val searchQuery = MutableStateFlow("")
 
     private var getProductListJob: Job? = null
 
@@ -82,6 +87,15 @@ class PlayBroProductSetupViewModel @Inject constructor(
         getEtalaseList()
 
         viewModelScope.launch {
+            searchQuery.debounce(300)
+                .collectLatest { query ->
+                    _loadParam.update {
+                        it.copy(keyword = query)
+                    }
+                }
+        }
+
+        viewModelScope.launch {
             _loadParam.collectLatest {
                 handleLoadProductList(it, true)
             }
@@ -98,6 +112,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
                 param = _loadParam.value,
                 resetList = false,
             )
+            is PlayBroProductChooserAction.SearchProduct -> handleSearchProduct(action.keyword)
         }
     }
 
@@ -216,5 +231,9 @@ class PlayBroProductSetupViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun handleSearchProduct(keyword: String) {
+        searchQuery.value = keyword
     }
 }

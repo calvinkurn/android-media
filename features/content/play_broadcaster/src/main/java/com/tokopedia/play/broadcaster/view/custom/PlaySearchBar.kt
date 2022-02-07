@@ -93,11 +93,9 @@ class PlaySearchBar : ConstraintLayout {
         etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 onChangeFocusTransition()
-//                tvCancel.visible()
                 etSearch.addTextChangedListener(getTextWatcher())
             }
             else {
-//                if (etSearch.text.isEmpty()) tvCancel.performClick()
                 hideKeyboard()
                 etSearch.removeTextChangedListener(getTextWatcher())
             }
@@ -113,7 +111,7 @@ class PlaySearchBar : ConstraintLayout {
 
         ivClear.setOnClickListener {
             clearText()
-            etSearch.requestFocus()
+            mListener?.onCleared(this@PlaySearchBar)
         }
     }
 
@@ -221,6 +219,7 @@ class PlaySearchBar : ConstraintLayout {
 
         fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {}
         fun onCanceled(view: PlaySearchBar) {}
+        fun onCleared(view: PlaySearchBar) {}
         fun onNewKeyword(view: PlaySearchBar, keyword: String)
         fun onSearchButtonClicked(view: PlaySearchBar, keyword: String)
     }

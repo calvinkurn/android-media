@@ -151,6 +151,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     is SortChipsViewComponent.Event -> handleSortChipsEvent(it)
                     is EtalaseChipsViewComponent.Event -> handleEtalaseChipsEvent(it)
                     is ProductListViewComponent.Event -> handleProductListEvent(it)
+                    is SearchBarViewComponent.Event -> handleSearchBarEvent(it)
                 }
             }
         }
@@ -269,6 +270,14 @@ class ProductChooserBottomSheet @Inject constructor(
                 viewModel.submitAction(
                     PlayBroProductChooserAction.LoadProductList(keyword = "")
                 )
+            }
+        }
+    }
+
+    private fun handleSearchBarEvent(event: SearchBarViewComponent.Event) {
+        when (event) {
+            is SearchBarViewComponent.Event.OnSearched -> {
+                viewModel.submitAction(PlayBroProductChooserAction.SearchProduct(event.keyword))
             }
         }
     }
