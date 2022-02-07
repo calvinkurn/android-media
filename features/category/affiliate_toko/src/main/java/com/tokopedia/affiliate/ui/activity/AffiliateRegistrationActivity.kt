@@ -64,7 +64,7 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
     private fun initObserver() {
         affiliateRegistrationSharedViewModel.getUserAction().observe(this,
-            EventObserver {
+             {
             when(it){
                 AffiliateRegistrationSharedViewModel.UserAction.NaigateToPortFolio -> {
                     openFragment(AffiliatePortfolioFragment.getFragmentInstance(),AffiliatePortfolioFragment.TAG)

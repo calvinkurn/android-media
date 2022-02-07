@@ -193,7 +193,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
 
     private fun initObserver() {
         affiliateLoginSharedViewModel.getUserAction().observe(viewLifecycleOwner,
-            EventObserver {
+             {
             when(it){
                 AffiliateRegistrationSharedViewModel.UserAction.RegisteredAction -> {
                     onUserRegistered()
