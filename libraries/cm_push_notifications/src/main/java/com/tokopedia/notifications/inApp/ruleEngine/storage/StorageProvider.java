@@ -22,6 +22,7 @@ import rx.Completable;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
+
 public class StorageProvider implements InterfaceDataStore {
 
     private static final String SERVER_LOGGER_TAG = "CM_VALIDATION";

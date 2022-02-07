@@ -46,6 +46,13 @@ object CatalogDetailMapper {
                     listOfComponents.add(CatalogVideoDataModel(name = component.name, type = component.type , videosList = videoArray ))
                 }
 
+                CatalogConstant.REVIEW -> {
+                    val crudeReviewData = component.data
+                    listOfComponents.addAll(mapIntoReviewDataModel(catalogGetDetailModular.basicInfo.name ?: "",
+                        catalogGetDetailModular.basicInfo.id
+                            , component.name, component.type, crudeReviewData))
+                }
+
                 CatalogConstant.COMPARISION -> {
                     component.data?.firstOrNull()?.let { comparisionData ->
                         val keySet = LinkedHashSet<String>()
@@ -91,6 +98,18 @@ object CatalogDetailMapper {
         return listOfComponents
     }
 
+    private fun mapIntoReviewDataModel(catalogName : String, catalogId : String, componentName : String,
+                                       componentType : String, crudeReviewData: List<ComponentData>?)
+    : List<BaseCatalogDataModel> {
+        val listOfReviewComponents = ArrayList<BaseCatalogDataModel>();
+        crudeReviewData?.firstOrNull()?.let {  componentData ->
+            listOfReviewComponents.add(CatalogReviewDataModel(componentName, type = componentType,
+                    data = ReviewComponentData(catalogName,catalogId,componentData.avgRating,componentData.reviews,
+                            componentData.totalHelpfulReview)))
+        }
+        return listOfReviewComponents
+    }
+
     fun getFullSpecificationsModel(catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular) : CatalogFullSpecificationDataModel{
         var catalogFullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
         catalogGetDetailModular.components?.forEachIndexed { _, component ->
@@ -109,4 +128,5 @@ object CatalogDetailMapper {
         }
         return catalogFullSpecificationDataModel
     }
+
 }

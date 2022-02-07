@@ -99,7 +99,7 @@ public class RedeemVoucherView extends LinearLayout {
         redeemVoucher.setText(actionButton.getLabel());
         if (!TextUtils.isEmpty(actionButton.getHeader())) {
             Header header = actionButton.getHeaderObject();
-            if (!TextUtils.isEmpty(header.getItemLabel())) {
+            if (header != null && !TextUtils.isEmpty(header.getItemLabel())) {
                 voucherNumber.setText(header.getItemLabel());
             }
         }else {

@@ -13,6 +13,7 @@ ext {
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
     workManagerVersion = "2.6.0"
+    startupRuntimeVersion = "1.1.0"
 
     biometricVersion = "1.1.0"
     appCompatVersion = '1.2.0-rc01'
@@ -104,7 +105,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.13'
     unifyPrinciplesVersion = '1.3.10'
-    unifyComponentsVersion = '1.1.78'
+    unifyComponentsVersion = '1.1.81'
     unifyCoachMarkVersion = '1.2.14'
     unifyCalendarVersion = '1.1.4'
     unifyBannerVersion = '1.0.4'
@@ -271,7 +272,7 @@ ext {
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.3.7",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.4.3",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
@@ -288,7 +289,8 @@ ext {
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
             window                : "androidx.window:window:$windowVersion",
             mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
-            localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion"
+            localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion",
+            startupRuntime        : "androidx.startup:startup-runtime:$startupRuntimeVersion",
     ]
 
     testDependencies = [

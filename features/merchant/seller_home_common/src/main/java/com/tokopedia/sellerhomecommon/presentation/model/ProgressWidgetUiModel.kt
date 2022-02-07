@@ -7,7 +7,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  * Created By @ilhamsuaib on 20/05/20
  */
 
-class ProgressWidgetUiModel(
+data class ProgressWidgetUiModel(
         override val id: String,
         override val widgetType: String,
         override val title: String,
@@ -17,6 +17,7 @@ class ProgressWidgetUiModel(
         override val tag: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val gridSize: Int,
         override val isShowEmpty: Boolean,
         override var data: ProgressDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
@@ -31,8 +32,8 @@ class ProgressWidgetUiModel(
         return typeFactory.type(this)
     }
 
-    override fun copy(): BaseWidgetUiModel<ProgressDataUiModel> {
-        return ProgressWidgetUiModel(id, widgetType, title, appLink, subtitle, tooltip, tag, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    override fun copyWidget(): BaseWidgetUiModel<ProgressDataUiModel> {
+        return this.copy()
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<ProgressDataUiModel>): Boolean {

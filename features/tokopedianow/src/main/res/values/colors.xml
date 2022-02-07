@@ -12,5 +12,7 @@
     <color name="tokopedianow_header_background_dms_color_4">#83ECB2</color>
     <color name="tokopedianow_header_background_dms_color_5">#C9FDE0</color>
     <color name="tokopedianow_divider_category_chooser_dms_color">#E5E7E9</color>
+    <color name="tokopedianow_circle_progressbar_background_dms_color">#E5E7E9</color>
     <color name="tokopedianow_cardview_background_dms_color">@color/Unify_NN0</color>
+    <color name="tokopedianow_cardview_inactive_background_dms_color">@color/Unify_NN50</color>
 </resources>

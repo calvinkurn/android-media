@@ -40,8 +40,6 @@ yang ditemukan</string>
         Pesan</string>
     <string name="chat_yesterday_date">Kemarin</string>
     <string name="chat_today_date">Hari ini</string>
-    <string name="undersize_image">Ukuran Dimensi Gambar Minimal Lebar 300px dan Tinggi 100px</string>
-    <string name="oversize_image">Ukuran gambar maksimal 15Mb</string>
 
     <!-- Chat Template -->
     <string name="add_template_chat_title">Tambah Template Pesan</string>
@@ -127,7 +125,6 @@ yang ditemukan</string>
     <string name="topchat_chat_delete_confirm">Hapus</string>
 
     <string name="chat_check_cart">Lihat</string>
-    <string name="error_compress_image">Gagal mengkompres gambar. Silahkan pilih gambar lain.</string>
     <string name="menu_delete_chat">Hapus percakapan</string>
     <string name="menu_mark_as_read">Tandai sudah dibaca</string>
     <string name="menu_mark_as_unread">Tandai belum dibaca</string>
@@ -222,6 +219,7 @@ yang ditemukan</string>
     <string name="title_topchat_delete">Hapus</string>
     <string name="title_topchat_reply">Balas</string>
     <string name="title_topchat_copy">Salin</string>
+    <string name="title_topchat_delete_msg">Hapus</string>
     <string name="title_topchat_new">BARU</string>
 
     <string name="title_topchat_bubble_long_click_menu">Pengaturan pesan</string>
@@ -230,4 +228,10 @@ yang ditemukan</string>
     <string name="desc_topchat_reply_bubble_onboarding">Tinggal tekan dan tahan chat yang mau kamu balas, lalu pilih Balas. Selamat mencoba!</string>
 
     <string name="topchat_product_added_to_wishlist">Cek Wishlist Kamu</string>
+    <string name="topchat_success_delete_msg_bubble">Pesan berhasil dihapus.</string>
+    <string name="topchat_error_delete_msg_bubble">Pesan gagal dihapus.</string>
+    <string name="topchat_title_delete_msg_bubble_confirmation">Mau hapus pesan ini?</string>
+    <string name="topchat_action_delete_msg_bubble_confirmation">Ya, Hapus</string>
+    <string name="topchat_desc_delete_msg_bubble_confirmation">Pesan yang dihapus tidak akan bisa dilihat lagi oleh kamu dan lawan bicaramu.</string>
+    <string name="desc_topchat_max_char_exceeded">Coba pendekin %s karakter lagi, ya!</string>
 </resources>

@@ -4,9 +4,12 @@ import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -45,7 +48,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                     val paymentProcessor: Lazy<OrderSummaryPagePaymentProcessor>,
                                                     private val calculator: OrderSummaryPageCalculator,
                                                     private val userSession: UserSessionInterface,
-                                                    private val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(executorDispatchers.immediate) {
+                                                    private val orderSummaryAnalytics: OrderSummaryAnalytics,
+                                                    private val eligibleForAddressUseCase: EligibleForAddressUseCase) : BaseViewModel(executorDispatchers.immediate) {
 
     init {
         initCalculator()
@@ -72,6 +76,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     val addressState: OccMutableLiveData<AddressState> = OccMutableLiveData(AddressState())
 
+    val eligibleForAnaRevamp = OccMutableLiveData<OccState<OrderEnableAddressFeature>>(OccState.Loading)
+
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
@@ -81,10 +87,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun getShopId(): String {
         return orderCart.shop.shopId.toString()
-    }
-
-    fun getPaymentProfile(): String {
-        return orderCart.paymentProfile
     }
 
     fun getActivationData(): OrderPaymentWalletActionData {
@@ -772,11 +774,24 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
     }
 
+    fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
+            },
+            {
+                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
         afpbJob?.cancel()
+        eligibleForAddressUseCase.cancelJobs()
         super.onCleared()
     }
 
