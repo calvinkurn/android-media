@@ -1178,7 +1178,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             firstUnavailableShop?.let { shop ->
                 if (shop is CartShopHolderData) {
                     val tmpProducts = getNonCollapsibleUnavailableProduct(shop)
-                    val cartShopHolderData = shop.copy()
+                    val cartShopHolderData = shop.deepCopy()
                     cartShopHolderData.productUiModelList.clear()
                     cartShopHolderData.productUiModelList.addAll(tmpProducts)
 
