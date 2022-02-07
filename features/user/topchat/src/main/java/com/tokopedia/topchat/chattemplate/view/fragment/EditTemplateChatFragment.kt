@@ -11,8 +11,6 @@ import android.os.Bundle
 import com.tokopedia.topchat.common.InboxMessageConstant
 import rx.functions.Action1
 import android.graphics.PorterDuff
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
 import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateResultModel
 import android.content.Intent
 import android.view.*
@@ -23,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chattemplate.di.ActivityComponentFactory
 import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel
@@ -210,12 +209,8 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
         initializeComponent().inject(this)
     }
 
-    protected open fun initializeComponent(): TemplateChatComponent {
-        val appComponent = (requireActivity().application as BaseMainApplication)
-            .baseAppComponent
-        return DaggerTemplateChatComponent.builder()
-            .baseAppComponent(appComponent)
-            .build() as DaggerTemplateChatComponent
+    private fun initializeComponent(): TemplateChatComponent {
+        return ActivityComponentFactory.instance.createActivityComponent(requireActivity())
     }
 
     private fun onResult(editTemplateViewModel: EditTemplateResultModel, index: Int, s: String) {

@@ -45,12 +45,6 @@ open class TemplateChatModule {
 
     @ActivityScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSession {
-        return UserSession(context)
-    }
-
-    @ActivityScope
-    @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }

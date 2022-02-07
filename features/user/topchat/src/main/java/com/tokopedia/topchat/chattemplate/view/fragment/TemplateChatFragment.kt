@@ -16,7 +16,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
 import com.tokopedia.topchat.chattemplate.di.ActivityComponentFactory
-import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
 import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
@@ -36,7 +35,6 @@ import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -153,7 +151,7 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
         initializeComponent().inject(this)
     }
 
-    protected open fun initializeComponent(): TemplateChatComponent {
+    private fun initializeComponent(): TemplateChatComponent {
         return ActivityComponentFactory.instance.createActivityComponent(requireActivity())
     }
 
