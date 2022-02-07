@@ -152,9 +152,12 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 chipsData[adapterPosition].cta?.type?.let { ctaType ->
                     chipsData[adapterPosition].tenure?.let{tenure ->
                         chipsData[adapterPosition].productCode?.let {productName ->
-                            widgetClickListner.clickedWidget(
-                                ctaType, url, tenure,productName
-                            )
+                            chipsData[adapterPosition].cta?.bottomsheet?.let {
+                                widgetClickListner.clickedWidget(
+                                    ctaType, url, tenure,productName,it
+                                )
+                            }
+
                         }
 
                     }

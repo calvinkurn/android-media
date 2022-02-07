@@ -141,6 +141,7 @@ import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
+import com.tokopedia.product.detail.view.bottomsheet.GopayLinkBenefitBottomSheet
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
@@ -772,8 +773,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             if (fintechRedirectionWidgetDataClass.cta == 2) {
                 openWebViewUrl(url = rediretionLink, showTitleBar = true)
             } else {
+//                activity?.let {
+//                    GopayLinkBenefitBottomSheet().showBottomSheet(it.supportFragmentManager,
+//                        Bundle().apply.putParcelable(BOTTOMSHEET_DETAIl,fintechRedirectionWidgetDataClass.widgetBottomSheet) })
+//                }
+
                 val intent = RouteManager.getIntent(requireContext(), rediretionLink)
                 startActivity(intent)
+
             }
         }
     }

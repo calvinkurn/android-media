@@ -14,13 +14,13 @@ import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
+import com.tokopedia.pdp.fintech.domain.datamodel.WidgetBottomsheet
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -108,14 +108,15 @@ class PdpFintechWidget @JvmOverloads constructor(
         val recyclerView = baseView.findViewById<RecyclerView>(R.id.recycler_items)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
-            override fun clickedWidget(cta: Int, url: String, tenure: Int, gatewayBrand: String) {
+            override fun clickedWidget(cta: Int, url: String, tenure: Int, gatewayBrand: String,widgetBottomsheet: WidgetBottomsheet) {
                 instanceProductUpdateListner.fintechRedirection(
                     FintechRedirectionWidgetDataClass(
                        cta =  cta,
                        redirectionUrl =  url,
                        tenure= tenure,
                        productUrl =  idToProductUrl[productID],
-                       gatewayCode =  gatewayBrand
+                       gatewayCode =  gatewayBrand,
+                        widgetBottomSheet = widgetBottomsheet
                     )
                 )
             }
