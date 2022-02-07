@@ -67,3 +67,7 @@ const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?(vt\\.tiktok\\.com
 const val AFFILIATE_TWITTER_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(twitter.com)\\/[\\w-]+"
 
 const val COACHMARK_TAG = "affiliate_coachmark_onboarding"
+
+const val TRANSACTION_TYPE_DEPOSIT = "TRANSACTION_TYPE_DEPOSIT"
+
+const val TRANSACTION_TYPE_WITHDRAWAL = "TRANSACTION_TYPE_WITHDRAWAL"

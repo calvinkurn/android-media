@@ -140,6 +140,7 @@ object AffiliateAnalytics {
 
             const val CLICK_REGISTER = "clickRegister"
             const val CLICK_PG = "clickPG"
+            const val VIEW_ITEM = "view_item"
         }
     }
 
@@ -204,6 +205,7 @@ object AffiliateAnalytics {
             const val CLICK_GENERATED_LINK_HISTORY = "click - generated link history"
             const val CLICK_PERNAH_DIBELI_TAB = "click - pernah dibeli tab"
             const val CLICK_PERNAH_DILIHAT_TAB = "click - pernah dilihat tab"
+            const val IMPRESSION_TRANSACTION_CARD = "impression - transaction card"
         }
     }
 

@@ -40,6 +40,8 @@ import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
+import com.tokopedia.affiliate.ui.viewholder.AffiliateTransactionHistoryItemVH
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -90,6 +92,8 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         return  ""
     }
 
+    private var lastItem : Visitable<AffiliateAdapterTypeFactory>? = null
+
     private fun setObservers() {
         affiliateIncomeViewModel.getAffiliateBalanceData().observe(this, {
             if(it.status == 1)
@@ -104,6 +108,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             if(it.isEmpty() && listSize == 0){
                 showGlobalErrorEmptyState()
             } else {
+                lastItem = it[it.lastIndex]
                 hideGlobalErrorEmptyState()
                 listSize += it.size
                 adapter.addMoreData(it)
@@ -338,9 +343,30 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                sendImpressionTracker()
                 if(affiliateIncomeViewModel.hasNext)
                     affiliateIncomeViewModel.getAffiliateTransactionHistory(page - 1)
             }
+        }
+    }
+
+    private fun sendImpressionTracker() {
+        val item = (lastItem as? AffiliateTransactionHistoryItemModel)?.transaction
+        var transactionID = ""
+        var label = ""
+        item?.transactionID?.let {
+            transactionID = it
+        }
+        item?.transactionType?.let {
+            if(it == TRANSACTION_TYPE_DEPOSIT) label = AffiliateAnalytics.LabelKeys.DEPOSIT
+            else if(it == TRANSACTION_TYPE_WITHDRAWAL) label = AffiliateAnalytics.LabelKeys.WITHDRAWAL
+        }
+
+        context?.let {
+            AffiliateAnalytics.sendIcomeTracker(
+                AffiliateAnalytics.EventKeys.VIEW_ITEM,AffiliateAnalytics.ActionKeys.IMPRESSION_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                label,listSize,transactionID,UserSession(it).userId
+            )
         }
     }
 
