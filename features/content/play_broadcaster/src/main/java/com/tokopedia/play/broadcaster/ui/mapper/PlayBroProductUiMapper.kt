@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -54,47 +55,53 @@ class PlayBroProductUiMapper @Inject constructor() {
         }
     }
 
-    fun mapProductsInEtalase(response: GetShopProductsResponse): List<ProductUiModel> {
-        return response.response.data.map { data ->
-            ProductUiModel(
-                id = data.productId,
-                name = data.name,
-                imageUrl = data.primaryImage.thumbnail,
-                stock = data.stock,
-                price = if (data.campaign.discountedPercentage == "0") {
-                    OriginalPrice(data.price.textIdr, 0.0)
-                } else DiscountedPrice(
-                    originalPrice = data.campaign.originalPriceFmt,
-                    originalPriceNumber = 0.0,
-                    discountPercent = data.campaign.discountedPercentage.toInt(),
-                    discountedPrice = data.campaign.discountedPriceFmt,
-                    discountedPriceNumber = 0.0,
+    fun mapProductsInEtalase(response: GetShopProductsResponse): PagedDataUiModel<ProductUiModel> {
+        return PagedDataUiModel(
+            dataList = response.response.data.map { data ->
+                ProductUiModel(
+                    id = data.productId,
+                    name = data.name,
+                    imageUrl = data.primaryImage.thumbnail,
+                    stock = data.stock,
+                    price = if (data.campaign.discountedPercentage == "0") {
+                        OriginalPrice(data.price.textIdr, 0.0)
+                    } else DiscountedPrice(
+                        originalPrice = data.campaign.originalPriceFmt,
+                        originalPriceNumber = 0.0,
+                        discountPercent = data.campaign.discountedPercentage.toInt(),
+                        discountedPrice = data.campaign.discountedPriceFmt,
+                        discountedPriceNumber = 0.0,
+                    )
                 )
-            )
-        }
+            },
+            hasNextPage = response.response.links.next.isNotBlank(),
+        )
     }
 
-    fun mapProductsInCampaign(response: GetCampaignProductResponse): List<ProductUiModel> {
-        return response.getCampaignProduct.products.map { data ->
-            ProductUiModel(
-                id = if (data.isVariant) data.parentId else data.id.toString(),
-                name = data.name,
-                imageUrl = data.imageUrl,
-                stock = data.campaign.customStock,
-                price = if (data.campaign.discountPercentage > 0) {
-                    DiscountedPrice(
-                        originalPrice = data.campaign.originalPrice,
-                        originalPriceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
-                        discountPercent = data.campaign.discountPercentage.toInt(),
-                        discountedPrice = data.campaign.discountedPrice,
-                        discountedPriceNumber = data.campaign.discountedPriceFmt.toDoubleOrNull() ?: 0.0,
+    fun mapProductsInCampaign(response: GetCampaignProductResponse): PagedDataUiModel<ProductUiModel> {
+        return PagedDataUiModel(
+            dataList = response.getCampaignProduct.products.map { data ->
+                ProductUiModel(
+                    id = if (data.isVariant) data.parentId else data.id.toString(),
+                    name = data.name,
+                    imageUrl = data.imageUrl,
+                    stock = data.campaign.customStock,
+                    price = if (data.campaign.discountPercentage > 0) {
+                        DiscountedPrice(
+                            originalPrice = data.campaign.originalPrice,
+                            originalPriceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
+                            discountPercent = data.campaign.discountPercentage.toInt(),
+                            discountedPrice = data.campaign.discountedPrice,
+                            discountedPriceNumber = data.campaign.discountedPriceFmt.toDoubleOrNull() ?: 0.0,
+                        )
+                    } else OriginalPrice(
+                        price = data.campaign.originalPrice,
+                        priceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
                     )
-                } else OriginalPrice(
-                    price = data.campaign.originalPrice,
-                    priceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
                 )
-            )
-        }
+            },
+            hasNextPage = response.getCampaignProduct.products.isNotEmpty(),
+        )
     }
 
     private fun Long.forceToUTCWithoutTimezone(): Date {

@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.domain.repository
 
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 
 /**
@@ -18,10 +19,10 @@ interface PlayBroProductRepository {
         page: Int,
         keyword: String,
         sort: Int,
-    ): List<ProductUiModel>
+    ): PagedDataUiModel<ProductUiModel>
 
     suspend fun getProductsInCampaign(
         campaignId: String,
         page: Int,
-    ): List<ProductUiModel>
+    ): PagedDataUiModel<ProductUiModel>
 }

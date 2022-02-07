@@ -21,11 +21,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -171,7 +169,11 @@ class PlayBroProductSetupViewModel @Inject constructor(
         param: ProductListPaging.Param,
         resetList: Boolean,
     ) {
-        if (!resetList && _focusedProductList.value.resultState == PageResultState.Loading) return
+        if (!resetList && when (val result = _focusedProductList.value.resultState) {
+            PageResultState.Loading -> true
+            is PageResultState.Success -> !result.hasNextPage
+            else -> false
+        }) return
 
         _focusedProductList.update {
             it.copy(
@@ -183,22 +185,22 @@ class PlayBroProductSetupViewModel @Inject constructor(
             val page = if (resetList) 1 else _focusedProductList.value.page + 1
             when (val selectedEtalase = _loadParam.value.etalase) {
                 is SelectedEtalaseModel.Campaign -> {
-                    val productList = repo.getProductsInCampaign(
+                    val pagedProductList = repo.getProductsInCampaign(
                         campaignId = selectedEtalase.campaign.id,
                         page = page
                     )
 
                     _focusedProductList.update {
                         it.copy(
-                            productList = it.productList + productList,
-                            resultState = PageResultState.Success(productList.isNotEmpty()),
+                            productList = it.productList + pagedProductList.dataList,
+                            resultState = PageResultState.Success(pagedProductList.hasNextPage),
                             page = page,
                         )
                     }
                 }
                 is SelectedEtalaseModel.Etalase,
                 SelectedEtalaseModel.None -> {
-                    val productList = repo.getProductsInEtalase(
+                    val pagedProductList = repo.getProductsInEtalase(
                         etalaseId = if (selectedEtalase is SelectedEtalaseModel.Etalase) {
                             selectedEtalase.etalase.id
                         } else "",
@@ -209,8 +211,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
                     _focusedProductList.update {
                         it.copy(
-                            productList = it.productList + productList,
-                            resultState = PageResultState.Success(productList.isNotEmpty()),
+                            productList = it.productList + pagedProductList.dataList,
+                            resultState = PageResultState.Success(pagedProductList.hasNextPage),
                             page = page,
                         )
                     }

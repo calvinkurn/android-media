@@ -58,6 +58,9 @@ class GetShopProductsUseCase @Inject constructor(
                     },
                     isQA: ${"$$PARAM_IS_QA"}
                 ) {
+                    links {
+                        next
+                    }
                     data {
                         product_id
                         name

@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -51,7 +52,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         page: Int,
         keyword: String,
         sort: Int,
-    ): List<ProductUiModel> = withContext(dispatchers.io) {
+    ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
         if (userSession.shopId.isBlank()) error("User does not has shop")
 
         val response = getShopProductsUseCase.apply {
