@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
+import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressDataView
+import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressViewHolder
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
@@ -20,9 +23,10 @@ import com.tokopedia.search.result.shop.presentation.viewholder.ShopRecommendati
 import com.tokopedia.search.result.shop.presentation.viewholder.ShopSuggestionViewHolder
 
 internal class ShopListTypeFactoryImpl(
-        private val shopListener: ShopListener,
-        private val emptyStateListener: EmptyStateListener,
-        private val bannerAdsListener: BannerAdsListener
+    private val shopListener: ShopListener,
+    private val emptyStateListener: EmptyStateListener,
+    private val bannerAdsListener: BannerAdsListener,
+    private val chooseAddressListener: ChooseAddressListener
 ) : BaseAdapterTypeFactory(), ShopListTypeFactory {
 
     override fun type(shopCpmDataView: ShopCpmDataView): Int {
@@ -45,6 +49,10 @@ internal class ShopListTypeFactoryImpl(
         return ShopSuggestionViewHolder.LAYOUT
     }
 
+    override fun type(chooseAddressDataView: ChooseAddressDataView): Int {
+        return ChooseAddressViewHolder.LAYOUT
+    }
+
     override fun type(loadingMoreModel: LoadingMoreModel): Int {
         return SearchLoadingMoreViewHolder.LAYOUT
     }
@@ -57,6 +65,7 @@ internal class ShopListTypeFactoryImpl(
             ShopRecommendationTitleViewHolder.LAYOUT -> ShopRecommendationTitleViewHolder(view)
             SearchLoadingMoreViewHolder.LAYOUT -> SearchLoadingMoreViewHolder(view)
             ShopSuggestionViewHolder.LAYOUT -> ShopSuggestionViewHolder(view)
+            ChooseAddressViewHolder.LAYOUT -> ChooseAddressViewHolder(view, chooseAddressListener)
             else -> super.createViewHolder(view, type)
         }
     }

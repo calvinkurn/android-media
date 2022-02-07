@@ -257,10 +257,14 @@ class SearchActivity : BaseActivity(),
 
     private fun onPageSelected(position: Int) {
         when (position) {
-            SearchTabPosition.TAB_FIRST_POSITION ->
+            SearchTabPosition.TAB_FIRST_POSITION -> {
                 SearchTracking.eventSearchResultTabClick(productTabTitle)
-            SearchTabPosition.TAB_SECOND_POSITION ->
+                searchSectionPagerAdapter?.getProductListFragment()?.onViewPagerChanged()
+            }
+            SearchTabPosition.TAB_SECOND_POSITION -> {
                 SearchTracking.eventSearchResultTabClick(shopTabTitle)
+                searchSectionPagerAdapter?.getShopListFragment()?.onViewPagerChanged()
+            }
         }
     }
 

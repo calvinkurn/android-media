@@ -497,7 +497,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
 
-        presenter?.onViewResumed()
+        presenter?.reCheckChooseAddress()
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -1986,6 +1986,10 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun getFragment() = this
+
+    override fun onViewPagerChanged() {
+        presenter?.reCheckChooseAddress()
+    }
 
     override val isChooseAddressWidgetEnabled: Boolean = true
 
