@@ -25,11 +25,11 @@ class CMHomeWidgetViewHolder(
                 itemView.cm_home_widget.visibility = View.VISIBLE
                 itemView.cm_home_widget.setOnCMHomeWidgetCloseClickListener(this)
                 itemView.cm_home_widget.loadCMHomeWidgetData(cmHomeWidgetData)
+                setChannelDivider(dataModel.channel)
             }
         } ?: run {
             callback.getCMHomeWidget()
         }
-        setChannelDivider(dataModel.channel)
     }
 
     override fun bind(element: CMHomeWidgetDataModel, payloads: MutableList<Any>) {

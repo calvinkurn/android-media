@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetProductCardBinding
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetProductCardShimmerBinding
-import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetViewAllCardBinding
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetViewAllCardShimmerBinding
+import com.tokopedia.cmhomewidget.databinding.LayoutCmHtwdViewAllCardBinding
 import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardData
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardShimmerData
@@ -88,8 +88,8 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
         )
     }
 
-    private fun getViewAllCardBinding(parent: ViewGroup): LayoutCmHomeWidgetViewAllCardBinding {
-        return LayoutCmHomeWidgetViewAllCardBinding.inflate(
+    private fun getViewAllCardBinding(parent: ViewGroup): LayoutCmHtwdViewAllCardBinding {
+        return LayoutCmHtwdViewAllCardBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false

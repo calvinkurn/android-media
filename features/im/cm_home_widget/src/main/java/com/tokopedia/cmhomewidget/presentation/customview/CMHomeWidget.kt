@@ -94,7 +94,6 @@ class CMHomeWidget @JvmOverloads constructor(
     private fun handleShimmer() {
         if (isShowShimmer) {
             adapter.get().loadData(getShimmerDataList())
-            binding.tvCmHomeWidgetHeadingShimmer.visibility = View.VISIBLE
         }
     }
 
@@ -116,7 +115,6 @@ class CMHomeWidget @JvmOverloads constructor(
 
     private fun setHeading() {
         binding.tvCmHomeWidgetHeading.text = cmHomeWidgetData?.widgetTitle
-        binding.tvCmHomeWidgetHeadingShimmer.visibility = View.GONE
     }
 
     private fun setItemsInRecyclerView() {

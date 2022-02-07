@@ -31,6 +31,27 @@
                   "app_link": "tokopedia://occ"
                 }
               ]
+            },
+            {
+              "id": 15261537,
+              "name": "Baju Gamis - Hitam",
+              "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/9/24/5511214/5511214_3b2a5707-6d10-4498-8ead-2da7ac814c0f_768_768.jpg",
+              "current_price": "Rp 59.000",
+              "dropped_percent": "",
+              "badge_image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler_10k.png",
+              "app_link": "tokopedia://product/15261535",
+              "shop": {
+                "id": 479707,
+                "name": "cancanshopstag",
+                "badge_image_url": "https://images.tokopedia.net/img/official_store_badge.png"
+              },
+              "action_buttons": [
+                {
+                  "id": 1,
+                  "text": "Beli Sekarang",
+                  "app_link": "tokopedia://occ"
+                }
+              ]
             }
           ],
           "card": {

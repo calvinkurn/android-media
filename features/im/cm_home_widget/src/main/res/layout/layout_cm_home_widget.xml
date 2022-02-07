@@ -35,17 +35,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_cm_home_widget_heading" />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/tv_cm_home_widget_heading_shimmer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/iv_cm_home_widget_close"
-        app:layout_constraintStart_toStartOf="@+id/tv_cm_home_widget_heading"
-        app:layout_constraintTop_toTopOf="@+id/tv_cm_home_widget_heading"
-        app:loader_type="line" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_cm_home_widget"
