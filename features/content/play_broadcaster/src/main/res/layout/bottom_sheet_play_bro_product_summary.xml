@@ -8,7 +8,8 @@
         android:id="@+id/rv_product_summaries"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="@dimen/spacing_lvl4"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toTopOf="@id/fl_btn_done_container"
         app:layout_constraintTop_toTopOf="parent" />
 

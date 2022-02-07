@@ -88,13 +88,25 @@ class ProductSummaryBottomSheet @Inject constructor(
         /** TODO: change this later */
         setTitle("Produk terpilih (5/30)")
         setAction(getString(R.string.play_bro_product_add_more)) {
-            /** TODO: handle logic here later */
+            /** TODO: there are 2 options
+             * 1. if user on select product -> just close this bottomsheet
+             * 2. if user want to edit product -> open product chooser bottomsheet*/
+        }
+
+        binding.btnDone.setOnClickListener {
+            dismiss()
+            /** TODO: need to close all product bottomsheets as well */
         }
     }
 
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                /** TODO: logic:
+                 * 1. Update List
+                 * 2. Update title
+                 * 3. Toggle show or hide done button
+                 */
             }
         }
     }
