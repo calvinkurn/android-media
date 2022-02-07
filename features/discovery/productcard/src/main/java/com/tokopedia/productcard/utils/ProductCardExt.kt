@@ -11,6 +11,7 @@ import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -26,6 +27,7 @@ import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
 
 internal val View.isVisible: Boolean
@@ -197,19 +199,24 @@ private fun Label.setCustomLabelType(labelGroupType: String) {
 private fun Label.trySetCustomLabelType(labelGroupType: String) {
     unlockFeature = true
 
-    val (backgroundColorRes, textColorRes) = labelGroupType.toUnifyLabelColor()
-    val backgroundColorHexInt = ContextCompat.getColor(context, backgroundColorRes)
-    val backgroundColorHexString = "#${Integer.toHexString(backgroundColorHexInt)}"
-
-    setLabelType(backgroundColorHexString)
-    setTextColor(ContextCompat.getColor(context, textColorRes))
+    val colorRes = labelGroupType.toUnifyLabelColor(context)
+    val colorHexInt = ContextCompat.getColor(context, colorRes)
+    val colorHexString = "#${Integer.toHexString(colorHexInt)}"
+    setLabelType(colorHexString)
 }
 
-private fun String?.toUnifyLabelColor(): Pair<Int, Int> {
-    return when (this) {
-        TRANSPARENT_BLACK -> unifyRColor.Unify_N700_68 to unifyRColor.Unify_NN0
-        else -> unifyRColor.Unify_N700_68 to unifyRColor.Unify_NN0
-    }
+@ColorRes
+private fun String?.toUnifyLabelColor(context: Context): Int {
+    return if (context.isDarkMode())
+        when (this) {
+            TRANSPARENT_BLACK -> unifyRColor.Unify_N200_68
+            else -> unifyRColor.Unify_N200_68
+        }
+    else
+        when (this) {
+            TRANSPARENT_BLACK -> unifyRColor.Unify_N700_68
+            else -> unifyRColor.Unify_N700_68
+        }
 }
 
 internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
