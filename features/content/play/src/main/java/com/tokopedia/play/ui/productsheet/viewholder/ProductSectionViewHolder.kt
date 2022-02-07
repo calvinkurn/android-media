@@ -104,21 +104,31 @@ class ProductSectionViewHolder(
     }
 
     private fun setupTimer(timerTime: String, serverTime: String) {
-        val dt = DateUtil.getCurrentCalendar().apply {
-            val currentDate = time
-            val diff = currentDate.time - timerTime.toDate(
-                DateUtil.YYYY_MM_DD_T_HH_MM_SS
-            ).time
-            val seconds = TimeUnit.MILLISECONDS.toSeconds(diff).toInt()
-            val minutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
-            val hours = TimeUnit.MILLISECONDS.toHours(diff).toInt()
-            val days = TimeUnit.MILLISECONDS.toDays(diff).toInt()
-            add(Calendar.SECOND, seconds)
-            add(Calendar.MINUTE, minutes)
-            add(Calendar.HOUR, hours)
-            add(Calendar.DAY_OF_MONTH, days)
+        if(!isExpired(serverTime = serverTime, expiredTime = timerTime)){
+            val dt = DateUtil.getCurrentCalendar().apply {
+                val currentDate = time
+                val diff = currentDate.time - timerTime.toDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS
+                ).time
+                val seconds = TimeUnit.MILLISECONDS.toSeconds(diff).toInt()
+                val minutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
+                val hours = TimeUnit.MILLISECONDS.toHours(diff).toInt()
+                val days = TimeUnit.MILLISECONDS.toDays(diff).toInt()
+                add(Calendar.SECOND, seconds)
+                add(Calendar.MINUTE, minutes)
+                add(Calendar.HOUR, hours)
+                add(Calendar.DAY_OF_MONTH, days)
+            }
+            timerSection.targetDate = dt
         }
-        timerSection.targetDate = dt
+    }
+
+    private fun isExpired(serverTime: String, expiredTime: String): Boolean {
+        val serverTimeInMillis = serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS).time
+        val dtNow = DateUtil.getCurrentCalendar().time
+        dtNow.time = dtNow.time + serverTimeInMillis
+        val expiredTimeInDate = expiredTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
+        return dtNow.after(expiredTimeInDate)
     }
 
     companion object {
