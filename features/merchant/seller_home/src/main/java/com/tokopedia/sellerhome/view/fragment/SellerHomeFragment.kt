@@ -252,6 +252,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeWidgetData(sellerHomeViewModel.recommendationWidgetData, WidgetType.RECOMMENDATION)
         observeWidgetData(sellerHomeViewModel.milestoneWidgetData, WidgetType.MILESTONE)
+        observeWidgetData(sellerHomeViewModel.calendarWidgetData, WidgetType.CALENDAR)
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
         observeShopShareData()
@@ -672,6 +673,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendMilestoneWidgetMinimizeClickEvent()
     }
 
+    override fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {
+
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view
@@ -897,6 +902,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val dataKeys = Utils.getWidgetDataKeys<MilestoneWidgetUiModel>(widgets)
         startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
         sellerHomeViewModel.getMilestoneWidgetData(dataKeys)
+    }
+
+    private fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>) {
+        startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
+        widgets.setLoading()
+        val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>()
+            .filter { it.data != null }
+            .map {
+                val defaultFilter = CalendarWidgetUiModel.getCalendarFilter(it.dataKey)
+                it.data?.filter ?: defaultFilter
+            }
+        sellerHomeViewModel.getCalendarWidgetData(dataKeys)
     }
 
     private fun setupShopSharing() {
@@ -1197,6 +1214,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { getMultiLineGraphData(this) }
         groupedWidgets[WidgetType.RECOMMENDATION]?.run { getRecommendationData(this) }
         groupedWidgets[WidgetType.MILESTONE]?.run { getMilestoneData(this) }
+        groupedWidgets[WidgetType.CALENDAR]?.run { getCalendarData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             recyclerView?.post {
                 val newWidgetList = adapter.data.toMutableList()

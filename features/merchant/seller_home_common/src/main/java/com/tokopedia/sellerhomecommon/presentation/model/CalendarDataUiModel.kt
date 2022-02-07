@@ -1,0 +1,20 @@
+package com.tokopedia.sellerhomecommon.presentation.model
+
+/**
+ * Created by @ilhamsuaib on 07/02/22.
+ */
+
+data class CalendarDataUiModel(
+    override var dataKey: String = "",
+    override var error: String = "",
+    override var isFromCache: Boolean = false,
+    override val showWidget: Boolean = false,
+    val eventGroups: List<CalendarEventGroupUiModel> = emptyList(),
+    val emptyState: CalendarEmptyStateUiModel? = null,
+    var filter: CalendarFilterDataKeyUiModel = CalendarWidgetUiModel.getCalendarFilter(dataKey)
+) : BaseDataUiModel {
+
+    override fun shouldRemove(): Boolean {
+        return eventGroups.isEmpty()
+    }
+}
