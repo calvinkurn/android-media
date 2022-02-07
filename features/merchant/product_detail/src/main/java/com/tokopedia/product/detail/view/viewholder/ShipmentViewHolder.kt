@@ -76,6 +76,7 @@ class ShipmentViewHolder(
             else -> {
                 loading(false)
                 loadShipmentState(element, rates)
+                listener.onImpressComponent(getComponentTrackData(element))
             }
         }
     }
