@@ -52,8 +52,8 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
                         "imageUrl": "https://....."
                       },
                       "startTime": "2022-01-02T15:04:05Z07:00",
-                      "endTime": "2022-01-02T16:04:05Z07:00",
-                      "serverTime": "2022-01-02T15:14:05Z07:00",
+                      "endTime": "2022-02-04T16:04:05Z07:00",
+                      "serverTime": "2022-02-03T15:14:05Z07:00",
                       "products": [
                         {
                           "ID": "15240013",
@@ -62,6 +62,94 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
                           "ShopID": "479887",
                           "OriginalPrice": 60000,
                           "OriginalPriceFormatted": "Rp 60.000",
+                          "Discount": 0,
+                          "Price": 0,
+                          "PriceFormatted": "",
+                          "Quantity": 5,
+                          "QuantityRender": {
+                            "show": true,
+                            "copy": "Sisa 5",
+                            "color": "#FF5733"
+                          },
+                          "IsVariant": false,
+                          "IsAvailable": false,
+                          "Order": 0,
+                          "AppLink": "tokopedia://product/15240013",
+                          "WebLink": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
+                          "MinQuantity": 1,
+                          "IsFreeShipping":true
+                        },
+                        {
+                          "ID": "15240014",
+                          "Name": "Indomie Soto Banjar",
+                          "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                          "ShopID": "479887",
+                          "OriginalPrice": 63000,
+                          "OriginalPriceFormatted": "Rp 63.000",
+                          "Discount": 0,
+                          "Price": 0,
+                          "PriceFormatted": "",
+                          "Quantity": 5,
+                          "QuantityRender": {
+                            "show": true,
+                            "copy": "Sisa 5",
+                            "color": "#FF5733"
+                          },
+                          "IsVariant": false,
+                          "IsAvailable": false,
+                          "Order": 0,
+                          "AppLink": "tokopedia://product/15240013",
+                          "WebLink": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
+                          "MinQuantity": 1,
+                          "IsFreeShipping":true
+                        }
+                      ]
+                    },
+                    {
+                      "type": "upcoming",
+                      "title": "Upcoming Campaign",
+                      "countdown": {
+                        "copy": "Berakhir Dalam"
+                      },
+                      "background": {
+                        "gradient": [],
+                        "imageUrl": "https://img.freepik.com/free-vector/blue-pink-halftone-background_53876-99004.jpg?size=626&ext=jpg"
+                      },
+                      "startTime": "2022-02-03T20:04:05Z07:00",
+                      "endTime": "2022-02-03T16:04:05Z07:00",
+                      "serverTime": "2022-02-03T15:14:05Z07:00",
+                      "products": [
+                        {
+                          "ID": "15240013",
+                          "Name": "Indomie Soto Lamongan",
+                          "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                          "ShopID": "479887",
+                          "OriginalPrice": 60000,
+                          "OriginalPriceFormatted": "Rp 60.000",
+                          "Discount": 0,
+                          "Price": 0,
+                          "PriceFormatted": "",
+                          "Quantity": 5,
+                          "QuantityRender": {
+                            "show": true,
+                            "copy": "Sisa 5",
+                            "color": "#FF5733"
+                          },
+                          "IsVariant": false,
+                          "IsAvailable": false,
+                          "Order": 0,
+                          "AppLink": "tokopedia://product/15240013",
+                          "WebLink": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
+                          "MinQuantity": 1,
+                          "IsFreeShipping":true
+                        },
+                        {
+                          "ID": "15240014",
+                          "Name": "Indomie Soto Banjar",
+                          "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                          "ShopID": "479887",
+                          "OriginalPrice": 63000,
+                          "OriginalPriceFormatted": "Rp 63.000",
                           "Discount": 0,
                           "Price": 0,
                           "PriceFormatted": "",

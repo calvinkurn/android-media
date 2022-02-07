@@ -1,16 +1,28 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
+import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
+import com.tokopedia.play.data.Section
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
+import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import java.lang.Exception
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * @author by astidhiyaa on 27/01/22
@@ -20,21 +32,18 @@ class ProductSectionViewHolder(
 ) : BaseViewHolder(itemView) {
 
     private val tvSectionTitle: TextView = itemView.findViewById(R.id.tv_header_title)
+    private val ivBg: ImageView = itemView.findViewById(R.id.iv_bg)
     private val tvTimerInfo: TextView = itemView.findViewById(R.id.tv_header_info)
     private val timerSection: TimerUnifySingle = itemView.findViewById(R.id.section_timer)
     private val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
 
     private val adapter: ProductLineAdapter =
         ProductLineAdapter(object : ProductLineViewHolder.Listener {
-            override fun onBuyProduct(product: PlayProductUiModel.Product) {
+            override fun onBuyProduct(product: PlayProductUiModel.Product) {}
 
-            }
+            override fun onAtcProduct(product: PlayProductUiModel.Product) {}
 
-            override fun onAtcProduct(product: PlayProductUiModel.Product) {
-            }
-
-            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-            }
+            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {}
         })
 
     init {
@@ -46,7 +55,70 @@ class ProductSectionViewHolder(
         tvSectionTitle.text = item.title
         tvTimerInfo.text = item.timerInfo
 
+
+        when (item.type) {
+            ProductSectionType.Active -> {
+                tvTimerInfo.show()
+                timerSection.show()
+                timerSection.timerVariant = TimerUnifySingle.VARIANT_MAIN
+                setupTimer(timerTime = item.endTime, serverTime = item.serverTime)
+
+                timerSection.targetDate = DateUtil.getCurrentCalendar().apply {
+                    add(Calendar.MINUTE, 4)
+                }
+            }
+            ProductSectionType.OutOfStock -> {
+                tvTimerInfo.hide()
+                timerSection.hide()
+            }
+            ProductSectionType.Upcoming -> {
+                tvTimerInfo.show()
+                timerSection.show()
+                timerSection.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
+                setupTimer(timerTime = item.startTime, serverTime = item.serverTime)
+            }
+            ProductSectionType.Other -> {
+                tvTimerInfo.hide()
+                timerSection.hide()
+            }
+        }
+
+        setupBackground(item.background)
         adapter.setItemsAndAnimateChanges(itemList = item.productList)
+    }
+
+    private fun setupBackground(background: Section.Background) {
+        if (background.gradientList.isNotEmpty()) {
+            try {
+                val bgArray = IntArray(background.gradientList.size)
+                background.gradientList.forEachIndexed { index, s ->
+                    bgArray[index] = android.graphics.Color.parseColor(s)
+                }
+                val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
+                itemView.background = gradient
+            } catch (e: Exception) {
+            }
+        } else {
+            ivBg.loadImage(background.imageUrl)
+        }
+    }
+
+    private fun setupTimer(timerTime: String, serverTime: String) {
+        val dt = DateUtil.getCurrentCalendar().apply {
+            val currentDate = time
+            val diff = currentDate.time - timerTime.toDate(
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS
+            ).time
+            val seconds = TimeUnit.MILLISECONDS.toSeconds(diff).toInt()
+            val minutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
+            val hours = TimeUnit.MILLISECONDS.toHours(diff).toInt()
+            val days = TimeUnit.MILLISECONDS.toDays(diff).toInt()
+            add(Calendar.SECOND, seconds)
+            add(Calendar.MINUTE, minutes)
+            add(Calendar.HOUR, hours)
+            add(Calendar.DAY_OF_MONTH, days)
+        }
+        timerSection.targetDate = dt
     }
 
     companion object {

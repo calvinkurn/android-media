@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.ProductSectionAdapter
+import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
@@ -89,8 +90,7 @@ class ProductSheetViewComponent(
             layoutManager = layoutManagerProductList
             adapter = productSectionAdapter
             addOnScrollListener(StopFlingScrollListener())
-            //TODO() = setup divider
-//            addItemDecoration(ProductLineItemDecoration(context))
+            addItemDecoration(ProductLineItemDecoration(context))
         }
 
         rvProductList.addOnScrollListener(productScrollListener)

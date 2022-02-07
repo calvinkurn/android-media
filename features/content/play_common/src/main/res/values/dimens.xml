@@ -40,4 +40,5 @@
     <dimen name="play_product_tag_stock_radius">4dp</dimen>
     <dimen name="play_product_line_discount_radius">3dp</dimen>
     <dimen name="play_product_tag_text_height_placeholder">16dp</dimen>
+    <dimen name="play_product_section_divider">20dp</dimen>
 </resources>

@@ -15,6 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:typographyType="heading_4"
+        android:translationZ="@dimen/dp_1"
         tools:text="Aksesoris Sale" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -28,6 +29,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:typographyType="body_3"
         tools:text="Berakhir dalam"
+        android:translationZ="@dimen/dp_1"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -44,6 +46,7 @@
         tools:timer_unify_single_remainingMinutes="10"
         tools:timer_unify_single_type="minute"
         tools:timer_unify_single_variant="main"
+        android:translationZ="@dimen/dp_1"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -65,9 +68,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/spacing_lvl1"
+        android:translationZ="@dimen/dp_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tv_header_info"
         app:layout_constraintTop_toBottomOf="@+id/tv_header_info" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:translationZ="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="@+id/tv_header_info"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/bg_gradient_blue" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
