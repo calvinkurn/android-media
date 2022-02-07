@@ -73,20 +73,20 @@ internal class ProductSummaryViewHolder private constructor() {
             when(item.product.price) {
                 is OriginalPrice -> {
                     binding.tvProductSummaryPrice.text = item.product.price.price
-                    binding.tvProductSummaryDiscount.visibility = View.GONE
+                    binding.labelProductSummaryDiscount.visibility = View.GONE
                 }
                 is DiscountedPrice -> {
                     binding.tvProductSummaryPrice.text = item.product.price.discountedPrice
                     binding.tvProductSummaryOriginalPrice.text = item.product.price.originalPrice
-                    binding.tvProductSummaryDiscount.text = itemView.context.getString(
+                    binding.labelProductSummaryDiscount.text = itemView.context.getString(
                         R.string.play_bro_product_discount_template,
                         item.product.price.discountPercent
                     )
-                    binding.tvProductSummaryDiscount.visibility = View.VISIBLE
+                    binding.labelProductSummaryDiscount.visibility = View.VISIBLE
                 }
                 else -> {
                     binding.tvProductSummaryPrice.text = ""
-                    binding.tvProductSummaryDiscount.visibility = View.GONE
+                    binding.labelProductSummaryDiscount.visibility = View.GONE
                 }
             }
 

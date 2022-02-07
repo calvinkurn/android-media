@@ -6,10 +6,8 @@ import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryA
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSummaryViewHolder
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -41,7 +39,7 @@ internal class ProductSummaryListViewComponent(
                 add(ProductSummaryAdapter.Model.Body(
                         ProductUiModel(
                             "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                            12, OriginalPrice("120000", 120000.0)
+                            12, OriginalPrice("Rp 120.000", 120000.0)
                         )
                     )
                 )
@@ -52,7 +50,7 @@ internal class ProductSummaryListViewComponent(
                 add(ProductSummaryAdapter.Model.Body(
                         ProductUiModel(
                             "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                            12, DiscountedPrice("120000", 120000.0, 20, "100000", 100000.0)
+                            12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
                         )
                     )
                 )
@@ -63,7 +61,7 @@ internal class ProductSummaryListViewComponent(
                 add(ProductSummaryAdapter.Model.Body(
                         ProductUiModel(
                             "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                            12, DiscountedPrice("120000", 120000.0, 20, "100000", 100000.0)
+                            12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
                         )
                     )
                 )

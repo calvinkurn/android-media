@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
             app:layout_constraintTop_toTopOf="@id/iv_product_summary_image"
@@ -45,10 +45,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:maxLines="2"
             android:ellipsize="end"
-            app:layout_constraintStart_toStartOf="@id/tv_product_summary_stock"
+            android:maxLines="2"
+            android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="@id/tv_product_summary_stock"
+            app:layout_constraintStart_toStartOf="@id/tv_product_summary_stock"
             app:layout_constraintTop_toBottomOf="@id/tv_product_summary_stock"
             app:typographyType="body_3"
             tools:text="2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP" />
@@ -59,25 +60,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="1"
+            android:text="Rp 370.000"
+            android:textColor="@color/Neutral_N700_96"
             app:layout_constraintStart_toStartOf="@id/tv_product_summary_name"
             app:layout_constraintTop_toBottomOf="@id/tv_product_summary_name"
             app:typographyType="body_1"
             app:typographyWeight="bold"
-            android:text="Rp 370.000"
             tools:text="Rp 370.000" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_product_summary_discount"
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_product_summary_discount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_play_discount_badge"
-            android:paddingStart="@dimen/spacing_lvl2"
-            android:paddingTop="@dimen/spacing_lvl1"
-            android:paddingEnd="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_R400"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:paddingBottom="@dimen/spacing_lvl1"
-            android:layout_marginBottom="@dimen/spacing_lvl1"
+            app:labelType="general_light_red"
             app:layout_constraintBottom_toBottomOf="@+id/tv_product_summary_price"
             app:layout_constraintStart_toEndOf="@+id/tv_product_summary_price"
             app:layout_constraintTop_toTopOf="@+id/tv_product_summary_price"
@@ -90,29 +86,28 @@
             android:id="@+id/tv_product_summary_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_44"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_product_summary_discount"
-            app:layout_constraintStart_toEndOf="@+id/tv_product_summary_discount"
-            app:layout_constraintTop_toTopOf="@+id/tv_product_summary_discount"
-            app:layout_constraintVertical_bias="1.0"
             android:layout_marginBottom="@dimen/spacing_lvl1"
+            android:textColor="@color/Neutral_N700_32"
+            app:layout_constraintBottom_toBottomOf="@+id/label_product_summary_discount"
+            app:layout_constraintStart_toEndOf="@+id/label_product_summary_discount"
+            app:layout_constraintTop_toTopOf="@+id/label_product_summary_discount"
+            app:layout_constraintVertical_bias="1.0"
             app:typographyType="small"
             tools:ignore="TextContrastCheck"
             tools:text="Rp349.000" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_product_summary_delete"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:icon_name="DELETE"
-            app:layout_constraintTop_toBottomOf="@id/tv_product_summary_price"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tv_product_summary_stock"
-            />
+            app:layout_constraintTop_toBottomOf="@id/tv_product_summary_price" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>
