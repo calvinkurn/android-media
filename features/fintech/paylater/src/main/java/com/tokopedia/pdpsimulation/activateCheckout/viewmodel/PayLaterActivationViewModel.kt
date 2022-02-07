@@ -3,10 +3,13 @@ package com.tokopedia.pdpsimulation.activateCheckout.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.pdpsimulation.activateCheckout.domain.model.OptimizedCheckoutAddToCartOcc
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
-import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.AddToCartUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
+import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
@@ -20,8 +23,8 @@ import javax.inject.Inject
 class PayLaterActivationViewModel @Inject constructor(
     private val paylaterActivationUseCase: PaylaterActivationUseCase,
     private val productDetailUseCase: ProductDetailUseCase,
-    private val addToCartUseCase: AddToCartUseCase,
-    @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
+    //private val addToCartUseCase: com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase,
+    @CoroutineBackgroundDispatcher val dispatcher: CoroutineDispatcher
 ) :
     BaseViewModel(dispatcher) {
 
@@ -33,8 +36,8 @@ class PayLaterActivationViewModel @Inject constructor(
     val payLaterActivationDetailLiveData: LiveData<Result<PaylaterGetOptimizedModel>> =
         _payLaterActivationDetailLiveData
 
-    private val _addToProductLiveData = MutableLiveData<Result<OptimizedCheckoutAddToCartOcc>>()
-    val addToProductLiveData: LiveData<Result<OptimizedCheckoutAddToCartOcc>> = _addToProductLiveData
+    private val _addToProductLiveData = MutableLiveData<Result<AddToCartOccMultiDataModel>>()
+    val addToProductLiveData: LiveData<Result<AddToCartOccMultiDataModel>> = _addToProductLiveData
 
     var price = 0.0
     var shopId: String? = null
@@ -88,25 +91,27 @@ class PayLaterActivationViewModel @Inject constructor(
         _payLaterActivationDetailLiveData.postValue(Fail(throwable))
     }
 
-    fun addProductToCart(productId: String,productQuantity:Int) {
-        shopId?.let {
-            addToCartUseCase.addProductToCart(
-                ::onSuccessAddProductToCart,
-                ::onFailAddProductToCart,
-                productId,
-                it,
-                productQuantity
-            )
-        }
-    }
+//    fun addProductToCart(productId: String, productQuantity: Int) {
+//        shopId?.let {
+//
+//            launchCatchError(block = {
+//                val response = addToCartUseCase.setParams(
+//                    AddToCartOccMultiRequestParams(
+//                        carts = arrayListOf(
+//                            AddToCartOccMultiCartParam(
+//                                productId = productId,
+//                                shopId = it,
+//                                quantity = productQuantity.toString()
+//                            )
+//                        )
+//                    )
+//                ).executeOnBackground()
+//                _addToProductLiveData.value = Success(response)
+//            }) {
+//                _addToProductLiveData.value = Fail(it)
+//            }
+//        }
+//    }
 
-
-    private fun onSuccessAddProductToCart(optimizedCheckoutAddToCartOcc: OptimizedCheckoutAddToCartOcc){
-        _addToProductLiveData.value = Success(optimizedCheckoutAddToCartOcc)
-    }
-
-    private fun onFailAddProductToCart(throwable: Throwable) {
-        _addToProductLiveData.value = Fail(throwable)
-    }
 
 }
