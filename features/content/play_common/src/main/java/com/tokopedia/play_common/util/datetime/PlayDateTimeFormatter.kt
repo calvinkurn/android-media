@@ -17,6 +17,7 @@ object PlayDateTimeFormatter {
     private const val yyyyMMddTHHmmss = "yyyy-MM-dd'T'HH:mm:ss"
     private const val ddMMMMyyyy_HHmm = "dd MMMM yyyy - HH:mm"
     private const val ddMMMyyyy_HHmm = "dd MMM yyyy - HH:mm"
+    const val ddMMMyyy_HHmmWIB = "dd MMM yyyy, HH:mm 'WIB'"
 
     private const val GMT_DIVIDER = 100
 
@@ -47,6 +48,18 @@ object PlayDateTimeFormatter {
         }
         catch (e: Exception){
             raw
+        }
+    }
+
+    fun formatDate(
+        date: Date,
+        outputPattern: String = ddMMMyyyy_HHmm
+    ): String? {
+        return try {
+            val outputFormat = SimpleDateFormat(outputPattern, locale)
+            outputFormat.format(date)
+        } catch (e: Exception) {
+            null
         }
     }
 

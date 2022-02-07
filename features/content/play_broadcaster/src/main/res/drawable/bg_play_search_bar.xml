@@ -6,6 +6,10 @@
         android:radius="@dimen/play_search_bar_radius"
         />
 
-    <solid android:color="@color/Unify_N50"/>
+    <solid android:color="@color/Unify_N0"/>
+    <stroke
+        android:width="@dimen/play_dp_1"
+        android:color="@color/Unify_NN200"
+        />
 
 </shape>

@@ -101,7 +101,13 @@
     <dimen name="play_bro_pinned_msg_empty_radius">8dp</dimen>
     <dimen name="play_bro_pinned_msg_loading_size">52dp</dimen>
 
-    <!-- Preparation -->
+    <!--Preparation -->
     <dimen name="play_bro_livestream_button_border_width">2dp</dimen>
     <dimen name="play_bro_title_form_loading_size">52dp</dimen>
+
+    <!--Etalase & Campaign-->
+    <dimen name="play_bro_etalase_list_body_image_size">64dp</dimen>
+
+    <!--Product Chooser-->
+    <dimen name="play_bro_product_chooser_btn_container_elevation">10dp</dimen>
 </resources>

@@ -120,6 +120,9 @@ class GetCampaignListUseCase @Inject constructor(
               use_upcoming_widget
               payment_type
               cover_img
+              product_summary {
+                total_item
+              }
             }
             total_campaign
             total_campaign_active
@@ -129,14 +132,14 @@ class GetCampaignListUseCase @Inject constructor(
      """
 
      fun createParams(
-         shopId: String,
-         campaignType: Int = 1, // 1: RILISAN_SPESIAL
-         campaignListType: Int = 0, // 0: DEFAULT_LIST
+         shopId: String, // https://www.tokopedia.com/voc123, content.prod.automation3+frontendtest@tokopedia.com
+         campaignType: Int = 1, // 0: FLASH_SALE_BY_SELLER, 1: RILISAN_SPESIAL
+         campaignListType: Int = 0, // params for shop etalase, must be used with listType: 0
          campaignStatus: IntArray = intArrayOf(6, 7, 14), // 6 (Ready), 14 (Ready Locked), 7 (Ongoing)
-         rows: Int = 15,
+         rows: Int = 20,
+         orderBy: Int = 2, // 0: DEFAULT_SORT (by campaign_id), 1: SORT_BY_CAMPAIGN_NAME, 2: SORT_BY_START_DATE, 3: SORT_BY_STATUS_ID, 4: SORT_BY_NPL_STATUS, 5: SORT_BY_UPDATE_TIME
+         orderRule: Int = 1, // 0: ASC, 1: DESC
          offset: Int = 0,
-         orderBy: Int = 0, // 0: DEFAULT_SORT (by campaign_id), 1: SORT_BY_CAMPAIGN_NAME, 2: SORT_BY_START_DATE, 3: SORT_BY_STATUS_ID, 4: SORT_BY_NPL_STATUS, 5: SORT_BY_UPDATE_TIME
-         orderRule: Int = 0 // 0: ASC, 1: DESC
      ): Map<String, Any> {
          return mapOf(
              PARAM_SHOP_ID to shopId,

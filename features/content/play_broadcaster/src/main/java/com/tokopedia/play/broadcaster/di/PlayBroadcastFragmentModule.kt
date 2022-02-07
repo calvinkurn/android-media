@@ -3,6 +3,11 @@ package com.tokopedia.play.broadcaster.di
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
@@ -49,4 +54,32 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayInteractiveLeaderBoardBottomSheet::class)
     abstract fun getInteractiveLeaderBoardBottomSheet(fragment: PlayInteractiveLeaderBoardBottomSheet): Fragment
+
+    /**
+     * Revamp
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(ProductSetupFragment::class)
+    abstract fun getPlayBroProductSetupFragment(fragment: ProductSetupFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(EtalaseListBottomSheet::class)
+    abstract fun getPlayBroEtalaseAndCampaignListBottomSheet(fragment: EtalaseListBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ProductChooserBottomSheet::class)
+    abstract fun getPlayBroProductChooserBottomSheet(fragment: ProductChooserBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ProductSortBottomSheet::class)
+    abstract fun getPlayBroProductSortBottomSheet(fragment: ProductSortBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ProductSummaryBottomSheet::class)
+    abstract fun getPlayBroProductSummaryBottomSheet(fragment: ProductSummaryBottomSheet): Fragment
 }
