@@ -6,12 +6,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
 import com.tokopedia.product_bundle.common.customview.RoundedCornerImageView
 import com.tokopedia.product_bundle.common.customview.SpinnerView
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
+import com.tokopedia.product_service_common.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 

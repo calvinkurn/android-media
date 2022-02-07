@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
+import com.tokopedia.product_service_common.R
 
 class SingleProductBundleAdapter(
     private var listener: BundleItemListener

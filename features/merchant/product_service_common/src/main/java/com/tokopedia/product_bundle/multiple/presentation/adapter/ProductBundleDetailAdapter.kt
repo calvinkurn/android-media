@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleDetailViewHolder
+import com.tokopedia.product_service_common.R
 
 class ProductBundleDetailAdapter(
     private val clickListener: ProductBundleDetailItemClickListener,

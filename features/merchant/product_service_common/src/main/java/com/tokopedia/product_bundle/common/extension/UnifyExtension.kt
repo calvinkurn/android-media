@@ -3,7 +3,7 @@ package com.tokopedia.product_bundle.common.extension
 import android.app.Activity
 import androidx.core.content.ContextCompat
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.product_bundle.R
+import com.tokopedia.product_service_common.R
 import com.tokopedia.unifycomponents.UnifyButton
 
 internal fun Activity?.setBackgroundToWhite() {

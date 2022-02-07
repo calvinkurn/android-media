@@ -3,13 +3,13 @@ package com.tokopedia.product_bundle.single.presentation.model
 import android.content.Context
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.Child
 import com.tokopedia.product_bundle.common.data.model.response.Preorder
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
+import com.tokopedia.product_service_common.R
 
 object BundleInfoToSingleProductBundleMapper {
 

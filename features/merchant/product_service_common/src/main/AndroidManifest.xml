@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.product_bundle">
+    package="com.tokopedia.product_service_common">
 
     <application>
         <activity
-            android:name=".activity.ProductBundleActivity"
+            android:name="com.tokopedia.product_bundle.activity.ProductBundleActivity"
             android:label="@string/title_bundling_selection_page"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
@@ -21,6 +21,16 @@
                     android:pathPattern="@string/path_product_bundle"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.gifting.presentation.activity.GiftingBottomsheetActivity"
+            android:label="@string/title_bundling_selection_page"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:theme="@style/Theme.White"
+            android:exported="false">
+
         </activity>
     </application>
 </manifest>

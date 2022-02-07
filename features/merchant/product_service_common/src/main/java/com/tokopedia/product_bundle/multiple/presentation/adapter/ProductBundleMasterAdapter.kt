@@ -3,7 +3,6 @@ package com.tokopedia.product_bundle.multiple.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleMasterBaseViewHolder
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleMasterOneItemViewHolder
@@ -11,6 +10,7 @@ import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBund
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleMasterBaseViewHolder.ProductBundleChipState
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleMasterBaseViewHolder.ProductBundleChipState.NORMAL
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleMasterBaseViewHolder.ProductBundleChipState.SELECTED
+import com.tokopedia.product_service_common.R
 
 class ProductBundleMasterAdapter(private val clickListener: ProductBundleMasterItemClickListener)
     : RecyclerView.Adapter<ProductBundleMasterBaseViewHolder>() {

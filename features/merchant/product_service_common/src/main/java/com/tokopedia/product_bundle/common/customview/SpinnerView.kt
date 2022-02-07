@@ -7,7 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.product_bundle.R
+import com.tokopedia.product_service_common.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.CardUnify.Companion.TYPE_BORDER

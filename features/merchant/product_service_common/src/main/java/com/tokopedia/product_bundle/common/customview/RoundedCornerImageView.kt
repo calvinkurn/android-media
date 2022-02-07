@@ -7,7 +7,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.product_bundle.R
+import com.tokopedia.product_service_common.R
 
 class RoundedCornerImageView : AppCompatImageView {
     companion object {

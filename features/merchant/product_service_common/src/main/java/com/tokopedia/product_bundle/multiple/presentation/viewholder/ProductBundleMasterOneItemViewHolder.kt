@@ -1,8 +1,8 @@
 package com.tokopedia.product_bundle.multiple.presentation.viewholder
 
 import android.view.View
-import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.product_service_common.R
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundleMasterOneItemViewHolder(

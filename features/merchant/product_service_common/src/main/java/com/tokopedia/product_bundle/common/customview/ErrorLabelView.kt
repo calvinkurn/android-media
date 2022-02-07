@@ -3,7 +3,7 @@ package com.tokopedia.product_bundle.common.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.product_bundle.R
+import com.tokopedia.product_service_common.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 

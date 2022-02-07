@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product_bundle.R
+import com.tokopedia.product_service_common.R
 import javax.inject.Inject
 
 class ResourceProvider @Inject constructor(@ApplicationContext val context: Context?) {

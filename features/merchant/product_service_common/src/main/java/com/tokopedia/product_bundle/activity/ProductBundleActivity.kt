@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.mapper.InventoryError
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorMapper
@@ -22,6 +21,7 @@ import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
 import com.tokopedia.product_bundle.single.presentation.fragment.SingleProductBundleFragment
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
+import com.tokopedia.product_service_common.R
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject

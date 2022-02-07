@@ -2,9 +2,9 @@ package com.tokopedia.product_bundle.multiple.presentation.viewholder
 
 import android.content.Context
 import android.view.View
-import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleMasterAdapter.ProductBundleMasterItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.product_service_common.R
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class ProductBundleMasterViewHolder(
