@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRecommendationBinding
-import com.tokopedia.digital.digital_recommendation.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
@@ -28,13 +27,12 @@ import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalU
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import timber.log.Timber
 
 /**
  * @author by furqan on 20/09/2021
  */
 class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : ConstraintLayout(context, attrs, defStyleAttr), DigitalRecommendationViewHolder.DigitalRecommendationItemActionListener {
+    : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private var binding: LayoutDigitalRecommendationBinding =
             LayoutDigitalRecommendationBinding.inflate(
@@ -114,7 +112,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
     }
 
-    override fun onItemBinding(element: DigitalRecommendationItemModel, position: Int) {
+    private fun onItemBinding(element: DigitalRecommendationItemModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
                     element, it, position, digitalRecommendationViewModel.getUserId(), page
@@ -122,7 +120,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
     }
 
-    override fun onItemClicked(element: DigitalRecommendationItemModel, position: Int) {
+    private fun onItemClicked(element: DigitalRecommendationItemModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.clickDigitalRecommendationItems(
                     element, it, position, digitalRecommendationViewModel.getUserId(), page
