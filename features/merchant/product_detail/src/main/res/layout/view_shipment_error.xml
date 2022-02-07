@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.LocalLoad xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pdp_shipment_local_load"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:unify_local_load_description="@string/variant_failed_load_description"
+    app:unify_local_load_title="@string/pdp_shipping_failed_label">
+
+</com.tokopedia.unifycomponents.LocalLoad>

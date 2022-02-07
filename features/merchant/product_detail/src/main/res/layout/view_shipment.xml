@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/pdp_shipment_title_strike"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        tools:text="Ongkir cuma Rp10.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_title_strike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
+        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_title"
+        app:layout_constraintRight_toLeftOf="@id/pdp_shipment_icon"
+        app:typographyType="body_3"
+        tools:text="Rp30.000" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/pdp_shipment_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_title"
+        app:unify_image_corner_radius="0"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_title"
+        app:typographyType="body_3"
+        tools:text="Min. belanja Rp50.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_tc_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_subtitle"
+        app:typographyType="body_3"
+        tools:text="Dilayani oleh" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/pdp_shipment_tc_icon"
+        android:layout_width="20dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_tc_label"
+        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_tc_label"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_tc_label"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_tc_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_tc_label"
+        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_tc_icon"
+        app:typographyType="body_3"
+        tools:text="TokoCabang" />
+
+    <View
+        android:id="@+id/pdp_shipment_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/Unify_N75"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_tc_label"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_line"
+        app:typographyType="body_3"
+        tools:text="Dikirim ke Kantor Jamika Nasaputra" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_estimation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_destination"
+        app:typographyType="body_3"
+        tools:text="Estimasi tiba 20 - 21 Nov" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_courier_label_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/pdp_shipping_other_courier_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_estimation"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/pdp_shipment_courier_option_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:labelType="general_light_grey"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
+        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_label_1"
+        tools:text="Instan" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/pdp_shipment_courier_option_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="@string/pdp_shipping_cod_label"
+        app:labelType="general_light_grey"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
+        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_option_1"
+        app:layout_goneMarginStart="4dp" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/pdp_shipment_courier_arrow"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1" />
+
+    <View
+        android:id="@+id/pdp_shipment_courier_placeholder_1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
+        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_option_2"
+        app:layout_constraintRight_toLeftOf="@id/pdp_shipment_courier_arrow"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_courier_label_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_1"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Lihat Pilihan Kurir" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_rates_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_2"
+        app:typographyType="body_3"
+        tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke alamatmu. Caring barang lain atau Ganti Alamat." />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/pdp_shipment_group_tc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="pdp_shipment_tc_label, pdp_shipment_tc_icon, pdp_shipment_tc_value"
+        tools:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
