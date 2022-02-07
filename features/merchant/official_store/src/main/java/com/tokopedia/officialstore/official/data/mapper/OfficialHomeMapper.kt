@@ -267,7 +267,13 @@ class OfficialHomeMapper (
             if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
                 newData.channelModel.channelHeader = it.channelModel.channelHeader
-                listOfficialStore[index] = newData.copy()
+                try {
+                    if (listOfficialStore.size > index && it.channelModel.id == newData.channelModel.id) {
+                        listOfficialStore[index] = newData.copy()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
         action.invoke(listOfficialStore)
