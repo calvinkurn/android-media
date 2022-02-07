@@ -9,7 +9,6 @@ import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -33,6 +32,9 @@ class DigitalUnifyCardViewHolder(
 ) : AbstractViewHolder<DigitalUnifyModel>(binding.root) {
 
     override fun bind(element: DigitalUnifyModel) {
+
+        listener?.onItemImpression(element, adapterPosition)
+
         renderMedia(element)
         renderCampaign(element)
         renderProductInfo(element)
@@ -462,6 +464,7 @@ class DigitalUnifyCardViewHolder(
 
     interface DigitalUnifyCardListener {
         fun onItemClicked(item: DigitalUnifyModel, index: Int)
+        fun onItemImpression(item: DigitalUnifyModel, index: Int)
     }
 
     companion object {
