@@ -620,13 +620,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         ctaButton?.getLocationInWindow(originalPosition)
                         positionWidgetGopay = originalPosition[1]
                         ctaButton?.let {
-                            this.add(
-                                CoachMark2Item(
-                                    ctaButton,
-                                    getString(R.string.home_gopay_new_coachmark_title),
-                                    getString(R.string.home_gopay_new_coachmark_description)
+                            if (this.isEmpty()) {
+                                this.add(
+                                    CoachMark2Item(
+                                        ctaButton,
+                                        getString(R.string.home_gopay_new_coachmark_title),
+                                        getString(R.string.home_gopay_new_coachmark_description)
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                     else { }
@@ -637,13 +639,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         gopayWidget?.getLocationInWindow(originalPosition)
                         positionWidgetGopay = originalPosition[1]
                         gopayWidget?.let {
-                            this.add(
-                                CoachMark2Item(
-                                    gopayWidget,
-                                    getString(R.string.home_gopay_new_active_cta_coachmark_title),
-                                    getString(R.string.home_gopay_new_active_cta_coachmark_description)
+                            if (this.isEmpty()) {
+                                this.add(
+                                    CoachMark2Item(
+                                        gopayWidget,
+                                        getString(R.string.home_gopay_new_active_cta_coachmark_title),
+                                        getString(R.string.home_gopay_new_active_cta_coachmark_description)
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                     else { }
@@ -659,13 +663,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             tokopointWidget?.getLocationInWindow(originalPosition)
             positionWidgetGopay = originalPosition[1]
             tokopointWidget?.let {
-                this.add(
-                    CoachMark2Item(
-                        tokopointWidget,
-                        tokopointsBalanceCoachmark.title,
-                        tokopointsBalanceCoachmark.description
+                if (this.isEmpty()) {
+                    this.add(
+                        CoachMark2Item(
+                            tokopointWidget,
+                            tokopointsBalanceCoachmark.title,
+                            tokopointsBalanceCoachmark.description
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -677,14 +683,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 tokonowIcon?.getLocationInWindow(originalPosition)
                 positionWidgetTokopoints = originalPosition[1]
                 tokonowIcon?.let {
-                    this.add(
-                        CoachMark2Item(
-                            tokonowIcon,
-                            getString(R.string.home_tokonow_coachmark_title),
-                            getString(R.string.home_tokonow_coachmark_description),
-                            position = CoachMark2.POSITION_TOP
+                    if (this.isEmpty()) {
+                        this.add(
+                            CoachMark2Item(
+                                tokonowIcon,
+                                getString(R.string.home_tokonow_coachmark_title),
+                                getString(R.string.home_tokonow_coachmark_description),
+                                position = CoachMark2.POSITION_TOP
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
@@ -694,9 +702,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
         context?.let { ctx ->
-//            showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
+            showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
 //            showTokopointsEligibleCoachmark(BalanceCoachmark("Test", "Description"))
-            showTokonowCoachmark()
+//            showTokonowCoachmark()
 //            if (!isNewWalletAppCoachmarkShown(ctx)) {
 //                showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
 //            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
@@ -932,9 +940,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
 //        if (tokonowCoachmarkIsShowing) coachmarkTokonow?.dismissCoachMark()
 
-        evaluateScrollGopayCoachmark()
-        evaluateScrollTokopointsCoachmark()
-        evaluateScrollTokonowCoachmark()
+        evaluateShowCoachmark()
     }
 
     private fun evaluateScrollGopayCoachmark() {
@@ -1058,6 +1064,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         refreshQuestWidget()
 
+        evaluateShowCoachmark()
+    }
+
+    private fun evaluateShowCoachmark() {
+        evaluateScrollGopayCoachmark()
+        evaluateScrollTokopointsCoachmark()
+        evaluateScrollTokonowCoachmark()
     }
 
     private fun refreshQuestWidget() {
