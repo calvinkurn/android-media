@@ -91,8 +91,10 @@ class ShipmentCartItemModel(
         var isDisableChangeCourier: Boolean = false,
         var isAutoCourierSelection: Boolean = false,
         var hasGeolocation: Boolean = false,
+
         // regular shipment service but do not show change courier card
         var isHideChangeCourierCard: Boolean = false,
+        var durationCardDescription: String = "",
 
         // Courier Selection Error
         var courierSelectionErrorTitle: String? = null,
@@ -151,6 +153,8 @@ class ShipmentCartItemModel(
             newShipmentCartItemModel.shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData
             newShipmentCartItemModel.isDisableChangeCourier = shipmentCartItemModel.isDisableChangeCourier
             newShipmentCartItemModel.isAutoCourierSelection = shipmentCartItemModel.isAutoCourierSelection
+            newShipmentCartItemModel.isHideChangeCourierCard = shipmentCartItemModel.isHideChangeCourierCard
+            newShipmentCartItemModel.durationCardDescription = shipmentCartItemModel.durationCardDescription
             return newShipmentCartItemModel
         }
     }

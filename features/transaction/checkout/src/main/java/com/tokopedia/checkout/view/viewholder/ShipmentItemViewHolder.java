@@ -956,7 +956,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSelectedFreeShipping.setText(htmlLinkHelper.getSpannedString());
             labelSelectedFreeShipping.setWeight(Typography.BOLD);
         }
-        renderFreeShippingEta(selectedCourierItemData);
+
+        if (!selectedCourierItemData.getDurationCardDescription().isEmpty()) {
+            labelFreeShippingEtaText.setVisibility(View.VISIBLE);
+            labelFreeShippingEtaText.setText(selectedCourierItemData.getDurationCardDescription());
+        } else {
+            labelFreeShippingEtaText.setVisibility(View.GONE);
+        }
     }
 
     private void renderFreeShippingTitle(CourierItemData selectedCourierItemData) {
