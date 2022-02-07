@@ -56,6 +56,10 @@ class AllFilterPDPBottomsheet(
         checkBoxFilterListener.onCheckBoxAllFilterClicked(filterTagComponent, adapterPosition)
     }
 
+    override fun onCheckBoxClickedActive(element: FilterTagDataCollection) {
+        checkBoxFilterListener.onCheckBoxAllFilterActiveClicked(element)
+    }
+
     private fun initView() {
         binding = BottomSheetAllFilterBinding.inflate(LayoutInflater.from(context))
         binding?.let {
@@ -81,6 +85,10 @@ class AllFilterPDPBottomsheet(
         fun onCheckBoxAllFilterClicked(
             tagComponent: TelcoFilterTagComponent,
             position: Int
+        )
+
+        fun onCheckBoxAllFilterActiveClicked(
+            element: FilterTagDataCollection
         )
     }
 }

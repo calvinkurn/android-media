@@ -40,6 +40,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.E
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_NEED_RESULT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.RESULT_CODE_QR_SCAN
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTokenListrikBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
@@ -145,7 +146,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private fun getDataFromBundle(){
         arguments?.run {
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
-                ?: TopupBillsExtraParam()
+                ?: GeneralExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
             productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
@@ -906,9 +907,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     companion object {
-        fun newInstance(telcoExtraParam: TopupBillsExtraParam) = DigitalPDPTokenListrikFragment().also {
+        fun newInstance(generalExtraParam: GeneralExtraParam) = DigitalPDPTokenListrikFragment().also {
             val bundle = Bundle()
-            bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, telcoExtraParam)
+            bundle.putParcelable(DigitalPDPConstant.EXTRA_PARAM, generalExtraParam)
             it.arguments = bundle
         }
     }

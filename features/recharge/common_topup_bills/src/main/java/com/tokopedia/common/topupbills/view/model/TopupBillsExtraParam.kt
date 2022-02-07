@@ -8,6 +8,5 @@ open class TopupBillsExtraParam(
     var categoryId: String = "",
     var productId: String = "",
     var clientNumber: String = "",
-    var menuId: String = "",
-    var operatorId: String = ""
+    var menuId: String = ""
 ) : Parcelable
