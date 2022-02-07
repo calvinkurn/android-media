@@ -74,6 +74,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.unifyDependencies.principles
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
