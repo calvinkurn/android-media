@@ -409,6 +409,10 @@ object ConstantTransactionAnalytics {
         const val ELIGIBLE_PROMO = "eligible promo"
         const val BLACKLIST_ERROR = "blacklist error"
         const val PHONE_VERIFICATION_MESSAGE = "phone verification message"
+
+        // Cart Bo Affordability
+        const val BO_FULFILL = "fulfill"
+        const val BO_UNFULFILL = "unfulfill"
     }
 
     object ExtraKey {

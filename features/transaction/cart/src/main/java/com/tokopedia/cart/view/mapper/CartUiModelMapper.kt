@@ -2,21 +2,40 @@ package com.tokopedia.cart.view.mapper
 
 import android.content.Context
 import com.tokopedia.cart.R
-import com.tokopedia.cart.data.model.response.promo.*
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.*
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
+import com.tokopedia.cart.data.model.response.promo.MessageGlobalPromo
+import com.tokopedia.cart.data.model.response.promo.MessageVoucherOrders
+import com.tokopedia.cart.data.model.response.promo.PromoAdditionalInfo
+import com.tokopedia.cart.data.model.response.promo.PromoEmptyCartInfo
+import com.tokopedia.cart.data.model.response.promo.PromoErrorDetail
+import com.tokopedia.cart.data.model.response.promo.PromoMessageInfo
+import com.tokopedia.cart.data.model.response.promo.VoucherOrders
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.AvailableGroup
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDetail
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Product
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.PromoSummary
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
-import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 object CartUiModelMapper {
@@ -137,7 +156,7 @@ object CartUiModelMapper {
                 latitude = availableGroup.shop.latitude
                 boMetadata = availableGroup.boMetadata
                 boAffordability = CartShopBoAffordabilityData(
-                        enable = true,
+                        enable = availableGroup.shipmentInformation.enableBoAffordability,
                         errorText = cartData.messages.errorBoAffordability
                 )
             }

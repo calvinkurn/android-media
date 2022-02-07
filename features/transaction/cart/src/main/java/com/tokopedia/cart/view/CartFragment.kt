@@ -1688,13 +1688,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setGlobalDeleteVisibility()
     }
 
-    override fun onCartBoAffordabilityClicked(shopId: String, isTokoNow: Boolean) {
-        if (isTokoNow) {
+    override fun onCartBoAffordabilityClicked(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.isTokoNow) {
             routeToTokoNowHomePage()
         } else {
-            routeToShopProductPage(shopId)
+            routeToShopProductPage(cartShopHolderData.shopId)
         }
-        cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(shopId)
+        cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(cartShopHolderData.boAffordability.cartIds, cartShopHolderData.shopId)
     }
 
     override fun onCartBoAffordabilityRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData) {
@@ -1705,8 +1705,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onViewCartBoAffordabilityTicker(cartShopHolderData: CartShopHolderData) {
-        cartPageAnalytics.eventViewBoTickerWording(cartShopHolderData.boAffordability.state == CartShopBoAffordabilityState.SUCCESS_AFFORD,
-            cartShopHolderData.shopId)
+        cartPageAnalytics.eventViewBoTickerWording(
+            cartShopHolderData.boAffordability.state == CartShopBoAffordabilityState.SUCCESS_AFFORD,
+            cartShopHolderData.boAffordability.cartIds,
+            cartShopHolderData.shopId
+        )
     }
 
     override fun onCartDataEnableToCheckout() {

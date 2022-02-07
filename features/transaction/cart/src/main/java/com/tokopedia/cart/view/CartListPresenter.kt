@@ -1,6 +1,5 @@
 package com.tokopedia.cart.view
 
-import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -12,14 +11,26 @@ import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
-import com.tokopedia.cart.domain.usecase.*
+import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
+import com.tokopedia.cart.domain.usecase.FollowShopUseCase
+import com.tokopedia.cart.domain.usecase.GetCartRevampV3UseCase
+import com.tokopedia.cart.domain.usecase.SetCartlistCheckboxStateUseCase
+import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
+import com.tokopedia.cart.domain.usecase.UpdateCartAndValidateUseUseCase
 import com.tokopedia.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.subscriber.*
-import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cart.view.uimodel.PromoSummaryData
+import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
@@ -35,7 +46,12 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -55,7 +71,13 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
@@ -119,6 +141,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     companion object {
         private const val PERCENTAGE = 100.0f
+        private const val BO_AFFORDABILITY_DELAY = 500L
+        private const val BO_AFFORDABILITY_WEIGHT_KILO = 1000
 
         const val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
         const val ITEM_CHECKED_ALL_WITH_CHANGES = 1
@@ -1130,7 +1154,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)
-//            setBoAffordability(cartItemHolderData.shopBoAffordabilityData.tickerText, cartItemHolderData.shopBoMetadata.boType)
+            setBoAffordability(cartItemHolderData.shopBoAffordabilityData.tickerText, cartItemHolderData.shopBoMetadata.boType)
         }
         return enhancedECommerceProductCartMapData
     }
@@ -1574,7 +1598,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         lastBoAffordabilityCartString = cartShopHolderData.cartString
         boAffordabilityJob = launch(dispatchers.io) {
             try {
-                delay(500)
+                delay(BO_AFFORDABILITY_DELAY)
                 val shopShipments = cartShopHolderData.shopShipments
                 // Recalculate total price and total weight, to prevent racing condition
                 val (shopProductList, shopTotalWeight) = getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData)
@@ -1597,8 +1621,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     originLongitude = cartShopHolderData.longitude
                     originLatitude = cartShopHolderData.latitude
                     originPostalCode = cartShopHolderData.postalCode
-                    weightInKilograms = shopTotalWeight / 1000
-                    weightActualInKilograms = shopTotalWeight / 1000
+                    weightInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
+                    weightActualInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     orderValue = subtotalPrice
                     shopId = cartShopHolderData.shopId
                     shopTier = cartShopHolderData.shopTypeInfo.shopTier
@@ -1608,10 +1632,17 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     products = shopProductList.map { Product(it.productId.toLong(), it.isFreeShipping, it.isFreeShippingExtra) }
                 }
                 val ratesParam = RatesParam.Builder(shopShipments, shipping).build()
-                Log.i("qwertyuiop", ratesParam.toBoAffordabilityMap("asdf").toString())
-
                 val response = boAffordabilityUseCase.setParam(ratesParam).executeOnBackground()
+                cartShopHolderData.boAffordability.cartIds = shopProductList.joinToString(",") { it.cartId }
+                if (response.texts.tickerCart.isBlank()) {
+                    cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.FAILED
+                    withContext(dispatchers.main) {
+                        view?.updateCartBoAffordability(cartShopHolderData)
+                    }
+                    return@launch
+                }
                 cartShopHolderData.boAffordability.tickerText = response.texts.tickerCart
+                cartShopHolderData.boAffordability.hasSeenTicker = false
                 if (subtotalPrice >= response.minTransaction) {
                     cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS_AFFORD
                 } else {

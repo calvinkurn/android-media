@@ -444,9 +444,12 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         arrowBoAffordability.show()
                         layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutBoAffordability.setOnClickListener {
-                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData.shopId, cartShopHolderData.isTokoNow)
+                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData)
                         }
-                        actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
+                        if (!cartShopHolderData.boAffordability.hasSeenTicker) {
+                            actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
+                            cartShopHolderData.boAffordability.hasSeenTicker = true
+                        }
                     }
                     CartShopBoAffordabilityState.SUCCESS_AFFORD -> {
                         largeLoaderBoAffordability.gone()
@@ -456,7 +459,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         textBoAffordability.show()
                         layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutBoAffordability.setOnClickListener(null)
-                        actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
+                        if (!cartShopHolderData.boAffordability.hasSeenTicker) {
+                            actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
+                            cartShopHolderData.boAffordability.hasSeenTicker = true
+                        }
                     }
                     CartShopBoAffordabilityState.FAILED -> {
                         largeLoaderBoAffordability.gone()
