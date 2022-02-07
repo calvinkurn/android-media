@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
+import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
@@ -68,6 +69,29 @@ class PlayBroProductUiMapper @Inject constructor() {
                     discountPercent = data.campaign.discountedPercentage.toInt(),
                     discountedPrice = data.campaign.discountedPriceFmt,
                     discountedPriceNumber = 0.0,
+                )
+            )
+        }
+    }
+
+    fun mapProductsInCampaign(response: GetCampaignProductResponse): List<ProductUiModel> {
+        return response.getCampaignProduct.products.map { data ->
+            ProductUiModel(
+                id = if (data.isVariant) data.parentId else data.id.toString(),
+                name = data.name,
+                imageUrl = data.imageUrl,
+                stock = data.campaign.customStock,
+                price = if (data.campaign.discountPercentage > 0) {
+                    DiscountedPrice(
+                        originalPrice = data.campaign.originalPrice,
+                        originalPriceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
+                        discountPercent = data.campaign.discountPercentage.toInt(),
+                        discountedPrice = data.campaign.discountedPrice,
+                        discountedPriceNumber = data.campaign.discountedPriceFmt.toDoubleOrNull() ?: 0.0,
+                    )
+                } else OriginalPrice(
+                    price = data.campaign.originalPrice,
+                    priceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
                 )
             )
         }

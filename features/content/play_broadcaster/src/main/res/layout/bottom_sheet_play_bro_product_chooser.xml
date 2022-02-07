@@ -24,11 +24,13 @@
         android:id="@+id/container_chips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/play_dp_12"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@id/search_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_bar"
-        app:layout_constraintEnd_toEndOf="@id/search_bar"
         >
 
         <com.tokopedia.unifycomponents.ChipsUnify

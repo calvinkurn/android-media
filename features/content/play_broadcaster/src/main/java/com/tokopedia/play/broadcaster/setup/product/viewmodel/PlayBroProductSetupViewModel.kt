@@ -123,7 +123,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private fun handleSelectEtalase(etalase: EtalaseUiModel) {
         _loadParam.update {
             it.copy(
-                etalase = SelectedEtalaseModel.Etalase(etalase)
+                etalase = SelectedEtalaseModel.Etalase(etalase),
             )
         }
     }
@@ -131,7 +131,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private fun handleSelectCampaign(campaign: CampaignUiModel) {
         _loadParam.update {
             it.copy(
-                etalase = SelectedEtalaseModel.Campaign(campaign)
+                etalase = SelectedEtalaseModel.Campaign(campaign),
+                sort = SortUiModel.supportedSortList.first(),
             )
         }
     }
@@ -161,9 +162,22 @@ class PlayBroProductSetupViewModel @Inject constructor(
             )
         }
         getProductListJob = viewModelScope.launchCatchError(dispatchers.io, block = {
-            val page = if (resetList) 0 else _focusedProductList.value.page + 1
+            val page = if (resetList) 1 else _focusedProductList.value.page + 1
             when (val selectedEtalase = _loadParam.value.etalase) {
-                is SelectedEtalaseModel.Campaign -> return@launchCatchError
+                is SelectedEtalaseModel.Campaign -> {
+                    val productList = repo.getProductsInCampaign(
+                        campaignId = selectedEtalase.campaign.id,
+                        page = page
+                    )
+
+                    _focusedProductList.update {
+                        it.copy(
+                            productList = it.productList + productList,
+                            resultState = PageResultState.Success(productList.isNotEmpty()),
+                            page = page,
+                        )
+                    }
+                }
                 is SelectedEtalaseModel.Etalase,
                 SelectedEtalaseModel.None -> {
                     val productList = repo.getProductsInEtalase(

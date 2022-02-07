@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
+import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SearchBarViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortChipsViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -64,6 +65,9 @@ class ProductChooserBottomSheet @Inject constructor(
     }
     private val etalaseChipsView by viewComponent {
         EtalaseChipsViewComponent(binding.chipsEtalase, eventBus)
+    }
+    private val searchBarView by viewComponent {
+        SearchBarViewComponent(binding.searchBar, eventBus)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -136,6 +140,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 )
                 renderSortChips(prevState?.sort, state.sort, state.campaignAndEtalase)
                 renderEtalaseChips(prevState?.campaignAndEtalase, state.campaignAndEtalase)
+                renderSearchBar(state.campaignAndEtalase)
                 renderBottomSheetTitle(state.selectedProductList)
             }
         }
@@ -202,6 +207,13 @@ class ProductChooserBottomSheet @Inject constructor(
         }
 
         etalaseChipsView.setState(selectedTitle, model.selected != SelectedEtalaseModel.None)
+    }
+
+    private fun renderSearchBar(
+        campaignAndEtalase: CampaignAndEtalaseUiModel,
+    ) {
+        if (campaignAndEtalase.selected !is SelectedEtalaseModel.Campaign) searchBarView.show()
+        else searchBarView.hide()
     }
 
     private fun renderBottomSheetTitle(

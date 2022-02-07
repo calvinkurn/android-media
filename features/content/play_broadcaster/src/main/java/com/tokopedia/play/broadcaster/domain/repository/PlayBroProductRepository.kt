@@ -19,4 +19,9 @@ interface PlayBroProductRepository {
         keyword: String,
         sort: Int,
     ): List<ProductUiModel>
+
+    suspend fun getProductsInCampaign(
+        campaignId: String,
+        page: Int,
+    ): List<ProductUiModel>
 }
