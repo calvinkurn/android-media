@@ -84,6 +84,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
     private fun setUpObservers() {
         tradeInAddressViewModel.getAddressLiveData().observe(viewLifecycleOwner, Observer {
             if (it.defaultAddress != null) {
+                tradeinHomeViewModel.districtId = it.defaultAddress?.district ?: 0
                 setAddress(it.defaultAddress as MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data)
             } else {
                 val intent = RouteManager.getIntent(

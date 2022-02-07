@@ -1,20 +1,25 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class FinishOrderResponse(
-        @SerializedName("data")
-        val data: Data = Data()
+    @Expose
+    @SerializedName("data")
+    val data: Data = Data()
 ) {
     data class Data(
-            @SerializedName("finish_order_buyer")
-            val finishOrderBuyer: FinishOrderBuyer = FinishOrderBuyer()
+        @Expose
+        @SerializedName("finish_order_buyer")
+        val finishOrderBuyer: FinishOrderBuyer = FinishOrderBuyer()
     ) {
         data class FinishOrderBuyer(
-                @SerializedName("success")
-                val success: Int = 0,
-                @SerializedName("message")
-                val message: List<String> = listOf()
+            @Expose
+            @SerializedName("success")
+            val success: Int = 0,
+            @Expose
+            @SerializedName("message")
+            val message: List<String> = listOf()
         )
     }
 }

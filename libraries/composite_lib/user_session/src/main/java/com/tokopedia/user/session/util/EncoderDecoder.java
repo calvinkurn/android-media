@@ -6,6 +6,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class EncoderDecoder {
 
+	// since it can't use remote config or rollence, we can hansel this function if there's an error in the future
+	public static boolean isReturnNull() {
+	    return false;
+	}
+
 	public static String Encrypt(String text, String initialVector) {
 		byte[] raw = new byte[] {'g','g','g','g','t','t','t','t','t','u','j','k','r','r','r','r'};   
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
@@ -26,7 +31,7 @@ public class EncoderDecoder {
 	
 	public static String Encrypt(String text, String initialVector, byte[] raw) {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-    	String encode_result = null;
+	String encode_result = null;
     	IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
     	try {
 	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -44,7 +49,7 @@ public class EncoderDecoder {
 	public static String Decrypt (String text, String initialVector, byte[] raw) {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");   
     	//String initialVector = "abcdefgh";
-    	String decode_result = null;
+	String decode_result = isReturnNull() ? null : "";
     	IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
     	try {
     		byte[] data = Base64_.decode(text, Base64_.DEFAULT);
@@ -63,7 +68,7 @@ public class EncoderDecoder {
 		byte[] raw = new byte[] {'g','g','g','g','t','t','t','t','t','u','j','k','r','r','r','r'};
 		SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
 		//String initialVector = "abcdefgh";
-		String decode_result = null;
+		String decode_result = isReturnNull() ? null : "";
 		IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
 		try {
 			byte[] data = Base64_.decode(text, Base64_.DEFAULT);
