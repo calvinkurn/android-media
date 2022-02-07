@@ -67,23 +67,23 @@ import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
-import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
@@ -113,11 +113,9 @@ import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.*
+import java.util.HashSet
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.math.max
 
 @Suppress("LongParameterList")
@@ -815,6 +813,8 @@ class ProductListPresenter @Inject constructor(
         } else {
             if (!productDataView.errorMessage.isNullOrEmpty()) {
                 getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
+            } else if(productDataView.violation != null) {
+                getViewToHandleViolation(productDataView)
             } else {
                 getViewToShowEmptySearch(productDataView)
 
@@ -882,34 +882,68 @@ class ProductListPresenter @Inject constructor(
             add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
         }
 
-    private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
-        val globalNavDataView = getGlobalNavViewModel(productDataView)
-        val isBannerAdsAllowed = globalNavDataView == null
 
+    private fun getViewToHandleViolation(
+        productDataView: ProductDataView,
+    ) {
+        val violationProductsVisitableList =
+            createViolationVisitableList(productDataView)
+
+        view.removeLoading()
+        view.addProductList(violationProductsVisitableList)
+    }
+
+    private fun createViolationVisitableList(
+        productDataView: ProductDataView,
+    ) : List<Visitable<*>> {
+        val violation = productDataView.violation ?: return emptyList()
+        return mutableListOf<Visitable<*>>().apply {
+            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
+                add(globalNavDataView)
+            }
+
+            add(violation)
+            add(SeparatorDataView())
+        }
+    }
+
+    private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
         clearData()
         view.removeLoading()
-        view.setEmptyProduct(globalNavDataView, createEmptySearchViewModel(isBannerAdsAllowed))
+        view.setProductList(constructEmptyStateProductList(productDataView))
     }
+
+    private fun constructEmptyStateProductList(
+        productDataView: ProductDataView,
+    ): List<Visitable<*>> =
+        mutableListOf<Visitable<*>>().apply {
+            getGlobalNavViewModel(productDataView)?.let { add(it) }
+            add(createEmptyStateDataView())
+        }
 
     private fun getGlobalNavViewModel(productDataView: ProductDataView): GlobalNavDataView? {
         val isGlobalNavWidgetAvailable = productDataView.globalNavDataView != null && enableGlobalNavWidget
         return if (isGlobalNavWidgetAvailable) productDataView.globalNavDataView else null
     }
 
-    private fun createEmptySearchViewModel(isBannerAdsAllowed: Boolean): EmptySearchProductDataView {
-        val emptySearchViewModel = EmptySearchProductDataView()
-        emptySearchViewModel.isBannerAdsAllowed = isBannerAdsAllowed
-        emptySearchViewModel.isFilterActive = view.isAnyFilterActive
+    private fun createEmptyStateDataView(): EmptyStateDataView {
+        val isAnyFilterActive = view.isAnyFilterActive
 
-        if (isShowLocalSearchRecommendation() && !view.isAnyFilterActive) {
-            emptySearchViewModel.isLocalSearch = true
-            emptySearchViewModel.globalSearchApplink = constructGlobalSearchApplink()
-            emptySearchViewModel.keyword = view.queryKey
-            emptySearchViewModel.pageTitle = pageTitle
-        }
-
-        return emptySearchViewModel
+        return EmptyStateDataView.create(
+            isFilterActive = isAnyFilterActive,
+            keyword = view.queryKey,
+            localSearch = emptyStateLocalSearch(isAnyFilterActive),
+        )
     }
+
+    private fun emptyStateLocalSearch(isAnyFilterActive: Boolean): EmptyStateDataView.LocalSearch? =
+        if (isShowLocalSearchRecommendation() && !isAnyFilterActive)
+            EmptyStateDataView.LocalSearch(
+                applink = constructGlobalSearchApplink(),
+                pageTitle = pageTitle,
+            )
+        else
+            null
 
     private fun isShowBroadMatchWithEmptyLocalSearch() =
             responseCode == EMPTY_LOCAL_SEARCH_RESPONSE_CODE

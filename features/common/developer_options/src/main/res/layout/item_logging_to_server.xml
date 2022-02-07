@@ -32,4 +32,15 @@
         app:unifyButtonType="main"
         app:unifyButtonSize="medium"/>
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/view_server_logger_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:text="@string/view_server_logger"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"/>
+
 </LinearLayout>
