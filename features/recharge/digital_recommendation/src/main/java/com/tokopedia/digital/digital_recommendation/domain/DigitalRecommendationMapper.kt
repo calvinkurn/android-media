@@ -1,7 +1,9 @@
 package com.tokopedia.digital.digital_recommendation.domain
 
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemUnifyModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
 import com.tokopedia.recharge_component.digital_card.presentation.model.*
 import com.tokopedia.unifycomponents.Label
 
@@ -13,7 +15,7 @@ class DigitalRecommendationMapper {
 
         fun transform(response: DigitalRecommendationResponse): DigitalRecommendationModel{
 
-            val unifyModel = response.personalizedItems.recommendationItems.map {
+            val items = response.personalizedItems.recommendationItems.map {
 
                 val discountLabel = when{
                     it.cashback.isNotEmpty() -> it.cashback
@@ -34,7 +36,7 @@ class DigitalRecommendationMapper {
                     else -> 0
                 }
 
-                return@map DigitalUnifyModel(
+                val itemUnify =  DigitalUnifyModel(
                     id = it.id,
                     mediaUrl = it.mediaURL,
                     mediaType = response.personalizedItems.mediaUrlType,
@@ -93,12 +95,28 @@ class DigitalRecommendationMapper {
                         buttonType = ""
                     )
                 )
+
+                val itemTracking = DigitalRecommendationTrackingModel(
+                    typeName = it.trackingData.__typename,
+                    businessUnit = it.trackingData.businessUnit,
+                    categoryId = it.trackingData.categoryID,
+                    categoryName = it.trackingData.categoryName,
+                    itemLabel = it.trackingData.itemLabel,
+                    itemType = it.trackingData.itemType,
+                    operatorId = it.trackingData.operatorID,
+                    productId = it.trackingData.productID
+                )
+
+                return@map DigitalRecommendationItemUnifyModel(
+                    unify = itemUnify,
+                    tracking = itemTracking
+                )
             }
 
             return DigitalRecommendationModel(
                 userType = response.personalizedItems.trackingData.userType,
                 title = response.personalizedItems.title,
-                items = unifyModel
+                items = items,
             )
         }
 

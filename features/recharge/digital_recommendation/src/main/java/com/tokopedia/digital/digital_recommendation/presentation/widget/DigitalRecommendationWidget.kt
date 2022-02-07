@@ -13,10 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRecommendationBinding
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.digital.digital_recommendation.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
@@ -49,10 +46,19 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     private var additionalTrackingData: DigitalRecommendationAdditionalTrackingData? = null
     private var page: DigitalRecommendationPage? = null
+    private var trackers: List<DigitalRecommendationItemUnifyModel>? = null
 
     private val unifyListener = object : DigitalUnifyCardViewHolder.DigitalUnifyCardListener{
         override fun onItemClicked(item: DigitalUnifyModel, index: Int) {
+            if (!trackers.isNullOrEmpty()){
+                trackers?.get(index)?.let { onItemClicked(it, index) }
+            }
+        }
 
+        override fun onItemImpression(item: DigitalUnifyModel, index: Int) {
+            if (!trackers.isNullOrEmpty()){
+                trackers?.get(index)?.let { onItemBinding(it, index) }
+            }
         }
     }
 
@@ -65,10 +71,12 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
                             hideLoading()
                             additionalTrackingData?.userType = it.data.userType
 
+                            trackers = it.data.items
+
                             if (!::adapter.isInitialized) {
                                 adapter = BaseAdapter(
                                     DigitalUnifyCardAdapterTypeFactory(unifyListener),
-                                    it.data.items
+                                    it.data.items.map { item -> item.unify }
                                 )
                             }
 
@@ -112,7 +120,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
     }
 
-    private fun onItemBinding(element: DigitalRecommendationItemModel, position: Int) {
+    private fun onItemBinding(element: DigitalRecommendationItemUnifyModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
                     element, it, position, digitalRecommendationViewModel.getUserId(), page
@@ -120,7 +128,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
     }
 
-    private fun onItemClicked(element: DigitalRecommendationItemModel, position: Int) {
+    private fun onItemClicked(element: DigitalRecommendationItemUnifyModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.clickDigitalRecommendationItems(
                     element, it, position, digitalRecommendationViewModel.getUserId(), page

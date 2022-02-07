@@ -11,8 +11,14 @@ import kotlinx.parcelize.Parcelize
 data class DigitalRecommendationModel(
         val userType: String,
         val title: String,
-        val items: List<DigitalUnifyModel>
+        val items: List<DigitalRecommendationItemUnifyModel>
 ) : Parcelable
+
+@Parcelize
+data class DigitalRecommendationItemUnifyModel(
+        val unify: DigitalUnifyModel,
+        val tracking: DigitalRecommendationTrackingModel = DigitalRecommendationTrackingModel()
+): Parcelable
 
 @Parcelize
 data class DigitalRecommendationItemModel(

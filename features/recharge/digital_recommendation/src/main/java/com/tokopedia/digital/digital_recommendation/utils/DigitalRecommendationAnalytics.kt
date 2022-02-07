@@ -2,7 +2,7 @@ package com.tokopedia.digital.digital_recommendation.utils
 
 import android.os.Bundle
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemUnifyModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.track.TrackApp
 
@@ -11,7 +11,7 @@ import com.tokopedia.track.TrackApp
  */
 class DigitalRecommendationAnalytics {
 
-    fun impressionDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationItemModel,
+    fun impressionDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationItemUnifyModel,
                                              additionalTrackingData: DigitalRecommendationAdditionalTrackingData,
                                              index: Int,
                                              userId: String,
@@ -52,10 +52,10 @@ class DigitalRecommendationAnalytics {
                         it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, "${digitalRecommendationModel.tracking.categoryId} - ${digitalRecommendationModel.tracking.categoryName}")
                         it.putString(DigitalRecommendationKeys.ITEM_ID, if (digitalRecommendationModel.tracking.productId.isNotEmpty())
                             digitalRecommendationModel.tracking.productId else "0")
-                        it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.productName)
+                        it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.unify.title)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
-                        it.putString(DigitalRecommendationKeys.PRICE, if (digitalRecommendationModel.price.isNotEmpty())
-                            digitalRecommendationModel.price else "0")
+                        it.putString(DigitalRecommendationKeys.PRICE, if (digitalRecommendationModel.unify.priceData.price.isNotEmpty())
+                            digitalRecommendationModel.unify.priceData.price else "0")
                     }
             ))
             putString(DigitalRecommendationKeys.USER_ID, userId)
@@ -64,7 +64,7 @@ class DigitalRecommendationAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalRecommendationEvents.VIEW_ITEM_LIST, bundle)
     }
 
-    fun clickDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationItemModel,
+    fun clickDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationItemUnifyModel,
                                         additionalTrackingData: DigitalRecommendationAdditionalTrackingData,
                                         index: Int,
                                         userId: String,
@@ -104,9 +104,9 @@ class DigitalRecommendationAnalytics {
                         it.putString(DigitalRecommendationKeys.ITEM_BRAND, digitalRecommendationModel.tracking.productId)
                         it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, "${digitalRecommendationModel.tracking.categoryId} - ${digitalRecommendationModel.tracking.categoryName}")
                         it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
-                        it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.productName)
+                        it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.unify.title)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
-                        it.putString(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.price)
+                        it.putString(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.unify.priceData.price)
                     }
             ))
             putString(DigitalRecommendationKeys.USER_ID, userId)
