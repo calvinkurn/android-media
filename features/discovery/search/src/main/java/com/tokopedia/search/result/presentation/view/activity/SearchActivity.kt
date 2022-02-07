@@ -259,11 +259,11 @@ class SearchActivity : BaseActivity(),
         when (position) {
             SearchTabPosition.TAB_FIRST_POSITION -> {
                 SearchTracking.eventSearchResultTabClick(productTabTitle)
-                searchSectionPagerAdapter?.getProductListFragment()?.onViewPagerChanged()
+                searchSectionPagerAdapter?.getProductListFragment()?.onPageSelected()
             }
             SearchTabPosition.TAB_SECOND_POSITION -> {
                 SearchTracking.eventSearchResultTabClick(shopTabTitle)
-                searchSectionPagerAdapter?.getShopListFragment()?.onViewPagerChanged()
+                searchSectionPagerAdapter?.getShopListFragment()?.onPageSelected()
             }
         }
     }

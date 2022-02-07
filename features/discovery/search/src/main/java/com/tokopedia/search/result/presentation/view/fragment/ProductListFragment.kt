@@ -1987,7 +1987,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun getFragment() = this
 
-    override fun onViewPagerChanged() {
+    override fun onPageSelected() {
         presenter?.reCheckChooseAddress()
     }
 

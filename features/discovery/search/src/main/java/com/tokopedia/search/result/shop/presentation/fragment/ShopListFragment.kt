@@ -649,7 +649,7 @@ internal class ShopListFragment:
         return this
     }
 
-    override fun onViewPagerChanged() {
+    override fun onPageSelected() {
         reCheckChooseAddressData()
     }
 

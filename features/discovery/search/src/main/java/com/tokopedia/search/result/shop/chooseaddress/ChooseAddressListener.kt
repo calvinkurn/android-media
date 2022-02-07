@@ -8,5 +8,5 @@ internal interface ChooseAddressListener {
 
     fun getFragment(): Fragment
 
-    fun onViewPagerChanged()
+    fun onPageSelected()
 }
