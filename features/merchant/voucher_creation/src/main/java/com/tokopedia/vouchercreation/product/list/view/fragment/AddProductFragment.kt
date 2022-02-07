@@ -1,9 +1,11 @@
 package com.tokopedia.vouchercreation.product.list.view.fragment
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,16 +24,22 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentMvcAddProductBinding
 import com.tokopedia.vouchercreation.product.list.view.adapter.ProductListAdapter
-import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
-import com.tokopedia.vouchercreation.product.list.view.model.ProductVariant
+import com.tokopedia.vouchercreation.product.list.view.bottomsheet.CategoryBottomSheet
+import com.tokopedia.vouchercreation.product.list.view.bottomsheet.LocationBottomSheet
+import com.tokopedia.vouchercreation.product.list.view.bottomsheet.ShowCaseBottomSheet
+import com.tokopedia.vouchercreation.product.list.view.bottomsheet.SortBottomSheet
+import com.tokopedia.vouchercreation.product.list.view.model.*
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemVariantViewHolder
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel
+import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel.Companion.SELLER_LOCATION_ID
 import javax.inject.Inject
 
 class AddProductFragment : BaseDaggerFragment(),
         ProductItemViewHolder.OnProductItemClickListener,
-        ProductItemVariantViewHolder.OnVariantItemClickListener {
+        ProductItemVariantViewHolder.OnVariantItemClickListener,
+        LocationBottomSheet.OnApplyButtonClickListener,
+        ShowCaseBottomSheet.OnApplyButtonClickListener, CategoryBottomSheet.OnApplyButtonClickListener, SortBottomSheet.OnApplyButtonClickListener {
 
     companion object {
 
@@ -55,9 +63,14 @@ class AddProductFragment : BaseDaggerFragment(),
         viewModelProvider.get(AddProductViewModel::class.java)
     }
 
+    private var locationBottomSheet: LocationBottomSheet? = null
+    private var showCaseBottomSheet: ShowCaseBottomSheet? = null
+    private var categoryBottomSheet: CategoryBottomSheet? = null
+    private var sortBottomSheet: SortBottomSheet? = null
+
     private var binding: FragmentMvcAddProductBinding? = null
     private var adapter: ProductListAdapter? = null
-    private var sellerLocationFilter: SortFilterItem? = null
+    private var warehouseLocationFilter: SortFilterItem? = null
     private var categoryFilter: SortFilterItem? = null
     private var showCaseFilter: SortFilterItem? = null
     private var sortFilter: SortFilterItem? = null
@@ -90,11 +103,16 @@ class AddProductFragment : BaseDaggerFragment(),
         setupView(binding)
         observeLiveData()
         val shopId = userSession.shopId
-        viewModel.getProductList(shopId)
+        // get initial product list
+        viewModel.setWarehouseLocationId(SELLER_LOCATION_ID)
+        viewModel.getProductList(shopId = shopId, warehouseLocationId = SELLER_LOCATION_ID)
+        // get warehouse locations
         val shopIdInt = shopId.toIntOrNull()
-        shopIdInt?.run { viewModel.getSellerLocations(this) }
-//        viewModel.getProductsMetaData()
+        shopIdInt?.run { viewModel.getWarehouseLocations(this) }
+        // get shop showcases
         viewModel.getShopShowCases(shopId)
+        // get sort and categories
+        viewModel.getProductListMetaData(shopId = shopId, warehouseLocationId = SELLER_LOCATION_ID)
     }
 
     private fun setupView(binding: FragmentMvcAddProductBinding?) {
@@ -105,47 +123,62 @@ class AddProductFragment : BaseDaggerFragment(),
     }
 
     private fun setupSearchBar(binding: FragmentMvcAddProductBinding?) {
-        binding?.sbuProductList
+        binding?.sbuProductList?.searchBarTextField?.setOnEditorActionListener { textView, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                val keyword = textView.text.toString().lowercase()
+                viewModel.setSearchKeyword(keyword)
+                viewModel.getProductList(
+                        keyword = keyword,
+                        shopId = userSession.shopId,
+                        warehouseLocationId = viewModel.getWarehouseLocationId(),
+                        shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                        categoryList = viewModel.getSelectedCategoryIds(),
+                        sort = viewModel.getSelectedSort()
+                )
+                return@setOnEditorActionListener true
+            } else return@setOnEditorActionListener false
+        }
     }
 
     private fun setupProductListFilter(binding: FragmentMvcAddProductBinding?) {
+
+        binding?.sfProductList?.indicatorCounter
+
         binding?.sfProductList?.apply {
-
             val sellerLocationTitle = getString(R.string.mvc_seller_location)
-            sellerLocationFilter = SortFilterItem(sellerLocationTitle)
-            sellerLocationFilter?.type = ChipsUnify.TYPE_SELECTED
-            sellerLocationFilter?.listener = {
-
+            warehouseLocationFilter = SortFilterItem(sellerLocationTitle)
+            warehouseLocationFilter?.type = ChipsUnify.TYPE_SELECTED
+            warehouseLocationFilter?.listener = {
+                locationBottomSheet?.show(childFragmentManager)
             }
             val categoryTitle = getString(R.string.mvc_category)
             categoryFilter = SortFilterItem(categoryTitle)
             categoryFilter?.listener = {
-
+                categoryBottomSheet?.show(childFragmentManager)
             }
             val showCaseTitle = getString(R.string.mvc_showcase)
             showCaseFilter = SortFilterItem(showCaseTitle)
             showCaseFilter?.listener = {
-
+                showCaseBottomSheet?.show(childFragmentManager)
             }
             val sortTitle = getString(R.string.mvc_sort)
             sortFilter = SortFilterItem(sortTitle)
             sortFilter?.listener = {
-
+                sortBottomSheet?.show(childFragmentManager)
             }
-
             val sortFilterItemList = ArrayList<SortFilterItem>()
-            sellerLocationFilter?.run { sortFilterItemList.add(this) }
+            warehouseLocationFilter?.run { sortFilterItemList.add(this) }
             categoryFilter?.run { sortFilterItemList.add(this) }
             showCaseFilter?.run { sortFilterItemList.add(this) }
             sortFilter?.run { sortFilterItemList.add(this) }
 
             addItem(sortFilterItemList)
 
-            sellerLocationFilter?.refChipUnify?.setChevronClickListener {
-                sellerLocationFilter?.listener?.invoke()
+            warehouseLocationFilter?.refChipUnify?.setChevronClickListener {
+                warehouseLocationFilter?.listener?.invoke()
             }
-            sellerLocationFilter?.refChipUnify?.setChevronClickListener {
-                sellerLocationFilter?.listener?.invoke()
+            warehouseLocationFilter?.refChipUnify?.setChevronClickListener {
+                warehouseLocationFilter?.listener?.invoke()
             }
             showCaseFilter?.refChipUnify?.setChevronClickListener {
                 showCaseFilter?.listener?.invoke()
@@ -159,8 +192,31 @@ class AddProductFragment : BaseDaggerFragment(),
                when clicked */
         }
         binding?.sfProductList?.dismissListener = {
-            viewModel.getProductList(userSession.shopId ?: "")
+            // reset all search criteria
+            viewModel.setSearchKeyword("")
+            viewModel.setWarehouseLocationId(SELLER_LOCATION_ID)
+            viewModel.setSelectedShowCases(listOf())
+            viewModel.getProductList(
+                    shopId = userSession.shopId,
+                    warehouseLocationId = viewModel.getWarehouseLocationId()
+            )
         }
+    }
+
+    private fun setupWarehouseLocationBottomSheet(warehouseLocationSelections: List<WarehouseLocationSelection>) {
+        locationBottomSheet = LocationBottomSheet.createInstance(warehouseLocationSelections, this)
+    }
+
+    private fun setupShowCaseBottomSheet(showCaseSelections: List<ShowCaseSelection>) {
+        showCaseBottomSheet = ShowCaseBottomSheet.createInstance(showCaseSelections, this)
+    }
+
+    private fun setupCategoryBottomSheet(categorySelections: List<CategorySelection>) {
+        categoryBottomSheet = CategoryBottomSheet.createInstance(categorySelections, this)
+    }
+
+    private fun setupSortBottomSheet(sortSelections: List<SortSelection>) {
+        sortBottomSheet = SortBottomSheet.createInstance(sortSelections, this)
     }
 
     private fun setupMaxLimitTicker(binding: FragmentMvcAddProductBinding?) {
@@ -193,7 +249,6 @@ class AddProductFragment : BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-
         viewModel.productListResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
@@ -207,35 +262,55 @@ class AddProductFragment : BaseDaggerFragment(),
                 }
             }
         })
-
         viewModel.getProductVariantsResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-//                    val x = result.data.product.variant.products
-                    val adapterPosition = viewModel.getAdapterPosition()
-//                    adapterPosition?.run { adapter?.updateProductVariant(adapterPosition, ) }
+                    val variantData = result.data.product.variant
+                    val adapterPosition = viewModel.getClickedAdapterPosition()
+                    val productUiModel = adapterPosition?.run { adapter?.getProductUiModel(this) }
+                    productUiModel?.run {
+                        val variantUiModels = viewModel.mapVariantDataToVariantUiModel(variantData, productUiModel)
+                        adapter?.updateProductVariant(adapterPosition, variantUiModels)
+                    }
                 }
                 is Fail -> {
                     // TODO : handle negative case
                 }
             }
         })
-
         viewModel.getSellerLocationsResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    val wareHouseLocations = result.data.ShopLocGetWarehouseByShopIDs.warehouses
+                    val warehouseLocations = result.data.ShopLocGetWarehouseByShopIDs.warehouses
+                    val locationSelections = viewModel.mapWarehouseLocationToSelections(warehouseLocations)
+                    setupWarehouseLocationBottomSheet(locationSelections)
                 }
                 is Fail -> {
                     // TODO : handle negative case
                 }
             }
         })
-
         viewModel.getShowCasesByIdResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    val shopShowCases = result.data.shopShowcasesByShopID.result
+                    val shopShowCases = result.data.shopShowcasesByShopId.result
+                    val showCaseSelections = viewModel.mapShopShowCasesToSelections(shopShowCases)
+                    setupShowCaseBottomSheet(showCaseSelections)
+                }
+                is Fail -> {
+                    // TODO : handle negative case
+                }
+            }
+        })
+        viewModel.getProductListMetaDataResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    val sort = result.data.response.data.sort
+                    val categories = result.data.response.data.category
+                    val sortSelections = viewModel.mapSortListToSortSelections(sort)
+                    setupSortBottomSheet(sortSelections)
+                    val categorySelections = viewModel.mapCategoriesToCategorySelections(categories)
+                    setupCategoryBottomSheet(categorySelections)
                 }
                 is Fail -> {
                     // TODO : handle negative case
@@ -250,12 +325,67 @@ class AddProductFragment : BaseDaggerFragment(),
         adapter?.updateSelectionState(isSelectAll = false, adapterPosition = adapterPosition)
     }
 
-    override fun onVariantAccordionClicked(isVariantEmpty: Boolean, productId: String) {
+    override fun onVariantAccordionClicked(isVariantEmpty: Boolean, productId: String, adapterPosition: Int) {
+        viewModel.setClickedAdapterPosition(adapterPosition)
         viewModel.getProductVariants(isVariantEmpty, productId)
     }
 
-    override fun onVariantCheckBoxClicked(isSelected: Boolean, productVariant: ProductVariant) {
+    override fun onVariantCheckBoxClicked(isSelected: Boolean, productVariant: VariantUiModel) {
 //        if (isSelected) viewModel.removeSelectedProduct(productVariant.variantId)
 //        else viewModel.removeSelectedProduct(productVariant.variantId)
+    }
+
+    override fun onApplyWarehouseLocationFilter(selectedWarehouseLocation: WarehouseLocationSelection) {
+        viewModel.setWarehouseLocationId(selectedWarehouseLocation.warehouseId)
+        viewModel.getProductList(
+                keyword = viewModel.getSearchKeyWord(),
+                shopId = userSession.shopId,
+                warehouseLocationId = selectedWarehouseLocation.warehouseId,
+                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                categoryList = viewModel.getSelectedCategoryIds(),
+                sort = viewModel.getSelectedSort()
+        )
+    }
+
+    override fun onApplyShowCaseFilter(selectedShowCases: List<ShowCaseSelection>) {
+        if (selectedShowCases.isNotEmpty()) showCaseFilter?.type = ChipsUnify.TYPE_SELECTED
+        else showCaseFilter?.type = ChipsUnify.TYPE_NORMAL
+        viewModel.setSelectedShowCases(selectedShowCases)
+        viewModel.getProductList(
+                keyword = viewModel.getSearchKeyWord(),
+                shopId = userSession.shopId,
+                warehouseLocationId = viewModel.getWarehouseLocationId(),
+                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                categoryList = viewModel.getSelectedCategoryIds(),
+                sort = viewModel.getSelectedSort()
+        )
+    }
+
+    override fun onApplyCategoryFilter(selectedCategories: List<CategorySelection>) {
+        if (selectedCategories.isNotEmpty()) categoryFilter?.type = ChipsUnify.TYPE_SELECTED
+        else categoryFilter?.type = ChipsUnify.TYPE_NORMAL
+        viewModel.setSelectedCategories(selectedCategories)
+        viewModel.getProductList(
+                keyword = viewModel.getSearchKeyWord(),
+                shopId = userSession.shopId,
+                warehouseLocationId = viewModel.getWarehouseLocationId(),
+                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                categoryList = viewModel.getSelectedCategoryIds(),
+                sort = viewModel.getSelectedSort()
+        )
+    }
+
+    override fun onApplySortFilter(selectedSort: List<SortSelection>) {
+        if (selectedSort.isNotEmpty()) sortFilter?.type = ChipsUnify.TYPE_SELECTED
+        else sortFilter?.type = ChipsUnify.TYPE_NORMAL
+        viewModel.setSelectedSort(selectedSort)
+        viewModel.getProductList(
+                keyword = viewModel.getSearchKeyWord(),
+                shopId = userSession.shopId,
+                warehouseLocationId = viewModel.getWarehouseLocationId(),
+                shopShowCaseIds = viewModel.getSelectedShopShowCaseIds(),
+                categoryList = viewModel.getSelectedCategoryIds(),
+                sort = viewModel.getSelectedSort()
+        )
     }
 }

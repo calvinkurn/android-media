@@ -461,6 +461,7 @@
     <string name="mvc_showcase">Etalase</string>
     <string name="mvc_select_all">Pilih semua</string>
     <string name="mvc_product_variant">Varian produk</string>
+    <string name="mvc_location">Lokasi</string>
 
     <!-- id tag -->
     <item name="product" type="id"/>

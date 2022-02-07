@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.product.list.view.model
 
-data class ProductVariant(
+data class VariantUiModel(
         var variantId: String = "",
         var variantName: String = "",
         var sku: String = "",
