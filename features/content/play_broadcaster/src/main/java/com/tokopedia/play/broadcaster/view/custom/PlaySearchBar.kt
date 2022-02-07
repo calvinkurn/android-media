@@ -72,6 +72,10 @@ class PlaySearchBar : ConstraintLayout {
         showKeyboard()
     }
 
+    fun setHint(hint: String) {
+        etSearch.hint = hint
+    }
+
     override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         val newState = SavedState(superState)

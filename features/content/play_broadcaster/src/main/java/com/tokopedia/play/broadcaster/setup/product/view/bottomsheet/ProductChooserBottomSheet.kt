@@ -140,7 +140,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 )
                 renderSortChips(prevState?.sort, state.sort, state.campaignAndEtalase)
                 renderEtalaseChips(prevState?.campaignAndEtalase, state.campaignAndEtalase)
-                renderSearchBar(state.campaignAndEtalase)
+                renderSearchBar(state.campaignAndEtalase, prevState?.shopName, state.shopName)
                 renderBottomSheetTitle(state.selectedProductList)
             }
         }
@@ -211,9 +211,17 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun renderSearchBar(
         campaignAndEtalase: CampaignAndEtalaseUiModel,
+        prevShopName: String?,
+        shopName: String,
     ) {
         if (campaignAndEtalase.selected !is SelectedEtalaseModel.Campaign) searchBarView.show()
         else searchBarView.hide()
+
+        if (prevShopName != shopName) {
+            searchBarView.setPlaceholder(
+                getString(R.string.play_etalase_search_hint, shopName)
+            )
+        }
     }
 
     private fun renderBottomSheetTitle(

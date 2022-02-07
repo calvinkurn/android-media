@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +33,7 @@ import javax.inject.Inject
  */
 class PlayBroProductSetupViewModel @Inject constructor(
     private val repo: PlayBroadcastRepository,
+    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
@@ -67,6 +69,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
             focusedProductList = focusedProductList,
             selectedProductList = selectedProductList,
             sort = loadParam.sort,
+            shopName = userSession.shopName,
         )
     }.stateIn(
         viewModelScope,

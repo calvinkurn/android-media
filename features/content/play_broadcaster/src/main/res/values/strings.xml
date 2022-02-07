@@ -7,7 +7,7 @@
 
     <string name="play_etalase_picker_title">Pilih Produk</string>
     <string name="play_etalase_picker_info">Pilih produk terbaik di tokomu untuk dijadikan konten yang membuat penonton tertarik membeli.</string>
-    <string name="play_etalase_search_hint">Cari Produk</string>
+    <string name="play_etalase_search_hint">Cari di toko %s</string>
     <string name="play_etalase_product_amount">%d Produk</string>
     <string name="play_etalase_detail_header">%s (%d)</string>
 

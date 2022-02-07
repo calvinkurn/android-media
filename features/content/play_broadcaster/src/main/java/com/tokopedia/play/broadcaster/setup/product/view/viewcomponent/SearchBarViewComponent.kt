@@ -14,10 +14,15 @@ class SearchBarViewComponent(
 ) : ViewComponent(view) {
 
     init {
+
     }
 
     fun setState(text: String, isSelected: Boolean) {
 //        view.chipText = text
 //        view.chipType = if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+    }
+
+    fun setPlaceholder(placeholder: String) {
+        view.setHint(placeholder)
     }
 }

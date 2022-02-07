@@ -16,6 +16,7 @@ data class PlayBroProductChooserUiState(
     val focusedProductList: ProductListPaging,
     val selectedProductList: EtalaseProductListMap,
     val sort: SortUiModel?,
+    val shopName: String,
 ) {
 
     companion object {
@@ -25,6 +26,7 @@ data class PlayBroProductChooserUiState(
                 focusedProductList = ProductListPaging.Empty,
                 selectedProductList = emptyMap(),
                 sort = null,
+                shopName = "",
             )
     }
 }

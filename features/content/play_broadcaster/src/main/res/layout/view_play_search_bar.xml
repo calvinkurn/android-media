@@ -43,7 +43,6 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:background="@android:color/transparent"
-            android:hint="@string/play_etalase_search_hint"
             android:imeOptions="actionSearch"
             android:inputType="textNoSuggestions"
             android:lines="1"
