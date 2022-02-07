@@ -53,4 +53,9 @@ class CMHomeWidgetViewHolder(
         itemView.cm_home_widget.visibility = View.GONE
         callback.onCMHomeWidgetDismissClick()
     }
+
+    override fun onRemoveCmWidgetLocally() {
+        itemView.cm_home_widget.visibility = View.GONE
+        callback.onRemoveCMWidgetLocally()
+    }
 }

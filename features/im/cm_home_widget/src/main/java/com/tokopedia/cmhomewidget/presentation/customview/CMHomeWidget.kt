@@ -170,10 +170,7 @@ class CMHomeWidget @JvmOverloads constructor(
 
     override fun onBuyDirectBtnClick(dataItem: CMHomeWidgetProductCardData) {
         cmHomeWidgetData?.let {
-            cmHomeWidgetCloseClickListener?.onCMHomeWidgetDismissClick(
-                it.parentId,
-                it.campaignId
-            )
+            cmHomeWidgetCloseClickListener?.onRemoveCmWidgetLocally()
         }
         sendCMHomeWidgetClickEvent()
         startRequiredActivity(dataItem.cmHomeWidgetActionButtons?.get(0)?.appLink)

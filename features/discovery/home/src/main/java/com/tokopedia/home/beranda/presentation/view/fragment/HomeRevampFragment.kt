@@ -2794,6 +2794,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().deleteCMHomeWidget()
     }
 
+    override fun onRemoveCMWidgetLocally() {
+        getHomeViewModel().deleteCMHomeWidgetLocally()
+    }
+
     override fun getCMHomeWidget() {
         getHomeViewModel().getCMHomeWidgetData()
     }

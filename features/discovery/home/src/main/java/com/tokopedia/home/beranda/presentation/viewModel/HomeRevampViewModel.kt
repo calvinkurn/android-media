@@ -605,4 +605,10 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteCMHomeWidgetLocally(){
+        findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
+            deleteWidget(cmHomeWidgetDataModel, index)
+        }
+    }
 }

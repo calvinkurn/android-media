@@ -175,4 +175,20 @@ class HomeViewModelCMHomeWidgetTest {
         // deleteCMHomeWidgetData API called -> Success -> Widget must be deleted
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)
     }
+
+    @Test
+    fun `CMHomeWidget must not be deleted locally`() {
+        val cmHomeWidgetDataModel = mockk<CMHomeWidgetDataModel>(relaxed = true)
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    cmHomeWidgetDataModel
+                ))
+        )
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase
+        )
+        homeViewModel.deleteCMHomeWidgetLocally()
+        assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)
+    }
 }
