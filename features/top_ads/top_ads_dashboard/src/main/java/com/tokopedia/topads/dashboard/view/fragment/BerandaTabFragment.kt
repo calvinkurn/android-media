@@ -4,18 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewpager.widget.ViewPager
-import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
@@ -73,8 +69,9 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private lateinit var imgAutoDebit: ImageUnify
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var creditHistory: CardUnify
-    private val graphLayout by lazy { BerandaGraphFragment.createInstance() }
+    private lateinit var graphContainer: FrameLayout
 
+    private val graphLayout by lazy { TopAdsMultiLineGraphFragment() }
     private val checkResponse by lazy { CheckResponse() }
     private var dataStatistic: DataStatistic? = null
     private var currentDateText: String = ""
@@ -114,7 +111,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     override fun loadChildStatisticsData() {
-        loadStatisticsData()
+        //loadStatisticsData()
     }
 
     override fun renderGraph() {
@@ -139,12 +136,10 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         setUpRecyclerView()
         setUpClick()
         loadData()
-        loadStatisticsData()
         initializeGraph()
         swipeRefreshLayout.setOnRefreshListener {
             showShimmer()
             loadData()
-            loadStatisticsData()
         }
     }
 
@@ -160,10 +155,11 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
             checkResponse.summaryStats = true
             when (it) {
                 is Success -> {
-                    summaryRvAdapter.addItems(it.data.mapToSummary(requireContext()))
+                    graphLayout.setValue(it.data.cells)
+                    summaryRvAdapter.addItems(it.data.summary.mapToSummary(requireContext()))
                     txtLastUpdated.text = String.format(
                         resources.getString(R.string.topads_dashboard_last_update_text),
-                        it.data.lastUpdate
+                        it.data.summary.lastUpdate
                     )
                 }
                 is Fail -> {}
@@ -209,9 +205,19 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         rvLatestReading.adapter = latestReadingRvAdapter
 
         summaryRvAdapter.infoClicked = { showInformationBottomSheet() }
-        summaryRvAdapter.itemClicked = {
+        summaryRvAdapter.itemClicked = { onSummaryItemClicked() }
+    }
 
+    private fun onSummaryItemClicked() {
+        if(summaryRvAdapter.selectedItems.size == 0) {
+            graphContainer.hide()
+            return
         }
+        if(!graphContainer.isVisible) {
+            graphContainer.show()
+        }
+        val ids = summaryRvAdapter.selectedItems.map { it.id }
+        graphLayout.showLineGraph(ids)
     }
 
     private fun setUpClick() {
@@ -260,18 +266,6 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         creditAmount.text = dataDeposit.amountFmt
     }
 
-    private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
-
-        this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
-            topAdsTabAdapter?.setSummary(
-                dataStatistic.summary,
-                resources.getStringArray(R.array.top_ads_tab_statistics_labels)
-            )
-        }
-        graphLayout.showLineGraph(this.dataStatistic)
-    }
-
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
         val isAutoTopUpActive =
             (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
@@ -311,19 +305,6 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         }
     }
 
-    fun loadStatisticsData() {
-        if (startDate == null || endDate == null) return
-        topAdsDashboardPresenter.getStatistic(
-            startDate ?: Date(),
-            endDate
-                ?: Date(),
-            selectedStatisticType,
-            (activity as TopAdsDashboardActivity?)?.getAdInfo()
-                ?: MANUAL_AD,
-            ::onSuccesGetStatisticsInfo
-        )
-    }
-
     interface GoToInsight {
         fun gotToInsights()
     }
@@ -334,6 +315,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     override fun setUpView(view: View) {
+        graphContainer = view.findViewById(R.id.graph_layout)
         creditHistory = view.findViewById(R.id.credit_history)
         txtAdType = view.findViewById(R.id.txtAdType)
         ivSummaryDropDown = view.findViewById(R.id.ivSummaryDropDown)
@@ -397,12 +379,4 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
                 hideShimmer()
             }
     }
-}
-
-class BerandaGraphFragment : TopAdsDashStatisticFragment() {
-    companion object {
-        fun createInstance() = BerandaGraphFragment()
-    }
-
-    override fun getIndex() = 0
 }

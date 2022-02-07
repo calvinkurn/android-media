@@ -12,13 +12,13 @@
         android:layout_width="@dimen/spacing_lvl5"
         android:layout_height="@dimen/spacing_lvl5"
         android:layout_marginEnd="@dimen/unify_space_12"
-        android:tint="@color/Unify_B900"
-        android:src="@drawable/iconunify_calendar" />
+        android:src="@drawable/iconunify_calendar"
+        android:tint="@color/Unify_NN900" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivEducationTopAdsActionBar"
         android:layout_width="@dimen/spacing_lvl5"
         android:layout_height="@dimen/spacing_lvl5"
-        android:tint="@color/Unify_B900" />
+        android:src="@drawable/education_icon" />
 
 </LinearLayout>

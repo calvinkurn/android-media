@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -18,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -205,12 +207,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private fun initView() {
         headerToolbar = findViewById(R.id.header_toolbar)
         headerToolbar.addCustomRightContent(headerToolbarRight)
-        /*headerToolbarRight.findViewById<ImageUnify>(R.id.ivEducationTopAdsActionBar)
-            .setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, com.tokopedia.unifycomponents.R.drawable.iconunify_education
-                )
-            )*/
     }
 
     private fun removeBtn() {
@@ -410,14 +406,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     override fun adInfo(adInfo: String) {
         adType = adInfo
-        val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
-        for (frag in fragments) {
-            when (frag.fragment) {
-                is BerandaTabFragment -> {
-                    (frag.fragment as BerandaTabFragment).loadStatisticsData()
-                }
-            }
-        }
     }
 
     override fun onNoProduct(isNoProduct: Boolean) {

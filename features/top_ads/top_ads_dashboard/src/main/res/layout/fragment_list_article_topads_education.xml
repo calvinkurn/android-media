@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="@dimen/spacing_lvl4"
-    android:paddingVertical="@dimen/unify_space_12">
+    android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtTitleArticleTopAdsEducation"
@@ -14,6 +14,8 @@
         android:layout_marginStart="@dimen/topads_dashboard_dp_6"
         android:text="@string/topads_education_article_frag_title"
         android:textSize="@dimen/fontSize_lvl4"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_goneMarginTop="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2" />

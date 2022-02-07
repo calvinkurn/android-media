@@ -113,4 +113,10 @@ object TopAdsDashboardConstant {
     const val FROM_EDIT = "fromEdit"
     const val FROM_DETAIL = "fromDetail"
     const val FROM_REKOMENDASI = "fromRekomendasi"
+    const val CONST_TAMPIL = 0
+    const val CONST_KLIK = 1
+    const val CONST_TERJUAL = 2
+    const val CONST_PENDAPATAN = 3
+    const val CONST_PENGELURAN = 4
+    const val CONST_EFECTIVITAS_IKLAN = 5
 }

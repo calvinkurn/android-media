@@ -20,8 +20,8 @@ class TopAdsDashboardViewModel @Inject constructor(
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val _summaryStatisticsLiveData =
-        MutableLiveData<Result<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Summary>>()
-    val summaryStatisticsLiveData: LiveData<Result<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Summary>> get() = _summaryStatisticsLiveData
+        MutableLiveData<Result<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics>>()
+    val summaryStatisticsLiveData: LiveData<Result<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics>> get() = _summaryStatisticsLiveData
 
     private val _latestReadingLiveData =
         MutableLiveData<Result<List<TopAdsLatestReading.CategoryTree.Data.Category>>>()
@@ -49,7 +49,7 @@ class TopAdsDashboardViewModel @Inject constructor(
                 if (data?.topadsWidgetSummaryStatistics?.data == null)
                     Fail(Throwable())
                 else
-                    Success(data.topadsWidgetSummaryStatistics.data.summary)
+                    Success(data.topadsWidgetSummaryStatistics.data)
         }, onError = {
             _summaryStatisticsLiveData.postValue(Fail(it))
         })
