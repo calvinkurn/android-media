@@ -290,6 +290,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun addListeners() {
 
+        gatewayDetailLayout.tenureDetailGlobalError.errorAction.setOnClickListener {
+            getCheckoutDetail()
+        }
+
+        fullPageGLobalError.errorAction.setOnClickListener {
+            startAllLoaders()
+            payLaterActivationViewModel.getProductDetail(productId)
+        }
+
         gatewayDetailLayout.changePayLaterPartner.setOnClickListener {
             if (this::listOfGateway.isInitialized) {
                 val bundle = Bundle().apply {
@@ -327,14 +336,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
         detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
             quantity = newValue
-            amountBottomDetailLoader.visibility = View.VISIBLE
-            gatewayDetailShimmer.visibility = View.VISIBLE
-            gatewayDetailLayout.visibility = View.GONE
-            payLaterActivationViewModel.getOptimizedCheckoutDetail(
-                productId,
-                payLaterActivationViewModel.price * quantity,
-                gatewayId
-            )
+            getCheckoutDetail()
 
         }
 
@@ -365,6 +367,17 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
 
 
+    }
+
+    private fun getCheckoutDetail() {
+        amountBottomDetailLoader.visibility = View.VISIBLE
+        gatewayDetailShimmer.visibility = View.VISIBLE
+        gatewayDetailLayout.visibility = View.GONE
+        payLaterActivationViewModel.getOptimizedCheckoutDetail(
+            productId,
+            payLaterActivationViewModel.price * quantity,
+            gatewayId
+        )
     }
 
     override fun getScreenName(): String {
