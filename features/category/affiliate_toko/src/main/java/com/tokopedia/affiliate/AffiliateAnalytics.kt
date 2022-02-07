@@ -90,17 +90,24 @@ object AffiliateAnalytics {
         productMap[EventKeys.KEY_CREATIVE_SLOT] = (position + 1).toString()
         productMap[EventKeys.KEY_ITEM_NAME] = ItemKeys.AFFILIATE_TRANSACTION_PAGE
         list.add(productMap)
-        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+        val map = HashMap<String,Any>()
+        if(event == PROMO_CLICK){
+            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
             EVENT_PROMO_CLICK to mapOf(
                 KEY_PROMOTIONS to list))
-        val map = HashMap<String,Any>()
+            map[EventKeys.KEY_ECOMMERCE] = eCommerce
+        }else{
+            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> =mapOf(
+                "detail" to mapOf(
+                    "products" to list))
+            map[EventKeys.KEY_ECOMMERCE] = eCommerce
+        }
         map[EventKeys.KEY_EVENT] = event
         map[EventKeys.KEY_EVENT_CATEGORY] = category
         map[EventKeys.KEY_EVENT_ACTION] = action
         map[EventKeys.KEY_EVENT_LABEL] = eventLabel
         map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
-        map[EventKeys.KEY_ECOMMERCE] = eCommerce
         map[EventKeys.KEY_USER_ID] = userId
 
         getTracker().sendEnhanceEcommerceEvent(map)
@@ -140,7 +147,7 @@ object AffiliateAnalytics {
 
             const val CLICK_REGISTER = "clickRegister"
             const val CLICK_PG = "clickPG"
-            const val VIEW_ITEM = "view_item"
+            const val VIEW_PRODUCT = "viewproduct"
         }
     }
 

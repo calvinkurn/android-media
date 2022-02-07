@@ -377,7 +377,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
         context?.let {
             AffiliateAnalytics.sendIcomeTracker(
-                AffiliateAnalytics.EventKeys.VIEW_ITEM,AffiliateAnalytics.ActionKeys.IMPRESSION_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                AffiliateAnalytics.EventKeys.VIEW_PRODUCT,AffiliateAnalytics.ActionKeys.IMPRESSION_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
                 label,listSize,transactionID,UserSession(it).userId
             )
         }

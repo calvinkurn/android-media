@@ -95,7 +95,7 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
 
     private fun sendTransactionClickEvent(transactionID: String, label: String) {
         AffiliateAnalytics.sendIcomeTracker(
-            AffiliateAnalytics.EventKeys.SELECT_CONTENT,AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+            AffiliateAnalytics.EventKeys.PROMO_CLICK,AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
             label,adapterPosition,transactionID,UserSession(itemView.context).userId
         )
     }
