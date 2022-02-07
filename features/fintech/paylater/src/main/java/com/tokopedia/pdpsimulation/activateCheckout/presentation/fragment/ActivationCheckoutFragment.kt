@@ -71,7 +71,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private var selectedTenurePosition = 0
     private var selectedGateway = 0
     var quantity = 1
-    var isDisabled= false
+    var isDisabled = false
 
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
@@ -103,14 +103,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun startAllLoaders() {
         productInfoActivationShimmer.visibility = View.VISIBLE
+        globalErrorGroup.visibility = View.GONE
         detailHeader.visibility = View.GONE
         amountBottomDetailLoader.visibility = View.VISIBLE
         gatewayDetailShimmer.visibility = View.VISIBLE
         gatewayDetailLayout.visibility = View.GONE
     }
 
-    fun updateSelectedTenure(gatewaySelected: Int)
-    {
+    fun updateSelectedTenure(gatewaySelected: Int) {
         this.selectedGateway = gatewaySelected
     }
 
@@ -118,25 +118,30 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.productDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    productInfoActivationShimmer.visibility = View.GONE
-                    detailHeader.visibility = View.VISIBLE
-                    setProductData(it.data)
-                    it.data.stock?.let { productStock->
-                        detailHeader.quantityEditor.maxValue = productStock
-                    }
+                    try {
+                        removeAllError()
+                        productInfoActivationShimmer.visibility = View.GONE
+                        detailHeader.visibility = View.VISIBLE
+                        setProductData(it.data)
+                        it.data.stock?.let { productStock ->
+                            detailHeader.quantityEditor.maxValue = productStock
+                        }
 
-                    payLaterActivationViewModel.getOptimizedCheckoutDetail(
-                        productId,
-                        payLaterActivationViewModel.price * quantity, gatewayId
-                    )
+                        payLaterActivationViewModel.getOptimizedCheckoutDetail(
+                            productId,
+                            payLaterActivationViewModel.price * quantity, gatewayId
+                        )
+                    } catch (e: Exception) {
+                        loaderhideOnCheckoutApi()
+                        fullPageEmptyError()
+                        removeBottomDetailForError()
+                    }
 
                 }
                 is Fail -> {
                     loaderhideOnCheckoutApi()
-                    fullPageGLobalError.visibility = View.VISIBLE
-                    nestedScrollView.visibility  = View.GONE
-                    amountToPay.text = "Rp"
-                    proceedToCheckout.isEnabled = false
+                    fullPageGlobalError()
+                    removeBottomDetailForError()
                 }
             }
 
@@ -144,44 +149,97 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
+
+    private fun removeAllError() {
+        globalErrorGroup.visibility = View.GONE
+        nestedScrollView.visibility = View.VISIBLE
+
+    }
+
+    private fun fullPageGlobalError() {
+        fullPageGLobalError.visibility = View.VISIBLE
+        nestedScrollView.visibility = View.GONE
+    }
+
+    private fun fullPageEmptyError() {
+        fullPageGLobalError.visibility = View.VISIBLE
+        nestedScrollView.visibility = View.GONE
+    }
 
     private fun observerOtherDetail() {
         payLaterActivationViewModel.payLaterActivationDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.checkoutData.isNotEmpty()) {
+                        showBottomDetail()
                         loaderhideOnCheckoutApi()
+                        removeErrorInTenure()
                         checkDisableLogic(it.data.checkoutData[selectedGateway].disable)
                         listOfGateway = it.data
                         setSelectedTenure(it.data)
                         setTenureOptionsData(it.data)
+
+
                     } else {
-                        TODO()
+                        loaderhideOnCheckoutApi()
+                        showEmptyErrorInTenureDetail()
+                        removeBottomDetailForError()
                     }
                 }
                 is Fail -> {
                     loaderhideOnCheckoutApi()
-                    gatewayDetailLayout.globalErrorHandlerGroup.visibility = View.GONE
-                    gatewayDetailLayout.tenureDetailGlobalError.visibility = View.VISIBLE
-                    proceedToCheckout.isEnabled = false
-                    amountToPay.text = "Rp"
+                    showGlobalErrorInTenureDetail()
+                    removeBottomDetailForError()
+
+
                 }
             }
         }
+    }
+
+    private fun showBottomDetail() {
+        proceedToCheckout.isEnabled = true
+        priceBreakdown.isEnabled = true
+        paymentDuration.visibility = View.VISIBLE
+    }
+
+    private fun removeErrorInTenure() {
+        gatewayDetailLayout.tenureErrorHandlerGroup.visibility = View.VISIBLE
+        gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.GONE
+        gatewayDetailLayout.tenureDetailGlobalError.visibility = View.GONE
+    }
+
+    private fun removeBottomDetailForError() {
+        proceedToCheckout.isEnabled = false
+        amountToPay.text = "Rp"
+        paymentDuration.visibility = View.GONE
+        priceBreakdown.isEnabled = false
+    }
+
+    private fun showEmptyErrorInTenureDetail() {
+        gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.VISIBLE
+        gatewayDetailLayout.tenureErrorHandlerGroup.visibility = View.GONE
+        gatewayDetailLayout.tenureDetailGlobalError.visibility = View.GONE
+
+
+    }
+
+    private fun showGlobalErrorInTenureDetail() {
+        gatewayDetailLayout.tenureDetailGlobalError.visibility = View.VISIBLE
+        gatewayDetailLayout.tenureErrorHandlerGroup.visibility = View.GONE
+        gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.GONE
     }
 
     private fun loaderhideOnCheckoutApi() {
         amountBottomDetailLoader.visibility = View.GONE
         gatewayDetailShimmer.visibility = View.GONE
         gatewayDetailLayout.visibility = View.VISIBLE
-        amountBottomDetailLoader.visibility = View.GONE
     }
 
     private fun checkDisableLogic(disable: Boolean) {
         isDisabled = disable
         this.isDisable()
     }
-
 
 
     private fun setSelectedTenure(data: PaylaterGetOptimizedModel) {
@@ -206,17 +264,17 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun setTenureOptionsData(data: PaylaterGetOptimizedModel) {
         if (data.checkoutData.isNotEmpty()) {
             setGatewayProductImage(data.checkoutData[selectedGateway])
-            if (!data.checkoutData[selectedGateway].gateway_name.isBlank())
+            if (data.checkoutData[selectedGateway].gateway_name.isNotBlank())
                 gatewayDetailLayout.getwayBrandName.text =
                     data.checkoutData[selectedGateway].gateway_name
             else
                 gatewayDetailLayout.getwayBrandName.visibility = View.GONE
-            if (!data.checkoutData[selectedGateway].subtitle.isBlank())
+            if (data.checkoutData[selectedGateway].subtitle.isNotBlank())
                 gatewayDetailLayout.subheaderGateway.text =
                     data.checkoutData[selectedGateway].subtitle
             else
                 gatewayDetailLayout.subheaderGateway.visibility = View.GONE
-            if (!data.checkoutData[selectedGateway].subtitle2.isBlank())
+            if (data.checkoutData[selectedGateway].subtitle2.isNotBlank())
                 gatewayDetailLayout.subheaderGatewayDetail.text =
                     data.checkoutData[selectedGateway].subtitle2
             else
@@ -290,11 +348,25 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun addListeners() {
 
+
+        gatewayDetailLayout.tenureDetailEmptyStateError.emptyStateCTAID.setOnClickListener {
+            gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.GONE
+            getCheckoutDetail()
+        }
         gatewayDetailLayout.tenureDetailGlobalError.errorAction.setOnClickListener {
+            gatewayDetailLayout.tenureDetailGlobalError.visibility = View.GONE
             getCheckoutDetail()
         }
 
+        fullPageEmptyState.emptyStateCTAID.setOnClickListener {
+            fullPageEmptyState.visibility = View.GONE
+            startAllLoaders()
+            payLaterActivationViewModel.getProductDetail(productId)
+        }
+
+
         fullPageGLobalError.errorAction.setOnClickListener {
+            fullPageGLobalError.visibility = View.GONE
             startAllLoaders()
             payLaterActivationViewModel.getProductDetail(productId)
         }
@@ -310,25 +382,26 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 bottomSheetNavigator.showBottomSheet(SelectGateWayBottomSheet::class.java, bundle)
             }
         }
-        detailHeader.quantityEditor.editText.addTextChangedListener(object : TextWatcher{
+        detailHeader.quantityEditor.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                if(!s.isNullOrBlank()) {
-                    if (s.toString().replace("[^0-9]".toRegex(), "")
-                            .toInt() > detailHeader.quantityEditor.maxValue
-                    ) {
-                        detailHeader.limiterMessage.visibility = View.VISIBLE
-                        detailHeader.limiterMessage.text =
-                            "Oops, stoknya tinggal ${detailHeader.quantityEditor.maxValue}"
+                if (!s.isNullOrBlank()) {
+                    when {
+                        s.toString().replace("[^0-9]".toRegex(), "")
+                            .toInt() > detailHeader.quantityEditor.maxValue -> {
+                            detailHeader.limiterMessage.visibility = View.VISIBLE
+                            detailHeader.limiterMessage.text =
+                                "Oops, stoknya tinggal ${detailHeader.quantityEditor.maxValue}"
 
-                    } else if (s.toString().replace("[^0-9]".toRegex(), "").toInt() < 1) {
-                        detailHeader.limiterMessage.visibility = View.VISIBLE
-                        detailHeader.limiterMessage.text = "Min. beli 1 barang"
+                        }
+                        s.toString().replace("[^0-9]".toRegex(), "").toInt() < 1 -> {
+                            detailHeader.limiterMessage.visibility = View.VISIBLE
+                            detailHeader.limiterMessage.text = "Min. beli 1 barang"
 
+                        }
+                        else -> detailHeader.limiterMessage.visibility = View.GONE
                     }
-                    else
-                        detailHeader.limiterMessage.visibility = View.GONE
                 }
             }
 
@@ -363,7 +436,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
 
         proceedToCheckout.setOnClickListener {
-         //   payLaterActivationViewModel.addProductToCart(productId,quantity)
+            //   payLaterActivationViewModel.addProductToCart(productId,quantity)
         }
 
 
@@ -391,7 +464,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 if (this.selectedProductId.isNotBlank()) {
                     productId = this.selectedProductId
 
-                   startAllLoaders()
+                    startAllLoaders()
                     payLaterActivationViewModel.getProductDetail(this.selectedProductId)
 
                 }
@@ -435,7 +508,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         activationTenureAdapter.notifyItemChanged(selectedTenurePosition)
         selectedTenurePosition = newPositionToSelect
     }
-
 
 
 }

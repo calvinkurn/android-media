@@ -18,6 +18,21 @@
         app:layout_constraintBottom_toTopOf="@id/ctaDivider"
         />
 
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/fullPageEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ctaDivider"
+        android:visibility="gone"
+        app:unifyEmptyStatePrimaryCTAText="@string/title_try_again"
+        app:unifyEmptyStateTitle="@string/pay_later_unavailable_title"
+        app:unifyEmptyStateDescription="@string/pay_later_unavailable_description"
+        app:unifyEmptyStateImageDrawable="@drawable/bg_installment_not_available"
+        />
+
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -44,6 +59,7 @@
                 layout="@layout/product_detail_activation_shimmer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                tools:visibility = "gone"
                 app:layout_constraintTop_toBottomOf="@id/detailHeader" />
 
 
@@ -62,6 +78,7 @@
                 layout="@layout/tenure_activation_shimmer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                tools:visibility = "gone"
                 android:layout_marginLeft="@dimen/unify_space_16"
                 android:layout_marginRight="@dimen/unify_space_16"
                 app:layout_constraintTop_toBottomOf="@id/gatewayDetailLayout" />
@@ -138,11 +155,9 @@
 <androidx.constraintlayout.widget.Group
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/bottomAmountDetailGroup"
-    app:layout_constraintBottom_toBottomOf="parent"
-    android:layout_marginTop="@dimen/unify_space_12"
-    app:layout_constraintTop_toBottomOf="@id/ctaDivider"
-    app:constraint_referenced_ids="proceedToCheckout,paymentDuration,amountToPay,proceedToCheckout,priceBreakdown"
+    android:id="@+id/globalErrorGroup"
+    app:constraint_referenced_ids="fullPageGLobalError,fullPageEmptyState"
     />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

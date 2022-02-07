@@ -82,13 +82,13 @@ class PayLaterActivationViewModel @Inject constructor(
 
     private fun onSuccessActivationData(paylaterGetOptimizedModel: PaylaterGetOptimizedModel) {
         paylaterGetOptimizedModel.let {
-            _payLaterActivationDetailLiveData.postValue(Success(it))
+            _payLaterActivationDetailLiveData.postValue( Success(it))
         }
 
     }
 
     private fun onFailActivationData(throwable: Throwable) {
-        _payLaterActivationDetailLiveData.postValue(Fail(throwable))
+        _payLaterActivationDetailLiveData.postValue(  Fail(throwable))
     }
 
 //    fun addProductToCart(productId: String, productQuantity: Int) {
