@@ -675,11 +675,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     override fun onClickIcon(isSwitchChecked: Boolean) {
                         binding?.run {
                             val clientNumber = rechargePdpTokenListrikClientNumberWidget.getInputNumber()
-                            val dgCategoryIds = arrayListOf(
-                                TelcoCategoryType.CATEGORY_PULSA.toString(),
-                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                                TelcoCategoryType.CATEGORY_ROAMING.toString()
-                            )
+                            val dgCategoryIds = arrayListOf(categoryId.toString())
                             navigateToContact(
                                 clientNumber, dgCategoryIds,
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId)
