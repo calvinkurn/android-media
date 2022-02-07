@@ -80,7 +80,7 @@
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
-/features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
+/features/merchant/product_service_common/              @tokopedia/android-minionken-dev
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 /features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
 

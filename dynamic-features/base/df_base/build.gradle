@@ -112,7 +112,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
-    implementation projectOrAar(rootProject.ext.features.productBundle)
+    implementation projectOrAar(rootProject.ext.features.productServiceCommon)
 
     //Operational
 
