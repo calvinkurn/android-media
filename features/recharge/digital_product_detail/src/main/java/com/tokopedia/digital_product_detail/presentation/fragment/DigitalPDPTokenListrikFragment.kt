@@ -293,11 +293,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun getFavoriteNumber() {
-        viewModel.getFavoriteNumber(listOf(
-            TelcoCategoryType.CATEGORY_PULSA,
-            TelcoCategoryType.CATEGORY_PAKET_DATA,
-            TelcoCategoryType.CATEGORY_ROAMING
-        ))
+        viewModel.getFavoriteNumber(listOf(categoryId))
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
