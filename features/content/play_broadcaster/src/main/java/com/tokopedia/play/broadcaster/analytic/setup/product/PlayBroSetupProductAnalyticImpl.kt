@@ -62,6 +62,25 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
         sendEvent("click - save product tag")
     }
 
+    override fun clickCampaignAndEtalaseFilter() {
+        sendEvent("click - etalase filter")
+    }
+
+    override fun clickProductSorting() {
+        sendEvent("click - product sort")
+    }
+
+    override fun clickProductSortingType(sortName: String) {
+        sendEvent(
+            "click - sort type",
+            "$shopId - $sortName"
+        )
+    }
+
+    override fun clickCampaignAndEtalase() {
+        sendEvent("click - etalase card")
+    }
+
     private fun sendEvent(
         eventAction: String,
         eventLabel: String = shopId,

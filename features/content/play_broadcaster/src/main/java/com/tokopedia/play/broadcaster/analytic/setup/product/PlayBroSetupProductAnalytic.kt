@@ -16,4 +16,12 @@ interface PlayBroSetupProductAnalytic {
     fun clickDeleteProductOnProductSetup(productId: String)
 
     fun clickDoneOnProductSetup()
+
+    fun clickCampaignAndEtalaseFilter()
+
+    fun clickProductSorting()
+
+    fun clickProductSortingType(sortName: String)
+
+    fun clickCampaignAndEtalase()
 }
