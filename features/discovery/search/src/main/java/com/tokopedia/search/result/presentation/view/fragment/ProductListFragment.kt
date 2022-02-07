@@ -497,7 +497,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
 
-        presenter?.reCheckChooseAddress()
+        presenter?.reCheckChooseAddressData()
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -1988,7 +1988,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun getFragment() = this
 
     override fun onPageSelected() {
-        presenter?.reCheckChooseAddress()
+        presenter?.reCheckChooseAddressData()
     }
 
     override val isChooseAddressWidgetEnabled: Boolean = true

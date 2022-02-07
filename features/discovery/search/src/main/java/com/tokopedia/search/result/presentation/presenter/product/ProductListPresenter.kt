@@ -2275,7 +2275,7 @@ class ProductListPresenter @Inject constructor(
         view.reloadData()
     }
 
-    override fun reCheckChooseAddress() {
+    override fun reCheckChooseAddressData() {
         if (isViewNotAttached) return
         val chooseAddressData = chooseAddressData ?: return
         val isAddressDataUpdated = view.getIsLocalizingAddressHasUpdated(chooseAddressData)
