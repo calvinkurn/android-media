@@ -165,6 +165,5 @@ interface ProductListSectionContract {
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
         fun shopAdsImpressionCount(impressionCount: Int)
-        fun reCheckChooseAddressData()
     }
 }
