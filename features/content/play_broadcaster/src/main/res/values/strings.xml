@@ -236,4 +236,5 @@
     <string name="play_bro_selected_product_title">Pilih produk (%d/%d)</string>
     <string name="play_bro_product_chooser_stock">Stok %d</string>
     <string name="play_bro_product_add_more">Tambah</string>
+    <string name="play_bro_product_summary_done">Selesai</string>
 </resources>

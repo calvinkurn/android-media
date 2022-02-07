@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.bottomsheet
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSumma
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,6 +25,7 @@ import javax.inject.Inject
  */
 class ProductSummaryBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
+    private val dialogCustomizer: PlayBroadcastDialogCustomizer,
 ) : BottomSheetUnify(), ProductSummaryListViewComponent.Listener {
 
     private lateinit var viewModel: PlayBroProductSetupViewModel
@@ -37,6 +40,12 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     override fun onProductDeleteClicked(product: ProductUiModel) {
         TODO("Not yet implemented")
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState).apply {
+            dialogCustomizer.customize(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +77,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         _binding = BottomSheetPlayBroProductSummaryBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
+        clearContentPadding = true
         setChild(binding.root)
     }
 
