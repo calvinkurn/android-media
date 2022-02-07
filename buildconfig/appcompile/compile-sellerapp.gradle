@@ -132,6 +132,7 @@ includeIfEnabled("features:top_ads:top_ads_management_sourcetagging")
 includeIfEnabled("features:top_ads:top_ads_detail_sheet")
 includeIfEnabled("features:top_ads:top_ads_headline")
 includeIfEnabled("features:top_ads:top_ads_headline_usecase")
+includeIfEnabled("features:top_ads:top_ads_on_boarding")
 
 includeIfEnabled("features:transaction:atc_common")
 includeIfEnabled("features:transaction:purchase_platform_common")
