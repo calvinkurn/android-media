@@ -60,7 +60,15 @@ data class P2RatesEstimateData(
 
         @SerializedName("errors")
         @Expose
-        val p2RatesError: List<P2RatesError> = listOf()
+        val p2RatesError: List<P2RatesError> = listOf(),
+
+        @SerializedName("shippingCtxDesc")
+        @Expose
+        val shippingCtxDesc: String = "",
+
+        @SerializedName("originalShippingRate")
+        @Expose
+        val originalShippingRate: Double = 0.0
 )
 
 data class P2RatesError(
