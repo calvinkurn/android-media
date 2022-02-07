@@ -60,13 +60,23 @@
 
         app:typographyWeight="reguler" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/errorTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/subheaderGatewayDetail"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:tickerType="error" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTenureDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:listitem="@layout/paylater_activation_individual_tenure"
         android:layout_marginTop="@dimen/unify_space_12"
-        app:layout_constraintTop_toBottomOf="@id/subheaderGatewayDetail" />
+        app:layout_constraintTop_toBottomOf="@id/errorTicker" />
 
 
     <com.tokopedia.unifyprinciples.Typography

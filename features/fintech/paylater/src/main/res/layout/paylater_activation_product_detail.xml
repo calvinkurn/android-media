@@ -58,4 +58,16 @@
         app:qty_min_value="1"
         app:unify_qty_step_value="1" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="small"
+        android:textColor="@color/Unify_RN500"
+        app:layout_constraintLeft_toLeftOf="@id/quantityEditor"
+        app:layout_constraintRight_toRightOf="@id/quantityEditor"
+        app:layout_constraintTop_toBottomOf="@id/quantityEditor"
+        tools:text=""
+        android:layout_marginTop="@dimen/unify_space_4"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
