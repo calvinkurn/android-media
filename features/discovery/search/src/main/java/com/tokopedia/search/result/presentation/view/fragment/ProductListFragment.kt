@@ -1987,10 +1987,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun getFragment() = this
 
-    override fun onPageSelected() {
-        presenter?.reCheckChooseAddressData()
-    }
-
     override val isChooseAddressWidgetEnabled: Boolean = true
 
     override val chooseAddressData: LocalCacheModel

@@ -552,6 +552,8 @@ internal class ShopListFragment:
 
         searchViewModel?.changeBottomNavigationVisibility(false)
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
+
+        reCheckChooseAddressData()
     }
 
     private fun trackScreen() {
@@ -647,10 +649,6 @@ internal class ShopListFragment:
 
     override fun getFragment(): Fragment {
         return this
-    }
-
-    override fun onPageSelected() {
-        reCheckChooseAddressData()
     }
 
     override fun onResume() {
