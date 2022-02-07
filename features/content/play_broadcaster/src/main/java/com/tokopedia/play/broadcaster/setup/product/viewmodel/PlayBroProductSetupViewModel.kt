@@ -46,6 +46,16 @@ class PlayBroProductSetupViewModel @Inject constructor(
         _campaignList,
         _etalaseList
     ) { selectedEtalase, campaignList, etalaseList ->
+        if(selectedEtalase !is SelectedEtalaseModel.None) {
+            campaignList.forEach {
+                it.isChecked = selectedEtalase is SelectedEtalaseModel.Campaign && selectedEtalase.campaign == it
+            }
+
+            etalaseList.forEach {
+                it.isChecked = selectedEtalase is SelectedEtalaseModel.Etalase && selectedEtalase.etalase == it
+            }
+        }
+
         CampaignAndEtalaseUiModel(
             selected = selectedEtalase,
             campaignList = campaignList,
