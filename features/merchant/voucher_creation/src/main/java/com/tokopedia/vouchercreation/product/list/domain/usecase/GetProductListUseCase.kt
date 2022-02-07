@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.product.list.domain.model.request.GoodsFilterInput
-import com.tokopedia.vouchercreation.product.list.domain.model.request.GoodsSortExtraInput
 import com.tokopedia.vouchercreation.product.list.domain.model.request.GoodsSortInput
 import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductListResponse
 import javax.inject.Inject
@@ -14,21 +13,33 @@ class GetProductListUseCase @Inject constructor(@ApplicationContext repository: 
     : GraphqlUseCase<ProductListResponse>(repository) {
 
     companion object {
-
+        private const val KEY_KEYWORD = "keyword"
+        private const val KEY_MENU = "menu"
+        private const val KEY_CATEGORY = "category"
         private const val KEY_SHOP_ID = "shopID"
         private const val KEY_WAREHOUSE_ID = "warehouseID"
         private const val KEY_FILTER = "filter"
         private const val KEY_SORT = "sort"
 
         @JvmStatic
-        fun createRequestParams(shopId: String,
-                         warehouseId: String? = null,
-                         filter: List<GoodsFilterInput>? = null,
-                         sort: GoodsSortInput? = null): RequestParams {
+        fun createRequestParams(
+                keyword: String?,
+                shopId: String?,
+                warehouseId: String? = null,
+                shopShowCaseIds: List<String>? = null,
+                categories: List<String>? = null,
+                sort: GoodsSortInput? = null): RequestParams {
+
+            val filtersParams = mutableListOf<GoodsFilterInput>().apply {
+                keyword?.run { add(GoodsFilterInput(id = KEY_KEYWORD, value = listOf(this))) }
+                shopShowCaseIds?.run { add(GoodsFilterInput(id = KEY_MENU, value = shopShowCaseIds)) }
+                categories?.run { add(GoodsFilterInput(id = KEY_CATEGORY, value = categories)) }
+            }
+
             return RequestParams.create().apply {
                 putString(KEY_SHOP_ID, shopId)
                 putString(KEY_WAREHOUSE_ID, warehouseId)
-                putObject(KEY_FILTER, filter)
+                putObject(KEY_FILTER, filtersParams)
                 putObject(KEY_SORT, sort)
             }
         }

@@ -10,6 +10,6 @@ data class ProductUiModel(
         var price: String = "",
         var soldNStock: String = "",
         var hasVariant: Boolean = false,
-        var variants: List<ProductVariant> = listOf(),
-        var isVariantsEmpty: Boolean = variants.isEmpty()
+        var variants: List<VariantUiModel> = listOf(),
+        var isVariantsEmpty: Boolean = true
 )

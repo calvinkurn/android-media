@@ -3,7 +3,7 @@ package com.tokopedia.vouchercreation.product.list.view.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.ItemProductListVariantLayoutBinding
-import com.tokopedia.vouchercreation.product.list.view.model.ProductVariant
+import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 
 class ProductItemVariantViewHolder(
         private val binding: ItemProductListVariantLayoutBinding,
@@ -11,17 +11,17 @@ class ProductItemVariantViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnVariantItemClickListener {
-        fun onVariantCheckBoxClicked(isSelected: Boolean, productVariant: ProductVariant)
+        fun onVariantCheckBoxClicked(isSelected: Boolean, productVariant: VariantUiModel)
     }
 
     init {
-        val productVariant = binding.root.getTag(R.id.product_variant) as ProductVariant
         binding.cbuVariantItem.setOnCheckedChangeListener { _, isChecked ->
+            val productVariant = binding.root.getTag(R.id.product_variant) as VariantUiModel
             variantItemClickListener.onVariantCheckBoxClicked(isChecked, productVariant)
         }
     }
 
-    fun bindData(productVariant: ProductVariant) {
+    fun bindData(productVariant: VariantUiModel) {
         binding.root.setTag(R.id.product_variant, productVariant)
         binding.tpgVariantName.text = productVariant.variantName
         binding.tpgSku.text = productVariant.sku
