@@ -24,14 +24,18 @@ class KycFlowUiTest {
         UserIdentificationInfoActivity::class.java, false, false
     )
 
+    private val testComponent = FakeKycActivityComponentFactory()
+    private val kycApi = testComponent.kycApi
+
+
     @Before
     fun setup() {
-        // no op
+        ActivityComponentFactory.instance = testComponent
     }
 
     @Test
     fun happyFlowTest() {
-        ActivityComponentFactory.instance = FakeKycActivityComponentFactory()
+        kycApi.case = FakeKycUploadApi.Case.Success
         activityTestRule.launchActivity(null)
         stubSampleForKtpAndLivenessPictures()
 
@@ -51,11 +55,7 @@ class KycFlowUiTest {
 
     @Test
     fun retakeFaceOnlyTest() {
-        ActivityComponentFactory.instance = FakeKycActivityComponentFactory(
-            case = FakeKycUploadApi.Case.Retake(
-                arrayListOf(2)
-            )
-        )
+        kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(2))
         activityTestRule.launchActivity(null)
         stubSampleForKtpAndLivenessPictures()
 
@@ -77,11 +77,7 @@ class KycFlowUiTest {
 
     @Test
     fun retakeKtpOnlyTest() {
-        ActivityComponentFactory.instance = FakeKycActivityComponentFactory(
-            case = FakeKycUploadApi.Case.Retake(
-                arrayListOf(1)
-            )
-        )
+        kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(1))
         activityTestRule.launchActivity(null)
         stubSampleForKtpAndLivenessPictures()
 
@@ -103,11 +99,7 @@ class KycFlowUiTest {
 
     @Test
     fun retakeKtpAndFaceTest() {
-        ActivityComponentFactory.instance = FakeKycActivityComponentFactory(
-            case = FakeKycUploadApi.Case.Retake(
-                arrayListOf(1, 2)
-            )
-        )
+        kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(1, 2))
         activityTestRule.launchActivity(null)
         stubSampleForKtpAndLivenessPictures()
 
@@ -129,9 +121,7 @@ class KycFlowUiTest {
 
     @Test
     fun retryCausedByNetworkTest() {
-        ActivityComponentFactory.instance = FakeKycActivityComponentFactory(
-            case = FakeKycUploadApi.Case.NetworkFailed
-        )
+        kycApi.case = FakeKycUploadApi.Case.NetworkFailed
         activityTestRule.launchActivity(null)
         stubSampleForKtpAndLivenessPictures()
 

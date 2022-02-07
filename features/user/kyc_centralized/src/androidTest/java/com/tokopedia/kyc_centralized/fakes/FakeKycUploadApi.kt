@@ -9,7 +9,7 @@ import okhttp3.RequestBody
 import okhttp3.internal.http2.ErrorCode
 import okhttp3.internal.http2.StreamResetException
 
-class FakeKycUploadApi(private val case: Case = Case.Success) : KycUploadApi {
+class FakeKycUploadApi(var case: Case = Case.Success) : KycUploadApi {
 
     var uploadCount = 0
 
@@ -42,7 +42,7 @@ class FakeKycUploadApi(private val case: Case = Case.Success) : KycUploadApi {
                     KycResponse(
                         data = KycData(
                             isSuccessRegister = false,
-                            listRetake = case.code,
+                            listRetake = (case as Case.Retake).code,
                             app = KycAppModel(
                                 title = "Verifikasi Wajah tidak berhasil",
                                 subtitle = "di tempat terang, ya!",

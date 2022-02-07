@@ -12,8 +12,11 @@ import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-class FakeKycActivityComponentFactory(val case: FakeKycUploadApi.Case = FakeKycUploadApi.Case.Success) :
+class FakeKycActivityComponentFactory() :
     ActivityComponentFactory() {
+
+    val kycApi = FakeKycUploadApi()
+
     override fun createActivityComponent(activity: Activity): UserIdentificationCommonComponent {
         return DaggerUserIdentificationCommonComponent.builder()
             .baseAppComponent((activity.application as BaseMainApplication).baseAppComponent)
@@ -22,7 +25,7 @@ class FakeKycActivityComponentFactory(val case: FakeKycUploadApi.Case = FakeKycU
                     okHttpClient: OkHttpClient,
                     retrofitBuilder: Retrofit.Builder
                 ): KycUploadApi {
-                    return FakeKycUploadApi(case)
+                    return kycApi
                 }
             })
             .userIdentificationCommonModule(object : UserIdentificationCommonModule() {
