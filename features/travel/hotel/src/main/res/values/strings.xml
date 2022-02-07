@@ -305,4 +305,5 @@
     <string name="hotel_review_booking_logo">Booking.com logo</string>
     <string name="hotel_search_map_max_radius_info">Area terlalu luas, zoom in lagi ya</string>
     <string name="hotel_error_cancel_promo">Maaf, belum berhasil hapus kupon. Coba lagi, yuk!</string>
+    <string name="hotel_image_slide_content_description">image slider</string>
 </resources>
