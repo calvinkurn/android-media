@@ -162,6 +162,7 @@ class TokoNowHomeFragment: Fragment(),
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val ITEM_VIEW_CACHE_SIZE = 20
         const val CATEGORY_LEVEL_DEPTH = 1
+        const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
         const val SHARE_URL = "https://www.tokopedia.com/now"
