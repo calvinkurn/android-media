@@ -80,8 +80,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     companion object {
         fun newInstance(
             onCreateCouponMenuSelected: () -> Unit,
-            onEditCouponMenuSelected: (Coupon) -> Unit,
-            onDuplicateCouponMenuSelected: (Coupon) -> Unit,
+            onEditCouponMenuSelected: (Long) -> Unit,
+            onDuplicateCouponMenuSelected: (Long) -> Unit,
             onViewCouponDetailMenuSelected : (Long) -> Unit = {}
         ): CouponListFragment {
             val args = Bundle()
@@ -155,8 +155,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private val filterTarget by lazy { SortFilterItem("Publik") }
 
     private var onCreateCouponMenuSelected : () -> Unit = {}
-    private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
-    private var onDuplicateCouponMenuSelected : (Coupon) -> Unit = {}
+    private var onEditCouponMenuSelected : (Long) -> Unit = {}
+    private var onDuplicateCouponMenuSelected : (Long) -> Unit = {}
     private var onViewCouponDetailMenuSelected : (Long) -> Unit = {}
     private var selectedFilterType = CouponFilterBottomSheet.FilterType.NOT_SELECTED
     private var selectedFilterTarget = CouponFilterBottomSheet.FilterTarget.NOT_SELECTED
@@ -574,7 +574,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun editCoupon(coupon: VoucherUiModel) {
-        onEditCouponMenuSelected(couponMapper.map(coupon))
+        onEditCouponMenuSelected(coupon.id.toLong())
     }
 
     private fun viewDetailCoupon(coupon: VoucherUiModel) {
@@ -632,7 +632,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun duplicateCoupon(coupon: VoucherUiModel) {
-        onDuplicateCouponMenuSelected(couponMapper.map(coupon))
+        onDuplicateCouponMenuSelected(coupon.id.toLong())
     }
 
     private fun showUpdateCouponPeriodBottomSheet(voucher: VoucherUiModel) {

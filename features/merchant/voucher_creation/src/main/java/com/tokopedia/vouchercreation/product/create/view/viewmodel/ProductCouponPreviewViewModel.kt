@@ -12,9 +12,12 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.product.create.data.mapper.CouponPreviewMapper
+import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
@@ -26,6 +29,8 @@ class ProductCouponPreviewViewModel @Inject constructor(
     private val createCouponUseCase: CreateCouponFacadeUseCase,
     private val updateCouponUseCase: UpdateCouponFacadeUseCase,
     private val initiateVoucherUseCase: InitiateVoucherUseCase,
+    private val getCouponDetailUseCase: GetCouponDetailUseCase,
+    private val couponPreviewMapper: CouponPreviewMapper
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -48,6 +53,9 @@ class ProductCouponPreviewViewModel @Inject constructor(
     val maxAllowedProductCount: LiveData<Result<Int>>
         get() = _maxAllowedProductCount
 
+    private val _couponDetail = MutableLiveData<Result<Coupon>>()
+    val couponDetail: LiveData<Result<Coupon>>
+        get() = _couponDetail
 
     fun validateCoupon(
         couponSettings: CouponSettings?,
@@ -168,4 +176,22 @@ class ProductCouponPreviewViewModel @Inject constructor(
 
         return true
     }
+
+
+    fun getCouponDetail(couponId : Long) {
+        launchCatchError(
+            block = {
+                val result = withContext(dispatchers.io) {
+                    getCouponDetailUseCase.params = GetCouponDetailUseCase.createRequestParam(couponId)
+                    val coupon = getCouponDetailUseCase.executeOnBackground()
+                    couponPreviewMapper.map(coupon)
+                }
+                _couponDetail.value = Success(result)
+            },
+            onError = {
+                _couponDetail.value = Fail(it)
+            }
+        )
+    }
+
 }

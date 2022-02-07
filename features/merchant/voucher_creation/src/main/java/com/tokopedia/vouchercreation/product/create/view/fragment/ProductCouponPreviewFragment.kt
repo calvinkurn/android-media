@@ -54,7 +54,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         private const val ROTATION_ANGLE_ZERO = 0f
         private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
         private const val ROTATION_ANIM_DURATION_IN_MILLIS: Long = 300
-        private const val COUPON_ID_NOT_YET_CREATED : Long = -1
+        const val COUPON_ID_NOT_YET_CREATED : Long = -1
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
@@ -63,7 +63,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
             onCreateCouponSuccess: (Coupon) -> Unit,
             onUpdateCouponSuccess: () -> Unit,
             onDuplicateCouponSuccess: () -> Unit,
-            coupon: Coupon?,
+            couponId: Long,
             mode : Mode
         ): ProductCouponPreviewFragment {
 
@@ -74,11 +74,8 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
                 this.onCreateCouponSuccess = onCreateCouponSuccess
                 this.onUpdateCouponSuccess = onUpdateCouponSuccess
                 this.onDuplicateCouponSuccess = onDuplicateCouponSuccess
-                this.couponInformation = coupon?.information
-                this.couponProducts = coupon?.products ?: emptyList()
-                this.couponSettings = coupon?.settings
-                this.couponId = coupon?.id.orZero()
                 this.pageMode = mode
+                this.couponId = couponId
             }
 
             return fragment
@@ -175,21 +172,49 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+        observeCouponDetail()
         observeValidCoupon()
         observeCreateCouponResult()
         observeUpdateCouponResult()
         observeMaxAllowedProductResult()
         viewModel.getMaxAllowedProducts(pageMode)
+        handlePageMode()
+    }
+
+    private fun observeCouponDetail() {
+        viewModel.couponDetail.observe(viewLifecycleOwner, { result ->
+            hideLoading()
+            when(result) {
+                is Success -> {
+                    showContent()
+                    this.couponInformation = result.data.information
+                    this.couponProducts = result.data.products
+                    this.couponSettings = result.data.settings
+
+                    refreshCouponInformationSection(couponInformation ?: return@observe)
+                    refreshCouponSettingsSection(couponSettings ?: return@observe)
+                    refreshProductsSection(couponProducts)
+                }
+                is Fail -> {
+                    hideLoading()
+                    hideContent()
+                    showError(result.throwable)
+                }
+            }
+        })
     }
 
     private fun handlePageMode() {
         when(pageMode) {
             Mode.CREATE -> {}
             Mode.UPDATE -> {
+                viewModel.getCouponDetail(couponId)
                 changeToolbarTitle(getString(R.string.update_coupon_product))
                 changeButtonBehavior()
             }
-            Mode.DUPLICATE -> {}
+            Mode.DUPLICATE -> {
+                viewModel.getCouponDetail(couponId)
+            }
         }
     }
 
@@ -311,13 +336,13 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     }
 
     fun getCouponInformationData() = this.couponInformation
+    fun getCouponSettingsData() = this.couponSettings
 
 
     override fun onResume() {
         super.onResume()
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
-        handlePageMode()
         refreshProductsSection(couponProducts)
 
         viewModel.validateCoupon(couponSettings, couponInformation, couponProducts)
@@ -660,4 +685,18 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         )
         onNavigateToProductListPage(coupon)
     }
+
+
+    private fun hideLoading() {
+        binding.loader.gone()
+    }
+
+    private fun showContent() {
+        binding.content.visible()
+    }
+
+    private fun hideContent() {
+        binding.content.gone()
+    }
+
 }

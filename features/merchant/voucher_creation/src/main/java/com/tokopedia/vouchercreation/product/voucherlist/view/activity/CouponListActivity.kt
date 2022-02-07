@@ -72,12 +72,12 @@ class CouponListActivity : BaseSimpleActivity() {
         startActivityForResult(intent, CreateCouponProductActivity.REQUEST_CODE_CREATE_COUPON)
     }
 
-    private fun navigateToEditCouponPage(coupon: Coupon) {
-        UpdateCouponActivity.start(this, coupon)
+    private fun navigateToEditCouponPage(couponId: Long) {
+        UpdateCouponActivity.start(this, couponId)
     }
 
-    private fun navigateToDuplicateCouponPage(coupon: Coupon) {
-        DuplicateCouponActivity.start(this, coupon)
+    private fun navigateToDuplicateCouponPage(couponId: Long) {
+        DuplicateCouponActivity.start(this, couponId)
     }
 
     private fun navigateToCouponDetail(couponId: Long) {

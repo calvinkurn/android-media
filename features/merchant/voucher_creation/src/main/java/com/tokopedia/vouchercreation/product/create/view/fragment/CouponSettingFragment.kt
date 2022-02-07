@@ -43,11 +43,11 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
         private const val EMPTY_STRING = ""
         private const val ZERO = 0
 
-        fun newInstance(onCouponSaved: (CouponSettings) -> Unit): CouponSettingFragment {
+        fun newInstance(couponSettings: CouponSettings?): CouponSettingFragment {
             val args = Bundle()
             val fragment = CouponSettingFragment().apply {
                 arguments = args
-                this.onCouponSaved = onCouponSaved
+                this.couponSettings = couponSettings
             }
 
             return fragment
@@ -805,14 +805,6 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
         binding.groupPercentageDiscountType.gone()
     }
 
-    fun setCouponSettings(couponSettings: CouponSettings?) {
-        this.couponSettings = couponSettings
-    }
-
-    fun clear() {
-        this.couponSettings = null
-    }
-
     private fun displayExpenseEstimationDescription() {
         if (!isAdded) return
         val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
@@ -888,5 +880,9 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
             textAreaFreeShippingMinimumPurchase.textAreaInput.setText(coupon.minimumPurchase.splitByThousand())
             textAreaFreeShippingQuota.textAreaInput.setText(coupon.quota.splitByThousand())
         }
+    }
+
+    fun setOnCouponSaved(onCouponSaved : (CouponSettings) -> Unit) {
+        this.onCouponSaved = onCouponSaved
     }
 }

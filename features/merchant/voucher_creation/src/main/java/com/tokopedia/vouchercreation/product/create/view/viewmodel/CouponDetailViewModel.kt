@@ -19,7 +19,8 @@ class CouponDetailViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     private val _couponDetail = MutableLiveData<Result<CouponDetailWithMetadata>>()
-    val couponDetail: LiveData<Result<CouponDetailWithMetadata>> = _couponDetail
+    val couponDetail: LiveData<Result<CouponDetailWithMetadata>>
+        get() = _couponDetail
 
     fun getCouponDetail(couponId : Long) {
         launchCatchError(
