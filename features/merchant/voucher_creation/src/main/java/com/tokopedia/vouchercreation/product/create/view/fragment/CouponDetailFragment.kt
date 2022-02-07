@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -112,6 +113,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun setupViews() {
         with(binding) {
             imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
+            imgCopyToClipboard.setOnClickListener {
+                val content = binding.tpgCouponCode.text.toString().trim()
+                copyToClipboard(content)
+            }
         }
     }
 
@@ -120,7 +125,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
             hideLoading()
             if (result is Success) {
                 showContent()
-                val coupon = result.data
+                val coupon = result.data.coupon
                 binding.header.headerView?.text = coupon.name
                 displayCouponImage(coupon.imageSquare)
                 displayCountdown(coupon.status, coupon.finishTime)
@@ -134,7 +139,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 )
                 displayCouponSettingsSection(coupon)
                 displayQuotaUsage(coupon)
-                refreshProductsSection(coupon.productIds.size)
+                refreshProductsSection(coupon.productIds.size, result.data.maxProduct)
             } else {
                 hideLoading()
                 hideContent()
@@ -231,10 +236,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun refreshProductsSection(productCount : Int) {
+    private fun refreshProductsSection(productCount: Int, maxProduct: Int) {
         if (productCount > ZERO) {
             binding.tpgProductCount.text =
-                String.format(getString(R.string.placeholder_registered_product), productCount, "100")
+                String.format(getString(R.string.placeholder_registered_product), productCount, maxProduct)
         } else {
 
             binding.tpgProductCount.text = getString(R.string.no_products)
@@ -458,6 +463,14 @@ class CouponDetailFragment : BaseDaggerFragment() {
             getString(R.string.error_message_failed_get_coupon_detail),
             Snackbar.LENGTH_SHORT,
             Toaster.TYPE_ERROR
+        ).show()
+    }
+
+    private fun copyToClipboard(content: String) {
+        ClipboardHandler().copyToClipboard(requireActivity(), content)
+        Toaster.build(
+            binding.root,
+            getString(R.string.coupon_code_copied_to_clipboard)
         ).show()
     }
 

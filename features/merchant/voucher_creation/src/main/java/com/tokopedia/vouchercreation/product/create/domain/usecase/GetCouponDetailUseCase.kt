@@ -22,10 +22,10 @@ class GetCouponDetailUseCase @Inject constructor(
         private const val SOURCE_KEY = "source"
 
         @JvmStatic
-        fun createRequestParam(voucherId: Int): RequestParams {
+        fun createRequestParam(voucherId: Long): RequestParams {
             return RequestParams.create().apply {
                 putString(SOURCE_KEY, VoucherSource.SELLERAPP)
-                putInt(VOUCHER_ID_KEY, voucherId)
+                putLong(VOUCHER_ID_KEY, voucherId)
             }
         }
     }

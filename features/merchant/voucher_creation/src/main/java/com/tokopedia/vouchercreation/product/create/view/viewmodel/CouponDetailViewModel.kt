@@ -8,25 +8,24 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailUseCase
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponDetailWithMetadata
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailFacadeUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CouponDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getCouponDetailUseCase: GetCouponDetailUseCase
+    private val getCouponDetailFacadeUseCase: GetCouponDetailFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _couponDetail = MutableLiveData<Result<CouponUiModel>>()
-    val couponDetail: LiveData<Result<CouponUiModel>> = _couponDetail
+    private val _couponDetail = MutableLiveData<Result<CouponDetailWithMetadata>>()
+    val couponDetail: LiveData<Result<CouponDetailWithMetadata>> = _couponDetail
 
     fun getCouponDetail(couponId : Long) {
         launchCatchError(
             block = {
-                getCouponDetailUseCase.params = GetCouponDetailUseCase.createRequestParam(couponId.toInt())
                 val result = withContext(dispatchers.io) {
-                    getCouponDetailUseCase.executeOnBackground()
+                    getCouponDetailFacadeUseCase.execute(this, couponId)
                 }
                 _couponDetail.value = Success(result)
             },
