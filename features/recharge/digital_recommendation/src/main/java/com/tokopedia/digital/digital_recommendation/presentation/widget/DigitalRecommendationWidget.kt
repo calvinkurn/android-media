@@ -11,8 +11,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRecommendationBinding
-import com.tokopedia.digital.digital_recommendation.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.digital.digital_recommendation.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
@@ -22,9 +22,13 @@ import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.Digit
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnifyCardAdapterTypeFactory
+import com.tokopedia.recharge_component.digital_card.presentation.adapter.viewholder.DigitalUnifyCardViewHolder
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import timber.log.Timber
 
 /**
  * @author by furqan on 20/09/2021
@@ -48,7 +52,13 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private var additionalTrackingData: DigitalRecommendationAdditionalTrackingData? = null
     private var page: DigitalRecommendationPage? = null
 
-    private lateinit var adapter: DigitalRecommendationAdapter
+    private val unifyListener = object : DigitalUnifyCardViewHolder.DigitalUnifyCardListener{
+        override fun onItemClicked(item: DigitalUnifyModel, index: Int) {
+
+        }
+    }
+
+    private lateinit var adapter: BaseAdapter<DigitalUnifyCardAdapterTypeFactory>
     private val observer: Observer<Result<DigitalRecommendationModel>> =
             Observer<Result<DigitalRecommendationModel>> {
                 when (it) {
@@ -58,7 +68,10 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
                             additionalTrackingData?.userType = it.data.userType
 
                             if (!::adapter.isInitialized) {
-                                adapter = DigitalRecommendationAdapter(it.data.items, this@DigitalRecommendationWidget)
+                                adapter = BaseAdapter(
+                                    DigitalUnifyCardAdapterTypeFactory(unifyListener),
+                                    it.data.items
+                                )
                             }
 
                             with(binding) {
