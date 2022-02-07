@@ -34,7 +34,7 @@
 
     <include
         android:id="@+id/link_benifit_1"
-        layout="@layout/pdpwidget_individual_activation_benifit"
+        layout="@layout/pdp_widget_individual_activation_benifit"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         android:id="@+id/link_benifit_2"
         android:layout_marginLeft="@dimen/unify_space_16"
         android:layout_marginRight="@dimen/unify_space_16"
-        layout="@layout/pdpwidget_individual_activation_benifit"
+        layout="@layout/pdp_widget_individual_activation_benifit"
         app:layout_constraintTop_toBottomOf="@id/link_benifit_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
         android:layout_marginLeft="@dimen/unify_space_16"
         android:layout_marginRight="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_8"
-        layout="@layout/pdpwidget_individual_activation_benifit"
+        layout="@layout/pdp_widget_individual_activation_benifit"
         app:layout_constraintTop_toBottomOf="@id/link_benifit_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
