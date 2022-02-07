@@ -189,6 +189,6 @@ class HomeViewModelCMHomeWidgetTest {
             getHomeUseCase = getHomeUseCase
         )
         homeViewModel.deleteCMHomeWidgetLocally()
-        assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)
+        assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } == null)
     }
 }
