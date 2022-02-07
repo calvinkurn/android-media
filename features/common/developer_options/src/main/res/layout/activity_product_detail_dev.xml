@@ -91,16 +91,6 @@
                 app:text_field_placeholder="@string/pdp_shop_id_edittext_placeholder" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify
-                android:id="@+id/pdp_pagesource_vbs"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                app:text_field_input_type="text"
-                app:text_field_label="Page Source"
-                app:text_field_label_static="true"
-                app:text_field_placeholder="@string/pdp_page_source_edittext_placeholder" />
-
-            <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/pdp_dismiss_after_atc_vbs"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -119,6 +109,20 @@
                 app:text_field_label="Save Variant Selected After Click X ?"
                 app:text_field_label_static="true"
                 app:text_field_placeholder="@string/pdp_true_false_atc_edittext_placeholder" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Page Source"/>
+
+            <Spinner
+                android:id="@+id/page_source_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="2"/>
 
             <CheckBox
                 android:id="@+id/toggle_is_tokonow"
