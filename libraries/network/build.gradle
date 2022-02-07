@@ -19,7 +19,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
-    implementation rootProject.ext.tkpdInternalLibDependencies.logger
+    implementation projectOrAar(rootProject.ext.tkpdInternalLibDependencies.logger)
     implementation rootProject.ext.debugToolsDependencies.chuck
 }
 
