@@ -262,17 +262,12 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             btnChangeDuration.gone()
             tvShippingCourierNotes.gone()
             tvShippingPrice.gone()
-            // todo eta get from which field?
-//            if (logisticPromoViewModel.etaData.errorCode == 0 && !logisticPromoViewModel.isBebasOngkirExtra) {
-//                if (logisticPromoViewModel.etaData.textEta.isEmpty()) {
-//                    tvShippingCourierEta.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
-//                } else {
-//                    tvShippingCourierEta.text = logisticPromoViewModel.etaData.textEta
-//                }
-//                tvShippingCourierEta.visible()
-//            } else {
-//                tvShippingCourierEta.gone()
-//            }
+            if (shipping.serviceEta != null) {
+                tvShippingCourierEta.text = shipping.serviceEta
+                tvShippingCourierEta.visible()
+            } else {
+                tvShippingCourierEta.gone()
+            }
             setMultiViewsOnClickListener(tvShippingCourier, tvShippingCourierEta, btnChangeCourier) {
                 if (profile.enable) {
                     val shippingRecommendationData = shipment.shippingRecommendationData
