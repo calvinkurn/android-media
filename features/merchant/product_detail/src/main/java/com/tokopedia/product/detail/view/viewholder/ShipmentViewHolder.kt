@@ -71,7 +71,7 @@ class ShipmentViewHolder(
             }
             rates.p2RatesError.isNotEmpty() -> {
                 loading(false)
-                loadShipmentErrorState(element, rates)
+                loadShipmentErrorState(rates)
             }
             else -> {
                 loading(false)
@@ -89,10 +89,7 @@ class ShipmentViewHolder(
         } else if (viewLoadingDelegate.isInitialized()) viewLoading.root.hide()
     }
 
-    private fun loadShipmentErrorState(
-        element: ProductShipmentDataModel,
-        rates: P2RatesEstimateData
-    ) = with(viewMain) {
+    private fun loadShipmentErrorState(rates: P2RatesEstimateData) = with(viewMain) {
         initialState()
 
         val title = rates.title
@@ -191,7 +188,7 @@ class ShipmentViewHolder(
 
     /**
      * Hide view with conditional visibility,
-     * which means the view not mandatory.
+     * which means the view is not mandatory.
      */
     private fun initialState() {
         if (!viewMainDelegate.isInitialized()) return
