@@ -294,7 +294,7 @@ internal class SearchShopViewModel(
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        visitableList.add(ChooseAddressDataView())
+        processChooseAddress(visitableList)
         processCPM(searchShopModel, visitableList)
         processSuggestion(searchShopModel, visitableList)
         processShopItem(searchShopModel, visitableList)
@@ -302,6 +302,10 @@ internal class SearchShopViewModel(
         addLoadingMoreModel(visitableList)
 
         return visitableList
+    }
+
+    private fun processChooseAddress(visitableList: MutableList<Visitable<*>>) {
+        visitableList.add(ChooseAddressDataView())
     }
 
     private fun processCPM(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
