@@ -206,7 +206,7 @@ object PayloadConverter {
         model.userTransactionId = data.userTransactionId
         model.userId = data.userId
         model.shopId = data.shopId
-        model.isBigImage = data.isBigImage
+        model.isBigImage = data.isBigImage ?: false
         model.blastId = data.blastId
 
         // webHook parameters

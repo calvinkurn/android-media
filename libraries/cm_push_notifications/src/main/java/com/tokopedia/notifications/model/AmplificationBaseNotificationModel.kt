@@ -221,7 +221,7 @@ data class AmplificationBaseNotificationModel(
         @Expose
         @SerializedName(IS_BIG_IMAGE)
         @ColumnInfo(name = "is_big_image")
-        var isBigImage: Boolean = false,
+        var isBigImage: Boolean? = false,
 
         @Expose
         @SerializedName(BLAST_ID)
