@@ -199,9 +199,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         setSelectedTenure(data)
         setTenureOptionsData(data)
         if(isDisabled)
-        {
             gatewayDetailLayout.errorTicker.tickerTitle = data.checkoutData[selectedGateway].reason_long
-        }
+        else
+            gatewayDetailLayout.errorTicker.visibility = View.GONE
 
     }
 
@@ -228,6 +228,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.VISIBLE
         gatewayDetailLayout.tenureErrorHandlerGroup.visibility = View.GONE
         gatewayDetailLayout.tenureDetailGlobalError.visibility = View.GONE
+        gatewayDetailLayout.errorTicker.visibility = View.GONE
 
 
     }
@@ -236,6 +237,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gatewayDetailLayout.tenureDetailGlobalError.visibility = View.VISIBLE
         gatewayDetailLayout.tenureErrorHandlerGroup.visibility = View.GONE
         gatewayDetailLayout.tenureDetailEmptyStateError.visibility = View.GONE
+        gatewayDetailLayout.errorTicker.visibility = View.GONE
     }
 
     private fun loaderhideOnCheckoutApi() {
@@ -390,30 +392,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 bottomSheetNavigator.showBottomSheet(SelectGateWayBottomSheet::class.java, bundle)
             }
         }
-        detailHeader.quantityEditor.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                if (!s.isNullOrBlank()) {
-                    when {
-                        s.toString().replace("[^0-9]".toRegex(), "")
-                            .toInt() > detailHeader.quantityEditor.maxValue -> {
-                            detailHeader.limiterMessage.visibility = View.VISIBLE
-                            detailHeader.limiterMessage.text =
-                                "Oops, stoknya tinggal ${detailHeader.quantityEditor.maxValue}"
-
-                        }
-                        s.toString().replace("[^0-9]".toRegex(), "").toInt() < 1 -> {
-                            detailHeader.limiterMessage.visibility = View.VISIBLE
-                            detailHeader.limiterMessage.text = "Min. beli 1 barang"
-
-                        }
-                        else -> detailHeader.limiterMessage.visibility = View.GONE
-                    }
-                }
-            }
-
-        })
+        quantityTextWatcher()
 
         detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
             quantity = newValue
@@ -448,6 +427,33 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
 
 
+    }
+
+    private fun quantityTextWatcher() {
+        detailHeader.quantityEditor.editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (!s.isNullOrBlank()) {
+                    when {
+                        s.toString().replace("[^0-9]".toRegex(), "")
+                            .toInt() > detailHeader.quantityEditor.maxValue -> {
+                            detailHeader.limiterMessage.visibility = View.VISIBLE
+                            detailHeader.limiterMessage.text =
+                                "Oops, stoknya tinggal ${detailHeader.quantityEditor.maxValue}"
+
+                        }
+                        s.toString().replace("[^0-9]".toRegex(), "").toInt() < 1 -> {
+                            detailHeader.limiterMessage.visibility = View.VISIBLE
+                            detailHeader.limiterMessage.text = "Min. beli 1 barang"
+
+                        }
+                        else -> detailHeader.limiterMessage.visibility = View.GONE
+                    }
+                }
+            }
+
+        })
     }
 
     private fun getCheckoutDetail() {
