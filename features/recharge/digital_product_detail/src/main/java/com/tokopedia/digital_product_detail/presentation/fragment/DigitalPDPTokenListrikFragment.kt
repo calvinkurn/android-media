@@ -183,15 +183,15 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun showDynamicSpacer() {
-        binding?.rechargePdpTokenListrikActionBarSpacer?.layoutParams?.height =
+        binding?.rechargePdpTokenListrikDynamicBannerSpacer?.layoutParams?.height =
             context?.resources?.getDimensionPixelSize(dynamicSpacerHeightRes)
                 ?: DigitalPDPConstant.DEFAULT_SPACE_HEIGHT
-        binding?.rechargePdpTokenListrikActionBarSpacer?.requestLayout()
+        binding?.rechargePdpTokenListrikDynamicBannerSpacer?.requestLayout()
     }
 
     private fun hideDynamicSpacer() {
-        binding?.rechargePdpTokenListrikActionBarSpacer?.layoutParams?.height = 0
-        binding?.rechargePdpTokenListrikActionBarSpacer?.requestLayout()
+        binding?.rechargePdpTokenListrikDynamicBannerSpacer?.layoutParams?.height = 0
+        binding?.rechargePdpTokenListrikDynamicBannerSpacer?.requestLayout()
     }
 
     private fun onCollapseAppBar() {
@@ -567,7 +567,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 rechargePdpTokenListrikEmptyStateWidget.show()
                 rechargePdpTokenListrikRecommendationWidget.hide()
                 rechargePdpTokenListrikDenomGridWidget.hide()
-                rechargePdpTokenListrikClientNumberWidget.hideOperatorIcon()
             }
         }
     }
@@ -613,7 +612,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private fun initClientNumberWidget() {
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
-
             setInputFieldStaticLabel(
                 getString(
                     com.tokopedia.recharge_component.R.string.label_recharge_client_number

@@ -32,6 +32,9 @@ import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
 
+/**
+ * @author by misael on 05/01/22
+ * */
 class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                            defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
@@ -48,6 +51,9 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private var textFieldStaticLabel: String = ""
 
     private var isClearableState = false
+
+    // this custom formatter will be used when user call getInputNumber & setInputNumber
+    private var customInputNumberFormatter: ((String) -> String)? = null
 
     init {
         initInputField()
@@ -235,7 +241,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                     show()
                 }
             }
-            clientNumberWidgetOperatorGroup.show()
         }
     }
 
@@ -246,12 +251,13 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun setInputNumber(inputNumber: String, isAutoFill: Boolean = false) {
         isClearableState = isAutoFill
-        binding.clientNumberWidgetInputField.editText.setText(
-            CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber))
+        val number = customInputNumberFormatter?.invoke(inputNumber) ?: inputNumber
+        binding.clientNumberWidgetInputField.editText.setText(number)
     }
 
     fun getInputNumber(): String {
-        return CommonTopupBillsUtil.formatPrefixClientNumber(binding.clientNumberWidgetInputField.editText.text.toString())
+        val inputNumber = binding.clientNumberWidgetInputField.editText.text.toString()
+        return customInputNumberFormatter?.invoke(inputNumber) ?: inputNumber
     }
 
     fun setContactName(contactName: String, needValidation: Boolean = true) {
@@ -339,6 +345,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 clientNumberWidgetOperatorGroup.show()
             }
         }
+    }
+
+    fun setCustomInputNumberFormatter(func: (String) -> String) {
+        this.customInputNumberFormatter = func
     }
 
     private fun showClearIcon() {
