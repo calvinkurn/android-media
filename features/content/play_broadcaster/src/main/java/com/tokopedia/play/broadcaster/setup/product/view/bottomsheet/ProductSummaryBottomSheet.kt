@@ -7,9 +7,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.extension.withCache
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -19,13 +23,21 @@ import javax.inject.Inject
  */
 class ProductSummaryBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-) : BottomSheetUnify() {
+) : BottomSheetUnify(), ProductSummaryListViewComponent.Listener {
 
     private lateinit var viewModel: PlayBroProductSetupViewModel
 
     private var _binding: BottomSheetPlayBroProductSummaryBinding? = null
     private val binding: BottomSheetPlayBroProductSummaryBinding
         get() = _binding!!
+
+    private val productSummaryListView by viewComponent {
+        ProductSummaryListViewComponent(binding.rvProductSummaries, this)
+    }
+
+    override fun onProductDeleteClicked(product: ProductUiModel) {
+        TODO("Not yet implemented")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +51,8 @@ class ProductSummaryBottomSheet @Inject constructor(
 
         setupView()
         setupObserve()
+
+        productSummaryListView.setProductList(listOf())
     }
 
     override fun onDestroyView() {
@@ -60,6 +74,11 @@ class ProductSummaryBottomSheet @Inject constructor(
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
+        }
+        /** TODO: change this later */
+        setTitle("Produk terpilih (5/30)")
+        setAction(getString(R.string.play_bro_product_add_more)) {
+            /** TODO: handle logic here later */
         }
     }
 
