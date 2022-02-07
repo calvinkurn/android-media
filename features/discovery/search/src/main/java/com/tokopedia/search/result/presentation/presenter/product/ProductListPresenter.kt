@@ -2247,7 +2247,9 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    override fun onViewResumed() {}
+    override fun onViewResumed() {
+        reCheckChooseAddressData()
+    }
 
     private fun switchToBigGridView(position: Int) {
         view.switchSearchNavigationLayoutTypeToBigGridView(position)

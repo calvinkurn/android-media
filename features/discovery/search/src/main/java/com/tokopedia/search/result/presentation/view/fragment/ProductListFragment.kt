@@ -497,7 +497,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
 
-        presenter?.reCheckChooseAddressData()
+        presenter?.onViewResumed()
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
