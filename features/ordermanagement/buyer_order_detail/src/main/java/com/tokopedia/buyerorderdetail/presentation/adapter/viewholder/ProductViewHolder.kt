@@ -85,7 +85,7 @@ open class ProductViewHolder(
                 partialItemBuyerOrderDetailAddonsBinding?.let { PartialProductAddonViewHolder(it) }
             partialProductAddonViewHolder?.bindViews(addonsListUiModel)
         } else {
-            partialItemBuyerOrderDetailAddonsBinding?.root?.hide()
+            addonsViewStub.hide()
         }
     }
 
