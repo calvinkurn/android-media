@@ -4,7 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.addongifting.view.adapter.AddOnListAdapterTypeFactory
 
 data class ProductUiModel(
-        var shopType: Int = 0,
+        var isTokoCabang: Boolean = false,
+        var shopTier: Int = 0,
         var shopName: String = "",
         var mainProductImageUrl: String = "",
         var mainProductName: String = "",

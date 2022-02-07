@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AddOnProductData(
+        var isTokoCabang: Boolean = false,
         var products: List<Product> = emptyList()
 ) : Parcelable
 

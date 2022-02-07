@@ -544,6 +544,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productQuantity = 3
                     }
                     products = listOf(product1, product2, product3)
+                    isTokoCabang = false
                 }
                 intent.putExtra("ADD_ON_PRODUCT_DATA", addOnProductData)
                 startActivity(intent)

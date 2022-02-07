@@ -14,7 +14,7 @@ object UiModelMapper {
     fun mapProduct(addOnProductData: AddOnProductData, getAddOnByProductResponse: GetAddOnByProductResponse): ProductUiModel {
         val addOnByProduct = getAddOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
         return ProductUiModel().apply {
-            shopType = addOnByProduct?.addOns?.firstOrNull()?.shop?.shopType ?: 0
+            shopTier = addOnByProduct?.addOns?.firstOrNull()?.shop?.shopTier ?: 0
             shopName = addOnByProduct?.addOns?.firstOrNull()?.shop?.name ?: ""
             mainProductImageUrl = addOnProductData.products.firstOrNull()?.productImageUrl ?: ""
             mainProductName = addOnProductData.products.firstOrNull()?.productName ?: ""
