@@ -280,7 +280,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
-                        listener.chooseDuration(false, shipping.getSelectedShipperProductId().toString(), list)
+                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
                     }
                 }
             }
