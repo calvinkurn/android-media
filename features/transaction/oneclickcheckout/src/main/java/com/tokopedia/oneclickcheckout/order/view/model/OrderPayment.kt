@@ -153,6 +153,7 @@ data class OrderPaymentWalletAdditionalData(
         const val WALLET_TYPE_OVO = 1
         const val WALLET_TYPE_GOPAY = 2
         const val WALLET_TYPE_GOPAYLATER = 3
+        const val WALLET_TYPE_GOPAYLATERCICIL = 4
     }
 }
 

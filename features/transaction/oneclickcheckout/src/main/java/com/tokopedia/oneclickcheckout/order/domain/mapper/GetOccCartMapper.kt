@@ -355,8 +355,8 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapPaymentWalletData(walletAdditionalData: WalletAdditionalData, callbackUrl: String): OrderPaymentWalletAdditionalData {
         return OrderPaymentWalletAdditionalData(
-                walletType = walletAdditionalData.walletType,
-                enableWalletAmountValidation = walletAdditionalData.enableWalletAmountValidation,
+                walletType = 4,
+                enableWalletAmountValidation = false,
                 callbackUrl = callbackUrl,
                 activation = mapPaymentWalletActionData(walletAdditionalData.activation),
                 topUp = mapPaymentWalletActionData(walletAdditionalData.topUp),
@@ -376,7 +376,7 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapPaymentWalletActionData(walletData: WalletData): OrderPaymentWalletActionData {
         return OrderPaymentWalletActionData(
-                isRequired = walletData.isRequired,
+                isRequired = false,
                 buttonTitle = walletData.buttonTitle,
                 successToaster = walletData.successToaster,
                 errorToaster = walletData.errorToaster,

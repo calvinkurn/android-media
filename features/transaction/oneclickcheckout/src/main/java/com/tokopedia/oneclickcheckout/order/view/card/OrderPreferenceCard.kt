@@ -10,7 +10,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
@@ -497,7 +502,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvPaymentErrorMessage.gone()
                 tvPaymentOvoErrorAction.gone()
                 setPaymentActiveAlpha()
-                setupPaymentInstallment(payment.creditCard)
+                setupPaymentInstallment(payment)
             } else {
                 if (payment.errorData != null) {
                     // general & cc error
@@ -612,7 +617,9 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 }
                 tvInstallmentType.gone()
                 tvInstallmentDetail.gone()
+                tvInstallmentDetailWrap.gone()
                 btnChangeInstallment.gone()
+                btnChangeInstallmentWrap.gone()
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
             }
@@ -620,7 +627,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
+    private fun setupPaymentInstallment(payment: OrderPayment) {
+        val creditCard = payment.creditCard
         val selectedTerm = creditCard.selectedTerm
         binding.apply {
             if (!creditCard.isDebit && selectedTerm != null) {
@@ -655,6 +663,15 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         listener.onInstallmentDetailClicked(selectedCreditCard)
                     }
                 }
+            } else if (payment.walletData.walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAYLATERCICIL) {
+                tvInstallmentType.visible()
+                tvInstallmentDetail.gone()
+                tvInstallmentDetailWrap.visible()
+                tvInstallmentDetailWrap.text = "asdf"
+                btnChangeInstallment.gone()
+                btnChangeInstallmentWrap.visible()
+                tvInstallmentErrorMessage.gone()
+                tvInstallmentErrorAction.gone()
             } else {
                 tvInstallmentType.gone()
                 tvInstallmentDetail.gone()
