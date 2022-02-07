@@ -105,7 +105,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
@@ -1522,22 +1521,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         stopSellerHomeFragmentWidgetPerformanceMonitoring(widgetType, isFromCache)
         stopPltMonitoringIfNotCompleted(isFromCache)
 
-        launchOnViewLifecycleScope(Dispatchers.IO) {
-            val newWidgetList = getMergedWidgetAndDataList(this, widgetType)
-            withContext(Dispatchers.Main) {
-                notifyWidgetWithSdkChecking {
-                    updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
-                }
-                binding?.root?.addOneTimeGlobalLayoutListener {
-                    recyclerView?.post {
-                        checkLoadingWidgets()
-                        requestVisibleWidgetsData()
-                    }
-                }
-                if (!isFromCache) {
-                    showWidgetSuccessToaster()
-                }
+        val newWidgetList = getMergedWidgetAndDataList(this, widgetType)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
+        binding?.root?.addOneTimeGlobalLayoutListener {
+            recyclerView?.post {
+                checkLoadingWidgets()
+                requestVisibleWidgetsData()
             }
+        }
+        if (!isFromCache) {
+            showWidgetSuccessToaster()
         }
     }
 
@@ -1682,7 +1677,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun reloadNotUpdatedWidgets() {
-        launchOnViewLifecycleScope(Dispatchers.Default) {
+        launchOnViewLifecycleScope {
             val widgets = adapter.data.filter {
                 //filter all widgets that the data still from cache
                 it.data?.isFromCache.orFalse()
@@ -1997,18 +1992,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun refreshSimilarWidgets(widget: BaseWidgetUiModel<*>) {
-        launchOnViewLifecycleScope(Dispatchers.Default) {
-            val similarWidget = adapter.data.filter {
-                val isTheSameWidget = it.widgetType == widget.widgetType
-                val isCacheData = (it.data as? LastUpdatedDataInterface)
-                    ?.lastUpdated?.needToUpdated.orFalse()
-                isTheSameWidget && isCacheData
-            }
+        launchOnViewLifecycleScope {
+            val similarWidget = mutableListOf<BaseWidgetUiModel<*>>()
             val widgets = adapter.data.map {
                 val isTheSameWidget = it.widgetType == widget.widgetType
                 val isCacheData = (it.data as? LastUpdatedDataInterface)
                     ?.lastUpdated?.needToUpdated.orFalse()
                 val tempWidget = if (isTheSameWidget && isCacheData) {
+                    similarWidget.add(it)
                     it.copyWidget().apply {
                         //set data to null to show loading state
                         showLoadingState = true
@@ -2026,7 +2017,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun launchOnViewLifecycleScope(
-        context: CoroutineContext = EmptyCoroutineContext,
+        context: CoroutineContext = Dispatchers.Default,
         action: suspend () -> Unit
     ) {
         viewLifecycleOwner.lifecycleScope.launch(context) {
