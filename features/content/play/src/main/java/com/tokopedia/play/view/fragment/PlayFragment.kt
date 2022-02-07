@@ -598,12 +598,6 @@ class PlayFragment @Inject constructor(
             fragmentBottomSheetView.safeRelease()
             fragmentBottomSheetView.hide()
         }
-
-        if(bottomInsets.isAnyUserReportBottomSheetShown && playViewModel.videoPlayer.isYouTube){
-            fragmentBottomSheetView.rootView.translationZ = 1.0f
-        }else if(playViewModel.videoPlayer.isYouTube){
-            fragmentBottomSheetView.rootView.translationZ = 0.0f
-        }
     }
 
     private fun fragmentYouTubeViewOnStateChanged(

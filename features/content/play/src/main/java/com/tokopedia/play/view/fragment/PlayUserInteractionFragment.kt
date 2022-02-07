@@ -1367,15 +1367,11 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.KebabMenuSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.UserReportSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.UserReportSubmissionSheet]?.isShown == false) {
+                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false) {
             sendChatView?.show()
         } else sendChatView?.invisible()
 
-        sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown
-                && bottomInsets[BottomInsetsType.UserReportSubmissionSheet] is BottomInsetsState.Hidden)
+        sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
     }
 
     private fun immersiveBoxViewOnStateChanged(

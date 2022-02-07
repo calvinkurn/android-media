@@ -249,22 +249,7 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * UserReportSheet View Component Listener
      */
-
-    private fun unlistenKeyboard(){
-        playFragment.view?.let {
-            playFragment.unregisterKeyboardListener(it)
-        }
-    }
-
-    private fun listenKeyboard(){
-        playFragment.view?.postDelayed({
-            playFragment.view?.let { playFragment.registerKeyboardListener(it) }
-        }, PlayFragment.KEYBOARD_REGISTER_DELAY)
-    }
-
     override fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning) {
-        unlistenKeyboard()
-
         userReportTimeMillis = Calendar.getInstance().timeInMillis
         playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
         userReportSubmissionSheetView.setView(item)
@@ -283,7 +268,6 @@ class PlayBottomSheetFragment @Inject constructor(
      */
 
     override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
-        listenKeyboard()
         playViewModel.hideUserReportSubmissionSheet()
     }
 
@@ -585,7 +569,6 @@ class PlayBottomSheetFragment @Inject constructor(
                 is PlayResult.Success -> {
                     playFragment.hideKeyboard()
                     playViewModel.hideInsets(isKeyboardHandled = true)
-                    listenKeyboard()
                 }
                 is PlayResult.Failure -> doShowToaster(
                     bottomSheetType = BottomInsetsType.UserReportSubmissionSheet,
