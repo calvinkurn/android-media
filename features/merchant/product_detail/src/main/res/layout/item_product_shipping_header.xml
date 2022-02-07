@@ -136,13 +136,24 @@
         app:barrierDirection="top"/>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_pdp_shipping_bo_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
+        app:layout_constraintTop_toBottomOf="@+id/barrier_bottom_shipping"
+        app:typographyType="body_3"
+        tools:text="Bebas Ongkir 2 kg khusus Surabaya &amp; sekitarnya" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_pdp_shipping_bo_estimation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
-        app:layout_constraintTop_toBottomOf="@+id/barrier_bottom_shipping"
+        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipping_bo_desc"
         app:typographyType="body_3"
         tools:text="Estimasi tiba 23-25 Nov" />
 

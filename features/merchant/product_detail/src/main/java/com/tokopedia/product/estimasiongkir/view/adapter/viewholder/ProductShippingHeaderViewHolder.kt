@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
@@ -44,6 +45,7 @@ class ProductShippingHeaderViewHolder(view: View,
     private val icShippingLine: View? = itemView.findViewById(R.id.pdp_shipping_header_separator)
     private val dividerFreeOngkir: View? = itemView.findViewById(R.id.div_pdp_shipping_bo)
     private val txtFreeOngkirPriceOriginal: Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_price_original)
+    private val txtFreeOngkirDesc: Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_desc)
 
     override fun bind(element: ProductShippingHeaderDataModel) {
         txtShippingTo?.bindChooseAddress(chooseAddressListener)
@@ -56,7 +58,8 @@ class ProductShippingHeaderViewHolder(view: View,
             element.freeOngkirPrice,
             element.shouldShowTxtTokoNow(),
             element.freeOngkirTokoNowText,
-            element.freeOngkirPriceOriginal
+            element.freeOngkirPriceOriginal,
+            element.freeOngkirDesc
         )
         renderWeight(element.weight)
     }
@@ -101,12 +104,13 @@ class ProductShippingHeaderViewHolder(view: View,
         freeOngkirPrice: String,
         shouldShowTxtTokoNow: Boolean,
         freeOngkirTokoNowText: String,
-        freeOngkirPriceOriginal: Double
+        freeOngkirPriceOriginal: Double,
+        freeOngkirDesc: String
     ) = with(itemView) {
         if (shouldShowTxtTokoNow) {
             renderBoTokoNow(shouldShowTxtTokoNow, freeOngkirEstimation, freeOngkirPrice, freeOngkirTokoNowText)
         } else {
-            renderBoNormal(isFreeOngkir, freeOngkirEstimation, freeOngkirImageUrl, freeOngkirPrice, freeOngkirPriceOriginal)
+            renderBoNormal(isFreeOngkir, freeOngkirEstimation, freeOngkirImageUrl, freeOngkirPrice, freeOngkirPriceOriginal, freeOngkirDesc)
         }
     }
 
@@ -115,7 +119,8 @@ class ProductShippingHeaderViewHolder(view: View,
         freeOngkirEstimation: String,
         freeOngkirImageUrl: String,
         freeOngkirPrice: String,
-        freeOngkirPriceOriginal: Double
+        freeOngkirPriceOriginal: Double,
+        freeOngkirDesc: String
     ) = with(itemView) {
         txtFreeOngkirPrice?.shouldShowWithAction(isFreeOngkir && freeOngkirPrice.isNotEmpty()) {
             txtFreeOngkirPrice.text = freeOngkirPrice
@@ -128,9 +133,13 @@ class ProductShippingHeaderViewHolder(view: View,
             txtFreeOngkirEstimation.text = freeOngkirEstimation
         }
 
-        txtFreeOngkirPriceOriginal?.shouldShowWithAction(isFreeOngkir && freeOngkirPriceOriginal > 0){
-            txtFreeOngkirPriceOriginal.text = freeOngkirPriceOriginal.getCurrencyFormatted()
-            txtFreeOngkirPriceOriginal.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+        txtFreeOngkirDesc?.showIfWithBlock(isFreeOngkir && freeOngkirDesc.isNotEmpty()) {
+            text = freeOngkirDesc
+        }
+
+        txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && freeOngkirPriceOriginal > 0){
+            text = freeOngkirPriceOriginal.getCurrencyFormatted()
+            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
 
         dividerFreeOngkir?.showWithCondition(isFreeOngkir)
