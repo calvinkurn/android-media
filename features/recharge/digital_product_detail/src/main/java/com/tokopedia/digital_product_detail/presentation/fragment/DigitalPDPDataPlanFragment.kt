@@ -433,12 +433,14 @@ class DigitalPDPDataPlanFragment :
 
                         sortFilterItem.listener = {
                             sortFilterItem.toggle()
-                            digitalPDPTelcoAnalytics.clickFilterChip(
-                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                                operator.attributes.name,
-                                sortFilterItem.title.toString(),
-                                userSession.userId,
-                            )
+                            if (!chipItems.get(index).isSelected) {
+                                digitalPDPTelcoAnalytics.clickFilterChip(
+                                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                                    operator.attributes.name,
+                                    sortFilterItem.title.toString(),
+                                    userSession.userId,
+                                )
+                            }
                             if (filterItems[index].type == ChipsUnify.TYPE_SELECTED){
                                 chipItems.get(index).isSelected = true
                                 selectedChipsCounter++

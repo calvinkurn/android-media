@@ -86,14 +86,21 @@ class FilterPDPBottomsheet(
             it.paramName.equals(tagComponent.paramName)
         }.first().filterTagDataCollections.get(position).run {
             isSelected = !isSelected
-            listener.onChipClicked(value)
         }
+    }
+
+    override fun onChipActiveTracked(element: FilterTagDataCollection) {
+        listener.onChipClicked(element.value)
     }
 
     override fun onCheckBoxAllFilterClicked(tagComponent: TelcoFilterTagComponent, position: Int) {
         filterTagComponents.toMutableList()[position] = tagComponent
         filterTagComponents.toList()
         adapterFilter.notifyItemChanged(position)
+    }
+
+    override fun onCheckBoxAllFilterActiveClicked(element: FilterTagDataCollection) {
+        listener.onChipClicked(element.value)
     }
 
     override fun onSeeAllClicked(element: TelcoFilterTagComponent, position: Int) {

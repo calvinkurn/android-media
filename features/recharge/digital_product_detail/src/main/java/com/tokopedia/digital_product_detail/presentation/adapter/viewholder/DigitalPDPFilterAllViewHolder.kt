@@ -17,10 +17,10 @@ class DigitalPDPFilterAllViewHolder(
 
             root.setOnClickListener {
                 checboxFilterTag.isChecked = !element.isSelected
-                checkBoxListener.onCheckBoxClicked(tagComponent, element, position)
             }
 
             checboxFilterTag.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) checkBoxListener.onCheckBoxClickedActive(element)
                 checkBoxListener.onCheckBoxClicked(tagComponent, element, position)
             }
         }
@@ -30,6 +30,10 @@ class DigitalPDPFilterAllViewHolder(
         fun onCheckBoxClicked(
             tagComponent: TelcoFilterTagComponent,
             element: FilterTagDataCollection, position: Int
+        )
+
+        fun onCheckBoxClickedActive(
+            element: FilterTagDataCollection
         )
     }
 }

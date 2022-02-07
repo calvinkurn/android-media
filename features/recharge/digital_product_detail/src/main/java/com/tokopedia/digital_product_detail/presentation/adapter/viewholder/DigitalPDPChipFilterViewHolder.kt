@@ -20,7 +20,10 @@ class DigitalPDPChipFilterViewHolder(
 
                 root.setOnClickListener {
                     chipType = if (chipType == ChipsUnify.TYPE_SELECTED) ChipsUnify.TYPE_NORMAL
-                    else ChipsUnify.TYPE_SELECTED
+                    else {
+                        chipListener.onChipActiveTracked(element)
+                        ChipsUnify.TYPE_SELECTED
+                    }
                     chipListener.onChipClicked(tagComponent, element, position)
                 }
             }
@@ -31,6 +34,10 @@ class DigitalPDPChipFilterViewHolder(
         fun onChipClicked(
             tagComponent: TelcoFilterTagComponent,
             element: FilterTagDataCollection, position: Int
+        )
+
+        fun onChipActiveTracked(
+            element: FilterTagDataCollection
         )
     }
 }
