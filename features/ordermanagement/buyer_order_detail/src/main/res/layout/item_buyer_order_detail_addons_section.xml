@@ -7,13 +7,15 @@
     android:layout_marginHorizontal="@dimen/buyer_order_detail_card_horizontal_margin">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container"
+        android:id="@+id/containerAddons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:background="?android:attr/selectableItemBackground">
 
-        <include layout="@layout/partial_item_buyer_order_detail_addons" />
+        <include
+            android:id="@+id/addonLayout"
+            layout="@layout/partial_item_buyer_order_detail_addons" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

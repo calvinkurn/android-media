@@ -80,7 +80,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                     addOnsThumbnailUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
                     toStr = "Adam",
                     fromStr = "John",
-                    message = "happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss,happy birthday boss"
+                    message = "happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss. happy birthday boss, happy birthday boss. happy birthday boss"
                 )
             )
         )

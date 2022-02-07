@@ -22,15 +22,18 @@ import com.tokopedia.buyerorderdetail.common.utils.Utils.setAddonMessageFormatte
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import java.lang.IllegalStateException
 import java.lang.StringBuilder
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.roundToInt
 
 object Utils {
     private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
@@ -131,21 +134,31 @@ object Utils {
         return false
     }
 
+    private fun Typography.getCharacterOneLine(message: String): Int {
+        return try {
+            val wordWidth = paint.measureText(message, Int.ZERO, Int.ONE)
+            val screenWidth = resources.displayMetrics.widthPixels
+            (screenWidth / wordWidth).roundToInt()
+        } catch (e: IllegalStateException) {
+            Int.ZERO
+        }
+    }
+
     fun Typography.setAddonMessageFormatted(message: String, context: Context) {
         val hyperLinkText: String
-        val htmlString: HtmlLinkHelper
-        text = message
-        if(layout?.lineCount.orZero() > Int.ONE) {
-            maxLines = MAX_LINE_MESSAGE
-            hyperLinkText = context.getString(R.string.order_addons_read_more)
-            htmlString = HtmlLinkHelper(context, StringBuilder(text.dropLast(READ_MORE.length)).append(hyperLinkText).toString())
-            text = htmlString.spannedString
-        } else {
+        val messageFmt: String
+        if (maxLines < Integer.MAX_VALUE) {
             maxLines = Integer.MAX_VALUE
             hyperLinkText = context.getString(R.string.order_addons_close)
-            htmlString = HtmlLinkHelper(context, StringBuilder(text.dropLast(CLOSE_MESSAGE.length)).append(hyperLinkText).toString())
-            text = htmlString.spannedString
+            messageFmt = message + hyperLinkText
+        } else {
+            maxLines = MAX_LINE_MESSAGE
+            hyperLinkText = context.getString(R.string.order_addons_read_more)
+            messageFmt = message.substring(Int.ZERO, getCharacterOneLine(message))
+                .dropLast(READ_MORE.length).trim() + "..." + hyperLinkText
         }
+        val htmlString = HtmlLinkHelper(context, messageFmt)
+        text = htmlString.spannedString
         this.movementMethod = LinkMovementMethod.getInstance()
         this.highlightColor = Color.TRANSPARENT
         htmlString.urlList.getOrNull(Int.ZERO)?.setOnClickListener {

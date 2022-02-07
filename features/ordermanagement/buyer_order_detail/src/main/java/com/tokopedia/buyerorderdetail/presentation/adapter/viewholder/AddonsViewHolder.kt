@@ -15,9 +15,8 @@ class AddonsViewHolder(itemView: View) : AbstractViewHolder<AddonsListUiModel>(i
         val LAYOUT = R.layout.item_buyer_order_detail_addons_section
     }
 
-    private val binding = ItemBuyerOrderDetailAddonsSectionBinding.bind(this.itemView)
     private val partialItemBuyerOrderDetailAddonsBinding =
-        PartialItemBuyerOrderDetailAddonsBinding.bind(binding.root)
+        PartialItemBuyerOrderDetailAddonsBinding.bind(this.itemView.findViewById(R.id.addonLayout))
 
     private var partialProductAddonViewHolder: PartialProductAddonViewHolder? = null
 

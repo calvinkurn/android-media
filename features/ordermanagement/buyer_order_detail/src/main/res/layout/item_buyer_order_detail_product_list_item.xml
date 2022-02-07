@@ -11,32 +11,33 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:background="?android:attr/selectableItemBackground">
+        android:animateLayoutChanges="true">
 
-        <include
-            android:id="@+id/itemBomDetailProductSection"
+        <ViewStub
+            android:id="@+id/itemBomDetailProductViewStub"
+            android:inflatedId="@+id/itemBomDetailProductViewStub"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            layout="@layout/partial_item_buyer_order_detail_product_list"/>
+            android:layout_marginBottom="8dp"
+            android:layout="@layout/partial_item_buyer_order_detail_product_list"/>
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerBomDetailProduct"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/itemBomDetailProductSection"/>
+            app:layout_constraintTop_toBottomOf="@id/itemBomDetailProductViewStub"/>
 
-        <include
-            android:id="@+id/itemBomDetailAddonsSection"
+        <ViewStub
+            android:id="@+id/itemBomDetailAddonsViewStub"
+            android:inflatedId="@+id/itemBomDetailAddonsViewStub"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            layout="@layout/partial_item_buyer_order_detail_addons"
+            android:layout_height="wrap_content"
+            android:layout="@layout/partial_item_buyer_order_detail_addons"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dividerBomDetailProduct"
             app:layout_constraintBottom_toBottomOf="parent"

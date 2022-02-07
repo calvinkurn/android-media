@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils.setAddonMessageFormatted
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailAddonsListBinding
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -79,8 +80,8 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             if (message.isBlank()) {
                 tvBomDetailAddonsMessageValue.hide()
             } else {
-                tvBomDetailAddonsMessageValue.show()
-                tvBomDetailAddonsMessageValue.apply {
+                tvBomDetailAddonsMessageValue.run {
+                    show()
                     setAddonMessageFormatted(message, context)
                 }
             }

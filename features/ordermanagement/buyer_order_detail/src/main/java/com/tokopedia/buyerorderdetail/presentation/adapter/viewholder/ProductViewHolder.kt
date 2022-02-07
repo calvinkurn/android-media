@@ -36,8 +36,9 @@ open class ProductViewHolder(
     private var partialProductItemViewHolder: PartialProductItemViewHolder? = null
 
     private var partialProductAddonViewHolder: PartialProductAddonViewHolder? = null
-    private val partialItemBuyerOrderDetailAddonsBinding =
-        PartialItemBuyerOrderDetailAddonsBinding.bind(this.itemView)
+
+    private var partialItemBuyerOrderDetailAddonsBinding: PartialItemBuyerOrderDetailAddonsBinding? =
+        null
 
     override fun bind(element: ProductListUiModel.ProductUiModel?) {
         element?.let {
@@ -67,6 +68,8 @@ open class ProductViewHolder(
     }
 
     private fun setupProductList(element: ProductListUiModel.ProductUiModel) {
+        val productListViewStub: View = itemView.findViewById(R.id.itemBomDetailProductViewStub)
+        if (productListViewStub is ViewStub) productListViewStub.inflate() else productListViewStub.show()
         partialProductItemViewHolder =
             PartialProductItemViewHolder(itemView, listener, navigator, element)
         setupProductThumbnail(element.productThumbnailUrl)
@@ -74,13 +77,22 @@ open class ProductViewHolder(
     }
 
     private fun setupAddonSection(addonsListUiModel: AddonsListUiModel) {
-        partialProductAddonViewHolder =
-            PartialProductAddonViewHolder(partialItemBuyerOrderDetailAddonsBinding)
+        val addonsViewStub: View = itemView.findViewById(R.id.itemBomDetailAddonsViewStub)
         if (addonsListUiModel.addonsItemList.isNotEmpty()) {
+            if (addonsViewStub is ViewStub) addonsViewStub.inflate() else addonsViewStub.show()
+            setupAddonsBinding()
+            partialProductAddonViewHolder =
+                partialItemBuyerOrderDetailAddonsBinding?.let { PartialProductAddonViewHolder(it) }
             partialProductAddonViewHolder?.bindViews(addonsListUiModel)
-            partialItemBuyerOrderDetailAddonsBinding.root.show()
         } else {
-            partialItemBuyerOrderDetailAddonsBinding.root.hide()
+            partialItemBuyerOrderDetailAddonsBinding?.root?.hide()
+        }
+    }
+
+    private fun setupAddonsBinding() {
+        if (partialItemBuyerOrderDetailAddonsBinding == null) {
+            partialItemBuyerOrderDetailAddonsBinding =
+                PartialItemBuyerOrderDetailAddonsBinding.bind(this.itemView.findViewById(R.id.itemBomDetailAddonsViewStub))
         }
     }
 

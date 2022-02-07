@@ -33,8 +33,8 @@ class PartialProductItemViewHolder(
         itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductNote)
     private val tvBuyerOrderDetailProductPriceValue =
         itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceValue)
-    private val cardBuyerOrderDetailProduct =
-        itemView?.findViewById<CardUnify>(R.id.cardBuyerOrderDetailProduct)
+    private val itemBomDetailProductViewStub =
+        itemView?.findViewById<View>(R.id.itemBomDetailProductViewStub)
     private val btnBuyerOrderDetailBuyProductAgain =
         itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
 
@@ -101,7 +101,7 @@ class PartialProductItemViewHolder(
     }
 
     private fun setupClickListeners() {
-        cardBuyerOrderDetailProduct?.setOnClickListener(this)
+        itemBomDetailProductViewStub?.setOnClickListener(this)
         btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this)
     }
 
@@ -138,7 +138,7 @@ class PartialProductItemViewHolder(
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.cardBuyerOrderDetailProduct -> goToProductSnapshotPage()
+            R.id.itemBomDetailProductViewStub -> goToProductSnapshotPage()
             R.id.btnBuyerOrderDetailBuyProductAgain -> onActionButtonClicked()
         }
     }
