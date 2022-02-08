@@ -67,7 +67,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
             intent.extras?.let {
                 bundle.putString(PARAM_GATEWAY_ID, it.getString(PARAM_GATEWAY_ID))
                 bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
-                bundle.getString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
+                bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
                 bundle.putString(PARAM_GATEWAY_CODE,it.getString(PARAM_GATEWAY_CODE))
             }
 
