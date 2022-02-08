@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
-import com.tokopedia.vouchercreation.product.create.view.fragment.CouponDetailFragment
+import com.tokopedia.vouchercreation.product.detail.view.fragment.CouponDetailFragment
 import javax.inject.Inject
 
 class VoucherProductDetailActivity : AppCompatActivity() {

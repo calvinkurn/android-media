@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.view.fragment
+package com.tokopedia.vouchercreation.product.preview
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,21 +32,19 @@ import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
-import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
+import com.tokopedia.vouchercreation.databinding.FragmentCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
-import com.tokopedia.vouchercreation.product.create.view.bottomsheet.CouponImagePreviewBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndConditionBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.dialog.UpdateProductCouponFailedDialog
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
 
 
-class ProductCouponPreviewFragment: BaseDaggerFragment() {
+class CouponPreviewFragment: BaseDaggerFragment() {
 
     companion object {
         private const val EMPTY_STRING = ""
@@ -55,7 +53,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         private const val ROTATION_ANGLE_ZERO = 0f
         private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
         private const val ROTATION_ANIM_DURATION_IN_MILLIS: Long = 300
-        private const val COUPON_ID_NOT_YET_CREATED : Long = -1
+        const val COUPON_ID_NOT_YET_CREATED : Long = -1
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
@@ -64,22 +62,19 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
             onCreateCouponSuccess: (Coupon) -> Unit,
             onUpdateCouponSuccess: () -> Unit,
             onDuplicateCouponSuccess: () -> Unit,
-            coupon: Coupon?,
+            couponId: Long,
             mode : Mode
-        ): ProductCouponPreviewFragment {
+        ): CouponPreviewFragment {
 
-            val fragment = ProductCouponPreviewFragment().apply {
+            val fragment = CouponPreviewFragment().apply {
                 this.onNavigateToCouponInformationPage = onNavigateToCouponInformationPage
                 this.onNavigateToCouponSettingsPage = onNavigateToCouponSettingsPage
                 this.onNavigateToProductListPage = onNavigateToProductListPage
                 this.onCreateCouponSuccess = onCreateCouponSuccess
                 this.onUpdateCouponSuccess = onUpdateCouponSuccess
                 this.onDuplicateCouponSuccess = onDuplicateCouponSuccess
-                this.couponInformation = coupon?.information
-                this.couponProducts = coupon?.products ?: emptyList()
-                this.couponSettings = coupon?.settings
-                this.couponId = coupon?.id.orZero()
                 this.pageMode = mode
+                this.couponId = couponId
             }
 
             return fragment
@@ -93,8 +88,8 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var nullableBinding by autoClearedNullable<FragmentProductCouponPreviewBinding>()
-    private val binding: FragmentProductCouponPreviewBinding
+    private var nullableBinding by autoClearedNullable<FragmentCouponPreviewBinding>()
+    private val binding: FragmentCouponPreviewBinding
         get() = requireNotNull(nullableBinding)
 
     private var onNavigateToCouponInformationPage: () -> Unit = {}
@@ -108,7 +103,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     private var couponProducts: List<CouponProduct> = emptyList()
     private var isCardExpanded = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(ProductCouponPreviewViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(CouponPreviewViewModel::class.java) }
     private var couponId : Long = -1
     private var maxAllowedProduct = 0
 
@@ -164,12 +159,19 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
             .inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (viewModel.isUpdateMode(pageMode)|| viewModel.isDuplicateMode(pageMode)) {
+            viewModel.getCouponDetail(couponId)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        nullableBinding = FragmentProductCouponPreviewBinding.inflate(inflater, container, false)
+        nullableBinding = FragmentCouponPreviewBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -177,21 +179,43 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setFragmentToUnifyBgColor()
         setupViews()
+        observeCouponDetail()
         observeValidCoupon()
         observeCreateCouponResult()
         observeUpdateCouponResult()
         observeMaxAllowedProductResult()
         viewModel.getMaxAllowedProducts(pageMode)
+        handlePageMode()
+        refreshCouponDetail()
+    }
+
+    private fun observeCouponDetail() {
+        viewModel.couponDetail.observe(viewLifecycleOwner, { result ->
+            hideLoading()
+            when(result) {
+                is Success -> {
+                    showContent()
+                    this.couponInformation = result.data.information
+                    this.couponProducts = result.data.products
+                    this.couponSettings = result.data.settings
+
+                    refreshCouponInformationSection(couponInformation ?: return@observe)
+                    refreshCouponSettingsSection(couponSettings ?: return@observe)
+                    refreshProductsSection(couponProducts)
+                }
+                is Fail -> {
+                    hideLoading()
+                    hideContent()
+                    showError(result.throwable)
+                }
+            }
+        })
     }
 
     private fun handlePageMode() {
-        when(pageMode) {
-            Mode.CREATE -> {}
-            Mode.UPDATE -> {
-                changeToolbarTitle(getString(R.string.update_coupon_product))
-                changeButtonBehavior()
-            }
-            Mode.DUPLICATE -> {}
+        if (viewModel.isUpdateMode(pageMode)) {
+            changeToolbarTitle(getString(R.string.update_coupon_product))
+            changeButtonBehavior()
         }
     }
 
@@ -252,7 +276,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
                         couponProducts
                     )
 
-                    if (pageMode == Mode.CREATE) {
+                    if (viewModel.isCreateMode(pageMode)) {
                         onCreateCouponSuccess(coupon)
                     } else {
                         onDuplicateCouponSuccess()
@@ -299,6 +323,12 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         })
     }
 
+    private fun refreshCouponDetail() {
+        couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
+        couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
+        refreshProductsSection(couponProducts)
+        viewModel.validateCoupon(pageMode, couponSettings, couponInformation, couponProducts)
+    }
 
     fun setCouponSettingsData(couponSettings: CouponSettings) {
         this.couponSettings = couponSettings
@@ -313,17 +343,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     }
 
     fun getCouponInformationData() = this.couponInformation
-
-
-    override fun onResume() {
-        super.onResume()
-        couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
-        couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
-        handlePageMode()
-        refreshProductsSection(couponProducts)
-
-        viewModel.validateCoupon(couponSettings, couponInformation, couponProducts)
-    }
+    fun getCouponSettingsData() = this.couponSettings
 
     private fun refreshCouponInformationSection(coupon: CouponInformation) {
         binding.imgCopyToClipboard.visible()
@@ -662,4 +682,18 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         )
         onNavigateToProductListPage(coupon)
     }
+
+
+    private fun hideLoading() {
+        binding.loader.gone()
+    }
+
+    private fun showContent() {
+        binding.content.visible()
+    }
+
+    private fun hideContent() {
+        binding.content.gone()
+    }
+
 }

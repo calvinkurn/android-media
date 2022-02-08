@@ -40,7 +40,6 @@ import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherUiModel
-import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
@@ -50,6 +49,8 @@ import com.tokopedia.vouchercreation.common.exception.VoucherCancellationExcepti
 import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.update.period.UpdateCouponPeriodBottomSheet
+import com.tokopedia.vouchercreation.product.update.quota.UpdateCouponQuotaBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
 import com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet.CouponFilterBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.CANCEL_VOUCHER_ERROR
@@ -80,7 +81,6 @@ import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.fragment.VoucherListFragment
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.BroadCastVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
-import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 import java.util.*
@@ -91,8 +91,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     companion object {
         fun newInstance(
             onCreateCouponMenuSelected: () -> Unit,
-            onEditCouponMenuSelected: (Coupon) -> Unit,
-            onDuplicateCouponMenuSelected: (Coupon) -> Unit,
+            onEditCouponMenuSelected: (Long) -> Unit,
+            onDuplicateCouponMenuSelected: (Long) -> Unit,
             onViewCouponDetailMenuSelected : (Long) -> Unit = {}
         ): CouponListFragment {
             val args = Bundle()
@@ -147,8 +147,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private val filterTarget by lazy { SortFilterItem("Publik") }
 
     private var onCreateCouponMenuSelected : () -> Unit = {}
-    private var onEditCouponMenuSelected : (Coupon) -> Unit = {}
-    private var onDuplicateCouponMenuSelected : (Coupon) -> Unit = {}
+    private var onEditCouponMenuSelected : (Long) -> Unit = {}
+    private var onDuplicateCouponMenuSelected : (Long) -> Unit = {}
     private var onViewCouponDetailMenuSelected : (Long) -> Unit = {}
 
     override fun getScreenName(): String = CouponListFragment::class.java.simpleName
@@ -317,6 +317,9 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private fun setupFilterChips(view: View) {
         val chip = view.findViewById<SortFilter>(R.id.sf_voucher_list)
         chip.parentListener = {
+            onCreateCouponMenuSelected()
+        }
+        /*chip.parentListener = {
             val bottomSheet = CouponFilterBottomSheet.newInstance(
                 viewModel.selectedFilterType.value ?: CouponFilterBottomSheet.FilterType.NOT_SELECTED,
                 viewModel.selectedFilterTarget.value ?: CouponFilterBottomSheet.FilterTarget.NOT_SELECTED,
@@ -324,7 +327,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
                 ::onResetFilter
             )
             bottomSheet.show(childFragmentManager, bottomSheet.tag)
-        }
+        }*/
 
         filterStatus.chevronListener = {
             CouponStatusFilterBotomSheet(::onStatusSelected).show(childFragmentManager, "")
@@ -597,7 +600,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun editCoupon(coupon: VoucherUiModel) {
-        onEditCouponMenuSelected(couponMapper.map(coupon))
+        onEditCouponMenuSelected(coupon.id.toLong())
     }
 
     private fun viewDetailCoupon(coupon: VoucherUiModel) {
@@ -623,7 +626,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun editPeriodCoupon(coupon: VoucherUiModel) {
-        showEditPeriodBottomSheet(coupon)
+        showUpdateCouponPeriodBottomSheet(coupon)
     }
 
     private fun downloadCoupon(coupon: VoucherUiModel) {
@@ -655,25 +658,22 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     private fun duplicateCoupon(coupon: VoucherUiModel) {
-        onDuplicateCouponMenuSelected(couponMapper.map(coupon))
+        onDuplicateCouponMenuSelected(coupon.id.toLong())
     }
 
-    private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
+    private fun showUpdateCouponPeriodBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        VoucherPeriodBottomSheet.createInstance(voucher)
-            .setOnSuccessClickListener {
-                onSuccessUpdateVoucherPeriod()
+        val bottomSheet = UpdateCouponPeriodBottomSheet.newInstance(voucher.id.toLong())
+        bottomSheet.setOnSuccessClickListener { onSuccessUpdateVoucherPeriod() }
+        bottomSheet.setOnFailClickListener { message ->
+            val errorMessage = if (message.isNotBlank()) {
+                message
+            } else {
+                context?.getString(R.string.mvc_general_error).toBlankOrString()
             }
-            .setOnFailClickListener { message ->
-                val errorMessage =
-                    if (message.isNotBlank()) {
-                        message
-                    } else {
-                        context?.getString(R.string.mvc_general_error).toBlankOrString()
-                    }
-                view?.showErrorToaster(errorMessage)
-            }
-            .show(childFragmentManager)
+            view?.showErrorToaster(errorMessage)
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun onSuccessUpdateVoucherPeriod() {
@@ -692,28 +692,28 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
 
-        EditQuotaBottomSheet.createInstance(voucher)
-            .setOnSuccessUpdateVoucher {
-                loadInitialData()
-                view?.run {
-                    Toaster.build(
-                        this,
-                        context?.getString(R.string.mvc_quota_success).toBlankOrString(),
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        context?.getString(R.string.mvc_oke).toBlankOrString()
-                    ).show()
-                }
+        val bottomSheet = UpdateCouponQuotaBottomSheet.newInstance(voucher)
+        bottomSheet.setOnUpdateQuotaSuccess {
+            loadInitialData()
+            view?.run {
+                Toaster.build(
+                    this,
+                    getString(R.string.update_quota_success).toBlankOrString(),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    context?.getString(R.string.mvc_oke).toBlankOrString()
+                ).show()
             }
-            .setOnFailUpdateVoucher { message ->
-                val errorMessage =
-                    if (message.isNotBlank()) {
-                        message
-                    } else {
-                        context?.getString(R.string.mvc_general_error).toBlankOrString()
-                    }
-                view?.showErrorToaster(errorMessage)
-            }.show(childFragmentManager)
+        }
+        bottomSheet.setOnUpdateQuotaError { message ->
+            val errorMessage = if (message.isNotBlank()) {
+                message
+            } else {
+                getString(R.string.mvc_general_error).toBlankOrString()
+            }
+            view?.showErrorToaster(errorMessage)
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun showCancellationSuccessToaster(successMessageRes: Int, couponId: Int) {

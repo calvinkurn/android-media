@@ -7,10 +7,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.*
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponSettingViewModel
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
+import com.tokopedia.vouchercreation.product.preview.CouponPreviewViewModel
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CreateCouponDetailViewModel
+import com.tokopedia.vouchercreation.product.detail.view.viewmodel.CouponDetailViewModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.AddProductViewModel
+import com.tokopedia.vouchercreation.product.preview.CouponImagePreviewViewModel
+import com.tokopedia.vouchercreation.product.update.period.UpdateCouponPeriodViewModel
+import com.tokopedia.vouchercreation.product.update.quota.UpdateCouponQuotaViewModel
 import com.tokopedia.vouchercreation.shop.create.view.viewmodel.*
 import com.tokopedia.vouchercreation.shop.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
@@ -94,8 +98,8 @@ abstract class VoucherCreationViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ProductCouponPreviewViewModel::class)
-    internal abstract fun provideProductCouponPreviewViewModel(productCouponPreviewViewModel: ProductCouponPreviewViewModel): ViewModel
+    @ViewModelKey(CouponPreviewViewModel::class)
+    internal abstract fun provideProductCouponPreviewViewModel(couponPreviewViewModel: CouponPreviewViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -126,4 +130,14 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(AddProductViewModel::class)
     internal abstract fun provideAddProductViewModel(addProductViewModel: AddProductViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UpdateCouponQuotaViewModel::class)
+    internal abstract fun provideUpdateCouponQuotaViewModel(updateCouponQuotaViewModel: UpdateCouponQuotaViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UpdateCouponPeriodViewModel::class)
+    internal abstract fun provideUpdateCouponPeriodViewModel(updateCouponPeriodViewModel: UpdateCouponPeriodViewModel): ViewModel
 }

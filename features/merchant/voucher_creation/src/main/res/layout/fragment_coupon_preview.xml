@@ -21,7 +21,7 @@
         android:fillViewport="true"
         android:visibility="gone"
         tools:visibility="visible"
-        tools:context=".product.create.view.fragment.ProductCouponPreviewFragment">
+        tools:context=".product.preview.CouponPreviewFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -159,7 +159,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/unify_space_16"
-                android:text="@string/change"
+                android:text="@string/update"
                 android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -411,7 +411,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/unify_space_16"
-                android:text="@string/change"
+                android:text="@string/update"
                 android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/typography10"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -718,7 +718,7 @@
                 android:layout_marginStart="@dimen/unify_space_24"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:layout_marginEnd="@dimen/unify_space_24"
-                android:text="@string/manage_product"
+                android:text="@string/view_all"
                 android:textColor="@color/Unify_G500"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"

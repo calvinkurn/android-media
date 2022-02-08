@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.view.viewmodel
+package com.tokopedia.vouchercreation.product.preview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,20 +12,22 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
-import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ProductCouponPreviewViewModel @Inject constructor(
+class CouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val createCouponUseCase: CreateCouponFacadeUseCase,
     private val updateCouponUseCase: UpdateCouponFacadeUseCase,
     private val initiateVoucherUseCase: InitiateVoucherUseCase,
+    private val getCouponDetailUseCase: GetCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -48,12 +50,21 @@ class ProductCouponPreviewViewModel @Inject constructor(
     val maxAllowedProductCount: LiveData<Result<Int>>
         get() = _maxAllowedProductCount
 
+    private val _couponDetail = SingleLiveEvent<Result<Coupon>>()
+    val couponDetail: LiveData<Result<Coupon>>
+        get() = _couponDetail
 
     fun validateCoupon(
+        pageMode : CouponPreviewFragment.Mode,
         couponSettings: CouponSettings?,
         couponInformation: CouponInformation?,
         couponProducts: List<CouponProduct>
     ) {
+        if (isUpdateMode(pageMode) || isDuplicateMode(pageMode)) {
+            _areInputValid.value = true
+            return
+        }
+
         if (couponSettings == null) {
             _areInputValid.value = false
             return
@@ -138,8 +149,8 @@ class ProductCouponPreviewViewModel @Inject constructor(
         return imageUrls
     }
 
-    fun getMaxAllowedProducts(mode : ProductCouponPreviewFragment.Mode) {
-        val isUpdateMode = mode == ProductCouponPreviewFragment.Mode.UPDATE
+    fun getMaxAllowedProducts(mode : CouponPreviewFragment.Mode) {
+        val isUpdateMode = mode == CouponPreviewFragment.Mode.UPDATE
 
         launchCatchError(block = {
             initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
@@ -167,5 +178,32 @@ class ProductCouponPreviewViewModel @Inject constructor(
         }
 
         return true
+    }
+
+
+    fun getCouponDetail(couponId: Long) {
+        launchCatchError(
+            block = {
+                val result = withContext(dispatchers.io) {
+                    getCouponDetailUseCase.execute(this, couponId)
+                }
+                _couponDetail.value = Success(result)
+            },
+            onError = {
+                _couponDetail.value = Fail(it)
+            }
+        )
+    }
+
+    fun isCreateMode(mode : CouponPreviewFragment.Mode): Boolean {
+        return mode == CouponPreviewFragment.Mode.CREATE
+    }
+
+    fun isUpdateMode(mode : CouponPreviewFragment.Mode): Boolean {
+        return mode == CouponPreviewFragment.Mode.UPDATE
+    }
+
+    fun isDuplicateMode(mode : CouponPreviewFragment.Mode): Boolean {
+        return mode == CouponPreviewFragment.Mode.DUPLICATE
     }
 }
