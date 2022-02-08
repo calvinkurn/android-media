@@ -56,9 +56,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.design
 
@@ -102,11 +99,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.miscDependencies.dagger
-    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.playServicesDependencies.phone
     api (rootProject.ext.firebase.crashlytics) {

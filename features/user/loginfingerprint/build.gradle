@@ -79,7 +79,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.kotlinTest
-    testImplementation rootProject.ext.networkDependencies.loggingInterceptor
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
