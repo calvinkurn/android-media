@@ -768,7 +768,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     "?productID=${this.productId}" +
                     "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
                     "&productURL=${fintechRedirectionWidgetDataClass.productUrl}" +
-                    "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}"
+                    "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}"+
+                    "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
 
             if (fintechRedirectionWidgetDataClass.cta == 2) {
                 openWebViewUrl(url = rediretionLink, showTitleBar = true)

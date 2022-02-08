@@ -30,14 +30,15 @@ class GatewayViewHolder(itemView: View, val gatewayCardClicked: GateWayCardClick
             radioGatewaySelector.isChecked = false
             if(!checkoutData.disable) {
                 itemView.radioGatewaySelector.setOnClickListener {
-                    gatewayCardClicked.gatewayCardSelected(position)
                     individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
+                    gatewayCardClicked.gatewayCardSelected(position)
                 }
                 itemView.setOnClickListener {
-                    gatewayCardClicked.gatewayCardSelected(position)
                     individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
+                    gatewayCardClicked.gatewayCardSelected(position)
+
                 }
             }
         }

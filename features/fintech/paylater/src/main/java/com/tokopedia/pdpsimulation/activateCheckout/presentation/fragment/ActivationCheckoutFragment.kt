@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.dialog.DialogUnify
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -68,11 +69,13 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private lateinit var activationTenureAdapter: ActivationTenureAdapter
     private lateinit var installmentModel: InstallmentDetails
     private var listOfTenureDetail: List<TenureDetail> = ArrayList()
+    private lateinit var paylaterGetOptimizedModel :PaylaterGetOptimizedModel
     private lateinit var listOfGateway: PaylaterGetOptimizedModel
     private var selectedTenurePosition = 0
     private var selectedGateway = 0
     var quantity = 1
     var isDisabled = false
+    var gatewayToChipMap: Map<Int,TenureDetail> = HashMap()
 
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
@@ -112,7 +115,13 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     fun updateSelectedTenure(gatewaySelected: Int) {
-        this.selectedGateway = gatewaySelected
+        if(selectedGateway != gatewaySelected)
+        {
+            this.selectedGateway = gatewaySelected
+            setTenureDetailData()
+        }
+
+
 
     }
 
@@ -176,7 +185,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         showBottomDetail()
                         loaderhideOnCheckoutApi()
                         removeErrorInTenure()
-                        setTenureDetailData(it.data)
+                        paylaterGetOptimizedModel = it.data
+                        setTenureDetailData()
                     } else {
                         loaderhideOnCheckoutApi()
                         showEmptyErrorInTenureDetail()
@@ -194,14 +204,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-    private fun setTenureDetailData(data: PaylaterGetOptimizedModel)
+    private fun setTenureDetailData()
     {
-        checkDisableLogic(data.checkoutData[selectedGateway].disable)
-        listOfGateway = data
-        setSelectedTenure(data)
-        setTenureOptionsData(data)
+        checkDisableLogic(paylaterGetOptimizedModel.checkoutData[selectedGateway].disable)
+        listOfGateway = paylaterGetOptimizedModel
+        setSelectedTenure(paylaterGetOptimizedModel)
+        setTenureOptionsData(paylaterGetOptimizedModel)
         if(isDisabled)
-            gatewayDetailLayout.errorTicker.tickerTitle = data.checkoutData[selectedGateway].reason_long
+            gatewayDetailLayout.errorTicker.tickerTitle = paylaterGetOptimizedModel.checkoutData[selectedGateway].reason_long
         else
             gatewayDetailLayout.errorTicker.visibility = View.GONE
 
@@ -524,6 +534,22 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         activationTenureAdapter.notifyItemChanged(newPositionToSelect)
         activationTenureAdapter.notifyItemChanged(selectedTenurePosition)
         selectedTenurePosition = newPositionToSelect
+    }
+
+    fun showDialog()
+    {
+        context?.let { context ->
+            DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle("")
+                setDescription("")
+                setPrimaryCTAText("")
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                setOverlayClose(false)
+                show()
+            }
+        }
     }
 
 
