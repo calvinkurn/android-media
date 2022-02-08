@@ -20,6 +20,9 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,16 +40,26 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
-class PlayBroProductSetupViewModel @Inject constructor(
+class PlayBroProductSetupViewModel @AssistedInject constructor(
+    @Assisted productList: List<ProductUiModel>,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            productList: List<ProductUiModel>
+        ): PlayBroProductSetupViewModel
+    }
+
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
-    private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(emptyMap())
+    private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(
+        mapOf(SelectedEtalaseModel.None to productList)
+    )
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
 
@@ -182,12 +195,12 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private fun handleSelectProduct(product: ProductUiModel) {
         //when select product, we can just treat it as no etalase/campaign
         val etalase = SelectedEtalaseModel.None
-        _selectedProductMap.update {
-            val prevSelectedProducts = it[etalase].orEmpty()
-            val newSelectedProducts = if (prevSelectedProducts.contains(product)) {
-                prevSelectedProducts - product
+        _selectedProductMap.update { map ->
+            val prevSelectedProducts = map[etalase].orEmpty()
+            val newSelectedProducts = if (prevSelectedProducts.any { it.id == product.id }) {
+                prevSelectedProducts.filter { it.id != product.id }
             } else prevSelectedProducts + product
-            it + mapOf(etalase to newSelectedProducts)
+            map + mapOf(etalase to newSelectedProducts)
         }
     }
 

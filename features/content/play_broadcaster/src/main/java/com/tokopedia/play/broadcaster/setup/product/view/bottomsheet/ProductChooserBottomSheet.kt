@@ -48,9 +48,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dispatchers: CoroutineDispatchers,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
-) : BottomSheetUnify(), ProductSortBottomSheet.Listener {
-
-    private lateinit var viewModel: PlayBroProductSetupViewModel
+) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
     private var _binding: BottomSheetPlayBroProductChooserBinding? = null
     private val binding: BottomSheetPlayBroProductChooserBinding

@@ -2,16 +2,25 @@ package com.tokopedia.play.broadcaster.setup.product.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
-class ProductSetupFragment @Inject constructor() : Fragment() {
+class ProductSetupFragment @Inject constructor(
+    private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory,
+) : Fragment() {
+
+    private var mDataSource: DataSource? = null
+
+    private lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,5 +54,25 @@ class ProductSetupFragment @Inject constructor() : Fragment() {
             childFragmentManager,
             requireActivity().classLoader,
         ).show(childFragmentManager)
+    }
+
+    fun setDataSource(dataSource: DataSource?) {
+        mDataSource = dataSource
+    }
+
+    fun getViewModelFactory(): ViewModelProvider.Factory {
+        if (!::viewModelFactory.isInitialized) {
+            viewModelFactory = object : ViewModelProvider.Factory {
+                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                    return productSetupViewModelFactory.create(mDataSource?.getProductList().orEmpty()) as T
+                }
+            }
+        }
+        return viewModelFactory
+    }
+
+    interface DataSource {
+
+        fun getProductList(): List<ProductUiModel>
     }
 }

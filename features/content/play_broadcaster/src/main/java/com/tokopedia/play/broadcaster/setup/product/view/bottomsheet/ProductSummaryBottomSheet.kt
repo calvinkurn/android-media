@@ -19,9 +19,7 @@ import javax.inject.Inject
  */
 class ProductSummaryBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-) : BottomSheetUnify() {
-
-    private lateinit var viewModel: PlayBroProductSetupViewModel
+) : BaseProductSetupBottomSheet() {
 
     private var _binding: BottomSheetPlayBroProductSummaryBinding? = null
     private val binding: BottomSheetPlayBroProductSummaryBinding
