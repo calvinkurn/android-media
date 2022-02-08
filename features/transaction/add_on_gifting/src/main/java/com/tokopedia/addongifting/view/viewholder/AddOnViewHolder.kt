@@ -64,10 +64,10 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
     private fun renderAddOnState(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
-            checkBoxAddOn.isSelected = element.isAddOnSelected
+            checkBoxAddOn.isChecked = element.isAddOnSelected
             setNoteVisibility(viewBinding, element)
-            checkBoxAddOn.setOnCheckedChangeListener { checkBox, isSelected ->
-                element.isAddOnSelected = isSelected
+            checkBoxAddOn.setOnCheckedChangeListener { checkBox, isChecked ->
+                element.isAddOnSelected = isChecked
                 setNoteVisibility(viewBinding, element)
             }
         }
@@ -76,13 +76,13 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
     private fun setNoteVisibility(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
             if (element.isAddOnSelected) {
-                cardAddOnNote.show()
+                containerAddOnNote.show()
                 renderTo(viewBinding, element)
                 renderFrom(viewBinding, element)
                 renderNote(viewBinding, element)
                 renderAddOnFooterMessages(viewBinding, element)
             } else {
-                cardAddOnNote.gone()
+                containerAddOnNote.gone()
             }
         }
     }
