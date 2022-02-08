@@ -697,7 +697,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         if (isBriIntent(uri) ) {
-            handlingBriIntent(url);
+            return handlingBriIntent(url);
         }
 
         String queryParam = null;
@@ -806,7 +806,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private boolean isBriIntent (Uri uri){
         return uri.getScheme().equals("intent") &&
                 uri.getHost().contains("kartukreditbri.co.id") &&
-                url.contains("browser_fallback_url=");
+                uri.toString().contains("browser_fallback_url=");
     }
 
     private boolean handlingBriIntent(String briUrl) {
