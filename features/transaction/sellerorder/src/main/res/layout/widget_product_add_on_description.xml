@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLabelCopyAddOnDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/som_detail_add_on_description_label"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@id/icCopyAddOnDescription"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icCopyAddOnDescription"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@id/tvLabelCopyAddOnDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvLabelCopyAddOnDescription"
+        app:layout_constraintTop_toTopOf="@id/tvLabelCopyAddOnDescription" />
+
+    <View
+        android:id="@+id/maskTriggerCopyArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:selectableItemBackground"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintBottom_toBottomOf="@id/tvLabelCopyAddOnDescription"
+        app:layout_constraintEnd_toEndOf="@id/icCopyAddOnDescription"
+        app:layout_constraintStart_toStartOf="@id/tvLabelCopyAddOnDescription"
+        app:layout_constraintTop_toTopOf="@id/tvLabelCopyAddOnDescription" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineLabelMaxX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.075" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierSenderTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tvLabelAddOnReceiverName,tvColonAddOnReceiverName,tvValueAddOnReceiverName" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierDescriptionTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tvLabelAddOnSenderName,tvColonAddOnSenderName,tvValueAddOnSenderName" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLabelAddOnReceiverName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/som_detail_add_on_label_to"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/guidelineLabelMaxX"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLabelCopyAddOnDescription"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLabelAddOnSenderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/som_detail_add_on_label_from"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/guidelineLabelMaxX"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrierSenderTop"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvColonAddOnReceiverName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/som_detail_add_on_colon"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/tvValueAddOnReceiverName"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/guidelineLabelMaxX"
+        app:layout_constraintTop_toBottomOf="@id/tvLabelCopyAddOnDescription"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvColonAddOnSenderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/som_detail_add_on_colon"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/tvValueAddOnSenderName"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/guidelineLabelMaxX"
+        app:layout_constraintTop_toBottomOf="@id/barrierSenderTop"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvValueAddOnReceiverName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvColonAddOnReceiverName"
+        app:layout_constraintTop_toBottomOf="@id/tvLabelCopyAddOnDescription"
+        app:typographyType="body_3"
+        tools:text="smitty werben man jensen"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvValueAddOnSenderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvColonAddOnSenderName"
+        app:layout_constraintTop_toBottomOf="@id/barrierSenderTop"
+        app:typographyType="body_3"
+        tools:text="smitty werben man jensen"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAddOnDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/barrierDescriptionTop"
+        app:typographyType="body_3"
+        tools:text="@string/lorem"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerAddOnDescriptionSeeMore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tvAddOnDescription"
+        tools:maxHeight="1000dp">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvAddOnDescriptionSeeMore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/som_detail_add_on_see_more_description"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

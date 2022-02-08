@@ -65,6 +65,7 @@
     <string name="additional_invalid_resi"><br><font color="#03ac0e">Unggah Sekarang</font></br></string>
     <string name="sale_from_top_ads">Penjualan dari TopAds</string>
     <string name="sale_from_broadcast_chat">Penjualan dari Broadcast Chat</string>
+    <string name="som_detail_product_note_format"><![CDATA[<i>%1$s</i>]]></string>
 
     <string name="chat">Chat</string>
 
@@ -345,4 +346,16 @@
 
     <!--  MVC Usage  -->
     <string name="som_detail_mvc_usage_label">Promo Penjual</string>
+
+    <!--  Product Add On  -->
+    <string name="som_detail_add_on_sample_label">Pelengkap</string>
+    <string name="som_detail_add_on_description_label">Pesan Kartu Ucapan</string>
+    <string name="som_detail_add_on_colon">:</string>
+    <string name="som_detail_add_on_label_to">Ke</string>
+    <string name="som_detail_add_on_label_from">Dari</string>
+    <string name="som_detail_add_on_description"><![CDATA[%1$s. <a href="#">%2$s</a>.]]></string>
+    <string name="som_detail_add_on_see_less_description">Tutup</string>
+    <string name="som_detail_add_on_see_more_description"><![CDATA[<a href="#">Lihat Selengkapnya</a>.]]></string>
+    <string name="som_detail_add_on_description_copyable_format"><![CDATA[Ke\t\t\t: %1$s<br/>Dari\t: %2$s<br/>%3$s]]></string>
+    <string name="som_detail_add_on_description_copied_message">Pesan berhasil disalin</string>
 </resources>

@@ -103,6 +103,8 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActiv
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
+import com.tokopedia.sellerorder.detail.presentation.model.AddOnSummaryUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.AddOnUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.model.MVCUsageUiModel
@@ -600,25 +602,21 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun renderProducts() {
         detailResponse?.run {
             val bundleDetailList = mutableListOf<BaseProductUiModel>()
-            bundleDetailList.addAll(getProductBundleList(details.bundle))
-            bundleDetailList.addAll(getProductNonBundleList(details.nonBundle))
+            bundleDetailList.addAll(getProductBundleList(details.bundle, details.bundleIcon))
+            bundleDetailList.addAll(getProductNonBundleList(details.nonBundle, addOnInfo))
             val dataProducts = SomDetailProducts(bundleDetailList, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
             listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
         }
     }
 
-    private fun getProductNonBundleList(
-        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>
-    ): List<BaseProductUiModel> {
-        return products.map { NonProductBundleUiModel(it) }
-    }
-
     private fun getProductBundleList(
-        bundleList: List<SomDetailOrder.Data.GetSomDetail.Details.Bundle>
+        bundleList: List<SomDetailOrder.Data.GetSomDetail.Details.Bundle>,
+        bundleIcon: String
     ): List<ProductBundleUiModel> {
         return bundleList.map { bundle ->
             return@map ProductBundleUiModel(
                 bundleId = bundle.bundleId,
+                bundleIcon = bundleIcon,
                 bundleName = bundle.bundleName,
                 bundlePrice = Utils.parseRupiah(bundle.bundlePrice),
                 bundleSubTotal = Utils.parseRupiah(bundle.bundleSubtotalPrice),
@@ -633,6 +631,62 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         note = it.note
                     )
                 }
+            )
+        }
+    }
+
+    private fun getProductNonBundleList(
+        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>,
+        addOnInfo: SomDetailOrder.Data.GetSomDetail.AddOnInfo?
+    ): List<BaseProductUiModel> {
+        return arrayListOf<BaseProductUiModel>().apply {
+            includeProducts(products, addOnInfo)
+            includeOrderAddOn(addOnInfo)
+        }
+    }
+
+    private fun ArrayList<BaseProductUiModel>.includeProducts(
+        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>,
+        addOnInfo: SomDetailOrder.Data.GetSomDetail.AddOnInfo?
+    ) {
+        products.forEach { product ->
+            add(
+                NonProductBundleUiModel(
+                    product = product,
+                    addOnSummary = product.addOnSummary?.let { addOnSummary ->
+                        AddOnSummaryUiModel(
+                            addons = addOnSummary.addons.map { AddOnUiModel(addOn = it) },
+                            total = addOnSummary.total,
+                            totalPrice = addOnSummary.totalPrice,
+                            totalPriceStr = addOnSummary.totalPriceStr,
+                            totalQuantity = addOnSummary.totalQuantity,
+                            iconUrl = addOnInfo?.iconUrl.orEmpty(),
+                            label = addOnInfo?.label.orEmpty(),
+                            providedByBranchShop = false
+                        )
+                    }
+                )
+            )
+        }
+    }
+
+    private fun ArrayList<BaseProductUiModel>.includeOrderAddOn(
+        addOnInfo: SomDetailOrder.Data.GetSomDetail.AddOnInfo?
+    ) {
+        addOnInfo?.orderLevelAddOnSummary?.let { addOnSummary ->
+            add(
+                NonProductBundleUiModel(
+                    addOnSummary = AddOnSummaryUiModel(
+                        addons = addOnSummary.addons.map { AddOnUiModel(addOn = it) },
+                        total = addOnSummary.total,
+                        totalPrice = addOnSummary.totalPrice,
+                        totalPriceStr = addOnSummary.totalPriceStr,
+                        totalQuantity = addOnSummary.totalQuantity,
+                        iconUrl = addOnInfo.iconUrl,
+                        label = addOnInfo.label,
+                        providedByBranchShop = true
+                    )
+                )
             )
         }
     }
@@ -1086,6 +1140,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(address, str))
         showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
+    }
+
+    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, description))
+        showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
     }
 
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {

@@ -37,6 +37,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onCopiedInvoice(invoice: String, str: String)
         fun onClickProduct(orderDetailId: Int)
         fun onCopiedAddress(address: String, str: String)
+        fun onCopyAddOnDescription(label: String, description: CharSequence)
     }
 
     companion object {

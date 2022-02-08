@@ -129,7 +129,11 @@ data class SomDetailOrder(
 
             @SerializedName("details")
             @Expose
-            val details: Details = Details()
+            val details: Details = Details(),
+
+            @SerializedName("addon_info")
+            @Expose
+            val addOnInfo: AddOnInfo? = null
         ) {
 
             fun getFirstProduct(): Details.Product? {
@@ -142,6 +146,18 @@ data class SomDetailOrder(
                     it.id
                 }
             }
+
+            data class AddOnInfo(
+                @SerializedName("order_level")
+                @Expose
+                val orderLevelAddOnSummary: AddOnSummary? = null,
+                @SerializedName("icon_url")
+                @Expose
+                val iconUrl: String = "",
+                @SerializedName("label")
+                @Expose
+                val label: String = ""
+            )
 
             data class Customer(
                 @SerializedName("id")
@@ -167,7 +183,10 @@ data class SomDetailOrder(
                 val bundle: List<Bundle> = listOf(),
                 @SerializedName("non_bundle")
                 @Expose
-                val nonBundle: List<Product> = listOf()
+                val nonBundle: List<Product> = listOf(),
+                @SerializedName("bundle_icon")
+                @Expose
+                val bundleIcon: String = ""
             ) {
                 data class Bundle(
                     @SerializedName("bundle_id")
@@ -208,7 +227,10 @@ data class SomDetailOrder(
                     val quantity: Int = 0,
                     @SerializedName("thumbnail")
                     @Expose
-                    val thumbnail: String = ""
+                    val thumbnail: String = "",
+                    @SerializedName("addon_summary")
+                    @Expose
+                    val addOnSummary: AddOnSummary? = null
                 )
             }
 

@@ -9,6 +9,7 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.factory.ProductAdap
 
 data class ProductBundleUiModel(
     val bundleId: String = "",
+    val bundleIcon: String = "",
     val bundleName: String = "",
     val bundlePrice: String = "",
     val bundleSubTotal: String = "",

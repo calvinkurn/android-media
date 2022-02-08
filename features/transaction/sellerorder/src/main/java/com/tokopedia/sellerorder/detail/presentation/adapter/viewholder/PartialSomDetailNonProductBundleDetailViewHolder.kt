@@ -1,0 +1,83 @@
+package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
+
+import android.annotation.SuppressLint
+import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.PartialNonProductBundleDetailBinding
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+
+class PartialSomDetailNonProductBundleDetailViewHolder(
+    private var binding: PartialNonProductBundleDetailBinding?,
+    private var actionListener: SomDetailAdapter.ActionListener?,
+    var element: SomDetailOrder.Data.GetSomDetail.Details.Product?
+) {
+
+    private fun setupProductDetail(element: SomDetailOrder.Data.GetSomDetail.Details.Product?) {
+        binding?.run {
+            if (element == null) {
+                root.hide()
+            } else {
+                root.show()
+                setupProductClickListener(element.orderDetailId.toIntOrZero())
+                setupProductImage(element.thumbnail)
+                setupProductName(element.name)
+                setupProductDescription(element.quantity, element.priceText)
+                setupProductNote(element.note)
+            }
+        }
+    }
+
+    private fun PartialNonProductBundleDetailBinding.setupProductClickListener(orderDetailId: Int) {
+        root.setOnClickListener {
+            actionListener?.onClickProduct(orderDetailId)
+        }
+    }
+
+    private fun PartialNonProductBundleDetailBinding.setupProductImage(thumbnailUrl: String) {
+        ivProduct.loadImage(thumbnailUrl)
+    }
+
+    private fun PartialNonProductBundleDetailBinding.setupProductName(name: String) {
+        tvProductName.text = name
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun PartialNonProductBundleDetailBinding.setupProductDescription(
+        quantity: Int,
+        priceText: String
+    ) {
+        tvProductDesc.text = "$quantity x $priceText"
+    }
+
+    private fun PartialNonProductBundleDetailBinding.setupProductNote(note: String) {
+        if (note.isNotBlank()) {
+            dividerProduct.visibility = View.VISIBLE
+            tvProductNotes.visibility = View.VISIBLE
+            tvProductNotes.text = MethodChecker.fromHtmlWithoutExtraSpace(
+                root.context.getString(
+                    R.string.som_detail_product_note_format,
+                    note.replace(
+                        oldValue = "\\n",
+                        newValue = System.getProperty("line.separator") ?: ""
+                    )
+                )
+            )
+        } else {
+            dividerProduct.visibility = View.GONE
+            tvProductNotes.visibility = View.GONE
+        }
+    }
+
+    fun bind() {
+        setupProductDetail(element)
+    }
+
+    fun isShowing() = binding?.root?.isVisible == true
+}

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
 import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingBinding
@@ -34,6 +35,7 @@ class SomDetailProductBundleCardViewHolder(
 
     override fun bind(element: ProductBundleUiModel) {
         binding?.run {
+            icSomProductBundling.loadImage(element.bundleIcon)
             tvSomBundleName.text = element.bundleName
             tvSomTotalPrice.text = element.bundleSubTotal
 

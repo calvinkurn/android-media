@@ -1,0 +1,77 @@
+package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
+
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
+import com.tokopedia.sellerorder.databinding.PartialAddOnSummaryBinding
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.AddOnAdapterFactory
+import com.tokopedia.sellerorder.detail.presentation.model.AddOnSummaryUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.AddOnUiModel
+import com.tokopedia.unifycomponents.toPx
+
+class PartialSomDetailAddOnSummaryViewHolder constructor(
+    somDetailAddOnListener: SomDetailAddOnViewHolder.Listener,
+    private val binding: PartialAddOnSummaryBinding?,
+    var element: AddOnSummaryUiModel?
+) {
+
+    companion object {
+        private const val ITEM_DECORATION_VERTICAL_MARGIN = 16
+    }
+
+    private val typeFactory = AddOnAdapterFactory(somDetailAddOnListener)
+    private val adapter = BaseAdapter(typeFactory)
+
+    init {
+        binding?.rvAddOn?.run {
+            addItemDecoration(RecyclerViewItemDivider(
+                MethodChecker.getDrawable(context, R.drawable.som_detail_add_on_divider),
+                ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
+                ITEM_DECORATION_VERTICAL_MARGIN.toPx()
+            ))
+        }
+    }
+
+    private fun setupAddOnSummary(element: AddOnSummaryUiModel?) {
+        binding?.run {
+            if (element == null) {
+                root.hide()
+            } else {
+                root.show()
+                setupAddOnTips(element.providedByBranchShop)
+                setupAddOnSummaryIcon(element.iconUrl)
+                setupAddOnSummaryLabel(element.label)
+                setupAddOnSummaryAddOns(element.addons)
+            }
+        }
+    }
+
+    private fun PartialAddOnSummaryBinding.setupAddOnTips(providedByTokoCabang: Boolean) {
+        labelAddOn.showWithCondition(providedByTokoCabang)
+    }
+
+    private fun PartialAddOnSummaryBinding.setupAddOnSummaryIcon(iconUrl: String) {
+        ivAddOnIcon.loadImage(iconUrl)
+    }
+
+    private fun PartialAddOnSummaryBinding.setupAddOnSummaryLabel(label: String) {
+        tvAddOnLabel.text = label
+    }
+
+    private fun PartialAddOnSummaryBinding.setupAddOnSummaryAddOns(addons: List<AddOnUiModel>) {
+        if (rvAddOn.adapter == null) rvAddOn.adapter = adapter
+        adapter.setElements(addons)
+    }
+
+    fun bind() {
+        setupAddOnSummary(element)
+    }
+
+    fun isShowing() = binding?.root?.isVisible == true
+}
