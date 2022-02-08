@@ -94,6 +94,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_lvl4"
                     android:layout_marginEnd="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -102,6 +103,7 @@
                     android:id="@+id/recharge_pdp_token_listrik_recommendation_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     app:layout_constraintTop_toBottomOf="@+id/recharge_pdp_ticker_widget_product_desc"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>

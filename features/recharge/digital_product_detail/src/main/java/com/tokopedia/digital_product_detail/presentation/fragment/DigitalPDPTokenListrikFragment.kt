@@ -521,6 +521,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             if (rechargePdpTokenListrikEmptyStateWidget.isVisible) {
                 rechargePdpTokenListrikEmptyStateWidget.hide()
                 rechargePdpTokenListrikRecommendationWidget.show()
+                rechargePdpTickerWidgetProductDesc.show()
             }
         }
     }
@@ -542,6 +543,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 rechargePdpTokenListrikEmptyStateWidget.show()
                 rechargePdpTokenListrikRecommendationWidget.hide()
                 rechargePdpTokenListrikDenomGridWidget.hide()
+                rechargePdpTickerWidgetProductDesc.hide()
             }
         }
     }
