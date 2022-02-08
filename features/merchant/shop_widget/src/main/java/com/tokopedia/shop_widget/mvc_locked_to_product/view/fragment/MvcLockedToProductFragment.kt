@@ -137,7 +137,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun refreshCartCounterData() {
-        if (isUserLogin)
+        if (isUserLogin && !MvcLockedToProductUtil.isSellerApp())
             viewBinding?.navigationToolbar?.setBadgeCounter(IconList.ID_CART, getCartCounter())
     }
 
@@ -331,10 +331,12 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun setupToolbar() {
         viewBinding?.navigationToolbar?.apply {
-            val iconBuilder = IconBuilder()
-            iconBuilder.addIcon(IconList.ID_CART) {}
-            iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
-            setIcon(iconBuilder)
+            if(!MvcLockedToProductUtil.isSellerApp()) {
+                val iconBuilder = IconBuilder()
+                iconBuilder.addIcon(IconList.ID_CART) {}
+                iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
+                setIcon(iconBuilder)
+            }
             setToolbarPageName(getString(R.string.mvc_locked_to_product_toolbar_name))
         }
     }
