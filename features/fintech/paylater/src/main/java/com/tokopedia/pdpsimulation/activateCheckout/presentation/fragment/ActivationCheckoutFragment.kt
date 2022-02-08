@@ -22,6 +22,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.Activat
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.GATEWAY_LIST
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
+import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_CODE
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
@@ -56,8 +57,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private var productId: String = ""
 
-    private val gatewayId: Int by lazy {
-        arguments?.getInt(PARAM_GATEWAY_ID) ?: -1
+    private val gatewayCode: String by lazy {
+        arguments?.getString(PARAM_GATEWAY_CODE) ?:""
     }
 
     private val tenureSelected: Int by lazy {
@@ -129,7 +130,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
                         payLaterActivationViewModel.getOptimizedCheckoutDetail(
                             productId,
-                            payLaterActivationViewModel.price * quantity, gatewayId
+                            payLaterActivationViewModel.price * quantity, gatewayCode
                         )
                     } catch (e: Exception) {
                         loaderhideOnCheckoutApi()
@@ -463,7 +464,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.getOptimizedCheckoutDetail(
             productId,
             payLaterActivationViewModel.price * quantity,
-            gatewayId
+            gatewayCode
         )
     }
 
@@ -476,10 +477,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         context?.let {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
                 if (this.selectedProductId.isNotBlank()) {
-                    productId = this.selectedProductId
-
-                    startAllLoaders()
-                    payLaterActivationViewModel.getProductDetail(this.selectedProductId)
+                    if(productId != this.selectedProductId) {
+                        productId = this.selectedProductId
+                        startAllLoaders()
+                        payLaterActivationViewModel.getProductDetail(this.selectedProductId)
+                    }
 
                 }
             }

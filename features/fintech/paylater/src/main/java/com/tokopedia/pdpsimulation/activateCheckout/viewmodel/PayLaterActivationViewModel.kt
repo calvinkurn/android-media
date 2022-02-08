@@ -2,9 +2,7 @@ package com.tokopedia.pdpsimulation.activateCheckout.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
@@ -13,7 +11,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
@@ -72,14 +69,14 @@ class PayLaterActivationViewModel @Inject constructor(
     }
 
 
-    fun getOptimizedCheckoutDetail(productId: String, price: Double, gatewayId: Int) {
+    fun getOptimizedCheckoutDetail(productId: String, price: Double, gatewayCode: String) {
         paylaterActivationUseCase.cancelJobs()
         paylaterActivationUseCase.getPayLaterActivationDetail(
             ::onSuccessActivationData,
             ::onFailActivationData,
             price,
             productId,
-            gatewayId
+            gatewayCode
         )
     }
 
