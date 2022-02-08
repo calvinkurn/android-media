@@ -34,6 +34,7 @@
             android:id="@+id/client_number_widget_operator_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:constraint_referenced_ids="client_number_widget_operator_view, client_number_widget_operator_icon" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
