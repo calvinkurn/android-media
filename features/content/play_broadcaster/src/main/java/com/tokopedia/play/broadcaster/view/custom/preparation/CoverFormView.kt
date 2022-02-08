@@ -34,9 +34,13 @@ class CoverFormView : ConstraintLayout {
     )
     private var mListener: Listener? = null
 
+    private var isCoverAvailable = false
+
     init {
         binding.icCloseCoverForm.setOnClickListener { mListener?.onCloseCoverForm() }
-        binding.clCoverFormPreview.setOnClickListener { mListener?.onClickCoverPreview() }
+        binding.clCoverFormPreview.setOnClickListener {
+            mListener?.onClickCoverPreview(isCoverAvailable)
+        }
     }
 
     override fun onDetachedFromWindow() {
@@ -47,6 +51,7 @@ class CoverFormView : ConstraintLayout {
     fun setCover(imageUrl: String) {
         binding.ivCoverImagePlaceholder.visibility = View.GONE
         binding.ivCoverFormPreview.setImageUrl(imageUrl)
+        isCoverAvailable = true
     }
 
     fun setTitle(title: String) {
@@ -63,6 +68,6 @@ class CoverFormView : ConstraintLayout {
 
     interface Listener {
         fun onCloseCoverForm()
-        fun onClickCoverPreview()
+        fun onClickCoverPreview(isEditCover: Boolean)
     }
 }
