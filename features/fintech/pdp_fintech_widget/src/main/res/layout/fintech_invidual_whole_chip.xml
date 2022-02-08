@@ -10,7 +10,7 @@
         android:id="@+id/card"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        app:card_type="shadow">
+        app:card_type="border">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cardContent"
@@ -19,9 +19,10 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/partnerIcon"
-                android:layout_width="26dp"
+                android:layout_width="44dp"
                 android:layout_height="26dp"
-                android:layout_marginStart="@dimen/pdp_fintech_16_dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="8dp"
                 android:layout_marginTop="@dimen/pdp_fintech_16_dp"
                 android:layout_marginBottom="@dimen/pdp_fintech_16_dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -33,7 +34,6 @@
                 android:id="@+id/chipHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/pfp_fintech_10_dp"
                 android:textAlignment="textStart"
                 android:textColor="@color/Unify_N700_96"
@@ -42,9 +42,8 @@
                 app:layout_constraintLeft_toRightOf="@id/partnerIcon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginBottom="@dimen/dp_10"
-                app:layout_goneMarginLeft="@dimen/pfp_fintech_10_dp"
-                app:layout_goneMarginStart="@dimen/unify_space_16"
                 app:typographyType="body_3"
+                app:layout_goneMarginLeft="10dp"
                 tools:text="Rp1.dsf250*10." />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -52,12 +51,10 @@
                 android:id="@+id/chipSubHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/pdp_fintech_7_dp"
+                android:layout_marginBottom="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/chipHeader"
                 app:layout_constraintTop_toBottomOf="@+id/chipHeader"
-                app:layout_goneMarginLeft="@dimen/pfp_fintech_10_dp"
-                app:layout_goneMarginRight="@dimen/dp_40"
                 app:typographyType="small"
                 tools:text="credit available: Rp 9.500" />
 
@@ -73,8 +70,8 @@
                 android:id="@+id/seeMore_Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/unify_space_16"
-                android:layout_marginRight="@dimen/unify_space_16"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="10dp"
                 android:src="@drawable/fintechwidget_procced_icon"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -87,7 +84,7 @@
                 android:id="@+id/dummyViewForMargin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginLeft="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/barrier"
                 app:layout_constraintTop_toTopOf="parent" />

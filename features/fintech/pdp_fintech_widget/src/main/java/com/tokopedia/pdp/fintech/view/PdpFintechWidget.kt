@@ -75,7 +75,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun observeWidgetInfo(parentLifeCycleOwner: LifecycleOwner) {
-        fintechWidgetViewModel.widgetDetailLiveData.observe(parentLifeCycleOwner, {
+        fintechWidgetViewModel.widgetDetailLiveData.observe(parentLifeCycleOwner) {
             when (it) {
                 is Success -> {
                     setPriceToChipMap(it.data)
@@ -86,7 +86,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                     instanceProductUpdateListner.removeWidget()
                 }
             }
-        })
+        }
     }
 
     private fun setPriceToChipMap(widgetDetail: WidgetDetail) {
