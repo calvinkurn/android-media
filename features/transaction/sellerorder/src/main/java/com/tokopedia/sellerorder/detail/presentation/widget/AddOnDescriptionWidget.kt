@@ -20,9 +20,6 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.WidgetProductAddOnDescriptionBinding
@@ -68,17 +65,17 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
             binding.tvAddOnDescription.layout?.run {
                 val lines = lineCount
                 val hasDescriptionSeeLessText = text?.contains(context.getString(R.string.som_detail_add_on_see_less_description)) == true
+                val isDescriptionSeeMoreVisible = binding.containerAddOnDescriptionSeeMore.maxHeight > Int.ZERO
                 if (lines == DESCRIPTION_MIN_LINES) {
                     val isEllipsized = getEllipsisCount(lines - 1) > Int.ZERO
-                    val isDescriptionSeeMoreVisible = binding.containerAddOnDescriptionSeeMore.isVisible
                     if (hasDescriptionSeeLessText) {
                         setDescriptionText(withSeeLessText = false)
                         return@OnPreDrawListener false
                     } else if (isEllipsized && !isDescriptionSeeMoreVisible) {
-                        binding.containerAddOnDescriptionSeeMore.show()
+                        binding.containerAddOnDescriptionSeeMore.maxHeight = Int.MAX_VALUE
                         return@OnPreDrawListener false
                     } else if (!isEllipsized && isDescriptionSeeMoreVisible) {
-                        binding.containerAddOnDescriptionSeeMore.gone()
+                        binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
                         return@OnPreDrawListener false
                     }
                     binding.tvAddOnDescription.viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
@@ -86,6 +83,9 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
                 } else {
                     if (!hasDescriptionSeeLessText) {
                         setDescriptionText(withSeeLessText = true)
+                        return@OnPreDrawListener false
+                    } else if (isDescriptionSeeMoreVisible) {
+                        binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
                         return@OnPreDrawListener false
                     }
                     binding.tvAddOnDescription.viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
@@ -308,7 +308,6 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
             layoutParams = layoutParamsCopy
             showWithCondition(this@AddOnDescriptionWidget.description.isNotBlank())
         }
-        binding.tvAddOnDescriptionSeeMore.maxHeight = Int.MAX_VALUE
     }
 
     fun expand() {
