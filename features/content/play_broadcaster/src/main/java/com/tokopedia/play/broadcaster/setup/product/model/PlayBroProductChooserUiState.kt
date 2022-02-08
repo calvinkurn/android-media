@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.setup.product.model
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
@@ -15,6 +16,7 @@ data class PlayBroProductChooserUiState(
     val focusedProductList: List<ProductUiModel>,
     val selectedProductList: EtalaseProductListMap,
     val sort: SortUiModel?,
+    val productTagSummary: ProductTagSummaryUiModel,
 ) {
 
     companion object {
@@ -24,6 +26,7 @@ data class PlayBroProductChooserUiState(
                 focusedProductList = emptyList(),
                 selectedProductList = emptyMap(),
                 sort = null,
+                productTagSummary = ProductTagSummaryUiModel.Unknown,
             )
     }
 }
@@ -41,4 +44,11 @@ data class CampaignAndEtalaseUiModel(
                 etalaseList = emptyList(),
             )
     }
+}
+
+sealed class ProductTagSummaryUiModel {
+    object Unknown: ProductTagSummaryUiModel()
+    object Loading: ProductTagSummaryUiModel()
+    data class Success(val sections: List<ProductTagSectionUiModel>): ProductTagSummaryUiModel()
+    data class Error(val throwable: Throwable): ProductTagSummaryUiModel()
 }

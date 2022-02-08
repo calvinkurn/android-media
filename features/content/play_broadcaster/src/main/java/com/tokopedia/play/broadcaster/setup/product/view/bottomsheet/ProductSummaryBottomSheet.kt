@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -55,13 +56,15 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupBottomSheet()
     }
 
+    /** TODO: gonna delete this later */
+    @ExperimentalStdlibApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
         setupObserve()
 
-        productSummaryListView.setProductList(listOf())
+        viewModel.getProductTagSummary()
     }
 
     override fun onDestroyView() {
@@ -102,6 +105,20 @@ class ProductSummaryBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                when(state.productTagSummary) {
+                    is ProductTagSummaryUiModel.Loading -> {
+                        /** TODO: hide error & loading */
+                        productSummaryListView.setLoading()
+                    }
+                    is ProductTagSummaryUiModel.Success -> {
+                        /** TODO: hide error & loading */
+                        productSummaryListView.setProductList(state.productTagSummary.sections)
+                    }
+                    is ProductTagSummaryUiModel.Error -> {
+                        /** TODO: hide recyclerview & show error */
+                    }
+                    else -> {}
+                }
                 /** TODO: logic:
                  * 1. Update List
                  * 2. Update title

@@ -8,12 +8,17 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
+import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.type.DiscountedPrice
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -21,6 +26,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -40,6 +46,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private val _focusedEtalase = MutableStateFlow<SelectedEtalaseModel>(SelectedEtalaseModel.None)
 
     private val _sort = MutableStateFlow<SortUiModel?>(null)
+
+    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(ProductTagSummaryUiModel.Unknown)
 
     private val _campaignAndEtalase = combine(
         _selectedEtalase,
@@ -75,12 +83,14 @@ class PlayBroProductSetupViewModel @Inject constructor(
         _focusedProductList,
         _selectedProductMap,
         _sort,
-    ) { campaignAndEtalase, focusedProductList, selectedProductList, sort ->
+        _productTagSummary,
+    ) { campaignAndEtalase, focusedProductList, selectedProductList, sort, productTagSummary ->
         PlayBroProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
             selectedProductList = selectedProductList,
             sort = sort,
+            productTagSummary = productTagSummary
         )
     }.stateIn(
         viewModelScope,
@@ -203,6 +213,46 @@ class PlayBroProductSetupViewModel @Inject constructor(
                 } else prevSelectedProducts + product
                 it + mapOf(theEtalase to newSelectedProducts)
             }
+        }
+    }
+
+    /** Product Summary */
+    /** TODO: gonna delete this later */
+    @ExperimentalStdlibApi
+    fun getProductTagSummary() {
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            withContext(dispatchers.main) {
+                _productTagSummary.value = ProductTagSummaryUiModel.Loading
+            }
+
+            delay(3000)
+
+            val productTagSectionList = buildList<ProductTagSectionUiModel> {
+                for(i in 1..3) {
+                    add(ProductTagSectionUiModel(
+                        name = "Sale $i",
+                        campaignStatus = when(i) {
+                            1 -> CampaignStatus.Ongoing
+                            2 -> CampaignStatus.Unknown
+                            else -> CampaignStatus.Ready
+                        },
+                        products = buildList {
+                            add(ProductUiModel(
+                                "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
+                                12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
+                            ))
+                        }
+                    ))
+                }
+            }
+
+            withContext(dispatchers.main) {
+                _productTagSummary.value = ProductTagSummaryUiModel.Success(
+                    sections = productTagSectionList,
+                )
+            }
+        }) {
+            _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
         }
     }
 

@@ -7,6 +7,6 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
  */
 data class ProductTagSectionUiModel(
     val name: String,
-    val statusFmt: String,
+    val campaignStatus: CampaignStatus,
     val products: List<ProductUiModel>,
 )

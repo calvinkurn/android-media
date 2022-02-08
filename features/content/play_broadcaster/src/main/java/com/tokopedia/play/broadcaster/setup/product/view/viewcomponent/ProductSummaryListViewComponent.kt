@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSumma
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.*
@@ -30,56 +31,73 @@ internal class ProductSummaryListViewComponent(
         view.layoutManager = LinearLayoutManager(view.context)
     }
 
+    fun setLoading() {
+        adapter.setItemsAndAnimateChanges(List(2){ ProductSummaryAdapter.Model.Placeholder })
+    }
+
     @OptIn(ExperimentalStdlibApi::class)
-    fun setProductList(productList: List<ProductUiModel>) {
+    /** TODO: gonna delete this later */
+    fun setProductList(productTagSection: List<ProductTagSectionUiModel>) {
+        /** TODO: Handle No Data */
+        val finalList = buildList {
+            productTagSection.forEach { section ->
+                add(ProductSummaryAdapter.Model.Header(section.name, section.campaignStatus))
+                addAll(section.products.map { product ->
+                    ProductSummaryAdapter.Model.Body(product)
+                })
+            }
+        }
+
+        adapter.setItemsAndAnimateChanges(finalList)
+
         /** TODO: fix this logic later */
-        val finalList = buildList<ProductSummaryAdapter.Model> {
-            // 12.12 Sale
-            add(ProductSummaryAdapter.Model.Header("12.12 Sale", CampaignStatus.Ongoing))
-            for(i in 1..3) {
-                add(ProductSummaryAdapter.Model.Body(
-                        ProductUiModel(
-                            "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                            12, OriginalPrice("Rp 120.000", 120000.0)
-                        )
-                    )
-                )
-            }
-
-            add(ProductSummaryAdapter.Model.Header("Semua Product", CampaignStatus.Unknown))
-            for(i in 4..6) {
-                add(ProductSummaryAdapter.Model.Body(
-                        ProductUiModel(
-                            "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                            12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
-                        )
-                    )
-                )
-            }
-
-            add(ProductSummaryAdapter.Model.Header("Rilisan Spesial", CampaignStatus.Ready))
-            for(i in 7..9) {
-                add(ProductSummaryAdapter.Model.Body(
-                        ProductUiModel(
-                            "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                            12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
-                        )
-                    )
-                )
-            }
-        }
-
-        CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.Main) {
-                adapter.setItemsAndAnimateChanges(List(2){ ProductSummaryAdapter.Model.Placeholder })
-            }
-
-            delay(3000)
-
-            withContext(Dispatchers.Main) {
-                adapter.setItemsAndAnimateChanges(finalList)
-            }
-        }
+//        val finalList = buildList<ProductSummaryAdapter.Model> {
+//            // 12.12 Sale
+//            add(ProductSummaryAdapter.Model.Header("12.12 Sale", CampaignStatus.Ongoing))
+//            for(i in 1..3) {
+//                add(ProductSummaryAdapter.Model.Body(
+//                        ProductUiModel(
+//                            "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
+//                            12, OriginalPrice("Rp 120.000", 120000.0)
+//                        )
+//                    )
+//                )
+//            }
+//
+//            add(ProductSummaryAdapter.Model.Header("Semua Product", CampaignStatus.Unknown))
+//            for(i in 4..6) {
+//                add(ProductSummaryAdapter.Model.Body(
+//                        ProductUiModel(
+//                            "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
+//                            12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
+//                        )
+//                    )
+//                )
+//            }
+//
+//            add(ProductSummaryAdapter.Model.Header("Rilisan Spesial", CampaignStatus.Ready))
+//            for(i in 7..9) {
+//                add(ProductSummaryAdapter.Model.Body(
+//                        ProductUiModel(
+//                            "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
+//                            12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
+//                        )
+//                    )
+//                )
+//            }
+//        }
+//
+//        CoroutineScope(Dispatchers.IO).launch {
+//            withContext(Dispatchers.Main) {
+//                adapter.setItemsAndAnimateChanges(List(2){ ProductSummaryAdapter.Model.Placeholder })
+//            }
+//
+//            delay(3000)
+//
+//            withContext(Dispatchers.Main) {
+//                adapter.setItemsAndAnimateChanges(finalList)
+//            }
+//        }
     }
 
     interface Listener {

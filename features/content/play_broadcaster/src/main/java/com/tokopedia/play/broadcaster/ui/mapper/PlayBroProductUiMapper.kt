@@ -79,7 +79,11 @@ class PlayBroProductUiMapper @Inject constructor() {
         return response.section.map { section ->
             ProductTagSectionUiModel(
                 name = section.name,
-                statusFmt = section.statusFmt,
+                campaignStatus = when(section.statusFmt) {
+                    "mendatang" -> CampaignStatus.Ready
+                    "berlangsung" -> CampaignStatus.Ongoing
+                    else -> CampaignStatus.Unknown
+                },
                 products = section.products.map { product ->
                     ProductUiModel(
                         id = product.productID,
