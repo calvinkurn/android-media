@@ -27,13 +27,7 @@ class ProductViewHolder(private val viewBinding: ItemProductBinding, private val
             } else {
                 labelHeaderMessage.text = "Disediakan oleh ${element.shopName}"
                 labelOtherProducts.gone()
-                val shopBadgeRes = getShopBadgeByTier(element.shopTier)
-                if (shopBadgeRes != -1) {
-                    iconShopBadge.setImage(newIconId = shopBadgeRes)
-                    iconShopBadge.show()
-                } else {
-                    iconShopBadge.gone()
-                }
+                imageShopBadge.setImageUrl(element.shopBadgeUrl)
             }
 
             imageProduct.setImageUrl(element.mainProductImageUrl)
@@ -42,14 +36,4 @@ class ProductViewHolder(private val viewBinding: ItemProductBinding, private val
         }
     }
 
-    private fun getShopBadgeByTier(tier: Int): Int {
-        when (tier) {
-            0 -> return IconUnify.SHOP_FILLED
-            1 -> return IconUnify.BADGE_PM_FILLED
-            2 -> return IconUnify.BADGE_OS_FILLED
-            3 -> return IconUnify.BADGE_PMPRO_FILLED
-        }
-
-        return -1
-    }
 }

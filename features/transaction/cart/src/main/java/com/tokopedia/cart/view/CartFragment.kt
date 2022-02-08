@@ -545,6 +545,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                     products = listOf(product1, product2, product3)
                     isTokoCabang = false
+                    shopBadgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
+                    addOnWording = listOf(
+                            "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
+                            "{{qty}} barang hanya dapat 1 kartu ucapan",
+                            "Invoice tidak dikirim ke penerima pesanan"
+                    )
                 }
                 intent.putExtra("ADD_ON_PRODUCT_DATA", addOnProductData)
                 startActivity(intent)

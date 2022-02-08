@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:paddingBottom="16dp"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icon_shop_badge"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_shop_badge"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginStart="16dp"
@@ -22,7 +23,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/icon_shop_badge"
+        app:layout_constraintStart_toEndOf="@+id/image_shop_badge"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         tools:text="Disediakan oleh Tokopedia" />

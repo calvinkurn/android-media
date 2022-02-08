@@ -5,7 +5,7 @@ import com.tokopedia.addongifting.view.adapter.AddOnListAdapterTypeFactory
 
 data class ProductUiModel(
         var isTokoCabang: Boolean = false,
-        var shopTier: Int = 0,
+        var shopBadgeUrl: String = "",
         var shopName: String = "",
         var mainProductImageUrl: String = "",
         var mainProductName: String = "",

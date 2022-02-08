@@ -14,7 +14,8 @@ object UiModelMapper {
     fun mapProduct(addOnProductData: AddOnProductData, getAddOnByProductResponse: GetAddOnByProductResponse): ProductUiModel {
         val addOnByProduct = getAddOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
         return ProductUiModel().apply {
-            shopTier = addOnByProduct?.addOns?.firstOrNull()?.shop?.shopTier ?: 0
+            isTokoCabang = addOnProductData.isTokoCabang
+            shopBadgeUrl = addOnProductData.shopBadgeUrl
             shopName = addOnByProduct?.addOns?.firstOrNull()?.shop?.name ?: ""
             mainProductImageUrl = addOnProductData.products.firstOrNull()?.productImageUrl ?: ""
             mainProductName = addOnProductData.products.firstOrNull()?.productName ?: ""
@@ -27,6 +28,7 @@ object UiModelMapper {
         val addOnByProduct = addOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
         val addOn = addOnByProduct?.addOns?.firstOrNull()
         return AddOnUiModel().apply {
+            isTokoCabang = addOnProductData.isTokoCabang
             productCount = addOnProductData.products.size
             addOnName = addOn?.basicInfo?.name ?: ""
             addOnDescription = ""
@@ -39,7 +41,7 @@ object UiModelMapper {
             addOnAllImageUrls = imageUrls
             val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
                     ?: "", addOnSavedStateResponse)
-            addOnSelectedState = addonSavedStateData != null
+            isAddOnSelected = addonSavedStateData != null
             addOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
             addOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
             addOnNote = addonSavedStateData?.addOnMetadata?.addOnNote?.notes ?: ""
