@@ -58,10 +58,16 @@ class ProductCouponPreviewViewModel @Inject constructor(
         get() = _couponDetail
 
     fun validateCoupon(
+        pageMode : ProductCouponPreviewFragment.Mode,
         couponSettings: CouponSettings?,
         couponInformation: CouponInformation?,
         couponProducts: List<CouponProduct>
     ) {
+        if (isUpdateMode(pageMode) || isDuplicateMode(pageMode)) {
+            _areInputValid.value = true
+            return
+        }
+
         if (couponSettings == null) {
             _areInputValid.value = false
             return
@@ -194,4 +200,15 @@ class ProductCouponPreviewViewModel @Inject constructor(
         )
     }
 
+    fun isCreateMode(mode : ProductCouponPreviewFragment.Mode): Boolean {
+        return mode == ProductCouponPreviewFragment.Mode.CREATE
+    }
+
+    fun isUpdateMode(mode : ProductCouponPreviewFragment.Mode): Boolean {
+        return mode == ProductCouponPreviewFragment.Mode.UPDATE
+    }
+
+    fun isDuplicateMode(mode : ProductCouponPreviewFragment.Mode): Boolean {
+        return mode == ProductCouponPreviewFragment.Mode.DUPLICATE
+    }
 }

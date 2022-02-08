@@ -163,18 +163,8 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        when(pageMode) {
-            Mode.CREATE -> {
-                viewModel.validateCoupon(couponSettings, couponInformation, couponProducts)
-            }
-            Mode.UPDATE -> {
-                viewModel.getCouponDetail(couponId)
-
-            }
-            Mode.DUPLICATE -> {
-                viewModel.getCouponDetail(couponId)
-
-            }
+        if (pageMode == Mode.UPDATE || pageMode == Mode.DUPLICATE) {
+            viewModel.getCouponDetail(couponId)
         }
     }
 
@@ -199,6 +189,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         observeMaxAllowedProductResult()
         viewModel.getMaxAllowedProducts(pageMode)
         handlePageMode()
+        displayCouponDetail()
     }
 
     private fun observeCouponDetail() {
@@ -225,19 +216,9 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun handlePageMode() {
-        when(pageMode) {
-            Mode.CREATE -> {
-            }
-            Mode.UPDATE -> {
-                changeToolbarTitle(getString(R.string.update_coupon_product))
-                changeButtonBehavior()
-                enableSubmitButton()
-                enableImagePreviewButton()
-            }
-            Mode.DUPLICATE -> {
-                enableSubmitButton()
-                enableImagePreviewButton()
-            }
+        if (viewModel.isUpdateMode(pageMode)) {
+            changeToolbarTitle(getString(R.string.update_coupon_product))
+            changeButtonBehavior()
         }
     }
 
@@ -246,14 +227,6 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         binding.btnCreateCoupon.setOnClickListener {
             updateCoupon(couponId)
         }
-    }
-
-    private fun enableImagePreviewButton() {
-        binding.btnPreviewCouponImage.isEnabled = true
-    }
-
-    private fun enableSubmitButton() {
-        binding.btnCreateCoupon.isEnabled = true
     }
 
 
@@ -306,7 +279,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
                         couponProducts
                     )
 
-                    if (pageMode == Mode.CREATE) {
+                    if (viewModel.isCreateMode(pageMode)) {
                         onCreateCouponSuccess(coupon)
                     } else {
                         onDuplicateCouponSuccess()
@@ -353,6 +326,12 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         })
     }
 
+    private fun displayCouponDetail() {
+        couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
+        couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
+        refreshProductsSection(couponProducts)
+        viewModel.validateCoupon(pageMode, couponSettings, couponInformation, couponProducts)
+    }
 
     fun setCouponSettingsData(couponSettings: CouponSettings) {
         this.couponSettings = couponSettings
@@ -368,14 +347,6 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
 
     fun getCouponInformationData() = this.couponInformation
     fun getCouponSettingsData() = this.couponSettings
-
-
-    override fun onResume() {
-        super.onResume()
-        couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
-        couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
-        refreshProductsSection(couponProducts)
-    }
 
     private fun refreshCouponInformationSection(coupon: CouponInformation) {
         binding.imgCopyToClipboard.visible()
