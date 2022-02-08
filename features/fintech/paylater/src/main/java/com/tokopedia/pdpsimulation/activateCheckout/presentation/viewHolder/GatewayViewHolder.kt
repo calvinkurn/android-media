@@ -17,7 +17,7 @@ import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.gateway_activation_individual_item.view.*
 import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view.*
 
-class GatewayViewHolder(itemView: View, val gatewayCardClicked: GateWayCardClicked,val context: Context) :
+class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayCardClicked, val context: Context) :
     RecyclerView.ViewHolder(itemView) {
 
 
@@ -32,12 +32,12 @@ class GatewayViewHolder(itemView: View, val gatewayCardClicked: GateWayCardClick
                 itemView.radioGatewaySelector.setOnClickListener {
                     individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
-                    gatewayCardClicked.gatewayCardSelected(position)
+                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id)
                 }
                 itemView.setOnClickListener {
                     individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
-                    gatewayCardClicked.gatewayCardSelected(position)
+                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id)
 
                 }
             }

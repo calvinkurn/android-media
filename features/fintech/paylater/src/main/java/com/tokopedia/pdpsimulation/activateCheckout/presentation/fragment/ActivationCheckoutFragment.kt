@@ -62,6 +62,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         arguments?.getString(PARAM_GATEWAY_CODE) ?:""
     }
 
+    private val gateWayId: Int by lazy {
+        arguments?.getInt(PARAM_GATEWAY_ID)?:0
+    }
+
     private val tenureSelected: Int by lazy {
         arguments?.getInt(PARAM_PRODUCT_TENURE) ?: 0
     }
@@ -72,10 +76,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private lateinit var paylaterGetOptimizedModel :PaylaterGetOptimizedModel
     private lateinit var listOfGateway: PaylaterGetOptimizedModel
     private var selectedTenurePosition = 0
-    private var selectedGateway = 0
     var quantity = 1
     var isDisabled = false
-    var gatewayToChipMap: Map<Int,TenureDetail> = HashMap()
+    private var gatewayToChipMap: MutableMap<Int,CheckoutData> = HashMap()
 
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
@@ -115,13 +118,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     fun updateSelectedTenure(gatewaySelected: Int) {
-        if(selectedGateway != gatewaySelected)
-        {
-            this.selectedGateway = gatewaySelected
-            setTenureDetailData()
-        }
-
-
 
     }
 
@@ -182,6 +178,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             when (it) {
                 is Success -> {
                     if (it.data.checkoutData.isNotEmpty()) {
+                        setGatewayToChipMap(it.data)
                         showBottomDetail()
                         loaderhideOnCheckoutApi()
                         removeErrorInTenure()
@@ -204,16 +201,25 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
+    private fun setGatewayToChipMap(data: PaylaterGetOptimizedModel) {
+        for(i in 0 until data.checkoutData.size)
+        {
+            gatewayToChipMap[data.checkoutData[i].gateway_id] = data.checkoutData[i]
+        }
+    }
+
     private fun setTenureDetailData()
     {
-        checkDisableLogic(paylaterGetOptimizedModel.checkoutData[selectedGateway].disable)
-        listOfGateway = paylaterGetOptimizedModel
-        setSelectedTenure(paylaterGetOptimizedModel)
-        setTenureOptionsData(paylaterGetOptimizedModel)
-        if(isDisabled)
-            gatewayDetailLayout.errorTicker.tickerTitle = paylaterGetOptimizedModel.checkoutData[selectedGateway].reason_long
-        else
-            gatewayDetailLayout.errorTicker.visibility = View.GONE
+        gatewayToChipMap[gateWayId]?.let {
+            checkDisableLogic(it.disable)
+            listOfGateway = paylaterGetOptimizedModel
+            setSelectedTenure()
+            setTenureOptionsData(paylaterGetOptimizedModel)
+            if(isDisabled)
+                gatewayDetailLayout.errorTicker.tickerTitle =it.reason_long
+            else
+                gatewayDetailLayout.errorTicker.visibility = View.GONE
+        }
 
     }
 
@@ -264,46 +270,51 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
 
-    private fun setSelectedTenure(data: PaylaterGetOptimizedModel) {
-        for (i in 0 until data.checkoutData[selectedGateway].tenureDetail.size) {
-            if (tenureSelected == data.checkoutData[selectedGateway].tenureDetail[i].tenure) {
-                selectedTenurePosition = i
-                break
+    private fun setSelectedTenure() {
+
+        gatewayToChipMap[gateWayId]?.let { checkoutData->
+            for (i in 0 until checkoutData.tenureDetail.size) {
+                if (tenureSelected == checkoutData.tenureDetail[i].tenure) {
+                    selectedTenurePosition = i
+                    break
+                }
+            }
+            checkoutData.tenureDetail[selectedTenurePosition].isSelected = true
+            DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).installmentDetails?.let {
+                installmentModel = it
+            }
+            DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).tenure?.let {
+                paymentDuration.text = it
+            }
+            DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).priceText?.let {
+                amountToPay.text = it
             }
         }
-        data.checkoutData[selectedGateway].tenureDetail[selectedTenurePosition].isSelected = true
-        DataMapper.mapToInstallationDetail(data.checkoutData[selectedGateway].tenureDetail[selectedTenurePosition]).installmentDetails?.let {
-            installmentModel = it
-        }
-        DataMapper.mapToInstallationDetail(data.checkoutData[selectedGateway].tenureDetail[selectedTenurePosition]).tenure?.let {
-            paymentDuration.text = it
-        }
-        DataMapper.mapToInstallationDetail(data.checkoutData[selectedGateway].tenureDetail[selectedTenurePosition]).priceText?.let {
-            amountToPay.text = it
-        }
+
     }
 
     private fun setTenureOptionsData(data: PaylaterGetOptimizedModel) {
-        if (data.checkoutData.isNotEmpty()) {
-            setGatewayProductImage(data.checkoutData[selectedGateway])
-            if (data.checkoutData[selectedGateway].gateway_name.isNotBlank())
-                gatewayDetailLayout.getwayBrandName.text =
-                    data.checkoutData[selectedGateway].gateway_name
-            else
-                gatewayDetailLayout.getwayBrandName.visibility = View.GONE
-            if (data.checkoutData[selectedGateway].subtitle.isNotBlank())
-                gatewayDetailLayout.subheaderGateway.text =
-                    data.checkoutData[selectedGateway].subtitle
-            else
-                gatewayDetailLayout.subheaderGateway.visibility = View.GONE
-            if (data.checkoutData[selectedGateway].subtitle2.isNotBlank())
-                gatewayDetailLayout.subheaderGatewayDetail.text =
-                    data.checkoutData[selectedGateway].subtitle2
-            else
-                gatewayDetailLayout.subheaderGatewayDetail.visibility = View.GONE
-            gatewayDetailLayout.additionalDetail.text = data.footer
-            setTenureDetail(data.checkoutData[selectedGateway].tenureDetail)
+        gatewayToChipMap[gateWayId]?.let { it ->
+                setGatewayProductImage(it)
+                if (it.gateway_name.isNotBlank())
+                    gatewayDetailLayout.getwayBrandName.text =
+                        it.gateway_name
+                else
+                    gatewayDetailLayout.getwayBrandName.visibility = View.GONE
+                if (it.subtitle.isNotBlank())
+                    gatewayDetailLayout.subheaderGateway.text =
+                        it.subtitle
+                else
+                    gatewayDetailLayout.subheaderGateway.visibility = View.GONE
+                if (it.subtitle2.isNotBlank())
+                    gatewayDetailLayout.subheaderGatewayDetail.text =
+                        it.subtitle2
+                else
+                    gatewayDetailLayout.subheaderGatewayDetail.visibility = View.GONE
+                gatewayDetailLayout.additionalDetail.text = data.footer
+                setTenureDetail(it.tenureDetail)
         }
+
 
     }
 
@@ -536,21 +547,21 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         selectedTenurePosition = newPositionToSelect
     }
 
-    fun showDialog()
-    {
-        context?.let { context ->
-            DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle("")
-                setDescription("")
-                setPrimaryCTAText("")
-                setPrimaryCTAClickListener {
-                    dismiss()
-                }
-                setOverlayClose(false)
-                show()
-            }
-        }
-    }
+//    fun showDialog()
+//    {
+//        context?.let { context ->
+//            DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+//                setTitle("")
+//                setDescription("")
+//                setPrimaryCTAText("")
+//                setPrimaryCTAClickListener {
+//                    dismiss()
+//                }
+//                setOverlayClose(false)
+//                show()
+//            }
+//        }
+//    }
 
 
 }

@@ -92,5 +92,5 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
 
 interface GateWayCardClicked
 {
-    fun gatewayCardSelected(gatewayPosition: Int)
+    fun gatewayCardSelected(gatewayId: Int)
 }
