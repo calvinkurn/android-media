@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,33 +13,83 @@ import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.GateWayCardClicked
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.gateway_activation_individual_item.view.*
 import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view.*
 
-class GatewayViewHolder(itemView: View, val gatewayCardClicked: GateWayCardClicked) :
+class GatewayViewHolder(itemView: View, val gatewayCardClicked: GateWayCardClicked,val context: Context) :
     RecyclerView.ViewHolder(itemView) {
 
-    fun bindData(checkoutData: CheckoutData) {
+
+    fun bindData(checkoutData: CheckoutData, position: Int) {
         itemView.apply {
-            gatewayImage.setImageUrl(checkoutData.light_img_url)
-            if(checkoutData.gateway_name.isNotBlank())
-                gatewayHeader.text = checkoutData.gateway_name
-            else
-                gatewayHeader.visibility = View.GONE
-
-            if(checkoutData.subtitle.isNotBlank())
-                gatewaySubHeader.text = checkoutData.subtitle
-            else
-                gatewaySubHeader.visibility = View.GONE
-
-            if(checkoutData.subtitle2.isNotBlank())
-                gatewaySubHeader2.text = checkoutData.subtitle2
-            else
-                gatewaySubHeader2.visibility = View.GONE
-
+            changeColorToEnableDisable(checkoutData.disable)
+            setIcon(checkoutData)
+            inflateAllDetails(checkoutData)
+            individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
+            radioGatewaySelector.isChecked = false
+            if(!checkoutData.disable) {
+                itemView.radioGatewaySelector.setOnClickListener {
+                    gatewayCardClicked.gatewayCardSelected(position)
+                    individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    radioGatewaySelector.isChecked = true
+                }
+                itemView.setOnClickListener {
+                    gatewayCardClicked.gatewayCardSelected(position)
+                    individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    radioGatewaySelector.isChecked = true
+                }
+            }
         }
+
+
+
     }
 
+    private fun View.inflateAllDetails(checkoutData: CheckoutData) {
+        if (checkoutData.gateway_name.isNotBlank())
+            gatewayHeader.text = checkoutData.gateway_name
+        else
+            gatewayHeader.visibility = View.GONE
+
+        if (checkoutData.subtitle.isNotBlank())
+            gatewaySubHeader.text = checkoutData.subtitle
+        else
+            gatewaySubHeader.visibility = View.GONE
+
+        if (checkoutData.subtitle2.isNotBlank())
+            gatewaySubHeader2.text = checkoutData.subtitle2
+        else
+            gatewaySubHeader2.visibility = View.GONE
+    }
+
+    private fun View.setIcon(checkoutData: CheckoutData) {
+        if (context.isDarkMode())
+            gatewayImage.setImageUrl(checkoutData.dark_img_url)
+        else
+            gatewayImage.setImageUrl(checkoutData.light_img_url)
+    }
+
+
+    private fun changeColorToEnableDisable(disable: Boolean) {
+        itemView.apply{
+            if(disable)
+            {
+                gatewayHeader.isEnabled = false
+                gatewaySubHeader.isEnabled = false
+                radioGatewaySelector.isEnabled = false
+                gatewaySubHeader2.isEnabled = false
+            }
+            else
+            {
+                gatewayHeader.isEnabled = true
+                gatewaySubHeader.isEnabled = true
+                radioGatewaySelector.isEnabled = true
+                gatewaySubHeader2.isEnabled = true
+            }
+        }
+
+    }
 
 
     companion object {
@@ -47,11 +98,12 @@ class GatewayViewHolder(itemView: View, val gatewayCardClicked: GateWayCardClick
         fun getViewHolder(
             inflater: LayoutInflater,
             parent: ViewGroup,
-            gatewayCardClicked: GateWayCardClicked
+            gatewayCardClicked: GateWayCardClicked,
+            parentContext:Context
 
         ) =
             GatewayViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false),gatewayCardClicked
+                inflater.inflate(LAYOUT_ID, parent, false),gatewayCardClicked,parentContext
             )
     }
 }

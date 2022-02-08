@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +10,8 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.Gate
 
 class GatewayListAdapter(
     var gatewayDetailList: List<CheckoutData>,
-   val gatewayClickListener: GateWayCardClicked,
+    val gatewayClickListener: GateWayCardClicked,
+    val context: Context,
 ) : RecyclerView.Adapter<GatewayViewHolder>() {
 
 
@@ -18,7 +20,7 @@ class GatewayListAdapter(
         viewType: Int
     ): GatewayViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return GatewayViewHolder.getViewHolder(inflater, parent,gatewayClickListener)
+        return GatewayViewHolder.getViewHolder(inflater, parent,gatewayClickListener,context)
     }
 
 
@@ -28,7 +30,7 @@ class GatewayListAdapter(
 
 
     override fun onBindViewHolder(holder: GatewayViewHolder, position: Int) {
-        holder.bindData(gatewayDetailList[position])
+        holder.bindData(gatewayDetailList[position],position)
     }
 
 }

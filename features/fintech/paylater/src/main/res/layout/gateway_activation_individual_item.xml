@@ -7,7 +7,7 @@
 
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/individualTenureItemContainer"
+        android:id="@+id/individualGatewayItemContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:card_type="border"
@@ -56,7 +56,7 @@
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toTopOf="@+id/gatewaySubHeader2"
                 app:layout_constraintLeft_toRightOf="@id/gatewayImage"
-                app:layout_constraintRight_toLeftOf="@id/radioTenureSelector"
+                app:layout_constraintRight_toLeftOf="@id/radioGatewaySelector"
                 app:layout_constraintTop_toBottomOf="@+id/gatewayHeader"
                 app:layout_goneMarginBottom="@dimen/unify_space_16"
                 app:typographyType="body_2" />
@@ -71,12 +71,12 @@
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toTopOf="@+id/gatewayHeader"
                 app:layout_constraintLeft_toRightOf="@id/gatewayImage"
-                app:layout_constraintRight_toLeftOf="@id/radioTenureSelector"
+                app:layout_constraintRight_toLeftOf="@id/radioGatewaySelector"
                 app:layout_constraintTop_toBottomOf="@+id/gatewaySubHeader"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-                android:id="@+id/radioTenureSelector"
+                android:id="@+id/radioGatewaySelector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/unify_space_16"

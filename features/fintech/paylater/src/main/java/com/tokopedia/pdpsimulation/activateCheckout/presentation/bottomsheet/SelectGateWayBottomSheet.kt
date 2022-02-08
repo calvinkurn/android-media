@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.listner.GatewaySelectActivityListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.GatewayListAdapter
-import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.activation_gateway_brand.*
 
 class SelectGateWayBottomSheet : BottomSheetUnify() {
@@ -20,6 +21,7 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+
 
     }
 
@@ -41,14 +43,16 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
 
     private fun setRecyclerData(gatewayList: List<CheckoutData>) {
         gatewayListRecycler.layoutManager = LinearLayoutManager(context)
-        gatewayListRecycler.adapter = GatewayListAdapter(gatewayList,object :GateWayCardClicked{
-            override fun gatewayCardSelected(gatewayPosition: Int) {
-                activity?.let {
-                    (it as GatewaySelectActivityListner).setGatewayValue(gatewayPosition)
+        gatewayListRecycler.adapter = context?.let {
+            GatewayListAdapter(gatewayList,object :GateWayCardClicked{
+                override fun gatewayCardSelected(gatewayPosition: Int) {
+                    activity?.let {
+                        (it as GatewaySelectActivityListner).setGatewayValue(gatewayPosition)
+                    }
                 }
-            }
 
-        })
+            }, it)
+        }
     }
 
 
@@ -65,6 +69,7 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
         isHideable = true
         showCloseIcon = true
         showHeader = true
+        customPeekHeight = (getScreenHeight()).toDp()
     }
 
 
