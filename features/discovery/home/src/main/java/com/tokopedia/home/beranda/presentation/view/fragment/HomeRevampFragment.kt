@@ -358,12 +358,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var coachmarkTokonow: CoachMark2? = null
     private var tokonowIconRef: View? = null
     private var tokonowIconParentPosition: Int = -1
-
-    private var bannerCarouselCallback: BannerComponentCallback? = null
-
-    private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
-    private var chooseAddressWidgetInitialized: Boolean = false
-
     private val coachMarkItemGopay = ArrayList<CoachMark2Item>()
     private val coachMarkItemTokopoints = ArrayList<CoachMark2Item>()
     private val coachMarkItemTokonow = ArrayList<CoachMark2Item>()
@@ -372,6 +366,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var positionWidgetTokopoints = 0
     private var positionWidgetTokonow = 0
 
+    private var bannerCarouselCallback: BannerComponentCallback? = null
+
+    private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private var chooseAddressWidgetInitialized: Boolean = false
 
     @Suppress("TooGenericExceptionCaught")
     private fun isEligibleForBeautyFest(): Boolean {
