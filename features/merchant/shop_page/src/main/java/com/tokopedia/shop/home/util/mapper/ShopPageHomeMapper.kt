@@ -461,15 +461,18 @@ object ShopPageHomeMapper {
             type = widgetResponse.type,
             header = DynamicHeaderUiModel(
                 title = "Ada saja",
-                subTitle = "Berakhir dalam",
-                ctaText = "Lihat semua",
+                subTitle = "",
+                ctaText = "",
                 ctaTextLink = "https://tokopedia.com",
-                startDate = "2022-01-25 11:30:00 +0000 UTC",
                 endDate = "2022-02-10 11:33:00 +0000 UTC",
                 timeCounter = 1000,
-                statusCampaign = "ongoing"
+                statusCampaign = "ongoing",
+                totalProduct = 12
             ),
-            widgetMasterId = widgetResponse.widgetMasterID
+            widgetMasterId = widgetResponse.widgetMasterID,
+            productList = listOf(),
+            firstBackgroundColor = "",
+            secondBackgroundColor = ""
         )
     }
 
