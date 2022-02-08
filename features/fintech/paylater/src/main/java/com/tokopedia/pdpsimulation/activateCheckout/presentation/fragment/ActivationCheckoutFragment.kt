@@ -423,7 +423,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
 
         proceedToCheckout.setOnClickListener {
-            //   payLaterActivationViewModel.addProductToCart(productId,quantity)
+               payLaterActivationViewModel.addProductToCart(productId,quantity)
         }
 
 
