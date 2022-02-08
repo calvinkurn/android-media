@@ -54,7 +54,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
     private static final String QR_RESPONSE = "QR_RESPONSE";
-    private static final String EXTRA_IS_FROM_TOKEN_LISTRIK = "IS_FROM_TOKEN_LISTRIK";
+    private static final String EXTRA_UPDATED_TITLE = "UPDATED_TITLE";
     @Inject
     QrScannerPresenter presenter;
     private QRComponent qrComponent;
@@ -85,14 +85,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                 mNeedResult = param.equals(PARAM_NEED_RESULT);
             }
         }
-
-        if (getIntent().getExtras() != null){
-            isFromTokenListrik = getIntent().getExtras().getBoolean(EXTRA_IS_FROM_TOKEN_LISTRIK, false);
-            if (isFromTokenListrik){
-                updateTitle(getString(R.string.qr_scanner_title_scan_barcode));
-            }
-        }
-
         progressBar = findViewById(R.id.progress_bar_scanner);
         permissionCheckerHelper = new PermissionCheckerHelper();
         permissionCheckerHelper.checkPermission(
@@ -208,6 +200,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                 torch.setImageDrawable(iconQr(isTorchOn));
             }
         });
+    }
+
+    @Override
+    public void updateTitle(String title) {
+        if (getIntent().getExtras() != null && !getIntent().getExtras().getString(EXTRA_UPDATED_TITLE, "").isEmpty()){
+            super.updateTitle(getIntent().getExtras().getString(EXTRA_UPDATED_TITLE, ""));
+        } else super.updateTitle(title);
     }
 
     private Drawable iconQr(boolean isTorchOn) {

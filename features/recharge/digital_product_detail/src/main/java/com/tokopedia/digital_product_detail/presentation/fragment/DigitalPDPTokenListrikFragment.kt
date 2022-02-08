@@ -28,15 +28,14 @@ import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
-import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_IS_FROM_TOKEN_LISTRIK
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_QR_PARAM
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_UPDATED_TITLE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_NEED_RESULT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.RESULT_CODE_QR_SCAN
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
@@ -671,7 +670,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
                         val intent = RouteManager.getIntent(context,
                             ApplinkConstInternalMarketplace.QR_SCANNEER, PARAM_NEED_RESULT)
-                        intent.putExtra(EXTRA_IS_FROM_TOKEN_LISTRIK, true)
+                        intent.putExtra(EXTRA_UPDATED_TITLE,
+                            getString(com.tokopedia.digital_product_detail.R.string.qr_scanner_title_scan_barcode))
                         startActivityForResult(intent, RESULT_CODE_QR_SCAN)
                     }
 
