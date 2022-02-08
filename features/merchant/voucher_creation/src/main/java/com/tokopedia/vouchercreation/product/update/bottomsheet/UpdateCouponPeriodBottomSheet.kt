@@ -65,9 +65,6 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
     private var onUpdatePeriodSuccess: () -> Unit = {}
     private var onUpdatePeriodError: (String) -> Unit = {}
 
-    private var startDateTimerPicker: DateTimePickerUnify? = null
-    private var endDateTimePicker:  DateTimePickerUnify? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
@@ -205,7 +202,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         ).parseAsHtml()
         val buttonText = getString(R.string.mvc_pick).toBlankOrString()
 
-        startDateTimerPicker = DateTimePickerUnify(
+        val dateTimePicker = DateTimePickerUnify(
             requireActivity(),
             getCouponStartDate(),
             currentStartDate.toCalendar(),
@@ -214,7 +211,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
             DateTimePickerUnify.TYPE_DATETIMEPICKER
         )
 
-        startDateTimerPicker?.apply {
+        dateTimePicker.apply {
             setTitle(title)
             setInfo(info)
             setInfoVisible(true)
@@ -228,7 +225,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
         }
-        startDateTimerPicker?.show(childFragmentManager, startDateTimerPicker?.tag)
+        dateTimePicker.show(childFragmentManager, dateTimePicker.tag)
     }
 
     private fun showEndDateTimePicker(currentEndDate : Date ) {
@@ -238,7 +235,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         val formattedEndDate = getCouponEndDate().time.parseTo(DateTimeUtils.DATE_FORMAT)
         val info = String.format(getString(R.string.mvc_end_date_desc), formattedEndDate).parseAsHtml()
 
-        endDateTimePicker = DateTimePickerUnify(
+        val dateTimePicker = DateTimePickerUnify(
             requireActivity(),
             getCouponStartDate(),
             currentEndDate.toCalendar(),
@@ -248,7 +245,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         )
 
 
-        endDateTimePicker?.apply {
+        dateTimePicker.apply {
             setTitle(title)
             setInfo(info)
             setInfoVisible(true)
@@ -263,7 +260,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
             }
 
         }
-        endDateTimePicker?.show(childFragmentManager, endDateTimePicker?.tag)
+        dateTimePicker.show(childFragmentManager, dateTimePicker.tag)
     }
 
     private fun displayCouponImage(target: CouponInformation.Target, couponType: CouponType) {
