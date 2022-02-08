@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import kotlinx.coroutines.*
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022
@@ -68,7 +69,17 @@ internal class ProductSummaryListViewComponent(
             }
         }
 
-        adapter.setItemsAndAnimateChanges(finalList)
+        CoroutineScope(Dispatchers.IO).launch {
+            withContext(Dispatchers.Main) {
+                adapter.setItemsAndAnimateChanges(List(2){ ProductSummaryAdapter.Model.Placeholder })
+            }
+
+            delay(3000)
+
+            withContext(Dispatchers.Main) {
+                adapter.setItemsAndAnimateChanges(finalList)
+            }
+        }
     }
 
     interface Listener {

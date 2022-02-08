@@ -11,6 +11,25 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSumma
  */
 internal class ProductSummaryAdapterDelegate private constructor() {
 
+    internal class Placeholder: TypedAdapterDelegate<
+            ProductSummaryAdapter.Model.Placeholder,
+            ProductSummaryAdapter.Model,
+            ProductSummaryViewHolder.Placeholder>(R.layout.view_empty) {
+        override fun onBindViewHolder(
+            item: ProductSummaryAdapter.Model.Placeholder,
+            holder: ProductSummaryViewHolder.Placeholder
+        ) {
+
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ProductSummaryViewHolder.Placeholder {
+            return ProductSummaryViewHolder.Placeholder.create(parent)
+        }
+    }
+
     internal class Header : TypedAdapterDelegate<
             ProductSummaryAdapter.Model.Header,
             ProductSummaryAdapter.Model,
