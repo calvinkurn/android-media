@@ -62,12 +62,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         arguments?.getString(PARAM_GATEWAY_CODE) ?:""
     }
 
-    private val gateWayId: Int by lazy {
-        arguments?.getInt(PARAM_GATEWAY_ID)?:0
-    }
+    private var gateWayId = ""
 
-    private val tenureSelected: Int by lazy {
-        arguments?.getInt(PARAM_PRODUCT_TENURE) ?: 0
+
+    private val tenureSelected: String by lazy {
+        arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
     }
 
     private lateinit var activationTenureAdapter: ActivationTenureAdapter
@@ -99,6 +98,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         productId = arguments?.getString(PARAM_PRODUCT_ID, "").toString()
+        gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?:"0"
         observerProductData()
         observerOtherDetail()
         initView()
@@ -118,7 +118,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     fun updateSelectedTenure(gatewaySelected: Int) {
-
+        this.gateWayId = gatewaySelected.toString()
     }
 
     private fun observerProductData() {
@@ -181,8 +181,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         setGatewayToChipMap(it.data)
                         showBottomDetail()
                         loaderhideOnCheckoutApi()
-                        removeErrorInTenure()
                         paylaterGetOptimizedModel = it.data
+                        removeErrorInTenure()
                         setTenureDetailData()
                     } else {
                         loaderhideOnCheckoutApi()
@@ -210,17 +210,32 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun setTenureDetailData()
     {
-        gatewayToChipMap[gateWayId]?.let {
+        gatewayToChipMap[gateWayId.toInt()]?.let {
             checkDisableLogic(it.disable)
             listOfGateway = paylaterGetOptimizedModel
             setSelectedTenure()
             setTenureOptionsData(paylaterGetOptimizedModel)
-            if(isDisabled)
-                gatewayDetailLayout.errorTicker.tickerTitle =it.reason_long
-            else
-                gatewayDetailLayout.errorTicker.visibility = View.GONE
+            setTickerVisibility(it)
+
+        }?:run{
+            loaderhideOnCheckoutApi()
+            showEmptyErrorInTenureDetail()
+            removeBottomDetailForError()
         }
 
+    }
+
+    private fun setTickerVisibility(it: CheckoutData) {
+        if (isDisabled) {
+            gatewayDetailLayout.errorTicker.visibility = View.VISIBLE
+            gatewayDetailLayout.errorTicker.tickerTitle = it.reason_long
+            proceedToCheckout.isEnabled = false
+            priceBreakdown.isEnabled = false
+        } else {
+            gatewayDetailLayout.errorTicker.visibility = View.GONE
+            proceedToCheckout.isEnabled = true
+            priceBreakdown.isEnabled = true
+        }
     }
 
     private fun showBottomDetail() {
@@ -272,9 +287,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun setSelectedTenure() {
 
-        gatewayToChipMap[gateWayId]?.let { checkoutData->
+        gatewayToChipMap[gateWayId.toInt()]?.let { checkoutData->
             for (i in 0 until checkoutData.tenureDetail.size) {
-                if (tenureSelected == checkoutData.tenureDetail[i].tenure) {
+                if (tenureSelected.toInt() == checkoutData.tenureDetail[i].tenure) {
                     selectedTenurePosition = i
                     break
                 }
@@ -294,7 +309,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setTenureOptionsData(data: PaylaterGetOptimizedModel) {
-        gatewayToChipMap[gateWayId]?.let { it ->
+        gatewayToChipMap[gateWayId.toInt()]?.let { it ->
                 setGatewayProductImage(it)
                 if (it.gateway_name.isNotBlank())
                     gatewayDetailLayout.getwayBrandName.text =
@@ -412,7 +427,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         listOfGateway
                     )
                 }
-                bottomSheetNavigator.showBottomSheet(SelectGateWayBottomSheet::class.java, bundle)
+
+                SelectGateWayBottomSheet.show(bundle,childFragmentManager).setOnDismissListener {
+                    setTenureDetailData()
+                }
             }
         }
         quantityTextWatcher()

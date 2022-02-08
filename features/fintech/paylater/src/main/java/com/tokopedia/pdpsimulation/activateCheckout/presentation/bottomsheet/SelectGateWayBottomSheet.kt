@@ -43,16 +43,15 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
 
     private fun setRecyclerData(gatewayList: List<CheckoutData>) {
         gatewayListRecycler.layoutManager = LinearLayoutManager(context)
-        gatewayListRecycler.adapter = context?.let {
+        gatewayListRecycler.adapter = context?.let { context ->
             GatewayListAdapter(gatewayList,object :GateWayCardClicked{
                 override fun gatewayCardSelected(gatewayPosition: Int) {
                     activity?.let {
                         (it as GatewaySelectActivityListner).setGatewayValue(gatewayPosition)
-                        dismiss()
                     }
                 }
 
-            }, it)
+            }, context)
         }
     }
 
@@ -82,10 +81,11 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
         fun show(
             bundle: Bundle,
             childFragmentManager: FragmentManager
-        ) {
+        ):SelectGateWayBottomSheet  {
             val actionStepsBottomSheet = SelectGateWayBottomSheet()
             actionStepsBottomSheet.arguments = bundle
             actionStepsBottomSheet.show(childFragmentManager, TAG)
+            return actionStepsBottomSheet
         }
     }
 }

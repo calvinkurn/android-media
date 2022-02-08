@@ -32,9 +32,7 @@ class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
                     childFragmentManager
                 )
             }
-            modelClass.isAssignableFrom(SelectGateWayBottomSheet::class.java)->{
-                SelectGateWayBottomSheet.show(bundle,childFragmentManager)
-            }
+
         }
     }
 

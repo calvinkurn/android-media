@@ -36,6 +36,10 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                     tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
                 }
             }
+            else{
+                individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
+                radioSelector.isChecked = false
+            }
         }
     }
 

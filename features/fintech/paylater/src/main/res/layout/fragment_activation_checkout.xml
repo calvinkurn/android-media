@@ -116,7 +116,8 @@
         tools:text="Rp1.250,00"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@id/priceBreakdown"
-        app:layout_constraintLeft_toLeftOf="@id/priceBreakdown"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="@dimen/unify_space_16"
         app:typographyType="body_1"
         app:typographyWeight="bold" />
 
