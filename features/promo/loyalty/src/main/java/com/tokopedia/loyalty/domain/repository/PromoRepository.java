@@ -2,8 +2,8 @@ package com.tokopedia.loyalty.domain.repository;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.apiservice.PromoApi;
-import com.tokopedia.loyalty.domain.entity.response.promo.MenuPromoResponse;
-import com.tokopedia.loyalty.domain.entity.response.promo.PromoResponse;
+import com.tokopedia.loyalty.domain.entity.response.promo.PromoDataNew;
+import com.tokopedia.loyalty.domain.entity.response.promo.PromoMenu;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 
@@ -33,10 +33,10 @@ public class PromoRepository implements IPromoRepository {
     @Override
     public Observable<List<PromoMenuData>> getPromoMenuDataList(final TKPDMapParam<String, String> param) {
         return promoApi.getMenuIndexList(param).map(
-                new Func1<Response<List<MenuPromoResponse>>, List<PromoMenuData>>() {
+                new Func1<Response<PromoMenu>, List<PromoMenuData>>() {
                     @Override
-                    public List<PromoMenuData> call(Response<List<MenuPromoResponse>> listResponse) {
-                        return mapper.convertPromoMenuDataList(listResponse.body());
+                    public List<PromoMenuData> call(Response<PromoMenu> listResponse) {
+                        return mapper.convertPromoMenuDataList(listResponse.body().getMenuPromoResponse());
                     }
                 });
     }
@@ -44,10 +44,10 @@ public class PromoRepository implements IPromoRepository {
     @Override
     public Observable<List<PromoData>> getPromoDataList(final TKPDMapParam<String, String> param) {
         return promoApi.getPromoList(param).map(
-                new Func1<Response<List<PromoResponse>>, List<PromoData>>() {
+                new Func1<Response<PromoDataNew>, List<PromoData>>() {
                     @Override
-                    public List<PromoData> call(Response<List<PromoResponse>> listResponse) {
-                        return mapper.convertPromoDataList(listResponse.body());
+                    public List<PromoData> call(Response<PromoDataNew> listResponse) {
+                        return mapper.convertPromoDataList(listResponse.body().getPromoData());
                     }
                 }
         );
