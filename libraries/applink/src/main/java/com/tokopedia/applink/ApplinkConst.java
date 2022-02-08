@@ -487,6 +487,7 @@ public interface ApplinkConst {
         String TOPADS_EDIT_AUTO_ADS = "sellerapp://topads/edit-autoads";
         String TOPADS_CREDIT_HISTORY = "sellerapp://topads/history-credit";
         String TOPADS_CREATE_CHOOSER = "sellerapp://topads/ad-picker";
+        String TOPADS_ONBOARDING = "sellerapp://topads/topads-onboarding";
         String GOLD_MERCHANT = "sellerapp://gold";
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";

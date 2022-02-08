@@ -59,10 +59,15 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collectLatest
+import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
+import java.util.Date
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -87,8 +92,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
         private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
-
-        private const val TO_SECONDS_DIVIDER = 1000L
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
@@ -113,14 +116,11 @@ class PlayBottomSheetFragment @Inject constructor(
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
-    private val generalErrorMessage: String
-        get() = getString(R.string.play_general_err_message)
-
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
 
-    private var userReportTimeMillis: Long = 0L
+    private var userReportTimeMillis: Date = Date()
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
@@ -263,7 +263,7 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning) {
         unlistenKeyboard()
 
-        userReportTimeMillis = Calendar.getInstance().timeInMillis
+        userReportTimeMillis = Calendar.getInstance().time
         playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
         userReportSubmissionSheetView.setView(item)
     }
@@ -303,11 +303,17 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
-            val startTimeInSecond = startTime.toLongOrZero()
-            val duration = (userReportTimeMillis - startTimeInSecond) / TO_SECONDS_DIVIDER
-            duration
+            val startTimeInMiliSecond : Date = try {
+                startTime.toDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS
+                )
+            }catch (e: Exception){
+                Date()
+            }
+            val duration = userReportTimeMillis.time - startTimeInMiliSecond.time
+            TimeUnit.MILLISECONDS.toSeconds(duration)
         }else{
-            playViewModel.getVideoTimestamp()
+            TimeUnit.MILLISECONDS.toSeconds(playViewModel.getVideoTimestamp())
         }
     }
 
