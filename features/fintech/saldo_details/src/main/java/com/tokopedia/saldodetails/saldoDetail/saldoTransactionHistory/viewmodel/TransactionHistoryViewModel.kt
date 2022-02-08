@@ -29,7 +29,8 @@ class TransactionHistoryViewModel @Inject constructor(
     private var dateFrom: Date = Date()
     private var dateTo: Date = Date()
     // default and oldSelected
-    var selectedFilter: Int = 0
+    var preSelected: Int = 0
+    var currentSelectedFilter: Int = 0
 
 
     private val allTransactionList = TransactionList()
@@ -37,6 +38,7 @@ class TransactionHistoryViewModel @Inject constructor(
     private val incomeTransactionList = TransactionList()
     private val salesTransactionList = TransactionList()
 
+    val filterLiveData = MutableLiveData<TransactionType>()
     private val allTransactionLiveData =
         MutableLiveData<SaldoResponse>() //for All saldo transaction
     private val refundTransactionLiveData =
@@ -44,12 +46,29 @@ class TransactionHistoryViewModel @Inject constructor(
     private val incomeTransactionLiveData = MutableLiveData<SaldoResponse>() //for Saldo Penghasilan
     private val salesTransactionLiveData = MutableLiveData<SaldoResponse>() //for Saldo Penjualan
 
+
+    fun selectTransactionFilter(newFilterIndex: Int, transactionType: TransactionType) {
+        // post saldo response on basis of trxtype
+        if (currentSelectedFilter != newFilterIndex) {
+            preSelected = currentSelectedFilter
+            currentSelectedFilter = newFilterIndex
+            filterLiveData.postValue(transactionType)
+            allTransactionLiveData.postValue(getStoredLiveData(transactionType).value)
+        }
+    }
+
     fun getLiveDataByTransactionType(transactionType: TransactionType): LiveData<SaldoResponse> {
         return when (transactionType) {
-            AllTransaction -> allTransactionLiveData
+            SalesTransaction -> salesTransactionLiveData
+            else -> allTransactionLiveData
+        }
+    }
+
+    private fun getStoredLiveData(transactionType: TransactionType): LiveData<SaldoResponse> {
+        return when (transactionType) {
             IncomeTransaction -> incomeTransactionLiveData
             RefundTransaction -> refundTransactionLiveData
-            SalesTransaction -> salesTransactionLiveData
+            else -> allTransactionLiveData
         }
     }
 

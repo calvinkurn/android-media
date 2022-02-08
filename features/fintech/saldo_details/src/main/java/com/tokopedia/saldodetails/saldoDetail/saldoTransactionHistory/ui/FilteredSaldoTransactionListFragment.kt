@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 
 class FilteredSaldoTransactionListFragment : BaseSaldoTransactionListFragment() {
 
+    private var filterData = arrayListOf<SortFilterItem>()
     private val filterTitleList by lazy { TransactionTypeMapper.getFilterList() }
 
     override fun onCreateView(
@@ -27,10 +28,10 @@ class FilteredSaldoTransactionListFragment : BaseSaldoTransactionListFragment() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         generateSortFilter()
         super.onViewCreated(view, savedInstanceState)
+        transactionHistoryViewModel?.filterLiveData?.observe(viewLifecycleOwner) { selectTransactionType(it) }
     }
 
     private fun generateSortFilter() {
-        val filterData = arrayListOf<SortFilterItem>()
         setFilterItem(filterTitleList, filterData)
         transactionFilter.addItem(filterData)
         saldoDetailsAnalytics.sendTransactionHistoryEvents(filterTitleList[0])
@@ -40,24 +41,20 @@ class FilteredSaldoTransactionListFragment : BaseSaldoTransactionListFragment() 
         input.forEachIndexed { index, title ->
             val chipSelection = if (index == 0) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
             val item  = SortFilterItem(title, chipSelection, ChipsUnify.SIZE_SMALL) {
-                selectTransactionType(index, title)
+                val type = TransactionTypeMapper.getTransactionListType(title) ?: AllTransaction
+                transactionHistoryViewModel?.selectTransactionFilter(index, type)
             }
             filterList.add(item)
         }
     }
 
-    fun selectTransactionType(index: Int, transactionTitle: String) {
-        if (transactionHistoryViewModel?.selectedFilter != index) {
-            val newType = TransactionTypeMapper.getTransactionListType(transactionTitle) ?: AllTransaction
-            val oldType = TransactionTypeMapper.getTransactionListType(filterTitleList[transactionHistoryViewModel?.selectedFilter ?: 0])
-            oldType?.let {
-                transactionHistoryViewModel?.getLiveDataByTransactionType(it)?.removeObservers(viewLifecycleOwner)
-            }
-            transactionType = newType
-            transactionHistoryViewModel?.selectedFilter = index
-            saldoDetailsAnalytics.sendTransactionHistoryEvents(transactionTitle)
-            initObservers()
-        }
+    private fun selectTransactionType(selectedTransactionType: TransactionType) {
+        if (transactionHistoryViewModel?.currentSelectedFilter?:0 >= 0)
+            filterData[transactionHistoryViewModel?.currentSelectedFilter ?: 0].type = ChipsUnify.TYPE_SELECTED
+        if (transactionHistoryViewModel?.preSelected?:0 >= 0)
+            filterData[transactionHistoryViewModel?.preSelected ?: 0].type = ChipsUnify.TYPE_NORMAL
+        transactionType = selectedTransactionType
+        saldoDetailsAnalytics.sendTransactionHistoryEvents(selectedTransactionType.title)
     }
 
     companion object {

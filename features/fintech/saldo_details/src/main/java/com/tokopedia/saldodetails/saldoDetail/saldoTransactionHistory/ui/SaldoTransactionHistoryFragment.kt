@@ -19,6 +19,7 @@ import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
+import com.tokopedia.saldodetails.commom.utils.AllTransaction
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.commom.utils.TransactionTitle
 import com.tokopedia.saldodetails.saldoDetail.coachmark.SaldoCoachMarkListener
@@ -81,15 +82,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         startInitialFetch()
     }
 
-    fun startInitialFetch(resetFilter: Boolean = false) {
+    fun startInitialFetch() {
         // when back from saldo withdrawal reset current item
         transactionHistoryViewPager.setCurrentItem(0, true)
         SaldoDateUtil.getInitialDateRange(::setDateRangeChanged)
-        if (resetFilter && ::saldoHistoryPagerAdapter.isInitialized ) {
-            saldoHistoryPagerAdapter.getItem(0).let {
-                (it as FilteredSaldoTransactionListFragment).selectTransactionType(0, TransactionTitle.ALL_TRANSACTION)
-            }
-        }
+        transactionHistoryViewModel.selectTransactionFilter(0, AllTransaction)
     }
 
     private fun setDateRangeChanged(dateFrom: Date, endDate: Date) {
