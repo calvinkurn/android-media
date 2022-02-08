@@ -24,9 +24,6 @@ import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -56,7 +53,20 @@ class ProductSheetViewComponent(
     private val btnProductEmpty: UnifyButton = findViewById(R.id.btn_action_product_empty)
 
     private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
-        //TODO() = tracker
+        override fun onBuyProduct(product: PlayProductUiModel.Product) {
+            listener.onBuyButtonClicked(this@ProductSheetViewComponent, product)
+
+        }
+        override fun onATCProduct(product: PlayProductUiModel.Product) {
+            listener.onAtcButtonClicked(this@ProductSheetViewComponent, product)
+        }
+        override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
+            listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
+        }
+
+        override fun onTimerExpired(product: PlayProductSectionUiModel.ProductSection) {
+            TODO("Not yet implemented")
+        }
     })
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
@@ -184,8 +194,6 @@ class ProductSheetViewComponent(
 
     fun showPlaceholder() {
         showContent(true)
-        //TODO() = shimmering
-//        setProductSheet(getPlaceholderModel())
     }
 
     fun showError(isConnectionError: Boolean, onError: () -> Unit) {
@@ -225,16 +233,6 @@ class ProductSheetViewComponent(
             clProductEmpty.show()
         }
     }
-
-    private fun getPlaceholderModel() = PlayProductTagsUiModel.Complete(
-            basicInfo = PlayProductTagsBasicInfoUiModel(
-                    bottomSheetTitle = "",
-                    partnerId = 0L,
-                    maxFeaturedProducts = 0
-            ),
-            voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
-            productList = List(PLACEHOLDER_COUNT) { PlayProductUiModel.Placeholder }
-    )
 
     private fun isProductCountChanged(productSize: Int): Boolean {
         return productSectionAdapter.getItems().isNotEmpty() &&
@@ -279,10 +277,6 @@ class ProductSheetViewComponent(
                     }
         }
         return emptyList()
-    }
-
-    companion object {
-        private const val PLACEHOLDER_COUNT = 5
     }
 
     interface Listener {

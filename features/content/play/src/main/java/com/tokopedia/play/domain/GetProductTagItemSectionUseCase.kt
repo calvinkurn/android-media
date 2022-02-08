@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.ProductSection
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -23,12 +24,13 @@ class GetProductTagItemSectionUseCase @Inject constructor(
     }
 
     companion object {
-        private const val CHANNEL_ID = "channelId"
+        private const val CHANNEL_ID = "channelID"
+        private const val REQUEST_PARAM = "req"
         const val QUERY_NAME = "GetProductTagItemSectionUseCaseQuery"
         const val QUERY = """
-            query getProductSheet(${'$'}channelId: String){
-              playGetTagsItemSection(req: {channelID:${'$'}channelId}){
-                 sections: {
+            query getProductSheet(${'$'}req: PlayGetTagsItemSectionReq){
+              playGetTagsItemSection(req: ${'$'}req){
+                 sections {
                   type
                   title
                   countdown {
@@ -90,8 +92,13 @@ class GetProductTagItemSectionUseCase @Inject constructor(
             }
         """
 
-        fun createParam(channelId: String): HashMap<String, Any> = hashMapOf(
-            CHANNEL_ID to channelId
-        )
+        fun createParam(channelId: String): RequestParams {
+            val params = mapOf(
+                CHANNEL_ID to channelId
+            )
+            return RequestParams.create().apply {
+                putObject(REQUEST_PARAM, params)
+            }
+        }
     }
 }

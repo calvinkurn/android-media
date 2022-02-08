@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
@@ -39,11 +40,15 @@ class ProductSectionViewHolder(
 
     private val adapter: ProductLineAdapter =
         ProductLineAdapter(object : ProductLineViewHolder.Listener {
-            override fun onBuyProduct(product: PlayProductUiModel.Product) {}
-
-            override fun onAtcProduct(product: PlayProductUiModel.Product) {}
-
-            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {}
+            override fun onBuyProduct(product: PlayProductUiModel.Product) {
+                listener.onBuyProduct(product)
+            }
+            override fun onAtcProduct(product: PlayProductUiModel.Product) {
+                listener.onATCProduct(product)
+            }
+            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
+                listener.onClickProductCard(product, position)
+            }
         })
 
     init {
@@ -52,9 +57,10 @@ class ProductSectionViewHolder(
     }
 
     fun bind(item: PlayProductSectionUiModel.ProductSection) {
-        tvSectionTitle.text = item.title
+        tvSectionTitle.shouldShowWithAction(item.title.isNotEmpty()){
+            tvSectionTitle.text = item.title
+        }
         tvTimerInfo.text = item.timerInfo
-
 
         when (item.type) {
             ProductSectionType.Active -> {
@@ -62,9 +68,8 @@ class ProductSectionViewHolder(
                 timerSection.show()
                 timerSection.timerVariant = TimerUnifySingle.VARIANT_MAIN
                 setupTimer(timerTime = item.endTime, serverTime = item.serverTime)
-
-                timerSection.targetDate = DateUtil.getCurrentCalendar().apply {
-                    add(Calendar.MINUTE, 4)
+                timerSection.onFinish  = {
+                    listener.onTimerExpired(product = item)
                 }
             }
             ProductSectionType.OutOfStock -> {
@@ -76,13 +81,15 @@ class ProductSectionViewHolder(
                 timerSection.show()
                 timerSection.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
                 setupTimer(timerTime = item.startTime, serverTime = item.serverTime)
+                timerSection.onFinish  = {
+                    listener.onTimerExpired(product = item)
+                }
             }
             ProductSectionType.Other -> {
                 tvTimerInfo.hide()
                 timerSection.hide()
             }
         }
-
         setupBackground(item.background)
         adapter.setItemsAndAnimateChanges(itemList = item.productList)
     }
@@ -120,14 +127,17 @@ class ProductSectionViewHolder(
                 add(Calendar.DAY_OF_MONTH, days)
             }
             timerSection.targetDate = dt
+        }else{
+            tvTimerInfo.hide()
+            timerSection.hide()
         }
     }
 
     private fun isExpired(serverTime: String, expiredTime: String): Boolean {
-        val serverTimeInMillis = serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS).time
-        val dtNow = DateUtil.getCurrentCalendar().time
-        dtNow.time = dtNow.time + serverTimeInMillis
+        val serverTimeInMillis = serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val expiredTimeInDate = expiredTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
+        val dtNow = DateUtil.getCurrentCalendar().time
+        dtNow.time = dtNow.time + serverTimeInMillis.time
         return dtNow.after(expiredTimeInDate)
     }
 
@@ -137,8 +147,10 @@ class ProductSectionViewHolder(
     }
 
     interface Listener {
-        //onTimerExpired
-        //TODO() = setup listener
+        fun onBuyProduct(product: PlayProductUiModel.Product)
+        fun onATCProduct(product: PlayProductUiModel.Product)
+        fun onClickProductCard(product: PlayProductUiModel.Product, position: Int)
+        fun onTimerExpired(product: PlayProductSectionUiModel.ProductSection)
     }
 }
 

@@ -1,13 +1,12 @@
 package com.tokopedia.play.data.repository
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.play.data.ProductSection
-import com.tokopedia.play.domain.GetProductTagItemsUseCase
+import com.tokopedia.play.data.Product
+import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
@@ -17,11 +16,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 
 class PlayViewerTagItemRepositoryImpl @Inject constructor(
-    private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
+    private val getProductTagItemsUseCase: GetProductTagItemSectionUseCase,
     private val getProductVariantUseCase: GetProductVariantUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val mapper: PlayUiModelMapper,
@@ -33,264 +31,26 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
         channelId: String
     ): TagItemUiModel = withContext(dispatchers.io) {
         val response = getProductTagItemsUseCase.apply {
-            setRequestParams(GetProductTagItemsUseCase.createParam(channelId))
+            setRequestParams(GetProductTagItemSectionUseCase.createParam(channelId).parameters)
         }.executeOnBackground()
 
-        //TODO() = fake data - change to real use case
-        val str = """
-            {
-                "playGetTagsItemSection": {
-                  "sections": [
-                    {
-                      "type": "active",
-                      "title": "Dekor Rumah Minimalis",
-                      "countdown": {
-                        "copy": "Berakhir Dalam"
-                      },
-                      "background": {
-                        "gradient": ["#ff23de", "#2244aa"],
-                        "imageUrl": "https://....."
-                      },
-                      "startTime": "2022-01-02T15:04:05Z07:00",
-                      "endTime": "2022-02-04T16:04:05Z07:00",
-                      "serverTime": "2022-02-03T15:14:05Z07:00",
-                      "products": [
-                        {
-                          "ID": "15240013",
-                          "Name": "Indomie Soto Lamongan",
-                          "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
-                          "ShopID": "479887",
-                          "OriginalPrice": 60000,
-                          "OriginalPriceFormatted": "Rp 60.000",
-                          "Discount": 0,
-                          "Price": 0,
-                          "PriceFormatted": "",
-                          "Quantity": 5,
-                          "QuantityRender": {
-                            "show": true,
-                            "copy": "Sisa 5",
-                            "color": "#FF5733"
-                          },
-                          "IsVariant": false,
-                          "IsAvailable": false,
-                          "Order": 0,
-                          "AppLink": "tokopedia://product/15240013",
-                          "WebLink": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
-                          "MinQuantity": 1,
-                          "IsFreeShipping":true
-                        },
-                        {
-                          "ID": "15240014",
-                          "Name": "Indomie Soto Banjar",
-                          "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
-                          "ShopID": "479887",
-                          "OriginalPrice": 63000,
-                          "OriginalPriceFormatted": "Rp 63.000",
-                          "Discount": 0,
-                          "Price": 0,
-                          "PriceFormatted": "",
-                          "Quantity": 5,
-                          "QuantityRender": {
-                            "show": true,
-                            "copy": "Sisa 5",
-                            "color": "#FF5733"
-                          },
-                          "IsVariant": false,
-                          "IsAvailable": false,
-                          "Order": 0,
-                          "AppLink": "tokopedia://product/15240013",
-                          "WebLink": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
-                          "MinQuantity": 1,
-                          "IsFreeShipping":true
-                        }
-                      ]
-                    },
-                    {
-                      "type": "upcoming",
-                      "title": "Upcoming Campaign",
-                      "countdown": {
-                        "copy": "Berakhir Dalam"
-                      },
-                      "background": {
-                        "gradient": [],
-                        "imageUrl": "https://img.freepik.com/free-vector/blue-pink-halftone-background_53876-99004.jpg?size=626&ext=jpg"
-                      },
-                      "startTime": "2022-02-03T20:04:05Z07:00",
-                      "endTime": "2022-02-03T16:04:05Z07:00",
-                      "serverTime": "2022-02-03T15:14:05Z07:00",
-                      "products": [
-                        {
-                          "ID": "15240013",
-                          "Name": "Indomie Soto Lamongan",
-                          "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
-                          "ShopID": "479887",
-                          "OriginalPrice": 60000,
-                          "OriginalPriceFormatted": "Rp 60.000",
-                          "Discount": 0,
-                          "Price": 0,
-                          "PriceFormatted": "",
-                          "Quantity": 5,
-                          "QuantityRender": {
-                            "show": true,
-                            "copy": "Sisa 5",
-                            "color": "#FF5733"
-                          },
-                          "IsVariant": false,
-                          "IsAvailable": false,
-                          "Order": 0,
-                          "AppLink": "tokopedia://product/15240013",
-                          "WebLink": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
-                          "MinQuantity": 1,
-                          "IsFreeShipping":true
-                        },
-                        {
-                          "ID": "15240014",
-                          "Name": "Indomie Soto Banjar",
-                          "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
-                          "ShopID": "479887",
-                          "OriginalPrice": 63000,
-                          "OriginalPriceFormatted": "Rp 63.000",
-                          "Discount": 0,
-                          "Price": 0,
-                          "PriceFormatted": "",
-                          "Quantity": 5,
-                          "QuantityRender": {
-                            "show": true,
-                            "copy": "Sisa 5",
-                            "color": "#FF5733"
-                          },
-                          "IsVariant": false,
-                          "IsAvailable": false,
-                          "Order": 0,
-                          "AppLink": "tokopedia://product/15240013",
-                          "WebLink": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
-                          "MinQuantity": 1,
-                          "IsFreeShipping":true
-                        }
-                      ]
-                    },
-                    {
-                      "type": "other",
-                      "title": "Produk Lainnya",
-                      "countdown": {
-                        "copy": ""
-                      },
-                      "background": {
-                        "gradient": [],
-                        "imageUrl": ""
-                      },
-                      "startTime": "",
-                      "endTime": "",
-                      "serverTime": "",
-                      "products": [
-                        {
-                          "ID": "15240013",
-                          "Name": "Indomie Soto Lamongan",
-                          "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
-                          "ShopID": "479887",
-                          "OriginalPrice": 60000,
-                          "OriginalPriceFormatted": "Rp 60.000",
-                          "Discount": 0,
-                          "Price": 0,
-                          "PriceFormatted": "",
-                          "Quantity": 9988,
-                          "QuantityRender": {
-                            "show": false,
-                            "copy": "",
-                            "color": ""
-                          },
-                          "IsVariant": false,
-                          "IsAvailable": true,
-                          "Order": 0,
-                          "AppLink": "tokopedia://product/15240013",
-                          "WebLink": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
-                          "MinQuantity": 1,
-                          "IsFreeShipping":true
-                        }
-                      ]
-                    },
-                    {
-                      "type": "out_of_stock",
-                      "title": "Produk Habis",
-                      "countdown": {
-                        "copy": ""
-                      },
-                      "background": {
-                        "gradient": [],
-                        "imageUrl": ""
-                      },
-                      "startTime": "",
-                      "endTime": "",
-                      "serverTime": "",
-                      "products": [
-                        {
-                          "ID": "15240014",
-                          "Name": "Lampu LED Multicolor",
-                          "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
-                          "ShopID": "479888",
-                          "OriginalPrice": 70000,
-                          "OriginalPriceFormatted": "Rp 70.000",
-                          "Discount": 0,
-                          "Price": 0,
-                          "PriceFormatted": "",
-                          "Quantity": 0,
-                          "QuantityRender": {
-                            "show": false,
-                            "copy": "",
-                            "color": ""
-                          },
-                          "IsVariant": false,
-                          "IsAvailable": false,
-                          "Order": 0,
-                          "AppLink": "tokopedia://product/15240013",
-                          "WebLink": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
-                          "MinQuantity": 1,
-                          "IsFreeShipping":true
-                        }
-                      ]
-                    }
-                  ],
-                  "vouchers": [
-                    {
-                      "ID": "12",
-                      "Name": "test date",
-                      "ShopID": "105407",
-                      "Title": " ",
-                      "Subtitle": "min. pembelian ",
-                      "VoucherType": 1,
-                      "VoucherImage": "https://ecs7.tokopedia.net/img/attachment/2018/10/4/5480066/5480066_4a86d259-d8ce-4501-a1d8-17803320bc35",
-                      "VoucherImageSquare": "",
-                      "VoucherQuota": 100,
-                      "VoucherFinishTime": "2022-12-07T23:30:00Z",
-                      "VoucherCode": "KMZWAY87AA",
-                      "IsHighlighted": true,
-                      "IsVoucherCopyable": true,
-                      "IsPrivate" : true
-                    }
-                  ],
-                  "config" : {
-                     "peek_product_count" : 15,
-                     "title_bottomsheet": "Promo dan Produk Lainnya"
-                  }
+        try {
+            val sectionList = mapper.mapProductSection(
+                response.playGetTagsItem.sectionList
+            )
+
+            //TODO= Improve
+            val prodArray = arrayListOf<Product>()
+
+            response.playGetTagsItem.sectionList.forEach {
+                it.listOfProducts.forEach {
+                    product -> prodArray.add(product)
                 }
             }
-        """
-
-
-        try {
-            val fake = Gson().fromJson(str, ProductSection.Response::class.java)
-
-            val sectionList = mapper.mapProductSection(
-                fake.playGetTagsItem.sectionList
-            )
-
-            //TODO() = remove product
-            val productList = mapper.mapProductTags(
-                fake.playGetTagsItem.sectionList.first().listOfProducts
-            )
+            val productList = mapper.mapProductTags(prodArray)
 
             val voucherList = mapper.mapMerchantVouchers(
-                fake.playGetTagsItem.voucherList
+                response.playGetTagsItem.voucherList
             )
 
             return@withContext TagItemUiModel(
