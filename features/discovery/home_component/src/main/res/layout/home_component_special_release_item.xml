@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/card_campaign"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/product_card_dms_card_background"
+    android:foreground="?attr/selectableItemBackground"
+    tools:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingBottom="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/special_release_brand_card"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:unify_image_corner_radius="0"
+            android:layout_width="128dp"
+            android:layout_height="128dp"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/special_release_shop_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="circle"
+            android:layout_marginTop="110dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/special_release_shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/special_release_shop_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Shop name"
+            app:typographyType="small"
+            android:layout_marginTop="5dp"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/special_release_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/special_release_shop_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Rilisan Spesial mulai"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            android:layout_marginTop="8dp"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/special_release_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/special_release_tag"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Rp850 rb"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold"
+            android:layout_marginTop="2dp"
+            />
+
+<!--        Timer-->
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            android:id="@+id/special_release_price"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/special_release_tag"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            tools:text="Rp850 rb"-->
+<!--            app:typographyType="heading_3"-->
+<!--            app:typographyWeight="bold"-->
+<!--            android:layout_marginTop="2dp"-->
+<!--            />-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
