@@ -79,16 +79,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
             number,
             operatorData,
             currentCategoryName,
-            dgCategoryIds,
-            object: OnEmptyResultListener {
-                override fun setClueVisibility(isVisible: Boolean) {
-                    if (isVisible) {
-                        clue?.show()
-                    } else {
-                        clue?.hide()
-                    }
-                }
-            }
+            dgCategoryIds
         )
     }
 
