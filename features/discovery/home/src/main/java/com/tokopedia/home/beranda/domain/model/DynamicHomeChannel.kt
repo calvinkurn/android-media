@@ -306,6 +306,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
             const val LAYOUT_QUESTWIDGET = "quest_widget"
             const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"
+            const val LAYOUT_MERCHANT_VOUCHER: String = "merchant_voucher"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
