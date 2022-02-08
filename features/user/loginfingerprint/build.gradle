@@ -73,6 +73,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.networkDependencies.retrofit
 
     //Test Dependencies
     testImplementation rootProject.ext.testDependencies.mockk
