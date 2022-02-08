@@ -245,10 +245,26 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun bindTracking(feedXCard: FeedXCard) {
-        if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW ) {
                 addOnImpressionListener(feedXCard.impressHolder) {
-                    listener?.onImpressionTracking(feedXCard, positionInFeed)
-                }
+
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                        imagePostListener.userCarouselImpression(
+                                feedXCard.id,
+                                feedXCard.media.first(),
+                                0,
+                                feedXCard.typename,
+                                feedXCard.followers.isFollowed,
+                                feedXCard.author.id,
+                                positionInFeed,
+                                feedXCard.cpmData,
+                                feedXCard.listProduct
+                        )
+                    }
+
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD ) {
+                        listener?.onImpressionTracking(feedXCard, positionInFeed)
+                    }
+
             }
         }
 
@@ -820,20 +836,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
 
 
-                if (media.isNotEmpty()) {
-                    imagePostListener.userCarouselImpression(
-                            feedXCard.id,
-                            media[0],
-                            0,
-                            feedXCard.typename,
-                            feedXCard.followers.isFollowed,
-                            feedXCard.author.id,
-                            positionInFeed,
-                            feedXCard.cpmData,
-                            feedXCard.listProduct
-                    )
-                }
-
                 media.forEach { feedMedia ->
                     val tags = feedMedia.tagging
                     val tagProducts = mutableListOf<FeedXProduct>()
@@ -891,30 +893,30 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     labelDiscount.hide()
                                     labelCashback.hide()
 
-                                    topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
+//                                    topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
                                     topAdsProductName.setTypeface(null,Typeface.BOLD)
-                                    topAdsProductName.setTextColor(
-                                            MethodChecker.getColor(
-                                                    context,
-                                                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                                            )
-                                    )
+//                                    topAdsProductName.setTextColor(
+//                                            MethodChecker.getColor(
+//                                                    context,
+//                                                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+//                                            )
+//                                    )
                                     topAdsProductName.show()
-                                    val constraintSet = ConstraintSet()
-                                    constraintSet.clone(topAdsCard)
-                                    constraintSet.connect(
-                                            topAdsProductName.id,
-                                            ConstraintSet.TOP,
-                                            topAdsCard.id,
-                                            ConstraintSet.TOP
-                                    )
-                                    constraintSet.connect(
-                                            topAdsProductName.id,
-                                            ConstraintSet.BOTTOM,
-                                            topAdsCard.id,
-                                            ConstraintSet.BOTTOM
-                                    )
-                                    constraintSet.applyTo(topAdsCard)
+//                                    val constraintSet = ConstraintSet()
+//                                    constraintSet.clone(topAdsCard)
+//                                    constraintSet.connect(
+//                                            topAdsProductName.id,
+//                                            ConstraintSet.TOP,
+//                                            topAdsCard.id,
+//                                            ConstraintSet.TOP
+//                                    )
+//                                    constraintSet.connect(
+//                                            topAdsProductName.id,
+//                                            ConstraintSet.BOTTOM,
+//                                            topAdsCard.id,
+//                                            ConstraintSet.BOTTOM
+//                                    )
+//                                    constraintSet.applyTo(topAdsCard)
 
                             }
 
@@ -1101,19 +1103,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         tagProducts))
                             tagProducts.add(globalCardProductList[it.tagIndex])
                     }
-                    if (media.isNotEmpty()) {
-                        imagePostListener.userCarouselImpression(
-                                feedXCard.playChannelID,
-                                media[0],
-                                0,
-                                feedXCard.typename,
-                                feedXCard.followers.isFollowed,
-                                feedXCard.author.id,
-                                positionInFeed,
-                                feedXCard.cpmData,
-                                feedXCard.listProduct
-                        )
-                    }
+
                     feedMedia.isImageImpressedFirst = true
                         setVODView(
                                 feedXCard,
