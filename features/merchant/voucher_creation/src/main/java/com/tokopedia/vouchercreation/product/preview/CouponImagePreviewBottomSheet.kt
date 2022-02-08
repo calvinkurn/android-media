@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.view.bottomsheet
+package com.tokopedia.vouchercreation.product.preview
 
 import android.content.Context
 import android.os.Bundle
@@ -26,7 +26,6 @@ import com.tokopedia.vouchercreation.databinding.BottomsheetCouponImagePreviewBi
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponImagePreviewViewModel
 import javax.inject.Inject
 
 

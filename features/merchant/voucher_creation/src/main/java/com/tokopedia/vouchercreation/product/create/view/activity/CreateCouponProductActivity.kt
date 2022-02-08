@@ -14,7 +14,7 @@ import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
-import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
+import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import java.util.*
@@ -38,15 +38,15 @@ class CreateCouponProductActivity : AppCompatActivity() {
     @Inject
     lateinit var router: FragmentRouter
 
-    private val couponPreviewFragment = ProductCouponPreviewFragment.newInstance(
+    private val couponPreviewFragment = CouponPreviewFragment.newInstance(
         ::navigateToCouponInformationPage,
         ::navigateToCouponSettingPage,
         ::navigateToProductListPage,
         ::onCreateCouponSuccess,
         {},
         {},
-        ProductCouponPreviewFragment.COUPON_ID_NOT_YET_CREATED,
-        ProductCouponPreviewFragment.Mode.CREATE
+        CouponPreviewFragment.COUPON_ID_NOT_YET_CREATED,
+        CouponPreviewFragment.Mode.CREATE
     )
 
     private val productId: String? by lazy { getProductIdDataFromApplink() }

@@ -21,7 +21,7 @@
         android:fillViewport="true"
         android:visibility="gone"
         tools:visibility="visible"
-        tools:context=".product.create.view.fragment.ProductCouponPreviewFragment">
+        tools:context=".product.preview.CouponPreviewFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

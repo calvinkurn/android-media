@@ -20,7 +20,7 @@
         android:layout_below="@id/header"
         android:fillViewport="true"
         android:visibility="gone"
-        tools:context=".product.create.view.fragment.ProductCouponPreviewFragment"
+        tools:context=".product.preview.CouponPreviewFragment"
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout

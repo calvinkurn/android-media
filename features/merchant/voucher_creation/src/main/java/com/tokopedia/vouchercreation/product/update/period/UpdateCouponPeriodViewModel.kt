@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.update.bottomsheet
+package com.tokopedia.vouchercreation.product.update.period
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

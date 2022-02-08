@@ -9,19 +9,19 @@ import com.tokopedia.vouchercreation.common.di.module.VoucherCreationViewModelMo
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponProductActivity
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.BroadcastCouponBottomSheet
-import com.tokopedia.vouchercreation.product.create.view.bottomsheet.CouponImagePreviewBottomSheet
-import com.tokopedia.vouchercreation.product.create.view.fragment.CouponDetailFragment
+import com.tokopedia.vouchercreation.product.preview.CouponImagePreviewBottomSheet
+import com.tokopedia.vouchercreation.product.detail.view.fragment.CouponDetailFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.product.voucherlist.view.fragment.CouponListFragment
-import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
+import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import com.tokopedia.vouchercreation.product.detail.view.activity.VoucherProductDetailActivity
 import com.tokopedia.vouchercreation.product.duplicate.DuplicateCouponActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import com.tokopedia.vouchercreation.product.list.view.fragment.AddProductFragment
 import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity
-import com.tokopedia.vouchercreation.product.update.bottomsheet.UpdateCouponPeriodBottomSheet
-import com.tokopedia.vouchercreation.product.update.bottomsheet.UpdateCouponQuotaBottomSheet
+import com.tokopedia.vouchercreation.product.update.period.UpdateCouponPeriodBottomSheet
+import com.tokopedia.vouchercreation.product.update.quota.UpdateCouponQuotaBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.activity.CouponListActivity
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet.CreatePromoCodeBottomSheetFragment
@@ -69,7 +69,7 @@ interface VoucherCreationComponent {
     fun inject(tipsAndTrickBottomSheetFragment: TipsAndTrickBottomSheetFragment)
     fun inject(tipsTrickBottomSheet: TipsTrickBottomSheet)
 
-    fun inject(productCouponPreviewFragment: ProductCouponPreviewFragment)
+    fun inject(couponPreviewFragment: CouponPreviewFragment)
     fun inject(couponSettingFragment: CouponSettingFragment)
     fun inject(createCouponDetailFragment: CreateCouponDetailFragment)
     fun inject(couponListFragment: CouponListFragment)

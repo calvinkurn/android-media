@@ -14,10 +14,9 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
-import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
+import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
 import javax.inject.Inject
 
@@ -40,7 +39,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
     private val couponId by lazy { intent.extras?.getLong(BUNDLE_KEY_COUPON_ID).orZero() }
 
     private val couponPreviewFragment by lazy {
-        ProductCouponPreviewFragment.newInstance(
+        CouponPreviewFragment.newInstance(
             ::navigateToCouponInformationPage,
             ::navigateToCouponSettingPage,
             ::navigateToProductListPage,
@@ -48,7 +47,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
             {},
             ::onDuplicateCouponSuccess,
             couponId,
-            ProductCouponPreviewFragment.Mode.DUPLICATE
+            CouponPreviewFragment.Mode.DUPLICATE
         )
     }
 

@@ -49,8 +49,8 @@ import com.tokopedia.vouchercreation.common.exception.VoucherCancellationExcepti
 import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
-import com.tokopedia.vouchercreation.product.update.bottomsheet.UpdateCouponPeriodBottomSheet
-import com.tokopedia.vouchercreation.product.update.bottomsheet.UpdateCouponQuotaBottomSheet
+import com.tokopedia.vouchercreation.product.update.period.UpdateCouponPeriodBottomSheet
+import com.tokopedia.vouchercreation.product.update.quota.UpdateCouponQuotaBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
 import com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet.CouponFilterBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.CANCEL_VOUCHER_ERROR
@@ -81,7 +81,6 @@ import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.fragment.VoucherListFragment
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.BroadCastVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
-import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 import java.util.*

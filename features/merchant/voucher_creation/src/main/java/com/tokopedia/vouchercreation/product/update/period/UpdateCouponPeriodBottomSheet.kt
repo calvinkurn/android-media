@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.update.bottomsheet
+package com.tokopedia.vouchercreation.product.update.period
 
 import android.os.Bundle
 import android.view.LayoutInflater

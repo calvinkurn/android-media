@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.view.viewmodel
+package com.tokopedia.vouchercreation.product.detail.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

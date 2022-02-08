@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.view.fragment
+package com.tokopedia.vouchercreation.product.detail.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -31,7 +31,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponDetailViewModel
+import com.tokopedia.vouchercreation.product.detail.view.viewmodel.CouponDetailViewModel
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.update.bottomsheet
+package com.tokopedia.vouchercreation.product.update.quota
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -58,12 +58,12 @@ class UpdateCouponQuotaViewModel @Inject constructor(
 
     fun validateInput(newQuota : Int, minQuota : Int) {
         if (newQuota < minQuota) {
-            _validInput.value =  QuotaState.BelowMinQuota(minQuota)
+            _validInput.value = QuotaState.BelowMinQuota(minQuota)
             return
         }
 
         if (newQuota > MAX_QUOTA) {
-            _validInput.value =  QuotaState.ExceedMaxAllowedQuota(MAX_QUOTA)
+            _validInput.value = QuotaState.ExceedMaxAllowedQuota(MAX_QUOTA)
             return
         }
 

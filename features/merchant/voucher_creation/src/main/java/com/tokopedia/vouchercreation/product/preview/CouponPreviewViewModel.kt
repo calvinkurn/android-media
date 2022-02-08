@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.view.viewmodel
+package com.tokopedia.vouchercreation.product.preview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,11 +19,10 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
-import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ProductCouponPreviewViewModel @Inject constructor(
+class CouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val createCouponUseCase: CreateCouponFacadeUseCase,
     private val updateCouponUseCase: UpdateCouponFacadeUseCase,
@@ -56,7 +55,7 @@ class ProductCouponPreviewViewModel @Inject constructor(
         get() = _couponDetail
 
     fun validateCoupon(
-        pageMode : ProductCouponPreviewFragment.Mode,
+        pageMode : CouponPreviewFragment.Mode,
         couponSettings: CouponSettings?,
         couponInformation: CouponInformation?,
         couponProducts: List<CouponProduct>
@@ -150,8 +149,8 @@ class ProductCouponPreviewViewModel @Inject constructor(
         return imageUrls
     }
 
-    fun getMaxAllowedProducts(mode : ProductCouponPreviewFragment.Mode) {
-        val isUpdateMode = mode == ProductCouponPreviewFragment.Mode.UPDATE
+    fun getMaxAllowedProducts(mode : CouponPreviewFragment.Mode) {
+        val isUpdateMode = mode == CouponPreviewFragment.Mode.UPDATE
 
         launchCatchError(block = {
             initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
@@ -196,15 +195,15 @@ class ProductCouponPreviewViewModel @Inject constructor(
         )
     }
 
-    fun isCreateMode(mode : ProductCouponPreviewFragment.Mode): Boolean {
-        return mode == ProductCouponPreviewFragment.Mode.CREATE
+    fun isCreateMode(mode : CouponPreviewFragment.Mode): Boolean {
+        return mode == CouponPreviewFragment.Mode.CREATE
     }
 
-    fun isUpdateMode(mode : ProductCouponPreviewFragment.Mode): Boolean {
-        return mode == ProductCouponPreviewFragment.Mode.UPDATE
+    fun isUpdateMode(mode : CouponPreviewFragment.Mode): Boolean {
+        return mode == CouponPreviewFragment.Mode.UPDATE
     }
 
-    fun isDuplicateMode(mode : ProductCouponPreviewFragment.Mode): Boolean {
-        return mode == ProductCouponPreviewFragment.Mode.DUPLICATE
+    fun isDuplicateMode(mode : CouponPreviewFragment.Mode): Boolean {
+        return mode == CouponPreviewFragment.Mode.DUPLICATE
     }
 }
