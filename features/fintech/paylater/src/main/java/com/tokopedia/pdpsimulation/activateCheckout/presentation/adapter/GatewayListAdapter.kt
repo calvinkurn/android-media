@@ -10,7 +10,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder.Gate
 
 class GatewayListAdapter(
     var gatewayDetailList: List<CheckoutData>,
-    val gatewayClickListener: GateWayCardClicked,
+    private val gatewayClickListener: GateWayCardClicked,
     val context: Context,
 ) : RecyclerView.Adapter<GatewayViewHolder>() {
 
@@ -30,7 +30,7 @@ class GatewayListAdapter(
 
 
     override fun onBindViewHolder(holder: GatewayViewHolder, position: Int) {
-        holder.bindData(gatewayDetailList[position],position)
+        holder.bindData(gatewayDetailList[position])
     }
 
 }

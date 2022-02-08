@@ -21,7 +21,7 @@ class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayC
     RecyclerView.ViewHolder(itemView) {
 
 
-    fun bindData(checkoutData: CheckoutData, position: Int) {
+    fun bindData(checkoutData: CheckoutData) {
         itemView.apply {
             changeColorToEnableDisable(checkoutData.disable)
             setIcon(checkoutData)
