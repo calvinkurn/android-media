@@ -11,4 +11,7 @@
     <declare-styleable name="ErrorLabelView">
         <attr name="errorlabel_text" format="string" />
     </declare-styleable>
+    <declare-styleable name="NumberView">
+        <attr name="numberview_text" format="string" />
+    </declare-styleable>
 </resources>
