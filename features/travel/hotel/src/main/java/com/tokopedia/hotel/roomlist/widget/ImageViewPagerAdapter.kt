@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.isValid
 import com.tokopedia.media.loader.loadImage
 
 /**
@@ -25,6 +27,11 @@ class ImageViewPagerAdapter(private val images: MutableList<String>, private val
         }
         holder.bannerImage.loadImage(images[position]){
             setPlaceHolder(R.drawable.ic_hotel_loading_image)
+        }
+
+        //cancel image request if context of itemView is invalid
+        if (!holder.itemView.context.isValid()){
+            holder.bannerImage.clearImage()
         }
     }
 
