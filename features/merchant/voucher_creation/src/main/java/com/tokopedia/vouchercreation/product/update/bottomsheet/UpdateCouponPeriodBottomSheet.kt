@@ -9,8 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.datepicker.DatePickerUnify
-import com.tokopedia.datepicker.OnDateChangedListener
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
@@ -23,7 +21,6 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.toCalendar
-import com.tokopedia.vouchercreation.common.extension.toDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.databinding.BottomsheetUpdateCouponPeriodBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
@@ -70,9 +67,6 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
 
     private var startDateTimerPicker: DateTimePickerUnify? = null
     private var endDateTimePicker:  DateTimePickerUnify? = null
-    private var couponSettings: CouponSettings? = null
-    private var couponInformation: CouponInformation? = null
-    private var couponProducts: List<CouponProduct> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,17 +115,20 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
 
             when(result) {
                 is Success -> {
-                    this.couponInformation = result.data.information
-                    this.couponProducts = result.data.products
-                    this.couponSettings = result.data.settings
+                    viewModel.setCurrentlySelectedStartDate(result.data.information.period.startDate)
+                    viewModel.setCurrentlySelectedEndDate(result.data.information.period.endDate)
+                    viewModel.setCouponData(result.data)
 
-                    displayCouponInformation(couponInformation ?: return@observe)
+                    displayCouponInformation(
+                        result.data.information.period.startDate,
+                        result.data.information.period.endDate,
+                        result.data.information.name
+                    )
                     displayCouponImage(
                         result.data.information.target,
                         result.data.settings.type
                     )
-                    viewModel.setCurrentlySelectedStartDate(result.data.information.period.startDate)
-                    viewModel.setCurrentlySelectedEndDate(result.data.information.period.endDate)
+
                     binding.groupContent.visible()
                 }
                 is Fail -> {
@@ -193,16 +190,10 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun displayCouponInformation(couponInformation: CouponInformation) {
-        val startDate =  couponInformation.period.startDate.parseTo(DATE_TIME_FORMAT_FULL)
-
-        binding.textFieldStartDate.textFieldInput.setText(startDate)
-
-        val endDate =  couponInformation.period.endDate.parseTo(DATE_TIME_FORMAT_FULL)
-
-        binding.textFieldEndDate.textFieldInput.setText(endDate)
-
-        binding.tpgCouponName.text = couponInformation.name
+    private fun displayCouponInformation(startDate : Date, endDate : Date, couponName : String) {
+        binding.textFieldStartDate.textFieldInput.setText(startDate.parseTo(DATE_TIME_FORMAT_FULL))
+        binding.textFieldEndDate.textFieldInput.setText(endDate.parseTo(DATE_TIME_FORMAT_FULL))
+        binding.tpgCouponName.text = couponName
     }
 
     private fun showStartDateTimePicker(currentStartDate : Date) {
@@ -317,28 +308,10 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
     }
 
     private fun updateCoupon() {
-        val couponInformation = this.couponInformation ?: return
-
         binding.btnSave.isLoading = true
         binding.btnSave.loadingText = getString(R.string.please_wait)
 
-        val newStartDate = startDateTimerPicker?.getDate()?.time ?: Date()
-        val newEndDate = endDateTimePicker?.getDate()?.time ?: Date()
-        val newPeriod = CouponInformation.Period(newStartDate, newEndDate)
-
-        val updatedCouponInformation = couponInformation.copy(
-            target = couponInformation.target,
-            name = couponInformation.name,
-            code = couponInformation.code,
-            period = newPeriod
-        )
-
-        viewModel.updateCoupon(
-            couponId,
-            updatedCouponInformation,
-            this.couponSettings ?: return,
-            this.couponProducts
-        )
+        viewModel.updateCoupon()
     }
 
 

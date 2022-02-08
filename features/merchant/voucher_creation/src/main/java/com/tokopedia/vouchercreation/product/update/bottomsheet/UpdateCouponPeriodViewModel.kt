@@ -13,8 +13,6 @@ import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.data.mapper.CouponPreviewMapper
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import kotlinx.coroutines.withContext
@@ -46,7 +44,12 @@ class UpdateCouponPeriodViewModel @Inject constructor(
 
     private var currentlySelectedStartDate = Date()
     private var currentlySelectedEndDate = Date()
+    private var coupon : Coupon? = null
 
+
+    fun setCouponData(coupon : Coupon) {
+        this.coupon = coupon
+    }
 
     fun setCurrentlySelectedStartDate(startDate: Date) {
         currentlySelectedStartDate = startDate
@@ -64,22 +67,27 @@ class UpdateCouponPeriodViewModel @Inject constructor(
         _endDate.value = currentlySelectedEndDate
     }
 
-    fun updateCoupon(
-        couponId: Long,
-        couponInformation: CouponInformation,
-        couponSettings: CouponSettings,
-        couponProducts: List<CouponProduct>
-    ) {
+    fun updateCoupon() {
+        val newPeriod = CouponInformation.Period(currentlySelectedStartDate, currentlySelectedEndDate)
+
+        val coupon = coupon ?: return
+        val updatedCouponInformation = coupon.information.copy(
+            target = coupon.information.target,
+            name = coupon.information.name,
+            code = coupon.information.code,
+            period = newPeriod
+        )
+
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
                     updateCouponUseCase.execute(
                         this,
                         ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
-                        couponId,
-                        couponInformation,
-                        couponSettings,
-                        couponProducts
+                        coupon.id,
+                        updatedCouponInformation,
+                        coupon.settings,
+                        coupon.products
                     )
                 }
                 _updateCouponResult.value = Success(result)
