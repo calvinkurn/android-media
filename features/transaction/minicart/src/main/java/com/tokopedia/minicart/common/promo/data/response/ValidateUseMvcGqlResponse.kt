@@ -14,11 +14,11 @@ class ValidateUseMvcResponse(
     val message: List<String> = emptyList(),
     @SerializedName("error_code")
     val errorCode: String = "",
-    @SerializedName("detail")
-    val detail: ValidateUseMvcDetail = ValidateUseMvcDetail()
+    @SerializedName("data")
+    val data: ValidateUseMvcData = ValidateUseMvcData()
 )
 
-class ValidateUseMvcDetail(
+class ValidateUseMvcData(
     @SerializedName("curr_purchase")
     val currentPurchase: Long = 0,
     @SerializedName("min_purchase")

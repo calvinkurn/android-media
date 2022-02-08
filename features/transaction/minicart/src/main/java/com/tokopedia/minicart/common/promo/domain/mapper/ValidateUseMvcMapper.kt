@@ -10,10 +10,10 @@ class ValidateUseMvcMapper @Inject constructor() {
         return ValidateUseMvcData(
             validateUseMvcResponse.status,
             validateUseMvcResponse.message,
-            validateUseMvcResponse.detail.currentPurchase,
-            validateUseMvcResponse.detail.minimumPurchase,
-            validateUseMvcResponse.detail.progressPercentage,
-            validateUseMvcResponse.detail.message
+            validateUseMvcResponse.data.currentPurchase,
+            validateUseMvcResponse.data.minimumPurchase,
+            validateUseMvcResponse.data.progressPercentage,
+            validateUseMvcResponse.data.message
         )
     }
 }

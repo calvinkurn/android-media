@@ -51,12 +51,12 @@ class ValidateUseMvcUseCase @Inject constructor(@ApplicationContext private val 
         private const val QUERY_NAME = "ValidateUseMvcQuery"
 
         private const val QUERY = """
-            mutation validate_use_mvc(${"$"}params: promo) {
-                validate_use_mvc(params: ${"$"}params, chosen_address: {mode: 1, address_id: 123, district_id: 0, postal_code: "", geolocation: "") {
+            mutation validateUseMvc(${"$"}params: PromoStackRequest, ${"$"}chosen_address: ChosenAddressParam) {
+                validate_use_mvc(params: ${"$"}params, chosen_address: ${"$"}chosen_address) {
                     status
                     message
                     error_code
-                    detail {
+                    data {
                         curr_purchase
                         min_purchase
                         max_potential_benefit
