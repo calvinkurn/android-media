@@ -15,6 +15,8 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSu
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.extension.productEtalaseEmpty
+import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -91,9 +93,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         }
         setTitle(getString(R.string.play_bro_product_summary_title))
         setAction(getString(R.string.play_bro_product_add_more)) {
-            /** TODO: there are 2 options
-             * 1. if user on select product -> just close this bottomsheet
-             * 2. if user want to edit product -> open product chooser bottomsheet*/
+            handleAddMoreProduct()
         }
 
         binding.btnDone.setOnClickListener {
@@ -122,13 +122,21 @@ class ProductSummaryBottomSheet @Inject constructor(
 
                         productSummaryListView.setProductList(state.productTagSummary.sections)
                     }
+                    is ProductTagSummaryUiModel.Empty -> {
+                        setTitle(0)
+                        productSummaryListView.setProductList(emptyList())
+
+                        binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
+                        binding.globalError.visibility = View.VISIBLE
+                        binding.flBtnDoneContainer.visibility = View.GONE
+                    }
                     is ProductTagSummaryUiModel.Error -> {
                         setTitle(null)
+                        productSummaryListView.setProductList(emptyList())
+
                         binding.ivLoading.visibility = View.GONE
                         binding.globalError.visibility = View.VISIBLE
                         binding.flBtnDoneContainer.visibility = View.GONE
-
-                        productSummaryListView.setProductList(emptyList())
                     }
                     else -> {}
                 }
@@ -143,6 +151,12 @@ class ProductSummaryBottomSheet @Inject constructor(
         else {
             setTitle(getString(R.string.play_bro_product_summary_title))
         }
+    }
+
+    private fun handleAddMoreProduct() {
+        /** TODO: there are 2 options
+         * 1. if user on select product -> just close this bottomsheet
+         * 2. if user want to edit product -> open product chooser bottomsheet*/
     }
 
     companion object {

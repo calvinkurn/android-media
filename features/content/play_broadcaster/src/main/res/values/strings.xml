@@ -241,4 +241,7 @@
     <string name="play_bro_product_summary_title_with_count">Product terpilih (%d/%d)</string>
     <string name="play_bro_product_add_more">Tambah</string>
     <string name="play_bro_product_summary_done">Selesai</string>
+    <string name="play_bro_product_summary_empty_title">Oops, kamu belum punya produk</string>
+    <string name="play_bro_product_summary_empty_description">Tambahkan produk ke tokomu untuk dijual selama live berlangsung.</string>
+    <string name="play_bro_product_summary_empty_action_text">Tambah Produk</string>
 </resources>

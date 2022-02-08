@@ -241,7 +241,9 @@ class PlayBroProductSetupViewModel @Inject constructor(
             }
 
             withContext(dispatchers.main) {
-                _productTagSummary.value = ProductTagSummaryUiModel.Success(response, productCount)
+//                _productTagSummary.value = if(productCount == 0) ProductTagSummaryUiModel.Empty
+//                                            else ProductTagSummaryUiModel.Success(response, productCount)
+                _productTagSummary.value = ProductTagSummaryUiModel.Empty
             }
         }) {
             _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
