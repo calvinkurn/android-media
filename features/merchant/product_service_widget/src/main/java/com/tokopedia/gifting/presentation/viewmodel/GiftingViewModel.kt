@@ -8,4 +8,7 @@ class GiftingViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
 
+    fun dummy() {
+        println("subhanallah")
+    }
 }
