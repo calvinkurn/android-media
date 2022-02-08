@@ -9,6 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -16,7 +19,6 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.state.KebabMenuType
@@ -30,10 +32,12 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.Calendar
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -101,12 +105,12 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     private fun initBottomSheet() {
-        this.clearContentPadding = true
-        this.showHeader = false
-        this.childView =
+        clearContentPadding = true
+        showHeader = false
+        childView =
             View.inflate(requireContext(), R.layout.bottom_sheet_play_more_action, null)
-        setChild(this.childView)
-        setCloseClickListener { this.dismiss() }
+        setChild(childView)
+        setCloseClickListener { dismiss() }
     }
 
     private fun setObserve(){
@@ -163,15 +167,13 @@ class PlayMoreActionBottomSheet @Inject constructor(
         playViewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
                 is PlayResult.Success -> {
-                    this.dismiss()
+                    dismiss()
                 }
-                is PlayResult.Failure -> ""
-                //TODO = provide toaster
-//                    doShowToaster(
-//                    bottomSheetType = BottomInsetsType.UserReportSubmissionSheet,
-//                    toasterType = Toaster.TYPE_ERROR,
-//                    message = ErrorHandler.getErrorMessage(requireContext(), it.error)
-//                )
+                is PlayResult.Failure ->
+                    doShowToaster(
+                    toasterType = Toaster.TYPE_ERROR,
+                    message = ErrorHandler.getErrorMessage(requireContext(), it.error)
+                )
             }
         })
     }
@@ -239,7 +241,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onCloseButtonClicked(view: KebabMenuSheetViewComponent) {
-        this.dismiss()
+        dismiss()
     }
 
     override fun onCloseButtonClicked(view: PlayUserReportSheetViewComponent) {
@@ -272,6 +274,74 @@ class PlayMoreActionBottomSheet @Inject constructor(
         reasonId: Int,
         description: String
     ) {
-        //TODO("Not yet implemented")
+        val isUse = description.isNotEmpty()
+        analytic.clickUserReportSubmissionBtnSubmit(isUse)
+
+        showDialog(title = getString(R.string.play_user_report_verification_dialog_title), description = getString(R.string.play_user_report_verification_dialog_desc),
+            primaryCTAText = getString(R.string.play_user_report_verification_dialog_btn_ok), secondaryCTAText = getString(R.string.play_pip_cancel),
+            primaryAction = {
+                onSubmitUserReport( reasonId, description)
+            })
+    }
+
+    private fun onSubmitUserReport(reasonId: Int, description: String) {
+        analytic.clickUserReportSubmissionDialogSubmit()
+        val channelData = playViewModel.latestCompleteChannelData
+
+        playViewModel.submitUserReport(
+            channelId = channelData.id.toLongOrZero(),
+            shopId = channelData.partnerInfo.id,
+            mediaUrl = getMediaUrl(channelData.id),
+            timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
+            reportDesc = description,
+            reasonId = reasonId
+        )
+    }
+
+    private fun getMediaUrl(channelId: String) : String = "${TokopediaUrl.getInstance().WEB}play/channel/$channelId"
+
+    private fun getTimestampVideo(startTime: String): Long{
+        return if(playViewModel.channelType.isLive){
+            val startTimeInSecond = startTime.toLongOrZero()
+            val duration = (userReportTimeMillis - startTimeInSecond) / 1
+            duration
+        }else{
+            playViewModel.getVideoTimestamp()
+        }
+    }
+
+    private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}){
+        activity?.let {
+            val dialog = DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.apply {
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCTAText)
+                setPrimaryCTAClickListener {
+                    primaryAction()
+                    dismiss()
+                }
+                setSecondaryCTAText(secondaryCTAText)
+                setSecondaryCTAClickListener {
+                    secondaryAction()
+                    dismiss()
+                }
+            }.show()
+        }
+    }
+
+    private fun doShowToaster(
+        toasterType: Int,
+        message: String,
+        actionText: String = "",
+        actionClickListener: View.OnClickListener = View.OnClickListener {}
+    ) {
+        Toaster.build(
+            view = requireView(),
+            text = message,
+            type = toasterType,
+            actionText = actionText,
+            clickListener = actionClickListener
+        ).show()
     }
 }

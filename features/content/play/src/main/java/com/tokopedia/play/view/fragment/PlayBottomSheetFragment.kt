@@ -16,9 +16,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -37,15 +35,11 @@ import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
-import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -57,11 +51,9 @@ import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewCo
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.Calendar
 import javax.inject.Inject
 
 /**
@@ -78,15 +70,10 @@ class PlayBottomSheetFragment @Inject constructor(
         ShopCouponSheetViewComponent.Listener
 {
 
-    //TODO = remove user report component
-
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
-        private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
-
-        private const val TO_SECONDS_DIVIDER = 1000L
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
@@ -102,20 +89,12 @@ class PlayBottomSheetFragment @Inject constructor(
     private val variantSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_VARIANT_SHEET_HEIGHT).toInt()
 
-    private val userReportSheetHeight: Int
-        get() = (requireView().height * PERCENT_FULL_SHEET_HEIGHT).toInt()
-
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
-
-    private val generalErrorMessage: String
-        get() = getString(R.string.play_general_err_message)
 
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
-
-    private var userReportTimeMillis: Long = 0L
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
@@ -228,33 +207,6 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(RefreshLeaderboard)
     }
 
-    private fun onSubmitUserReport(reasonId: Int, description: String) {
-        analytic.clickUserReportSubmissionDialogSubmit()
-        val channelData = playViewModel.latestCompleteChannelData
-
-        viewModel.submitUserReport(
-            channelId = channelData.id.toLongOrZero(),
-            shopId = channelData.partnerInfo.id,
-            mediaUrl = getMediaUrl(channelData.id),
-            timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
-            reportDesc = description,
-            reasonId = reasonId
-        )
-    }
-
-    private fun getMediaUrl(channelId: String) : String = "${TokopediaUrl.getInstance().WEB}play/channel/$channelId"
-
-    private fun getTimestampVideo(startTime: String): Long{
-        return if(playViewModel.channelType.isLive){
-            val startTimeInSecond = startTime.toLongOrZero()
-            val duration = (userReportTimeMillis - startTimeInSecond) / TO_SECONDS_DIVIDER
-            duration
-        }else{
-            playViewModel.getVideoTimestamp()
-        }
-    }
-
-
     /**
      * CouponSheet View Component Listener
      */
@@ -349,10 +301,6 @@ class PlayBottomSheetFragment @Inject constructor(
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
     }
 
-    private fun shouldOpenUserReport() {
-        viewModel.doInteractionEvent(InteractionEvent.OpenUserReport)
-    }
-
     private fun doShowToaster(
             bottomSheetType: BottomInsetsType,
             toasterType: Int,
@@ -382,26 +330,6 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}){
-        activity?.let {
-            val dialog = DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.apply {
-                setTitle(title)
-                setDescription(description)
-                setPrimaryCTAText(primaryCTAText)
-                setPrimaryCTAClickListener {
-                    primaryAction()
-                    dismiss()
-                }
-                setSecondaryCTAText(secondaryCTAText)
-                setSecondaryCTAClickListener {
-                    secondaryAction()
-                    dismiss()
-                }
-            }.show()
-        }
-    }
-
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
         val statusBarHeight = view?.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
         val requiredMargin = offset16
@@ -419,7 +347,6 @@ class PlayBottomSheetFragment @Inject constructor(
         when (event) {
             is InteractionEvent.DoActionProduct -> doActionProduct(event.product, event.action, event.type)
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
-            is InteractionEvent.OpenUserReport -> doActionUserReport()
         }
     }
 
@@ -432,12 +359,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun doActionProduct(product: PlayProductUiModel.Product, productAction: ProductAction, type: BottomInsetsType) {
         viewModel.addToCart(product, action = productAction, type = type)
-    }
-
-    private fun doActionUserReport(){
-        analytic.clickUserReport()
-        playViewModel.onShowUserReportSheet(userReportSheetHeight)
-        viewModel.getUserReportList()
     }
 
     private fun openLoginPage() {
