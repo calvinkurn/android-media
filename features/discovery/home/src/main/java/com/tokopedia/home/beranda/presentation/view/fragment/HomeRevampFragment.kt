@@ -612,43 +612,37 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         context?.let { currentContext ->
             isGopayActivated?.let {
                 if (it) {
-                    if(!gopayCoachmarkIsShowing) {
-                        val ctaButton = getGopayNewBalanceWidgetView()
-                        ctaButton?.let { gopayWidget ->
-                            if (this.isEmpty()) {
-                                val originalPosition = intArrayOf(0,0)
-                                gopayWidget.getLocationInWindow(originalPosition)
-                                positionWidgetGopay = originalPosition[1]
-                                this.add(
-                                    CoachMark2Item(
-                                        ctaButton,
-                                        getString(R.string.home_gopay_new_coachmark_title),
-                                        getString(R.string.home_gopay_new_coachmark_description)
-                                    )
+                    val ctaButton = getGopayNewBalanceWidgetView()
+                    ctaButton?.let { gopayWidget ->
+                        if (this.isEmpty()) {
+                            val originalPosition = intArrayOf(0,0)
+                            gopayWidget.getLocationInWindow(originalPosition)
+                            positionWidgetGopay = originalPosition[1]
+                            this.add(
+                                CoachMark2Item(
+                                    ctaButton,
+                                    getString(R.string.home_gopay_new_coachmark_title),
+                                    getString(R.string.home_gopay_new_coachmark_description)
                                 )
-                            }
+                            )
                         }
                     }
-                    else { }
                 } else {
-                    if(!gopayCoachmarkIsShowing) {
-                        val gopayWidget = getGopayNewActivateBalanceWidgetView()
-                        gopayWidget?.let { gopayWidget ->
-                            if (this.isEmpty()) {
-                                val originalPosition = intArrayOf(0,0)
-                                gopayWidget.getLocationInWindow(originalPosition)
-                                positionWidgetGopay = originalPosition[1]
-                                this.add(
-                                    CoachMark2Item(
-                                        gopayWidget,
-                                        getString(R.string.home_gopay_new_active_cta_coachmark_title),
-                                        getString(R.string.home_gopay_new_active_cta_coachmark_description)
-                                    )
+                    val gopayWidget = getGopayNewActivateBalanceWidgetView()
+                    gopayWidget?.let { gopayWidget ->
+                        if (this.isEmpty()) {
+                            val originalPosition = intArrayOf(0,0)
+                            gopayWidget.getLocationInWindow(originalPosition)
+                            positionWidgetGopay = originalPosition[1]
+                            this.add(
+                                CoachMark2Item(
+                                    gopayWidget,
+                                    getString(R.string.home_gopay_new_active_cta_coachmark_title),
+                                    getString(R.string.home_gopay_new_active_cta_coachmark_description)
                                 )
-                            }
+                            )
                         }
                     }
-                    else { }
                 }
             }
         }
@@ -913,28 +907,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setStatusBarAlpha(STATUS_BAR_DEFAULT_ALPHA)
     }
 
-    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
-//because later we will disable scroll up for this parent recyclerview
-//and makes refresh layout think we can't scroll up (which actually can! we only disable
-//scroll so that feed recommendation section can scroll its content)
-        if (recyclerView.computeVerticalScrollOffset() == VERTICAL_SCROLL_FULL_BOTTOM_OFFSET) {
-            refreshLayout.setCanChildScrollUp(false)
-        } else {
-            refreshLayout.setCanChildScrollUp(true)
-        }
-        if (recyclerView.canScrollVertically(RV_DIRECTION_TOP)) {
-            navToolbar?.showShadow(lineShadow = true)
-            showFeedSectionViewHolderShadow(false)
-            homeRecyclerView?.setNestedCanScroll(false)
-        } else { //home feed now can scroll up, so hide maintoolbar shadow
-            navToolbar?.hideShadow(lineShadow = true)
-            showFeedSectionViewHolderShadow(true)
-            homeRecyclerView?.setNestedCanScroll(true)
-        }
-
-        evaluateShowCoachmark()
-    }
-
     private fun evaluateScrollGopayCoachmark() {
         coachmarkGopay?.let { gopayCoachmark ->
             context?.let {ctx ->
@@ -969,6 +941,34 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    private fun evaluateShowCoachmark() {
+        evaluateScrollGopayCoachmark()
+        evaluateScrollTokopointsCoachmark()
+        evaluateScrollTokonowCoachmark()
+    }
+
+    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
+//because later we will disable scroll up for this parent recyclerview
+//and makes refresh layout think we can't scroll up (which actually can! we only disable
+//scroll so that feed recommendation section can scroll its content)
+        if (recyclerView.computeVerticalScrollOffset() == VERTICAL_SCROLL_FULL_BOTTOM_OFFSET) {
+            refreshLayout.setCanChildScrollUp(false)
+        } else {
+            refreshLayout.setCanChildScrollUp(true)
+        }
+        if (recyclerView.canScrollVertically(RV_DIRECTION_TOP)) {
+            navToolbar?.showShadow(lineShadow = true)
+            showFeedSectionViewHolderShadow(false)
+            homeRecyclerView?.setNestedCanScroll(false)
+        } else { //home feed now can scroll up, so hide maintoolbar shadow
+            navToolbar?.hideShadow(lineShadow = true)
+            showFeedSectionViewHolderShadow(true)
+            homeRecyclerView?.setNestedCanScroll(true)
+        }
+
+        evaluateShowCoachmark()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -1062,13 +1062,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         refreshQuestWidget()
 
-        evaluateShowCoachmark()
-    }
-
-    private fun evaluateShowCoachmark() {
-        evaluateScrollGopayCoachmark()
-        evaluateScrollTokopointsCoachmark()
-        evaluateScrollTokonowCoachmark()
     }
 
     private fun refreshQuestWidget() {
