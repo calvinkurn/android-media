@@ -161,11 +161,29 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
             .inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        when(pageMode) {
+            Mode.CREATE -> {
+                viewModel.validateCoupon(couponSettings, couponInformation, couponProducts)
+            }
+            Mode.UPDATE -> {
+                viewModel.getCouponDetail(couponId)
+
+            }
+            Mode.DUPLICATE -> {
+                viewModel.getCouponDetail(couponId)
+
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         nullableBinding = FragmentProductCouponPreviewBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -208,14 +226,17 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
 
     private fun handlePageMode() {
         when(pageMode) {
-            Mode.CREATE -> {}
+            Mode.CREATE -> {
+            }
             Mode.UPDATE -> {
-                viewModel.getCouponDetail(couponId)
                 changeToolbarTitle(getString(R.string.update_coupon_product))
                 changeButtonBehavior()
+                enableSubmitButton()
+                enableImagePreviewButton()
             }
             Mode.DUPLICATE -> {
-                viewModel.getCouponDetail(couponId)
+                enableSubmitButton()
+                enableImagePreviewButton()
             }
         }
     }
@@ -225,6 +246,14 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         binding.btnCreateCoupon.setOnClickListener {
             updateCoupon(couponId)
         }
+    }
+
+    private fun enableImagePreviewButton() {
+        binding.btnPreviewCouponImage.isEnabled = true
+    }
+
+    private fun enableSubmitButton() {
+        binding.btnCreateCoupon.isEnabled = true
     }
 
 
@@ -346,8 +375,6 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
         refreshProductsSection(couponProducts)
-
-        viewModel.validateCoupon(couponSettings, couponInformation, couponProducts)
     }
 
     private fun refreshCouponInformationSection(coupon: CouponInformation) {

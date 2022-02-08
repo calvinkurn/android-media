@@ -53,7 +53,7 @@ class ProductCouponPreviewViewModel @Inject constructor(
     val maxAllowedProductCount: LiveData<Result<Int>>
         get() = _maxAllowedProductCount
 
-    private val _couponDetail = MutableLiveData<Result<Coupon>>()
+    private val _couponDetail = SingleLiveEvent<Result<Coupon>>()
     val couponDetail: LiveData<Result<Coupon>>
         get() = _couponDetail
 
