@@ -142,7 +142,8 @@ data class OrderPaymentWalletAdditionalData(
     val activation: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
     val topUp: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
     val phoneNumber: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
-    val goCicilData: OrderPaymentGoCicilData = OrderPaymentGoCicilData()
+    val goCicilData: OrderPaymentGoCicilData = OrderPaymentGoCicilData(),
+    val errorToaster: String = "",
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired

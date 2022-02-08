@@ -711,17 +711,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                     }
                 }
+                is OccGlobalEvent.ToasterInfo -> {
+                    progressDialog?.dismiss()
+                    view?.let { v ->
+                        Toaster.build(v, it.message).show()
+                    }
+                }
             }
         }
     }
 
     private fun validateAddressState(addressState: AddressState) {
-        if (addressState.popupMessage.isNotBlank()) {
-            view?.let {
-                Toaster.build(it, addressState.popupMessage).show()
-            }
-        }
-
         when (addressState.errorCode) {
             AddressState.ERROR_CODE_OPEN_ADDRESS_LIST -> {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)

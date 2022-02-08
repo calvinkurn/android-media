@@ -24,7 +24,13 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequ
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.oneclickcheckout.order.view.processor.*
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -128,10 +134,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
             orderPromo.value = result.orderPromo
-            if (result.globalEvent != null) {
-                globalEvent.value = result.globalEvent
-            } else if (uiMessage is OccToasterAction) {
-                globalEvent.value = OccGlobalEvent.ToasterAction(uiMessage)
+            when {
+                result.globalEvent != null -> {
+                    globalEvent.value = result.globalEvent
+                }
+                uiMessage is OccToasterAction -> {
+                    globalEvent.value = OccGlobalEvent.ToasterAction(uiMessage)
+                }
+                result.orderPayment.walletData.errorToaster.isNotBlank() -> {
+                    globalEvent.value = OccGlobalEvent.ToasterInfo(result.orderPayment.walletData.errorToaster)
+                }
+                result.addressState.popupMessage.isNotBlank() -> {
+                    globalEvent.value = OccGlobalEvent.ToasterInfo(result.addressState.popupMessage)
+                }
             }
             if (orderCart.products.isNotEmpty() && result.orderProfile.isValidProfile) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)

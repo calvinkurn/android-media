@@ -484,10 +484,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             val description = paymentModel.description
             if (description.isNotBlank()) {
                 val replace = description.replace('*', '\u2022')
-                val prefix = "Limit tersedia: "
-                val span = SpannableString("$prefix$replace")
-                span.setSpan(ForegroundColorSpan(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)), prefix.length, span.length, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE)
-                tvPaymentDetail.text = span
+                tvPaymentDetail.text = replace
                 tvPaymentDetail.visible()
             } else {
                 tvPaymentDetail.gone()

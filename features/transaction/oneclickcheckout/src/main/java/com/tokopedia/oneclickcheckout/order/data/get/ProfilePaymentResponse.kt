@@ -144,6 +144,8 @@ class WalletAdditionalData(
         val phoneNumberRegistered: WalletData = WalletData(),
         @SerializedName("gocicil")
         val goCicilData: GoCicilData = GoCicilData(),
+        @SerializedName("error_toaster")
+        val errorToaster: String = "",
 )
 
 class OvoActionData(
