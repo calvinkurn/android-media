@@ -135,6 +135,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductList(): List<ProductUiModel> {
+                        //TODO("Revamp this")
                         val productDataList = parentViewModel.productList
                         return productDataList.map {
                             ProductUiModel(
