@@ -91,14 +91,19 @@ dependencies {
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     implementation rootProject.ext.miscDependencies.chips
 
+    // Unit Test
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    // Ui Test
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
