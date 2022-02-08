@@ -100,7 +100,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -1521,10 +1520,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         stopSellerHomeFragmentWidgetPerformanceMonitoring(widgetType, isFromCache)
         stopPltMonitoringIfNotCompleted(isFromCache)
 
-        val newWidgetList = getMergedWidgetAndDataList(this, widgetType)
-        notifyWidgetWithSdkChecking {
-            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
-        }
+        mergedWidgetAndData(this, widgetType)
+
         binding?.root?.addOneTimeGlobalLayoutListener {
             recyclerView?.post {
                 checkLoadingWidgets()
@@ -1537,10 +1534,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     @Suppress("UNCHECKED_CAST")
-    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> getMergedWidgetAndDataList(
+    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> mergedWidgetAndData(
         widgetDataList: List<D>,
         widgetType: String
-    ): List<BaseWidgetUiModel<D>> {
+    ) {
         val newWidgetList = adapter.data.toMutableList()
         widgetDataList.forEach { widgetData ->
             newWidgetList.indexOfFirst {
@@ -1564,7 +1561,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
-        return newWidgetList as List<BaseWidgetUiModel<D>>
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
     }
 
     private fun showWidgetSuccessToaster() {
@@ -1677,15 +1677,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun reloadNotUpdatedWidgets() {
-        launchOnViewLifecycleScope {
-            val widgets = adapter.data.filter {
-                //filter all widgets that the data still from cache
-                it.data?.isFromCache.orFalse()
-            }
-            withContext(Dispatchers.Main) {
-                getWidgetsData(widgets)
-            }
+        val widgets = adapter.data.filter {
+            //filter all widgets that the data still from cache
+            it.data?.isFromCache.orFalse()
         }
+        getWidgetsData(widgets)
     }
 
     private fun copyExistingWidget(widget: BaseWidgetUiModel<*>): BaseWidgetUiModel<*> {
@@ -1992,28 +1988,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun refreshSimilarWidgets(widget: BaseWidgetUiModel<*>) {
-        launchOnViewLifecycleScope {
-            val similarWidget = mutableListOf<BaseWidgetUiModel<*>>()
-            val widgets = adapter.data.map {
-                val isTheSameWidget = it.widgetType == widget.widgetType
-                val isCacheData = (it.data as? LastUpdatedDataInterface)
-                    ?.lastUpdated?.needToUpdated.orFalse()
-                val tempWidget = if (isTheSameWidget && isCacheData) {
-                    similarWidget.add(it)
-                    it.copyWidget().apply {
-                        //set data to null to show loading state
-                        showLoadingState = true
-                    }
-                } else {
-                    it
+        val similarWidget = mutableListOf<BaseWidgetUiModel<*>>()
+        val widgets = adapter.data.map {
+            val isTheSameWidget = it.widgetType == widget.widgetType
+            val isCacheData = (it.data as? LastUpdatedDataInterface)
+                ?.lastUpdated?.needToUpdated.orFalse()
+            val tempWidget = if (isTheSameWidget && isCacheData) {
+                similarWidget.add(it)
+                it.copyWidget().apply {
+                    //set data to null to show loading state
+                    showLoadingState = true
                 }
-                return@map tempWidget as BaseWidgetUiModel<BaseDataUiModel>
+            } else {
+                it
             }
-            withContext(Dispatchers.Main) {
-                updateWidgets(widgets)
-                getWidgetsData(similarWidget)
-            }
+            return@map tempWidget as BaseWidgetUiModel<BaseDataUiModel>
         }
+        updateWidgets(widgets)
+        getWidgetsData(similarWidget)
     }
 
     private fun launchOnViewLifecycleScope(
