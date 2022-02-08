@@ -46,7 +46,7 @@ class FilteredSaldoTransactionListFragment : BaseSaldoTransactionListFragment() 
         }
     }
 
-    private fun selectTransactionType(index: Int, transactionTitle: String) {
+    fun selectTransactionType(index: Int, transactionTitle: String) {
         if (transactionHistoryViewModel?.selectedFilter != index) {
             val newType = TransactionTypeMapper.getTransactionListType(transactionTitle) ?: AllTransaction
             val oldType = TransactionTypeMapper.getTransactionListType(filterTitleList[transactionHistoryViewModel?.selectedFilter ?: 0])

@@ -35,6 +35,7 @@ import javax.inject.Inject
 class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     OnDateRangeSelectListener {
 
+    private lateinit var saldoHistoryPagerAdapter: SaldoHistoryPagerAdapter
     private var selectedDateFrom: Date = Date()
     private var selectedDateTo: Date = Date()
 
@@ -80,10 +81,15 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         startInitialFetch()
     }
 
-    fun startInitialFetch() {
+    fun startInitialFetch(resetFilter: Boolean = false) {
         // when back from saldo withdrawal reset current item
         transactionHistoryViewPager.setCurrentItem(0, true)
         SaldoDateUtil.getInitialDateRange(::setDateRangeChanged)
+        if (resetFilter && ::saldoHistoryPagerAdapter.isInitialized ) {
+            saldoHistoryPagerAdapter.getItem(0).let {
+                (it as FilteredSaldoTransactionListFragment).selectTransactionType(0, TransactionTitle.ALL_TRANSACTION)
+            }
+        }
     }
 
     private fun setDateRangeChanged(dateFrom: Date, endDate: Date) {
@@ -105,7 +111,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
 
     private fun initialVar() {
         loadMultipleTabItem()
-        val saldoHistoryPagerAdapter = SaldoHistoryPagerAdapter(childFragmentManager)
+        saldoHistoryPagerAdapter = SaldoHistoryPagerAdapter(childFragmentManager)
         saldoHistoryPagerAdapter.setItems(saldoTabItems)
         transactionHistoryViewPager.adapter = saldoHistoryPagerAdapter
         saldoTransactionTabsUnify.customTabMode = TabLayout.MODE_FIXED

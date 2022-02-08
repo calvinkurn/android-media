@@ -444,7 +444,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     fun resetPageAfterWithdrawal() {
         if (::saldoDetailViewModel.isInitialized) {
             saldoDetailViewModel.getUserSaldoBalance()
-            saldoHistoryFragment?.startInitialFetch()
+            saldoHistoryFragment?.startInitialFetch(true)
         }
     }
 
