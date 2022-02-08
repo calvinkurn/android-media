@@ -67,7 +67,6 @@ dependencies {
     //Debug Tools
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
@@ -79,6 +78,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.networkDependencies.loggingInterceptor
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
