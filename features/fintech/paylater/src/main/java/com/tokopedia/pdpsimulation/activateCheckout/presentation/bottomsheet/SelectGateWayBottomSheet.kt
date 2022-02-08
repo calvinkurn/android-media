@@ -48,6 +48,7 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
                 override fun gatewayCardSelected(gatewayPosition: Int) {
                     activity?.let {
                         (it as GatewaySelectActivityListner).setGatewayValue(gatewayPosition)
+                        dismiss()
                     }
                 }
 

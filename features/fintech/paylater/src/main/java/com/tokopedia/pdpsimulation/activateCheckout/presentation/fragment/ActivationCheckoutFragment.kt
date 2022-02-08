@@ -113,6 +113,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     fun updateSelectedTenure(gatewaySelected: Int) {
         this.selectedGateway = gatewaySelected
+
     }
 
     private fun observerProductData() {
