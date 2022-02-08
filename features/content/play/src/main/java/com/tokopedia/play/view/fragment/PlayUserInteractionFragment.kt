@@ -813,8 +813,6 @@ class PlayUserInteractionFragment @Inject constructor(
             immersiveBoxViewOnStateChanged(bottomInsets = map)
             pipViewOnStateChanged(bottomInsets = map)
             castViewOnStateChanged(bottomInsets = map)
-
-            if(map.isAnyUserReportBottomSheetShown) showMoreActionBottomSheet()
         })
     }
 
@@ -838,6 +836,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderPinnedVoucherView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
+                renderKebabView(state.userReportUiState)
 
                 handleStatus(state.status)
 
@@ -1609,6 +1608,10 @@ class PlayUserInteractionFragment @Inject constructor(
         else kebabMenuView?.hide()
     }
 
+    private fun renderKebabView(playUserReportState: PlayUserReportUiState){
+        if(playUserReportState.shouldShow) showMoreActionBottomSheet()
+    }
+
     private fun castViewOnStateChanged(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
@@ -1698,7 +1701,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
-        playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
+        playViewModel.submitAction(OpenKebab)
     }
 
     companion object {

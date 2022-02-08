@@ -30,6 +30,7 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isAnyThreeDotsShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -47,6 +48,7 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.action.OpenKebab
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
@@ -180,6 +182,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _tagItems = MutableStateFlow(data.tagItems)
     private val _quickReply = MutableStateFlow(data.quickReplyInfo)
+    private val _kebab = MutableStateFlow(emptyMap<KebabMenuType, BottomInsetsState>())
 
     private val _interactiveUiState = combine(
         _interactive, _bottomInsets, _status
@@ -255,6 +258,12 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
+    private val _userReportUiState = _kebab.map {
+        PlayUserReportUiState(
+            shouldShow = !isFreezeOrBanned && it.isAnyThreeDotsShown,
+            kebabMenuType = it
+        )
+    }.flowOn(dispatchers.computation)
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -276,9 +285,10 @@ class PlayViewModel @AssistedInject constructor(
         _status,
         _quickReply,
         _kebabMenuUiState.distinctUntilChanged(),
+        _userReportUiState.distinctUntilChanged(),
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, kebabMenu ->
+        status, quickReply, kebabMenu, userReport ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactiveView = interactive,
@@ -293,6 +303,7 @@ class PlayViewModel @AssistedInject constructor(
             status = status,
             quickReply = quickReply,
             kebabMenu = kebabMenu,
+            userReportUiState = userReport,
         )
     }.flowOn(dispatchers.computation)
 
@@ -646,26 +657,26 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun onShowKebabMenuSheet(estimatedSheetHeight: Int) {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+        val insetsMap = getLatestInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.KebabMenuSheet] =
+        insetsMap[KebabMenuType.ThreeDots] =
             BottomInsetsState.Shown(
                 estimatedInsetsHeight = estimatedSheetHeight,
-                isPreviousStateSame = insetsMap[BottomInsetsType.KebabMenuSheet]?.isShown == true
+                isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isShown == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _kebab.value = insetsMap
     }
 
     fun hideKebabMenuSheet() {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+        val insetsMap = getLatestInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.KebabMenuSheet] =
+        insetsMap[KebabMenuType.ThreeDots] =
             BottomInsetsState.Hidden(
-                isPreviousStateSame = insetsMap[BottomInsetsType.KebabMenuSheet]?.isHidden == true
+                isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isHidden == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _kebab.value = insetsMap
     }
 
     fun showCouponSheet(estimatedHeight: Int) {
@@ -692,49 +703,49 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun onShowUserReportSheet(estimatedSheetHeight: Int) {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+        val insetsMap = getLatestInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.UserReportSheet] =
+        insetsMap[KebabMenuType.UserReportList] =
             BottomInsetsState.Shown(
                 estimatedInsetsHeight = estimatedSheetHeight,
-                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSheet]?.isShown == true
+                isPreviousStateSame = insetsMap[KebabMenuType.UserReportList]?.isShown == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _kebab.value = insetsMap
     }
 
     fun hideUserReportSheet() {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+        val insetsMap = getLatestInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.UserReportSheet] =
+        insetsMap[KebabMenuType.UserReportList] =
             BottomInsetsState.Hidden(
-                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSheet]?.isHidden == true
+                isPreviousStateSame = insetsMap[KebabMenuType.UserReportList]?.isHidden == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _kebab.value = insetsMap
     }
 
     fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int) {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+        val insetsMap = getLatestInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.UserReportSubmissionSheet] =
+        insetsMap[KebabMenuType.UserReportSubmission] =
             BottomInsetsState.Shown(
                 estimatedInsetsHeight = estimatedSheetHeight,
-                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSubmissionSheet]?.isShown == true
+                isPreviousStateSame = insetsMap[KebabMenuType.UserReportSubmission]?.isShown == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _kebab.value = insetsMap
     }
 
     fun hideUserReportSubmissionSheet() {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+        val insetsMap = getLatestInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.UserReportSubmissionSheet] =
+        insetsMap[KebabMenuType.UserReportSubmission] =
             BottomInsetsState.Hidden(
-                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSubmissionSheet]?.isHidden == true
+                isPreviousStateSame = insetsMap[KebabMenuType.UserReportSubmission]?.isHidden == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _kebab.value = insetsMap
     }
 
     fun hideInsets(isKeyboardHandled: Boolean) {
@@ -757,6 +768,16 @@ class PlayViewModel @AssistedInject constructor(
         return currentValue
     }
 
+
+    private fun getLatestInset(): Map<KebabMenuType, BottomInsetsState> {
+        val currentValue = _kebab.value
+        currentValue.values.forEach {
+            it.isPreviousStateSame = true
+            if (it is BottomInsetsState.Shown) it.deepLevel += 1
+        }
+        return currentValue
+    }
+
     private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
         val currentBottomInsetsMap = _observableBottomInsetsState.value
         val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: true
@@ -764,18 +785,12 @@ class PlayViewModel @AssistedInject constructor(
         val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
         val defaultLeaderboardSheetState = currentBottomInsetsMap?.get(BottomInsetsType.LeaderboardSheet)?.isHidden ?: true
         val defaultCouponSheetState = currentBottomInsetsMap?.get(BottomInsetsType.CouponSheet)?.isHidden ?: true
-        val defaultKebabMenuSheet = currentBottomInsetsMap?.get(BottomInsetsType.KebabMenuSheet)?.isHidden ?: true
-        val defautUserReportListSheet = currentBottomInsetsMap?.get(BottomInsetsType.UserReportSheet)?.isHidden ?: true
-        val defaultUserReportSubmissionSHeet = currentBottomInsetsMap?.get(BottomInsetsType.UserReportSubmissionSheet)?.isHidden ?: true
         return mapOf(
                 BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
                 BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
                 BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState),
                 BottomInsetsType.LeaderboardSheet to BottomInsetsState.Hidden(defaultLeaderboardSheetState),
                 BottomInsetsType.CouponSheet to BottomInsetsState.Hidden(defaultCouponSheetState),
-                BottomInsetsType.KebabMenuSheet to BottomInsetsState.Hidden(defaultKebabMenuSheet),
-                BottomInsetsType.UserReportSheet to BottomInsetsState.Hidden(defautUserReportListSheet),
-                BottomInsetsType.UserReportSubmissionSheet to BottomInsetsState.Hidden(defaultUserReportSubmissionSHeet)
         )
     }
     //endregion
@@ -816,6 +831,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun submitAction(action: PlayViewerNewAction) {
+        //Add Action Untuk Buka Bottom Sheet
         when (action) {
             SetChannelActiveAction -> handleSetChannelActive()
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
@@ -838,6 +854,7 @@ class PlayViewModel @AssistedInject constructor(
             CloseSharingOptionAction -> handleCloseSharingOption()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
+            is OpenKebab -> onShowKebabMenuSheet(estimatedSheetHeight = 200)
         }
     }
 
@@ -1085,9 +1102,6 @@ class PlayViewModel @AssistedInject constructor(
             BottomInsetsType.ProductSheet -> onHideProductSheet()
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
-            BottomInsetsType.KebabMenuSheet -> hideKebabMenuSheet()
-            BottomInsetsType.UserReportSheet -> hideUserReportSheet()
-            BottomInsetsType.UserReportSubmissionSheet -> hideUserReportSubmissionSheet()
             BottomInsetsType.CouponSheet -> hideCouponSheet()
         }
         return shownBottomSheets.isNotEmpty()

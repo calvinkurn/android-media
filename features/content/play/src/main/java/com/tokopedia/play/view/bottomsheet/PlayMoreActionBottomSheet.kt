@@ -6,17 +6,20 @@ import android.util.DisplayMetrics
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.state.KebabMenuType
 import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSubmissionViewComponent
@@ -27,6 +30,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
 import java.util.Calendar
@@ -113,30 +117,33 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     private fun observeBottomInsets() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
-            it[BottomInsetsType.KebabMenuSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) {
-                    kebabMenuSheetView.showWithHeight(state.estimatedInsetsHeight)
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiState.withCache().collectLatest { (_, type) ->
+                type.userReportUiState.kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
+                    if (it is BottomInsetsState.Shown) {
+                        customPeekHeight = (displayMetrix.heightPixels * 0.2).toInt()
+                        kebabMenuSheetView.showWithHeight(customPeekHeight)
+                    }
+                    else kebabMenuSheetView.hide()
                 }
-                else kebabMenuSheetView.hide()
-            }
 
-            it[BottomInsetsType.UserReportSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) {
-                    customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
-                    userReportSheetView.showWithHeight(customPeekHeight)
+                type.userReportUiState.kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
+                    if (state is BottomInsetsState.Shown) {
+                        customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
+                        userReportSheetView.showWithHeight(customPeekHeight)
+                    }
+                    else userReportSheetView.hide()
                 }
-                else userReportSheetView.hide()
-            }
 
-            it[BottomInsetsType.UserReportSubmissionSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) {
-                    customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
-                    userReportSubmissionSheetView.showWithHeight(customPeekHeight)
+                type.userReportUiState.kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
+                    if (state is BottomInsetsState.Shown) {
+                        customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
+                        userReportSubmissionSheetView.showWithHeight(customPeekHeight)
+                    }
+                    else userReportSubmissionSheetView.hide()
                 }
-                else userReportSubmissionSheetView.hide()
             }
-        })
+        }
     }
 
     private fun observeUserReport() {

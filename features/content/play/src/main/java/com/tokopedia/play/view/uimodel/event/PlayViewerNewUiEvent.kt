@@ -2,8 +2,10 @@ package com.tokopedia.play.view.uimodel.event
 
 import androidx.annotation.StringRes
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
+import com.tokopedia.play.view.uimodel.state.KebabMenuType
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**

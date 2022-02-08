@@ -27,6 +27,7 @@ data class PlayViewerNewUiState(
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
     val kebabMenu: PlayKebabMenuUiState,
+    val userReportUiState: PlayUserReportUiState
 )
 
 data class PlayInteractiveViewUiState(
@@ -92,6 +93,17 @@ data class PlayTitleUiState(
 data class PlayKebabMenuUiState(
     val shouldShow: Boolean
 )
+
+data class PlayUserReportUiState(
+    val shouldShow: Boolean,
+    val kebabMenuType: Map<KebabMenuType, BottomInsetsState>
+)
+
+enum class KebabMenuType{
+    ThreeDots,
+    UserReportList,
+    UserReportSubmission
+}
 
 enum class ViewVisibility {
 
