@@ -6,6 +6,7 @@
     <string name="picker_title_gallery">Gallery</string>
     <string name="picker_toolbar_main_title">Pilih Media</string>
     <string name="picker_toolbar_album_title">Pilih Album</string>
+    <string name="picker_toolbar_preview_title">Preview</string>
 
 <!--    action button -->
     <string name="picker_toolbar_continue">Lanjut</string>
