@@ -36,6 +36,9 @@ android {
                     pathSources + 'common'
             ]
         }
+        androidTest {
+            resources.srcDirs += "$projectDir/src/androidTest/resources"
+        }
     }
     defaultConfig {
         multiDexEnabled true
@@ -141,6 +144,10 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
     androidTestImplementation rootProject.ext.miscDependencies.exoPlayer
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

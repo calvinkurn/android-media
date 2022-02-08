@@ -2,21 +2,13 @@ package com.tokopedia.topchat.chatroom.view.listener
 
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.parentreply.ParentReply
-import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
-import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
-import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
-import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 
 /**
  * @author : Steven 11/12/18
@@ -81,62 +73,13 @@ interface TopChatContract {
         fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
         fun notifyPreviewRemoved(model: SendablePreview)
-        fun onReceiveWsEventDeleteMsg(replyTimeNano: String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
-        fun connectWebSocket(messageId: String)
-
-        fun startTyping()
-
-        fun stopTyping()
-
-        fun readMessage()
-
-        fun startCompressImages(it: ImageUploadUiModel)
-
-        fun startUploadImages(image: ImageUploadUiModel)
-
-        fun isUploading(): Boolean
-
-        fun sendAttachmentsAndMessage(
-            sendMessage: String, referredMsg: ParentReply? = null
-        )
-
-        fun sendAttachmentsAndSticker(
-            sticker: Sticker, referredMsg: ParentReply?
-        )
-
-        fun sendAttachmentsAndSrw(
-            question: QuestionUiModel, referredMsg: ParentReply?
-        )
-
-        fun initAttachmentPreview()
-
-        fun clearAttachmentPreview()
-
-        fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
-
-        fun isInTheMiddleOfThePage(): Boolean
-
-        fun resetUnreadMessage()
-
-        fun addAttachmentPreview(sendablePreview: SendablePreview)
-
-        fun hasEmptyAttachmentPreview(): Boolean
-
         fun addOngoingUpdateProductStock(
             productId: String,
             product: ProductAttachmentUiModel, adapterPosition: Int,
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
-
-        fun initUserLocation(userLocation: LocalCacheModel?)
-        fun getProductIdPreview(): List<String>
-        fun getAttachmentsPreview(): List<SendablePreview>
-        fun sendSrwBubble(
-            question: QuestionUiModel, products: List<SendablePreview>
-        )
-        fun sendSrwFrom(attachment: HeaderCtaButtonAttachment)
     }
 }

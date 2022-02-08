@@ -17,9 +17,6 @@ object RollenceKey {
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
 
-    const val HOME_WALLETAPP = "gopay_on"
-    const val HOME_PAYMENT_ABC = "PaymentABC"
-
     const val HOME_BEAUTY_FEST = "home_cantik"
 
     //home component rollence section
@@ -38,9 +35,6 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
-
-    //Home account
-    const val HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE = "akun_widget_button"
 
     //User
     const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"

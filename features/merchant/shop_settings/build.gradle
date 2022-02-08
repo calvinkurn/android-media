@@ -65,6 +65,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
     implementation rootProject.ext.miscDependencies.navigationUiKtx
     implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation (rootProject.ext.firebase.crashlytics) {

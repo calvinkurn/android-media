@@ -39,6 +39,8 @@ import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.binding.viewBinding
 import java.net.URLDecoder
 import java.util.*
@@ -63,7 +65,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private var isFirstTry = true
 
     private lateinit var viewModel: SilentVerificationViewModel
-    private var binding: FragmentSilentVerificationBinding? by viewBinding()
+    private var binding by autoClearedNullable<FragmentSilentVerificationBinding>()
     private var otpData: OtpData? = null
     private var modeListData: ModeListData? = null
     private var lottieTaskList: ArrayList<LottieTask<LottieComposition>> = arrayListOf()
@@ -89,7 +91,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_silent_verification, container, false)
+        binding = FragmentSilentVerificationBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

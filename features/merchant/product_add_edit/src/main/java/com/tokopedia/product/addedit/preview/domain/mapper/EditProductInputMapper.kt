@@ -3,8 +3,8 @@ package com.tokopedia.product.addedit.preview.domain.mapper
 import android.net.Uri
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.ProductStatus
-import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
@@ -15,7 +15,6 @@ import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
-import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import javax.inject.Inject
 
@@ -73,7 +72,6 @@ class EditProductInputMapper @Inject constructor() {
                 shipmentInputModel.isMustInsurance,
                 detailInputModel.sku,
                 ShopParam(shopId),
-                Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
                 mapProductShowCases(detailInputModel.productShowCases),
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
@@ -118,6 +116,7 @@ class EditProductInputMapper @Inject constructor() {
         Selection(
                 it.variantId,
                 it.unitID,
+                it.variantName,
                 mapVariantOptions(it.options)
         )
     }

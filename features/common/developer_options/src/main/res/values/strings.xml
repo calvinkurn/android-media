@@ -18,9 +18,12 @@
     <string name="remote_config_delete_btn_key">Delete Key</string>
 
     <string name="pdp_layout_id">Change Layout ID PDP</string>
+    <string name="pdp_vbs">Go To Variant Bottom Sheet</string>
     <string name="pdp_route">Route to PDP</string>
     <string name="pdp_layout_id_edittext_placeholder">Layout ID PDP</string>
     <string name="pdp_product_id_edittext_placeholder">Product Id</string>
+    <string name="pdp_shop_id_edittext_placeholder">Shop Id</string>
+    <string name="pdp_page_source_edittext_placeholder">Page Source</string>
 
     <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
     <string name="ab_test_rollence_edit_text_search_hint">Search key</string>
@@ -58,6 +61,7 @@
     <string name="logging_to_server">Logging To Server:</string>
     <string name="required_server_logging">Pno##TAG##message (message: abc=123##edf=4) (required Server Logging ON)</string>
     <string name="send_log_to_server">Send Log to Server</string>
+    <string name="view_server_logger">View Server Logger</string>
     <string name="enable_seller_app_review_debugging">Enable Seller App Review Debugging</string>
     <string name="v_3_99">3.99</string>
     <string name="example_version_code">399123456</string>

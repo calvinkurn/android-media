@@ -11,7 +11,7 @@ import dagger.Component
  * @author by nisie on 8/11/17.
  */
 @ReputationScope
-@Component(modules = [ReputationModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [ReputationModule::class, ReputationViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface ReputationComponent {
     fun inject(inboxReputationFragment: InboxReputationFragment)
     fun inject(inboxReputationDetailFragment: InboxReputationDetailFragment)
