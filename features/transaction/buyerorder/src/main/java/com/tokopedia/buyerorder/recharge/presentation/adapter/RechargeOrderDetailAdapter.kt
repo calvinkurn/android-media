@@ -6,7 +6,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 /**
