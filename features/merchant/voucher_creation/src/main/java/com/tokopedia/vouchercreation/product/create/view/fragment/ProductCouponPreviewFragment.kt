@@ -163,7 +163,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (pageMode == Mode.UPDATE || pageMode == Mode.DUPLICATE) {
+        if (viewModel.isUpdateMode(pageMode)|| viewModel.isDuplicateMode(pageMode)) {
             viewModel.getCouponDetail(couponId)
         }
     }
@@ -173,7 +173,6 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         nullableBinding = FragmentProductCouponPreviewBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -189,7 +188,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         observeMaxAllowedProductResult()
         viewModel.getMaxAllowedProducts(pageMode)
         handlePageMode()
-        displayCouponDetail()
+        refreshCouponDetail()
     }
 
     private fun observeCouponDetail() {
@@ -326,7 +325,7 @@ class ProductCouponPreviewFragment: BaseDaggerFragment() {
         })
     }
 
-    private fun displayCouponDetail() {
+    private fun refreshCouponDetail() {
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
         refreshProductsSection(couponProducts)
