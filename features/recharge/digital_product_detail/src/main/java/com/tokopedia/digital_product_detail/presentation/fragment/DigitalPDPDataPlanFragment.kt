@@ -316,7 +316,7 @@ class DigitalPDPDataPlanFragment :
                     showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon()
+                    hideIndicatorIcon(shouldShowClearIcon = true)
                     setErrorInputField(msg)
                     onHideBuyWidget()
                 }
