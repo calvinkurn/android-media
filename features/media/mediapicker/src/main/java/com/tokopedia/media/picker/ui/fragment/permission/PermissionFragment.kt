@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.FragmentPermissionBinding
-import com.tokopedia.media.picker.common.PickerPageType
+import com.tokopedia.media.common.types.PickerPageType
 import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.view.binding.viewBinding

@@ -1,7 +1,7 @@
 package com.tokopedia.media.common
 
 import android.annotation.SuppressLint
-import com.tokopedia.media.picker.common.PickerPageType
+import com.tokopedia.media.common.types.PickerPageType
 import java.io.File
 
 @SuppressLint("ResponseFieldAnnotation")

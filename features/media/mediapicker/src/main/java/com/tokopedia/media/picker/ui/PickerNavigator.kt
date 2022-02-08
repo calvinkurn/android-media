@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
-import com.tokopedia.media.picker.common.PickerFragmentType
+import com.tokopedia.media.common.types.PickerFragmentType
 import com.tokopedia.media.picker.ui.fragment.camera.CameraFragment
 import com.tokopedia.media.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment

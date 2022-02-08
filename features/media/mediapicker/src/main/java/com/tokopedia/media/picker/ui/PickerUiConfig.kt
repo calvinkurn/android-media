@@ -3,9 +3,9 @@ package com.tokopedia.media.picker.ui
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst.MediaPicker
 import com.tokopedia.media.common.PickerParam
-import com.tokopedia.media.picker.common.PickerModeType
-import com.tokopedia.media.picker.common.PickerPageType
-import com.tokopedia.media.picker.common.PickerSelectionType
+import com.tokopedia.media.common.types.PickerModeType
+import com.tokopedia.media.common.types.PickerPageType
+import com.tokopedia.media.common.types.PickerSelectionType
 
 object PickerUiConfig {
 

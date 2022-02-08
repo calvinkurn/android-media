@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.common
+package com.tokopedia.media.common.types
 
 import androidx.annotation.IntDef
 

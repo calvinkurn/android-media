@@ -19,8 +19,8 @@ import com.tokopedia.media.common.component.ToolbarTheme
 import com.tokopedia.media.common.intent.PreviewIntent
 import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.ActivityPickerBinding
-import com.tokopedia.media.picker.common.PickerFragmentType
-import com.tokopedia.media.picker.common.PickerPageType
+import com.tokopedia.media.common.types.PickerFragmentType
+import com.tokopedia.media.common.types.PickerPageType
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
