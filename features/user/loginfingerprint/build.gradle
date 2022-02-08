@@ -1,7 +1,12 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 buildscript {
     repositories {
@@ -62,6 +67,11 @@ dependencies {
     //Debug Tools
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation projectOrAar(rootProject.ext.libraries.logger)
+
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.design
 
     //Test Dependencies
     testImplementation rootProject.ext.testDependencies.mockk
