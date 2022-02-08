@@ -3,10 +3,13 @@ package com.tokopedia.addongifting.view.viewholder
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.databinding.ItemAddOnBinding
+import com.tokopedia.addongifting.databinding.SubLayoutAddOnFooterMessageBinding
 import com.tokopedia.addongifting.view.AddOnActionListener
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -77,6 +80,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 renderTo(viewBinding, element)
                 renderFrom(viewBinding, element)
                 renderNote(viewBinding, element)
+                renderAddOnFooterMessages(viewBinding, element)
             } else {
                 cardAddOnNote.gone()
             }
@@ -170,17 +174,16 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
         }
     }
 
-    private fun validateNote(text: String, element: AddOnUiModel): Pair<Boolean, String> {
-        if (text.length > 25) {
-            return Pair(true, "Isi pesan maks. 250 karakter")
-        }
-
-        return if (element.isCustomNote) {
-            Pair(false, "Bisa ubah pesan yang disediakan")
-        } else {
-            Pair(false, "Menggunakan pesan yang disediakan")
+    private fun renderAddOnFooterMessages(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
+        with(viewBinding) {
+            containerFooterMessages.removeAllViews()
+            element.addOnFooterMessages.forEach {
+                val messageView = SubLayoutAddOnFooterMessageBinding.inflate(LayoutInflater.from(itemView.context))
+                val message = it.replace("{{qty}}", element.productCount.toString())
+                messageView.labelFooterMessage.text = message
+                containerFooterMessages.addView(messageView.root)
+            }
         }
     }
-
 
 }
