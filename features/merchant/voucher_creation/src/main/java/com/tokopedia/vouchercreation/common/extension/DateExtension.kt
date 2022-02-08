@@ -15,3 +15,9 @@ fun Date.parseTo(desiredOutputFormat: String): String {
         EMPTY_STRING
     }
 }
+
+fun Date.toCalendar(): Calendar {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar
+}

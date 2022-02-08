@@ -317,10 +317,10 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private fun setupFilterChips(view: View) {
         val chip = view.findViewById<SortFilter>(R.id.sf_voucher_list)
-        /*chip.parentListener = {
-            onCreateCouponMenuSelected()
-        }*/
         chip.parentListener = {
+            onCreateCouponMenuSelected()
+        }
+        /*chip.parentListener = {
             val bottomSheet = CouponFilterBottomSheet.newInstance(
                 viewModel.selectedFilterType.value ?: CouponFilterBottomSheet.FilterType.NOT_SELECTED,
                 viewModel.selectedFilterTarget.value ?: CouponFilterBottomSheet.FilterTarget.NOT_SELECTED,
@@ -328,7 +328,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
                 ::onResetFilter
             )
             bottomSheet.show(childFragmentManager, bottomSheet.tag)
-        }
+        }*/
 
         filterStatus.chevronListener = {
             CouponStatusFilterBotomSheet(::onStatusSelected).show(childFragmentManager, "")
@@ -664,7 +664,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private fun showUpdateCouponPeriodBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val bottomSheet = UpdateCouponPeriodBottomSheet.newInstance(couponMapper.map(voucher))
+        val bottomSheet = UpdateCouponPeriodBottomSheet.newInstance(voucher.id.toLong())
         bottomSheet.setOnSuccessClickListener { onSuccessUpdateVoucherPeriod() }
         bottomSheet.setOnFailClickListener { message ->
             val errorMessage = if (message.isNotBlank()) {
