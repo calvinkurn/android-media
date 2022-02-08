@@ -988,9 +988,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun initCoachmark() {
-        coachmarkGopay = CoachMark2(requireContext())
-        coachmarkTokopoint = CoachMark2(requireContext())
-        coachmarkTokonow = CoachMark2(requireContext())
+        context?.let {
+            coachmarkGopay = CoachMark2(it)
+            coachmarkTokopoint = CoachMark2(it)
+            coachmarkTokonow = CoachMark2(it)
+        }
     }
 
     private fun initStickyLogin() {
