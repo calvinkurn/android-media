@@ -94,6 +94,8 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
               color
             }
             benefits
+            user_state
+            user_balance_amt
             disable {
               status
               header

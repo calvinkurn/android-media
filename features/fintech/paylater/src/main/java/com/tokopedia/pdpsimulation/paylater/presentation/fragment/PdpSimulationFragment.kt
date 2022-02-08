@@ -25,6 +25,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteracti
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.ActionHandler
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterBundleGenerator
 import com.tokopedia.pdpsimulation.paylater.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationAdapter
@@ -94,7 +95,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
             PayLaterInstallmentFeeInfo::class.java,
-            ActionHandler.getInstallmentBundle(detail)
+            PayLaterBundleGenerator.getInstallmentBundle(detail)
         )
     }
 
@@ -170,10 +171,20 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 data[defaultSelectedSimulation].simulationList ?: arrayListOf()
             )
         }
+
+        sendPayLaterImpression(data, defaultSelectedSimulation)
+    }
+
+    private fun sendPayLaterImpression(data: ArrayList<SimulationUiModel>, defaultSelectedSimulation:Int) {
+        val firstDetail = data[defaultSelectedSimulation].simulationList?.getOrNull(0)
+        var userState = ""
+        if (firstDetail is Detail) {
+            userState = firstDetail.userState ?:""
+        }
         val event = PayLaterAnalyticsBase().apply {
             tenureOption = defaultSelectedSimulation
             action = PdpSimulationAnalytics.IMPRESSION_PAYLATER
-            //Todo partner name, userstatus
+            userStatus = userState
         }
         sendEvent(event)
     }

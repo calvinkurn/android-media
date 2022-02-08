@@ -65,6 +65,8 @@ data class Detail(
     @SerializedName("disable") val paylaterDisableDetail: DisableDetail?,
     @SerializedName("cta") val cta: Cta,
     @SerializedName("installment_details") val installementDetails: InstallmentDetails?,
+    @SerializedName("user_state") val userState: String?,
+    @SerializedName("user_balance_amt") val limit: Double?,
 ) : BasePayLaterWidgetUiModel, Parcelable {
     override fun type(typeFactory: PayLaterAdapterFactory): Int {
         return typeFactory.type(this)

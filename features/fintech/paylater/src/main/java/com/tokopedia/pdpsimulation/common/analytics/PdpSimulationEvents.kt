@@ -29,7 +29,6 @@ open class PayLaterAnalyticsBase {
     var tenureOption: Int = 0
     var payLaterPartnerName: String = ""
     var action: String = ""
-    var timeStamp: Long = System.currentTimeMillis()
 }
 
 open class PayLaterProductImpressionEvent: PayLaterAnalyticsBase() {

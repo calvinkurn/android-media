@@ -64,6 +64,7 @@ class PayLaterSimulationAdapter(val adapterFactory: PayLaterAdapterFactoryImpl) 
                 val item = visitables[position] as Detail
                 val event = PayLaterProductImpressionEvent().apply {
                     tenureOption = item.tenure ?: 0
+                    userStatus = item.userState ?: ""
                     payLaterPartnerName = item.gatewayDetail?.name?:""
                     action = PdpSimulationAnalytics.IMPRESSION_PARTNER_CARD
                     emiAmount = item.installment_per_month_ceil?.toString() ?:""
