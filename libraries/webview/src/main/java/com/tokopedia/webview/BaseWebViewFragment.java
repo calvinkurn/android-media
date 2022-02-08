@@ -811,7 +811,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private boolean handlingBriIntent(String briUrl) {
         String newUrl = briUrl.substring(briUrl.indexOf("browser_fallback_url=") + 21, briUrl.length() - 1);
-        return launchWebviewForNewUrl(newUrl);
+        return launchWebviewForNewUrl(UrlEncoderExtKt.decode(newUrl));
     }
 
     private boolean launchWebviewForNewUrl(String newUrl) {
