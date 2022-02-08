@@ -615,9 +615,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     val ctaButton = getGopayNewBalanceWidgetView()
                     ctaButton?.let { gopayWidget ->
                         if (this.isEmpty()) {
-                            val originalPosition = intArrayOf(0,0)
-                            gopayWidget.getLocationInWindow(originalPosition)
-                            positionWidgetGopay = originalPosition[1]
+                            positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
                             this.add(
                                 CoachMark2Item(
                                     ctaButton,
@@ -631,9 +629,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     val gopayWidget = getGopayNewActivateBalanceWidgetView()
                     gopayWidget?.let { gopayWidget ->
                         if (this.isEmpty()) {
-                            val originalPosition = intArrayOf(0,0)
-                            gopayWidget.getLocationInWindow(originalPosition)
-                            positionWidgetGopay = originalPosition[1]
+                            positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
                             this.add(
                                 CoachMark2Item(
                                     gopayWidget,
@@ -653,9 +649,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             val tokopointWidget = getTokopointsNewBalanceWidgetView()
             tokopointWidget?.let {
                 if (this.isEmpty()) {
-                    val originalPosition = intArrayOf(0,0)
-                    it.getLocationInWindow(originalPosition)
-                    positionWidgetTokopoints = originalPosition[1]
+                    positionWidgetTokopoints = it.getPositionWidgetVertical()
                     this.add(
                         CoachMark2Item(
                             tokopointWidget,
@@ -671,11 +665,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun ArrayList<CoachMark2Item>.buildTokonowCoachmark(tokonowIcon: View?) {
         context?.let { currentContext ->
             if (!isHomeTokonowCoachmarkShown(currentContext)) {
-                tokonowIcon?.let {
+                tokonowIcon?.let { tokonowIcon ->
                     if (this.isEmpty()) {
-                        val originalPosition = intArrayOf(0, 0)
-                        it.getLocationInWindow(originalPosition)
-                        positionWidgetTokonow = originalPosition[1]
+                        positionWidgetTokonow = tokonowIcon.getPositionWidgetVertical()
                         this.add(
                             CoachMark2Item(
                                 tokonowIcon,
