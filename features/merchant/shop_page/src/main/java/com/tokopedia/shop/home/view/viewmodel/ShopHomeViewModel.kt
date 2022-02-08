@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
@@ -12,7 +13,6 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -53,6 +53,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -100,9 +101,9 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopHomeWidgetLayoutData
     private val _shopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageHomeWidgetLayoutUiModel>>()
 
-    val shopHomeWidgetContentData : Flow<Result<Map<Pair<String,String>, BaseShopHomeWidgetUiModel?>>>
+    val shopHomeWidgetContentData : Flow<Result<Map<Pair<String,String>, Visitable<*>?>>>
         get() = _shopHomeWidgetContentData
-    private val _shopHomeWidgetContentData = MutableSharedFlow<Result<Map<Pair<String,String>, BaseShopHomeWidgetUiModel?>>>()
+    private val _shopHomeWidgetContentData = MutableSharedFlow<Result<Map<Pair<String,String>, Visitable<*>?>>>()
 
     val shopHomeWidgetContentDataError : Flow<List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>>
         get() = _shopHomeWidgetContentDataError
@@ -673,11 +674,22 @@ class ShopHomeViewModel @Inject constructor(
                     ShopUtil.isMyShop(shopId, userSessionShopId),
                     isLogin
             )
-            val mapShopHomeWidgetData = mutableMapOf<Pair<String, String>, BaseShopHomeWidgetUiModel?>().apply{
+            val mapShopHomeWidgetData = mutableMapOf<Pair<String, String>, Visitable<*>?>().apply{
                 listWidgetLayout.onEach {
                     val widgetLayoutId = it.widgetId
                     val matchedWidget = listShopHomeWidget.firstOrNull { shopHomeWidget ->
-                        shopHomeWidget.widgetId == widgetLayoutId
+                        when (shopHomeWidget) {
+                            is BaseShopHomeWidgetUiModel -> {
+                                shopHomeWidget.widgetId == widgetLayoutId
+                            }
+                            is ThematicWidgetUiModel -> {
+                                shopHomeWidget.widgetId == widgetLayoutId
+                            }
+                            else -> {
+                                false
+                            }
+                        }
+
                     }
                     if (matchedWidget != null) {
                         put(Pair(it.widgetId, it.widgetMasterId), matchedWidget)

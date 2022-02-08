@@ -26,6 +26,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
+import com.tokopedia.shop_widget.common.util.WidgetState
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
 /**
@@ -114,11 +116,15 @@ class ShopHomeAdapter(
         }
     }
 
-    fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
+    fun setHomeLayoutData(data: List<Visitable<*>>) {
         val newList = getNewVisitableItems()
         newList.clear()
         newList.addAll(data.onEach {
-            it.widgetState = WidgetState.PLACEHOLDER
+            if (it is BaseShopHomeWidgetUiModel) {
+                it.widgetState = WidgetState.PLACEHOLDER
+            } else if (it is ThematicWidgetUiModel) {
+                it.widgetState = WidgetState.PLACEHOLDER
+            }
         })
         newList.add(ProductGridListPlaceholderUiModel(WidgetState.PLACEHOLDER))
         submitList(newList)
@@ -476,19 +482,27 @@ class ShopHomeAdapter(
                 || (widget as? PlayWidgetUiModel.Medium)?.items?.isEmpty() == true
     }
 
-    fun updateShopHomeWidgetContentData(listWidgetContentData: Map<Pair<String, String>, BaseShopHomeWidgetUiModel?>) {
+    fun updateShopHomeWidgetContentData(listWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
         val newList = getNewVisitableItems()
         listWidgetContentData.onEach { widgetContentData ->
             newList.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
                 widgetContentData.key.first == it.widgetId
             }.let{ position ->
                 if (position >= 0 && position < newList.size) {
-                    if(widgetContentData.value != null){
-                        widgetContentData.value?.widgetState = WidgetState.FINISH
-                        widgetContentData.value?.isNewData = true
-                        newList.setElement(position, widgetContentData.value)
-                    } else {
-                        newList.removeAt(position)
+                    when (widgetContentData.value) {
+                        null -> {
+                            newList.removeAt(position)
+                        }
+                        is BaseShopHomeWidgetUiModel -> {
+                            (widgetContentData.value as BaseShopHomeWidgetUiModel).widgetState = WidgetState.FINISH
+                            (widgetContentData.value as BaseShopHomeWidgetUiModel).isNewData = true
+                            newList.setElement(position, widgetContentData.value)
+                        }
+                        is ThematicWidgetUiModel -> {
+                            (widgetContentData.value as ThematicWidgetUiModel).widgetState = WidgetState.FINISH
+                            (widgetContentData.value as ThematicWidgetUiModel).isNewData = true
+                            newList.setElement(position, widgetContentData.value)
+                        }
                     }
                 }
             }

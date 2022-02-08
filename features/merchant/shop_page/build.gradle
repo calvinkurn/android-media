@@ -69,6 +69,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.features.shopPageWidget)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)

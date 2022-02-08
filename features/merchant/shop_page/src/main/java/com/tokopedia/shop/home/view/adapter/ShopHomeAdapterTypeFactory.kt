@@ -34,6 +34,10 @@ import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop_widget.common.util.WidgetState
+import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFactory
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 
 class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
@@ -48,7 +52,7 @@ class ShopHomeAdapterTypeFactory(
         private val isShowTripleDot: Boolean,
         private val shopHomeShowcaseListWidgetListener: ShopHomeShowcaseListWidgetListener,
         private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener
-) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
+) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var previousViewHolder: AbstractViewHolder<*>? = null
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
@@ -144,6 +148,10 @@ class ShopHomeAdapterTypeFactory(
         return CarouselPlayWidgetViewHolder.LAYOUT
     }
 
+    override fun type(uiModel: ThematicWidgetUiModel): Int {
+        return ThematicWidgetViewHolder.LAYOUT
+    }
+
     override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
         return when(productCardType) {
             ShopProductViewGridType.SMALL_GRID -> {
@@ -233,6 +241,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderBannerPlaceholderViewHolder(parent)
             ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderSquarePlaceholderViewHolder(parent)
             ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnPlaceholderViewHolder(parent)
+            ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder

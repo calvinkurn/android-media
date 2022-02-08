@@ -1,9 +1,13 @@
 package com.tokopedia.shop.home.util.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
+import com.tokopedia.shop.home.WidgetName.ETALASE_THEMATIC
 import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
@@ -24,6 +28,8 @@ import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
@@ -202,7 +208,7 @@ object ShopPageHomeMapper {
             widgetResponse: ShopLayoutWidget.Widget,
             isMyOwnProduct: Boolean,
             isLoggedIn: Boolean
-    ): BaseShopHomeWidgetUiModel? {
+    ): Visitable<*>? {
         if (widgetResponse.name == VOUCHER_STATIC) {
             return mapToVoucherUiModel(widgetResponse)
         }
@@ -215,6 +221,8 @@ object ShopPageHomeMapper {
             }
             CAMPAIGN.toLowerCase() -> {
                 when(widgetResponse.name) {
+                    ETALASE_THEMATIC -> mapToThematicWidget(widgetResponse)
+                    BIG_CAMPAIGN_THEMATIC -> mapToThematicWidget(widgetResponse)
                     FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
                     NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
                     else -> null
@@ -425,6 +433,46 @@ object ShopPageHomeMapper {
         )
     }
 
+    private fun mapToThematicWidget(widgetResponse: ShopLayoutWidget.Widget): ThematicWidgetUiModel {
+//        return ThematicWidgetUiModel(
+//            widgetId = widgetResponse.widgetID,
+//            layoutOrder = widgetResponse.layoutOrder,
+//            name = widgetResponse.name,
+//            type = widgetResponse.type,
+//            header = DynamicHeaderUiModel(
+//                campaignId = widgetResponse.data.firstOrNull()?.campaignId.orEmpty(),
+//                title = widgetResponse.header.title,
+//                subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
+//                ctaText = widgetResponse.header.ctaText,
+//                ctaTextLink = widgetResponse.header.ctaLink,
+//                startDate = widgetResponse.data.firstOrNull()?.startDate.orEmpty(),
+//                endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
+//                timeDescription = widgetResponse.data.firstOrNull()?.description.orEmpty(),
+//                timeCounter = widgetResponse.data.firstOrNull()?.timeCounter.toLongOrZero(),
+//                statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty()
+//            ),
+//            widgetMasterId = widgetResponse.widgetMasterID
+//        )
+
+        return ThematicWidgetUiModel(
+            widgetId = widgetResponse.widgetID,
+            layoutOrder = widgetResponse.layoutOrder,
+            name = widgetResponse.name,
+            type = widgetResponse.type,
+            header = DynamicHeaderUiModel(
+                title = "Ada saja",
+                subTitle = "Berakhir dalam",
+                ctaText = "Lihat semua",
+                ctaTextLink = "https://tokopedia.com",
+                startDate = "2022-01-25 11:30:00 +0000 UTC",
+                endDate = "2022-02-10 11:33:00 +0000 UTC",
+                timeCounter = 1000,
+                statusCampaign = "ongoing"
+            ),
+            widgetMasterId = widgetResponse.widgetMasterID
+        )
+    }
+
     private fun mapToListDisplayWidgetItem(
             data: List<ShopLayoutWidget.Widget.Data>
     ): List<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem>? {
@@ -579,13 +627,20 @@ object ShopPageHomeMapper {
             responseWidgetData: List<ShopLayoutWidget.Widget>,
             myShop: Boolean,
             isLoggedIn: Boolean
-    ): List<BaseShopHomeWidgetUiModel> {
-        return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+    ): List<Visitable<*>> {
+        return mutableListOf<Visitable<*>>().apply {
             responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC}.onEach {
                 val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn)
-                widgetUiModel?.let { model ->
-                    model.widgetMasterId = it.widgetMasterID
-                    add(model)
+                if (widgetUiModel is BaseShopHomeWidgetUiModel) {
+                    widgetUiModel.let { model ->
+                        model.widgetMasterId = it.widgetMasterID
+                        add(model)
+                    }
+                } else if (widgetUiModel is ThematicWidgetUiModel) {
+                    widgetUiModel.let { model ->
+                        model.widgetMasterId = it.widgetMasterID
+                        add(model)
+                    }
                 }
             }
         }
@@ -610,8 +665,8 @@ object ShopPageHomeMapper {
             listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
             myShop: Boolean,
             isLoggedIn: Boolean
-    ): List<BaseShopHomeWidgetUiModel> {
-        return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+    ): List<Visitable<*>> {
+        return mutableListOf<Visitable<*>>().apply {
             listWidgetLayout.onEach {
                 mapToWidgetUiModel(
                         ShopLayoutWidget.Widget(
@@ -620,8 +675,13 @@ object ShopPageHomeMapper {
                                 name = it.widgetName
                         ), myShop, isLoggedIn
                 )?.let{ resModel ->
-                    resModel.widgetMasterId = it.widgetMasterId
-                    add(resModel)
+                    if (resModel is BaseShopHomeWidgetUiModel) {
+                        resModel.widgetMasterId = it.widgetMasterId
+                        add(resModel)
+                    } else if (resModel is ThematicWidgetUiModel) {
+                        resModel.widgetMasterId = it.widgetMasterId
+                        add(resModel)
+                    }
                 }
             }
         }

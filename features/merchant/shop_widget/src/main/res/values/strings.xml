@@ -7,4 +7,7 @@
     <string name="shop_ops_hour_datetime_format_24_hours_text">Buka 24 Jam</string>
     <string name="shop_ops_hour_datetime_format_holiday_text">Libur</string>
     <string name="shop_widget_ops_hour_retry">Coba Lagi</string>
+
+    <!-- Thematic Widget -->
+    <string name="thematic_widget_see_all">Lihat Semua</string>
 </resources>
