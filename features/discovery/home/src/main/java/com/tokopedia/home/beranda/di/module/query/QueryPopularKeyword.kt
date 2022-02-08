@@ -1,7 +1,13 @@
 package com.tokopedia.home.beranda.di.module.query
 
-object QueryPopularKeyword {
-    val popularKeywordQuery = "query PopularKeywords(\$count: Int!, \$page: Int!) {\n" +
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.POPULAR_KEYWORD_QUERY
+import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.POPULAR_KEYWORD_QUERY_NAME
+
+@GqlQuery(POPULAR_KEYWORD_QUERY_NAME, POPULAR_KEYWORD_QUERY)
+internal object QueryPopularKeyword {
+    const val POPULAR_KEYWORD_QUERY_NAME = "PopularKeywordGqlQuery"
+    const val POPULAR_KEYWORD_QUERY = "query PopularKeywords(\$count: Int!, \$page: Int!) {\n" +
             "                popular_keywords(count: \$count, page: \$page) {\n" +
             "                    recommendation_type\n" +
             "                    title\n" +

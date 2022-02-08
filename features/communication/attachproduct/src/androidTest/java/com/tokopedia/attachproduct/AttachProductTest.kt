@@ -19,12 +19,14 @@ import com.tokopedia.attachproduct.test.R
 import com.tokopedia.attachproduct.utils.FileUtils
 import com.tokopedia.attachproduct.utils.ViewUtils
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.espresso_component.CommonAssertion
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 
+@UiTest
 class AttachProductTest {
 
     @get:Rule
