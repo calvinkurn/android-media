@@ -34,6 +34,11 @@ class MoreInfoPDPBottomsheet(
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bottomSheetBehaviorKnob(view, true)
+    }
+
     private fun initView(){
         binding = BottomSheetMoreInfoBinding.inflate(LayoutInflater.from(context))
         binding?.run {
