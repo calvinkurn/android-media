@@ -66,7 +66,10 @@ class SomOrderRequestCancelBottomSheet(
                             SomConsts.STATUS_CODE_ORDER_CREATED -> {
                                 listener?.onAcceptOrder(primaryButtonText)
                             }
-                            SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
+                            SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED,
+                            SomConsts.STATUS_CODE_WAITING_PICKUP,
+                            SomConsts.STATUS_CODE_READY_TO_SEND,
+                            SomConsts.STATUS_CODE_RECEIPT_CHANGED -> {
                                 listener?.onRejectCancelRequest()
                             }
                         }
@@ -74,7 +77,10 @@ class SomOrderRequestCancelBottomSheet(
                 )
             }
             btnPositive.setOnClickListener {
-                showPositiveButtonBuyerRequestCancelOnClickButtonDialog(reasonBuyer)
+                showPositiveButtonBuyerRequestCancelOnClickButtonDialog(
+                    reasonBuyer,
+                    statusCode
+                )
             }
         }
     }
@@ -83,6 +89,8 @@ class SomOrderRequestCancelBottomSheet(
         return when (statusCode) {
             SomConsts.STATUS_CODE_ORDER_CREATED -> context.getString(R.string.som_buyer_cancellation_confirm_accept_order_button)
             SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> context.getString(R.string.som_buyer_cancellation_confirm_shipping_button)
+            SomConsts.STATUS_CODE_WAITING_PICKUP, SomConsts.STATUS_CODE_READY_TO_SEND, SomConsts.STATUS_CODE_RECEIPT_CHANGED ->
+                context.getString(R.string.som_request_cancellation_btn_primary_continue_send_order_dialog)
             else -> ""
         }
     }
@@ -91,6 +99,9 @@ class SomOrderRequestCancelBottomSheet(
         return when (statusCode) {
             SomConsts.STATUS_CODE_ORDER_CREATED -> context.getString(R.string.som_buyer_cancellation_confirm_accept_order_description)
             SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> context.getString(R.string.som_buyer_cancellation_confirm_shipping_description)
+            SomConsts.STATUS_CODE_WAITING_PICKUP,
+            SomConsts.STATUS_CODE_READY_TO_SEND,
+            SomConsts.STATUS_CODE_RECEIPT_CHANGED -> context.getString(R.string.som_request_cancellation_desc_continue_send_order_dialog)
             else -> ""
         }
     }
@@ -99,6 +110,9 @@ class SomOrderRequestCancelBottomSheet(
         return when (statusCode) {
             SomConsts.STATUS_CODE_ORDER_CREATED -> context.getString(R.string.som_buyer_cancellation_confirm_accept_order_title)
             SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> context.getString(R.string.som_buyer_cancellation_confirm_shipping_title)
+            SomConsts.STATUS_CODE_WAITING_PICKUP,
+            SomConsts.STATUS_CODE_READY_TO_SEND,
+            SomConsts.STATUS_CODE_RECEIPT_CHANGED -> context.getString(R.string.som_request_cancellation_title_continue_send_order_dialog)
             else -> ""
         }
     }
@@ -127,10 +141,13 @@ class SomOrderRequestCancelBottomSheet(
         }
     }
 
-    private fun showPositiveButtonBuyerRequestCancelOnClickButtonDialog(reasonBuyer: String) {
+    private fun showPositiveButtonBuyerRequestCancelOnClickButtonDialog(
+        reasonBuyer: String,
+        orderStatusCode: Int
+    ) {
         showBuyerRequestCancelOnClickButtonDialog(
             title = context.getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_title),
-            description = context.getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_description),
+            description = getDescPositiveButtonBuyerRequestCancelOnClickButtonDialog(orderStatusCode),
             primaryButtonText = context.getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_button),
             secondaryButtonText = context.getString(R.string.som_buyer_cancellation_cancel_button),
             primaryButtonClickAction = {
@@ -138,6 +155,16 @@ class SomOrderRequestCancelBottomSheet(
                 listener?.onRejectOrder(reasonBuyer)
             }
         )
+    }
+
+    private fun getDescPositiveButtonBuyerRequestCancelOnClickButtonDialog(orderStatusCode: Int): String {
+        return when (orderStatusCode) {
+            SomConsts.STATUS_CODE_WAITING_PICKUP,
+            SomConsts.STATUS_CODE_READY_TO_SEND,
+            SomConsts.STATUS_CODE_RECEIPT_CHANGED ->
+                context.getString(R.string.som_request_cancellation_desc_confirm_cancellation_order_dialog)
+            else -> context.getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_description)
+        }
     }
 
     fun init(popUp: PopUp, reason: String, orderStatusCode: Int) {
