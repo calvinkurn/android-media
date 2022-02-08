@@ -412,6 +412,7 @@
     <string name="percent">%</string>
     <string name="percentage">Persentase</string>
     <string name="manage_product">Atur Produk</string>
+    <string name="view_all">Lihat Semua</string>
     <string name="max_expense_estimation_1">Kuota Kupon akan berkurang saat transaksi selesai.</string>
     <string name="max_expense_estimation_2">Masa aktif kupon 1 minggu sejak diklaim pembeli untuk 1 kali pemakaian. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
     <string name="coupon_scheduled">Yay, Kupon dijadwalkan!</string>
@@ -445,6 +446,7 @@
     <string name="update_active_coupon_period">Ubah periode kupon aktif</string>
     <string name="start">Mulai</string>
     <string name="end">Selesai</string>
+    <string name="update">Ubah</string>
 
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
