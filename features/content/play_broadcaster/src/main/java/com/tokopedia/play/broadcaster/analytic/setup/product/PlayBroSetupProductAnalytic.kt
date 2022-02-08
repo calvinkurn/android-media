@@ -9,7 +9,7 @@ interface PlayBroSetupProductAnalytic {
 
     fun clickSaveButtonOnProductSetup(productId: String)
 
-    fun clickAddMoreProductonProductSetup(productId: String) /** TODO: where to get this productId? */
+    fun clickAddMoreProductOnProductSetup()
 
     fun clickSelectProductOnProductSetup(productId: String)
 

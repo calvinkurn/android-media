@@ -37,10 +37,10 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickAddMoreProductonProductSetup(productId: String) {
+    override fun clickAddMoreProductOnProductSetup() {
         sendEvent(
             "click - add product card",
-            "$shopId - $productId"
+            "$shopId"
         )
     }
 
@@ -87,7 +87,7 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to "clickPG",
+                KEY_EVENT to "clickSellerBroadcast",
                 KEY_EVENT_ACTION to eventAction,
                 KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                 KEY_EVENT_LABEL to eventLabel,
