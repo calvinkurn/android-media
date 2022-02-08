@@ -19,7 +19,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -52,7 +52,7 @@ class GopayInstallmentDetailBottomSheet(private var paymentProcessor: OrderSumma
                 setChild(binding?.root)
                 setOnDismissListener {
                     binding = null
-                    cancel()
+                    coroutineContext.cancelChildren()
                 }
                 show(it, null)
             }
