@@ -47,6 +47,15 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 labelAddOnDescription.gone()
             }
             labelAddOnPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()
+            labelAddOnName.setOnClickListener(getCheckboxClickListener())
+            labelAddOnDescription.setOnClickListener(getCheckboxClickListener())
+            labelAddOnPrice.setOnClickListener(getCheckboxClickListener())
+        }
+    }
+
+    private fun getCheckboxClickListener(): View.OnClickListener {
+        return View.OnClickListener {
+            viewBinding.checkBoxAddOn.isChecked = !viewBinding.checkBoxAddOn.isChecked
         }
     }
 
