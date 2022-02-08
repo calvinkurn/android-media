@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.productEtalaseEmpty
 import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -102,6 +103,8 @@ class ProductSummaryBottomSheet @Inject constructor(
         }
     }
 
+    @ExperimentalStdlibApi
+    /** TODO: gonna remove this annotation later */
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
@@ -131,11 +134,18 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.flBtnDoneContainer.visibility = View.GONE
                     }
                     is ProductTagSummaryUiModel.Error -> {
+                        view?.showErrorToaster(
+                            err = state.productTagSummary.throwable,
+                            customErrMessage = state.productTagSummary.throwable.localizedMessage
+                                ?: getString(R.string.play_broadcaster_default_error),
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = { viewModel.getProductTagSummary() }
+                        )
+
                         setTitle(null)
                         productSummaryListView.setProductList(emptyList())
 
                         binding.ivLoading.visibility = View.GONE
-                        binding.globalError.visibility = View.VISIBLE
                         binding.flBtnDoneContainer.visibility = View.GONE
                     }
                     else -> {}
