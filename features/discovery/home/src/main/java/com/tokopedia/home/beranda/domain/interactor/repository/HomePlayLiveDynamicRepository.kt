@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.model.PlayLiveDynamicChannelEntity
-import com.tokopedia.home.beranda.data.query.PlayLiveDynamicChannelQuery
+import com.tokopedia.home.beranda.data.query.PlayLiveDynamicQuery
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -35,7 +35,7 @@ class HomePlayLiveDynamicRepository @Inject constructor(
 
     override suspend fun executeOnBackground(): PlayData {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(PlayLiveDynamicChannelQuery.getQuery())
+        graphqlUseCase.setGraphqlQuery(PlayLiveDynamicQuery())
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground().playDynamicData.playData
     }
