@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatlist.viewmodel
+package com.tokopedia.topchat.chatsearch.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topchat.chatsearch.data.ChatSearch
