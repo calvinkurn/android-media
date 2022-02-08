@@ -22,6 +22,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class OfficialHomeMapper (
         private val context: Context,
@@ -263,20 +264,14 @@ class OfficialHomeMapper (
     }
 
     fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
-        listOfficialStore.forEachIndexed {index, it ->
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.forEach {
             if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
-                newData.channelModel.channelHeader = it.channelModel.channelHeader
-                try {
-                    if (listOfficialStore.size > index) {
-                        listOfficialStore[index] = newData.copy()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+                newList.add(newData.copy())
+            } else newList.add(it)
         }
-        action.invoke(listOfficialStore)
+        action.invoke(newList.toMutableList())
     }
 
     fun removeFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
