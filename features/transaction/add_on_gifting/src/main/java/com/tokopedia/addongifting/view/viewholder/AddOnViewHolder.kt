@@ -96,15 +96,9 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val validationResult = validateTo(s.toString())
-                    if (validationResult.first) {
-                        textFieldAddOnTo.isInputError = true
-                        textFieldAddOnTo.setMessage(validationResult.second)
-                    } else {
-                        element.addOnNote = s.toString()
-                        textFieldAddOnTo.isInputError = false
-                        textFieldAddOnTo.setMessage("")
-                    }
+                    element.addOnNote = s.toString()
+                    textFieldAddOnTo.isInputError = false
+                    textFieldAddOnTo.setMessage("")
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -112,14 +106,6 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
             })
         }
-    }
-
-    private fun validateTo(text: String): Pair<Boolean, String> {
-        if (text.length > 25) {
-            return Pair(true, "Nama penerima maks. 25 karakter")
-        }
-
-        return Pair(false, "")
     }
 
     private fun renderFrom(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
@@ -135,15 +121,9 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val validationResult = validateFrom(s.toString())
-                    if (validationResult.first) {
-                        textFieldAddOnFrom.isInputError = true
-                        textFieldAddOnFrom.setMessage(validationResult.second)
-                    } else {
-                        element.addOnNote = s.toString()
-                        textFieldAddOnFrom.isInputError = false
-                        textFieldAddOnFrom.setMessage("")
-                    }
+                    element.addOnNote = s.toString()
+                    textFieldAddOnFrom.isInputError = false
+                    textFieldAddOnFrom.setMessage("")
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -151,14 +131,6 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
             })
         }
-    }
-
-    private fun validateFrom(text: String): Pair<Boolean, String> {
-        if (text.length > 25) {
-            return Pair(true, "Nama pengirim maks. 25 karakter")
-        }
-
-        return Pair(false, "")
     }
 
     private fun renderNote(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
@@ -175,26 +147,26 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val validationResult = validateNote(s.toString(), element)
-                    if (validationResult.first) {
-                        textFieldAddOnFrom.isInputError = true
-                        textFieldAddOnFrom.setMessage(validationResult.second)
-                    } else {
-                        textFieldAddOnFrom.isInputError = false
-                        textFieldAddOnFrom.setMessage("")
-                        element.addOnNote = s.toString()
-                    }
-                    if (s?.length ?: 0 > 0) {
-                        textFieldAddOnNote.setLabel("Pesan")
-                    } else {
-                        textFieldAddOnNote.setLabel("Tulis pesan di kartu ucapan")
-                    }
+                    textFieldAddOnFrom.isInputError = false
+                    textFieldAddOnFrom.setMessage("")
+                    element.addOnNote = s.toString()
                 }
 
                 override fun afterTextChanged(s: Editable?) {
 
                 }
             })
+            textFieldAddOnNote.editText.setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    textFieldAddOnNote.setLabel("Pesan")
+                } else {
+                    if (textFieldAddOnNote.editText.text.isNotEmpty()) {
+                        textFieldAddOnNote.setLabel("Pesan")
+                    } else {
+                        textFieldAddOnNote.setLabel("Tulis pesan di kartu ucapan")
+                    }
+                }
+            }
         }
     }
 
