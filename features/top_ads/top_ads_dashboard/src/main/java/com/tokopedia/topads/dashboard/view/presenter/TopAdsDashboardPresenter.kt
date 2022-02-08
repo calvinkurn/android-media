@@ -459,7 +459,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     fun getBidInfo(suggestion: List<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit)) {
-        bidInfoUseCase.setParams(suggestion, ParamObject.GROUP, ParamObject.SOURCE_CREATE_HEADLINE)
+        bidInfoUseCase.setParams(suggestion, ParamObject.PRODUCT, ParamObject.SOURCE_CREATE_HEADLINE)
         bidInfoUseCase.executeQuerySafeMode({
             onSuccess(it.topadsBidInfo.data)
         }, {

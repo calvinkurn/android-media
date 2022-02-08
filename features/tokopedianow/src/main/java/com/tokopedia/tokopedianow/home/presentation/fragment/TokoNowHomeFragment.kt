@@ -1082,7 +1082,9 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        adapter.submitList(data.items)
+        rvHome?.post {
+            adapter.submitList(data.items)
+        }
     }
 
     private fun addLoadMoreListener() {

@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class HomeDataMapper(
@@ -29,6 +30,7 @@ class HomeDataMapper(
         var processingAtf = homeData.atfData?.isProcessingAtf?: false
         var processingDynamicChannel = homeData.isProcessingDynamicChannel
 
+        var isChannelBeautyFest = HomeRevampFragment.BEAUTY_FEST_NOT_SET
         if (isCache) {
             processingAtf = false
             processingDynamicChannel = false
@@ -38,6 +40,24 @@ class HomeDataMapper(
             }
             if (homeData.dynamicHomeChannel.channels.isEmpty() && haveCachedData) {
                 throw IllegalStateException(DC_ERROR_MESSAGE)
+            }
+            for (channel in homeData.dynamicHomeChannel.channels) {
+                isChannelBeautyFest = when(channel.id) {
+                    //hardcoded channel id as beauty fest channel id
+                    "129362",
+                    "129363",
+                    "129364",
+                    "129365",
+                    "129366",
+                    "129367",
+                    "129368",
+                    "129369",
+                    "129370",
+                    "129371" -> HomeRevampFragment.BEAUTY_FEST_TRUE
+                    else -> HomeRevampFragment.BEAUTY_FEST_FALSE
+                }
+                if(isChannelBeautyFest == HomeRevampFragment.BEAUTY_FEST_TRUE)
+                    break
             }
         }
         val firstPage = homeData.token.isNotEmpty()
@@ -64,7 +84,8 @@ class HomeDataMapper(
                 isCache = isCache,
                 isFirstPage = firstPage,
                 homeChooseAddressData = HomeChooseAddressData(true),
-            flowCompleted = false
+                flowCompleted = false,
+                isBeautyFest = isChannelBeautyFest
         )
     }
 }
