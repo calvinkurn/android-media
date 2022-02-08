@@ -186,9 +186,14 @@ internal class SearchShopViewModel(
 
         putRequestParamsParameters(requestParams)
         requestParams.putAll(searchParameter)
-        requestParams.putAllString(chooseAddressData?.toSearchParams())
+        putRequestParamsChooseAddress(requestParams)
 
         return requestParams
+    }
+
+    private fun putRequestParamsChooseAddress(requestParams: RequestParams) {
+        val chooseAddressData = chooseAddressData ?: return
+        requestParams.putAllString(chooseAddressData.toSearchParams())
     }
 
     private fun putRequestParamsParameters(requestParams: RequestParams) {
