@@ -89,9 +89,10 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
     private fun renderTo(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
-            textFieldAddOnTo.editText.inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            textFieldAddOnTo.editText.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
             textFieldAddOnTo.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldAddOnTo.editText.setRawInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
+            textFieldAddOnTo.editText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+            textFieldAddOnTo.setCounter(25)
             textFieldAddOnTo.editText.setText(Utils.getHtmlFormat(element.addOnNoteTo))
             textFieldAddOnTo.editText.setSelection(textFieldAddOnTo.editText.length())
             textFieldAddOnTo.editText.addTextChangedListener(object : TextWatcher {
@@ -114,10 +115,11 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
     private fun renderFrom(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
-            textFieldAddOnFrom.editText.inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            textFieldAddOnFrom.editText.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
             textFieldAddOnFrom.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldAddOnFrom.editText.setRawInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
-            textFieldAddOnFrom.editText.setText(Utils.getHtmlFormat(element.addOnNoteTo))
+            textFieldAddOnFrom.editText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+            textFieldAddOnFrom.setCounter(25)
+            textFieldAddOnFrom.editText.setText(Utils.getHtmlFormat(element.addOnNoteFrom))
             textFieldAddOnFrom.editText.setSelection(textFieldAddOnFrom.editText.length())
             textFieldAddOnFrom.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -149,8 +151,8 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
             textFieldAddOnNote.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             textFieldAddOnNote.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldAddOnNote.setCounter(250)
             textFieldAddOnNote.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            textFieldAddOnNote.setCounter(250)
             textFieldAddOnNote.editText.setText(Utils.getHtmlFormat(element.addOnNote))
             textFieldAddOnNote.editText.setSelection(textFieldAddOnNote.editText.length())
             textFieldAddOnNote.editText.addTextChangedListener(object : TextWatcher {
