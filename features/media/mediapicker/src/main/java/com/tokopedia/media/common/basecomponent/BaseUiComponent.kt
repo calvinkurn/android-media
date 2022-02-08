@@ -1,4 +1,4 @@
-package com.tokopedia.media.common.component
+package com.tokopedia.media.common.basecomponent
 
 import android.content.res.Resources
 import android.view.View

@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemSelectionThumbnailBinding
-import com.tokopedia.media.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {

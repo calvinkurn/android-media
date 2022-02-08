@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.WidgetSelectionBottomNavBinding
-import com.tokopedia.media.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
 import com.tokopedia.media.picker.utils.ActionType
 import com.tokopedia.media.picker.utils.Unify_N0

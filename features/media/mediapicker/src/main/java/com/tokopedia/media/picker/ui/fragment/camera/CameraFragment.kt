@@ -16,7 +16,7 @@ import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.VideoResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.media.common.component.uiComponent
+import com.tokopedia.media.common.basecomponent.uiComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
@@ -28,8 +28,8 @@ import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.media.picker.ui.fragment.camera.component.CameraControllerComponent
 import com.tokopedia.media.picker.ui.fragment.camera.component.CameraPreviewComponent
-import com.tokopedia.media.picker.ui.uimodel.MediaUiModel
-import com.tokopedia.media.picker.ui.uimodel.MediaUiModel.Companion.toUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.media.picker.utils.AddMediaEvent
 import com.tokopedia.media.picker.utils.EventState
 import com.tokopedia.media.picker.utils.exceptionHandler

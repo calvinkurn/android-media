@@ -6,7 +6,7 @@ import com.tokopedia.media.picker.common.data.repository.TestMediaRepository
 import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.repository.MediaRepositoryImpl
-import com.tokopedia.media.picker.ui.PickerParam
+import com.tokopedia.media.common.PickerParam
 import javax.inject.Inject
 
 class TestPickerInterceptor {

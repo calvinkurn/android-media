@@ -3,7 +3,7 @@ package com.tokopedia.media.picker.data.repository
 import android.content.Context
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
-import com.tokopedia.media.picker.ui.PickerParam
+import com.tokopedia.media.common.PickerParam
 
 interface MediaRepository {
     suspend operator fun invoke(bucketId: Long, param: PickerParam): List<Media>

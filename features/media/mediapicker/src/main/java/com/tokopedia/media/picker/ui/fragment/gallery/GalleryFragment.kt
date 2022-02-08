@@ -23,7 +23,7 @@ import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
-import com.tokopedia.media.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.utils.ActionType
 import com.tokopedia.media.picker.utils.EventState

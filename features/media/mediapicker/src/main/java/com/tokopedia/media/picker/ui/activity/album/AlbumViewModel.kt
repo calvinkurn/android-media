@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.picker.data.mapper.toUiModel
 import com.tokopedia.media.picker.data.repository.AlbumRepository
-import com.tokopedia.media.picker.ui.PickerParam
-import com.tokopedia.media.picker.ui.uimodel.AlbumUiModel
+import com.tokopedia.media.common.PickerParam
+import com.tokopedia.media.common.uimodel.AlbumUiModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

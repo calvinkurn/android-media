@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.uimodel.internal
+package com.tokopedia.media.picker.ui.uimodel
 
 import androidx.annotation.StringRes
 import com.tokopedia.media.R

@@ -8,24 +8,26 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.media.common.component.uiComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.common.basecomponent.uiEagerComponent
+import com.tokopedia.media.common.component.NavToolbarComponent
+import com.tokopedia.media.common.component.ToolbarTheme
+import com.tokopedia.media.common.intent.PreviewIntent
+import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.media.databinding.ActivityPickerBinding
 import com.tokopedia.media.picker.common.PickerFragmentType
 import com.tokopedia.media.picker.common.PickerPageType
-import com.tokopedia.media.databinding.ActivityPickerBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.media.picker.ui.PickerNavigator
 import com.tokopedia.media.picker.ui.PickerUiConfig
-import com.tokopedia.media.picker.ui.activity.component.NavToolbarComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
-import com.tokopedia.media.picker.ui.uimodel.MediaUiModel
 import com.tokopedia.media.picker.utils.*
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
@@ -102,7 +104,7 @@ open class PickerActivity : BaseActivity()
         )
     }
 
-    private val navToolbar by uiComponent {
+    private val navToolbar by uiEagerComponent {
         NavToolbarComponent(
             listener = this,
             parent = it,
@@ -149,11 +151,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        println("MEDIAPICKER -> file count : ${medias.size}")
-
-        medias.forEach {
-            println("MEDIAPICKER -> ${it.path}")
-        }
+        PreviewIntent.intentWith(this, medias)
     }
 
     override fun tabVisibility(isShown: Boolean) {
@@ -241,7 +239,7 @@ open class PickerActivity : BaseActivity()
                     }
                 }
 
-                navToolbar.showContinueButtonWithCondition(
+                navToolbar.showContinueButtonAs(
                     medias.isNotEmpty()
                 )
             }
@@ -259,11 +257,11 @@ open class PickerActivity : BaseActivity()
     private fun navigateByPageType() {
         when (PickerUiConfig.paramPage) {
             PickerPageType.CAMERA -> {
-                navToolbar.setNavToolbarColorState(true)
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
                 navigator?.start(PickerFragmentType.CAMERA)
             }
             PickerPageType.GALLERY -> {
-                navToolbar.setNavToolbarColorState(false)
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
                 navigator?.start(PickerFragmentType.GALLERY)
             }
             else -> {
@@ -283,7 +281,7 @@ open class PickerActivity : BaseActivity()
         binding?.tabPage?.tabLayout?.setBackgroundColor(Color.TRANSPARENT)
 
         // set transparent of nav toolbar
-        navToolbar.setNavToolbarColorState(true)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
 
         binding?.tabPage?.addNewTab(getString(R.string.picker_title_camera))
         binding?.tabPage?.addNewTab(getString(R.string.picker_title_gallery))
@@ -299,7 +297,7 @@ open class PickerActivity : BaseActivity()
 
     private fun onCameraTabSelected() {
         navigator?.onPageSelected(PickerFragmentType.CAMERA)
-        navToolbar.setNavToolbarColorState(isTransparent = true)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         binding?.container?.setMargin(0, 0, 0, 0)
     }
 
@@ -307,7 +305,7 @@ open class PickerActivity : BaseActivity()
         val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
 
         navigator?.onPageSelected(PickerFragmentType.GALLERY)
-        navToolbar.setNavToolbarColorState(isTransparent = false)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
 
         binding?.container?.setMargin(0, 0, 0, marginBottom)
     }

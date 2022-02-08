@@ -6,17 +6,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.media.common.component.uiComponent
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.common.basecomponent.uiEagerComponent
+import com.tokopedia.media.common.component.NavToolbarComponent
+import com.tokopedia.media.common.component.ToolbarTheme
+import com.tokopedia.media.common.uimodel.AlbumUiModel
 import com.tokopedia.media.databinding.ActivityAlbumBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.activity.album.adapter.AlbumAdapter
-import com.tokopedia.media.picker.ui.activity.component.NavToolbarComponent
 import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
-import com.tokopedia.media.picker.ui.uimodel.AlbumUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -38,7 +39,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
         AlbumAdapter(listener = onAlbumClickListener)
     }
 
-    private val navToolbar by uiComponent {
+    private val navToolbar by uiEagerComponent {
         NavToolbarComponent(
             listener = this,
             parent = it
@@ -75,7 +76,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     private fun initView() {
         // set toolbar as solid theme and toolbar title
         navToolbar.setTitle(getString(R.string.picker_toolbar_album_title))
-        navToolbar.setNavToolbarColorState(false)
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
 
         // fetch the album list
         viewModel.fetch(param)

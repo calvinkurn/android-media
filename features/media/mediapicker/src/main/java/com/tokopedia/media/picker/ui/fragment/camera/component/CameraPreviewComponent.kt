@@ -15,11 +15,11 @@ import com.otaliastudios.cameraview.gesture.GestureAction
 import com.otaliastudios.cameraview.size.AspectRatio
 import com.otaliastudios.cameraview.size.Size
 import com.otaliastudios.cameraview.size.SizeSelectors
-import com.tokopedia.media.common.component.UiComponent
+import com.tokopedia.media.common.basecomponent.UiComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.ui.PickerParam
+import com.tokopedia.media.common.PickerParam
 import com.tokopedia.media.picker.utils.MediaFileUtils
 import com.tokopedia.media.picker.utils.exceptionHandler
 

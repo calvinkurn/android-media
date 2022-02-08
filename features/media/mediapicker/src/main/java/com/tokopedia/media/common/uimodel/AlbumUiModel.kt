@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.uimodel
+package com.tokopedia.media.common.uimodel
 
 import android.net.Uri
 import android.os.Parcelable

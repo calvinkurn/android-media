@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.repository.MediaRepository
-import com.tokopedia.media.picker.ui.PickerParam
+import com.tokopedia.media.common.PickerParam
 import com.tokopedia.media.picker.utils.EventBusFactory
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*

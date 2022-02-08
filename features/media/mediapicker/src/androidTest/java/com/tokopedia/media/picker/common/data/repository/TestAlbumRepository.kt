@@ -2,7 +2,7 @@ package com.tokopedia.media.picker.common.data.repository
 
 import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.repository.AlbumRepository
-import com.tokopedia.media.picker.ui.PickerParam
+import com.tokopedia.media.common.PickerParam
 
 class TestAlbumRepository : AlbumRepository {
 

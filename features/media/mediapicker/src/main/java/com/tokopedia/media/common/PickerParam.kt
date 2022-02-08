@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui
+package com.tokopedia.media.common
 
 import android.annotation.SuppressLint
 import com.tokopedia.media.picker.common.PickerPageType

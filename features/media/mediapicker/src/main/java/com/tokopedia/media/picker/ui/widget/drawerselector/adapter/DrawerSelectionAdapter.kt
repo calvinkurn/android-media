@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.PlaceholderViewHolder
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder

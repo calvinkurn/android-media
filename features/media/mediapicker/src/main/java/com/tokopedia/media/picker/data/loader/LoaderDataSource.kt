@@ -10,7 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.Files.FileColumns.*
 import com.tokopedia.media.picker.data.entity.Media
-import com.tokopedia.media.picker.ui.PickerParam
+import com.tokopedia.media.common.PickerParam
 import com.tokopedia.media.picker.utils.isGifFormat
 import java.io.File
 

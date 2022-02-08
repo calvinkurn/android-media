@@ -1,4 +1,4 @@
-package com.tokopedia.media.common.component.utils
+package com.tokopedia.media.common.basecomponent.utils
 
 import android.app.Activity
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.media.common.component.BaseUiComponent
+import com.tokopedia.media.common.basecomponent.BaseUiComponent
 
 fun LifecycleOwner.safeLifecycleOwner(): LifecycleOwner {
     if (this is Fragment) return this.viewLifecycleOwner

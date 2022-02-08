@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.uimodel
+package com.tokopedia.media.common.uimodel
 
 import android.content.Context
 import android.net.Uri
@@ -14,7 +14,7 @@ data class MediaUiModel(
     val name: String = "",
     val path: String = "",
     val uri: Uri? = null,
-    val isFromCamera: Boolean = false,
+    val isFromPickerCamera: Boolean = false,
 ) : Parcelable {
 
     fun isVideo() = isVideoFormat(path)
@@ -34,7 +34,7 @@ data class MediaUiModel(
             name = name,
             path = path,
             uri = Uri.parse(path),
-            isFromCamera = true,
+            isFromPickerCamera = true,
         )
     }
 

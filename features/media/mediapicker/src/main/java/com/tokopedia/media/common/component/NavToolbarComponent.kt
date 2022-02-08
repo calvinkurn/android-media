@@ -1,17 +1,23 @@
-package com.tokopedia.media.picker.ui.activity.component
+package com.tokopedia.media.common.component
 
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import com.tokopedia.media.common.component.UiComponent
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.common.basecomponent.UiComponent
+import com.tokopedia.media.picker.utils.Unify_G500
 import com.tokopedia.media.picker.utils.Unify_N700_96
 import com.tokopedia.media.picker.utils.Unify_Static_White
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+
+sealed class ToolbarTheme {
+    object Solid: ToolbarTheme()
+    object Transparent: ToolbarTheme()
+}
 
 class NavToolbarComponent(
     listener: Listener,
@@ -37,13 +43,15 @@ class NavToolbarComponent(
         txtTitle.text = title
     }
 
-    fun setNavToolbarColorState(isTransparent: Boolean) {
-        setTitleColor(isTransparent)
+    fun onToolbarThemeChanged(theme: ToolbarTheme) {
+        val isTransparent = theme == ToolbarTheme.Transparent
+
         setCloseActionColor(isTransparent)
+        setTitleColor(isTransparent)
     }
 
-    fun showContinueButtonWithCondition(isShown: Boolean) {
-        btnDone.showWithCondition(isShown)
+    fun showContinueButtonAs(visibility: Boolean) {
+        btnDone.showWithCondition(visibility)
     }
 
     fun showContinueButton() {
@@ -52,6 +60,13 @@ class NavToolbarComponent(
 
     fun hideContinueButton() {
         btnDone.hide()
+    }
+
+    private fun setActionColor() {
+        btnDone.setTextColor(ContextCompat.getColor(
+            context,
+            Unify_G500
+        ))
     }
 
     private fun setTitleColor(isTransparent: Boolean) {
@@ -67,7 +82,11 @@ class NavToolbarComponent(
     }
 
     private fun setCloseActionColor(isTransparent: Boolean) {
-        val icon = if (useArrowIcon) IconUnify.ARROW_BACK else IconUnify.CLOSE
+        val icon = if (useArrowIcon) {
+            IconUnify.ARROW_BACK
+        } else {
+            IconUnify.CLOSE
+        }
 
         toolbarThemeCondition(
             isTransparent,

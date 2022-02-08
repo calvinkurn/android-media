@@ -1,6 +1,6 @@
 package com.tokopedia.media.picker.utils
 
-import com.tokopedia.media.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 

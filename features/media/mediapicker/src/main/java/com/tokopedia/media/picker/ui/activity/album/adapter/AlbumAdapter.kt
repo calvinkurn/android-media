@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemAlbumPickerBinding
 import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
-import com.tokopedia.media.picker.ui.uimodel.AlbumUiModel
+import com.tokopedia.media.common.uimodel.AlbumUiModel
 import com.tokopedia.media.picker.utils.pickerLoadImage
 import com.tokopedia.utils.view.binding.viewBinding
 

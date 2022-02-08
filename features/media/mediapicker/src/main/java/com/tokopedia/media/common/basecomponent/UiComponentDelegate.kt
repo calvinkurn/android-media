@@ -1,27 +1,27 @@
-package com.tokopedia.media.common.component
+package com.tokopedia.media.common.basecomponent
 
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.media.common.component.observers.ImmediateLifecycleObserver
-import com.tokopedia.media.common.component.observers.UiComponentLifecycleObserver
-import com.tokopedia.media.common.component.utils.addSafeObserver
-import com.tokopedia.media.common.component.utils.createUiComponent
-import com.tokopedia.media.common.component.utils.rootCurrentView
-import com.tokopedia.media.common.component.utils.safeLifecycleOwner
+import com.tokopedia.media.common.basecomponent.observers.ImmediateLifecycleObserver
+import com.tokopedia.media.common.basecomponent.observers.UiComponentLifecycleObserver
+import com.tokopedia.media.common.basecomponent.utils.addSafeObserver
+import com.tokopedia.media.common.basecomponent.utils.createUiComponent
+import com.tokopedia.media.common.basecomponent.utils.rootCurrentView
+import com.tokopedia.media.common.basecomponent.utils.safeLifecycleOwner
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 class UiComponentDelegate<Ui: BaseUiComponent>(
-    needImmediateComponent: Boolean,
     private val lifecycleOwner: LifecycleOwner,
-    private val componentCreation: (ViewGroup) -> Ui
+    private val componentCreation: (ViewGroup) -> Ui,
+    eagerComponent: Boolean,
 ) : ReadOnlyProperty<LifecycleOwner, Ui> {
 
     private var uiComponent: Ui? = null
 
     init {
-        if (needImmediateComponent) {
+        if (eagerComponent) {
             lifecycleOwner.addSafeObserver(buildImmediateLifecycleObserver())
         }
     }

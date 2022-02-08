@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemCameraModeSliderBinding
-import com.tokopedia.media.picker.ui.uimodel.internal.CameraSelectionMode
+import com.tokopedia.media.picker.ui.uimodel.CameraSelectionMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CameraSliderAdapter(

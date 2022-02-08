@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
-import com.tokopedia.media.picker.ui.uimodel.MediaUiModel
+import com.tokopedia.media.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
 import com.tokopedia.media.picker.utils.extractVideoDuration
 import com.tokopedia.media.picker.utils.pickerLoadImage
