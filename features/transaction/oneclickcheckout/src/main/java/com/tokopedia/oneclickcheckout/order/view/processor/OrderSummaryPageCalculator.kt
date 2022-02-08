@@ -20,12 +20,30 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
 
     val total: MutableSharedFlow<Pair<OrderPayment, OrderTotal>> = MutableSharedFlow()
 
-    private fun generateMinimumAmountPaymentErrorMessage(gatewayName: String): String {
-        return "$MINIMUM_AMOUNT_ERROR_MESSAGE $gatewayName."
+    private fun generateMinimumAmountPaymentError(payment: OrderPayment): OrderPaymentErrorData {
+        if (payment.walletData.isGoPaylaterCicil) {
+            return OrderPaymentErrorData(
+                message = payment.walletData.goCicilData.errorMessageBottomLimit,
+            )
+        }
+        return OrderPaymentErrorData(
+            message = "$MINIMUM_AMOUNT_ERROR_MESSAGE ${payment.gatewayName}.",
+            buttonText = CHANGE_PAYMENT_METHOD_MESSAGE,
+            action = OrderPaymentErrorData.ACTION_CHANGE_PAYMENT
+        )
     }
 
-    private fun generateMaximumAmountPaymentErrorMessage(gatewayName: String): String {
-        return "$MAXIMUM_AMOUNT_ERROR_MESSAGE $gatewayName."
+    private fun generateMaximumAmountPaymentError(payment: OrderPayment): OrderPaymentErrorData {
+        if (payment.walletData.isGoPaylaterCicil) {
+            return OrderPaymentErrorData(
+                message = payment.walletData.goCicilData.errorMessageTopLimit,
+            )
+        }
+        return OrderPaymentErrorData(
+            message = "$MAXIMUM_AMOUNT_ERROR_MESSAGE ${payment.gatewayName}.",
+            buttonText = CHANGE_PAYMENT_METHOD_MESSAGE,
+            action = OrderPaymentErrorData.ACTION_CHANGE_PAYMENT
+        )
     }
 
     private fun validatePaymentState(orderCart: OrderCart, orderProfile: OrderProfile, shipping: OrderShipment): Boolean {
@@ -115,7 +133,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     currentState = disableButtonState(currentState)
                     buttonType = OccButtonType.PAY
                 }
-                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMinimumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
+                return@withContext payment.copy(isCalculationError = true, errorData = generateMinimumAmountPaymentError(payment)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = buttonType, buttonState = currentState)
             }
             if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
@@ -128,7 +146,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     currentState = disableButtonState(currentState)
                     buttonType = OccButtonType.PAY
                 }
-                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMaximumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
+                return@withContext payment.copy(isCalculationError = true, errorData = generateMaximumAmountPaymentError(payment)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = buttonType, buttonState = currentState)
             }
             if (payment.isOvo && subtotal > payment.walletAmount) {

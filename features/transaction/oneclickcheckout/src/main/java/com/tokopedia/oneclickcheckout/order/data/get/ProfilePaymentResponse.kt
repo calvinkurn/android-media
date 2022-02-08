@@ -141,7 +141,9 @@ class WalletAdditionalData(
         @SerializedName("top_up")
         val topUp: WalletData = WalletData(),
         @SerializedName("phone_number_registered")
-        val phoneNumberRegistered: WalletData = WalletData()
+        val phoneNumberRegistered: WalletData = WalletData(),
+        @SerializedName("gocicil")
+        val goCicilData: GoCicilData = GoCicilData(),
 )
 
 class OvoActionData(
@@ -174,4 +176,13 @@ class WalletData(
         val headerTitle: String = "",
         @SerializedName("url_link")
         val urlLink: String = ""
+)
+
+class GoCicilData(
+        @SerializedName("error_message_invalid_tenure")
+        val errorMessageInvalidTenure: String = "",
+        @SerializedName("error_message_top_limit")
+        val errorMessageTopLimit: String = "",
+        @SerializedName("error_message_bottom_limit")
+        val errorMessageBottomLimit: String = "",
 )

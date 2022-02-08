@@ -141,13 +141,17 @@ data class OrderPaymentWalletAdditionalData(
     val callbackUrl: String = "",
     val activation: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
     val topUp: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
-    val phoneNumber: OrderPaymentWalletActionData = OrderPaymentWalletActionData()
+    val phoneNumber: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
+    val goCicilData: OrderPaymentGoCicilData = OrderPaymentGoCicilData()
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired
 
     val isPhoneNumberMissing: Boolean
         get() = phoneNumber.isRequired
+
+    val isGoPaylaterCicil: Boolean
+        get() = walletType == WALLET_TYPE_GOPAYLATERCICIL
 
     companion object {
         const val WALLET_TYPE_OVO = 1
@@ -198,3 +202,9 @@ data class OrderPaymentWalletErrorData(
         const val TYPE_MISSING_PHONE = 3
     }
 }
+
+data class OrderPaymentGoCicilData(
+    val errorMessageInvalidTenure: String = "tenure invalid",
+    val errorMessageTopLimit: String = "over top limit",
+    val errorMessageBottomLimit: String = "below bottom limit",
+)
