@@ -34,6 +34,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

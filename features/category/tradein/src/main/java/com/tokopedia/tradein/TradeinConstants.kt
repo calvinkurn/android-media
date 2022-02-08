@@ -4,15 +4,11 @@ import com.tokopedia.keys.Keys
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 
 object TradeinConstants {
-    @JvmField
-    var LAKU6_BASEURL = getInstance().LAKU6
-    @JvmField
-    var LAKU6_BASEURL_STAGING = "http://wst.laku6.com"
     const val ACTION_GO_TO_SHIPMENT = "ACTION_GO_TO_SHIPMENT"
     const val CAMPAIGN_ID_PROD = "tokopediaTradeInProduction"
     const val CAMPAIGN_ID_STAGING = "tokopediaSandbox"
     const val LOGIN_REQUIRED = 1
-    const val LOGEED_IN = 2
+    const val LOGGED_IN = 2
 
 
 
@@ -24,6 +20,7 @@ object TradeinConstants {
         const val KEY_ORIGIN = "origin"
         const val KEY_SHOP_IDS = "shopIds"
         const val KEY_FIELDS = "fields"
+        const val KEY_CODE = "code"
 
         const val SHIPMENT = "shipment"
         const val SP_ID = "48"

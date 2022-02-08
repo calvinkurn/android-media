@@ -46,4 +46,22 @@ abstract class TradeInViewModelModule {
     @ViewModelKey(TradeInInfoViewModel::class)
     internal abstract fun tradeInInfoViewModel(viewModel: TradeInInfoViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @TradeInScope
+    @ViewModelKey(TradeInHomePageVM::class)
+    internal abstract fun tradeInHomePageVM(viewModel: TradeInHomePageVM): ViewModel
+
+    @Binds
+    @IntoMap
+    @TradeInScope
+    @ViewModelKey(TradeInPromoDetailPageVM::class)
+    internal abstract fun tradeInPromoDetailPageVM(viewModel: TradeInPromoDetailPageVM): ViewModel
+
+    @Binds
+    @IntoMap
+    @TradeInScope
+    @ViewModelKey(TradeInHomePageFragmentVM::class)
+    internal abstract fun tradeInHomePageFragmentVM(viewModel: TradeInHomePageFragmentVM): ViewModel
+
 }

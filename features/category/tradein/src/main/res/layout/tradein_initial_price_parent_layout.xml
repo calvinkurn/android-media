@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:orientation="vertical">
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/initial_price_navToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeTitle"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/initial_price_navToolbar"
+        android:background="@color/Unify_Background"
+        app:layout_constraintBottom_toTopOf="@id/btn_continue"
+        android:orientation="vertical"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/product_layout"
+                layout="@layout/tradein_product_initial_price_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/tradein_promo_view"
+                layout="@layout/tradein_promo_view_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:layout_constraintTop_toBottomOf="@id/product_layout" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/tradein_promo_view" />
+
+            <include
+                android:id="@+id/exchange_method_layout"
+                layout="@layout/tradein_exchange_method_initial_price_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/divider1"/>
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/exchange_method_layout" />
+
+            <include
+                android:id="@+id/phone_detail_layout"
+                layout="@layout/tradein_phone_detail_initial_price_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/divider2"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="16dp"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:text="@string/tradein_mulai_tes_hp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

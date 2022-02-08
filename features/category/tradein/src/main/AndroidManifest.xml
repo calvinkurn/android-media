@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.viewcontrollers.activity.TradeInHomeActivity"
+            android:name=".view.viewcontrollers.activity.TradeInHomePageActivity"
             android:label="@string/tukar_tambah"
             android:launchMode="singleTask"
             android:exported="false">
@@ -43,11 +43,12 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_category"
                     android:pathPattern="@string/path_pattern_tradein" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_category"
-                    android:path="@string/path_final_price" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.viewcontrollers.activity.TradeInPromoActivity"
+            android:launchMode="singleTop"
+            android:exported="false">
         </activity>
     </application>
 </manifest>

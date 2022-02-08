@@ -48,7 +48,7 @@ class TradeInHomeViewModel @Inject constructor(
         if (!userSession.isLoggedIn)
             askUserLogin.value = TradeinConstants.LOGIN_REQUIRED
         else {
-            askUserLogin.value = TradeinConstants.LOGEED_IN
+            askUserLogin.value = TradeinConstants.LOGGED_IN
         }
     }
 

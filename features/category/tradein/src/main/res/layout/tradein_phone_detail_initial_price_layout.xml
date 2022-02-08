@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/phone_detail_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tradein_rincian_hp_kamu"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_promo"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@id/phone_detail_heading"
+        app:layout_constraintLeft_toRightOf="@id/phone_detail_heading"
+        app:layout_constraintTop_toTopOf="@id/phone_detail_heading" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/tradein_model"
+        android:textColor="@color/Unify_N600"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/phone_detail_heading"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/mdoel_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@id/model"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/model"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Samsung S8 32GB" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/estimated_price_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/tradein_estimasi_harga_maks"
+        android:textColor="@color/Unify_N600"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/model"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/estimated_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@id/estimated_price_text"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/estimated_price_text"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Rp2.700.000*" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/imei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/tradein_no_imei"
+        android:textColor="@color/Unify_N600"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/estimated_price_text"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/imei_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@id/imei"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imei"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="345681982131408571345" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/help_device_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/tradein_help_device_text"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imei"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

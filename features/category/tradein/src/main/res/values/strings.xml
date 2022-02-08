@@ -85,7 +85,6 @@
     <string name="tradein_outside_coverage_description">Coba cari barang serupa di toko lain yang melayani Tukar Tambah di wilayahmu, ya.</string>
     <string name="tradein_price_range">Cek Harga Gadget Impian</string>
     <string name="tradein_cellphone_details">Rincian HP kamu</string>
-    <string name="tradein_model">Model</string>
     <string name="tradein_max_price">Harga Maks</string>
     <string name="tradein_read_guide">Baca panduan</string>
     <string name="tradein_new_gadget_price">Harga gadget barumu</string>
@@ -127,4 +126,26 @@
     <string name="tradein_sid_desc">kode ini dapat berubah sewaktu waktu</string>
     <string name="tradein_sid_mes">Session ID berhasil disalin.</string>
     <string name="tradein_btn_copy_code">Salin Kode</string>
+
+
+
+    <string name="tradein_product_save_text">Hemat beli HP baru hanya dengan harga:</string>
+    <string name="tradein_product_info_text">*Harga akhir tergantung hasil pengecekan dan kondisi HP.</string>
+    <string name="tradein_price_detail">Lihat Rincian Harga</string>
+    <string name="tradein_gadget_price">Harga Gadget Impian</string>
+    <string name="tradein_estimate_price">Estimasi HP Kamu</string>
+    <string name="tradein_estimated_total">Estimasi Total Harga</string>
+    <string name="tradein_periode_promo">Periode Promo</string>
+    <string name="tradein_salin">Salin</string>
+    <string name="tradein_save_on_checkout">Biar lebih hemat, masukkan kode ini di halaman Pengiriman.</string>
+    <string name="tradein_syarat_dan_ketentuan">Syarat dan ketentuan</string>
+    <string name="tradein_mulai_tes_hp">Mulai Tes HP</string>
+    <string name="tradein_metode_penukaran">Metode Penukaran</string>
+    <string name="tradein_ditukar_di_alamatmu">Ditukar di Alamatmu</string>
+    <string name="tradein_help_text">Metode penukaran akan mempengaruhi harga dan cara pengujian HP kamu.</string>
+    <string name="tradein_rincian_hp_kamu">Rincian HP kamu</string>
+    <string name="tradein_model">Model</string>
+    <string name="tradein_estimasi_harga_maks">Estimasi Harga Maks.</string>
+    <string name="tradein_no_imei">No. IMEI</string>
+    <string name="tradein_help_device_text">*Lakukan Tes Fungsi dan Foto HP untuk mendapatkan harga final.</string>
 </resources>
