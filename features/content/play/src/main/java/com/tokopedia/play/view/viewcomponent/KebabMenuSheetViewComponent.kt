@@ -2,7 +2,6 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -25,7 +24,6 @@ class KebabMenuSheetViewComponent(
     private val listener: Listener
 ) : ViewComponent(container, R.id.cl_kebab_menu_sheet) {
 
-    private val clContent: ConstraintLayout = findViewById(R.id.cl_user_kebab_menu_sheet_content)
     private val rvActionList: RecyclerView = findViewById(R.id.rv_action_list)
     private val moreActionAdapter = PlayMoreActionAdapter()
 
