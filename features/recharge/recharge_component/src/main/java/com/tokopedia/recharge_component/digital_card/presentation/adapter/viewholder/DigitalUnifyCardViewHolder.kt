@@ -195,7 +195,7 @@ class DigitalUnifyCardViewHolder(
     private fun renderSubtitle(element: DigitalUnifyModel) {
         with(binding.dguSubtitle) {
             if (element.subtitle.isNotEmpty()) {
-                text = element.subtitle
+                text = MethodChecker.fromHtml(element.subtitle)
                 show()
             } else {
                 hide()
