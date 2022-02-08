@@ -289,7 +289,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
            sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,"")
-           sendTarikSaldoClickEvent()
            openWithdrawalScreen()
         }
         ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
@@ -319,17 +318,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
         initDateRangeClickListener()
         affiliateIncomeViewModel.getAffiliateBalance()
-    }
-
-    private fun sendTarikSaldoClickEvent() {
-        context?.let { ctx ->
-            AffiliateAnalytics.sendEvent(
-                    AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                    AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
-                    AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,
-                    "",
-                    UserSession(ctx).userId)
-        }
     }
 
     private fun initUi() {

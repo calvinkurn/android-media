@@ -156,7 +156,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             }
         }
         if(!CoachMarkPreference.hasShown(requireContext(), COACHMARK_TAG)) affiliateActitvityInterface?.showCoachMarker()
-        sendScreenEvent()
         setUserDetails()
     }
     private fun openHistoryActivity() {
@@ -444,14 +443,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
-    }
-
-    private fun sendScreenEvent() {
-        AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                AffiliateAnalytics.ActionKeys.IMPRESSION_HOME_PORTAL,
-                AffiliateAnalytics.CategoryKeys.HOME_PORTAL,
-                "",userSessionInterface.userId)
     }
 
     override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {

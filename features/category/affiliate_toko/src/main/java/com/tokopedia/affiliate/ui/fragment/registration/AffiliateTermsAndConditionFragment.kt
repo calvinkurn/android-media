@@ -119,21 +119,12 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         }
         view?.findViewById<UnifyButton>(R.id.terms_accept_btn)?.setOnClickListener {
             sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR)
-            sendTracker()
             affiliateTermsAndConditionViewModel.affiliateOnBoarding(channels)
         }
         view?.findViewById<Typography>(R.id.syarat_text)?.setOnClickListener {
             sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_SYARAT)
             AffiliateWebViewBottomSheet.newInstance(getString(R.string.terms_and_condition_upper), AFFILIATE_TANDC_URL).show(childFragmentManager,"")
         }
-    }
-
-    private fun sendTracker() {
-        AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.CLICK_REGISTER,
-                AffiliateAnalytics.ActionKeys.CLICK_DAFTAR,
-                AffiliateAnalytics.CategoryKeys.REGISTRATION_PAGE,
-                "", userSessionInterface.userId)
     }
 
     private fun setUpNavBar() {

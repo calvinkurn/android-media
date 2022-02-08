@@ -41,22 +41,10 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
                 when(element?.transaction?.transactionType){
                     TRANSACTION_TYPE_DEPOSIT -> {
                         sendTransactionClickEvent(element?.transaction?.transactionID,AffiliateAnalytics.LabelKeys.DEPOSIT)
-                        AffiliateAnalytics.sendEvent(
-                                AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                                AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
-                                AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
-                                "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.INCOMING}",
-                                UserSession(itemView.context).userId)
                         itemView.context.startActivity(AffiliateTransactionDetailActivity.createIntent(itemView.context, element?.transaction?.transactionID))
                     }
                     TRANSACTION_TYPE_WITHDRAWAL -> {
                         sendTransactionClickEvent(element?.transaction?.transactionID,AffiliateAnalytics.LabelKeys.WITHDRAWAL)
-                        AffiliateAnalytics.sendEvent(
-                                AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                                AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
-                                AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
-                                "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.OUTGOING}",
-                                UserSession(itemView.context).userId)
                         itemView.context.startActivity(AffiliateSaldoWithdrawalDetailActivity.newInstance(itemView.context, element.transaction.transactionID))
                     }
                 }

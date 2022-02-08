@@ -249,7 +249,6 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                     }
                 }
             }
-            sendTracker()
             affiliateNavigationInterface.navigateToTermsFragment(arrayListOfChannels)
         }else {
             view?.let { view ->
@@ -257,13 +256,5 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                         Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
-    }
-
-    private fun sendTracker() {
-        AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.CLICK_REGISTER,
-                AffiliateAnalytics.ActionKeys.CLICK_SELANJUTNYA,
-                AffiliateAnalytics.CategoryKeys.REGISTRATION_PAGE,
-                "", userSessionInterface.userId)
     }
 }

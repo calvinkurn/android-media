@@ -172,7 +172,6 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_sign_up_btn.isVisible = true
             affiliate_sign_up_btn.setOnClickListener {
                 sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG)
-                sendTrackerDaftar()
                 affiliateNavigationInterface.navigateToPortfolioFragment()
             }
 
@@ -196,15 +195,6 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             label,
             userSessionInterface.userId
         )
-    }
-
-    private fun sendTrackerDaftar() {
-        val loginText = if(userSessionInterface.isLoggedIn)"login" else "non login"
-        AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.CLICK_REGISTER,
-                AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG,
-                AffiliateAnalytics.CategoryKeys.REGISTRATION_PAGE,
-                loginText, userSessionInterface.userId)
     }
 
     private fun showDialogLogout() {
