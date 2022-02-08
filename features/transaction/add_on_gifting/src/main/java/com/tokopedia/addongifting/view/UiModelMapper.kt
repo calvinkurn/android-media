@@ -5,7 +5,9 @@ import com.tokopedia.addongifting.data.response.GetAddOnByProductResponse
 import com.tokopedia.addongifting.data.response.GetAddOnSavedStateResponse
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.ProductUiModel
+import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnData
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnSavedStateResult
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import kotlin.math.roundToLong
 
@@ -24,7 +26,7 @@ object UiModelMapper {
         }
     }
 
-    fun mapAddOn(addOnProductData: AddOnProductData, addOnByProductResponse: GetAddOnByProductResponse, addOnSavedStateResponse: GetAddOnSavedStateResponse): AddOnUiModel {
+    fun mapAddOn(addOnProductData: AddOnProductData, addOnByProductResponse: GetAddOnByProductResponse, addOnSavedStateResponse: GetAddOnSavedStateResponse? = null): AddOnUiModel {
         val addOnByProduct = addOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
         val addOn = addOnByProduct?.addOns?.firstOrNull()
         return AddOnUiModel().apply {
@@ -39,13 +41,25 @@ object UiModelMapper {
                 imageUrls.add(it.url)
             }
             addOnAllImageUrls = imageUrls
-            val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
-                    ?: "", addOnSavedStateResponse)
-            isAddOnSelected = addonSavedStateData != null
-            addOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
-            addOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
-            addOnNote = addonSavedStateData?.addOnMetadata?.addOnNote?.notes ?: ""
+            if (addOnSavedStateResponse != null) {
+                // Get saved state from API
+                val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
+                        ?: "", addOnSavedStateResponse)
+                isAddOnSelected = addonSavedStateData != null
+                addOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
+                addOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
+                addOnNote = addonSavedStateData?.addOnMetadata?.addOnNote?.notes ?: ""
+            } else {
+                // Get saved state from previous page (Checkout / OSP)
+                val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
+                        ?: "", addOnProductData.addOnSavedState)
+                isAddOnSelected = addonSavedStateData != null
+                addOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
+                addOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
+                addOnNote = addonSavedStateData?.addOnMetadata?.addOnNote?.notes ?: ""
+            }
             isCustomNote = addOn?.basicInfo?.rules?.customNote ?: false
+            addOnFooterMessages = addOnProductData.addOnFooterMessages
             isLoadingNoteState = false
         }
     }
@@ -53,6 +67,20 @@ object UiModelMapper {
     private fun getAddOnSavedStateById(addOnId: String, addOnSavedStateResponse: GetAddOnSavedStateResponse): AddOnDataResponse? {
         if (addOnId.isNotBlankOrZero()) {
             addOnSavedStateResponse.addOns.forEach {
+                it.addOnData.forEach {
+                    if (it.addOnId == addOnId) {
+                        return it
+                    }
+                }
+            }
+        }
+
+        return null
+    }
+
+    private fun getAddOnSavedStateById(addOnId: String, addOnSavedStateResult: AddOnSavedStateResult): AddOnData? {
+        if (addOnId.isNotBlankOrZero()) {
+            addOnSavedStateResult.addOns.forEach {
                 it.addOnData.forEach {
                     if (it.addOnId == addOnId) {
                         return it

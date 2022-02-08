@@ -7,7 +7,8 @@ import kotlinx.parcelize.Parcelize
 data class AddOnProductData(
         var isTokoCabang: Boolean = false,
         var shopBadgeUrl: String = "",
-        var addOnWording: List<String> = emptyList(),
+        var addOnFooterMessages: List<String> = emptyList(),
+        var addOnSavedState: AddOnSavedStateResult = AddOnSavedStateResult(),
         var products: List<Product> = emptyList()
 ) : Parcelable
 

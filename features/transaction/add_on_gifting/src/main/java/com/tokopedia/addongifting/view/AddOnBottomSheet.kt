@@ -97,9 +97,6 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     private fun observeGlobalEvent() {
         viewModel.globalEvent.observe(this, {
             when (it.state) {
-                GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA -> {
-                    // ?
-                }
                 GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA -> {
                     // Todo : show global error
                 }

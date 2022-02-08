@@ -15,6 +15,7 @@ data class AddOnUiModel(
         var addOnNoteTo: String = "",
         var addOnNoteFrom: String = "",
         var addOnNote: String = "",
+        var addOnFooterMessages: List<String> = emptyList(),
         var isCustomNote: Boolean = false,
         var isLoadingNoteState: Boolean = false
 ) : Visitable<AddOnListAdapterTypeFactory> {

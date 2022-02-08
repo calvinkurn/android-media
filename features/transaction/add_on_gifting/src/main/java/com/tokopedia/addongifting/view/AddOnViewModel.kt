@@ -11,7 +11,6 @@ import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.ProductUiModel
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import timber.log.Timber
 import javax.inject.Inject
 
 class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatchers,
@@ -41,7 +40,9 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                     loadSavedStateData(addOnProductData, it, mockAddOnSavedStateResponse)
                 },
                 onError = {
-                    Timber.d("Error")
+                    _globalEvent.value = GlobalEvent().apply {
+                        state = GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA
+                    }
                 }
         )
     }
@@ -56,7 +57,10 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                     _addOnData.value = addOnUiModel
                 },
                 onError = {
-                    Timber.d("Error")
+                    val productUiModel = UiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
+                    _productData.value = productUiModel
+                    val addOnUiModel = UiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)
+                    _addOnData.value = addOnUiModel
                 }
         )
     }

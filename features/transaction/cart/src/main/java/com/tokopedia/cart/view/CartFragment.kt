@@ -94,8 +94,7 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.Product
+import com.tokopedia.purchase_platform.common.feature.addongifting.data.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -546,11 +545,28 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     products = listOf(product1, product2, product3)
                     isTokoCabang = false
                     shopBadgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
-                    addOnWording = listOf(
+                    addOnFooterMessages = listOf(
                             "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
                             "{{qty}} barang hanya dapat 1 kartu ucapan",
                             "Invoice tidak dikirim ke penerima pesanan"
                     )
+/*
+                    addOnSavedState = AddOnSavedStateResult().apply {
+                        addOns = listOf(AddOnSavedState().apply {
+                            addOnData = listOf(AddOnData().apply {
+                                addOnId = "898"
+                                addOnMetadata = AddOnMetadata().apply {
+                                    addOnNote = AddOnNote().apply {
+                                        isCustomNote = true
+                                        to = "Irfan"
+                                        from = "Khoirul"
+                                        notes = "Selamat Hari Raya Idul Fitri"
+                                    }
+                                }
+                            })
+                        })
+                    }
+*/
                 }
                 intent.putExtra("ADD_ON_PRODUCT_DATA", addOnProductData)
                 startActivity(intent)

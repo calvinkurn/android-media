@@ -51,7 +51,7 @@
             ],
             "Inventory": {
               "WarehouseID": "1234",
-              "Price": 123.12,
+              "Price": 10000.00,
               "Stock": "100",
               "UnlimitedStock": true
             },

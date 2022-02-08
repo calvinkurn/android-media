@@ -20,7 +20,7 @@ data class AddOnSavedState(
 data class AddOnData(
         var addOnId: String = "",
         var addOnQty: Int = 0,
-        var addOnPrice: Double = 0.0,
+        var addOnPrice: Long = 0,
         var addOnMetadata: AddOnMetadata = AddOnMetadata()
 ) : Parcelable
 
