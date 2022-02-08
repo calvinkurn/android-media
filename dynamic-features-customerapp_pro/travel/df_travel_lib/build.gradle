@@ -49,9 +49,6 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
-    implementation project(rootProject.ext.feature_lib_pro.travel)
-
-    implementation projectOrAar(rootProject.ext.features.flight)
-
-    implementation projectOrAar(rootProject.ext.features.hotel)
+    implementation projectOrAar(rootProject.ext.features.travelCountryCode)
+    implementation projectOrAar(rootProject.ext.features.travelPassenger)
 }

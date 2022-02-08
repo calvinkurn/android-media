@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.df.travel">
+    package="com.tokopedia.df.travel.lib">
 
-    <dist:module dist:title="@string/df_title_travel">
+    <dist:module dist:title="@string/title_dynamic_libraries">
         <dist:delivery>
             <dist:on-demand />
         </dist:delivery>
