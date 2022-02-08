@@ -74,7 +74,6 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private val graphLayout by lazy { TopAdsMultiLineGraphFragment() }
     private val checkResponse by lazy { CheckResponse() }
     private var dataStatistic: DataStatistic? = null
-    private var currentDateText: String = ""
 
     private val summaryAdTypeList by lazy { resources.getSummaryAdTypes() }
     private var lastSelectedAdType: Chip? = null
@@ -119,7 +118,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     override fun getCustomDateText(customDateText: String) {
-        currentDateText = customDateText
+
     }
 
     override fun initInjector() {
@@ -209,15 +208,17 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     private fun onSummaryItemClicked() {
-        if(summaryRvAdapter.selectedItems.size == 0) {
+        if (summaryRvAdapter.selectedItems.size == 0) {
             graphContainer.hide()
             return
         }
-        if(!graphContainer.isVisible) {
+        if (!graphContainer.isVisible) {
             graphContainer.show()
         }
-        val ids = summaryRvAdapter.selectedItems.map { it.id }
-        graphLayout.showLineGraph(ids)
+        val items = summaryRvAdapter.selectedItems.map {
+            TopAdsMultiLineGraphFragment.MultiLineGraph(it.id, it.selectedColor)
+        }
+        graphLayout.showLineGraph(items)
     }
 
     private fun setUpClick() {

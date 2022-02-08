@@ -8,9 +8,8 @@ import javax.inject.Inject
 class TopAdsLatestReadingUseCase @Inject constructor() {
 
     suspend fun getLatestReading(): TopAdsLatestReading? {
-        val params = createParams()
         val gql = MultiRequestGraphqlUseCase()
-        val request = GraphqlRequest(query, TopAdsLatestReading::class.java, params)
+        val request = GraphqlRequest(query, TopAdsLatestReading::class.java, mapOf())
         gql.addRequest(request)
         val response = gql.executeOnBackground()
         return response.getData(TopAdsLatestReading::class.java) as? TopAdsLatestReading
@@ -21,6 +20,7 @@ class TopAdsLatestReadingUseCase @Inject constructor() {
     )
 
     companion object {
+        private const val SOURCE = ""
         private const val query = """
             query categoryTree(${'$'}level: Int!, ${'$'}source: String!){
               categoryTree(level:${'$'}level, source:${'$'}source){

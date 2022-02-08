@@ -11,8 +11,6 @@ import com.tokopedia.charts.model.*
 import com.tokopedia.charts.view.LineChartView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.data.model.Cell
-import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
 import com.tokopedia.topads.dashboard.data.utils.ChartXAxisLabelFormatter
 import kotlinx.android.synthetic.main.topads_statistics_graph_fragment.*
@@ -37,30 +35,36 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
         this.cells = cells
     }
 
-    fun showLineGraph(ids: List<Int>) {
+    fun showLineGraph(items: List<MultiLineGraph>) {
         with(lineGraphView) {
             init(getLineChartConfig())
-            setDataForMultipleLine(ids)
+            setDataForMultipleLine(items)
             invalidateChart()
         }
     }
 
-    private fun setDataForMultipleLine(ids: List<Int>) {
-        val dataSets = ids.map { getDataForSingleLine(it) }
+    private fun setDataForMultipleLine(items: List<MultiLineGraph>) {
+        val dataSets = items.map { getDataForSingleLine(it) }
         lineGraphView?.setDataSets(dataSets)
     }
 
-    private fun getDataForSingleLine(id: Int): LineChartData {
-        val chartEntry: List<LineChartEntry> = getCellData(id).map {
+    private fun getDataForSingleLine(item: MultiLineGraph): LineChartData {
+        val chartEntry: List<LineChartEntry> = getCellData(item.id).map {
             LineChartEntry(it.data, it.dataStr, it.date)
         }
 
-        val yAxisLabel = getYAxisLabel(id)
+        val yAxisLabel = getYAxisLabel(item.id)
 
         return LineChartData(
             chartEntry = chartEntry,
             yAxisLabel = yAxisLabel,
-            config = LineChartEntryConfigModel(lineWidth = 1.8f)
+            config = LineChartEntryConfigModel(
+                lineWidth = 1.8f,
+                lineColor = item.color,
+                fillColor = ContextCompat.getColor(
+                    requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_B100_44
+                )
+            )
         )
     }
 
@@ -91,7 +95,13 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
     }
 
     private fun getLineChartConfig(): LineChartConfigModel {
-        val lineChartData = getDataForSingleLine(0)
+        val lineChartData = getDataForSingleLine(
+            MultiLineGraph(
+                0, ContextCompat.getColor(
+                    requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_B100_44
+                )
+            )
+        )
 
         return LineChartConfig.create {
             xAnimationDuration { 200 }
@@ -105,8 +115,7 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
                 context?.let {
                     textColor {
                         ContextCompat.getColor(
-                            it,
-                            (com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
+                            it, (com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
                         )
                     }
                 }
@@ -122,4 +131,6 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
         val date = formater.parse(cell.date)
         return SimpleDateFormat("dd MMM").format(date)
     }
+
+    data class MultiLineGraph(val id: Int, val color: Int)
 }

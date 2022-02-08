@@ -52,31 +52,6 @@ class TopAdsEducationFragment : TkpdBaseV4Fragment() {
         }
     }
 
-    private fun getItems() = listOf(
-        ContextCompat.getDrawable(
-            requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_product_promo
-        ) to resources.getString(R.string.topads_education_pengenalan_topads),
-        ContextCompat.getDrawable(
-            requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_clipboard
-        ) to resources.getString(R.string.topads_education_tipe_tipe_topads),
-        ContextCompat.getDrawable(
-            requireContext(),
-            com.tokopedia.unifycomponents.R.drawable.iconunify_wallet
-        )
-                to resources.getString(R.string.topads_education_seputar_topads),
-        ContextCompat.getDrawable(
-            requireContext(),
-            com.tokopedia.unifycomponents.R.drawable.iconunify_graph
-        )
-                to resources.getString(R.string.topads_education_tingkatkan_topads),
-        ContextCompat.getDrawable(
-            requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_user_success
-        ) to resources.getString(R.string.topads_education_kisah_sukses_topads),
-        ContextCompat.getDrawable(
-            requireContext(), com.tokopedia.unifycomponents.R.drawable.iconunify_lightbulb
-        ) to resources.getString(R.string.topads_education_tips_lainnya_topads),
-    )
-
     override fun getScreenName(): String = javaClass.name
 
     companion object {

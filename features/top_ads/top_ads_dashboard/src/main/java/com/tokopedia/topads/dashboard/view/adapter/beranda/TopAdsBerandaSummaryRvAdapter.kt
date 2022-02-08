@@ -32,16 +32,23 @@ class TopAdsBerandaSummaryRvAdapter :
             title.text = item.title
             txtValue.text = item.count.toString()
             txtPercentageChange.text = item.percentCount
+            if (item.isSelected) selectView(holder, item) else unSelectView(holder, item)
+
             rootLayout.setOnClickListener {
                 item.isSelected = !item.isSelected
-                if (item.isSelected) selectView(holder, item) else unSelectView(holder, item)
+                if (item.isSelected) {
+                    selectedItems.add(item)
+                    selectView(holder, item)
+                } else {
+                    selectedItems.remove(item)
+                    unSelectView(holder, item)
+                }
                 itemClicked?.invoke()
             }
         }
     }
 
     private fun selectView(holder: RingkasanViewHolder, item: SummaryBeranda) {
-        selectedItems.add(item)
         with(holder) {
             rootLayout.setBackgroundColor(
                 ContextCompat.getColor(holder.rootLayout.context, selectedBackgroundColor)
@@ -51,7 +58,6 @@ class TopAdsBerandaSummaryRvAdapter :
     }
 
     private fun unSelectView(holder: RingkasanViewHolder, item: SummaryBeranda) {
-        selectedItems.remove(item)
         with(holder) {
             rootLayout.setBackgroundColor(
                 ContextCompat.getColor(holder.rootLayout.context, unSelectedBackgroundColor)
@@ -64,6 +70,8 @@ class TopAdsBerandaSummaryRvAdapter :
 
     fun addItems(items: List<SummaryBeranda>) {
         list.clear()
+        selectedItems.clear()
+        itemClicked?.invoke()
         list.addAll(items)
         notifyDataSetChanged()
     }
