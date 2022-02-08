@@ -20,22 +20,18 @@ import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActi
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
-import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
-import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.beranda.Chip
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.getSummaryAdTypes
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.mapToSummary
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.showDialogWithCoachMark
 import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.berandaDialogShown
 import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.showBerandaDialog
-import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.asString
 import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.beranda.LatestReadingTopAdsDashboardRvAdapter
 import com.tokopedia.topads.dashboard.view.adapter.beranda.TopAdsBerandaSummaryRvAdapter
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment.Companion.MANUAL_AD
 import com.tokopedia.topads.dashboard.view.fragment.education.READ_MORE_URL
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
@@ -50,7 +46,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -81,7 +76,7 @@ open class BerandaTabFragment : BaseDaggerFragment() {
     private val checkResponse by lazy { CheckResponse() }
 
     private val summaryAdTypeList by lazy { resources.getSummaryAdTypes() }
-    private var lastSelectedAdType: Chip? = null
+    private lateinit var selectedAdType: Chip
     private val summaryAdTypesBottomSheet by lazy {
         SummaryAdTypesBottomSheet.createInstance(summaryAdTypeList, ::adTypeChanged)
     }
@@ -118,6 +113,7 @@ open class BerandaTabFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        selectedAdType = summaryAdTypeList[0]
         showShimmer()
         creditHistoryImage.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_wallet))
 
@@ -175,15 +171,21 @@ open class BerandaTabFragment : BaseDaggerFragment() {
             return
         }
 
-        chip.isSelected = true
-        lastSelectedAdType?.isSelected = false
-        lastSelectedAdType = chip
-        txtAdType.text = chip.title
+        selectedAdType.isSelected = false
 
-        topAdsDashboardViewModel.fetchSummaryStatistics(
-            Utils.getStartDate().asString(), Utils.getEndDate().asString(), chip.adTypeId
-        )
+        chip.isSelected = true
+        selectedAdType = chip
+        txtAdType.text = chip.title
+        loadSummaryStats()
         dismissBottomSheet()
+    }
+
+    fun loadSummaryStats() {
+        topAdsDashboardViewModel.fetchSummaryStatistics(
+            (requireActivity() as? TopAdsDashboardActivity)?.startDate.asString(),
+            (requireActivity() as? TopAdsDashboardActivity)?.endDate.asString(),
+            selectedAdType.adTypeId
+        )
     }
 
     private fun setUpRecyclerView() {
@@ -241,7 +243,7 @@ open class BerandaTabFragment : BaseDaggerFragment() {
         swipeRefreshLayout.isEnabled = true
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
-        adTypeChanged(summaryAdTypeList[0])
+        adTypeChanged(selectedAdType)
         topAdsDashboardViewModel.fetchLatestReading()
     }
 

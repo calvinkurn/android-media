@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -19,7 +18,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -51,6 +49,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_TAB
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
@@ -59,6 +58,8 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
+import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
@@ -66,6 +67,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -80,13 +82,26 @@ private const val VIEW_IKLAN_PRODUK = "view - dashboard iklan produk"
 private const val VIEW_HEADLINE_EVENT = "view - iklan toko"
 
 class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
-        TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight,
-        TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline {
+    TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight,
+    TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline,
+    CustomDatePicker.ActionListener {
 
-    private lateinit var headerToolbar : HeaderUnify
+    private lateinit var headerToolbar: HeaderUnify
     lateinit var ivEducationTopAdsActionBar: ImageUnify
+    lateinit var ivCalendarTopAdsActionBar: ImageUnify
 
-    private val headerToolbarRight by lazy { layoutInflater.inflate(R.layout.layout_topads_dashboard_actionbar, null, false) }
+    private var customStartDate: String? = null
+    private var customEndDate: String? = null
+    internal var startDate = Utils.getStartDate()
+    internal var endDate = Utils.getEndDate()
+    private var datePickerSheet: DatePickerSheet? = null
+    private var datePickerIndex = 2
+
+    private val headerToolbarRight by lazy {
+        layoutInflater.inflate(
+            R.layout.layout_topads_dashboard_actionbar, null, false
+        )
+    }
     private var tracker: TopAdsDashboardTracking? = null
     private var adType = "-1"
     private var isNoProduct = false
@@ -153,8 +168,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             override fun onTabUnselected(p0: TabLayout.Tab?) {}
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                ivCalendarTopAdsActionBar.hide()
                 when (tab?.position) {
                     CONST_0 -> {
+                        ivCalendarTopAdsActionBar.show()
                         bottom?.visible()
                         multiActionBtn.buttonSize = UnifyButton.Size.LARGE
                         multiActionBtn?.text = getString(R.string.topads_dash_button_submit_beranda)
@@ -192,11 +209,12 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     private fun setUpClick() {
-        val ivCalendarTopAdsActionBar : ImageUnify = headerToolbarRight.findViewById(R.id.ivCalendarTopAdsActionBar)
-        ivEducationTopAdsActionBar = headerToolbarRight.findViewById(R.id.ivEducationTopAdsActionBar)
+        ivCalendarTopAdsActionBar = headerToolbarRight.findViewById(R.id.ivCalendarTopAdsActionBar)
+        ivEducationTopAdsActionBar =
+            headerToolbarRight.findViewById(R.id.ivEducationTopAdsActionBar)
 
         ivCalendarTopAdsActionBar.setOnClickListener {
-
+            showBottomSheet()
         }
 
         ivEducationTopAdsActionBar.setOnClickListener {
@@ -456,5 +474,49 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         multiActionBtn.isEnabled = count > 0
     }
 
-    fun disableMultiActionButton() { multiActionBtn.isEnabled = false}
+    fun disableMultiActionButton() {
+        multiActionBtn.isEnabled = false
+    }
+
+    private fun showBottomSheet() {
+        val dateRange = if (!customStartDate.isNullOrEmpty()) {
+            "$customStartDate - $customEndDate"
+        } else
+            getString(R.string.topads_dash_custom_date_desc)
+
+        datePickerSheet = DatePickerSheet.newInstance(this, datePickerIndex, dateRange)
+        datePickerSheet?.show()
+        datePickerSheet?.onItemClick = { date1, date2, position ->
+            handleDate(date1, date2, position)
+        }
+        datePickerSheet?.customDatepicker = {
+            val sheet = CustomDatePicker.getInstance()
+            sheet.setListener(this)
+            sheet.show(supportFragmentManager, TopAdsDashboardConstant.DATE_PICKER_SHEET)
+        }
+    }
+
+    private fun handleDate(date1: Long, date2: Long, position: Int) {
+        startDate = Date(date1)
+        endDate = Date(date2)
+        datePickerIndex = position
+        loadSummaryStats()
+    }
+
+    override fun onCustomDateSelected(dateSelected: Date, endDate: Date) {
+        startDate = dateSelected
+        this.endDate = endDate
+        customEndDate = Utils.outputFormat.format(endDate)
+        customStartDate = Utils.outputFormat.format(dateSelected)
+        loadSummaryStats()
+    }
+
+    private fun loadSummaryStats() {
+        val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
+        for (frag in fragments) {
+            when (frag.fragment) {
+                is BerandaTabFragment -> (frag.fragment as BerandaTabFragment).loadSummaryStats()
+            }
+        }
+    }
 }
