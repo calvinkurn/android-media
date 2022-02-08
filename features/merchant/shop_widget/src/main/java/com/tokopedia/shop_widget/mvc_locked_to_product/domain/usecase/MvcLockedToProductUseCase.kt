@@ -94,7 +94,6 @@ class MvcLockedToProductUseCase @Inject constructor(
                       url
                     }
                     stock
-                    productInCart
                   }
                 }
                 error {
