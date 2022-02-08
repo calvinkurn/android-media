@@ -36,7 +36,7 @@ class GetProductTagSummarySectionUseCase @Inject constructor(
 
         const val QUERY_NAME = "GetProductTagSummarySectionUseCaseQuery"
         const val QUERY = """
-            query GetProductTagSummarySection(${"$${PARAM_CHANNEL_ID}"}: Int,) {
+            query GetProductTagSummarySection(${"$${PARAM_CHANNEL_ID}"}: Long,) {
                 broadcasterGetProductTagSection(req: {
                     channelID: ${"$${PARAM_CHANNEL_ID}"}
                 }) {
@@ -60,7 +60,7 @@ class GetProductTagSummarySectionUseCase @Inject constructor(
         """
 
         fun createparams(
-            channelID: Int,
+            channelID: Long,
         ): Map<Any, Any> {
             return mapOf(
                 PARAM_CHANNEL_ID to channelID

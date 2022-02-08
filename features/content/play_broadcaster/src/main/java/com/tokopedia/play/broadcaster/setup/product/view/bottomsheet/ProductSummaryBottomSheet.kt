@@ -19,6 +19,7 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.processNextEventInCurrentThread
 import javax.inject.Inject
 
 /**
@@ -88,8 +89,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
         }
-        /** TODO: change this later */
-        setTitle("Produk terpilih (5/30)")
+        setTitle(getString(R.string.play_bro_product_summary_title))
         setAction(getString(R.string.play_bro_product_add_more)) {
             /** TODO: there are 2 options
              * 1. if user on select product -> just close this bottomsheet
@@ -107,24 +107,41 @@ class ProductSummaryBottomSheet @Inject constructor(
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 when(state.productTagSummary) {
                     is ProductTagSummaryUiModel.Loading -> {
-                        /** TODO: hide error & loading */
+                        setTitle(null)
+                        binding.ivLoading.visibility = View.GONE
+                        binding.globalError.visibility = View.GONE
+                        binding.flBtnDoneContainer.visibility = View.GONE
+
                         productSummaryListView.setLoading()
                     }
                     is ProductTagSummaryUiModel.Success -> {
-                        /** TODO: hide error & loading */
+                        setTitle(state.productTagSummary.productCount)
+                        binding.ivLoading.visibility = View.GONE
+                        binding.globalError.visibility = View.GONE
+                        binding.flBtnDoneContainer.visibility = View.VISIBLE
+
                         productSummaryListView.setProductList(state.productTagSummary.sections)
                     }
                     is ProductTagSummaryUiModel.Error -> {
-                        /** TODO: hide recyclerview & show error */
+                        setTitle(null)
+                        binding.ivLoading.visibility = View.GONE
+                        binding.globalError.visibility = View.VISIBLE
+                        binding.flBtnDoneContainer.visibility = View.GONE
+
+                        productSummaryListView.setProductList(emptyList())
                     }
                     else -> {}
                 }
-                /** TODO: logic:
-                 * 1. Update List
-                 * 2. Update title
-                 * 3. Toggle show or hide done button
-                 */
             }
+        }
+    }
+
+    private fun setTitle(productCount: Int?) {
+        if(productCount != null) {
+            setTitle(getString(R.string.play_bro_product_summary_title_with_count, productCount, viewModel.maxProduct))
+        }
+        else {
+            setTitle(getString(R.string.play_bro_product_summary_title))
         }
     }
 

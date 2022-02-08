@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
@@ -34,8 +35,15 @@ import javax.inject.Inject
  */
 class PlayBroProductSetupViewModel @Inject constructor(
     private val repo: PlayBroadcastRepository,
+    private val hydraConfigStore: HydraConfigStore,
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
+
+    val channelId: String
+        get() = hydraConfigStore.getChannelId()
+
+    val maxProduct: Int
+        get() = hydraConfigStore.getMaxProduct()
 
     private val _selectedEtalase = MutableStateFlow<SelectedEtalaseModel>(SelectedEtalaseModel.None)
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
@@ -220,36 +228,20 @@ class PlayBroProductSetupViewModel @Inject constructor(
     /** TODO: gonna delete this later */
     @ExperimentalStdlibApi
     fun getProductTagSummary() {
+        _productTagSummary.value = ProductTagSummaryUiModel.Loading
+
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            withContext(dispatchers.main) {
-                _productTagSummary.value = ProductTagSummaryUiModel.Loading
-            }
-
+            /** TODO: gonna remove this delay */
             delay(3000)
+            val response = repo.getProductTagSummarySection(channelId.toLong())
 
-            val productTagSectionList = buildList<ProductTagSectionUiModel> {
-                for(i in 1..3) {
-                    add(ProductTagSectionUiModel(
-                        name = "Sale $i",
-                        campaignStatus = when(i) {
-                            1 -> CampaignStatus.Ongoing
-                            2 -> CampaignStatus.Unknown
-                            else -> CampaignStatus.Ready
-                        },
-                        products = buildList {
-                            add(ProductUiModel(
-                                "$i", "Product $i", "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
-                                12, DiscountedPrice("Rp 120.000", 120000.0, 20, "Rp 100.000", 100000.0)
-                            ))
-                        }
-                    ))
-                }
+            var productCount = 0
+            response.forEach {
+                productCount += it.products.size
             }
 
             withContext(dispatchers.main) {
-                _productTagSummary.value = ProductTagSummaryUiModel.Success(
-                    sections = productTagSectionList,
-                )
+                _productTagSummary.value = ProductTagSummaryUiModel.Success(response, productCount)
             }
         }) {
             _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
