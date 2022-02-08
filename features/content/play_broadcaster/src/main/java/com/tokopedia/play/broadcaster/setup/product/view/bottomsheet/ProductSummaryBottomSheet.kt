@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
@@ -43,8 +44,9 @@ class ProductSummaryBottomSheet @Inject constructor(
         ProductSummaryListViewComponent(binding.rvProductSummaries, this)
     }
 
+    @ExperimentalStdlibApi
     override fun onProductDeleteClicked(product: ProductUiModel) {
-        TODO("Not yet implemented")
+        viewModel.submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -68,7 +70,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupView()
         setupObserve()
 
-        viewModel.getProductTagSummary()
+        viewModel.submitAction(PlayBroProductSummaryAction.LoadProductSummary)
     }
 
     override fun onDestroyView() {
@@ -110,6 +112,11 @@ class ProductSummaryBottomSheet @Inject constructor(
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 when(state.productTagSummary) {
                     is ProductTagSummaryUiModel.Loading -> {
+                        binding.ivLoading.visibility = View.VISIBLE
+                        binding.globalError.visibility = View.GONE
+                        binding.flBtnDoneContainer.visibility = View.GONE
+                    }
+                    is ProductTagSummaryUiModel.LoadingWithPlaceholder -> {
                         setTitle(null)
                         binding.ivLoading.visibility = View.GONE
                         binding.globalError.visibility = View.GONE
@@ -139,7 +146,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                             customErrMessage = state.productTagSummary.throwable.localizedMessage
                                 ?: getString(R.string.play_broadcaster_default_error),
                             actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = { viewModel.getProductTagSummary() }
+                            actionListener = { viewModel.submitAction(PlayBroProductSummaryAction.LoadProductSummary) }
                         )
 
                         setTitle(null)

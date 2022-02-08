@@ -5,11 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
-import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.*
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
@@ -36,6 +34,7 @@ import javax.inject.Inject
 class PlayBroProductSetupViewModel @Inject constructor(
     private val repo: PlayBroadcastRepository,
     private val hydraConfigStore: HydraConfigStore,
+    private val setupDataStore: PlayBroadcastSetupDataStore,
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
@@ -148,6 +147,14 @@ class PlayBroProductSetupViewModel @Inject constructor(
         }
     }
 
+    @ExperimentalStdlibApi
+    fun submitAction(action: PlayBroProductSummaryAction) {
+        when(action) {
+            is PlayBroProductSummaryAction.LoadProductSummary -> handleLoadProductSummary()
+            is PlayBroProductSummaryAction.DeleteProduct -> handleDeleteProduct(action.product)
+        }
+    }
+
     private fun getProductsInEtalase(model: SelectedEtalaseModel, keyword: String = "") {
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val map = _productInEtalaseMap.value
@@ -225,27 +232,51 @@ class PlayBroProductSetupViewModel @Inject constructor(
     }
 
     /** Product Summary */
+
     /** TODO: gonna delete this later */
     @ExperimentalStdlibApi
-    fun getProductTagSummary() {
-        _productTagSummary.value = ProductTagSummaryUiModel.Loading
-
+    private fun handleLoadProductSummary() {
+        _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            /** TODO: gonna remove this delay */
-            delay(1000)
-            val response = repo.getProductTagSummarySection(channelId.toLong())
-
-            var productCount = 0
-            response.forEach {
-                productCount += it.products.size
-            }
-
-            withContext(dispatchers.main) {
-                _productTagSummary.value = if(productCount == 0) ProductTagSummaryUiModel.Empty
-                                            else ProductTagSummaryUiModel.Success(response, productCount)
-            }
+            getProductTagSummary()
         }) {
             _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
+        }
+    }
+
+    /** TODO: gonna delete this later */
+    @ExperimentalStdlibApi
+    private fun handleDeleteProduct(product: ProductUiModel) {
+        _productTagSummary.value = ProductTagSummaryUiModel.Loading
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            delay(1000)
+//            val productSectionList = _productTagSummary.value as ProductTagSummaryUiModel.Success
+//
+//            val productIdList = productSectionList.sections.flatMap { section ->
+//                section.products.filter { it.id != product.id }.map { it.id }
+//            }.joinToString(",")
+
+            getProductTagSummary()
+        }) {
+            _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
+        }
+    }
+
+    /** TODO: gonna delete this later */
+    @ExperimentalStdlibApi
+    private suspend fun getProductTagSummary() {
+        /** TODO: gonna remove this delay */
+        delay(1000)
+        val response = repo.getProductTagSummarySection(channelId.toLong())
+
+        var productCount = 0
+        response.forEach {
+            productCount += it.products.size
+        }
+
+        withContext(dispatchers.main) {
+            _productTagSummary.value = if(productCount == 0) ProductTagSummaryUiModel.Empty
+            else ProductTagSummaryUiModel.Success(response, productCount)
         }
     }
 
