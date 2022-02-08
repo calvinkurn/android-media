@@ -1,6 +1,8 @@
 package com.tokopedia.digital_product_detail.presentation.activity
 
+import android.app.Activity
 import android.os.Bundle
+import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -13,7 +15,9 @@ import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPTokenListrikFragment
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
+import com.tokopedia.digital_product_detail.presentation.utils.setupOrderListIcon
 import com.tokopedia.header.HeaderUnify
+import java.lang.ref.WeakReference
 
 /**
  * @author by firmanda on 04/02/22
@@ -56,6 +60,15 @@ class DigitalPDPTokenListrikActivity: BaseSimpleActivity(), HasComponent<Digital
 
     override fun getToolbarResourceID(): Int {
         return R.id.pdp_toolbar
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.run {
+            val mActivity = WeakReference<Activity>(this@DigitalPDPTokenListrikActivity)
+            setupOrderListIcon(mActivity)
+            return true
+        }
+        return false
     }
 
     private fun setupAppBar() {

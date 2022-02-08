@@ -46,13 +46,11 @@ import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
-import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTokenListrikViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -97,7 +95,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private var binding by autoClearedNullable<FragmentDigitalPdpTokenListrikBinding>()
 
-    private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
     private var loyaltyStatus = ""
     private var clientNumber = ""
     private var productId =  0
@@ -135,7 +132,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         getDataFromBundle()
         initClientNumberWidget()
         initEmptyState()
-        setAnimationAppBarLayout()
         observeData()
 
         getCatalogMenuDetail()
@@ -169,43 +165,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         binding?.rechargePdpTokenListrikEmptyStateWidget?.setImageUrl(
             "https://images.tokopedia.net/img/ULHhFV/2022/1/7/8324919c-fa15-46d9-84f7-426adb6994e0.jpg"
         )
-    }
-
-    private fun setAnimationAppBarLayout() {
-        binding?.run {
-            rechargePdpTokenListrikAppbar.setupDynamicAppBar(
-                { !viewModel.isEligibleToBuy },
-                { rechargePdpTokenListrikClientNumberWidget.getInputNumber().isEmpty() },
-                { onCollapseAppBar() },
-                { onExpandAppBar() }
-            )
-        }
-    }
-
-    private fun showDynamicSpacer() {
-        binding?.rechargePdpTokenListrikActionBarSpacer?.layoutParams?.height =
-            context?.resources?.getDimensionPixelSize(dynamicSpacerHeightRes)
-                ?: DigitalPDPConstant.DEFAULT_SPACE_HEIGHT
-        binding?.rechargePdpTokenListrikActionBarSpacer?.requestLayout()
-    }
-
-    private fun hideDynamicSpacer() {
-        binding?.rechargePdpTokenListrikActionBarSpacer?.layoutParams?.height = 0
-        binding?.rechargePdpTokenListrikActionBarSpacer?.requestLayout()
-    }
-
-    private fun onCollapseAppBar() {
-        binding?.run {
-            rechargePdpTokenListrikClientNumberWidget.setVisibleSimplifiedLayout(true)
-            showDynamicSpacer()
-        }
-    }
-
-    private fun onExpandAppBar() {
-        binding?.run {
-            rechargePdpTokenListrikClientNumberWidget.setVisibleSimplifiedLayout(false)
-            hideDynamicSpacer()
-        }
     }
 
     private fun observeData() {
@@ -334,11 +293,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     }
 
     private fun getFavoriteNumber() {
-        viewModel.getFavoriteNumber(listOf(
-            TelcoCategoryType.CATEGORY_PULSA,
-            TelcoCategoryType.CATEGORY_PAKET_DATA,
-            TelcoCategoryType.CATEGORY_ROAMING
-        ))
+        viewModel.getFavoriteNumber(listOf(categoryId))
     }
 
     private fun renderPrefill(data: TopupBillsUserPerso) {
@@ -444,7 +399,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
-                dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
             }
         }
     }
@@ -567,7 +521,6 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 rechargePdpTokenListrikEmptyStateWidget.show()
                 rechargePdpTokenListrikRecommendationWidget.hide()
                 rechargePdpTokenListrikDenomGridWidget.hide()
-                rechargePdpTokenListrikClientNumberWidget.hideOperatorIcon()
             }
         }
     }
@@ -613,10 +566,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
     private fun initClientNumberWidget() {
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
-
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number
+                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_token_listrik
                 )
             )
             setInputFieldType(RechargeClientNumberWidget.InputFieldType.Listrik)
@@ -723,11 +675,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     override fun onClickIcon(isSwitchChecked: Boolean) {
                         binding?.run {
                             val clientNumber = rechargePdpTokenListrikClientNumberWidget.getInputNumber()
-                            val dgCategoryIds = arrayListOf(
-                                TelcoCategoryType.CATEGORY_PULSA.toString(),
-                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                                TelcoCategoryType.CATEGORY_ROAMING.toString()
-                            )
+                            val dgCategoryIds = arrayListOf(categoryId.toString())
                             navigateToContact(
                                 clientNumber, dgCategoryIds,
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId)

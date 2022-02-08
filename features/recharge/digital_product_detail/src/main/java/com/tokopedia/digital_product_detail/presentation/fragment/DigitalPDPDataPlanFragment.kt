@@ -23,6 +23,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -542,9 +543,11 @@ class DigitalPDPDataPlanFragment :
 
     private fun initClientNumberWidget() {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            setCustomInputNumberFormatter { inputNumber ->
+                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber) }
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number
+                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
                 )
             )
             setInputFieldType(RechargeClientNumberWidget.InputFieldType.Telco)
