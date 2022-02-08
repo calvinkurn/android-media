@@ -28,21 +28,21 @@ import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
-import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_IS_FROM_TOKEN_LISTRIK
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_QR_PARAM
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_UPDATED_TITLE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_NEED_RESULT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.RESULT_CODE_QR_SCAN
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTokenListrikBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
@@ -136,6 +136,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
         getCatalogMenuDetail()
         getPrefixOperatorData()
+        onShowGreenBox()
     }
 
 
@@ -258,6 +259,26 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         renderPrefill(data.userPerso)
         renderRecommendation(data.recommendations)
         renderTicker(data.tickers)
+    }
+
+    private fun onShowGreenBox(){
+        binding?.let {
+            //TODO Firman change to real data
+            val dummyInfo = "Transaksi selama <b>23:40-00:20 WIB</b> baru akan diproses pada <b>00:45 WIB.</b> <b>Selengkapnya</b>"
+            val clickableInfo = "Selengkapnya"
+            val dummyListInfo = listOf<String>(
+                "Transaksi selama 23:40-00:20 WIB baru akan <b>diproses pada 00:45 WIB.</b>",
+                "Proses verifikasi transaksi membutuhkan <b>maksimal 2x24 jam</b> hari kerja",
+                "Harap cek <b>limit kWh</b> anda sebelum membeli token listrik ya"
+            )
+            it.rechargePdpTickerWidgetProductDesc.apply {
+                setText(dummyInfo)
+                setLinks(clickableInfo, View.OnClickListener {
+                    showMoreInfoBottomSheet(dummyListInfo, dummyInfo)
+                })
+            }
+
+        }
     }
 
     private fun onFailedGetMenuDetail(throwable: Throwable) {
@@ -500,6 +521,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             if (rechargePdpTokenListrikEmptyStateWidget.isVisible) {
                 rechargePdpTokenListrikEmptyStateWidget.hide()
                 rechargePdpTokenListrikRecommendationWidget.show()
+                rechargePdpTickerWidgetProductDesc.show()
             }
         }
     }
@@ -521,6 +543,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                 rechargePdpTokenListrikEmptyStateWidget.show()
                 rechargePdpTokenListrikRecommendationWidget.hide()
                 rechargePdpTokenListrikDenomGridWidget.hide()
+                rechargePdpTickerWidgetProductDesc.hide()
             }
         }
     }
@@ -601,7 +624,8 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
                         val intent = RouteManager.getIntent(context,
                             ApplinkConstInternalMarketplace.QR_SCANNEER, PARAM_NEED_RESULT)
-                        intent.putExtra(EXTRA_IS_FROM_TOKEN_LISTRIK, true)
+                        intent.putExtra(EXTRA_UPDATED_TITLE,
+                            getString(com.tokopedia.digital_product_detail.R.string.qr_scanner_title_scan_barcode))
                         startActivityForResult(intent, RESULT_CODE_QR_SCAN)
                     }
 
@@ -699,6 +723,12 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
             val requestCode = DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
             startActivityForResult(intent, requestCode)
+        }
+    }
+
+    private fun showMoreInfoBottomSheet(listInfo: List<String>, tickerInfo: String){
+        fragmentManager?.let {
+            MoreInfoPDPBottomsheet(tickerInfo, listInfo).show(it, "")
         }
     }
 
