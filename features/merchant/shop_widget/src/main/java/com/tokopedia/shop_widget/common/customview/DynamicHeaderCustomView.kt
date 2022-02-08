@@ -3,7 +3,6 @@ package com.tokopedia.shop_widget.common.customview
 import android.view.LayoutInflater
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
@@ -28,6 +27,7 @@ class DynamicHeaderCustomView: FrameLayout {
         private const val NO_TIMER = 0L
         private const val H24 = 24
         private const val D7 = 7
+        private const val MIN_TOTAL_PRODUCT = 10
     }
 
     private var listener: HeaderListener? = null
@@ -56,7 +56,7 @@ class DynamicHeaderCustomView: FrameLayout {
         setupUi()
         handleTitle(model.title)
         handleSubtitle(model.subTitle)
-        handleSeeAllAppLink(model.ctaText, model.ctaTextLink)
+        handleSeeAllAppLink(model.ctaText, model.ctaTextLink, model.totalProduct)
         handleCountDownTimer(model.statusCampaign, model.endDate, model.timeCounter)
     }
 
@@ -79,16 +79,15 @@ class DynamicHeaderCustomView: FrameLayout {
     }
 
     private fun handleSubtitle(subtitle: String) {
-        if (subtitle.isNotBlank()) {
-            tpSubtitle?.text = subtitle
-            tpSubtitle?.show()
+        tpSubtitle?.text = if (subtitle.isNotBlank()) {
+            subtitle
         } else {
-            tpSubtitle?.gone()
+            itemView?.context?.getString(R.string.thematic_widget_subtitle)
         }
     }
 
-    private fun handleSeeAllAppLink(ctaText: String, ctaTextLink: String) {
-        if (ctaTextLink.isNotBlank()) {
+    private fun handleSeeAllAppLink(ctaText: String, ctaTextLink: String, totalProduct: Int) {
+        if (ctaTextLink.isNotBlank() && totalProduct > MIN_TOTAL_PRODUCT) {
             tpSeeAll?.text = if (ctaText.isNotBlank()) {
                 ctaText
             } else {
