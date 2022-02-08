@@ -11,11 +11,11 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.PartialNonProductBundleDetailBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 
 class PartialSomDetailNonProductBundleDetailViewHolder(
     private var binding: PartialNonProductBundleDetailBinding?,
-    private var actionListener: SomDetailAdapter.ActionListener?,
+    private var actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
     var element: SomDetailOrder.Data.GetSomDetail.Details.Product?
 ) {
 

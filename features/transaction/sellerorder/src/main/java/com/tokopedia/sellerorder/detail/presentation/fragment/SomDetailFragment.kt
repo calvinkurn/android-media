@@ -21,6 +21,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
@@ -100,12 +102,14 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactory
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnSummaryUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.DividerUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.model.MVCUsageUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
@@ -118,6 +122,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -134,11 +139,12 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-09-30.
  */
 open class SomDetailFragment : BaseDaggerFragment(),
-        RefreshHandler.OnRefreshHandlerListener,
-        SomBottomSheetRejectOrderAdapter.ActionListener,
-        SomDetailAdapter.ActionListener,
-        SomBottomSheetRejectReasonsAdapter.ActionListener,
-        SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener, SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener,
+    RefreshHandler.OnRefreshHandlerListener,
+    SomBottomSheetRejectOrderAdapter.ActionListener,
+    SomDetailAdapterFactoryImpl.ActionListener,
+    SomBottomSheetRejectReasonsAdapter.ActionListener,
+    SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener,
+    SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener,
     SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener,
     SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
 
@@ -156,9 +162,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var acceptOrderResponse = SomAcceptOrderResponse.Data.AcceptOrder()
     private var successEditAwbResponse = SomEditRefNumResponse.Data()
     private var failEditAwbResponse = SomEditRefNumResponse.Error()
-    private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
+    private var listDetailData: ArrayList<Visitable<SomDetailAdapterFactory>> = arrayListOf()
     private var somDetailLoadTimeMonitoring: SomDetailLoadTimeMonitoring? = null
-    private lateinit var somDetailAdapter: SomDetailAdapter
+    private var somDetailAdapter = BaseAdapter(getAdapterTypeFactory())
+
     private var refreshHandler: RefreshHandler? = null
     private var pendingAction: SomPendingAction? = null
 
@@ -212,6 +219,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
         private const val ERROR_EDIT_AWB = "Error when edit AWB."
         private const val ERROR_REJECT_ORDER = "Error when rejecting order."
         private const val PAGE_NAME = "seller order detail page."
+        private const val THICK_DIVIDER_HEIGHT = 8
+        private const val THICK_DIVIDER_VERITCAL_MARGIN = 16
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
@@ -352,9 +361,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(binding?.swipeRefreshLayout, this)
         refreshHandler?.setPullEnabled(true)
-        somDetailAdapter = SomDetailAdapter().apply {
-            setActionListener(this@SomDetailFragment)
-        }
         binding?.rvDetail?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = somDetailAdapter
@@ -556,7 +562,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
     protected open fun renderDetail() {
         showSuccessState()
         listDetailData = arrayListOf()
-        somDetailAdapter.listDataDetail = arrayListOf()
         renderHeader()
         renderProducts()
         renderShipment()
@@ -564,11 +569,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
         renderMvc()
         renderButtons()
 
-        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         binding?.rvDetail?.addOneTimeGlobalLayoutListener {
             stopLoadTimeMonitoring()
         }
-        somDetailAdapter.notifyDataSetChanged()
+        somDetailAdapter.setElements(listDetailData.toList())
     }
 
     private fun renderHeader() {
@@ -596,6 +600,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     flagOrderMeta.isWareHouse,
                     tickerInfo)
             listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
+            listDetailData.add(DividerUiModel(height = THICK_DIVIDER_HEIGHT.toPx(), marginTop = THICK_DIVIDER_VERITCAL_MARGIN.toPx(), marginBottom = THICK_DIVIDER_VERITCAL_MARGIN.toPx()))
         }
     }
 
@@ -604,8 +609,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
             val bundleDetailList = mutableListOf<BaseProductUiModel>()
             bundleDetailList.addAll(getProductBundleList(details.bundle, details.bundleIcon))
             bundleDetailList.addAll(getProductNonBundleList(details.nonBundle, addOnInfo))
-            val dataProducts = SomDetailProducts(bundleDetailList, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
+            val dataProducts = SomDetailProducts(flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
             listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
+            listDetailData.addAll(bundleDetailList.toList())
+            listDetailData.add(DividerUiModel(height = THICK_DIVIDER_HEIGHT.toPx(), marginTop = THICK_DIVIDER_VERITCAL_MARGIN.toPx(), marginBottom = THICK_DIVIDER_VERITCAL_MARGIN.toPx()))
         }
     }
 
@@ -742,6 +749,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         val dataPayments = SomDetailPayments(paymentDataUiModel = paymentData,
                 paymentMethodUiModel = paymentMethodList, pricingData = pricingList)
 
+        listDetailData.add(DividerUiModel(height = THICK_DIVIDER_HEIGHT.toPx(), marginTop = THICK_DIVIDER_VERITCAL_MARGIN.toPx(), marginBottom = THICK_DIVIDER_VERITCAL_MARGIN.toPx()))
         listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
     }
 
@@ -1520,5 +1528,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     protected open fun doOnResume() {
         updateShopActive()
+    }
+
+    protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
+        return SomDetailAdapterFactoryImpl(this)
     }
 }

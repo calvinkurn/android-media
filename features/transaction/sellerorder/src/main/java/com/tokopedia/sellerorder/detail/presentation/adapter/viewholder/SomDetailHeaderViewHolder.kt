@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -29,8 +30,8 @@ import com.tokopedia.sellerorder.common.util.Utils.toStringFormatted
 import com.tokopedia.sellerorder.databinding.DetailHeaderItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.view.binding.viewBinding
@@ -38,12 +39,15 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by fwidjaja on 2019-10-03.
  */
-class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+class SomDetailHeaderViewHolder(
+    itemView: View?,
+    private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?
+) : AbstractViewHolder<SomDetailData>(itemView) {
 
     private val adapter: SomDetailLabelAdapter = SomDetailLabelAdapter(emptyList())
     private val binding by viewBinding<DetailHeaderItemBinding>()
 
-    override fun bind(item: SomDetailData, position: Int) {
+    override fun bind(item: SomDetailData) {
         if (item.dataObject is SomDetailHeader) {
             setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
             binding?.run {
@@ -180,5 +184,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
     companion object {
         const val MAX_BUYER_NAME = 35
+
+        val LAYOUT = R.layout.detail_header_item
     }
 }

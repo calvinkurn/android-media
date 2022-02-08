@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.DetailProductCardItemBinding
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -14,7 +14,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class SomDetailNonProductBundleCardViewHolder(
-    private val actionListener: SomDetailAdapter.ActionListener?,
+    private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
     itemView: View?
 ) : AbstractViewHolder<NonProductBundleUiModel>(itemView), SomDetailAddOnViewHolder.Listener {
 
@@ -27,12 +27,13 @@ class SomDetailNonProductBundleCardViewHolder(
     private var addOnSummaryViewHolder: PartialSomDetailAddOnSummaryViewHolder? = null
 
     override fun bind(element: NonProductBundleUiModel) {
-        val productDetailViewHolder = getProductDetailViewHolder(element)
-        val addOnSummaryViewHolder = getAddOnSummaryViewHolder(element)
-        productDetailViewHolder.bind()
-        addOnSummaryViewHolder.bind()
+        productDetailViewHolder = getProductDetailViewHolder(element)
+        addOnSummaryViewHolder = getAddOnSummaryViewHolder(element)
+        productDetailViewHolder?.bind()
+        addOnSummaryViewHolder?.bind()
         binding?.dividerAddOn?.showWithCondition(
-            shouldShow = productDetailViewHolder.isShowing() && addOnSummaryViewHolder.isShowing()
+            productDetailViewHolder?.isShowing() == true &&
+                    addOnSummaryViewHolder?.isShowing() == true
         )
     }
 

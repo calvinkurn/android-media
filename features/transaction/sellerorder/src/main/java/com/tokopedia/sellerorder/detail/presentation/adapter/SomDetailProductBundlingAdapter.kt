@@ -11,6 +11,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingProductBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -18,7 +19,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class SomDetailProductBundlingAdapter(
-        private val actionListener: SomDetailAdapter.ActionListener?
+    private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?
 ) : RecyclerView.Adapter<SomDetailProductBundlingAdapter.ViewHolder>() {
 
     var products = emptyList<SomDetailOrder.Data.GetSomDetail.Details.Product>()

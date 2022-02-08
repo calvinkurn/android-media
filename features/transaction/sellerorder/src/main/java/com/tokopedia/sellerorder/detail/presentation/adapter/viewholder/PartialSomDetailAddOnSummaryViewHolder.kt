@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -30,11 +31,16 @@ class PartialSomDetailAddOnSummaryViewHolder constructor(
 
     init {
         binding?.rvAddOn?.run {
-            addItemDecoration(RecyclerViewItemDivider(
-                MethodChecker.getDrawable(context, R.drawable.som_detail_add_on_divider),
-                ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
-                ITEM_DECORATION_VERTICAL_MARGIN.toPx()
-            ))
+            adapter = this@PartialSomDetailAddOnSummaryViewHolder.adapter
+            if (itemDecorationCount == Int.ZERO) {
+                addItemDecoration(
+                    RecyclerViewItemDivider(
+                        MethodChecker.getDrawable(context, R.drawable.som_detail_add_on_divider),
+                        ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
+                        ITEM_DECORATION_VERTICAL_MARGIN.toPx()
+                    )
+                )
+            }
         }
     }
 
@@ -64,8 +70,7 @@ class PartialSomDetailAddOnSummaryViewHolder constructor(
         tvAddOnLabel.text = label
     }
 
-    private fun PartialAddOnSummaryBinding.setupAddOnSummaryAddOns(addons: List<AddOnUiModel>) {
-        if (rvAddOn.adapter == null) rvAddOn.adapter = adapter
+    private fun setupAddOnSummaryAddOns(addons: List<AddOnUiModel>) {
         adapter.setElements(addons)
     }
 

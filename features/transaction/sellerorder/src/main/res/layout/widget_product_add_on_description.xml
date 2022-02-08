@@ -177,6 +177,8 @@
         android:id="@+id/containerAddOnDescriptionSeeMore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxHeight="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvAddOnDescription">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -184,6 +186,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/som_detail_add_on_see_more_description"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>

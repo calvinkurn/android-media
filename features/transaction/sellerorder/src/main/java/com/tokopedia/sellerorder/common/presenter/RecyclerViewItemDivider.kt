@@ -25,13 +25,13 @@ class RecyclerViewItemDivider(
         val itemPosition = parent.getChildAdapterPosition(view)
         val isLastItem: Boolean = itemPosition == parent.adapter?.itemCount.orZero() - 1
         val layoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.topMargin += if (itemPosition == 0) {
+        layoutParams.topMargin = if (itemPosition == 0) {
             topMargin
         } else {
             topMargin + divider?.intrinsicHeight.orZero()
         }
         if (!isLastItem || applyMarginAfterLastItem) {
-            layoutParams.bottomMargin += bottomMargin
+            layoutParams.bottomMargin = bottomMargin
         }
         view.layoutParams = layoutParams
     }

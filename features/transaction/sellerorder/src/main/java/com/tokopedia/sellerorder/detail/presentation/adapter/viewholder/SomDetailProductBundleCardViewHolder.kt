@@ -9,8 +9,8 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
 import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailProductBundlingAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -19,8 +19,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class SomDetailProductBundleCardViewHolder(
-        private val actionListener: SomDetailAdapter.ActionListener?,
-        itemView: View?
+    private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
+    itemView: View?
 ) : AbstractViewHolder<ProductBundleUiModel>(itemView) {
 
     companion object {

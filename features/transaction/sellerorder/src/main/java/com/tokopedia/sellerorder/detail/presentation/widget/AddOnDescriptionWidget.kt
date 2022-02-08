@@ -20,6 +20,8 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.WidgetProductAddOnDescriptionBinding
@@ -62,6 +64,7 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
 
     private fun createDescriptionOnPreDrawListener(): ViewTreeObserver.OnPreDrawListener {
         return ViewTreeObserver.OnPreDrawListener {
+            var continueDraw = true
             binding.tvAddOnDescription.layout?.run {
                 val lines = lineCount
                 val hasDescriptionSeeLessText = text?.contains(context.getString(R.string.som_detail_add_on_see_less_description)) == true
@@ -70,28 +73,29 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
                     val isEllipsized = getEllipsisCount(lines - 1) > Int.ZERO
                     if (hasDescriptionSeeLessText) {
                         setDescriptionText(withSeeLessText = false)
-                        return@OnPreDrawListener false
-                    } else if (isEllipsized && !isDescriptionSeeMoreVisible) {
-                        binding.containerAddOnDescriptionSeeMore.maxHeight = Int.MAX_VALUE
-                        return@OnPreDrawListener false
-                    } else if (!isEllipsized && isDescriptionSeeMoreVisible) {
-                        binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
-                        return@OnPreDrawListener false
+                        continueDraw = false
                     }
-                    binding.tvAddOnDescription.viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
-                    true
+                    if (isEllipsized && !isDescriptionSeeMoreVisible) {
+                        binding.containerAddOnDescriptionSeeMore.maxHeight = Int.MAX_VALUE
+                        continueDraw = false
+                    }
+                    if (!isEllipsized && isDescriptionSeeMoreVisible) {
+                        binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
+                        continueDraw = false
+                    }
                 } else {
                     if (!hasDescriptionSeeLessText) {
                         setDescriptionText(withSeeLessText = true)
-                        return@OnPreDrawListener false
-                    } else if (isDescriptionSeeMoreVisible) {
-                        binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
-                        return@OnPreDrawListener false
+                        continueDraw = false
                     }
-                    binding.tvAddOnDescription.viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
-                    true
+                    if (isDescriptionSeeMoreVisible) {
+                        binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
+                        continueDraw = false
+                    }
                 }
-            } ?: true
+            }
+            binding.tvAddOnDescription.viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
+            continueDraw
         }
     }
 
@@ -298,15 +302,20 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
     fun setDescription(description: String, expanded: Boolean) {
         this@AddOnDescriptionWidget.description = description
         with(binding.tvAddOnDescription) {
-            viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
-            viewTreeObserver.addOnPreDrawListener(descriptionOnPreDrawListener)
-            animatorSet.cancel()
-            setDescriptionText(expanded)
-            updateDescriptionMaxLines(expanded)
-            val layoutParamsCopy = layoutParams
-            layoutParamsCopy.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            layoutParams = layoutParamsCopy
-            showWithCondition(this@AddOnDescriptionWidget.description.isNotBlank())
+            if (this@AddOnDescriptionWidget.description.isBlank()) {
+                gone()
+                binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
+            } else {
+                viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
+                viewTreeObserver.addOnPreDrawListener(descriptionOnPreDrawListener)
+                animatorSet.cancel()
+                setDescriptionText(expanded)
+                updateDescriptionMaxLines(expanded)
+                val layoutParamsCopy = layoutParams
+                layoutParamsCopy.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                layoutParams = layoutParamsCopy
+                show()
+            }
         }
     }
 
