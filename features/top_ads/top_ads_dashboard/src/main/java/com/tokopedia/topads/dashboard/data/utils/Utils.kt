@@ -7,6 +7,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCALE
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -29,6 +31,10 @@ object Utils {
 
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy", locale)
     val format = SimpleDateFormat("yyyy-MM-dd", locale)
+
+    fun Context.openWebView(url: String) {
+        RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, url)
+    }
 
     fun Date?.asString(): String {
         return if (this == null) ""

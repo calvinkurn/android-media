@@ -30,11 +30,13 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.berandaDialogSh
 import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.showBerandaDialog
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.asString
+import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.beranda.LatestReadingTopAdsDashboardRvAdapter
 import com.tokopedia.topads.dashboard.view.adapter.beranda.TopAdsBerandaSummaryRvAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment.Companion.MANUAL_AD
+import com.tokopedia.topads.dashboard.view.fragment.education.READ_MORE_URL
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
@@ -228,11 +230,7 @@ open class BerandaTabFragment : BaseDaggerFragment() {
             showInformationBottomSheet()
         }
         btnRefreshCredits.setOnClickListener { topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess) }
-        btnReadMore.setOnClickListener {
-            (requireActivity() as? TopAdsDashboardActivity)?.switchTab(
-                TopAdsDashboardActivity.INSIGHT_PAGE
-            )
-        }
+        btnReadMore.setOnClickListener { requireContext().openWebView(READ_MORE_URL) }
     }
 
     private fun showInformationBottomSheet() {

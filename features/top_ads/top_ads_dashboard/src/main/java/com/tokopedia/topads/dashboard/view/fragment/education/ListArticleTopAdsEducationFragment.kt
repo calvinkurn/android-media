@@ -8,14 +8,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.ListArticle
+import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.topads.dashboard.view.adapter.ListArticleRvAdapter
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+
+const val READ_MORE_URL =
+    "https://seller.tokopedia.com/edu/topic/fitur-kembangkan-toko-promosi/topads/"
 
 class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
 
@@ -51,11 +53,9 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
     }
 
     private fun initClicks() {
-        adapter.itemClick = { openWebView(it) }
+        adapter.itemClick = { requireContext().openWebView(it) }
 
-        btnReadMore.setOnClickListener {
-            openWebView(READ_MORE_URL)
-        }
+        btnReadMore.setOnClickListener { requireContext().openWebView(READ_MORE_URL) }
     }
 
     private fun initView(data: ListArticle.ListArticleItem) {
@@ -68,17 +68,12 @@ class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
         adapter.addItems(data.articles)
     }
 
-    private fun openWebView(url: String) {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
-    }
 
     override fun getScreenName(): String {
         return javaClass.name
     }
 
     companion object {
-        private const val READ_MORE_URL =
-            "https://seller.tokopedia.com/edu/topic/fitur-kembangkan-toko-promosi/topads/"
         private const val ARTICLES = "articles"
         fun createInstance(listArticleItem: ListArticle.ListArticleItem): ListArticleTopAdsEducationFragment {
             val bundle = Bundle()
