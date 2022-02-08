@@ -12,7 +12,7 @@ class CouponPreviewMapper @Inject constructor() {
         private const val DISCOUNT_TYPE_NOMINAL = "idr"
     }
 
-    fun map(coupon: CouponUiModel): Coupon {
+    fun map(coupon: CouponUiModel, products : List<CouponProduct>): Coupon {
         val startDate = coupon.startTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
         val endDate = coupon.finishTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
 
@@ -59,11 +59,6 @@ class CouponPreviewMapper @Inject constructor() {
             coupon.minimumAmt,
             maxExpense
         )
-        val products = mutableListOf<CouponProduct>()
-
-        coupon.productIds.forEach { productId ->
-            products.add(CouponProduct(productId.toString(), 0, 0f, "", 0))
-        }
 
         return Coupon(coupon.id.toLong(), information, setting, products)
     }

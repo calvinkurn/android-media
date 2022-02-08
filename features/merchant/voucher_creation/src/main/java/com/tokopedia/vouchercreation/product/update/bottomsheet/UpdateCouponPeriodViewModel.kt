@@ -10,10 +10,9 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
-import com.tokopedia.vouchercreation.product.create.data.mapper.CouponPreviewMapper
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailUseCase
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -22,8 +21,7 @@ import javax.inject.Inject
 class UpdateCouponPeriodViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val updateCouponUseCase: UpdateCouponFacadeUseCase,
-    private val getCouponDetailUseCase: GetCouponDetailUseCase,
-    private val couponPreviewMapper: CouponPreviewMapper
+    private val getCouponDetailUseCase: GetCouponFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _updateCouponResult = SingleLiveEvent<Result<Boolean>>()
@@ -102,10 +100,7 @@ class UpdateCouponPeriodViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    getCouponDetailUseCase.params =
-                        GetCouponDetailUseCase.createRequestParam(couponId)
-                    val coupon = getCouponDetailUseCase.executeOnBackground()
-                    couponPreviewMapper.map(coupon)
+                    getCouponDetailUseCase.execute(this, couponId)
                 }
                 _couponDetail.value = Success(result)
             },
