@@ -45,7 +45,7 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
 
     private fun setDataForMultipleLine(items: List<MultiLineGraph>) {
         val dataSets = items.map { getDataForSingleLine(it) }
-        lineGraphView?.setDataSets(dataSets)
+        lineGraphView?.setDataSets(*dataSets.toTypedArray())
     }
 
     private fun getDataForSingleLine(item: MultiLineGraph): LineChartData {

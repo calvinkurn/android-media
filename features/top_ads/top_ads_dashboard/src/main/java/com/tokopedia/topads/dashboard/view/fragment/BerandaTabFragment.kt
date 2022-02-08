@@ -3,7 +3,9 @@ package com.tokopedia.topads.dashboard.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
@@ -25,6 +28,7 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.map
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.showDialogWithCoachMark
 import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.berandaDialogShown
 import com.tokopedia.topads.dashboard.data.utils.TopAdsPrefsUtil.showBerandaDialog
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.asString
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
@@ -50,7 +54,7 @@ import javax.inject.Inject
 /**
  * Created by Pika on 15/5/20.
  */
-open class BerandaTabFragment : TopAdsBaseTabFragment() {
+open class BerandaTabFragment : BaseDaggerFragment() {
 
     private lateinit var shimmerView: ConstraintLayout
     private lateinit var scrollView: NestedScrollView
@@ -73,7 +77,6 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     private val graphLayout by lazy { TopAdsMultiLineGraphFragment() }
     private val checkResponse by lazy { CheckResponse() }
-    private var dataStatistic: DataStatistic? = null
 
     private val summaryAdTypeList by lazy { resources.getSummaryAdTypes() }
     private var lastSelectedAdType: Chip? = null
@@ -98,37 +101,22 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     @Inject
     lateinit var topAdsDashboardViewModel: TopAdsDashboardViewModel
 
-    @TopAdsStatisticsType
-    internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
-
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_topads_dashboard_beranda_base
-    }
-
-    override fun getChildScreenName(): String {
-        return BerandaTabFragment::class.java.name
-    }
-
-    override fun loadChildStatisticsData() {
-        //loadStatisticsData()
-    }
-
-    override fun renderGraph() {
-        currentStatisticsFragment?.showLineGraph(dataStatistic)
-    }
-
-    override fun getCustomDateText(customDateText: String) {
-
-    }
-
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        val layout =
+            inflater.inflate(R.layout.fragment_topads_dashboard_beranda_base, container, false)
+        setUpView(layout)
+        return layout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showShimmer()
-        selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         creditHistoryImage.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_wallet))
 
         observeLiveData()
@@ -145,7 +133,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private fun initializeGraph() {
         parentFragmentManager
             .beginTransaction()
-            .replace(R.id.graph_layout, graphLayout, "a")
+            .replace(R.id.graph_layout, graphLayout, "")
             .commit()
     }
 
@@ -191,7 +179,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         txtAdType.text = chip.title
 
         topAdsDashboardViewModel.fetchSummaryStatistics(
-            startDate.asString(), endDate.asString(), chip.adTypeId
+            Utils.getStartDate().asString(), Utils.getEndDate().asString(), chip.adTypeId
         )
         dismissBottomSheet()
     }
@@ -222,9 +210,6 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     }
 
     private fun setUpClick() {
-        /*help_section.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
-        }*/
         creditHistory.setOnClickListener {
             goToCreditHistory(false)
         }
@@ -315,7 +300,11 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         topAdsDashboardViewModel.summaryStatisticsLiveData.removeObservers(this)
     }
 
-    override fun setUpView(view: View) {
+    override fun getScreenName(): String {
+        return BerandaTabFragment::class.java.name
+    }
+
+    private fun setUpView(view: View) {
         graphContainer = view.findViewById(R.id.graph_layout)
         creditHistory = view.findViewById(R.id.credit_history)
         txtAdType = view.findViewById(R.id.txtAdType)

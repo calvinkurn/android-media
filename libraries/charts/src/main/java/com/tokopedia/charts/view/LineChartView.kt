@@ -88,11 +88,6 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         binding?.lineChart?.data = LineData(dateSets)
     }
 
-    fun setDataSets(dataSets: List<LineChartData>) {
-        dataSets.map { getLineDataSet(it) }
-        binding?.lineChart?.data = LineData(dataSets.map { getLineDataSet(it) })
-    }
-
     private fun getLineDataSet(data: LineChartData): LineDataSet {
         val entries: List<Entry> = getLineChartEntry(data.chartEntry)
 
