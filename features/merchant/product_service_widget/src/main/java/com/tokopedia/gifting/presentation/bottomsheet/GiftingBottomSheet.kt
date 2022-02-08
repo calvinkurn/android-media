@@ -8,13 +8,13 @@ import com.tokopedia.gifting.presentation.viewmodel.GiftingViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
-class GiftingBottomSheet: BottomSheetUnify() {
+class GiftingBottomSheet(private val productId: Long) : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: GiftingViewModel
 
     init {
-        setTitle("werwer")
+        setTitle("werwer $productId")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

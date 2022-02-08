@@ -10,7 +10,7 @@
             android:configChanges="orientation"
             android:theme="@style/Theme.White"
             android:exported="false">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -19,12 +19,11 @@
                     android:host="@string/host_merchant"
                     android:pathPattern="@string/path_product_bundle"
                     android:scheme="@string/internal_scheme" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
 
         <activity
             android:name="com.tokopedia.gifting.presentation.activity.GiftingBottomsheetActivity"
-            android:label="@string/title_bundling_selection_page"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent"
@@ -36,7 +35,7 @@
 
                 <data
                     android:host="@string/host_merchant"
-                    android:pathPattern="@string/path_product_bundle"
+                    android:pathPattern="@string/path_gifting_bottomsheet"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
