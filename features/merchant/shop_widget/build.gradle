@@ -65,6 +65,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -72,6 +73,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.minicart)
     implementation projectOrAar(rootProject.ext.features.cart_common)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
 
     //unit test
     testImplementation rootProject.ext.testDependencies.mockk

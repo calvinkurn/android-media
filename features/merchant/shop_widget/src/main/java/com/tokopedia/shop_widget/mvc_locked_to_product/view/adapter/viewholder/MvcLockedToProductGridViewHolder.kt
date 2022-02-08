@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.productcard.ATCNonVariantListener
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.databinding.ItemMvcLockedToProductProductGridCardLayoutBinding
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductGridProductUiModel
@@ -25,8 +24,9 @@ open class MvcLockedToProductGridViewHolder(
 
     interface Listener {
         fun onProductClicked(index: Int, uiModel: MvcLockedToProductGridProductUiModel)
-        fun onOpenVariantBottomSheet(uiModel: MvcLockedToProductGridProductUiModel)
+        fun onProductVariantClickAtc(uiModel: MvcLockedToProductGridProductUiModel)
         fun onProductVariantQuantityZero(productId: String)
+        fun onProductNonVariantVariantAtc(productId: String, quantity: Int)
     }
 
     override fun bind(uiModel: MvcLockedToProductGridProductUiModel) {
@@ -40,15 +40,17 @@ open class MvcLockedToProductGridViewHolder(
             setOnClickListener {
                 listener.onProductClicked(adapterPosition, uiModel)
             }
-            setAddToCartNonVariantClickListener(object: ATCNonVariantListener{
+            setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
-                    if(quantity == 0 && uiModel.isVariant){
+                    if (quantity == 0 && uiModel.isVariant) {
                         listener.onProductVariantQuantityZero(uiModel.productID)
+                    } else {
+                        listener.onProductNonVariantVariantAtc(uiModel.productID, quantity)
                     }
                 }
             })
             setAddToCartOnClickListener {
-                listener.onOpenVariantBottomSheet(uiModel)
+                listener.onProductVariantClickAtc(uiModel)
             }
         }
     }

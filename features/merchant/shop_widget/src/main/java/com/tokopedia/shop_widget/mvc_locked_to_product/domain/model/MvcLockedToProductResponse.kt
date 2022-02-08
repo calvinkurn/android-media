@@ -121,7 +121,7 @@ data class MvcLockedToProductResponse(
                 var stock: Int = 0,
                 @SerializedName("productInCart")
                 @Expose
-                var productInCart: Int = 0
+                var productInCart: ProductInCart = ProductInCart()
             ) {
                 fun isVariant(): Boolean {
                     return childIDs.isNotEmpty()
@@ -140,6 +140,15 @@ data class MvcLockedToProductResponse(
                     @SerializedName("url")
                     @Expose
                     var url: String = ""
+                )
+
+                data class ProductInCart(
+                    @SerializedName("productID")
+                    @Expose
+                    var productId: String = "",
+                    @SerializedName("qty")
+                    @Expose
+                    var qty: Int = 0
                 )
             }
         }

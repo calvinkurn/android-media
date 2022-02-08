@@ -93,7 +93,10 @@ object MvcLockedToProductMapper {
             productResponse.city,
             productResponse.minimumOrder,
             productResponse.stock,
-            productResponse.productInCart,
+            MvcLockedToProductGridProductUiModel.ProductInCart(
+                productResponse.productInCart.productId,
+                productResponse.productInCart.qty
+            ),
             productResponse.isVariant(),
             mapToProductCardModel(productResponse)
         )
@@ -102,7 +105,7 @@ object MvcLockedToProductMapper {
     private fun mapToProductCardModel(
         productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data
     ): ProductCardModel {
-        return if(false){
+        return if(!MvcLockedToProductUtil.isMvcPhase2()){
             createProductCardModelPhase1(productResponse)
         } else {
             if (productResponse.isVariant()) {

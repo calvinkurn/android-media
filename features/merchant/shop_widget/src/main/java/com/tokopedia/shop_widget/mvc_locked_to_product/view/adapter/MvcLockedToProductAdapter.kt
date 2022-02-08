@@ -161,6 +161,10 @@ class MvcLockedToProductAdapter(
         return visitables.filterIsInstance<MvcLockedToProductVoucherUiModel>().firstOrNull()?.baseCode.orEmpty()
     }
 
+    fun getVoucherUiModel(): MvcLockedToProductVoucherUiModel? {
+        return visitables.filterIsInstance<MvcLockedToProductVoucherUiModel>().firstOrNull()
+    }
+
     fun getFirstProductCardPosition(): Int {
         return visitables.indexOfFirst {
             it is MvcLockedToProductGridProductUiModel
