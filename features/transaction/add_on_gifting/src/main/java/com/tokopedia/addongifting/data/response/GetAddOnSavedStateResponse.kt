@@ -24,15 +24,15 @@ data class AddOnDataResponse(
         @SerializedName("add_on_price")
         val addOnPrice: Double = 0.0,
         @SerializedName("add_on_metadata")
-        val addOnMetadata: AddOnMetadata = AddOnMetadata()
+        val addOnMetadata: AddOnMetadataResponse = AddOnMetadataResponse()
 )
 
-data class AddOnMetadata(
+data class AddOnMetadataResponse(
         @SerializedName("add_on_note")
-        val addOnNote: AddOnNote = AddOnNote()
+        val addOnNote: AddOnNoteResponse = AddOnNoteResponse()
 )
 
-data class AddOnNote(
+data class AddOnNoteResponse(
         @SerializedName("is_custom_note")
         val isCustomNote: Boolean = false,
         @SerializedName("to")

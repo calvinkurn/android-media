@@ -65,6 +65,8 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
         with(viewBinding) {
             if (element.isAddOnSelected) {
                 cardAddOnNote.show()
+                renderTo(viewBinding, element)
+                renderFrom(viewBinding, element)
                 renderNote(viewBinding, element)
             } else {
                 cardAddOnNote.gone()
@@ -72,10 +74,89 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
         }
     }
 
+    private fun renderTo(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
+        with(viewBinding) {
+            textFieldAddOnTo.editText.inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            textFieldAddOnTo.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+            textFieldAddOnTo.editText.setRawInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
+            textFieldAddOnTo.editText.setText(Utils.getHtmlFormat(element.addOnNoteTo))
+            textFieldAddOnTo.editText.setSelection(textFieldAddOnTo.editText.length())
+            textFieldAddOnTo.editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val validationResult = validateTo(s.toString())
+                    if (validationResult.first) {
+                        textFieldAddOnTo.isInputError = true
+                        textFieldAddOnTo.setMessage(validationResult.second)
+                    } else {
+                        element.addOnNote = s.toString()
+                        textFieldAddOnTo.isInputError = false
+                        textFieldAddOnTo.setMessage("")
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+            })
+        }
+    }
+
+    private fun validateTo(text: String): Pair<Boolean, String> {
+        if (text.length > 25) {
+            return Pair(true, "Nama penerima maks. 25 karakter")
+        }
+
+        return Pair(false, "")
+    }
+
+    private fun renderFrom(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
+        with(viewBinding) {
+            textFieldAddOnFrom.editText.inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            textFieldAddOnFrom.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+            textFieldAddOnFrom.editText.setRawInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
+            textFieldAddOnFrom.editText.setText(Utils.getHtmlFormat(element.addOnNoteTo))
+            textFieldAddOnFrom.editText.setSelection(textFieldAddOnFrom.editText.length())
+            textFieldAddOnFrom.editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val validationResult = validateFrom(s.toString())
+                    if (validationResult.first) {
+                        textFieldAddOnFrom.isInputError = true
+                        textFieldAddOnFrom.setMessage(validationResult.second)
+                    } else {
+                        element.addOnNote = s.toString()
+                        textFieldAddOnFrom.isInputError = false
+                        textFieldAddOnFrom.setMessage("")
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+            })
+        }
+    }
+
+    private fun validateFrom(text: String): Pair<Boolean, String> {
+        if (text.length > 25) {
+            return Pair(true, "Nama pengirim maks. 25 karakter")
+        }
+
+        return Pair(false, "")
+    }
+
     private fun renderNote(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
             textFieldAddOnNote.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             textFieldAddOnNote.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+            textFieldAddOnNote.setCounter(250)
             textFieldAddOnNote.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
             textFieldAddOnNote.editText.setText(Utils.getHtmlFormat(element.addOnNote))
             textFieldAddOnNote.editText.setSelection(textFieldAddOnNote.editText.length())
@@ -85,7 +166,15 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    element.addOnNote = s.toString()
+                    val validationResult = validateNote(s.toString(), element)
+                    if (validationResult.first) {
+                        textFieldAddOnFrom.isInputError = true
+                        textFieldAddOnFrom.setMessage(validationResult.second)
+                    } else {
+                        textFieldAddOnFrom.isInputError = false
+                        textFieldAddOnFrom.setMessage("")
+                        element.addOnNote = s.toString()
+                    }
                     if (s?.length ?: 0 > 0) {
                         textFieldAddOnNote.setLabel("Pesan")
                     } else {
@@ -97,8 +186,20 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
                 }
             })
-
         }
     }
+
+    private fun validateNote(text: String, element: AddOnUiModel): Pair<Boolean, String> {
+        if (text.length > 25) {
+            return Pair(true, "Isi pesan maks. 250 karakter")
+        }
+
+        return if (element.isCustomNote) {
+            Pair(false, "Bisa ubah pesan yang disediakan")
+        } else {
+            Pair(false, "Menggunakan pesan yang disediakan")
+        }
+    }
+
 
 }
