@@ -67,7 +67,7 @@ class DigitalRecommendationUseCaseTest {
                 showSoldPercentage=true,
                 slashedPrice="Rp150.000",
                 discount="20%",
-                cashback="",
+                cashback="cashback",
                 specialDiscount="",
                 price="Rp120.000",
                 pricePrefix="Mulai dari",
@@ -412,7 +412,7 @@ class DigitalRecommendationUseCaseTest {
             assertEquals(DGExpectedData.specialInfoText, DGActualData.specialInfo.text)
             assertEquals(DGExpectedData.specialInfoColor, DGActualData.specialInfo.textColor)
             assertEquals(DGExpectedData.price, DGActualData.priceData.price)
-            assertEquals(DGExpectedData.label3, DGActualData.priceData.discountLabel)
+            assertEquals(DGExpectedData.cashback, DGActualData.priceData.discountLabel)
             assertEquals(DigitalUnifyConst.DISCOUNT_CASHBACK, DGActualData.priceData.discountType)
             assertEquals(Label.HIGHLIGHT_LIGHT_GREEN, DGActualData.priceData.discountLabelType)
             assertEquals(DGExpectedData.slashedPrice, DGActualData.priceData.slashedPrice)
@@ -465,7 +465,7 @@ class DigitalRecommendationUseCaseTest {
             assertEquals(PGExpectedData.specialInfoText, PGActualData.specialInfo.text)
             assertEquals(PGExpectedData.specialInfoColor, PGActualData.specialInfo.textColor)
             assertEquals(PGExpectedData.price, PGActualData.priceData.price)
-            assertEquals(PGExpectedData.label3, PGActualData.priceData.discountLabel)
+            assertEquals(PGExpectedData.cashback, PGActualData.priceData.discountLabel)
             assertEquals(DigitalUnifyConst.DISCOUNT_CASHBACK, PGActualData.priceData.discountType)
             assertEquals(Label.HIGHLIGHT_LIGHT_GREEN, PGActualData.priceData.discountLabelType)
             assertEquals(PGExpectedData.slashedPrice, PGActualData.priceData.slashedPrice)
