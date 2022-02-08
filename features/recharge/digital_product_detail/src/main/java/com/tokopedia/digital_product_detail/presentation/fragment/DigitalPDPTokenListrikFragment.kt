@@ -305,12 +305,12 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     private fun onShowGreenBox(){
         binding?.let {
             //TODO Firman change to real data
-            val dummyInfo = "Transaksi selama 23:40-00:20 WIB baru akan diproses pada 00:45 WIB. Selengkapnya"
+            val dummyInfo = "Transaksi selama <b>23:40-00:20 WIB</b> baru akan diproses pada <b>00:45 WIB.</b> <b>Selengkapnya</b>"
             val clickableInfo = "Selengkapnya"
             val dummyListInfo = listOf<String>(
-                "Transaksi selama 23:40-00:20 WIB baru akan <b> diproses pada 00:45 WIB.</b>",
-                "Proses verifikasi transaksi membutuhkan maksimal 2x24 jam hari kerja",
-                "Harap cek limit kWh anda sebelum membeli token listrik ya"
+                "Transaksi selama 23:40-00:20 WIB baru akan <b>diproses pada 00:45 WIB.</b>",
+                "Proses verifikasi transaksi membutuhkan <b>maksimal 2x24 jam</b> hari kerja",
+                "Harap cek <b>limit kWh</b> anda sebelum membeli token listrik ya"
             )
             it.rechargePdpTickerWidgetProductDesc.apply {
                 setText(dummyInfo)
