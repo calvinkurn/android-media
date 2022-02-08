@@ -1,31 +1,31 @@
 package com.tokopedia.tokomember.usecase
 
 import com.tokopedia.tokomember.model.MembershipShopResponse
+import com.tokopedia.tokomember.model.ShopParams
 import com.tokopedia.tokomember.repository.TokomemberRepository
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 class TokomemberUsecase @Inject constructor(private val tokomemberRepository: TokomemberRepository) :
     UseCase<MembershipShopResponse>() {
 
-    var shopId by Delegates.notNull<Int>()
-    var amount by Delegates.notNull<Float>()
+    var orderData : ArrayList<ShopParams> = arrayListOf()
 
     override suspend fun executeOnBackground(): MembershipShopResponse {
-        return tokomemberRepository.getTokomemberData(shopId, amount)
+        return tokomemberRepository.getTokomemberData(orderData)
     }
 
     fun setGqlParams(
-        shopId: Int ,
-        amount: Float
+        orderData: List<ShopParams>,
     ) {
-       this.shopId = shopId
-        this.amount = amount
+        this.orderData.clear()
+        this.orderData.addAll(orderData)
     }
 }
 
 object TokomemberShopParams{
     const val SHOP_ID = "shopID"
     const val AMOUNT = "amount"
+    const val ORDER_DATA = "orderData"
+
 }

@@ -7,9 +7,9 @@ import com.tokopedia.tokomember.util.MembershipWidgetType.Companion.MEMBERSHIP_O
 const val IO = "IO"
 
 const val TM_REGISTRATION_SHOP_DATA ="""
-     query membershipGetShopRegistrationWidget(${'$'}shopID: Int!, ${'$'}amount: Float!) {
-  membershipGetShopRegistrationWidget(orderData: {
-        shopID: ${'$'}shopID, amount: ${'$'}amount } ) {
+     query membershipGetShopRegistrationWidget(${'$'}orderData: [MembershipOrderData]!) {
+  membershipGetShopRegistrationWidget(orderData: 
+        orderData: ${'$'}orderData  ) {
         resultStatus {
         code
         message

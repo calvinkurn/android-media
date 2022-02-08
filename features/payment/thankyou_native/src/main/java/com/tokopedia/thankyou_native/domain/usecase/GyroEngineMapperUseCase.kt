@@ -65,7 +65,7 @@ class GyroEngineMapperUseCase @Inject constructor(
 
     suspend fun getTokomemberData() {
         queryParamTokomember?.let { tokomemberRequestParam->
-            tokomemberUsecase.setGqlParams(tokomemberRequestParam.shopID , tokomemberRequestParam.amount )
+            tokomemberUsecase.setGqlParams(tokomemberRequestParam.orderData)
             deferredTokomemberData = fetchTokomemberData()
             tokomemberModel = deferredTokomemberData?.await()?.let { it ->
                 TokomemberMapper.getGyroTokomemberItem(

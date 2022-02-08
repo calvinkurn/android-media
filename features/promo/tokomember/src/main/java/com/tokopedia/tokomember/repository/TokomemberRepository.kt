@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokomember.model.MembershipRegisterResponse
 import com.tokopedia.tokomember.model.MembershipShopResponse
+import com.tokopedia.tokomember.model.ShopParams
 import com.tokopedia.tokomember.usecase.MembershipRegisterParams
 import com.tokopedia.tokomember.usecase.TokomemberShopParams
 import com.tokopedia.tokomember.util.MEMBERSHIP_REGISTER
@@ -31,10 +32,9 @@ class TokomemberRepository @Inject constructor(private val gql: GraphqlRepositor
     }
 
     @GqlQuery("TmMembershipShopData", TM_REGISTRATION_SHOP_DATA)
-    suspend fun getTokomemberData(shopId: Int , amount:Float): MembershipShopResponse {
+    suspend fun getTokomemberData(orderData: ArrayList<ShopParams> ): MembershipShopResponse {
         val variables = HashMap<String, Any>()
-            variables[TokomemberShopParams.SHOP_ID] = shopId
-            variables[TokomemberShopParams.AMOUNT] = amount
+            variables[TokomemberShopParams.ORDER_DATA] = orderData
         val request = GraphqlRequest(
             TmMembershipShopData.GQL_QUERY,
             MembershipShopResponse::class.java, variables , false

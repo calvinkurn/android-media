@@ -5,10 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
-import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
-import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
-import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.thankyou_native.presentation.adapter.model.*
+import com.tokopedia.tokomember.model.ShopParams
 import com.tokopedia.tokomember.trackers.TokomemberSource
 import org.json.JSONObject
 
@@ -41,7 +39,7 @@ object FeatureRecommendationMapper {
             engineData.featureEngineItem.forEach { featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[TYPE_TOKOMEMBER].toString().equals(TYPE_TDN_PRODUCT, true)){
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
                         return true
                     }
                 } catch (e: Exception) { }
@@ -50,20 +48,22 @@ object FeatureRecommendationMapper {
         return false
     }
 
-    fun getTokomemberRequestParams(thanksPageData: ThanksPageData): TokoMemberRequestParam{
-        var totalPrice= 0F
-        val storeId = 0
+    fun getTokomemberRequestParams(thanksPageData: ThanksPageData): TokoMemberRequestParam {
+        var index = 0
+        val shopParams = ArrayList<ShopParams>()
+
         thanksPageData.shopOrder.forEach {
+            shopParams[index].shopID = it.storeId.toInt()
             it.purchaseItemList.forEach { orderItem ->
-                totalPrice += orderItem.totalPrice
+                shopParams[index].amount += orderItem.totalPrice
             }
+            index++
         }
-        //TODO get shopid
-        return TokoMemberRequestParam(
+        return TokoMemberRequestParam (
             pageType = PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
             source = TokomemberSource.THANK_YOU,
             paymentID = thanksPageData.paymentID,
-            amount = totalPrice
+            orderData = shopParams
         )
     }
 

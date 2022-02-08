@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember.model
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
@@ -119,4 +120,12 @@ data class ResultStatusShopRegister(
 	@SerializedName("message")
 	val message: List<String?>? = null
 ) : Parcelable
+
+@SuppressLint("ResponseFieldAnnotation")
+data class ShopParams(
+	@SerializedName("shopID")
+	var shopID: Int = 0,
+	@SerializedName("amount")
+	var amount: Float = 0F
+)
 

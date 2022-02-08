@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.tokomember.model.BottomSheetContentItem
+import com.tokopedia.tokomember.trackers.TokomemberSource
 import com.tokopedia.tokomember.trackers.TokomemberTracker
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
@@ -14,6 +15,7 @@ import timber.log.Timber
 class TokomemberActivity : BaseActivity() , TokomemberBottomSheetView.OnFinishedListener {
     private var isOnResume = false
     lateinit var userSession: UserSession
+    private var bottomSheetContentItem : BottomSheetContentItem? = null
 
     companion object {
         const val KEY_MEMBERSHIP = "key_membership"
@@ -40,7 +42,7 @@ class TokomemberActivity : BaseActivity() , TokomemberBottomSheetView.OnFinished
     }
 
     private fun showTmBottomSheetDetail() {
-        val bottomSheetContentItem = intent?.getParcelableExtra<BottomSheetContentItem>(KEY_MEMBERSHIP)
+        bottomSheetContentItem = intent?.getParcelableExtra<BottomSheetContentItem>(KEY_MEMBERSHIP)
         val bottomSheet = TokomemberBottomSheetView.newInstance(intent?.extras?:Bundle())
         bottomSheet.setOnFinishedListener(this)
         bottomSheet.setShowListener {
@@ -79,6 +81,13 @@ class TokomemberActivity : BaseActivity() , TokomemberBottomSheetView.OnFinished
     override fun onDestroy() {
         super.onDestroy()
         isOnResume = false
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(bottomSheetContentItem?.source == TokomemberSource.THANK_YOU){
+            onFinish()
+        }
     }
 
     override fun onFinish() {

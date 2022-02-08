@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ViewFlipper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokomember.TokomemberActivity.Companion.KEY_MEMBERSHIP
 import com.tokopedia.tokomember.di.DaggerTokomemberComponent
@@ -21,6 +22,7 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
     private var textTitle: Typography? = null
     private var textDesc: Typography? = null
     private var button: UnifyButton? = null
+    private var viewContainer: ViewFlipper? = null
     private var bottomSheetData: BottomSheetContentItem? = null
 
     companion object {
@@ -29,6 +31,9 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
             rbs.arguments = bundle
             return rbs
         }
+
+        const val SHIMMER = 0
+        const val DATA = 1
     }
 
     override fun onCreateView(
@@ -42,12 +47,13 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
 
 
     private fun init() {
-        val view = View.inflate(context, R.layout.activity_tokomember, null)
+        val view = View.inflate(context, R.layout.tm_bottomsheet_container, null)
+        viewContainer = view.findViewById(R.id.viewContainer)
         textTitle = view.findViewById(R.id.tvTitle)
         textDesc = view.findViewById(R.id.tvSubtitle)
         button = view?.findViewById(R.id.tokoButton)
+        viewContainer?.displayedChild = SHIMMER
         setUpBottomSheet()
-        setBottomSheetData()
         setChild(view)
 
         DaggerTokomemberComponent.builder()
@@ -64,8 +70,10 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
             bottomSheet.isGestureInsetBottomIgnored = true
             customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels / 2).toDp()
 
-            bottomSheetData = arguments?.getParcelable(KEY_MEMBERSHIP)
-
+        }
+        bottomSheetData = arguments?.getParcelable(KEY_MEMBERSHIP)
+        if (bottomSheetData != null) {
+            viewContainer?.displayedChild = DATA
             setCloseClickListener {
                 TokomemberTracker().closeMainBottomSheet(
                     bottomSheetData?.membershipType ?: 0,
@@ -75,6 +83,7 @@ class TokomemberBottomSheetView : BottomSheetUnify() {
                 dismiss()
                 onFinishedListener?.onFinish()
             }
+            setBottomSheetData()
         }
     }
 
