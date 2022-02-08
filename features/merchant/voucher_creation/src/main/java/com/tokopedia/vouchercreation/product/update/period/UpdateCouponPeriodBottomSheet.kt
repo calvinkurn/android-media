@@ -101,8 +101,8 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         setupView()
         observeCouponDetail()
         observeUpdateResult()
-        observeStartDate()
-        observeEndDate()
+        observeStartDateChange()
+        observeEndDateChange()
         viewModel.getCouponDetail(couponId)
     }
 
@@ -175,15 +175,16 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun observeStartDate() {
+    private fun observeStartDateChange() {
         viewModel.startDate.observe(viewLifecycleOwner) { startDate ->
             showStartDateTimePicker(startDate)
         }
     }
 
-    private fun observeEndDate() {
-        viewModel.endDate.observe(viewLifecycleOwner) { endDate ->
-            showEndDateTimePicker(endDate)
+    private fun observeEndDateChange() {
+        viewModel.endDate.observe(viewLifecycleOwner) { date ->
+            val (startDate, endDate) = date
+            showEndDateTimePicker(startDate, endDate)
         }
     }
 
@@ -228,12 +229,12 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         dateTimePicker.show(childFragmentManager, dateTimePicker.tag)
     }
 
-    private fun showEndDateTimePicker(currentEndDate : Date ) {
+    private fun showEndDateTimePicker(currentStartDate: Date, currentEndDate : Date ) {
         val title = getString(R.string.mvc_end_date_title)
         val buttonText = getString(R.string.mvc_pick).toBlankOrString()
 
-        val formattedEndDate = getCouponEndDate().time.parseTo(DateTimeUtils.DATE_FORMAT)
-        val info = String.format(getString(R.string.mvc_end_date_desc), formattedEndDate).parseAsHtml()
+        val formattedStartDate = currentStartDate.parseTo(DateTimeUtils.DATE_FORMAT)
+        val info = String.format(getString(R.string.mvc_end_date_desc), formattedStartDate).parseAsHtml()
 
         val dateTimePicker = DateTimePickerUnify(
             requireActivity(),

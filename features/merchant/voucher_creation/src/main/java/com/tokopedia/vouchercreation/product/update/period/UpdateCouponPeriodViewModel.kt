@@ -36,8 +36,8 @@ class UpdateCouponPeriodViewModel @Inject constructor(
     val startDate: LiveData<Date>
         get() = _startDate
 
-    private val _endDate = SingleLiveEvent<Date>()
-    val endDate: LiveData<Date>
+    private val _endDate = SingleLiveEvent<Pair<Date, Date>>()
+    val endDate: LiveData<Pair<Date, Date>>
         get() = _endDate
 
     private var currentlySelectedStartDate = Date()
@@ -62,7 +62,7 @@ class UpdateCouponPeriodViewModel @Inject constructor(
     }
 
     fun openEndDateTimePicker() {
-        _endDate.value = currentlySelectedEndDate
+        _endDate.value = Pair(currentlySelectedStartDate, currentlySelectedEndDate)
     }
 
     fun updateCoupon() {
