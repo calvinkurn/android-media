@@ -164,10 +164,6 @@ abstract class BaseNotification internal constructor(
         }
     }
 
-    private val actionButtonHeightWidth: Int
-        get() = context.resources.getDimensionPixelSize(R.dimen.dp_20)
-
-
     private val imageWidth: Int
         get() = context.resources.getDimensionPixelSize(R.dimen.cm_notif_width)
 
@@ -300,24 +296,6 @@ abstract class BaseNotification internal constructor(
         }
     }
 
-    internal fun getBitmap(url: String?, width: Int, height: Int): Bitmap {
-        return try {
-            Glide.with(context)
-                    .asBitmap()
-                    .load(url)
-                    .into(width, height)
-                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
-        } catch (e: InterruptedException) {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        } catch (e: ExecutionException) {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        } catch (e: TimeoutException) {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        } catch (e: IllegalArgumentException) {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        }
-    }
-
     override fun loadResourceAsBitmap(resId: Int, result: (Bitmap) -> Unit) {
         Glide.with(context)
                 .asBitmap()
@@ -330,26 +308,6 @@ abstract class BaseNotification internal constructor(
                         result(resource)
                     }
                 })
-    }
-
-    internal fun getActionButtonBitmap(url: String): Bitmap {
-        return try {
-            val wh = actionButtonHeightWidth
-            Glide.with(context)
-                    .asBitmap()
-                    .load(url)
-                    .into(wh, wh)
-                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
-        } catch (e: InterruptedException) {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        } catch (e: ExecutionException) {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        } catch (e: TimeoutException) {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        } catch (e: IllegalArgumentException) {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        }
-
     }
 
     internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, reqCode: Int): PendingIntent {
