@@ -20,6 +20,8 @@ interface PlayBroProductRepository {
         keyword: String,
     ): List<ProductUiModel>
 
+    suspend fun addProductTag(channelId: String, productIds: List<String>)
+
     suspend fun getProductTagSummarySection(
         channelID: Long,
     ): List<ProductTagSectionUiModel>

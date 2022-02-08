@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
+import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetShopProductsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
@@ -26,6 +27,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
     private val getCampaignListUseCase: GetCampaignListUseCase,
     private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
     private val getShopProductsUseCase: GetShopProductsUseCase,
+    private val addProductTagUseCase: AddProductTagUseCase,
     private val getProductTagSummarySectionUseCase: GetProductTagSummarySectionUseCase,
     private val productMapper: PlayBroProductUiMapper,
     private val userSession: UserSessionInterface,
@@ -94,6 +96,17 @@ class PlayBroProductRepositoryImpl @Inject constructor(
 //                )
 //            }
 //        }
+    }
+
+    override suspend fun addProductTag(channelId: String, productIds: List<String>) {
+        withContext(dispatchers.io) {
+            addProductTagUseCase.apply {
+                params = AddProductTagUseCase.createParams(
+                    channelId = channelId,
+                    productIds = productIds
+                )
+            }.executeOnBackground()
+        }
     }
 
     @ExperimentalStdlibApi

@@ -247,18 +247,24 @@ class PlayBroProductSetupViewModel @Inject constructor(
     /** TODO: gonna delete this later */
     @ExperimentalStdlibApi
     private fun handleDeleteProduct(product: ProductUiModel) {
-        _productTagSummary.value = ProductTagSummaryUiModel.Loading
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            delay(1000)
-//            val productSectionList = _productTagSummary.value as ProductTagSummaryUiModel.Success
-//
-//            val productIdList = productSectionList.sections.flatMap { section ->
-//                section.products.filter { it.id != product.id }.map { it.id }
-//            }.joinToString(",")
+        if(_productTagSummary.value is ProductTagSummaryUiModel.Success) {
+            val productSectionList = _productTagSummary.value as ProductTagSummaryUiModel.Success
+            _productTagSummary.value = ProductTagSummaryUiModel.Loading
 
-            getProductTagSummary()
-        }) {
-            _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
+            viewModelScope.launchCatchError(dispatchers.io, block = {
+                /** TODO: gonna delete this later */
+                delay(1000)
+
+                /** TODO: gonna uncomment this later */
+//                val productIds = productSectionList.sections.flatMap { section ->
+//                    section.products.filter { it.id != product.id }.map { it.id }
+//                }
+//                repo.addProductTag(channelId, productIds)
+
+                getProductTagSummary()
+            }) {
+                _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
+            }
         }
     }
 
