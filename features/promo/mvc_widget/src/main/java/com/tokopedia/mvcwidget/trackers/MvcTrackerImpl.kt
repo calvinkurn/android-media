@@ -5,7 +5,13 @@ import com.tokopedia.mvcwidget.FollowWidgetType
 interface MvcTrackerImpl {
     //1 Pdp
     //16 Shop
-    fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean)
+    fun userClickEntryPoints(
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int,
+        isTokomember: Boolean,
+        productId: String
+    )
 
     fun userClickEntryPointOnMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String)
 

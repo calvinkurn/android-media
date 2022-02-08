@@ -48,6 +48,7 @@ object Tracker {
         const val EVENT_VIEW_PROMO = "promoView"
         const val EVENT_LOCK_TO_PRODUCT = "select_content"
         const val EVENT_LOCK_TO_PRODUCT_VIEW = "view_item"
+        const val CLICK_MVC_PRODUCT_ID = "productId"
     }
 
     object Category {
