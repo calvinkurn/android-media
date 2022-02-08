@@ -17,6 +17,7 @@ data class PlayBroProductChooserUiState(
     val selectedProductList: EtalaseProductListMap,
     val sort: SortUiModel?,
     val shopName: String,
+    val saveState: ProductSaveStateUiModel,
 ) {
 
     companion object {
@@ -27,6 +28,7 @@ data class PlayBroProductChooserUiState(
                 selectedProductList = emptyMap(),
                 sort = null,
                 shopName = "",
+                saveState = ProductSaveStateUiModel.Empty,
             )
     }
 }
@@ -42,6 +44,20 @@ data class CampaignAndEtalaseUiModel(
                 selected = SelectedEtalaseModel.None,
                 campaignList = emptyList(),
                 etalaseList = emptyList(),
+            )
+    }
+}
+
+data class ProductSaveStateUiModel(
+    val isLoading: Boolean,
+    val canSave: Boolean,
+) {
+
+    companion object {
+        val Empty: ProductSaveStateUiModel
+            get() = ProductSaveStateUiModel(
+                isLoading = false,
+                canSave = false,
             )
     }
 }

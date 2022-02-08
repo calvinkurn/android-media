@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
@@ -19,7 +22,9 @@ import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -34,6 +39,7 @@ import javax.inject.Inject
  */
 class PlayBroProductSetupViewModel @Inject constructor(
     private val repo: PlayBroadcastRepository,
+    private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
@@ -42,12 +48,15 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
     private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(emptyMap())
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
+    private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
 
     private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
 
     private val searchQuery = MutableStateFlow("")
 
     private var getProductListJob: Job? = null
+
+    private val _uiEvent = MutableSharedFlow<PlayBroProductChooserEvent>(extraBufferCapacity = 5)
 
     private val _campaignAndEtalase = combine(
         _loadParam,
@@ -61,18 +70,23 @@ class PlayBroProductSetupViewModel @Inject constructor(
         )
     }
 
+    val uiEvent: SharedFlow<PlayBroProductChooserEvent>
+        get() = _uiEvent
+
     val uiState = combine(
         _campaignAndEtalase,
         _focusedProductList,
         _selectedProductMap,
         _loadParam,
-    ) { campaignAndEtalase, focusedProductList, selectedProductList, loadParam ->
+        _saveState,
+    ) { campaignAndEtalase, focusedProductList, selectedProductList, loadParam, saveState ->
         PlayBroProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
             selectedProductList = selectedProductList,
             sort = loadParam.sort,
             shopName = userSession.shopName,
+            saveState = saveState,
         )
     }.stateIn(
         viewModelScope,
@@ -98,6 +112,16 @@ class PlayBroProductSetupViewModel @Inject constructor(
                 handleLoadProductList(it, true)
             }
         }
+
+        viewModelScope.launch {
+            _selectedProductMap.collectLatest { map ->
+                _saveState.update {
+                    it.copy(
+                        canSave = map.values.flatten().isNotEmpty()
+                    )
+                }
+            }
+        }
     }
 
     fun submitAction(action: PlayBroProductChooserAction) {
@@ -111,6 +135,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
                 resetList = false,
             )
             is PlayBroProductChooserAction.SearchProduct -> handleSearchProduct(action.keyword)
+            PlayBroProductChooserAction.SaveProducts -> handleSaveProducts()
         }
     }
 
@@ -237,5 +262,26 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
     private fun handleSearchProduct(keyword: String) {
         searchQuery.value = keyword
+    }
+
+    private fun handleSaveProducts() {
+        _saveState.update {
+            it.copy(isLoading = true)
+        }
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            repo.saveProducts(
+                channelId = configStore.getChannelId(),
+                products = _selectedProductMap.value.values.flatten(),
+            )
+            _uiEvent.emit(PlayBroProductChooserEvent.SaveProductSuccess)
+        }) {
+            _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
+        }.apply {
+            invokeOnCompletion {
+                _saveState.update {
+                    it.copy(isLoading = false)
+                }
+            }
+        }
     }
 }

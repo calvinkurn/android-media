@@ -25,4 +25,9 @@ interface PlayBroProductRepository {
         campaignId: String,
         page: Int,
     ): PagedDataUiModel<ProductUiModel>
+
+    suspend fun saveProducts(
+        channelId: String,
+        products: List<ProductUiModel>,
+    )
 }

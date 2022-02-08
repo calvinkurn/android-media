@@ -19,4 +19,5 @@ sealed class PlayBroProductChooserAction {
         val keyword: String,
     ) : PlayBroProductChooserAction()
     data class SearchProduct(val keyword: String) : PlayBroProductChooserAction()
+    object SaveProducts : PlayBroProductChooserAction()
 }

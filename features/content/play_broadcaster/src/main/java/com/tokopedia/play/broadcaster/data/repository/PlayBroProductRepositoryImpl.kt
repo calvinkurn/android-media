@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
+import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetShopProductsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
@@ -27,6 +28,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
     private val getProductsInCampaignUseCase: GetProductsInCampaignUseCase,
     private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
     private val getShopProductsUseCase: GetShopProductsUseCase,
+    private val addProductTagUseCase: AddProductTagUseCase,
     private val productMapper: PlayBroProductUiMapper,
     private val userSession: UserSessionInterface,
 ) : PlayBroProductRepository {
@@ -89,6 +91,20 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }.executeOnBackground()
 
         return@withContext productMapper.mapProductsInCampaign(response)
+    }
+
+    override suspend fun saveProducts(
+        channelId: String,
+        products: List<ProductUiModel>
+    ) = withContext(dispatchers.io) {
+        addProductTagUseCase.apply {
+            params = AddProductTagUseCase.createParams(
+                channelId = channelId,
+                productIds = products.map(ProductUiModel::id)
+            )
+        }.executeOnBackground()
+
+        return@withContext
     }
 
     companion object {
