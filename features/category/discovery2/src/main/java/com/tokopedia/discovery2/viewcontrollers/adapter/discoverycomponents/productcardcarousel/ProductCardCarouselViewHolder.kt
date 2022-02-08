@@ -157,7 +157,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         if (mProductCarouselComponentViewModel.getProductList() == null) {
             carouselEmptyState?.run {
                 title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-                description?.text = context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+                description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
                 refreshBtn?.setOnClickListener {
                     reloadComponent()
                 }

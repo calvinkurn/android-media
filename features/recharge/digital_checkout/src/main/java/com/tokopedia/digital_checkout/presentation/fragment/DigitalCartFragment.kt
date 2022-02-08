@@ -489,9 +489,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
         if (postPaidPopupAttribute.title.isNotEmpty() || postPaidPopupAttribute.content.isNotEmpty()) {
             val dialog =
-                DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
             dialog.setTitle(postPaidPopupAttribute.title)
             dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content))
+            dialog.setImageUrl(postPaidPopupAttribute.imageUrl)
             dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle)
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
