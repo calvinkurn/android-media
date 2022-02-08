@@ -18,6 +18,7 @@ import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.liveDataExtension.toFreshLiveData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate_toko.R
@@ -191,7 +192,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        affiliateLoginSharedViewModel.getUserAction().observe(viewLifecycleOwner,
+        affiliateLoginSharedViewModel.getUserAction().toFreshLiveData().observe(viewLifecycleOwner,
              {
             when(it){
                 AffiliateRegistrationSharedViewModel.UserAction.RegisteredAction -> {
