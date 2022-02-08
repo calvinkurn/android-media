@@ -48,6 +48,6 @@ class DynamicIconComponentCallback (private val context: Context?, private val h
     }
 
     override fun onIconScroll(parentPosition: Int) {
-        homeCategoryListener.dismissTokonowCoachmark(parentPosition)
+
     }
 }

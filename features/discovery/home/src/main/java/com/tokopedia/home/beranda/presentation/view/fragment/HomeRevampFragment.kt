@@ -76,8 +76,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -616,11 +614,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (it) {
                     if(!gopayCoachmarkIsShowing) {
                         val ctaButton = getGopayNewBalanceWidgetView()
-                        val originalPosition = intArrayOf(0,0)
-                        ctaButton?.getLocationInWindow(originalPosition)
-                        positionWidgetGopay = originalPosition[1]
-                        ctaButton?.let {
+                        ctaButton?.let { gopayWidget ->
                             if (this.isEmpty()) {
+                                val originalPosition = intArrayOf(0,0)
+                                gopayWidget.getLocationInWindow(originalPosition)
+                                positionWidgetGopay = originalPosition[1]
                                 this.add(
                                     CoachMark2Item(
                                         ctaButton,
@@ -635,11 +633,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 } else {
                     if(!gopayCoachmarkIsShowing) {
                         val gopayWidget = getGopayNewActivateBalanceWidgetView()
-                        val originalPosition = intArrayOf(0,0)
-                        gopayWidget?.getLocationInWindow(originalPosition)
-                        positionWidgetGopay = originalPosition[1]
-                        gopayWidget?.let {
+                        gopayWidget?.let { gopayWidget ->
                             if (this.isEmpty()) {
+                                val originalPosition = intArrayOf(0,0)
+                                gopayWidget.getLocationInWindow(originalPosition)
+                                positionWidgetGopay = originalPosition[1]
                                 this.add(
                                     CoachMark2Item(
                                         gopayWidget,
@@ -659,11 +657,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun ArrayList<CoachMark2Item>.buildTokopointNewCoachmark(tokopointsBalanceCoachmark: BalanceCoachmark) {
         context?.let { currentContext ->
             val tokopointWidget = getTokopointsNewBalanceWidgetView()
-            val originalPosition = intArrayOf(0,0)
-            tokopointWidget?.getLocationInWindow(originalPosition)
-            positionWidgetGopay = originalPosition[1]
             tokopointWidget?.let {
                 if (this.isEmpty()) {
+                    val originalPosition = intArrayOf(0,0)
+                    it.getLocationInWindow(originalPosition)
+                    positionWidgetTokopoints = originalPosition[1]
                     this.add(
                         CoachMark2Item(
                             tokopointWidget,
@@ -679,11 +677,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun ArrayList<CoachMark2Item>.buildTokonowCoachmark(tokonowIcon: View?) {
         context?.let { currentContext ->
             if (!isHomeTokonowCoachmarkShown(currentContext)) {
-                val originalPosition = intArrayOf(0, 0)
-                tokonowIcon?.getLocationInWindow(originalPosition)
-                positionWidgetTokopoints = originalPosition[1]
                 tokonowIcon?.let {
                     if (this.isEmpty()) {
+                        val originalPosition = intArrayOf(0, 0)
+                        it.getLocationInWindow(originalPosition)
+                        positionWidgetTokonow = originalPosition[1]
                         this.add(
                             CoachMark2Item(
                                 tokonowIcon,
@@ -880,11 +878,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
 
     private fun isValidToShowCoachMark(): Boolean {
-//        activity?.let {
-//            return !it.isFinishing
-//        }
-//        return false
-        return true
+        activity?.let {
+            return !it.isFinishing
+        }
+        return false
     }
 
     private fun setupHomeRecyclerView() {
@@ -935,37 +932,41 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             homeRecyclerView?.setNestedCanScroll(true)
         }
 
-//        if (tokonowCoachmarkIsShowing) coachmarkTokonow?.dismissCoachMark()
-
         evaluateShowCoachmark()
     }
 
     private fun evaluateScrollGopayCoachmark() {
         coachmarkGopay?.let { gopayCoachmark ->
-            if (scrollPositionY > positionWidgetGopay && gopayCoachmarkIsShowing)
-                gopayCoachmark.hideCoachMark()
-            else if (!isNewWalletAppCoachmarkShown(requireContext())) {
-                gopayCoachmark.showCoachMark(coachMarkItemGopay)
+            context?.let {ctx ->
+                if (scrollPositionY > positionWidgetGopay && gopayCoachmarkIsShowing)
+                    gopayCoachmark.hideCoachMark()
+                else if (!isNewWalletAppCoachmarkShown(ctx)) {
+                    gopayCoachmark.showCoachMark(coachMarkItemGopay)
+                }
             }
         }
     }
 
     private fun evaluateScrollTokopointsCoachmark() {
         coachmarkTokopoint?.let { tokopointsCoachmark ->
-            if (scrollPositionY > positionWidgetTokopoints && tokopointsCoachmarkIsShowing)
-                tokopointsCoachmark.hideCoachMark()
-            else if (!isNewWalletAppCoachmarkShown(requireContext())) {
-                tokopointsCoachmark.showCoachMark(coachMarkItemTokopoints)
+            context?.let {ctx ->
+                if (scrollPositionY > positionWidgetTokopoints && tokopointsCoachmarkIsShowing)
+                    tokopointsCoachmark.hideCoachMark()
+                else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && coachMarkItemTokopoints.isNotEmpty()) {
+                    tokopointsCoachmark.showCoachMark(coachMarkItemTokopoints)
+                }
             }
         }
     }
 
     private fun evaluateScrollTokonowCoachmark() {
         coachmarkTokonow?.let { tokonowCoachmark ->
-            if (scrollPositionY > positionWidgetTokonow && tokonowCoachmarkIsShowing)
-                tokonowCoachmark.hideCoachMark()
-            else if (!isNewWalletAppCoachmarkShown(requireContext())) {
-                tokonowCoachmark.showCoachMark(coachMarkItemTokonow)
+            context?.let {ctx ->
+                if (scrollPositionY > positionWidgetTokonow && tokonowCoachmarkIsShowing)
+                    tokonowCoachmark.hideCoachMark()
+                else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || coachMarkItemTokopoints.isEmpty())) {
+                    tokonowCoachmark.showCoachMark(coachMarkItemTokonow)
+                }
             }
         }
     }
