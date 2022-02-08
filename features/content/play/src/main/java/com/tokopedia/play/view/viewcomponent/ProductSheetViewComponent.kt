@@ -63,9 +63,11 @@ class ProductSheetViewComponent(
         override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
             listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
         }
-
         override fun onTimerExpired(product: PlayProductSectionUiModel.ProductSection) {
             TODO("Not yet implemented")
+        }
+        override fun onProductChanged() {
+            listener.onProductCountChanged(this@ProductSheetViewComponent)
         }
     })
 
@@ -146,9 +148,6 @@ class ProductSheetViewComponent(
         title: String,
     ) {
         showContent(true)
-
-//        if (isProductCountChanged(productList.size)) listener.onProductCountChanged(this)
-
         tvSheetTitle.text = title
         productSectionAdapter.setItemsAndAnimateChanges(sectionList)
 

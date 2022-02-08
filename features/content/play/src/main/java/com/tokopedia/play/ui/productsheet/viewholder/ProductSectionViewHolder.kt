@@ -92,6 +92,7 @@ class ProductSectionViewHolder(
         }
         setupBackground(item.background)
         adapter.setItemsAndAnimateChanges(itemList = item.productList)
+        if (isProductCountChanged(item.productList.size)) listener.onProductChanged()
     }
 
     private fun setupBackground(background: Section.Background) {
@@ -141,6 +142,12 @@ class ProductSectionViewHolder(
         return dtNow.after(expiredTimeInDate)
     }
 
+    private fun isProductCountChanged(productSize: Int): Boolean {
+        return adapter.getItems().isNotEmpty() &&
+                adapter.getItems().first() is PlayProductUiModel.Product &&
+                adapter.itemCount != productSize
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_play_product_section_header
@@ -150,6 +157,7 @@ class ProductSectionViewHolder(
         fun onBuyProduct(product: PlayProductUiModel.Product)
         fun onATCProduct(product: PlayProductUiModel.Product)
         fun onClickProductCard(product: PlayProductUiModel.Product, position: Int)
+        fun onProductChanged()
         fun onTimerExpired(product: PlayProductSectionUiModel.ProductSection)
     }
 }
