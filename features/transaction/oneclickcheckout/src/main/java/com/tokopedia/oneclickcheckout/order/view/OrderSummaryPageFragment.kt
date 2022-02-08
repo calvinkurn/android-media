@@ -80,7 +80,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.C
 import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment
-import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
+import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardInstallmentDetailBottomSheet
+import com.tokopedia.oneclickcheckout.payment.installment.GopayInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.purchase_platform.common.constant.*
@@ -1297,12 +1298,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
 
-        override fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
+        override fun onCreditCardInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
-                InstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment, creditCard,
+                CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment, creditCard,
                         viewModel.orderCart, orderTotal.orderCost, userSession.get().userId,
-                        object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                        object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                             override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
                                 viewModel.chooseInstallment(selectedInstallment, installmentList)
                             }
@@ -1313,6 +1314,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                 }
                             }
                         })
+            }
+        }
+
+        override fun onGopayInstallmentDetailClicked() {
+            val orderTotal = viewModel.orderTotal.value
+            if (orderTotal.buttonState != OccButtonState.LOADING) {
+                GopayInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment,
+                    viewModel.orderCart, orderTotal.orderCost, userSession.get().userId,
+                    object : GopayInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                        override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
+                            viewModel.chooseInstallment(selectedInstallment, installmentList)
+                        }
+
+                        override fun onFailedLoadInstallment() {
+                            view?.let { v ->
+                                Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                            }
+                        }
+                    })
             }
         }
 

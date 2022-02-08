@@ -757,7 +757,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private suspend fun adjustAdminFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
-        val installmentTermList = paymentProcessor.get().getAdminFee(orderPayment.value.creditCard, userSession.userId,
+        val installmentTermList = paymentProcessor.get().getCreditCardAdminFee(orderPayment.value.creditCard, userSession.userId,
                 orderCost, orderCart)
         if (installmentTermList == null) {
             val newOrderPayment = orderPayment.value

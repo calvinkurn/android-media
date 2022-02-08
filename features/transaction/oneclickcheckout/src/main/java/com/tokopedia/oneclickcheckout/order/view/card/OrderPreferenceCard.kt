@@ -637,6 +637,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvInstallmentType.visible()
                 tvInstallmentDetail.visible()
                 btnChangeInstallment.visible()
+                tvInstallmentDetailWrap.gone()
+                btnChangeInstallmentWrap.gone()
                 if (selectedTerm.term > 0) {
                     tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
                 } else {
@@ -647,7 +649,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     if (profile.enable) {
                         val selectedCreditCard = payment.creditCard
                         if (selectedCreditCard.availableTerms.isNotEmpty()) {
-                            listener.onInstallmentDetailClicked(selectedCreditCard)
+                            listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
                         }
                     }
                 }
@@ -657,12 +659,14 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 btnChangeInstallment.visible()
                 tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_afpb_default)
                 tvInstallmentDetail.alpha = ENABLE_ALPHA
+                tvInstallmentDetailWrap.gone()
+                btnChangeInstallmentWrap.gone()
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
                 setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
                     if (profile.enable) {
                         val selectedCreditCard = payment.creditCard
-                        listener.onInstallmentDetailClicked(selectedCreditCard)
+                        listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
                     }
                 }
             } else if (payment.walletData.walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAYLATERCICIL) {
@@ -674,10 +678,17 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 btnChangeInstallmentWrap.visible()
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
+                setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetailWrap, btnChangeInstallmentWrap) {
+                    if (profile.enable) {
+                        listener.onGopayInstallmentDetailClicked()
+                    }
+                }
             } else {
                 tvInstallmentType.gone()
                 tvInstallmentDetail.gone()
+                tvInstallmentDetailWrap.gone()
                 btnChangeInstallment.gone()
+                btnChangeInstallmentWrap.gone()
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
             }
@@ -694,7 +705,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     if (profile.enable) {
                         val creditCard = payment.creditCard
                         if (creditCard.availableTerms.isNotEmpty()) {
-                            listener.onInstallmentDetailClicked(creditCard)
+                            listener.onCreditCardInstallmentDetailClicked(creditCard)
                         }
                     }
                 }
@@ -859,7 +870,9 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         fun choosePayment(profile: OrderProfile, payment: OrderPayment)
 
-        fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard)
+        fun onCreditCardInstallmentDetailClicked(creditCard: OrderPaymentCreditCard)
+
+        fun onGopayInstallmentDetailClicked()
 
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
 

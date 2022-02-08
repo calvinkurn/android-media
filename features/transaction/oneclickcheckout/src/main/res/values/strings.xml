@@ -79,4 +79,7 @@
 
     <!--AFPB-->
     <string name="default_afpb_error">Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi.</string>
+
+    <!--GOPAYLATERCICIL-->
+    <string name="occ_gopaylatercicil_bottom_sheet_title">Bayarnya mau berapa lama?</string>
 </resources>

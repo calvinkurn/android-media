@@ -6,7 +6,12 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -14,8 +19,8 @@ import javax.inject.Inject
 class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCardTenorListUseCase: CreditCardTenorListUseCase,
                                                            private val executorDispatchers: CoroutineDispatchers) {
 
-    suspend fun getAdminFee(orderPaymentCreditCard: OrderPaymentCreditCard, userId: String,
-                            orderCost: OrderCost, orderCart: OrderCart): List<OrderPaymentInstallmentTerm>? {
+    suspend fun getCreditCardAdminFee(orderPaymentCreditCard: OrderPaymentCreditCard, userId: String,
+                                      orderCost: OrderCost, orderCart: OrderCart): List<OrderPaymentInstallmentTerm>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
@@ -66,5 +71,25 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
                 monthlyAmount = tenor.amount,
                 description = tenor.desc
         )
+    }
+
+    suspend fun getGopayAdminFee() {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+//                val creditCardData = creditCardTenorListUseCase.executeSuspend(generateCreditCardTenorListRequest(orderPaymentCreditCard, userId, orderCost, orderCart))
+//                if (creditCardData.errorMsg.isNotEmpty()) {
+//                    return@withContext null
+//                } else {
+//                    return@withContext creditCardData.tenorList.map { mapAfpbToInstallmentTerm(it) }
+//                }
+                delay(5_000)
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return@withContext null
+            }
+        }
+        OccIdlingResource.decrement()
+//        return result
     }
 }

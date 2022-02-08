@@ -9,7 +9,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.databinding.BottomSheetInstallmentBinding
+import com.tokopedia.oneclickcheckout.databinding.BottomSheetCreditCardInstallmentBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemInstallmentDetailBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -27,7 +27,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class InstallmentDetailBottomSheet(private var paymentProcessor: OrderSummaryPagePaymentProcessor) : CoroutineScope {
+class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: OrderSummaryPagePaymentProcessor) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Main.immediate
@@ -35,7 +35,7 @@ class InstallmentDetailBottomSheet(private var paymentProcessor: OrderSummaryPag
     private lateinit var listener: InstallmentDetailBottomSheetListener
 
     private var bottomSheetUnify: BottomSheetUnify? = null
-    private var binding: BottomSheetInstallmentBinding? = null
+    private var binding: BottomSheetCreditCardInstallmentBinding? = null
 
     fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, orderCart: OrderCart,
              orderCost: OrderCost, userId: String, listener: InstallmentDetailBottomSheetListener) {
@@ -48,7 +48,7 @@ class InstallmentDetailBottomSheet(private var paymentProcessor: OrderSummaryPag
                 showCloseIcon = true
                 showHeader = true
                 setTitle(fragment.getString(R.string.lbl_choose_installment_type))
-                binding = BottomSheetInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
+                binding = BottomSheetCreditCardInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
                 setupChild(context, fragment, creditCard, orderCart, orderCost, userId)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
@@ -71,7 +71,7 @@ class InstallmentDetailBottomSheet(private var paymentProcessor: OrderSummaryPag
             binding?.tvInstallmentMessage?.gone()
             binding?.loaderInstallment?.visible()
             launch {
-                val installmentTermList = paymentProcessor.getAdminFee(creditCard, userId, orderCost, orderCart)
+                val installmentTermList = paymentProcessor.getCreditCardAdminFee(creditCard, userId, orderCost, orderCart)
                 if (installmentTermList != null) {
                     setupInstallments(context, fragment, creditCard.copy(availableTerms = installmentTermList))
                 } else {
