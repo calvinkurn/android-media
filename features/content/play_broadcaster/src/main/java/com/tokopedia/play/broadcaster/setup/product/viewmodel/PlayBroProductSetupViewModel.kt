@@ -232,7 +232,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
         viewModelScope.launchCatchError(dispatchers.io, block = {
             /** TODO: gonna remove this delay */
-            delay(3000)
+            delay(1000)
             val response = repo.getProductTagSummarySection(channelId.toLong())
 
             var productCount = 0
