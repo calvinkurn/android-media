@@ -50,7 +50,6 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 buyerOrderDetail.orderId,
                 buyerOrderDetail.orderStatus.id
             ),
-            addonsListUiModel = getAddonsSectionTemp(),
             shipmentInfoUiModel = mapShipmentInfoUiModel(
                 buyerOrderDetail.shipment,
                 buyerOrderDetail.meta,
@@ -66,7 +65,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun getAddonsSectionTemp(): AddonsListUiModel {
+    private fun getAddonsSectionTemp(message: String): AddonsListUiModel {
         return AddonsListUiModel(
             addonsTitle = "Pelengkap",
             addonsLogoUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
@@ -80,7 +79,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                     addOnsThumbnailUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
                     toStr = "Adam",
                     fromStr = "John",
-                    message = "happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss. happy birthday boss, happy birthday boss. happy birthday boss"
+                    message = message
                 )
             )
         )
@@ -166,11 +165,12 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             } else {
                 emptyList()
             }
+        val message = "happy birthday boss, happy birthday boss, happy birthday hap"
         return ProductListUiModel(
             productList = productList,
             productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),
             productBundlingList = productBundlingList,
-            addonsListUiModel = getAddonsSectionTemp()
+            addonsListUiModel = getAddonsSectionTemp(message)
         )
     }
 
@@ -393,6 +393,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         orderId: String,
         orderStatusId: String
     ): ProductListUiModel.ProductUiModel {
+        val message = "happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss. happy birthday boss, happy birthday boss. happy birthday boss"
         return ProductListUiModel.ProductUiModel(
             button = mapActionButton(product.button),
             category = product.category,
@@ -409,7 +410,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             quantity = product.quantity,
             totalPrice = product.totalPrice,
             totalPriceText = product.totalPriceText,
-            addonsListUiModel = getAddonsSectionTemp()
+            addonsListUiModel = getAddonsSectionTemp(message)
         )
     }
 

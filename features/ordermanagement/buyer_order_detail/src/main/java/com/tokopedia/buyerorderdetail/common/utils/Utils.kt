@@ -8,29 +8,24 @@ import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.StyleSpan
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
-import com.tokopedia.buyerorderdetail.common.utils.Utils.setAddonMessageFormatted
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import java.lang.IllegalStateException
-import java.lang.StringBuilder
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.roundToInt
@@ -139,7 +134,7 @@ object Utils {
             val wordWidth = paint.measureText(message, Int.ZERO, Int.ONE)
             val screenWidth = resources.displayMetrics.widthPixels
             (screenWidth / wordWidth).roundToInt()
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             Int.ZERO
         }
     }
@@ -147,15 +142,19 @@ object Utils {
     fun Typography.setAddonMessageFormatted(message: String, context: Context) {
         val hyperLinkText: String
         val messageFmt: String
-        if (maxLines < Integer.MAX_VALUE) {
-            maxLines = Integer.MAX_VALUE
-            hyperLinkText = context.getString(R.string.order_addons_close)
-            messageFmt = message + hyperLinkText
+        if (getCharacterOneLine(message) < message.length) {
+            if (maxLines < Integer.MAX_VALUE) {
+                maxLines = Integer.MAX_VALUE
+                hyperLinkText = context.getString(R.string.order_addons_close)
+                messageFmt = message + hyperLinkText
+            } else {
+                maxLines = MAX_LINE_MESSAGE
+                hyperLinkText = context.getString(R.string.order_addons_read_more)
+                messageFmt = message.substring(Int.ZERO, getCharacterOneLine(message))
+                    .dropLast(READ_MORE.length).trim() + "..." + hyperLinkText
+            }
         } else {
-            maxLines = MAX_LINE_MESSAGE
-            hyperLinkText = context.getString(R.string.order_addons_read_more)
-            messageFmt = message.substring(Int.ZERO, getCharacterOneLine(message))
-                .dropLast(READ_MORE.length).trim() + "..." + hyperLinkText
+            messageFmt = message
         }
         val htmlString = HtmlLinkHelper(context, messageFmt)
         text = htmlString.spannedString
