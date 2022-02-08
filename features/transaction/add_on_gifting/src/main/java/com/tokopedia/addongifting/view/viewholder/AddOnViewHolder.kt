@@ -139,6 +139,14 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
     private fun renderNote(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
+            if (element.isCustomNote) {
+                textFieldAddOnNote.editText.isEnabled = true
+                textFieldAddOnFrom.setMessage("Bisa ubah pesan yang disediakan")
+            } else {
+                textFieldAddOnNote.editText.isEnabled = true
+                textFieldAddOnFrom.setMessage("Menggunakan pesan yang disediakan")
+            }
+
             textFieldAddOnNote.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             textFieldAddOnNote.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldAddOnNote.setCounter(250)
