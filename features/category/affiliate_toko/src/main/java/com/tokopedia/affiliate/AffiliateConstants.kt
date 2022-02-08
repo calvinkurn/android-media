@@ -9,6 +9,8 @@ const val AFFILIATE_REGISTER_REQUEST_CODE = 1024
 const val AFFILIATE_REQUEST_CODE_LOGOUT = 1025
 const val LINK_HISTORY_BUTTON_CLICKED = 403
 const val AFFILIATE_HELP_URL = "https://affiliate.tokopedia.com/help"
+const val AFFILIATE_TANDC_URL = "https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate"
+const val AFFILIATE_FRAUD_URL = "https://www.tokopedia.com/help/article/cara-gabung-tokopedia-affiliate"
 const val AFFILIATE_LIHAT_KATEGORI = "tokopedia://affiliate/help"
 const val PAGE_ZERO = 0
 const val PAGE_SEGMENT_HELP = "help"
@@ -55,3 +57,13 @@ const val APP_LINK_PARAMS_KYC = "projectId=$PROJECT_ID"
 val APP_LINK_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalGlobal.PARAM_CALL_BACK}=$uri"
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
+
+const val AFFILIATE_INSTAGRAM_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(instagram.com|instagr.am|instagr.com)\\/[\\w-_@.]+"
+
+const val AFFILIATE_YT_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(youtube\\.com)\\/((user|channel|c|id)\\/)?[\\w-_@.]+"
+
+const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?((www|vt).)?(tiktok\\.com)\\/[\\w-_@.]+"
+
+const val AFFILIATE_TWITTER_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(twitter.com)\\/[\\w-_@.]+"
+
+const val COACHMARK_TAG = "affiliate_coachmark_onboarding"

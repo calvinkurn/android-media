@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
@@ -42,6 +42,7 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSettingsList()
+        startShopActiveService()
     }
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {}
@@ -71,4 +72,11 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
             adapter.notifyDataSetChanged()
         }
     }
+
+    private fun startShopActiveService() {
+        context?.let {
+            UpdateShopActiveService.startService(it)
+        }
+    }
+
 }
