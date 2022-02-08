@@ -13,8 +13,8 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on February 08, 2022
  */
-@GqlQuery(GetProductTagSummarySection.QUERY_NAME, GetProductTagSummarySection.QUERY)
-class GetProductTagSummarySection @Inject constructor(
+@GqlQuery(GetProductTagSummarySectionUseCase.QUERY_NAME, GetProductTagSummarySectionUseCase.QUERY)
+class GetProductTagSummarySectionUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
     private val dispatchers: CoroutineDispatchers,
 ) : RetryableGraphqlUseCase<GetProductTagSummarySectionResponse>(gqlRepository) {

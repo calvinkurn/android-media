@@ -1,12 +1,14 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
+import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
 import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
@@ -69,6 +71,33 @@ class PlayBroProductUiMapper @Inject constructor() {
                     discountedPrice = data.campaign.discountedPriceFmt,
                     discountedPriceNumber = 0.0,
                 )
+            )
+        }
+    }
+
+    fun mapProductTagSection(response: GetProductTagSummarySectionResponse): List<ProductTagSectionUiModel> {
+        return response.section.map { section ->
+            ProductTagSectionUiModel(
+                name = section.name,
+                statusFmt = section.statusFmt,
+                products = section.products.map { product ->
+                    ProductUiModel(
+                        id = product.productID,
+                        name = product.productName,
+                        imageUrl = product.imageURL,
+                        stock = product.quantity,
+                        price = if(product.discount == "0") {
+                            OriginalPrice(product.priceFmt, product.price.toDouble())
+                        }
+                        else DiscountedPrice(
+                            originalPrice = product.originalPriceFmt,
+                            originalPriceNumber = product.originalPrice.toDouble(),
+                            discountPercent = product.discount.toInt(),
+                            discountedPrice = product.priceFmt,
+                            discountedPriceNumber = product.price.toDouble(),
+                        )
+                    )
+                }
             )
         }
     }

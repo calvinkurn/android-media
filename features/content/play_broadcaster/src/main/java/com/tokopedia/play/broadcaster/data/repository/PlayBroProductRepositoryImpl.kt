@@ -5,10 +5,12 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetShopProductsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductTagSummarySectionUseCase
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
@@ -24,6 +26,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
     private val getCampaignListUseCase: GetCampaignListUseCase,
     private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
     private val getShopProductsUseCase: GetShopProductsUseCase,
+    private val getProductTagSummarySectionUseCase: GetProductTagSummarySectionUseCase,
     private val productMapper: PlayBroProductUiMapper,
     private val userSession: UserSessionInterface,
 ) : PlayBroProductRepository {
@@ -91,6 +94,12 @@ class PlayBroProductRepositoryImpl @Inject constructor(
 //                )
 //            }
 //        }
+    }
+
+    override suspend fun getProductTagSummarySection(channelID: Int) = withContext(dispatchers.io) {
+        val response = getProductTagSummarySectionUseCase.executeOnBackground()
+
+        return@withContext productMapper.mapProductTagSection(response)
     }
 
     companion object {
