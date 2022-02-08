@@ -76,6 +76,10 @@ class PlaySearchBar : ConstraintLayout {
         etSearch.hint = hint
     }
 
+    fun clear() {
+        etSearch.text.replace(0, etSearch.text.length, "")
+    }
+
     override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         val newState = SavedState(superState)

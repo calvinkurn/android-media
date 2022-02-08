@@ -173,7 +173,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
         _loadParam.update {
             it.copy(
                 etalase = SelectedEtalaseModel.Campaign(campaign),
-                sort = SortUiModel.supportedSortList.first(),
+                sort = null,
+                keyword = "",
             )
         }
     }
@@ -231,7 +232,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
                         } else "",
                         page = page,
                         keyword = param.keyword,
-                        sort = param.sort.id,
+                        sort = param.sort?.id ?: SortUiModel.supportedSortList.first().id,
                     )
 
                     _focusedProductList.update {

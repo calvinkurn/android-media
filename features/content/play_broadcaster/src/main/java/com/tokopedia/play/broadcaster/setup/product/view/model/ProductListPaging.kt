@@ -25,14 +25,14 @@ data class ProductListPaging(
     data class Param(
         val etalase: SelectedEtalaseModel,
         val keyword: String,
-        val sort: SortUiModel,
+        val sort: SortUiModel?,
     ) {
         companion object {
             val Empty: Param
                 get() = Param(
                     etalase = SelectedEtalaseModel.None,
                     keyword = "",
-                    sort = SortUiModel.supportedSortList.first(),
+                    sort = null,
                 )
         }
     }

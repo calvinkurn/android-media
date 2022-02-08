@@ -33,6 +33,11 @@ class SearchBarViewComponent(
         view.setHint(placeholder)
     }
 
+    override fun hide() {
+        super.hide()
+        view.clear()
+    }
+
     sealed class Event {
         data class OnSearched(val keyword: String) : Event()
     }
