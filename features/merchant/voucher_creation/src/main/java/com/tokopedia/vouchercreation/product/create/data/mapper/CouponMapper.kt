@@ -7,7 +7,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import javax.inject.Inject
 
-class CouponPreviewMapper @Inject constructor() {
+class CouponMapper @Inject constructor() {
     companion object {
         private const val DISCOUNT_TYPE_NOMINAL = "idr"
     }

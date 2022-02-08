@@ -141,29 +141,21 @@ class CreateCouponProductActivity : AppCompatActivity() {
         return listOf(
             CouponProduct(
                 "2147956088",
-                18000,
-                5.0F,
                 "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
                 19
             ),
             CouponProduct(
                 "15455652",
-                18000,
-                4.7F,
                 "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
                 1000
             ),
             CouponProduct(
                 "15429644",
-                18000,
-                5.0F,
                 "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
                 2100
             ),
             CouponProduct(
                 "15409031",
-                25000,
-                4.0F,
                 "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg",
                 31000
             )

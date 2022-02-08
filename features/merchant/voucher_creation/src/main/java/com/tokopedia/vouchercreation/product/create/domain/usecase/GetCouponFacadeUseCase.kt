@@ -1,7 +1,8 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vouchercreation.product.create.data.mapper.CouponPreviewMapper
+import com.tokopedia.vouchercreation.common.consts.NumberConstant
+import com.tokopedia.vouchercreation.product.create.data.mapper.CouponMapper
 import com.tokopedia.vouchercreation.product.create.data.response.GetProductsByProductIdResponse
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
@@ -14,10 +15,13 @@ class GetCouponFacadeUseCase @Inject constructor(
     private val getCouponDetailUseCase: GetCouponDetailUseCase,
     private val getProductsUseCase: GetProductsUseCase,
     private val userSession: UserSessionInterface,
-    private val couponPreviewMapper: CouponPreviewMapper
+    private val couponMapper: CouponMapper
 ) {
-
-
+    
+    companion object {
+        private const val EMPTY_STRING = ""
+    }
+    
     suspend fun execute(scope: CoroutineScope, couponId: Long): Coupon {
         val couponDetailDeferred = scope.async { getCouponDetail(couponId) }
         val couponDetail = couponDetailDeferred.await()
@@ -28,11 +32,11 @@ class GetCouponFacadeUseCase @Inject constructor(
         val couponProducts = mutableListOf<CouponProduct>()
 
         couponDetail.productIds.forEach { productId ->
-            val imageUrl = getCouponImageUrl(productId.toString(), products.data)
-            couponProducts.add(CouponProduct(productId.toString(), 0, 0f, imageUrl, 0))
+            val pair = getCouponImageUrlAndSoldCount(productId.toString(), products.data)
+            couponProducts.add(CouponProduct(productId.toString(), pair.first, pair.second))
         }
 
-        return couponPreviewMapper.map(couponDetail, couponProducts)
+        return couponMapper.map(couponDetail, couponProducts)
     }
 
 
@@ -47,22 +51,23 @@ class GetCouponFacadeUseCase @Inject constructor(
         return getProductsUseCase.executeOnBackground()
     }
 
-    private fun getCouponImageUrl(
+    private fun getCouponImageUrlAndSoldCount(
         childProductId: String,
         productIds: List<GetProductsByProductIdResponse.Data>
-    ): String {
+    ): Pair<String, Int> {
         productIds.forEach { product ->
             if (childProductId == product.id) {
-                return getImageUrlOrEmpty(product.pictures)
+                val imageUrl = getImageUrlOrEmpty(product.pictures)
+                return Pair(imageUrl, product.txStats.sold)
             }
         }
 
-        return ""
+        return Pair(EMPTY_STRING, NumberConstant.ZERO)
     }
 
     private fun getImageUrlOrEmpty(pictures : List<GetProductsByProductIdResponse.Picture>): String {
         if (pictures.isEmpty()) {
-            return ""
+            return EMPTY_STRING
         }
 
         return pictures[0].urlThumbnail

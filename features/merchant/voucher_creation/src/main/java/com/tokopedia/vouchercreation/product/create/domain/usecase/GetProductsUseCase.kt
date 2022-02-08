@@ -23,7 +23,6 @@ class GetProductsUseCase @Inject constructor(
                     data {
                         id
                         name
-                        stock
                         pictures {
                             urlThumbnail
                         }
@@ -73,14 +72,12 @@ class GetProductsUseCase @Inject constructor(
         ): Map<String, Any> = mapOf(
             PARAMS_SHOP_ID to shopId,
             PARAMS_FILTER to mutableListOf(
-                getFilterInput(PARAMS_INPUT_PRODUCT_ID, populateProductId(productIds)),
+                mapOf(
+                    PARAMS_ID to PARAMS_INPUT_PRODUCT_ID,
+                    PARAMS_VALUE to populateProductId(productIds)
+                )
             ),
             PARAMS_SORT to mapOf(PARAMS_INPUT_SOLD to "DESC")
-        )
-
-        fun getFilterInput(id: String, values: List<String>) = mapOf(
-            PARAMS_ID to id,
-            PARAMS_VALUE to values
         )
 
         private fun populateProductId(productIds: List<Long>): List<String> {

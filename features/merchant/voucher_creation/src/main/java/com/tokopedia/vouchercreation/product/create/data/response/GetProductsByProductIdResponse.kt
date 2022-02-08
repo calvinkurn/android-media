@@ -39,11 +39,16 @@ data class GetProductsByProductIdResponse(
         @SerializedName("name")
         val name: String = "",
 
-        @SerializedName("stock")
-        val stock: Int = 0,
-
         @SerializedName("pictures")
-        val pictures: List<Picture> = emptyList()
+        val pictures: List<Picture> = emptyList(),
+
+        @SerializedName("txStats")
+        val txStats: TxStats = TxStats()
+    )
+
+    data class TxStats(
+        @SerializedName("sold")
+        val sold: Int = 0
     )
 
     data class Picture(
