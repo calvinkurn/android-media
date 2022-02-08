@@ -181,6 +181,48 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           bottom_sheet_description
         }
       }
+      list_promo_stacking {
+        is_promo
+        promo_code
+        title
+        shipper_id
+        shipper_product_id
+        shipper_name
+        shipper_desc
+        promo_detail
+        benefit_desc
+        point_change
+        user_point
+        promo_tnc_html
+        shipper_disable_text
+        service_id
+        is_applied
+        image_url
+        discounted_rate
+        shipping_rate
+        benefit_amount
+        disabled
+        hide_shipper_name
+        cod {
+          is_cod_available
+          cod_text
+          cod_price
+          formatted_price
+          tnc_text
+          tnc_link
+        }
+        eta {
+          text_eta
+          error_code
+        }
+        is_bebas_ongkir_extra
+        texts {
+          bottom_sheet
+          chosen_courier
+          ticker_courier
+          bottom_sheet_description
+        }
+      }
       pre_order {
         header
         label

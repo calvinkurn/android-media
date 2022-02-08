@@ -34,6 +34,9 @@ class ShippingDurationConverter @Inject constructor() {
                 // Setting up for Logistic Promo
                 shippingRecommendationData.logisticPromo = convertToPromoModel(ratesData.ratesDetailData.promoStacking)
 
+                // Setting up for List of Logistic Promo
+                shippingRecommendationData.listLogisticPromo = ratesData.ratesDetailData.listPromoStacking.mapNotNull { promo -> convertToPromoModel(promo) }
+
                 // Setting up for Logistic Pre Order
                 shippingRecommendationData.preOrderModel = convertToPreOrderModel(ratesData.ratesDetailData.preOrder)
 

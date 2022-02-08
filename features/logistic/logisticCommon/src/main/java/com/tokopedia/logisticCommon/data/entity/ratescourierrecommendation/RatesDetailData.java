@@ -35,6 +35,9 @@ public class RatesDetailData implements Parcelable {
     @SerializedName("promo_stacking")
     @Expose
     private PromoStacking promoStacking;
+    @SerializedName("list_promo_stacking")
+    @Expose
+    private List<PromoStacking> listPromoStacking;
     @SerializedName("pre_order")
     @Expose
     private PreOrder preOrder;
@@ -138,5 +141,13 @@ public class RatesDetailData implements Parcelable {
 
     public void setPreOrder(PreOrder preOrder) {
         this.preOrder = preOrder;
+    }
+
+    public List<PromoStacking> getListPromoStacking() {
+        return listPromoStacking;
+    }
+
+    public void setListPromoStacking(List<PromoStacking> listPromoStacking) {
+        this.listPromoStacking = listPromoStacking;
     }
 }
