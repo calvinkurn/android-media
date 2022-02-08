@@ -7,17 +7,17 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.result.presentation.model.InspirationData
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetDataView
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
+import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 object MockSearchProductModel {
@@ -58,15 +58,15 @@ object MockSearchProductModel {
 
     fun getInspirationCardViewModel(): InspirationCardDataView {
         return InspirationCardDataView(
-            InspirationData(
+            data = InspirationWidgetDataView(
                 title = "Coba produk dengan kategori ini :",
                 type = "category",
                 position = 8,
-                optionCardData = listOf(
-                    getInspirationCardOptionViewModel(1), getInspirationCardOptionViewModel(2),
-                    getInspirationCardOptionViewModel(3), getInspirationCardOptionViewModel(4)
-                ),
-            )
+            ),
+            optionCardData = listOf(
+                getInspirationCardOptionViewModel(1), getInspirationCardOptionViewModel(2),
+                getInspirationCardOptionViewModel(3), getInspirationCardOptionViewModel(4)
+            ),
         )
     }
 
@@ -181,12 +181,7 @@ object MockSearchProductModel {
             suggestedQuery = "q=baju batik&rf=true",
         )
 
-    fun getEmptySearchProductViewModel(): EmptySearchProductDataView {
-        val emptySearchProductViewModel = EmptySearchProductDataView()
-        emptySearchProductViewModel.isBannerAdsAllowed = true
-
-        return emptySearchProductViewModel
-    }
+    fun getEmptySearchProductViewModel(): EmptyStateDataView = EmptyStateDataView()
 
     fun getBannedProductsEmptySearchViewModel(): BannedProductsEmptySearchDataView {
         return BannedProductsEmptySearchDataView("Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.")

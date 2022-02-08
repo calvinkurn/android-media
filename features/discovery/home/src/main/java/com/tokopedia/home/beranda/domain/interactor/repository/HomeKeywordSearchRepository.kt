@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
-import com.tokopedia.home.beranda.domain.gql.searchHint.KeywordSearchHintQuery
+import com.tokopedia.home.beranda.domain.gql.searchHint.KeywordSearchHintUniversalQuery
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -36,7 +36,7 @@ class HomeKeywordSearchRepository @Inject constructor(
 
     override suspend fun executeOnBackground(): KeywordSearchData {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(KeywordSearchHintQuery.query)
+        graphqlUseCase.setGraphqlQuery(KeywordSearchHintUniversalQuery())
         graphqlUseCase.setRequestParams(params)
         return graphqlUseCase.executeOnBackground()
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.viewmodel.posttag
 
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
 
@@ -30,6 +31,7 @@ data class ProductPostTagViewModelNew(
     override var positionInFeed: Int = 0,
     override var postId: Int = 0,
     var postType: String = "",
+    var mediaType : String = "",
     var isFollowed:Boolean = false,
     var description:String = "",
     var isTopads:Boolean = false,

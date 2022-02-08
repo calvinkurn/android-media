@@ -349,4 +349,5 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
         }
     }
+
 }
