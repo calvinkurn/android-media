@@ -64,12 +64,6 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
                     spanCount = icons.size
             )
             iconRecyclerView?.clearOnScrollListeners()
-            iconRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    listener.onIconScroll(adapterPosition)
-                }
-            })
         }
     }
 
