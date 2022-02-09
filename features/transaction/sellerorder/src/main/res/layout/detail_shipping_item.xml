@@ -71,6 +71,17 @@
         app:layout_constraintStart_toEndOf="@id/booking_code_title"
         app:layout_constraintTop_toTopOf="@id/booking_code_title" />
 
+    <View
+        android:id="@+id/maskTriggerBookingCodeCopyArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:selectableItemBackground"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintBottom_toBottomOf="@id/booking_code_title"
+        app:layout_constraintEnd_toEndOf="@id/booking_code_copy"
+        app:layout_constraintStart_toStartOf="@id/booking_code_title"
+        app:layout_constraintTop_toTopOf="@id/booking_code_title" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/booking_code_value"
         android:layout_width="wrap_content"
@@ -176,36 +187,40 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_no_resi"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/no_resi_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="@string/nomor_resi"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@id/booking_code_title"
-        app:layout_constraintTop_toBottomOf="@id/card_driver">
+        app:layout_constraintTop_toBottomOf="@id/card_driver"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/no_resi_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="@string/nomor_resi"
-            android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            tools:text="@string/nomor_resi" />
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/no_resi_copy"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_toEndOf="@id/no_resi_title"
+        android:contentDescription="Tombol salin nomor resi"
+        app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@id/no_resi_title"
+        app:layout_constraintStart_toEndOf="@id/no_resi_title"
+        app:layout_constraintTop_toTopOf="@id/no_resi_title" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/no_resi_copy"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl2"
-            android:layout_toEndOf="@id/no_resi_title"
-            android:contentDescription="Tombol salin nomor resi"
-            app:icon_name="COPY" />
-
-    </RelativeLayout>
+    <View
+        android:id="@+id/maskTriggerAwbCopyArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:selectableItemBackground"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintBottom_toBottomOf="@id/no_resi_title"
+        app:layout_constraintEnd_toEndOf="@id/no_resi_copy"
+        app:layout_constraintStart_toStartOf="@id/no_resi_title"
+        app:layout_constraintTop_toTopOf="@id/no_resi_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/no_resi_value"
@@ -215,11 +230,17 @@
         android:inputType="none"
         android:textColor="@color/Unify_N700"
         android:textIsSelectable="true"
-        app:layout_constraintBottom_toBottomOf="@id/rl_no_resi"
+        app:layout_constraintBottom_toBottomOf="@id/no_resi_title"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@id/card_driver"
         app:typographyType="body_3"
         tools:text="TJNE-8K4LFVPNMT6 >" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/layoutAwb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="no_resi_title,no_resi_copy,maskTriggerAwbCopyArea,no_resi_value"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/alamat_label"
@@ -229,7 +250,7 @@
         android:text="@string/alamat_pengiriman"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_no_resi"
+        app:layout_constraintTop_toBottomOf="@id/no_resi_title"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
@@ -241,7 +262,18 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:icon_name="COPY"
         app:layout_constraintStart_toEndOf="@id/alamat_label"
-        app:layout_constraintTop_toBottomOf="@id/rl_no_resi" />
+        app:layout_constraintTop_toBottomOf="@id/no_resi_title" />
+
+    <View
+        android:id="@+id/maskTriggerShippingAddressCopyArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:selectableItemBackground"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintBottom_toBottomOf="@id/alamat_label"
+        app:layout_constraintEnd_toEndOf="@id/shipping_address_copy"
+        app:layout_constraintStart_toStartOf="@id/alamat_label"
+        app:layout_constraintTop_toTopOf="@id/alamat_label" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/shippingPrintedLabel"
@@ -253,7 +285,7 @@
         app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@+id/alamat_label"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
-        app:layout_constraintTop_toBottomOf="@+id/rl_no_resi" />
+        app:layout_constraintTop_toBottomOf="@+id/no_resi_title" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierShippingPrinted"
@@ -262,7 +294,7 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="shippingPrintedLabel"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
-        app:layout_constraintTop_toBottomOf="@+id/rl_no_resi" />
+        app:layout_constraintTop_toBottomOf="@+id/no_resi_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_name"

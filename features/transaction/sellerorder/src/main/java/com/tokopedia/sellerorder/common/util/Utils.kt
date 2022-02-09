@@ -6,9 +6,11 @@ import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.Spanned
+import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -174,5 +176,13 @@ object Utils {
 
     fun Activity.updateShopActive() {
         UpdateShopActiveService.startService(this)
+    }
+
+    fun View.generateHapticFeedback() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+        } else {
+            performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        }
     }
 }

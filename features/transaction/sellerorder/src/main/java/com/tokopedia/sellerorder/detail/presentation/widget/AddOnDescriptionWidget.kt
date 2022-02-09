@@ -7,11 +7,9 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.text.Spanned
 import android.text.style.URLSpan
 import android.util.AttributeSet
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -24,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.Utils.generateHapticFeedback
 import com.tokopedia.sellerorder.databinding.WidgetProductAddOnDescriptionBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -269,14 +268,6 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
     private fun onDescriptionCollapsed() {
         setDescriptionText(false)
         binding.tvAddOnDescription.maxLines = DESCRIPTION_MIN_LINES
-    }
-
-    private fun View.generateHapticFeedback() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-        } else {
-            performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-        }
     }
 
     fun setIsCopyable(copyable: Boolean) {

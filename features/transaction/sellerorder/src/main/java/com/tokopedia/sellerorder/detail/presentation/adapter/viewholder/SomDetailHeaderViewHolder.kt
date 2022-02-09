@@ -26,6 +26,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_REJECTED
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.generateHapticFeedback
 import com.tokopedia.sellerorder.common.util.Utils.toStringFormatted
 import com.tokopedia.sellerorder.databinding.DetailHeaderItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
@@ -116,10 +117,9 @@ class SomDetailHeaderViewHolder(
 
                 headerInvoice.text = item.dataObject.invoice
 
-                headerInvoiceCopy.setOnClickListener {
-                    binding?.root?.run {
-                        actionListener?.onCopiedInvoice(context.getString(R.string.invoice_label), item.dataObject.invoice)
-                    }
+                maskTriggerCopyArea.setOnClickListener {
+                    it.generateHapticFeedback()
+                    actionListener?.onCopiedInvoice(it.context.getString(R.string.invoice_label), item.dataObject.invoice)
                 }
 
                 headerSeeInvoice.setOnClickListener {

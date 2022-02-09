@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.Utils.generateHapticFeedback
 import com.tokopedia.sellerorder.databinding.DetailShippingItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
@@ -92,9 +93,9 @@ class SomDetailShippingViewHolder(
                         tvReceiverProvince.hide()
                     }
 
-                    shippingAddressCopy.apply {
+                    maskTriggerShippingAddressCopyArea.apply {
                         setOnClickListener {
-
+                            it.generateHapticFeedback()
                             val numberPhoneText = if (numberPhone.isNotBlank()) {
                                 "\n" + numberPhone
                             } else ""
@@ -127,18 +128,17 @@ class SomDetailShippingViewHolder(
                 }
 
                 if (item.dataObject.awb.isNotEmpty()) {
-                    rlNoResi.visibility = View.VISIBLE
-                    noResiValue.show()
+                    layoutAwb.show()
                     noResiValue.text = item.dataObject.awb
                     if (item.dataObject.awbTextColor.isNotEmpty()) {
                         noResiValue.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
                     }
-                    noResiCopy.setOnClickListener {
+                    maskTriggerAwbCopyArea.setOnClickListener {
+                        it.generateHapticFeedback()
                         actionListener?.onTextCopied(root.context.getString(R.string.awb_label), item.dataObject.awb, root.context.getString(R.string.readable_awb_label))
                     }
                 } else {
-                    rlNoResi.visibility = View.GONE
-                    noResiValue.hide()
+                    layoutAwb.hide()
                 }
 
                 // booking online - driver
@@ -176,22 +176,27 @@ class SomDetailShippingViewHolder(
                     bookingCodeTitle.hide()
                     bookingCodeCopy.hide()
                     bookingCodeValue.hide()
+                    maskTriggerBookingCodeCopyArea.hide()
                 } else {
                     if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
                         bookingCodeTitle.hide()
                         bookingCodeCopy.hide()
                         bookingCodeValue.hide()
+                        maskTriggerBookingCodeCopyArea.hide()
                     } else {
                         bookingCodeTitle.show()
                         bookingCodeCopy.show()
                         bookingCodeValue.show()
+                        maskTriggerBookingCodeCopyArea.show()
 
                         if (item.dataObject.onlineBookingCode.isEmpty()) {
                             bookingCodeTitle.hide()
                             bookingCodeCopy.hide()
                             bookingCodeValue.hide()
+                            maskTriggerBookingCodeCopyArea.hide()
                         } else {
-                            bookingCodeCopy.setOnClickListener {
+                            maskTriggerBookingCodeCopyArea.setOnClickListener {
+                                it.generateHapticFeedback()
                                 actionListener?.onTextCopied(root.context.getString(R.string.booking_code_label), item.dataObject.onlineBookingCode, root.context.getString(R.string.readable_booking_code_label))
                             }
                             bookingCodeValue.apply {

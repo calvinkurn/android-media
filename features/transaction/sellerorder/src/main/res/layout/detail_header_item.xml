@@ -101,6 +101,17 @@
         app:layout_constraintStart_toEndOf="@+id/header_invoice"
         app:layout_constraintTop_toTopOf="@+id/header_invoice" />
 
+    <View
+        android:id="@+id/maskTriggerCopyArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:selectableItemBackground"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintBottom_toBottomOf="@id/header_invoice"
+        app:layout_constraintEnd_toEndOf="@id/header_invoice_copy"
+        app:layout_constraintStart_toStartOf="@id/header_invoice"
+        app:layout_constraintTop_toTopOf="@id/header_invoice" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_see_invoice"
         android:layout_width="wrap_content"
