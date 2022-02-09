@@ -32,6 +32,8 @@ class SuggestionDoubleLineViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_double_line_item
+
+        private const val FONT_LEVEL_14_SP = 2
     }
 
     private var searchQueryStartIndexInKeyword = -1
@@ -84,7 +86,7 @@ class SuggestionDoubleLineViewHolder(
                 setSearchQueryStartIndexInKeyword(item.data)
                 bindBoldTextTitle(item.data)
             }
-            item.isBoldSquareType() -> bindForceBoldTextTitle(item.data)
+            item.isBoldSquareType() -> bindAllBoldTextTitle(item.data)
             else -> bindNormalTextTitle(item.data)
         }
     }
@@ -107,9 +109,8 @@ class SuggestionDoubleLineViewHolder(
         }
     }
 
-    private fun bindForceBoldTextTitle(item: BaseSuggestionDataView){
-        val fontLevel = 2 // this level will be converted to 14sp
-        itemView.doubleLineTitle?.setBodyText(fontLevel, true)
+    private fun bindAllBoldTextTitle(item: BaseSuggestionDataView){
+        itemView.doubleLineTitle?.setBodyText(FONT_LEVEL_14_SP, true)
         itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
     }
 
