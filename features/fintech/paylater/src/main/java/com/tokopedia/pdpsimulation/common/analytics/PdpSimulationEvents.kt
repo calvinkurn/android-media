@@ -1,32 +1,10 @@
 package com.tokopedia.pdpsimulation.common.analytics
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 sealed class PdpSimulationEvent {
     sealed class PayLater {
-        data class PayLaterProductImpressionEvent(
-            val payLaterProduct: String,
-            val actionType: String?,
-            val tenure: Int
-        ) : PdpSimulationEvent()
-
-        data class MainBottomSheetImpression(val payLaterProduct: String, val tenure: Int) :
-            PdpSimulationEvent()
-
-        data class MainBottomSheetClickEvent(
-            val payLaterProduct: String,
-            val tenure: Int,
-            val url: String
-        ) : PdpSimulationEvent()
-
-        data class ClickCardButton(
-            val tenure: Int,
-            val partnerName: String,
-            val buttonName: String,
-            val redirectionUrl: String
-        ) : PdpSimulationEvent()
-
-        object SelectedPayLater : PdpSimulationEvent()
-
-        data class TenureListImpression(val tenure: String) : PdpSimulationEvent()
 
         data class GopayBottomSheetImpression(
             val productId: String,
@@ -43,4 +21,27 @@ sealed class PdpSimulationEvent {
             val url: String
         ) : PdpSimulationEvent()
     }
+}
+
+open class PayLaterAnalyticsBase {
+    var productId: String = ""
+    var userStatus: String = ""
+    var tenureOption: Int = 0
+    var payLaterPartnerName: String = ""
+    var action: String = ""
+}
+
+open class PayLaterProductImpressionEvent: PayLaterAnalyticsBase() {
+    var emiAmount: String = ""
+}
+
+@Parcelize
+open class PayLaterBottomSheetImpression: PayLaterProductImpressionEvent(), Parcelable {
+    var limit: String = ""
+    var redirectLink: String = ""
+}
+
+@Parcelize
+class PayLaterCtaClick: PayLaterBottomSheetImpression(), Parcelable {
+    var ctaWording: String = ""
 }

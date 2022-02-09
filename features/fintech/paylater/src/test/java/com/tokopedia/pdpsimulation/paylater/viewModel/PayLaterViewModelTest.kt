@@ -8,6 +8,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -29,7 +30,6 @@ class PayLaterViewModelTest {
     private lateinit var viewModel: PayLaterViewModel
 
     private val fetchFailedErrorMessage = "Fetch Failed"
-    private val nullDataErrorMessage = "NULL DATA"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
 
@@ -80,13 +80,6 @@ class PayLaterViewModelTest {
     fun successPayLaterOptions()
     {
         val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
-
-        coEvery {
-            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 0.0, "0")
-        } coAnswers {
-            firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
-        }
-
         val list = arrayListOf(SimulationUiModel(
             1,
             "",
@@ -95,7 +88,14 @@ class PayLaterViewModelTest {
             arrayListOf(SupervisorUiModel)))
         mockMapperResponse(list)
 
+        coEvery {
+            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
+        } coAnswers {
+            firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
+        }
+
         viewModel.getPayLaterAvailableDetail(10.0, "0")
+        coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
 
@@ -116,6 +116,8 @@ class PayLaterViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
         viewModel.getPayLaterAvailableDetail(0.0, "0")
+        coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any(), any()) }
+
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Fail).throwable,mockThrowable)
     }
 

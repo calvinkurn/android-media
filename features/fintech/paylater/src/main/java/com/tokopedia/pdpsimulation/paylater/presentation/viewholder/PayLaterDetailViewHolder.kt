@@ -9,6 +9,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterCtaClick
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.unifycomponents.UnifyButton
@@ -56,6 +58,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         itemView.payLaterActionCta.text = element.cta.name
         itemView.payLaterActionCta.buttonVariant = if (element.cta.button_color == TYPE_FILLED) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
         itemView.payLaterActionCta.setOnClickListener {
+            interaction.invokeAnalytics(getInstallmentInfoEvent(element, PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD, element.cta.android_url ?:""))
             interaction.onCtaClicked(element)
         }
     }
@@ -103,7 +106,9 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         itemView.apply {
             tvTitlePaymentPartner.text = element.gatewayDetail?.name
             tvInstallmentAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.installment_per_month_ceil?: 0, false)
-            tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.tenure)
+            if(element.tenure != 1)
+                tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.tenure)
+            else tvTenureMultiplier.gone()
             if (element.subheader.isNullOrEmpty())
                 tvInstallmentDescription.gone()
             else {
@@ -112,8 +117,20 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             }
             partnerTenureInfo.setOnClickListener {
                 if (element.installementDetails != null)
-                interaction.installementDetails(element.installementDetails)
+                    interaction.invokeAnalytics(getInstallmentInfoEvent(element, PdpSimulationAnalytics.CLICK_INSTALLMENT_INFO))
+                    interaction.installementDetails(element)
             }
         }
+    }
+
+    private fun getInstallmentInfoEvent(detail: Detail, eventAction: String, link: String = "", ) = PayLaterCtaClick().apply {
+        tenureOption = detail.tenure ?: 0
+        userStatus = detail.userState ?: ""
+        payLaterPartnerName = detail.gatewayDetail?.name ?: ""
+        emiAmount = detail.installment_per_month_ceil.toString()
+        limit = detail.limit ?: ""
+        redirectLink = link
+        ctaWording = detail.cta.name ?: ""
+        action = eventAction
     }
 }
