@@ -9,8 +9,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.applink.RouteManager
@@ -18,14 +21,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
-import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
-import com.tokopedia.topchat.matchers.withTotalItem
-import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
@@ -36,6 +37,8 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRob
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickWishlistButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.verifyVariantLabel
+import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
+import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
@@ -295,7 +298,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Then
         val intent = RouteManager.getIntent(context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1160424090", "6115659", AtcVariantHelper.TOPCHAT_PAGESOURCE, "false", "") //Product from firstPageChatAsBuyer
+            "1160424090", "6115659", VariantPageSource.TOPCHAT_PAGESOURCE.source, "false", "") //Product from firstPageChatAsBuyer
         openPageWithIntent(intent)
     }
 
@@ -314,7 +317,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Then
         val intent = RouteManager.getIntent(context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1160424090", "6115659", AtcVariantHelper.TOPCHAT_PAGESOURCE, "false", "") //Product from firstPageChatAsBuyer
+            "1160424090", "6115659", VariantPageSource.TOPCHAT_PAGESOURCE.source, "false", "") //Product from firstPageChatAsBuyer
         openPageWithIntent(intent)
     }
 

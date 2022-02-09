@@ -711,13 +711,13 @@ open class TopChatViewStateImpl constructor(
     }
 
     fun setTemplate(
-            listTemplate: List<Visitable<Any>>?,
+            listTemplate: List<Visitable<*>>?,
             isLastMessageBroadcast: Boolean = false,
             amIBuyer: Boolean = true
     ) {
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
-            templateAdapter.list = listTemplate
+            templateAdapter.setList(listTemplate)
             if (setTemplateChecker(isLastMessageBroadcast, amIBuyer)) {
                 showTemplateChat()
             } else {

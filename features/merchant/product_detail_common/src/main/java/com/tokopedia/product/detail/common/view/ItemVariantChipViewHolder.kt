@@ -41,15 +41,9 @@ class ItemVariantChipViewHolder(val view: View,
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
         setViewListener(element, VariantConstant.IGNORE_STATE)
-        val chipMargin = txtChipVariant.layoutParams as ViewGroup.MarginLayoutParams
-
-        if (element.flashSale) {
-            txtChipVariant.setMargin(chipMargin.leftMargin, chipMargin.topMargin, 6.toPx(), chipMargin.bottomMargin)
-            promoChipVariant.show()
-        } else {
-            txtChipVariant.setMargin(chipMargin.leftMargin, chipMargin.topMargin, 12.toPx(), chipMargin.bottomMargin)
-            promoChipVariant.hide()
-        }
+        val shouldShowFlashSale = element.currentState != VariantConstant.STATE_EMPTY
+                && element.currentState != VariantConstant.STATE_SELECTED_EMPTY
+        renderFlashSale(shouldShowFlashSale, element.flashSale)
 
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
@@ -69,6 +63,17 @@ class ItemVariantChipViewHolder(val view: View,
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_unselected)
                 txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
+        }
+    }
+
+    private fun renderFlashSale(shouldRender: Boolean, isCampaignActive: Boolean) {
+        val chipMargin = txtChipVariant.layoutParams as ViewGroup.MarginLayoutParams
+        if (shouldRender && isCampaignActive) {
+            txtChipVariant.setMargin(chipMargin.leftMargin, chipMargin.topMargin, 6.toPx(), chipMargin.bottomMargin)
+            promoChipVariant.show()
+        } else {
+            txtChipVariant.setMargin(chipMargin.leftMargin, chipMargin.topMargin, 12.toPx(), chipMargin.bottomMargin)
+            promoChipVariant.hide()
         }
     }
 

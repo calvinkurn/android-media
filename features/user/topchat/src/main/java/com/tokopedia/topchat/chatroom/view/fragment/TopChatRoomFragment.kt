@@ -146,6 +146,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
@@ -1230,7 +1231,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {
+    override fun onSuccessGetTemplate(list: List<Visitable<*>>) {
         val isLastMessageBroadcast = adapter.isLastMessageBroadcast()
         val amIBuyer = !isSeller()
         chatRoomFlexModeListener?.getSeparatedTemplateChat()?.updateTemplate(list)
@@ -1566,7 +1567,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             AtcVariantHelper.goToAtcVariant(
                 context = ctx,
                 productId = productId,
-                pageSource = AtcVariantHelper.TOPCHAT_PAGESOURCE,
+                pageSource = VariantPageSource.TOPCHAT_PAGESOURCE,
                 isTokoNow = interlocutorShopType == SHOP_TYPE_TOKONOW,
                 shopId = shopId,
                 startActivitResult = { intent, requestCode ->
@@ -2655,10 +2656,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.errorSnackbar.observe(viewLifecycleOwner, { error ->
             showSnackbarError(error)
-        })
-
-        viewModel.errorSnackbarStringRes.observe(viewLifecycleOwner, { stringRes ->
-            showSnackbarError(getStringResource(stringRes))
         })
 
         viewModel.uploadImageService.observe(viewLifecycleOwner, { image ->
