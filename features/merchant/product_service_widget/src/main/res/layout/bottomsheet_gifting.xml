@@ -2,155 +2,187 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="36dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_tips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
         android:text="Langkah mudah lengkapi bingkisanmu:"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2" />
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_number"
+        android:layout_width="4dp"
+        android:layout_height="0dp"
+        android:background="@color/Unify_N75"
+        android:layout_marginVertical="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/number_tips_5"
+        app:layout_constraintEnd_toEndOf="@+id/number_tips_1"
+        app:layout_constraintStart_toStartOf="@+id/number_tips_1"
+        app:layout_constraintTop_toTopOf="@+id/number_tips_1" />
+
     <com.tokopedia.gifting.presentation.customview.NumberView
-        android:id="@+id/sdads"
+        android:id="@+id/number_tips_1"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/dsas"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_tips_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dsas"
-        app:numberview_text="9" />
+        app:layout_constraintTop_toTopOf="@+id/text_tips_1"
+        app:numberview_text="1" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/dsas"
+        android:id="@+id/text_tips_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginHorizontal="8dp"
         android:text="Pilih barang kategori Bingkisan. Beli langsung atau masukkan ke keranjang."
         app:typographyType="body_2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sdads"
+        app:layout_constraintStart_toEndOf="@+id/number_tips_1"
         app:layout_constraintTop_toBottomOf="@+id/title_tips" />
 
     <com.tokopedia.gifting.presentation.customview.NumberView
-        android:id="@+id/sdadsd"
+        android:id="@+id/number_tips_2"
         android:layout_width="24dp"
         android:layout_height="24dp"
+
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dsasd"
-        app:numberview_text="9" />
+        app:layout_constraintTop_toTopOf="@+id/text_tips_2"
+        app:numberview_text="2" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/dsasd"
+        android:id="@+id/text_tips_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
-        android:text="Pilih barang kategori Bingkisan. Beli langsung atau masukkan ke keranjang."
+        android:layout_marginHorizontal="8dp"
+        android:text="Di halaman Keranjang, pilih barang bertanda khusus (    ) dan lanjut ke Pengiriman."
         app:typographyType="body_2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sdads"
-        app:layout_constraintTop_toBottomOf="@+id/dsas" />
+        app:layout_constraintStart_toEndOf="@+id/number_tips_1"
+        app:layout_constraintTop_toBottomOf="@+id/text_tips_1" />
 
     <com.tokopedia.gifting.presentation.customview.NumberView
-        android:id="@+id/sdadsdds"
+        android:id="@+id/number_tips_3"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dsasdff"
-        app:numberview_text="9" />
+        app:layout_constraintTop_toTopOf="@+id/text_tips_3"
+        app:numberview_text="3" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/dsasdff"
+        android:id="@+id/text_tips_3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginHorizontal="8dp"
         android:layout_marginTop="16dp"
-        android:text="Pilih barang kategori Bingkisan. Beli langsung atau masukkan ke keranjang."
+        android:text="Di halaman Pengiriman atau Beli Langsung, tambah pelengkap bingkisan yang tersedia."
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sdads"
-        app:layout_constraintTop_toBottomOf="@+id/dsasd"
+        app:layout_constraintStart_toEndOf="@+id/number_tips_1"
+        app:layout_constraintTop_toBottomOf="@+id/text_tips_2"
         app:typographyType="body_2" />
 
     <com.tokopedia.gifting.presentation.customview.NumberView
-        android:id="@+id/sdadsddsd"
+        android:id="@+id/number_tips_4"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dsasdffd"
-        app:numberview_text="9" />
+        app:layout_constraintTop_toTopOf="@+id/text_tips_4"
+        app:numberview_text="4" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/dsasdffd"
+        android:id="@+id/text_tips_4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginHorizontal="8dp"
         android:layout_marginTop="16dp"
-        android:text="Pilih barang kategori Bingkisan. Beli langsung atau masukkan ke keranjang."
+        android:text="Tulis pesan spesial di kartu ucapan."
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sdads"
-        app:layout_constraintTop_toBottomOf="@+id/dsasdff"
+        app:layout_constraintStart_toEndOf="@+id/number_tips_1"
+        app:layout_constraintTop_toBottomOf="@+id/text_tips_3"
         app:typographyType="body_2" />
 
     <com.tokopedia.gifting.presentation.customview.NumberView
-        android:id="@+id/sdadsddsds"
+        android:id="@+id/number_tips_5"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dsasdffdd"
-        app:numberview_text="9" />
+        app:layout_constraintTop_toTopOf="@+id/text_tips_5"
+        app:numberview_text="5" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/dsasdffdd"
+        android:id="@+id/text_tips_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginHorizontal="8dp"
         android:layout_marginTop="16dp"
-        android:text="Pilih barang kategori Bingkisan. Beli langsung atau masukkan ke keranjang."
+        android:text="Lanjut bayar untuk kirim ke orang spesial."
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sdads"
-        app:layout_constraintTop_toBottomOf="@+id/dsasdffd"
+        app:layout_constraintStart_toEndOf="@+id/number_tips_1"
+        app:layout_constraintTop_toBottomOf="@+id/text_tips_4"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/dividerUnify2"
-        android:layout_width="match_parent"
+        android:id="@+id/divider_shop"
+        android:layout_width="0dp"
         android:layout_height="8dp"
         android:layout_marginTop="16dp"
+        android:background="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dsasdffdd" />
+        app:layout_constraintTop_toBottomOf="@+id/text_tips_5" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/dasdf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginStart="16dp"
+        app:icon_name="BADGE_OS_FILLED"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dividerUnify2" />
+        app:layout_constraintTop_toBottomOf="@+id/divider_shop" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        app:icon_name="LOCATION"
+        app:layout_constraintBottom_toBottomOf="@+id/dasdffgcc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dasdf" />
+        app:layout_constraintTop_toTopOf="@+id/dasdffgcc" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dasdffg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:layout_marginStart="10dp"
         android:text="Disediakan oleh Banana Indonesia"
+        app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/dasdf"
-        app:layout_constraintTop_toBottomOf="@+id/dividerUnify2" />
+        app:layout_constraintTop_toBottomOf="@+id/divider_shop" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dasdffgcc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="10dp"
         android:text="Tersedia di wilayah tertentu. Info Selengkapnya."
+        app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/dasdf"
         app:layout_constraintTop_toBottomOf="@+id/dasdffg" />

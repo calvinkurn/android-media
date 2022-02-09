@@ -16,7 +16,11 @@ class GiftingBottomsheetActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gifting_bottomsheet)
-        GiftingBottomSheet(getProductIdFromUri()).show(supportFragmentManager, "")
+        GiftingBottomSheet(getProductIdFromUri()).apply {
+            setOnDismissListener {
+                finish()
+            }
+        }.show(supportFragmentManager, "")
     }
 
     private fun getProductIdFromUri(): Long {

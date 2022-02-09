@@ -18,6 +18,7 @@ class GiftingBottomSheet(private val productId: Long) : BottomSheetUnify() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setTitle("Cara atur bingkisan")
+        clearContentPadding = true
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
