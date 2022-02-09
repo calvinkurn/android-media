@@ -1,5 +1,7 @@
 package com.tokopedia.addongifting.view
 
+import android.app.Activity
+import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -23,8 +26,12 @@ import com.tokopedia.addongifting.view.di.AddOnComponent
 import com.tokopedia.addongifting.view.di.DaggerAddOnComponent
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -68,6 +75,17 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        activity?.let {
+            return object : BottomSheetDialog(it, theme) {
+                override fun onBackPressed() {
+                    showCloseConfirmationDialog()
+                }
+            }
+        }
+        return super.onCreateDialog(savedInstanceState)
+    }
+
     private fun initializeView(): LayoutAddOnBottomSheetBinding {
         val viewBinding = LayoutAddOnBottomSheetBinding.inflate(LayoutInflater.from(context))
         initializeBottomSheet(viewBinding)
@@ -84,6 +102,11 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         isHideable = true
         clearContentPadding = true
         customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+        setShowListener {
+            bottomSheetClose.setOnClickListener {
+                showCloseConfirmationDialog()
+            }
+        }
         setChild(viewBinding.root)
     }
 
@@ -206,6 +229,23 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
                 ?: 0
         val displayHeight = displayMetrics?.heightPixels ?: 0
         return bottomSheetHeight != 0 && displayHeight != 0 && (bottomSheetHeight + (recyclerViewPaddingBottom / 2)) >= displayHeight
+    }
+
+    private fun showCloseConfirmationDialog() {
+        activity?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle("Batal tambah pelengkap?")
+                setDescription("Pesan kartu ucapan nggak akan tersimpan kalau kamu keluar dari sini.")
+                setPrimaryCTAText("Ya, Batal")
+                setSecondaryCTAText("Tetap di Sini")
+                setPrimaryCTAClickListener {
+                    this@AddOnBottomSheet.dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }.show()
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
