@@ -3,7 +3,6 @@ package com.tokopedia.shop.home.util.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
@@ -23,7 +22,6 @@ import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
-import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -464,7 +462,7 @@ object ShopPageHomeMapper {
                 subTitle = "",
                 ctaText = "",
                 ctaTextLink = "https://tokopedia.com",
-                endDate = "2022-02-10 11:33:00 +0000 UTC",
+                endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
                 timeCounter = 1000,
                 statusCampaign = "ongoing",
                 totalProduct = 12

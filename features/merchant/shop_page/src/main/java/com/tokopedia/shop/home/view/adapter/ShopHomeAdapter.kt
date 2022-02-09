@@ -485,6 +485,7 @@ class ShopHomeAdapter(
     fun updateShopHomeWidgetContentData(listWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
         val newList = getNewVisitableItems()
         listWidgetContentData.onEach { widgetContentData ->
+            // need to separate updating ui model for temporary purpose
             newList.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
                 widgetContentData.key.first == it.widgetId
             }.let{ position ->
@@ -497,6 +498,18 @@ class ShopHomeAdapter(
                             (widgetContentData.value as BaseShopHomeWidgetUiModel).widgetState = WidgetState.FINISH
                             (widgetContentData.value as BaseShopHomeWidgetUiModel).isNewData = true
                             newList.setElement(position, widgetContentData.value)
+                        }
+                    }
+                }
+            }
+
+            newList.filterIsInstance<ThematicWidgetUiModel>().indexOfFirst {
+                widgetContentData.key.first == it.widgetId
+            }.let{ position ->
+                if (position >= 0 && position < newList.size) {
+                    when (widgetContentData.value) {
+                        null -> {
+                            newList.removeAt(position)
                         }
                         is ThematicWidgetUiModel -> {
                             (widgetContentData.value as ThematicWidgetUiModel).widgetState = WidgetState.FINISH
@@ -512,7 +525,13 @@ class ShopHomeAdapter(
 
     fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
         listWidgetLayout.onEach { widgetLayout ->
+            // need to separate updating ui model for temporary purpose
             visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().firstOrNull {
+                widgetLayout.widgetId == it.widgetId
+            }?.let{
+                it.widgetState = WidgetState.LOADING
+            }
+            visitables.filterIsInstance<ThematicWidgetUiModel>().firstOrNull {
                 widgetLayout.widgetId == it.widgetId
             }?.let{
                 it.widgetState = WidgetState.LOADING
@@ -521,7 +540,9 @@ class ShopHomeAdapter(
     }
 
     fun isLoadNextHomeWidgetData(position: Int): Boolean {
-        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
+        // need to separate updating ui model for temporary purpose
+        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER ||
+                visitables.filterIsInstance<ThematicWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
     }
 
     fun isLoadProductGridListData(position: Int): Boolean {
@@ -551,7 +572,10 @@ class ShopHomeAdapter(
     }
 
     fun isLoadFirstWidgetContentData(): Boolean {
+        // need to separate checking ui model for temporary purpose
         return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().none {
+            it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
+        } || visitables.filterIsInstance<ThematicWidgetUiModel>().none {
             it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
         }
     }
@@ -565,9 +589,16 @@ class ShopHomeAdapter(
     }
 
     fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
+        // need to separate updating ui model for temporary purpose
         val newList = getNewVisitableItems()
         listShopWidgetLayout.onEach { shopWidgetLayout ->
             newList.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
+                shopWidgetLayout.widgetId == it.widgetId
+            }.let { position ->
+                newList.removeAt(position)
+            }
+
+            newList.filterIsInstance<ThematicWidgetUiModel>().indexOfFirst {
                 shopWidgetLayout.widgetId == it.widgetId
             }.let { position ->
                 newList.removeAt(position)
@@ -583,7 +614,13 @@ class ShopHomeAdapter(
         val diffCallback = ShopPageHomeDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
-        newList.filterIsInstance<BaseShopHomeWidgetUiModel>().onEach { it.isNewData = false }
+        // need to separate updating ui model for temporary purpose
+        newList.forEach {
+            when(it) {
+                is BaseShopHomeWidgetUiModel -> it.isNewData = false
+                is ThematicWidgetUiModel -> it.isNewData = false
+            }
+        }
         visitables.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
         currentRecyclerViewState?.let{
@@ -600,5 +637,4 @@ class ShopHomeAdapter(
             nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
         }
     }
-
 }

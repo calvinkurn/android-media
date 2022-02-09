@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 
 class ShopPageHomeDiffUtilCallback(
         private val oldItems: List<Visitable<*>>,
@@ -27,11 +28,17 @@ class ShopPageHomeDiffUtilCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        // need to separate checking ui model for temporary purpose
         val oldItem = oldItems.getOrNull(oldItemPosition)
         val newItem = newItems.getOrNull(newItemPosition)
         if(isItemMatchWithUiModel<BaseShopHomeWidgetUiModel>(oldItem, newItem)){
             val oldShopHomeWidgetData = oldItem as? BaseShopHomeWidgetUiModel
             val newShopHomeWidgetData = newItem as? BaseShopHomeWidgetUiModel
+            return oldShopHomeWidgetData?.isNewData == false && newShopHomeWidgetData?.isNewData == false
+        }
+        if(isItemMatchWithUiModel<ThematicWidgetUiModel>(oldItem, newItem)){
+            val oldShopHomeWidgetData = oldItem as? ThematicWidgetUiModel
+            val newShopHomeWidgetData = newItem as? ThematicWidgetUiModel
             return oldShopHomeWidgetData?.isNewData == false && newShopHomeWidgetData?.isNewData == false
         }
         return oldItem == newItem
