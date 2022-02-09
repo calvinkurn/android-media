@@ -123,7 +123,6 @@ class DuplicateCouponActivity : AppCompatActivity() {
         val couponSettingsData = couponPreviewFragment.getCouponSettingsData()
         val fragment = CouponSettingFragment.newInstance(couponSettingsData)
         fragment.setOnCouponSaved {
-            //couponSettingFragment.setCouponSettings(couponSettings)
 
             //Stub the products data for testing purpose
             couponPreviewFragment.setCouponProductsData(buildDummyProducts())

@@ -47,7 +47,7 @@ class CouponListActivity : BaseSimpleActivity() {
 
     private val couponListFragment = CouponListFragment.newInstance(
         ::navigateToCreateCouponPage,
-        ::navigateToEditCouponPage,
+        ::navigateToUpdateCouponPage,
         ::navigateToDuplicateCouponPage,
         ::navigateToCouponDetail
     )
@@ -72,8 +72,11 @@ class CouponListActivity : BaseSimpleActivity() {
         startActivityForResult(intent, CreateCouponProductActivity.REQUEST_CODE_CREATE_COUPON)
     }
 
-    private fun navigateToEditCouponPage(couponId: Long) {
-        UpdateCouponActivity.start(this, couponId)
+    private fun navigateToUpdateCouponPage(couponId: Long) {
+        val intent = Intent(this, UpdateCouponActivity::class.java).apply {
+            putExtra(UpdateCouponActivity.BUNDLE_KEY_COUPON_ID, couponId)
+        }
+        startActivityForResult(intent, UpdateCouponActivity.REQUEST_CODE_UPDATE_COUPON)
     }
 
     private fun navigateToDuplicateCouponPage(couponId: Long) {
@@ -84,20 +87,31 @@ class CouponListActivity : BaseSimpleActivity() {
         VoucherProductDetailActivity.start(this, couponId)
     }
 
-    private fun showToaster(text: String) {
-        if (text.isEmpty()) return
-        val view = findViewById<FrameLayout>(R.id.parent_view)
-        Toaster.build(view, text).show()
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CreateCouponProductActivity.REQUEST_CODE_CREATE_COUPON) {
-            if (resultCode == Activity.RESULT_OK) {
-                val coupon = data?.getParcelableExtra<Coupon>(CreateCouponProductActivity.BUNDLE_KEY_COUPON)
-                    ?: return
-                showBroadCastVoucherBottomSheet(coupon)
+        when(requestCode) {
+            CreateCouponProductActivity.REQUEST_CODE_CREATE_COUPON ->{
+                handleCreateCouponResult(resultCode, data)
             }
+            UpdateCouponActivity.REQUEST_CODE_UPDATE_COUPON -> {
+                handleUpdateCouponResult(resultCode)
+            }
+        }
+    }
+
+    private fun handleCreateCouponResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val coupon = data?.getParcelableExtra<Coupon>(CreateCouponProductActivity.BUNDLE_KEY_COUPON)
+                ?: return
+            showBroadCastVoucherBottomSheet(coupon)
+            couponListFragment.loadInitialData()
+        }
+    }
+
+    private fun handleUpdateCouponResult(resultCode: Int) {
+        if (resultCode == Activity.RESULT_OK) {
+            showToaster(getString(R.string.coupon_updated))
             couponListFragment.loadInitialData()
         }
     }
@@ -113,6 +127,12 @@ class CouponListActivity : BaseSimpleActivity() {
             bottomSheet.dismiss()
         }
         bottomSheet.show(supportFragmentManager)
+    }
+
+    private fun showToaster(text: String) {
+        if (text.isEmpty()) return
+        val view = findViewById<FrameLayout>(R.id.parent_view)
+        Toaster.build(view, text).show()
     }
 
 }
