@@ -42,6 +42,13 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
     }
 
     private val binding: WidgetProductAddOnDescriptionBinding = inflateContent()
+    /*
+        this listener is used to synchronize description text, see less text and see more text
+        visibility to prevent a glitch where see less text or see more text was visible when it is
+        expected to be not visible
+
+        this listener should be added only when we're change the description text
+     */
     private val descriptionOnPreDrawListener = createDescriptionOnPreDrawListener()
 
     private var animatorSet: AnimatorSet = AnimatorSet()
@@ -302,19 +309,19 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
     fun setDescription(description: String, expanded: Boolean) {
         this@AddOnDescriptionWidget.description = description
         with(binding.tvAddOnDescription) {
+            animatorSet.cancel()
             if (this@AddOnDescriptionWidget.description.isBlank()) {
                 gone()
                 binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
             } else {
+                show()
                 viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
                 viewTreeObserver.addOnPreDrawListener(descriptionOnPreDrawListener)
-                animatorSet.cancel()
                 setDescriptionText(expanded)
                 updateDescriptionMaxLines(expanded)
                 val layoutParamsCopy = layoutParams
                 layoutParamsCopy.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 layoutParams = layoutParamsCopy
-                show()
             }
         }
     }

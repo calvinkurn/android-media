@@ -5,6 +5,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.show
@@ -215,13 +216,13 @@ class SomDetailShippingViewHolder(
                     tvDropshipperNumber.text = numberPhoneDropShipper
                     tvDropshipperNumber.show()
                 } else {
-                    tvDropshipperNumber.hide()
+                    tvDropshipperNumber.gone()
                 }
                 if (item.dataObject.dropshipperName.isNotBlank()) {
                     tvSomDropshipperName.text = item.dataObject.dropshipperName
                     tvSomDropshipperName.show()
                 } else {
-                    tvSomDropshipperName.show()
+                    tvSomDropshipperName.gone()
                 }
                 tvSomDropshipperLabel.showWithCondition(
                     numberPhoneDropShipper.isNotBlank() || item.dataObject.dropshipperName.isNotBlank()

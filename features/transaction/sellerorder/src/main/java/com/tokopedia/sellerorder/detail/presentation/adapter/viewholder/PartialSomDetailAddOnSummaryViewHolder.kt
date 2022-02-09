@@ -62,8 +62,8 @@ class PartialSomDetailAddOnSummaryViewHolder(
         }
     }
 
-    private fun PartialAddOnSummaryBinding.setupAddOnTips(providedByTokoCabang: Boolean) {
-        labelAddOn.showWithCondition(providedByTokoCabang)
+    private fun PartialAddOnSummaryBinding.setupAddOnTips(providedByBranchShop: Boolean) {
+        labelAddOn.showWithCondition(providedByBranchShop)
     }
 
     private fun PartialAddOnSummaryBinding.setupAddOnSummaryIcon(iconUrl: String) {

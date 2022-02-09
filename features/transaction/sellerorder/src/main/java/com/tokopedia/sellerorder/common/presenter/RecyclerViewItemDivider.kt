@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 
 class RecyclerViewItemDivider(
@@ -32,6 +33,8 @@ class RecyclerViewItemDivider(
         }
         if (!isLastItem || applyMarginAfterLastItem) {
             layoutParams.bottomMargin = bottomMargin
+        } else {
+            layoutParams.bottomMargin = Int.ZERO
         }
         view.layoutParams = layoutParams
     }
