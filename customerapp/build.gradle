@@ -300,7 +300,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.feedbackForm)
     implementation projectOrAar(rootProject.ext.libraries.screenshot_observer)
 
-
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.playServicesDependencies.maps
