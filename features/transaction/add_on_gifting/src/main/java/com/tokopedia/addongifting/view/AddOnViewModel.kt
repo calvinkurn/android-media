@@ -39,8 +39,8 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
     val addOnUiModel: LiveData<AddOnUiModel>
         get() = _addOnUiModel
 
-    fun loadAddOnData(addOnProductData: AddOnProductData, mockAddOnResponse: String = "", mockAddOnSavedStateResponse: String = "") {
-        getAddOnByProductUseCase.mockResponse = mockAddOnResponse
+    fun loadAddOnData(addOnProductData: AddOnProductData, mockAddOnResponse: String? = "", mockAddOnSavedStateResponse: String? = "") {
+        getAddOnByProductUseCase.mockResponse = mockAddOnResponse ?: ""
         getAddOnByProductUseCase.execute(
                 onSuccess = {
                     loadSavedStateData(addOnProductData, it, mockAddOnSavedStateResponse)
@@ -48,21 +48,28 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                 onError = {
                     _globalEvent.value = GlobalEvent().apply {
                         state = GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA
+                        throwable = it
                     }
                 }
         )
     }
 
-    private fun loadSavedStateData(addOnProductData: AddOnProductData, addOnByProductResponse: GetAddOnByProductResponse, mockAddOnSavedStateResponse: String = "") {
-        getAddOnSavedStateUseCase.mockResponse = mockAddOnSavedStateResponse
+    private fun loadSavedStateData(addOnProductData: AddOnProductData, addOnByProductResponse: GetAddOnByProductResponse, mockAddOnSavedStateResponse: String? = "") {
+        getAddOnSavedStateUseCase.mockResponse = mockAddOnSavedStateResponse ?: ""
         getAddOnSavedStateUseCase.execute(
                 onSuccess = {
+                    _globalEvent.value = GlobalEvent().apply {
+                        state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+                    }
                     val productUiModel = UiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
                     _productUiModel.value = productUiModel
                     val addOnUiModel = UiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, it)
                     _addOnUiModel.value = addOnUiModel
                 },
                 onError = {
+                    _globalEvent.value = GlobalEvent().apply {
+                        state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+                    }
                     val productUiModel = UiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
                     _productUiModel.value = productUiModel
                     val addOnUiModel = UiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)

@@ -1,6 +1,5 @@
 package com.tokopedia.addongifting.view
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -27,16 +26,18 @@ import com.tokopedia.addongifting.view.di.DaggerAddOnComponent
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
-import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
@@ -125,17 +126,22 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     private fun initializeObserver(viewBinding: LayoutAddOnBottomSheetBinding) {
-        observeGlobalEvent()
+        observeGlobalEvent(viewBinding)
         observeProductData()
         observeAddOnData()
         observeFragmentData(viewBinding)
     }
 
-    private fun observeGlobalEvent() {
+    private fun observeGlobalEvent(viewBinding: LayoutAddOnBottomSheetBinding) {
         viewModel.globalEvent.observe(this, {
             when (it.state) {
+                GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA -> {
+                    hideLoading()
+                    renderLayoutNormal(viewBinding)
+                }
                 GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA -> {
-                    // Todo : show global error
+                    hideLoading()
+                    renderLayoutError(viewBinding, it.throwable)
                 }
                 GlobalEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION -> {
                     showCloseConfirmationDialog()
@@ -195,7 +201,6 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
 
     private fun showLoading() {
         adapter?.let {
-            it.removeErrorNetwork()
             it.setLoadingModel(LoadingModel())
             it.showLoading()
         }
@@ -235,6 +240,37 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
                 ?: 0
         val displayHeight = displayMetrics?.heightPixels ?: 0
         return bottomSheetHeight != 0 && displayHeight != 0 && (bottomSheetHeight + (recyclerViewPaddingBottom / 2)) >= displayHeight
+    }
+
+    private fun renderLayoutNormal(viewBinding: LayoutAddOnBottomSheetBinding) {
+        with(viewBinding) {
+            globalError.gone()
+            totalAmount.show()
+            rvAddOn.show()
+        }
+    }
+
+    private fun renderLayoutError(viewBinding: LayoutAddOnBottomSheetBinding, throwable: Throwable?) {
+        with(viewBinding) {
+            throwable?.let {
+                globalError.setType(getGlobalErrorType(throwable))
+                globalError.setActionClickListener {
+                    renderLayoutNormal(viewBinding)
+                    initializeData(addOnProductData)
+                }
+            }
+            globalError.show()
+            totalAmount.gone()
+            rvAddOn.gone()
+        }
+    }
+
+    private fun getGlobalErrorType(throwable: Throwable): Int {
+        return if (throwable is UnknownHostException || throwable is SocketTimeoutException || throwable is ConnectException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
     }
 
     private fun showCloseConfirmationDialog() {

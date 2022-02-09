@@ -7,19 +7,20 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_add_on"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_add_on"
             android:layout_width="match_parent"
-            tools:itemCount="30"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@+id/total_amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            tools:itemCount="30"
+            tools:visibility="gone" />
 
         <com.tokopedia.totalamount.TotalAmount
             android:id="@+id/total_amount"
@@ -31,15 +32,22 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_height="100dp" />
+            tools:layout_height="100dp"
+            tools:visibility="gone" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/chat_icon"
-            android:layout_width="0.5dp"
-            android:layout_height="0.5dp"
-            android:visibility="visible"
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16dp"
+            android:visibility="gone"
+            app:globalerrors_type="SERVER_ERROR"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
