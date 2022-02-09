@@ -48,8 +48,7 @@ class PlayProductTagUiMapper @Inject constructor() {
                             priceNumber = input.originalPrice)
                 },
                 isVariantAvailable = input.isVariant,
-                //TODO= TBD
-                stock = if (input.quantity > 0 || input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
+                stock = if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
                 minQty = input.minimumQuantity,
                 isFreeShipping = input.isFreeShipping,
                 applink = input.appLink,
