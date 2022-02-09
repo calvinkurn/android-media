@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/individual_benifit"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="start"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageUnify"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_1"
-        android:text="Tinggal tanda tangan digital, nggak perlu dafsfjgn.dfdk gnkdjfnvkdkf dfkj dkfj dfkjgjftar lagi" />
-
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imageUnify"
-        android:layout_width="wrap_content"
+        android:id="@+id/greenTickActivationPage"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_ticker_action_close_12dp" />
+
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/activationGopayBenefit"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        app:layout_constraintBottom_toBottomOf="@id/individual_benifit"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/individual_benifit"
-        app:layout_constraintTop_toTopOf="@id/individual_benifit" />
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/greenTickActivationPage"
+        app:layout_constraintTop_toTopOf="@+id/greenTickActivationPage"
+        app:typographyType="body_2"
+        tools:text="Pengajuanmu akan diverifikasi selama maks. 24 jam. Setelah disetujui, kamu bisa langsung gunakan untuk belanja!" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

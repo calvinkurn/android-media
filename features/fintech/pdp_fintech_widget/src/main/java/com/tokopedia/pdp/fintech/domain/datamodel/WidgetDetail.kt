@@ -62,8 +62,8 @@ data class WidgetBottomsheet(
     @SerializedName("product_icon_light") var productIconLight: String? = null,
     @SerializedName("product_icon_dark") var productIconDark: String? = null,
     @SerializedName("title") var title: String? = null,
-    @SerializedName("buttons") var buttons: ArrayList<BottomSheetButtons> = arrayListOf(),
-    @SerializedName("descriptions") var descriptions: ArrayList<BottomSheetDescriptions> = arrayListOf(),
+    @SerializedName("buttons") var buttons: ArrayList<ActivationBottomSheetButtons> = arrayListOf(),
+    @SerializedName("descriptions") var descriptions: ArrayList<ActivationBottomSheetDescriptions> = arrayListOf(),
     @SerializedName("product_footnote") var productFootnote: String? = null,
     @SerializedName("product_footnote_icon_light") var productFootnoteIconLight: String? = null,
     @SerializedName("product_footnote_icon_dark") var productFootnoteIconDark: String? = null,
@@ -73,7 +73,7 @@ data class WidgetBottomsheet(
 ): Parcelable
 
 @Parcelize
-data class BottomSheetButtons(
+data class ActivationBottomSheetButtons(
     @SerializedName("button_text") var buttonText: String? = null,
     @SerializedName("button_text_color") var buttonTextColor: String? = null,
     @SerializedName("button_color") var buttonColor: String? = null,
@@ -81,7 +81,7 @@ data class BottomSheetButtons(
 ): Parcelable
 
 @Parcelize
-data class BottomSheetDescriptions(
+data class ActivationBottomSheetDescriptions(
     @SerializedName("line_icon_dark") var lineIconDark: String? = null,
     @SerializedName("line_icon_light") var lineIconLight: String? = null,
     @SerializedName("text") var text: String? = null

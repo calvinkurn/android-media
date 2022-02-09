@@ -139,8 +139,10 @@ import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
-import com.tokopedia.product.detail.view.bottomsheet.GopayLinkBenefitBottomSheet
+import com.tokopedia.product.detail.view.bottomsheet.fintechBottomSheet.GopayLinkBenefitBottomSheet
+import com.tokopedia.product.detail.view.bottomsheet.fintechBottomSheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_BOTTOMSHEET_DETAIl
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
+import com.tokopedia.product.detail.view.bottomsheet.fintechBottomSheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_WEBVIEW_LINK
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -350,7 +352,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         initBtnAction()
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
-        
+
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
             UniversalShareBottomSheet.createAndStartScreenShotDetector(
@@ -764,24 +766,36 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     "?productID=${this.productId}" +
                     "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
                     "&productURL=${fintechRedirectionWidgetDataClass.productUrl}" +
-                    "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}"+
+                    "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
                     "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}"
 
-            if (fintechRedirectionWidgetDataClass.cta == 2) {
+            if (fintechRedirectionWidgetDataClass.cta == 2 &&
+                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false) {
                 openWebViewUrl(url = rediretionLink, showTitleBar = true)
-            } else {
-//                activity?.let {
-//                    GopayLinkBenefitBottomSheet().showBottomSheet(it.supportFragmentManager,
-//                        Bundle().apply.putParcelable(BOTTOMSHEET_DETAIl,fintechRedirectionWidgetDataClass.widgetBottomSheet) })
-//                }
+            } else if (fintechRedirectionWidgetDataClass.cta == 2 &&
+                fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == true) {
 
-                val intent = RouteManager.getIntent(requireContext(), rediretionLink)
-                startActivity(intent)
+                val bundle = Bundle()
+                bundle.putParcelable(ACTIVATION_BOTTOMSHEET_DETAIl, fintechRedirectionWidgetDataClass)
+                bundle.putString(ACTIVATION_WEBVIEW_LINK,rediretionLink)
 
+
+                activity?.let {
+                    GopayLinkBenefitBottomSheet().showBottomSheet(
+                        it.supportFragmentManager,
+                        bundle
+                    )
+                }
             }
+
+        else {
+
+            val intent = RouteManager.getIntent(requireContext(), rediretionLink)
+            startActivity(intent)
+
         }
     }
-
+}
     /**
      * ImpressionComponent
      */

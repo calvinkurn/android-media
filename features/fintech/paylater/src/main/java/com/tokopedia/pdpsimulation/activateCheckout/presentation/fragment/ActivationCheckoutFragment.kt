@@ -444,9 +444,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         activationTenureAdapter = ActivationTenureAdapter(listOf(), this)
         detailHeader.showVariantBottomSheet.setOnClickListener {
             context?.let {
-                AtcVariantHelper.goToAtcVariant(it, productId, "", false, "") { data, code ->
-                    startActivityForResult(data, code)
-                }
+//                AtcVariantHelper.goToAtcVariant(it, productId, "", false, "") { data, code ->
+//                    startActivityForResult(data, code)
+//                }
             }
         }
 
