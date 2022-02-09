@@ -1871,7 +1871,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         validateRenderWishlist()
         validateRenderRecentView()
         loadRecommendation()
-        validateRenderAddOnGifting()
     }
 
     private fun updateStateAfterFinishGetCartList(cartData: CartData) {
@@ -1963,10 +1962,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else if (cartData.popUpMessage.isNotBlank()) {
             showToastMessageGreen(cartData.popUpMessage)
         }
-    }
-
-    private fun validateRenderAddOnGifting() {
-
     }
 
     private fun setInitialCheckboxGlobalState(cartData: CartData) {
