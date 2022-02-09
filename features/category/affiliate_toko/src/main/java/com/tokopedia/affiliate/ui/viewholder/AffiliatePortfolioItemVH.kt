@@ -2,9 +2,9 @@ package com.tokopedia.affiliate.ui.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View
-import android.webkit.URLUtil.isValidUrl
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
@@ -32,6 +32,13 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
                     s.toString())
+
+                if(s.toString().isNotEmpty()){
+                    element?.portfolioItm?.isError = !isValidUrl(s.toString(),element)
+                }else {
+                    element?.portfolioItm?.isError = false
+                }
+                setState(element)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -48,12 +55,6 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
                 if ((event?.action == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER))
                 {
-                    if(isValidUrl(urlEtView.getEditableValue().toString())) {
-                        portfolioUrlTextUpdateInterface?.onUrlSuccess(adapterPosition)
-                    }
-                    else if (urlEtView.getEditableValue().toString().isNotEmpty()){
-                        portfolioUrlTextUpdateInterface?.onError(adapterPosition)
-                    }
                     portfolioUrlTextUpdateInterface?.onNextKeyPressed(adapterPosition,true)
                     return true
                 }
@@ -62,9 +63,18 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
         })
     }
 
+    private fun isValidUrl(text: String, element: AffiliatePortfolioUrlModel?): Boolean {
+        return if(element?.portfolioItm?.regex != null){
+            val regex = Regex(element.portfolioItm.regex!!, setOf(RegexOption.IGNORE_CASE))
+            regex.matches(text) && Patterns.WEB_URL.matcher(text).matches()
+        } else{
+            Patterns.WEB_URL.matcher(text).matches()
+        }
+    }
+
     private fun setState(element: AffiliatePortfolioUrlModel?) {
-        urlEtView.isInputError = element?.portfolioItm?.isError==true
-        if(element?.portfolioItm?.isError==true) {
+        urlEtView.isInputError = element?.portfolioItm?.isError == true
+        if(element?.portfolioItm?.isError == true) {
             element.portfolioItm.errorContent?.let { message ->
                 urlEtView.setMessage(message)
             }

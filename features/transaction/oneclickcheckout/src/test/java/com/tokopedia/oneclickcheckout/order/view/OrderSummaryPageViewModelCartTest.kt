@@ -936,21 +936,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Get Payment Profile`() {
-        // Given
-        val paymentProfile = "paymentProfile"
-        val response = helper.orderData.copy(cart = helper.orderData.cart.copy(paymentProfile = paymentProfile))
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
-
-        // When
-        orderSummaryPageViewModel.getOccCart(true, "")
-
-        // Then
-        assertEquals(paymentProfile, orderSummaryPageViewModel.getPaymentProfile())
-    }
-
-    @Test
     fun `Get Wallet Activation Data`() {
         // Given
         val activationData = OrderPaymentWalletActionData(isRequired = true)

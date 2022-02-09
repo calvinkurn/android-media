@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="top_ads_common_dp_20">20dp</dimen>
+    <dimen name="top_ads_common_dp_10">10dp</dimen>
+    <dimen name="top_ads_common_dp_1">1dp</dimen>
+    <dimen name="top_ads_common_dp_80">80dp</dimen>
+</resources>

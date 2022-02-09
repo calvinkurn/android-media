@@ -14,12 +14,22 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.logisticCommon.R
+import com.tokopedia.logisticCommon.ui.userconsent.analytic.TncAnalytics
 
-class LogisticUserConsentHelper {
+object LogisticUserConsentHelper {
 
-    fun displayUserConsent(context: Context, textView: TextView?, buttonText: String) {
+    const val ANA_REVAMP_POSITIVE = "add new address positive"
+    const val ANA_REVAMP_NEGATIVE = "add new address negative"
+    const val ANA_POSITIVE = "add new address positive old"
+    const val ANA_NEGATIVE = "add new address negative old"
+    const val EDIT_ADDRESS = "edit address"
+
+    fun displayUserConsent(context: Context, userId: String, textView: TextView?, buttonText: String, screenName: String = "") {
         val onTermsAndConditionClicked: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
+                if (screenName.isNotEmpty()) {
+                    TncAnalytics.onClickTnC(userId, screenName)
+                }
                 RouteManager.route(context, ApplinkConstInternalLogistic.TNC_WEBVIEW)
             }
 
@@ -47,6 +57,9 @@ class LogisticUserConsentHelper {
             movementMethod = LinkMovementMethod.getInstance()
             isClickable = true
             setText(consentText, TextView.BufferType.SPANNABLE)
+        }
+        if (screenName.isNotEmpty()) {
+            TncAnalytics.onViewTnC(userId, screenName)
         }
     }
 }

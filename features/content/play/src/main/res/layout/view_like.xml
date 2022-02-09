@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.airbnb.lottie.LottieAnimationView
+<com.tokopedia.iconunify.IconUnify
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/animation_like"
-    android:layout_width="@dimen/layout_lvl3"
-    android:layout_height="@dimen/layout_lvl3"
-    app:lottie_rawRes="@raw/anim_outline_spam_like"
+    android:id="@+id/icon_like"
+    android:layout_width="@dimen/layout_lvl4"
+    android:layout_height="@dimen/layout_lvl4"
+    app:icon_color_light_enable="@color/Unify_Static_White"
+    app:icon_color_night_enable="@color/Unify_Static_White"
+    app:icon_name="THUMB"
     />

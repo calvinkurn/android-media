@@ -3,7 +3,6 @@ package com.tokopedia.deals.home.ui.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer

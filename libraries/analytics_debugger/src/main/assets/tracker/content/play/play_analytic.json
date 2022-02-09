@@ -366,18 +366,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click on button share link",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "sessionIris": ".*",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*"
-    },
-    {
       "eventAction": "impression on merchant voucher",
       "event": "viewGroupChatIris",
       "eventCategory": "groupchat room",
@@ -479,6 +467,46 @@
       "currentSite": ".*",
       "userId": ".*",
       "businessUnit": "play"
+    },
+    {
+      "event": "clickGroupChat",
+      "eventAction": "click - three dots menu",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickGroupChat",
+      "eventAction": "click - laporkan video",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickGroupChat",
+      "eventAction": "click - laporkan on bottom sheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (use|not use)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickGroupChat",
+      "eventAction": "click - laporkan on pop up",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

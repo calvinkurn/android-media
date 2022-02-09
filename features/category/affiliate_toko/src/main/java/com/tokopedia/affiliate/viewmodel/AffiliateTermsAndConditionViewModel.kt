@@ -4,7 +4,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.affiliate.model.response.AffiliateOnBoardingData
-import com.tokopedia.affiliate.model.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.usecase.AffiliateOnBoardingUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -20,7 +20,7 @@ class AffiliateTermsAndConditionViewModel@Inject constructor(
     private var errorMessage = MutableLiveData<Throwable>()
     private var progressBar = MutableLiveData<Boolean>()
 
-    fun affiliateOnBoarding(channels : ArrayList<OnBoardingRequest.Channel>) {
+    fun affiliateOnBoarding(channels : ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
         launchCatchError(block = {
             progressBar.value = true
             onBoardingData.value = affiliateOnBoardingUseCase.affiliateOnBoarding(channels)

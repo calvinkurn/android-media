@@ -4,8 +4,9 @@ import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTU_BE_URL
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.model.ValidateProductDescriptionResponse
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
@@ -16,6 +17,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -25,7 +27,10 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import org.junit.*
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import java.lang.reflect.Type
 
 @FlowPreview
@@ -155,6 +160,21 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
+    fun `When user insert product description and usecase is failed expect return throwable`() = coroutineTestRule.runBlockingTest {
+        mockkObject(AddEditProductErrorHandler)
+        every { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) } returns mockk(relaxed = true)
+        coEvery {
+            validateProductDescriptionUseCase.executeOnBackground()
+        } throws Throwable()
+
+        viewModel.validateDescriptionChanged("test")
+
+        coVerify(timeout = 2000) {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(any())
+        }
+    }
+
+    @Test
     fun `When user insert url from youtube app and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
         mockUriParsing()
         mockkObject(GetYoutubeVideoDetailUseCase)
@@ -224,7 +244,23 @@ class AddEditProductDescriptionViewModelTest {
         } returns null
 
         usedYoutubeVideoUrl = unknownYoutubeUrl
+        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
+        val result = viewModel.videoYoutube.getOrAwaitValue()
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `When the url lastPathSegment is null expect failed get youtube video data`()= coroutineTestRule.runBlockingTest {
+        mockUriParsing()
+        every {
+            videoUri.host
+        } returns YOUTU_BE_URL
+        every {
+            videoUri.lastPathSegment
+        } returns null
+
+        usedYoutubeVideoUrl = unknownYoutubeUrl
         viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
         val result = viewModel.videoYoutube.getOrAwaitValue()

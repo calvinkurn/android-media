@@ -422,7 +422,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         return asyncCatchError(block = {
             val warehouseId = localCacheModel?.warehouse_id.orEmpty()
             val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
-            layoutList.addCategoryGrid(response)
+            layoutList.addCategoryGrid(response, warehouseId)
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,

@@ -10,7 +10,6 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -26,13 +25,11 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.*
-import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
-import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
-import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
-import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
+import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
@@ -61,7 +58,13 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcastComponentProvider {
+class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
+
+    private val retainedComponent by retainedComponent {
+        DaggerActivityRetainedComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -80,8 +83,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private lateinit var containerSetup: FrameLayout
     private lateinit var globalErrorView: GlobalError
     private lateinit var surfaceView: SurfaceAspectRatioView
-
-    private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
     private var isRecreated = false
     private var isResultAfterAskPermission = false
@@ -159,6 +160,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     override fun onPostResume() {
         super.onPostResume()
+
         if (isResultAfterAskPermission) {
             if (isRequiredPermissionGranted()) configureChannelType(channelType)
             else showPermissionPage()
@@ -178,28 +180,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         }
     }
 
-    override fun getBroadcastComponent(): PlayBroadcastComponent {
-        return playBroadcastComponent
-    }
-
     override fun onBackPressed() {
         if (shouldClosePage()) return
         super.onBackPressed()
     }
 
     private fun inject() {
-        playBroadcastComponent = DaggerPlayBroadcastComponent.builder()
-                .playBroadcastModule(PlayBroadcastModule(this))
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-
-        playBroadcastComponent.inject(this)
+        retainedComponent.inject(this)
     }
 
     private fun initViewModel() {
-        /** Must be created here to avoid this PlayBroadcastSummaryViewModel being injected
-         * with different instance of dependencies when configuration changes occur */
-        ViewModelProvider(this, viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
@@ -288,6 +278,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
                 is NetworkResult.Success -> {
                     showLoading(false)
                     if (!isRecreated) handleChannelConfiguration(result.data)
+                    else if(result.data.channelType == ChannelType.Pause) showDialogContinueLiveStreaming()
                     stopPageMonitoring()
                 }
                 is NetworkResult.Fail -> {
@@ -352,7 +343,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         )
     }
 
-    private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
+    fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
 
     fun startPreview() {
         if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) viewModel.startPreview(surfaceView)

@@ -282,6 +282,13 @@ class StockReminderFragment: BaseDaggerFragment() {
                     getStockReminder()
                 }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                ProductManageListErrorHandler.logExceptionToServer(
+                    errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                    throwable = stockReminderData.throwable,
+                    errorType =
+                    ProductManageListErrorHandler.ProductManageMessage.GET_STOCK_REMINDER_ERROR,
+                    deviceId = userSession.deviceId.orEmpty()
+                )
             }
         }
     }
@@ -302,6 +309,13 @@ class StockReminderFragment: BaseDaggerFragment() {
                 }
                 Toaster.onCTAClick = View.OnClickListener { createStockReminder() }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                ProductManageListErrorHandler.logExceptionToServer(
+                    errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                    throwable = stockReminderData.throwable,
+                    errorType =
+                    ProductManageListErrorHandler.ProductManageMessage.CREATE_STOCK_REMINDER_ERROR,
+                    deviceId = userSession.deviceId.orEmpty()
+                )
             }
         }
     }
@@ -321,6 +335,13 @@ class StockReminderFragment: BaseDaggerFragment() {
                     ).show()
                     Toaster.onCTAClick = View.OnClickListener { updateStockReminder() }
                     ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = stockReminderData.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.UPDATE_STOCK_REMINDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }

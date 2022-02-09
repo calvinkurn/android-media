@@ -21,10 +21,10 @@ object MacroArgs {
     fun getCompilationMode(args: Bundle?): CompilationMode {
         val compilationMode = args?.getString(compilation) ?: ""
         return when(compilationMode) {
-            compilationNone -> CompilationMode.None
+            compilationNone -> CompilationMode.None()
             compilationInterpreted -> CompilationMode.Interpreted
             compilationSpeed -> CompilationMode.Speed
-            else -> CompilationMode.None
+            else -> CompilationMode.None()
         }
     }
 

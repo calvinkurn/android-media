@@ -122,7 +122,7 @@ class OfficialHomeMapper (
                     DynamicChannelLayout.LAYOUT_FEATURED_SHOP -> {
                         views.add(
                             FeaturedShopDataModel(
-                                channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponentBannerToHeader(
                                     officialStore.channel,
                                     position
                                 ),

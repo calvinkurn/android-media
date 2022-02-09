@@ -6,6 +6,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'newrelic'
+apply plugin: 'embrace-swazzler'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -39,6 +40,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
@@ -263,11 +265,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingbank)
     implementation projectOrAar(rootProject.ext.features.managepassword)
     implementation projectOrAar(rootProject.ext.features.voucherCreation)
+    implementation projectOrAar(rootProject.ext.features.campaignList)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.withdraw)
     implementation projectOrAar(rootProject.ext.features.mediaCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.topAdsOnBoarding)
 
     implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
     implementation projectOrAar(rootProject.ext.features.loginregister)
@@ -303,6 +307,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.miscDependencies.newRelic
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -319,6 +325,7 @@ dependencies {
     }
 
     implementation projectOrAar(rootProject.ext.libraries.pageInfoPusher)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspector)
@@ -363,6 +370,9 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
+
+    implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.startupRuntime
 
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)

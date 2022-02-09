@@ -14,6 +14,7 @@ import com.tokopedia.home_account.di.HomeAccountUserScope
 import com.tokopedia.home_account.stub.domain.FakeUserSession
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -79,6 +80,9 @@ class FakeHomeAccountUserModules(val context: Context) {
     fun provideHomeAccountAnalytics(userSession: UserSessionInterface): HomeAccountAnalytics {
         return HomeAccountAnalytics(userSession)
     }
+
+    @Provides
+    fun provideBiometricTracker(): BiometricTracker = BiometricTracker()
 
     @Provides
     fun provideMenuGenerator(@HomeAccountUserContext context: Context): StaticMenuGenerator {

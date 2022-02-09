@@ -898,7 +898,7 @@ class OfficialHomeFragment :
         viewModel.featuredShopResult.observe(viewLifecycleOwner, {
             when(it) {
                 is Success -> {
-                   //update UI
+                    //update UI
                     officialHomeMapper.updateFeaturedShopDC(it.data) { newDataList ->
                         adapter?.submitList(newDataList)
                     }
