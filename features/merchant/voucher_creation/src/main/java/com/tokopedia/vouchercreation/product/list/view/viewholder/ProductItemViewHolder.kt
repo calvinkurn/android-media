@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.vouchercreation.R
@@ -19,7 +21,6 @@ class ProductItemViewHolder(
 
     interface OnProductItemClickListener {
         fun onProductCheckBoxClicked(isSelected: Boolean, productUiModel: ProductUiModel, adapterPosition: Int)
-        fun onVariantAccordionClicked(isVariantEmpty: Boolean, productId: String, adapterPosition: Int)
     }
 
     private var context: Context? = null
@@ -33,7 +34,6 @@ class ProductItemViewHolder(
         }
         binding.productVariantLayout.setOnClickListener {
             val product = binding.root.getTag(R.id.product) as ProductUiModel
-            productItemClickListener.onVariantAccordionClicked(product.variants.isEmpty(), product.id, adapterPosition)
         }
         binding.rvProductVariants.apply {
             adapter = variantListAdapter
@@ -42,6 +42,7 @@ class ProductItemViewHolder(
     }
 
     fun bindData(productUiModel: ProductUiModel) {
+
         // product list item views
         binding.root.setTag(R.id.product, productUiModel)
         binding.cbuProductItem.isChecked = productUiModel.isSelected
@@ -52,7 +53,7 @@ class ProductItemViewHolder(
         binding.tpgSoldAndStock.text = productUiModel.soldNStock
 
         // variant layout
-        if (productUiModel.hasVariant) {
+        if (productUiModel.hasVariant && !productUiModel.isError) {
             variantListAdapter.setVariantList(productUiModel.variants)
             binding.variantHeader.visible()
             if (productUiModel.variants.isEmpty()) {
@@ -68,5 +69,11 @@ class ProductItemViewHolder(
             binding.variantDivider.gone()
             binding.rvProductVariants.gone()
         }
+
+        // error layout
+        if (productUiModel.isError) {
+            binding.errorLayout.show()
+            binding.tpgProductError.text = productUiModel.errorMessage
+        } else binding.errorLayout.hide()
     }
 }

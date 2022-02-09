@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.vouchercreation.databinding.ItemProductListLayoutBinding
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
-import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemVariantViewHolder.OnVariantItemClickListener
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder.OnProductItemClickListener
@@ -37,10 +36,6 @@ class ProductListAdapter(
         }
     }
 
-    fun getProductUiModel(adapterPosition: Int): ProductUiModel {
-        return productUiModelList[adapterPosition]
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     fun setProductList(productUiModelList: List<ProductUiModel>) {
         this.productUiModelList = productUiModelList
@@ -58,11 +53,6 @@ class ProductListAdapter(
 
     fun updateSelectionState(isSelectAll: Boolean, adapterPosition: Int) {
         this.productUiModelList[adapterPosition].isSelectAll = isSelectAll
-        notifyItemChanged(adapterPosition)
-    }
-
-    fun updateProductVariant(adapterPosition: Int, variants: List<VariantUiModel>) {
-        productUiModelList[adapterPosition].variants = variants
         notifyItemChanged(adapterPosition)
     }
 }

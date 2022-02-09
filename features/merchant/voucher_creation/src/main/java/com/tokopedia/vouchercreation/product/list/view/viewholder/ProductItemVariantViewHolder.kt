@@ -1,6 +1,8 @@
 package com.tokopedia.vouchercreation.product.list.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.ItemProductListVariantLayoutBinding
 import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
@@ -25,7 +27,11 @@ class ProductItemVariantViewHolder(
         binding.root.setTag(R.id.product_variant, productVariant)
         binding.tpgVariantName.text = productVariant.variantName
         binding.tpgSku.text = productVariant.sku
-        binding.tpgProductPrice.text = productVariant.price
+        binding.tpgProductPrice.text = productVariant.priceTxt
         binding.tpgSoldAndStock.text = productVariant.soldNStock
+        if (productVariant.isError) {
+            binding.tpgVariantError.text = productVariant.errorMessage
+            binding.tpgVariantError.show()
+        } else binding.tpgVariantError.hide()
     }
 }
