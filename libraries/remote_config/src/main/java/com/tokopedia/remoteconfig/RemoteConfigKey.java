@@ -162,6 +162,10 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 
+    public static final String DISABLE_OFFICIAL_STORE_SHOP_WIDGET = "android_disable_officialstore_shop_widget";
+    public static final String DISABLE_OFFICIAL_STORE_BEST_SELLER_WIDGET = "android_disable_officialstore_best_seller_widget";
+    public static final String DISABLE_OFFICIAL_STORE_MAPPING_BANNERS = "android_disable_officialstore_mapping_banners";
+
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
