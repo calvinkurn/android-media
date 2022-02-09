@@ -8,10 +8,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSetupUiEvent
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -19,17 +18,13 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSu
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.extension.productEtalaseEmpty
 import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.processNextEventInCurrentThread
 import javax.inject.Inject
 
 /**
@@ -122,19 +117,16 @@ class ProductSummaryBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.summaryUiState.withCache().collectLatest { (prevState, state) ->
-//                if(prevState?.productTagSummary == state.productTagSummary) return@collectLatest
-
                 when(state.productTagSummary) {
                     is ProductTagSummaryUiModel.Loading -> {
                         binding.ivLoading.visibility = View.VISIBLE
                         binding.globalError.visibility = View.GONE
-                        binding.flBtnDoneContainer.visibility = View.GONE
+//                        binding.flBtnDoneContainer.visibility = View.GONE
                     }
                     is ProductTagSummaryUiModel.LoadingWithPlaceholder -> {
-                        setTitle(null)
                         binding.ivLoading.visibility = View.GONE
                         binding.globalError.visibility = View.GONE
-                        binding.flBtnDoneContainer.visibility = View.GONE
+//                        binding.flBtnDoneContainer.visibility = View.GONE
 
                         productSummaryListView.setLoading()
                     }
@@ -144,15 +136,13 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.globalError.visibility = View.GONE
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
 
-                        productSummaryListView.setProductList(state.productTagSummary.sections)
-                    }
-                    is ProductTagSummaryUiModel.Empty -> {
-                        setTitle(0)
-                        productSummaryListView.setProductList(emptyList())
+                        productSummaryListView.setProductList(state.productTagSectionList)
 
-                        binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
-                        binding.globalError.visibility = View.VISIBLE
-                        binding.flBtnDoneContainer.visibility = View.GONE
+                        if(state.productTagSectionList.isEmpty()) {
+                            binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
+                            binding.globalError.visibility = View.VISIBLE
+                            binding.flBtnDoneContainer.visibility = View.GONE
+                        }
                     }
                     else -> {}
                 }
@@ -162,9 +152,20 @@ class ProductSummaryBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when(event) {
-                    is PlayBroProductSetupUiEvent.Error -> {
+                    is PlayBroProductSummaryUiEvent.GetDataError -> {
                         view?.rootView?.showErrorToaster(
                             err = event.throwable,
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = { event.action?.invoke() },
+                        )
+
+                        productSummaryListView.setProductList(emptyList())
+                        binding.ivLoading.visibility = View.GONE
+                    }
+                    is PlayBroProductSummaryUiEvent.DeleteProductError -> {
+                        view?.rootView?.showErrorToaster(
+                            err = event.throwable,
+                            customErrMessage = getString(R.string.play_bro_product_summary_fail_to_delete_product),
                             actionLabel = getString(R.string.play_broadcast_try_again),
                             actionListener = { event.action?.invoke() },
                         )
