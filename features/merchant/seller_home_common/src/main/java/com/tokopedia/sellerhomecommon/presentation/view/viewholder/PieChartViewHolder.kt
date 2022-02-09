@@ -121,6 +121,9 @@ class PieChartViewHolder(
             setupLastUpdatedInfo(element)
         }
 
+        horLineShcMilestoneBtm.isVisible = luvShcPieChart.isVisible
+                || btnShcPieChartSeeMore.isVisible
+
         root.addOnImpressionListener(element.impressHolder) {
             listener.sendPieChartImpressionEvent(element)
         }

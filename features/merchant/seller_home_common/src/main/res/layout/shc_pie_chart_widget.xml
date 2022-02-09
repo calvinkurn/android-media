@@ -95,21 +95,29 @@
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="pieChartShc, btnShcPieChartEmpty" />
 
+            <View
+                android:id="@+id/horLineShcMilestoneBtm"
+                android:layout_width="0dp"
+                android:layout_height="0.1dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrierShcPieChart"
+                tools:layout_constraintTop_toBottomOf="@+id/pieChartShc" />
+
             <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
                 android:id="@+id/luvShcPieChart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcMilestoneBtm"
                 app:layout_constraintEnd_toStartOf="@+id/btnShcPieChartSeeMore"
                 app:layout_constraintHorizontal_bias="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barrierShcPieChart"
-                app:layout_constraintVertical_bias="1"
-                tools:layout_constraintTop_toBottomOf="@+id/pieChartShc" />
+                app:layout_constraintTop_toTopOf="@+id/horLineShcMilestoneBtm" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btnShcPieChartSeeMore"
@@ -125,12 +133,11 @@
                 android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/fontSize_lvl3"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcMilestoneBtm"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barrierShcPieChart"
+                app:layout_constraintTop_toTopOf="@+id/horLineShcMilestoneBtm"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                tools:layout_constraintTop_toBottomOf="@+id/pieChartShc"
                 tools:text="Selengkapnya"
                 tools:visibility="visible" />
 
