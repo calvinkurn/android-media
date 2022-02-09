@@ -35,6 +35,9 @@ class ProductSummaryBottomSheet @Inject constructor(
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
 ) : BottomSheetUnify(), ProductSummaryListViewComponent.Listener {
 
+    private val container: ProductSetupFragment?
+        get() = parentFragment as? ProductSetupFragment
+
     private lateinit var viewModel: PlayBroProductSetupViewModel
 
     private var _binding: BottomSheetPlayBroProductSummaryBinding? = null
@@ -99,9 +102,13 @@ class ProductSummaryBottomSheet @Inject constructor(
         setAction(getString(R.string.play_bro_product_add_more)) {
             handleAddMoreProduct()
         }
+        setCloseClickListener {
+            container?.removeFragment()
+        }
 
         binding.btnDone.setOnClickListener {
             dismiss()
+            container?.removeFragment()
         }
     }
 
@@ -171,9 +178,8 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun handleAddMoreProduct() {
+        container?.openProductChooser()
         dismiss()
-        (parentFragment as? ProductSetupFragment)
-            ?.openProductChooser()
     }
 
     companion object {
