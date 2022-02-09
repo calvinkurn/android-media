@@ -22,6 +22,7 @@ import com.tokopedia.addongifting.view.di.AddOnComponent
 import com.tokopedia.addongifting.view.di.DaggerAddOnComponent
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -141,13 +142,14 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
             setLabelTitle("Total Pelengkap")
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.addOnTotalPrice, false).removeDecimalSuffix())
             if (fragmentUiModel.addOnTotalQuantity > 0) {
-                setCtaText("Simpan ${fragmentUiModel.addOnTotalQuantity}")
+                setCtaText("Simpan (${fragmentUiModel.addOnTotalQuantity})")
             } else {
                 setCtaText("Simpan")
             }
+            amountCtaView.show()
             amountCtaView.setOnClickListener {
                 // Todo : hit save state
-                Toaster.build(viewBinding.root, "Will Save The State", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                Toaster.build(viewBinding.bottomsheetContainer, "Will Save The State", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
                         .show()
             }
         }
@@ -214,7 +216,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
 
     override fun onCheckBoxCheckedChanged(addOnUiModel: AddOnUiModel) {
         viewBinding?.let {
-            adjustRecyclerViewPaddingBottom(it)
+//            adjustRecyclerViewPaddingBottom(it)
         }
         viewModel.updateFragmentUiModel(addOnUiModel)
     }
