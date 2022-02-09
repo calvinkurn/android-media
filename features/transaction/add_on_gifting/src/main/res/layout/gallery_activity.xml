@@ -10,6 +10,7 @@
         android:layout_height="match_parent" />
 
     <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/button_close"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_margin="20dp"

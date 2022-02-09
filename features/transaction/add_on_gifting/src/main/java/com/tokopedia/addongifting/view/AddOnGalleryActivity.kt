@@ -1,4 +1,4 @@
-package com.tokopedia.addongifting.addonimagegallery
+package com.tokopedia.addongifting.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -33,6 +33,10 @@ class AddOnGalleryActivity : BaseSimpleActivity() {
             viewBinding?.imageGalleryAddOn?.show()
         } else {
             viewBinding?.imageGalleryAddOn?.gone()
+        }
+
+        viewBinding?.buttonClose?.setOnClickListener {
+            finish()
         }
     }
 

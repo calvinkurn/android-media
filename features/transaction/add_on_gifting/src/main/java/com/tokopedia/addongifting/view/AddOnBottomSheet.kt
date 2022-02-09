@@ -23,7 +23,6 @@ import com.tokopedia.addongifting.view.di.AddOnComponent
 import com.tokopedia.addongifting.view.di.DaggerAddOnComponent
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
-import com.tokopedia.addongifting.addonimagegallery.AddOnGalleryActivity
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix

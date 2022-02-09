@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.addongifting.addonimagegallery.AddOnGalleryActivity"
+            android:name="com.tokopedia.addongifting.view.AddOnGalleryActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:label="Add on gallery activity"
