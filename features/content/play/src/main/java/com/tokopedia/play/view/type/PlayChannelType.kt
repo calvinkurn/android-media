@@ -15,9 +15,6 @@ enum class PlayChannelType(val value: String) {
     val isVod: Boolean
         get() = this == VOD
 
-    val isUpcoming: Boolean
-        get() = this == Upcoming
-
     companion object {
         private val values = values()
 

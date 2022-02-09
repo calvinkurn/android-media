@@ -37,7 +37,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             PlayChannelData(
                 id = it.id,
                 channelDetail = PlayChannelDetailUiModel(
-                    channelInfo = mapChannelInfo(it.id, it.isLive, it.config, it.title, it.coverUrl, it.startTime, it.airTime),
+                    channelInfo = mapChannelInfo(it),
                     shareInfo = mapShareInfo(it.share),
                     rtnConfigInfo = mapRealTimeNotificationConfig(
                         it.config.welcomeFormat,
@@ -60,21 +60,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         }
     }
 
-    private fun mapChannelInfo(
-            channelId: String,
-            isLive: Boolean,
-            configResponse: ChannelDetailsWithRecomResponse.Config,
-            title: String,
-            coverUrl: String,
-            startTime: String,
-            airTime: String,
-    ) = PlayChannelInfoUiModel(
-            id = channelId,
-            channelType = getChannelType(isLive, airTime),
-            backgroundUrl = configResponse.roomBackground.imageUrl,
-            title = title,
-            coverUrl = coverUrl,
-            startTime = startTime
+    private fun mapChannelInfo(data: ChannelDetailsWithRecomResponse.Data) = PlayChannelInfoUiModel(
+            id = data.id,
+            channelType = getChannelType(data.isLive, data.airTime),
+            backgroundUrl = data.config.roomBackground.imageUrl,
+            title = data.title,
+            coverUrl = data.coverUrl,
+            startTime = data.startTime
     )
 
     private fun getChannelType(isLive: Boolean, airTime: String): PlayChannelType {
