@@ -30,9 +30,9 @@
                   {
                     "FilePath": "/filepath",
                     "FileName": "Filename.jpg",
-                    "URL": "http://urlto/image",
-                    "URL100": "http://urlto/image",
-                    "URL200": "http://urlto/image"
+                    "URL": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png",
+                    "URL100": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png",
+                    "URL200": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png"
                   }
                 ],
                 "NotesTemplate": "some template"
@@ -44,9 +44,9 @@
               {
                 "FilePath": "/filepath",
                 "FileName": "Filename.jpg",
-                "URL": "http://urlto/image",
-                "URL100": "http://urlto/image",
-                "URL200": "http://urlto/image"
+                "URL": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png",
+                "URL100": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png",
+                "URL200": "https://cdn.shopify.com/s/files/1/0400/2001/products/e38bd83af578077b65a31424bd24d085_640x.png"
               }
             ],
             "Inventory": {
