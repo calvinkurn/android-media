@@ -43,7 +43,8 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
     private fun initArguments() {
         arguments?.let {
             installmentDetails = it.getParcelable(INSTALLMENT_DETAIL)
-            impression = it.getParcelable(IMPRESSION_DETAIL)
+            if (it.containsKey(IMPRESSION_DETAIL))
+                impression = it.getParcelable(IMPRESSION_DETAIL)
         }
     }
 

@@ -19,7 +19,7 @@ object PayLaterBundleGenerator {
             payLaterPartnerName = detail.gatewayDetail?.name ?: ""
             action = PdpSimulationAnalytics.CLICK_CTA_HOW_TO_USE
             emiAmount = detail.installment_per_month_ceil?.toString() ?: ""
-            limit = detail.limit?.toString() ?: ""
+            limit = detail.limit ?: ""
             redirectLink = detail.cta.android_url ?: " "
             ctaWording = "Cari Tahu Lebih Lanjut"
         }
@@ -62,7 +62,7 @@ object PayLaterBundleGenerator {
             action = PdpSimulationAnalytics.IMPRESSION_BOTTOMSHEET
             emiAmount = detail.installment_per_month_ceil?.toString() ?: ""
             userStatus = detail.userState ?: ""
-            limit = detail.limit?.toString() ?: ""
+            limit = detail.limit ?: ""
             redirectLink = ""
         }
         return Bundle().apply {

@@ -128,7 +128,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         userStatus = detail.userState ?: ""
         payLaterPartnerName = detail.gatewayDetail?.name ?: ""
         emiAmount = detail.installment_per_month_ceil.toString()
-        limit = detail.limit?.toString() ?: ""
+        limit = detail.limit ?: ""
         redirectLink = link
         ctaWording = detail.cta.name ?: ""
         action = eventAction
