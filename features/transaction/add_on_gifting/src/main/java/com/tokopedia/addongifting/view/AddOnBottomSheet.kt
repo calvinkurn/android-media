@@ -79,7 +79,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         activity?.let {
             return object : BottomSheetDialog(it, theme) {
                 override fun onBackPressed() {
-                    showCloseConfirmationDialog()
+                    viewModel.validateCloseAction()
                 }
             }
         }
@@ -104,7 +104,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
         setShowListener {
             bottomSheetClose.setOnClickListener {
-                showCloseConfirmationDialog()
+                viewModel.validateCloseAction()
             }
         }
         setChild(viewBinding.root)
@@ -136,6 +136,12 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
             when (it.state) {
                 GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA -> {
                     // Todo : show global error
+                }
+                GlobalEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION -> {
+                    showCloseConfirmationDialog()
+                }
+                GlobalEvent.STATE_DISMISS_BOTTOM_SHEET -> {
+                    dismiss()
                 }
             }
         })

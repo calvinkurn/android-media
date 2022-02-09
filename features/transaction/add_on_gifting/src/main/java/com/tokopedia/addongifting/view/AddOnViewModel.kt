@@ -82,4 +82,18 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
             }
         }
     }
+
+    fun validateCloseAction() {
+        addOnUiModel.value?.let {
+            if (it.initialAddOnNote != it.addOnNote || it.initialAddOnNoteFrom != it.addOnNoteFrom || it.initialAddOnNoteTo != it.addOnNoteTo) {
+                _globalEvent.value = GlobalEvent().apply {
+                    state = GlobalEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION
+                }
+            } else {
+                _globalEvent.value = GlobalEvent().apply {
+                    state = GlobalEvent.STATE_DISMISS_BOTTOM_SHEET
+                }
+            }
+        }
+    }
 }

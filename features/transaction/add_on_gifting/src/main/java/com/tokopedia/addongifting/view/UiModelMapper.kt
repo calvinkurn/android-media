@@ -46,17 +46,23 @@ object UiModelMapper {
                 val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
                         ?: "", addOnSavedStateResponse)
                 isAddOnSelected = addonSavedStateData != null
-                addOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
-                addOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
-                addOnNote = addonSavedStateData?.addOnMetadata?.addOnNote?.notes ?: ""
+                initialAddOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
+                addOnNoteTo = initialAddOnNoteTo
+                initialAddOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
+                addOnNoteFrom = initialAddOnNoteFrom
+                initialAddOnNote = addonSavedStateData?.addOnMetadata?.addOnNote?.notes ?: ""
+                addOnNote = initialAddOnNote
             } else {
                 // Get saved state from previous page (Checkout / OSP)
                 val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
                         ?: "", addOnProductData.addOnSavedState)
                 isAddOnSelected = addonSavedStateData != null
-                addOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
-                addOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
-                addOnNote = addonSavedStateData?.addOnMetadata?.addOnNote?.notes ?: ""
+                initialAddOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
+                addOnNoteTo = initialAddOnNoteTo
+                initialAddOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
+                addOnNoteFrom = initialAddOnNoteFrom
+                initialAddOnNote = addonSavedStateData?.addOnMetadata?.addOnNote?.notes ?: ""
+                addOnNote = initialAddOnNote
             }
             isCustomNote = addOn?.basicInfo?.rules?.customNote ?: false
             addOnFooterMessages = addOnProductData.addOnFooterMessages
