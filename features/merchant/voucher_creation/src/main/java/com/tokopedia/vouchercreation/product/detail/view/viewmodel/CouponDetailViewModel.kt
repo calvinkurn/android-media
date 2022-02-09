@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.view.viewmodel
+package com.tokopedia.vouchercreation.product.detail.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,28 +8,25 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
-import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailUseCase
-import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponDetailWithMetadata
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailFacadeUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CouponDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getCouponDetailUseCase: GetCouponDetailUseCase
+    private val getCouponDetailFacadeUseCase: GetCouponDetailFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-
-    private val _couponDetail = MutableLiveData<Result<VoucherUiModel>>()
-    val couponDetail: LiveData<Result<VoucherUiModel>> = _couponDetail
-
+    private val _couponDetail = MutableLiveData<Result<CouponDetailWithMetadata>>()
+    val couponDetail: LiveData<Result<CouponDetailWithMetadata>>
+        get() = _couponDetail
 
     fun getCouponDetail(couponId : Long) {
         launchCatchError(
             block = {
-                getCouponDetailUseCase.params = GetCouponDetailUseCase.createRequestParam(couponId.toInt())
                 val result = withContext(dispatchers.io) {
-                    getCouponDetailUseCase.executeOnBackground()
+                    getCouponDetailFacadeUseCase.execute(this, couponId)
                 }
                 _couponDetail.value = Success(result)
             },

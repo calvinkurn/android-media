@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.product.create.view.fragment
+package com.tokopedia.vouchercreation.product.detail.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,11 +12,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.consts.VoucherDiscountTypeConst
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -26,14 +26,13 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.Timer
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponDetailBinding
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
-import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponDetailViewModel
+import com.tokopedia.vouchercreation.product.detail.view.viewmodel.CouponDetailViewModel
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
-import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
 
 class CouponDetailFragment : BaseDaggerFragment() {
@@ -116,6 +115,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun setupViews() {
         with(binding) {
             imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
+            imgCopyToClipboard.setOnClickListener {
+                val content = binding.tpgCouponCode.text.toString().trim()
+                copyToClipboard(content)
+            }
         }
     }
 
@@ -124,7 +127,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
             hideLoading()
             if (result is Success) {
                 showContent()
-                val coupon = result.data
+                val coupon = result.data.coupon
                 binding.header.headerView?.text = coupon.name
                 displayCouponImage(coupon.imageSquare)
                 displayCountdown(coupon.status, coupon.finishTime)
@@ -138,7 +141,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 )
                 displayCouponSettingsSection(coupon)
                 displayQuotaUsage(coupon)
-                //refreshProductsSection()
+                refreshProductsSection(coupon.productIds.size, result.data.maxProduct)
             } else {
                 hideLoading()
                 hideContent()
@@ -157,8 +160,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     private fun displayCountdown(couponStatus: Int, finishTime: String) {
         if (couponStatus == VoucherStatusConst.ONGOING) {
-            //val timerIcon = ContextCompat.getDrawable(requireActivity(), R.drawable.ic_timer) ?: return
-            //binding.labelCountdown.setLabelImage(timerIcon, timerIcon.intrinsicWidth, timerIcon.intrinsicHeight)
             binding.groupCountdown.isVisible = couponStatus == VoucherStatusConst.ONGOING
             startTimer(finishTime)
         }
@@ -202,7 +203,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         binding.tpgCouponPeriod.text = period
     }
 
-    private fun displayCouponSettingsSection(coupon: VoucherUiModel) {
+    private fun displayCouponSettingsSection(coupon: CouponUiModel) {
         binding.tpgCouponType.text = coupon.typeFormatted
         binding.tpgCouponQouta.text = coupon.quota.splitByThousand()
 
@@ -237,11 +238,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun refreshProductsSection(products: List<CouponProduct>) {
-        if (products.isNotEmpty()) {
-
+    private fun refreshProductsSection(productCount: Int, maxProduct: Int) {
+        if (productCount > ZERO) {
             binding.tpgProductCount.text =
-                String.format(getString(R.string.placeholder_registered_product), products.size)
+                String.format(getString(R.string.placeholder_registered_product), productCount, maxProduct)
         } else {
 
             binding.tpgProductCount.text = getString(R.string.no_products)
@@ -373,7 +373,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     }
 
-    private fun displayCouponStatus(coupon: VoucherUiModel) {
+    private fun displayCouponStatus(coupon: CouponUiModel) {
         when (coupon.status) {
             VoucherStatusConst.ONGOING -> {
                 binding.labelCountdown.visible()
@@ -415,7 +415,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         timer?.startCountdown()
     }
 
-    private fun displayQuotaUsage(coupon: VoucherUiModel) {
+    private fun displayQuotaUsage(coupon: CouponUiModel) {
         val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
         binding.progressBarQuotaUsage.setValue(progressBarValue, true)
         binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(6).toInt()
@@ -465,6 +465,14 @@ class CouponDetailFragment : BaseDaggerFragment() {
             getString(R.string.error_message_failed_get_coupon_detail),
             Snackbar.LENGTH_SHORT,
             Toaster.TYPE_ERROR
+        ).show()
+    }
+
+    private fun copyToClipboard(content: String) {
+        ClipboardHandler().copyToClipboard(requireActivity(), content)
+        Toaster.build(
+            binding.root,
+            getString(R.string.coupon_code_copied_to_clipboard)
         ).show()
     }
 

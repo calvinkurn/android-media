@@ -20,7 +20,7 @@
         android:layout_below="@id/header"
         android:fillViewport="true"
         android:visibility="gone"
-        tools:context=".product.create.view.fragment.ProductCouponPreviewFragment"
+        tools:context=".product.preview.CouponPreviewFragment"
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -91,6 +91,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:typographyType="body_3"
+                android:textStyle="bold"
                 tools:text="14 hari : 23j : 59m : 59d"
                 tools:visibility="visible" />
 
@@ -668,6 +669,22 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
                 app:layout_constraintTop_toTopOf="@+id/typography23" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgViewProducts"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_24"
+                android:layout_marginTop="@dimen/unify_space_4"
+                android:layout_marginEnd="@dimen/unify_space_24"
+                android:text="@string/view_all"
+                android:textColor="@color/Unify_G500"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/tpgProductCount"
+                app:typographyType="heading_5"
+                tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupMaxDiscount"
