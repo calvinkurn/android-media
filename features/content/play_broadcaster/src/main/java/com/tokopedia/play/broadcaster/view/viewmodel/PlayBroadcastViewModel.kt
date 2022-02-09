@@ -158,8 +158,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
     val observableLivePusherInfo: LiveData<PlayLiveLogState>
         get() = _observableLivePusherInfo
 
-    val productList: List<ProductData>
-        get() = getCurrentSetupDataStore().getProductDataStore().getSelectedProducts()
+    val productMap: EtalaseProductListMap
+        get() = _productMap.value
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()

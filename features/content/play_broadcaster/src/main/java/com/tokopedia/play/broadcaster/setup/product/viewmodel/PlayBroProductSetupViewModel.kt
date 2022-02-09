@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductSetupViewModel @AssistedInject constructor(
-    @Assisted productList: List<ProductUiModel>,
+    @Assisted productMap: EtalaseProductListMap,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
@@ -50,15 +50,13 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            productList: List<ProductUiModel>
+            productMap: EtalaseProductListMap,
         ): PlayBroProductSetupViewModel
     }
 
     private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
     private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
-    private val _selectedProductMap = MutableStateFlow<EtalaseProductListMap>(
-        mapOf(SelectedEtalaseModel.None to productList)
-    )
+    private val _selectedProductMap = MutableStateFlow(productMap)
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
 

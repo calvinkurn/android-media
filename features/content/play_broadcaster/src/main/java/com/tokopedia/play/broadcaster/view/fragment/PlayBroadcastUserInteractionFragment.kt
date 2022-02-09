@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -22,10 +22,11 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
@@ -216,6 +217,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ProductSetupFragment -> {
+                childFragment.setDataSource(object : ProductSetupFragment.DataSource {
+                    override fun getProductMap(): EtalaseProductListMap {
+                        //TODO("Revamp this")
+                        return parentViewModel.productMap
+                    }
+                })
+            }
+        }
+    }
 
     private fun initAnalytic() {
         productTagAnalyticHelper = ProductTagAnalyticHelper(analytic)
@@ -496,7 +511,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun doShowProductInfo() {
-        getProductLiveBottomSheet().show(childFragmentManager)
+        childFragmentManager.beginTransaction()
+            .add(ProductSetupFragment::class.java, null, null)
+            .commit()
+//        getProductLiveBottomSheet().show(childFragmentManager)
     }
 
     private fun navigateToSummary() {

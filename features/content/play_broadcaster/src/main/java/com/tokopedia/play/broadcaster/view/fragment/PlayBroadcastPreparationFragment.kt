@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.type.StockAvailable
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -134,18 +135,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         when (childFragment) {
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
-                    override fun getProductList(): List<ProductUiModel> {
+                    override fun getProductMap(): EtalaseProductListMap {
                         //TODO("Revamp this")
-                        val productDataList = parentViewModel.productList
-                        return productDataList.map {
-                            ProductUiModel(
-                                id = it.id,
-                                name = it.name,
-                                imageUrl = it.imageUrl,
-                                stock = if (it.stock is StockAvailable) it.stock.stock else 0,
-                                price = it.price,
-                            )
-                        }
+                        return parentViewModel.productMap
                     }
                 })
             }
