@@ -38,6 +38,8 @@ class ProductSectionViewHolder(
     private val timerSection: TimerUnifySingle = itemView.findViewById(R.id.section_timer)
     private val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
 
+    private var timerTime = ""
+
     private val adapter: ProductLineAdapter =
         ProductLineAdapter(object : ProductLineViewHolder.Listener {
             override fun onBuyProduct(product: PlayProductUiModel.Product) {
@@ -67,19 +69,13 @@ class ProductSectionViewHolder(
                 tvTimerInfo.show()
                 timerSection.show()
                 timerSection.timerVariant = TimerUnifySingle.VARIANT_MAIN
-                setupTimer(timerTime = item.endTime, serverTime = item.serverTime)
-                timerSection.onFinish  = {
-                    listener.onTimerExpired(product = item)
-                }
+                setupTimer(item)
             }
             ProductSectionType.Upcoming -> {
                 tvTimerInfo.show()
                 timerSection.show()
                 timerSection.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
-                setupTimer(timerTime = item.startTime, serverTime = item.serverTime)
-                timerSection.onFinish  = {
-                    listener.onTimerExpired(product = item)
-                }
+                setupTimer(item)
             }
             ProductSectionType.Other -> {
                 tvTimerInfo.hide()
@@ -106,8 +102,9 @@ class ProductSectionViewHolder(
         }
     }
 
-    private fun setupTimer(timerTime: String, serverTime: String) {
-        if(!isExpired(serverTime = serverTime, expiredTime = timerTime)){
+    private fun setupTimer(item : PlayProductSectionUiModel.ProductSection) {
+        if(item.type == ProductSectionType.Active) timerTime = item.endTime else item.startTime
+        if(!isExpired(serverTime = item.serverTime, expiredTime = timerTime)){
             val dt = DateUtil.getCurrentCalendar().apply {
                 val currentDate = time
                 val diff = currentDate.time - timerTime.toDate(
@@ -122,7 +119,12 @@ class ProductSectionViewHolder(
                 add(Calendar.HOUR, hours)
                 add(Calendar.DAY_OF_MONTH, days)
             }
+            timerSection.pause()
             timerSection.targetDate = dt
+            timerSection.onFinish = {
+                listener.onTimerExpired(product = item)
+            }
+            timerSection.resume()
         }else{
             tvTimerInfo.hide()
             timerSection.hide()
