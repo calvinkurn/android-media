@@ -449,6 +449,11 @@
     <string name="update">Ubah</string>
     <string name="download_coupon_product_success">Download Kupon Produk berhasil</string>
     <string name="download_coupon_product_failed">Download Kupon Produk tidak berhasil</string>
+    <string name="download_coupon">Download Kupon</string>
+    <string name="choose_coupon_image_ratio">Pilih Ratio Kupon</string>
+    <string name="download_coupon_image_description">Download kupon menggunakan ukuran yang sesuai kebutuhanmu dari 3 ukuran berikut: </string>
+    <string name="banner">Banner</string>
+    <string name="banner_image_description">Untuk sampul tokomu</string>
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>

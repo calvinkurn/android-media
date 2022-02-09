@@ -27,8 +27,6 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
-import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
-import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherUiModel
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
@@ -44,6 +42,8 @@ import com.tokopedia.vouchercreation.databinding.FragmentCouponDetailBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.detail.view.viewmodel.CouponDetailViewModel
+import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
+import com.tokopedia.vouchercreation.product.download.DownloadCouponImageBottomSheet
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import javax.inject.Inject
 
@@ -105,6 +105,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private var timer : Timer? = null
     private var bannerImageUrl : String = ""
     private var squareImageUrl : String = ""
+    private var portraitImageUrl : String = ""
 
 
     override fun getScreenName() = CouponDetailFragment::class.simpleName
@@ -140,7 +141,13 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 val content = binding.tpgCouponCode.text.toString().trim()
                 copyToClipboard(content)
             }
-            btnDownload.setOnClickListener { downloadCoupon(bannerImageUrl, squareImageUrl) }
+            btnDownload.setOnClickListener {
+                downloadCoupon(
+                    bannerImageUrl,
+                    squareImageUrl,
+                    portraitImageUrl
+                )
+            }
         }
     }
 
@@ -174,6 +181,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         refreshProductsSection(coupon.productIds.size, maxProduct)
         this.bannerImageUrl = coupon.image
         this.squareImageUrl = coupon.imageSquare
+        this.portraitImageUrl = coupon.imagePortrait
     }
 
     private fun displayCouponImage(imageUrl: String) {
@@ -507,19 +515,19 @@ class CouponDetailFragment : BaseDaggerFragment() {
         timer?.stopCountdown()
     }
 
-    private fun downloadCoupon(bannerImageUrl : String, squareImageUrl : String) {
+    private fun downloadCoupon(bannerImageUrl : String, squareImageUrl : String, portraitImageUrl : String) {
         if (!isAdded) return
-
-        DownloadVoucherBottomSheet.createInstance(
-            bannerUrl = bannerImageUrl,
-            squareUrl = squareImageUrl,
-            userId = userSession.userId
-        ).setOnDownloadClickListener { couponList ->
-            checkDownloadPermission(couponList)
-        }.show(childFragmentManager)
+        val bottomSheet = DownloadCouponImageBottomSheet.newInstance(
+            bannerImageUrl,
+            squareImageUrl,
+            portraitImageUrl,
+            userSession.userId
+        )
+        bottomSheet.setOnDownloadClickListener { couponList -> checkDownloadPermission(couponList) }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun checkDownloadPermission(couponList: List<DownloadVoucherUiModel>) {
+    private fun checkDownloadPermission(couponList: List<CouponImageUiModel>) {
         val listener = object : PermissionCheckerHelper.PermissionCheckListener {
             override fun onPermissionDenied(permissionText: String) {
                 permissionCheckerHelper.onPermissionDenied(requireActivity(), permissionText)
@@ -541,7 +549,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
                     couponList.forEach {
-                        downloadFiles(it.downloadVoucherType.imageUrl)
+                        downloadFiles(it.imageType.imageUrl)
                     }
                 }
             }

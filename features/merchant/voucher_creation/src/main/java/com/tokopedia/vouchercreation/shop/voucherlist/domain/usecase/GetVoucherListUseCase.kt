@@ -38,6 +38,7 @@ class GetVoucherListUseCase @Inject constructor(
                         voucher_type_formatted
                         voucher_image
                         voucher_image_square
+                        voucher_image_portrait
                         voucher_status
                         voucher_discount_type_formatted
                         voucher_discount_amt
