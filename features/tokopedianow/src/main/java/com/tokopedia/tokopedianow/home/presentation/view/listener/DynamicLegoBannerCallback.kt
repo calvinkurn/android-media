@@ -1,12 +1,19 @@
 package com.tokopedia.tokopedianow.home.presentation.view.listener
 
-import android.content.Context
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 
-class DynamicLegoBannerCallback(private val context: Context): DynamicLegoBannerListener {
+class DynamicLegoBannerCallback(
+    private val view: TokoNowView,
+    private val analytics: HomeAnalytics
+): DynamicLegoBannerListener {
+
+    private val context by lazy { view.getFragmentPage().context }
+
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
         RouteManager.route(context,
             if (channelModel.channelHeader.applink.isNotEmpty())
@@ -38,6 +45,7 @@ class DynamicLegoBannerCallback(private val context: Context): DynamicLegoBanner
         RouteManager.route(context,
             if (channelGrid.applink.isNotEmpty())
                 channelGrid.applink else channelGrid.url)
+        analytics.trackClickLego3Banner(position, channelModel, channelGrid)
     }
 
     override fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -62,6 +70,7 @@ class DynamicLegoBannerCallback(private val context: Context): DynamicLegoBanner
     }
 
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+        analytics.trackImpressionLego3Banner(channelModel)
     }
 
     override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {

@@ -498,7 +498,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetQuestWidgetList_thenReturn(createQuestWidgetList(code))
 
         //put home sequence ui model as param and re-fetch quest list
-        viewModel.getQuestList(((viewModel.homeLayoutList.value as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }) as HomeQuestSequenceWidgetUiModel)
+        viewModel.refreshQuestList()
 
         //prepare model for expectedResult
         val expectedResponse = HomeQuestSequenceWidgetUiModel(
@@ -537,12 +537,39 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetQuestWidgetList_thenReturn(Exception())
 
         //put home sequence ui model as param and re-fetch quest list
-        viewModel.getQuestList(((viewModel.homeLayoutList.value as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }) as HomeQuestSequenceWidgetUiModel)
+        viewModel.refreshQuestList()
 
         // verify use case called and response
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetQuestWidgetListUseCaseCalled()
         verifyGetQuestListResponseSuccess(null)
+    }
+
+    @Test
+    fun `given layout list does NOT contain quest ui model when refreshQuestList should NOT call use case`() {
+        val layoutList = listOf(
+            HomeLayoutResponse(
+                id = "2222",
+                layout = "banner_carousel_v2",
+                header = Header(
+                    name = "Banner Tokonow",
+                    serverTimeUnix = 0
+                ),
+                token = "==aff1ed" // Dummy token
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(layoutList)
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
+
+        viewModel.refreshQuestList()
+
+        verifyGetQuestWidgetListUseCaseNotCalled()
     }
 
     @Test

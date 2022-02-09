@@ -42,6 +42,7 @@ class HomeAdapterTypeFactory(
     private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener? = null,
     private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocListener? = null,
     private val homeQuestSequenceWidgetListener : HomeQuestSequenceWidgetListener? = null,
+    private val dynamicLegoBannerCallback: DynamicLegoBannerCallback? = null,
     private val mixLeftComponentListener: MixLeftComponentListener? = null
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
@@ -118,8 +119,7 @@ class HomeAdapterTypeFactory(
 
             // region Global Home Component
             DynamicLegoBannerViewHolder.LAYOUT -> {
-                val listener = DynamicLegoBannerCallback(view.context)
-                DynamicLegoBannerViewHolder(view, listener, null)
+                DynamicLegoBannerViewHolder(view, dynamicLegoBannerCallback, null)
             }
             BannerComponentViewHolder.LAYOUT -> {
                 BannerComponentViewHolder(view, bannerComponentListener, null)

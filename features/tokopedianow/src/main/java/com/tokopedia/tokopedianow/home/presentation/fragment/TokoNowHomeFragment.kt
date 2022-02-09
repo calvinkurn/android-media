@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.BannerComponentListener
+import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -113,8 +114,9 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOK
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.MixLeftCarouselCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.HomeSharingEducationListener
@@ -150,8 +152,7 @@ class TokoNowHomeFragment: Fragment(),
         ScreenShotListener,
         HomeSharingEducationListener,
         HomeEducationalInformationListener,
-        ServerErrorListener,
-        HomeQuestSequenceWidgetListener
+        ServerErrorListener
 {
 
     companion object {
@@ -199,8 +200,9 @@ class TokoNowHomeFragment: Fragment(),
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
-                homeQuestSequenceWidgetListener = this,
-                mixLeftComponentListener = MixLeftCarouselCallback(this)
+                homeQuestSequenceWidgetListener = createQuestWidgetCallback(),
+                dynamicLegoBannerCallback = createLegoBannerCallback(),
+                mixLeftComponentListener = createMixLeftComponentCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -345,7 +347,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
-        analytics.onClickBannerPromo(position, userSession.userId, channelModel, channelGrid)
+        analytics.onClickBannerPromo(position, channelModel, channelGrid)
         context?.let {
             RouteManager.route(it, channelGrid.applink)
         }
@@ -371,7 +373,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onCategoryClicked(position: Int, categoryId: String) {
-        analytics.onClickCategory(position, userSession.userId, categoryId)
+        analytics.onClickCategory(position, categoryId)
     }
 
     override fun onRecomProductCardClicked(
@@ -387,7 +389,6 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickProductRecom(
             channelId = channelId,
             headerName = headerName,
-            userId = userSession.userId,
             recommendationItem = recomItem,
             position = position,
             isOoc = isOoc
@@ -406,9 +407,7 @@ class TokoNowHomeFragment: Fragment(),
             analytics.onImpressProductRecom(
                 channelId = channelId,
                 headerName = headerName,
-                userId = userSession.userId,
                 recomItems = recomItems,
-                pageName = pageName,
                 isOoc = isOoc
             )
         }
@@ -497,12 +496,15 @@ class TokoNowHomeFragment: Fragment(),
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
+        analytics.onImpressBannerPromo(
+            channelModel,
+            localCacheModel?.warehouse_id.toLongOrZero().toString()
+        )
     }
 
     override fun onShareBtnSharingEducationClicked() {
         shareClicked(shareHomeTokonow())
-        analytics.onClickShareToOthers(userSession.userId)
+        analytics.onClickShareToOthers()
     }
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
@@ -518,6 +520,11 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onEducationInformationWidgetImpressed() {
         hasEducationalInformationAppeared = true
+        analytics.trackImpressionUSPWidget()
+    }
+
+    override fun onEducationInformationDropDownClicked() {
+        analytics.trackClickUSPWidget()
     }
 
     override fun onDestroyView() {
@@ -961,7 +968,6 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickProductRecomAddToCart(
             channelId = productRecomModel.id,
             headerName = productRecomModel.recomWidget.title,
-            userId = userSession.userId,
             quantity = quantity.toString(),
             recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
             position = position.toString(),
@@ -971,15 +977,15 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun trackRepurchaseImpression(data: TokoNowProductCardUiModel) {
         val productList = viewModelTokoNow.getRepurchaseProducts()
-        analytics.onImpressRepurchase(userSession.userId, data, productList)
+        analytics.onImpressRepurchase(data, productList)
     }
 
     private fun trackRepurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
-        analytics.onClickRepurchase(position, userSession.userId, data)
+        analytics.onClickRepurchase(position, data)
     }
 
     private fun trackRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
-        analytics.onRepurchaseAddToCart(position, quantity, userSession.userId, data)
+        analytics.onRepurchaseAddToCart(position, quantity, data)
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
@@ -1399,16 +1405,16 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    override fun onClickRefreshQuestWidget() {
-        val item = adapter.getItem(HomeQuestSequenceWidgetUiModel::class.java)
-        if (item is HomeQuestSequenceWidgetUiModel) {
-            viewModelTokoNow.getQuestList(item)
-        }
+    private fun createMixLeftComponentCallback(): MixLeftComponentListener {
+        return MixLeftCarouselCallback(this, analytics)
     }
 
-    override fun onCloseQuestAllClaimedBtnClicked(id: String) {
-        SharedPreferencesUtil.setQuestAllClaimedRemoved(activity)
-        viewModelTokoNow.removeWidget(id)
+    private fun createLegoBannerCallback(): DynamicLegoBannerCallback {
+        return DynamicLegoBannerCallback(this, analytics)
+    }
+
+    private fun createQuestWidgetCallback(): HomeQuestSequenceWidgetListener {
+        return QuestWidgetCallback(this, viewModelTokoNow, analytics)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

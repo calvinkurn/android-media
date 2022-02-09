@@ -42,6 +42,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProgressBar
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
@@ -225,7 +226,6 @@ class TokoNowHomeViewModel @Inject constructor(
      *
      * @param lastVisibleItemIndex last item index visible on user screen
      * @param localCacheModel address data cache from choose address widget
-     * @param hasSharingEducationBeenRemoved has sharing education widget dismissed by user
      */
     fun onScrollTokoMartHome(
         lastVisibleItemIndex: Int,
@@ -401,18 +401,20 @@ class TokoNowHomeViewModel @Inject constructor(
         return repurchase?.productList.orEmpty()
     }
 
-    fun getQuestList(item: HomeQuestSequenceWidgetUiModel) {
-        launchCatchError(block = {
-            getQuestListData(item)
+    fun refreshQuestList() {
+        getQuestUiModel()?.let { item ->
+            launchCatchError(block = {
+                getQuestListData(item)
 
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.UPDATE
-            )
+                val data = HomeLayoutListUiModel(
+                    items = getHomeVisitableList(),
+                    state = TokoNowLayoutState.UPDATE
+                )
 
-            _homeLayoutList.postValue(Success(data))
-        }) {
-            removeWidget(item.id)
+                _homeLayoutList.postValue(Success(data))
+            }) {
+                removeWidget(item.id)
+            }
         }
     }
 
@@ -714,5 +716,9 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun getHomeVisitableList(): List<Visitable<*>> {
         return homeLayoutItemList.mapNotNull { it.layout }
+    }
+
+    private fun getQuestUiModel(): HomeQuestSequenceWidgetUiModel? {
+        return homeLayoutItemList.getItem(HomeQuestSequenceWidgetUiModel::class.java)
     }
 }
