@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.uimodel
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopTypeInfo
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
 
@@ -18,6 +19,7 @@ data class CartItemHolderData(
         var productImage: String = "",
         var productId: String = "",
         var productInformation: List<String> = emptyList(),
+        var productInformationWithIcon: List<ProductInformationWithIcon> = emptyList(),
         var productAlertMessage: String = "",
         var productPrice: Long = 0,
         var productOriginalPrice: Long = 0,

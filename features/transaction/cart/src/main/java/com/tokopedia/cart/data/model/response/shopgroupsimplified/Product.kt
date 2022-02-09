@@ -14,6 +14,8 @@ data class Product(
         val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList(),
+        @SerializedName("product_information_with_icon")
+        val productInformationWithIcon: List<ProductInformationWithIcon> = emptyList(),
         @SerializedName("parent_id")
         val parentId: String = "",
         @SerializedName("product_id")

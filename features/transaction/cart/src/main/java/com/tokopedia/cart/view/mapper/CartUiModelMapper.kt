@@ -130,6 +130,8 @@ object CartUiModelMapper {
                 isError = false
                 promoCodes = availableGroup.promoCodes
                 shopTypeInfo = availableGroup.shop.shopTypeInfo
+                addOnText = availableGroup.giftingAddOn.tickerText
+                addOnImgUrl = availableGroup.giftingAddOn.iconUrl
             }
             cartShopHolderDataList.add(shopUiModel)
         }
@@ -317,6 +319,7 @@ object CartUiModelMapper {
             productImage = product.productImage.imageSrc100Square
             productId = product.productId
             productInformation = product.productInformation
+            productInformationWithIcon = product.productInformationWithIcon
             productAlertMessage = product.productAlertMessage
             productPrice = product.productPrice
             productOriginalPrice = product.productOriginalPrice
