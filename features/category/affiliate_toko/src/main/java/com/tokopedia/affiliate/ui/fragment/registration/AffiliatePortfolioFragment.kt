@@ -57,7 +57,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
 
-    private lateinit var affiliateNavigationInterface: AffiliateActivityInterface
+    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
 
     override fun getViewModelType(): Class<AffiliatePortfolioViewModel> {
         return AffiliatePortfolioViewModel::class.java
@@ -84,10 +84,14 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? AffiliateActivityInterface)?.let {
+            affiliateNavigationInterface = it
+        }
         afterViewCreated()
     }
 
     private fun afterViewCreated() {
+        initButton()
         setUpNavBar()
         view?.findViewById<RecyclerView>(R.id.social_link_rv)?.run {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -95,6 +99,12 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             adapter = affiliateAdapter
         }
         affiliatePortfolioViewModel.createDefaultListForSm()
+    }
+
+    private fun initButton() {
+        view?.findViewById<UnifyButton>(R.id.next_button)?.setOnClickListener {
+            nextButtonClicked()
+        }
     }
 
     private fun setUpNavBar() {
@@ -107,7 +117,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         view?.findViewById<HeaderUnify>(R.id.affiliate_portfolio_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface.handleBackButton()
+                affiliateNavigationInterface?.handleBackButton(false)
             }
         }
     }
@@ -121,9 +131,16 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             index->
             affiliateAdapter.notifyItemChanged(index)
         })
+        affiliatePortfolioViewModel.isError().observe(this ,{ isError ->
+                view?.findViewById<UnifyButton>(R.id.next_button)?.apply {
+                    isEnabled = !isError
+                }
+        })
     }
 
     private fun setDataToRV(data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?) {
+        view?.findViewById<RecyclerView>(R.id.social_link_rv)?.adapter = null
+        view?.findViewById<RecyclerView>(R.id.social_link_rv)?.adapter = affiliateAdapter
         affiliateAdapter.clearAllElements()
         affiliateAdapter.addMoreData(data)
     }
@@ -138,10 +155,8 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             .build()
 
     companion object {
-        fun getFragmentInstance(affiliateActivityInterface: AffiliateActivityInterface): Fragment {
-            return AffiliatePortfolioFragment().apply {
-                affiliateNavigationInterface = affiliateActivityInterface
-            }
+        fun getFragmentInstance(): Fragment {
+            return AffiliatePortfolioFragment()
         }
     }
 
@@ -179,15 +194,14 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             val portfolioDataItemText = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.text
             if(portfolioDataItemText?.isNotBlank() == true){
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false)))
+                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex)))
             }else {
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-                        "",item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false)))
+                        "",item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex)))
             }
         }
         updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_tambah_sosial_media), UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST)))
-        updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_portfolio_confirm_btn), UnifyButton.Type.MAIN,UnifyButton.Variant.FILLED,true)))
-        affiliatePortfolioViewModel.affiliatePortfolioData.value = updateList
+         affiliatePortfolioViewModel.affiliatePortfolioData.value = updateList
     }
 
     override fun addSocialMediaButtonClicked() {
@@ -201,7 +215,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
 
     }
 
-    override fun nextButtonClicked() {
+    private fun nextButtonClicked() {
         if(affiliatePortfolioViewModel.checkDataForAtLeastOne()){
             val arrayListOfChannels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
             affiliatePortfolioViewModel.affiliatePortfolioData.value?.forEach { channelItem ->
@@ -213,7 +227,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                 }
             }
             sendTracker()
-            affiliateNavigationInterface.navigateToTermsFragment(arrayListOfChannels)
+            affiliateNavigationInterface?.navigateToTermsFragment(arrayListOfChannels)
         }else {
             view?.let { view ->
                 Toaster.build(view, getString(com.tokopedia.affiliate_toko.R.string.affiliate_please_fill_one_social_media),

@@ -250,12 +250,12 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
                 shopID = userSession.shopId
                 keywords = null
                 group = Group(
-                        groupName = currentGroupName,
-                        ads = getAdsList(),
-                        priceBid = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0,
-                        groupBudget = "0",
-                        source = PARAM_SOURCE_RECOM,
-                        suggestedBidValue = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0
+                    groupName = currentGroupName,
+                    ads = getAdsList(),
+                    priceBid = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0,
+                    groupBudget = "0",
+                    source = PARAM_SOURCE_RECOM,
+                    suggestedBidValue = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0
                 )
             }
             topAdsDashboardPresenter.createGroup(param, ::onSuccessGroupCreation)

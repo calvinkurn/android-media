@@ -46,13 +46,11 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     private lateinit var affiliateLoginViewModel: AffiliateLoginViewModel
 
-    private lateinit var affiliateNavigationInterface: AffiliateActivityInterface
+    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
 
     companion object {
-        fun getFragmentInstance(affiliateActivityInterface: AffiliateActivityInterface): Fragment {
-            return AffiliateLoginFragment().apply {
-                affiliateNavigationInterface = affiliateActivityInterface
-            }
+        fun getFragmentInstance(): Fragment {
+            return AffiliateLoginFragment()
         }
     }
 
@@ -66,6 +64,9 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? AffiliateActivityInterface)?.let {
+            affiliateNavigationInterface = it
+        }
         afterViewCreated()
     }
 
@@ -128,7 +129,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_login_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface.handleBackButton()
+                affiliateNavigationInterface?.handleBackButton(false)
             }
             actionTextView?.setOnClickListener {
                 AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_MICRO_SITE_LINK).show(childFragmentManager,"")
@@ -158,8 +159,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_login_card.hide()
 
         } else {
-
-            affiliateNavigationInterface.validateUserStatus()
+            affiliateNavigationInterface?.validateUserStatus()
 
             affiliate_login_text.isVisible = true
             affiliate_login_text.text = getString(R.string.affiliate_daftarkan_akun_ini)
@@ -169,7 +169,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_sign_up_btn.isVisible = true
             affiliate_sign_up_btn.setOnClickListener {
                 sendTrackerDaftar()
-                affiliateNavigationInterface.navigateToPortfolioFragment()
+                affiliateNavigationInterface?.navigateToPortfolioFragment()
             }
 
             affiliate_keluar_btn.setOnClickListener {
@@ -264,7 +264,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             tickerType = Ticker.TYPE_ERROR
             setDescriptionClickEvent(object: TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-
+                    AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_FRAUD_URL).show(childFragmentManager,"")
                 }
                 override fun onDismiss() {}
             })

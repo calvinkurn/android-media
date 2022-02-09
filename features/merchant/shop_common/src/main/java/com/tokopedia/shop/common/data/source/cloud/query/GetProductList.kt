@@ -11,6 +11,9 @@ internal object GetProductList {
                 reason
                 errorCode
             }
+            meta {
+                totalHits
+            }
             data{
                 id
                 name

@@ -423,6 +423,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient?.onActivityResult(requestCode, resultCode, intent)
+        } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == Activity.RESULT_OK) {
+            val redirectionUrl = intent?.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL) ?: ""
+            if (redirectionUrl.isNotEmpty())
+                scroogeWebView?.loadUrl(redirectionUrl)
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imagePath = intent?.getStringExtra(HCI_KTP_IMAGE_PATH)
             sendKycImagePathToLite(imagePath)
@@ -519,6 +523,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+        }
+        
+        fun goToAlaCarteKyc(uri: Uri) {
+            val projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID) ?: ""
+            val kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL) ?: ""
+
+            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.KYC_FORM_ONLY, projectId, kycRedirectionUrl)
+            startActivityForResult(intent, REQUEST_CODE_LIVENESS)
         }
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -620,6 +632,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
                 if (urlFinal.isNotEmpty()) {
                     view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
+                    return true
+                }
+                if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
+                    goToAlaCarteKyc(uri)
                     return true
                 }
             }
@@ -835,7 +851,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         const val CHARSET_UTF_8 = "UTF-8"
 
         const val HCI_CAMERA_REQUEST_CODE = 978
+        private const val REQUEST_CODE_LIVENESS = 1235;
         const val FORCE_TIMEOUT = 90000L
+
         const val LOG_TIMEOUT = 1000
 
         private const val IMAGE_COMPRESS_QUALITY = 60
