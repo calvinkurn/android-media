@@ -254,6 +254,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/verify-fingerprint
     const val VERIFY_BIOMETRIC = "$INTERNAL_GLOBAL/verify-fingerprint"
 
+    // RegisterFingerprintActivity
+    // tokopedia-android-internal://global/register-fingerprint
+    const val REGISTER_BIOMETRIC = "$INTERNAL_GLOBAL/register-fingerprint"
+
     // LoginByQrActivity
     // tokopedia-android-internal://global/qr-login
     @JvmField
