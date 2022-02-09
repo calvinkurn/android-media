@@ -56,7 +56,8 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private val mLayoutProductInfo: FlexboxLayout = itemView.findViewById(R.id.layout_product_info)
     private val mIconTooltip: IconUnify = itemView.findViewById(R.id.icon_tooltip)
     private val mPricePerProduct: Typography = itemView.findViewById(R.id.text_item_per_product)
-    private val buttonGiftingAddOn: ButtonGiftingAddOnView = itemView.findViewById(R.id.button_gifting_addon)
+    private val layoutGiftingAddonProductLevel: ConstraintLayout = itemView.findViewById(R.id.layout_addon_gifting_product_level)
+    private val buttonGiftingAddOnProductLevel: ButtonGiftingAddOnView = itemView.findViewById(R.id.button_gifting_addon_product_level)
 
     fun bindViewHolder(cartItem: CartItemModel, listener: ShipmentItemListener?) {
         shipmentItemListener = listener
@@ -82,7 +83,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         renderProductTicker(cartItem)
         renderProductProperties(cartItem)
         renderBundlingInfo(cartItem)
-        renderGiftingAddonInfo(cartItem)
+        renderAddOnProductLevel(cartItem)
     }
 
     private fun renderProductProperties(cartItemModel: CartItemModel) {
@@ -243,8 +244,25 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         }
     }
 
-    private fun renderGiftingAddonInfo(cartItemModel: CartItemModel) {
-        buttonGiftingAddOn.setOnClickListener { shipmentItemListener?.openAddOnBottomSheet(cartItemModel) }
+    private fun renderAddOnProductLevel(cartItemModel: CartItemModel) {
+        val addOns = cartItemModel.addOnProductLevelModel
+        if (addOns.status == 0) {
+            layoutGiftingAddonProductLevel.visibility = View.GONE
+            buttonGiftingAddOnProductLevel.visibility = View.GONE
+        } else {
+            if (addOns.status == 1) {
+                buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.ACTIVE
+            } else if (addOns.status == 2) {
+                buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.INACTIVE
+            }
+            layoutGiftingAddonProductLevel.visibility = View.VISIBLE
+            buttonGiftingAddOnProductLevel.visibility = View.VISIBLE
+            buttonGiftingAddOnProductLevel.title = addOns.addOnsButtonModel.title
+            buttonGiftingAddOnProductLevel.desc = addOns.addOnsButtonModel.description
+            buttonGiftingAddOnProductLevel.urlLeftIcon = addOns.addOnsButtonModel.leftIconUrl
+            buttonGiftingAddOnProductLevel.urlRightIcon = addOns.addOnsButtonModel.rightIconUrl
+            buttonGiftingAddOnProductLevel.setOnClickListener { shipmentItemListener?.openAddOnBottomSheet(cartItemModel) }
+        }
     }
 
     interface ShipmentItemListener {

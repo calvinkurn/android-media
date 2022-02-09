@@ -88,5 +88,7 @@ data class Product(
         @SerializedName("product_ticker")
         val productTicker: ProductTicker = ProductTicker(),
         @SerializedName("variant_description_detail")
-        val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail()
+        val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
+        @SerializedName("add_ons")
+        val addOns: AddOnsResponse = AddOnsResponse()
 )

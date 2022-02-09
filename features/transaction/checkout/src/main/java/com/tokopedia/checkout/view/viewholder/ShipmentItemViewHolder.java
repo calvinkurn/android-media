@@ -44,6 +44,8 @@ import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnButtonModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -53,6 +55,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
+import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifycomponents.HtmlLinkHelper;
@@ -231,6 +234,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imageMerchantVoucher;
     private IconUnify mIconTooltip;
     private Typography mPricePerProduct;
+    private ConstraintLayout layoutGiftingAddonOrderLevel;
+    private ButtonGiftingAddOnView buttonGiftingAddonOrderLevel;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -364,6 +369,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelFreeShippingEtaText = itemView.findViewById(R.id.label_free_shipping_eta);
         imageMerchantVoucher = itemView.findViewById(R.id.img_mvc);
 
+        // AddOn Experience
+        layoutGiftingAddonOrderLevel = itemView.findViewById(R.id.layout_addon_gifting_order_level);
+        buttonGiftingAddonOrderLevel = itemView.findViewById(R.id.button_gifting_addon_order_level);
+
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
     }
@@ -413,6 +422,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderErrorAndWarning(shipmentCartItemModel);
         renderCustomError(shipmentCartItemModel);
         renderShippingVibrationAnimation(shipmentCartItemModel);
+        renderAddOnOrderLevel(shipmentCartItemModel);
     }
 
     public void unsubscribeDebouncer() {
@@ -1070,6 +1080,31 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 mActionListener.onClickRefreshErrorLoadCourier();
             }
         });
+    }
+
+    private void renderAddOnOrderLevel(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+            AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
+            AddOnButtonModel addOnButtonModel = addOnsDataModel.getAddOnsButtonModel();
+            int statusAddOn = addOnsDataModel.getStatus();
+            if (statusAddOn == 0) {
+                layoutGiftingAddonOrderLevel.setVisibility(View.GONE);
+                buttonGiftingAddonOrderLevel.setVisibility(View.GONE);
+            } else {
+                if (statusAddOn == 1) {
+                    buttonGiftingAddonOrderLevel.setState(ButtonGiftingAddOnView.State.ACTIVE);
+                } else if (statusAddOn == 2) {
+                    buttonGiftingAddonOrderLevel.setState(ButtonGiftingAddOnView.State.INACTIVE);
+                }
+
+                layoutGiftingAddonOrderLevel.setVisibility(View.VISIBLE);
+                buttonGiftingAddonOrderLevel.setVisibility(View.VISIBLE);
+                buttonGiftingAddonOrderLevel.setTitle(addOnButtonModel.getTitle());
+                buttonGiftingAddonOrderLevel.setDesc(addOnButtonModel.getDescription());
+                buttonGiftingAddonOrderLevel.setUrlLeftIcon(addOnButtonModel.getLeftIconUrl());
+                buttonGiftingAddonOrderLevel.setUrlRightIcon(addOnButtonModel.getRightIconUrl());
+            }
+        }
     }
 
     private View.OnClickListener getOnChangeCourierClickListener(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress) {

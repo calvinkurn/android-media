@@ -8,8 +8,10 @@ import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnsResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.domain.model.cartshipmentform.*
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddOnDataItem
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
@@ -142,6 +144,7 @@ class ShipmentMapper @Inject constructor() {
                         fulfillmentName = it.tokoCabangInfo.message
                         shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
                         shop = mapShopData(it.shop)
+                        addOns = mapAddOnsData(it.addOns)
                         shopShipments = mapShopShipments(it.shopShipments)
                         val mapProducts = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
                         products = mapProducts.first
@@ -266,6 +269,7 @@ class ShipmentMapper @Inject constructor() {
                         isBundlingItem = false
                         bundleId = "0"
                     }
+                    addOnProduct = mapAddOnsData(product.addOns)
                 }
                 productListResult.add(productResult)
             }
@@ -376,6 +380,64 @@ class ShipmentMapper @Inject constructor() {
             shopAlertMessage = shop.shopAlertMessage
             isTokoNow = shop.isTokoNow
         }
+    }
+
+    private fun mapAddOnsData(addOns: AddOnsResponse): AddOns {
+        return AddOns().apply {
+            status = addOns.status
+            addOnButton = mapAddOnButton(addOns.addOnButton)
+            addOnBottomsheet = mapAddOnBottomSheet(addOns.addOnBottomsheet)
+            addOnData = mapAddOnListData(addOns.addOnData)
+        }
+    }
+
+    private fun mapAddOnListData(addOnData: List<AddOnsResponse.AddOnDataItem>): MutableList<AddOnDataItem> {
+        val listAddOnDataItem = arrayListOf<AddOnDataItem>()
+        addOnData.forEach { item ->
+            listAddOnDataItem.add(AddOnDataItem().apply {
+                addOnPrice = item.addOnPrice
+                addOnId = item.addOnId
+                addOnMetadata = item.addOnMetadata
+                addOnQty = item.addOnQty
+            })
+        }
+        return listAddOnDataItem
+    }
+
+    private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButton {
+        return AddOnButton().apply {
+            leftIconUrl = addOnButton.leftIconUrl
+            rightIconUrl = addOnButton.rightIconUrl
+            description = addOnButton.description
+            action = addOnButton.action
+            title = addOnButton.title
+        }
+    }
+
+    private fun mapAddOnBottomSheet(addOnBottomsheet: AddOnsResponse.AddOnBottomsheet): AddOnBottomsheet {
+        return AddOnBottomsheet().apply {
+            headerTitle = addOnBottomsheet.headerTitle
+            description = addOnBottomsheet.description
+            ticker = mapAddOnTicker(addOnBottomsheet.ticker)
+            products = mapAddOnProducts(addOnBottomsheet.products)
+        }
+    }
+
+    private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTicker {
+        return AddOnTicker().apply {
+            text = ticker.text
+        }
+    }
+
+    private fun mapAddOnProducts(products: List<AddOnsResponse.AddOnBottomsheet.ProductsItem>): MutableList<AddOnProductsItem> {
+        val listAddOnProductItem = arrayListOf<AddOnProductsItem>()
+        products.forEach { productItem ->
+            listAddOnProductItem.add(AddOnProductsItem().apply {
+                productImageUrl = productItem.productImageUrl
+                productName = productItem.productName
+            })
+        }
+        return listAddOnProductItem
     }
 
     private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {

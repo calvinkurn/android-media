@@ -59,5 +59,6 @@ data class Product(
         var bundleSlashPriceLabel: String = "",
         var bundleOriginalPrice: Long = 0L,
         var bundleQuantity: Int = 0,
-        var bundleIconUrl: String = ""
+        var bundleIconUrl: String = "",
+        var addOnProduct: AddOns = AddOns()
 ) : Parcelable

@@ -6,6 +6,8 @@ import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 
 data class GroupShop(
+        @SerializedName("add_ons")
+        val addOns: AddOnsResponse = AddOnsResponse(),
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("errors_unblocking")
