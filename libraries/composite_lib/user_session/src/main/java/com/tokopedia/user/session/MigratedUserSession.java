@@ -154,8 +154,12 @@ public class MigratedUserSession {
                     return value;
                 } else {
                     value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);// decrypt here
-                    UserSessionMap.map.put(key, value);
-                    return value;
+                    if(value.isEmpty()) {
+                        return defValue;
+                    } else {
+                        UserSessionMap.map.put(key, value);
+                        return value;
+                    }
                 }
             } else {
                 return defValue;

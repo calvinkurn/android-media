@@ -39,11 +39,11 @@
     <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
     <string name="setting_menu_product_package">Kemasan Produk</string>
     <string name="setting_menu_finance_service">Layanan Keuangan</string>
-    <string name="setting_menu_set_activation_page_cod">Layanan Bayar di Tempat</string>
+    <string name="setting_menu_set_activation_page_cod">Layanan bayar di tempat</string>
     <string name="setting_menu_account_setting">Pengaturan akun</string>
-    <string name="setting_menu_self_profile">Profil Diri</string>
-    <string name="setting_menu_bank_account">Rekening Bank</string>
-    <string name="setting_menu_password">Kata Sandi</string>
+    <string name="setting_menu_self_profile">Ubah profil diri</string>
+    <string name="setting_menu_bank_account">Edit rekening bank</string>
+    <string name="setting_menu_password">Edit kata sandi</string>
     <string name="setting_menu_app_setting">Pengaturan aplikasi</string>
     <string name="setting_menu_chat_and_notification">Chat &amp; Notifikasi</string>
     <string name="setting_notification_troubleshooter">Push Notification Troubleshooter</string>
