@@ -342,6 +342,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
                     || configUiModel.channelType == ChannelType.Draft) {
                         val deferredChannel = async { getChannelById(configUiModel.channelId) }
                         val deferredProductMap = async {
+                            //TODO("Use real data")
                             mapOf<SelectedEtalaseModel, List<ProductUiModel>>(
                                 SelectedEtalaseModel.None to listOf(
                                     ProductUiModel(

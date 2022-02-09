@@ -35,12 +35,14 @@ import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.hideKeyboard
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.Toaster
 import java.util.*
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -194,6 +196,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeCover()
         observeCreateLiveStream()
         observeLiveStreamState()
+
+        observeUiState()
     }
 
     private fun observeTitle() {
@@ -270,6 +274,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     showCountdown(false)
                     handleLivePushError(it)
                 }
+            }
+        }
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
+
+                if (prevState?.selectedProduct != state.selectedProduct) {
+                    binding.viewPreparationMenu.isSetProductChecked(
+                        state.selectedProduct.values.flatten().isNotEmpty()
+                    )
+                }
+
             }
         }
     }
