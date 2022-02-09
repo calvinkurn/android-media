@@ -139,13 +139,8 @@ class LineGraphViewHolder(
             lineGraphView.visibility = componentVisibility
             luvShcLineGraph.visibility = componentVisibility
 
-            val isCtaVisible =
-                element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
-            val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
-            btnLineGraphMore.visibility = ctaVisibility
-            if (isCtaVisible) {
-                setupSeeMoreCta(element)
-            }
+            setupSeeMoreCta(element, isShown)
+
             if (isShown) {
                 setupLastUpdated(element)
                 showEmptyState = showEmpty(element)
@@ -155,6 +150,9 @@ class LineGraphViewHolder(
                 }
                 setupEmptyState(element)
             }
+
+            horLineShcLineGraphBtm.isVisible = btnLineGraphMore.isVisible
+                    || luvShcLineGraph.isVisible
         }
     }
 
@@ -197,8 +195,15 @@ class LineGraphViewHolder(
         listener.onReloadWidget(element)
     }
 
-    private fun setupSeeMoreCta(element: LineGraphWidgetUiModel) {
+    private fun setupSeeMoreCta(element: LineGraphWidgetUiModel, isShown: Boolean) {
         with(binding) {
+            val isCtaVisible =
+                element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
+            val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
+            btnLineGraphMore.visibility = ctaVisibility
+
+            if (!isCtaVisible) return
+
             btnLineGraphMore.text = element.ctaText
             btnLineGraphMore.setOnClickListener {
                 openAppLink(element)

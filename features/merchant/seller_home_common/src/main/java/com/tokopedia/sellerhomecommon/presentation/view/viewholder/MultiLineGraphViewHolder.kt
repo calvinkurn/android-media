@@ -274,6 +274,8 @@ class MultiLineGraphViewHolder(
             setTagNotification(element.tag)
             setupTooltip(element)
 
+            horLineShcMultiLineGraphBtm.isVisible = luvShcMultiLineGraph.isVisible
+                    || tvShcMultiLineCta.isVisible
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendMultiLineGraphImpressionEvent(element)
             }
@@ -330,6 +332,7 @@ class MultiLineGraphViewHolder(
         val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
         tvShcMultiLineCta.visibility = ctaVisibility
+        tvShcMultiLineCta.isVisible = false
         if (isCtaVisible) {
             tvShcMultiLineCta.text = element.ctaText
             tvShcMultiLineCta.setOnClickListener {

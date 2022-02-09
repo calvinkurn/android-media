@@ -89,7 +89,7 @@
             android:layout_marginStart="@dimen/shc_dimen_12dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="@dimen/shc_dimen_12dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toTopOf="@+id/barrierShcMultiLineGraph"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,16 +104,25 @@
             app:barrierDirection="top"
             app:constraint_referenced_ids="luvShcMultiLineGraph,tvShcMultiLineCta" />
 
+        <View
+            android:id="@+id/horLineShcMultiLineGraphBtm"
+            android:layout_width="0dp"
+            android:layout_height="0.1dp"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
             android:id="@+id/luvShcMultiLineGraph"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/horLineShcMultiLineGraphBtm"
             app:layout_constraintEnd_toStartOf="@+id/tvShcMultiLineCta"
             app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toStartOf="@+id/guidelineShcMultiLineGraphStart" />
+            app:layout_constraintStart_toStartOf="@+id/guidelineShcMultiLineGraphStart"
+            app:layout_constraintTop_toTopOf="@+id/horLineShcMultiLineGraphBtm" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcMultiLineCta"
@@ -121,16 +130,15 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="14dp"
             android:gravity="end"
             android:paddingStart="0dp"
-            android:paddingEnd="4dp"
             android:textColor="@color/Unify_G500"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/horLineShcMultiLineGraphBtm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@+id/luvShcMultiLineGraph"
+            app:layout_constraintTop_toTopOf="@+id/horLineShcMultiLineGraphBtm"
             app:typographyType="body_2"
             app:typographyWeight="reguler"
             tools:text="Selanjutnya"
