@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetOrderPriceSummaryBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemCashbackDetailBinding
+import com.tokopedia.oneclickcheckout.databinding.ItemInstallmentSummaryDetailBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -91,20 +92,51 @@ class OrderPriceSummaryBottomSheet {
 
         binding.tvTotalPaymentPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
 
+        renderCashbacks(binding, orderCost)
+
+        renderInstallment(binding, orderCost)
+    }
+
+    private fun renderCashbacks(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost) {
         if (orderCost.cashbacks.isNotEmpty()) {
             binding.llCashback.removeAllViews()
+            val layoutInflater = LayoutInflater.from(binding.root.context)
             for (cashback in orderCost.cashbacks) {
-                val cashbackDetailBinding = ItemCashbackDetailBinding.inflate(LayoutInflater.from(binding.root.context))
+                val cashbackDetailBinding = ItemCashbackDetailBinding.inflate(layoutInflater)
                 cashbackDetailBinding.tvTotalCashbackLabel.text = cashback.description
                 cashbackDetailBinding.tvTotalCashbackValue.text = cashback.amountStr
                 cashbackDetailBinding.tvTotalCashbackCurrencyInfo.text = cashback.currencyDetailStr
                 binding.llCashback.addView(cashbackDetailBinding.root)
                 binding.llCashback.visible()
-                binding.divider2.visible()
+                binding.dividerCashback.visible()
             }
         } else {
             binding.llCashback.gone()
-            binding.divider2.gone()
+            binding.dividerCashback.gone()
+        }
+    }
+
+    private fun renderInstallment(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost) {
+        if (orderCost.installmentData == null) {
+//            binding.tvTotalInstallmentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.installmentData.installmentFee, false).removeDecimalSuffix()
+            binding.tvTotalInstallmentFeePriceValue.text = "blablabla"
+            binding.tvTotalInstallmentFeePriceValue.visible()
+            binding.tvTotalInstallmentFeePriceLabel.visible()
+
+            binding.llInstallment.removeAllViews()
+            val layoutInflater = LayoutInflater.from(binding.root.context)
+            val installmentPeriod = ItemInstallmentSummaryDetailBinding.inflate(layoutInflater)
+            installmentPeriod.tvInstallmentSummaryLabel.text = "asdf"
+            installmentPeriod.tvInstallmentSummaryValue.text = "1234"
+            binding.llInstallment.addView(installmentPeriod.root)
+
+            binding.llInstallment.visible()
+            binding.dividerInstallment.visible()
+        } else {
+            binding.tvTotalInstallmentFeePriceValue.gone()
+            binding.tvTotalInstallmentFeePriceLabel.gone()
+            binding.llInstallment.gone()
+            binding.dividerInstallment.gone()
         }
     }
 }

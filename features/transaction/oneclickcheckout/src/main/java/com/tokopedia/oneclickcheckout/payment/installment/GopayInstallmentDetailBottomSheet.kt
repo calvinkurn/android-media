@@ -18,8 +18,9 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -32,6 +33,8 @@ class GopayInstallmentDetailBottomSheet(private var paymentProcessor: OrderSumma
 
     private var bottomSheetUnify: BottomSheetUnify? = null
     private var binding: BottomSheetGopayInstallmentBinding? = null
+
+    private var j: Job? = null
 
     fun show(fragment: OrderSummaryPageFragment, orderCart: OrderCart,
              orderCost: OrderCost, userId: String, listener: InstallmentDetailBottomSheetListener) {
@@ -52,7 +55,7 @@ class GopayInstallmentDetailBottomSheet(private var paymentProcessor: OrderSumma
                 setChild(binding?.root)
                 setOnDismissListener {
                     binding = null
-                    coroutineContext.cancelChildren()
+                    cancel()
                 }
                 show(it, null)
             }
@@ -63,7 +66,7 @@ class GopayInstallmentDetailBottomSheet(private var paymentProcessor: OrderSumma
                            orderCart: OrderCart, orderCost: OrderCost, userId: String) {
         binding?.tvInstallmentMessage?.gone()
         binding?.loaderInstallment?.visible()
-        launch {
+        j = launch {
             paymentProcessor.getGopayAdminFee()
 //            if (installmentTermList != null) {
 //                setupInstallments(context, fragment, creditCard.copy(availableTerms = installmentTermList))

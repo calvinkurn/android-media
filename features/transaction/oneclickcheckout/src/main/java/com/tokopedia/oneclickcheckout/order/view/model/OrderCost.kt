@@ -9,5 +9,20 @@ data class OrderCost(
         val shippingDiscountAmount: Int = 0,
         val productDiscountAmount: Int = 0,
         val purchaseProtectionPrice: Int = 0,
-        val cashbacks: List<OrderCostCashbackData> = emptyList()
+        val cashbacks: List<OrderCostCashbackData> = emptyList(),
+        val installmentData: OrderCostInstallmentData? = null,
+)
+
+data class OrderCostCashbackData(
+        val description: String = "",
+        val amountStr: String = "",
+        val currencyDetailStr: String = "",
+)
+
+data class OrderCostInstallmentData(
+        val installmentFee: Double = 0.0,
+        val installmentTerm: Int = 0,
+        val installmentAmountPerPeriod: Double = 0.0,
+        val installmentFirstDate: String = "",
+        val installmentLastDate: String = "",
 )
