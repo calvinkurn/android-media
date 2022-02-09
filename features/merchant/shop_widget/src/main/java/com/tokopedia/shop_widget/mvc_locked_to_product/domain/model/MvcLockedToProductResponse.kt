@@ -117,10 +117,7 @@ data class MvcLockedToProductResponse(
                 var labelGroups: List<LabelGroups> = listOf(),
                 @SerializedName("stock")
                 @Expose
-                var stock: Int = 0,
-                @SerializedName("productInCart")
-                @Expose
-                var productInCart: Int = 0
+                var stock: Int = 0
             ) {
                 data class LabelGroups(
                     @SerializedName("position")

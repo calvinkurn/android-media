@@ -7,11 +7,6 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.MvcLockedToP
 
 class MvcLockedToProductGridProductUiModel(
     val productID: String = "",
-    val childIDs: List<String> = listOf(),
-    val city: String = "",
-    val minimumOrder: Int = 0,
-    val stock: Int = 0,
-    val productInCart: Int = 0,
     val productCardModel: ProductCardModel = ProductCardModel()
 ) : Visitable<MvcLockedToProductTypeFactory>, ImpressHolder() {
 

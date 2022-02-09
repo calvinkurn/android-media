@@ -75,7 +75,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var voucherId: String = ""
     private var shopId: String = ""
-    private var previousPage: String = ""
+    private var previousPage: String = "NULL"
     private var selectedSortData: MvcLockedToProductSortUiModel =
         MvcLockedToProductSortListFactory.getDefaultSortData()
     private val isUserLogin: Boolean
@@ -103,7 +103,9 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             if (shopIdSegmentData.toIntOrNull() != null) {
                 shopId = shopIdSegmentData
             }
-            previousPage = it.getQueryParameter(PAGE_SOURCE_KEY).orEmpty()
+            previousPage = it.getQueryParameter(PAGE_SOURCE_KEY)?.takeIf { queryParamValue ->
+                queryParamValue.isNotEmpty()
+            } ?: previousPage
             voucherId = it.pathSegments.getOrNull(5).orEmpty()
         }
     }
@@ -135,7 +137,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun refreshCartCounterData() {
-        if (isUserLogin)
+        if (isUserLogin && !MvcLockedToProductUtil.isSellerApp())
             viewBinding?.navigationToolbar?.setBadgeCounter(IconList.ID_CART, getCartCounter())
     }
 
@@ -150,6 +152,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun loadInitialData() {
+        resetEndlessScrollState()
         adapter.showInitialPagePlaceholderLoading()
         getMvcLockedToProductData(voucherId)
     }
@@ -328,10 +331,12 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun setupToolbar() {
         viewBinding?.navigationToolbar?.apply {
-            val iconBuilder = IconBuilder()
-            iconBuilder.addIcon(IconList.ID_CART) {}
-            iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
-            setIcon(iconBuilder)
+            if(!MvcLockedToProductUtil.isSellerApp()) {
+                val iconBuilder = IconBuilder()
+                iconBuilder.addIcon(IconList.ID_CART) {}
+                iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
+                setIcon(iconBuilder)
+            }
             setToolbarPageName(getString(R.string.mvc_locked_to_product_toolbar_name))
         }
     }
@@ -388,6 +393,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun getNewProductListData() {
+        resetEndlessScrollState()
         adapter.updateTotalProductAndSortData(selectedSortData)
         adapter.showNewProductListPlaceholder()
         getProductListData(voucherId, START_PAGE)
@@ -408,7 +414,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             voucherId,
             shopId,
             userId,
-            adapter.getVoucherName()
+            adapter.getVoucherName(),
+            isSellerView
         )
     }
 
@@ -421,6 +428,10 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             )
             startActivity(intent)
         }
+    }
+
+    private fun resetEndlessScrollState(){
+        endlessRecyclerViewScrollListener?.resetState()
     }
 
 }
