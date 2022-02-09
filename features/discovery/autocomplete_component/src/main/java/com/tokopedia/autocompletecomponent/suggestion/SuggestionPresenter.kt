@@ -97,6 +97,8 @@ class SuggestionPresenter @Inject constructor(
     private fun onSuccessReceivedSuggestion(suggestionUniverse: SuggestionUniverse) {
         clearListVisitable()
         updateListVisitable(suggestionUniverse)
+
+        val visit = listVisitable
         notifyView()
     }
 
