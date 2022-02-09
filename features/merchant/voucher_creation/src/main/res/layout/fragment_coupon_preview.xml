@@ -24,6 +24,7 @@
         tools:context=".product.preview.CouponPreviewFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -718,7 +719,7 @@
                 android:layout_marginStart="@dimen/unify_space_24"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:layout_marginEnd="@dimen/unify_space_24"
-                android:text="@string/view_all"
+                android:text="@string/manage_product"
                 android:textColor="@color/Unify_G500"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -742,7 +743,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                app:unifyButtonRightLoader="false"
                 android:layout_marginEnd="@dimen/unify_space_8"
                 android:text="@string/check_coupon_appearance"
                 app:layout_constraintEnd_toStartOf="@+id/btnCreateCoupon"
@@ -758,14 +758,14 @@
                 android:id="@+id/btnCreateCoupon"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 android:text="@string/create_coupon"
-                app:unifyButtonRightLoader="false"
+                app:layout_constraintBottom_toBottomOf="@+id/btnPreviewCouponImage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/btnPreviewCouponImage"
-                app:layout_constraintTop_toBottomOf="@+id/dividerBottom"
+                app:layout_constraintTop_toTopOf="@+id/btnPreviewCouponImage"
+                app:unifyButtonRightLoader="false"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="filled" />
 
