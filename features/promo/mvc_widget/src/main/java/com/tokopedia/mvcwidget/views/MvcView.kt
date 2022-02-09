@@ -130,9 +130,4 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
             mvcTracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId, isTokomember)
         }
     }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-//        mvcTracker.viewTokomemberBottomSheet(shopId, UserSession(context).userId, source)
-    }
 }
