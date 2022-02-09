@@ -328,6 +328,7 @@
 /libraries/travel_calendar/								@tokopedia/android-core-dev
 /libraries/twitter_share/								@tokopedia/android-core-dev
 /libraries/unit_test                                    @tokopedia/android-core-dev
+/libraries/user_session                                 @tokopedia/android-minionkevin-dev
 /libraries/utils                                        @tokopedia/android-core-dev
 /libraries/videoplayer/									@tokopedia/android-core-dev
 /libraries/videouploader/								@tokopedia/android-core-dev
