@@ -11,25 +11,24 @@ import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetOccCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                             private val mapper: GetOccCartMapper,
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
-    fun createRequestParams(source: String): RequestParams {
-        val params = RequestParams.create().apply {
-            putString(PARAM_SOURCE, source)
-        }
-        chosenAddressRequestHelper.addChosenAddressParam(params)
-
-        return params
+    fun createRequestParams(source: String, gatewayCode: String, tenor: Int): Map<String, Any?> {
+        return mapOf(
+            PARAM_SOURCE to source,
+            PARAM_GATEWAY_CODE to gatewayCode,
+            PARAM_TENOR to tenor,
+            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+        )
     }
 
-    suspend fun executeSuspend(params: RequestParams): OrderData {
+    suspend fun executeSuspend(params: Map<String, Any?>): OrderData {
         val graphqlRequest = GET_OCC_CART_PAGE_QUERY
-        val request = GraphqlRequest(graphqlRequest, GetOccCartGqlResponse::class.java, params.parameters)
+        val request = GraphqlRequest(graphqlRequest, GetOccCartGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {
             val errorMessage = response.response.data.errors.firstOrNull()
@@ -47,6 +46,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
 
     companion object {
         private const val PARAM_SOURCE = "source"
+        private const val PARAM_GATEWAY_CODE = "gateway_code"
+        private const val PARAM_TENOR = "tenor"
 
         private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_multi(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
   get_occ_multi(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {

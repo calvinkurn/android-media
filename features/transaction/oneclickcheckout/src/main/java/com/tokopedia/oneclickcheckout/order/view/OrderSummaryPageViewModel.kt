@@ -110,11 +110,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return profile.address.addressId <= 0 && addressState.errorCode != AddressState.ERROR_CODE_OPEN_ANA
     }
 
-    fun getOccCart(isFullRefresh: Boolean, source: String, uiMessage: OccUIMessage? = null) {
+    fun getOccCart(isFullRefresh: Boolean, source: String, uiMessage: OccUIMessage? = null,
+                   gatewayCode: String = "", tenor: Int = 0) {
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
-            val result = cartProcessor.getOccCart(source)
+            val result = cartProcessor.getOccCart(source, gatewayCode, tenor)
             addressState.value = result.addressState
             orderCart = result.orderCart
             orderShop.value = orderCart.shop

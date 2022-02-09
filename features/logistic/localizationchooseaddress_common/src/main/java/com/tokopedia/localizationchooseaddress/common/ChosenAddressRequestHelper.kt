@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.usecase.RequestParams
 import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
@@ -39,11 +38,6 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
 
     fun getContext(): Context {
         return context
-    }
-
-    fun addChosenAddressParam(requestParams: RequestParams): RequestParams {
-        requestParams.putObject(KEY_CHOSEN_ADDRESS, getChosenAddress())
-        return requestParams
     }
 
     fun getChosenAddress(): ChosenAddress? {

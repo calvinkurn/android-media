@@ -36,6 +36,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_FULL_FLOW
@@ -144,6 +145,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private val lastPurchaseProtectionCheckStates: HashMap<Long, Int> = HashMap()
 
     private var source: String = SOURCE_OTHERS
+    private var tenor: Int = 0
+    private var gatewayCode: String = ""
     private var shouldShowToaster: Boolean = false
 
     private var binding by autoCleared<FragmentOrderSummaryPageBinding> {
@@ -363,6 +366,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val productIds = arguments?.getString(QUERY_PRODUCT_ID)
             if (productIds.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
                 setSourceFromPDP()
+                setAdditionalParams()
                 refresh()
             } else {
                 atcOcc(productIds)
@@ -1012,7 +1016,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             binding.globalError.animateGone()
             binding.loaderContent.animateShow()
         }
-        viewModel.getOccCart(isFullRefresh, source, uiMessage)
+        viewModel.getOccCart(isFullRefresh, source, uiMessage, gatewayCode, tenor)
     }
 
     private fun setSourceFromPDP() {
@@ -1021,6 +1025,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             sourceArgs = SOURCE_PDP
         }
         source = sourceArgs
+    }
+
+    private fun setAdditionalParams() {
+        tenor = arguments?.getString(QUERY_TENURE_TYPE, "").toIntOrZero()
+        gatewayCode = arguments?.getString(QUERY_GATEWAY_CODE, "") ?: ""
+    }
+
+    private fun resetAdditionalParams() {
+        // overwrite arguments
+        arguments?.putString(QUERY_TENURE_TYPE, "")
+        arguments?.putString(QUERY_GATEWAY_CODE, "")
+
+        // overwrite field
+        tenor = 0
+        gatewayCode = ""
+        if (source == SOURCE_FINTECH) {
+            source = SOURCE_OTHERS
+        }
     }
 
     private fun showToasterSuccess() {
@@ -1057,6 +1079,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             } else {
                 binding.rvOrderSummaryPage.gone()
             }
+            resetAdditionalParams()
         }
     }
 

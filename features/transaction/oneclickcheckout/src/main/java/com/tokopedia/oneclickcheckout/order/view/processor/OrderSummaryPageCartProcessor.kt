@@ -44,11 +44,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         return result
     }
 
-    suspend fun getOccCart(source: String): ResultGetOccCart {
+    suspend fun getOccCart(source: String, gatewayCode: String, tenor: Int): ResultGetOccCart {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source))
+                val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor))
                 return@withContext ResultGetOccCart(
                         orderCart = orderData.cart,
                         orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
