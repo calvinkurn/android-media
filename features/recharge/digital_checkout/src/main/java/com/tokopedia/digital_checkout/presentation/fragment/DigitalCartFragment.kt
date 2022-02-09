@@ -489,7 +489,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
         if (postPaidPopupAttribute.title.isNotEmpty() || postPaidPopupAttribute.content.isNotEmpty()) {
             val dialog =
-                DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                DialogUnify(
+                    requireActivity(),
+                    DialogUnify.SINGLE_ACTION,
+                    DialogUnify.WITH_ILLUSTRATION
+                )
             dialog.setTitle(postPaidPopupAttribute.title)
             dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content))
             dialog.setImageUrl(postPaidPopupAttribute.imageUrl)
@@ -531,6 +535,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             getCategoryName(),
             getOperatorName()
         )
+    }
+
+    override fun onSubscriptionMoreInfoClicked(fintechProduct: FintechProduct) {
+        renderSubscriptionMoreInfoBottomSheet()
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
@@ -721,6 +729,26 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         checkoutBottomViewWidget.hide()
     }
 
+    private fun renderSubscriptionMoreInfoBottomSheet() {
+        context?.let {
+            val typographyContent = Typography(it)
+            typographyContent.fontType = Typography.BODY_2
+            typographyContent.setTextColor(
+                MethodChecker.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                )
+            )
+            typographyContent.text =
+                MethodChecker.fromHtml(getString(com.tokopedia.digital_checkout.R.string.subscription_more_info_bottomsheet_description))
+
+            val bottomSheetUnify = BottomSheetUnify()
+            bottomSheetUnify.setTitle(getString(com.tokopedia.digital_checkout.R.string.subscription_more_info_bottomsheet_title))
+            bottomSheetUnify.setChild(typographyContent)
+            bottomSheetUnify.show(childFragmentManager, SUBSCRIPTION_BOTTOM_SHEET_TAG)
+        }
+    }
+
     private fun getPromoDigitalModel(): PromoDigitalModel =
         viewModel.getPromoDigitalModel(cartPassData, getPriceInput())
 
@@ -747,6 +775,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
 
         private const val DEFAULT_ANDROID_DEVICE_ID = 5
+
+        private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,
