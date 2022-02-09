@@ -142,7 +142,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     private void setupAlphaObserver() {
         String versionName = BuildConfig.VERSION_NAME;
-        if (versionName.endsWith("-alpha")) {
+        if (versionName.endsWith("-alpha") && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, false)) {
             registerActivityLifecycleCallbacks(new AlphaObserver());
             registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
                 @Override
