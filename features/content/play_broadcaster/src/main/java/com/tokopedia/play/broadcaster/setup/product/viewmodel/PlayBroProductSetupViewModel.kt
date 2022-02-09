@@ -236,8 +236,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
     /** TODO: gonna delete this later */
     @ExperimentalStdlibApi
     private fun handleLoadProductSummary() {
-        _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
             getProductTagSummary()
         }) {
             _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
@@ -248,10 +248,10 @@ class PlayBroProductSetupViewModel @Inject constructor(
     @ExperimentalStdlibApi
     private fun handleDeleteProduct(product: ProductUiModel) {
         if(_productTagSummary.value is ProductTagSummaryUiModel.Success) {
-            val productSectionList = _productTagSummary.value as ProductTagSummaryUiModel.Success
-            _productTagSummary.value = ProductTagSummaryUiModel.Loading
+            viewModelScope.launchCatchError(dispatchers.main, block = {
+                val productSectionList = _productTagSummary.value as ProductTagSummaryUiModel.Success
+                _productTagSummary.value = ProductTagSummaryUiModel.Loading
 
-            viewModelScope.launchCatchError(dispatchers.io, block = {
                 /** TODO: gonna delete this later */
                 delay(1000)
 
@@ -280,10 +280,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
             productCount += it.products.size
         }
 
-        withContext(dispatchers.main) {
-            _productTagSummary.value = if(productCount == 0) ProductTagSummaryUiModel.Empty
-            else ProductTagSummaryUiModel.Success(response, productCount)
-        }
+        _productTagSummary.value = if(productCount == 0) ProductTagSummaryUiModel.Empty
+        else ProductTagSummaryUiModel.Success(response, productCount)
     }
 
 
