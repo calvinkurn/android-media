@@ -18,7 +18,7 @@ object PromoCreationStaticData {
         broadcastChatUrl: String,
         freeShippingEnabled: Boolean,
         isVoucherCashbackEligible: Boolean,
-        isTopAdsOnBoardingEnable: Boolean
+        isTopAdsOnBoardingEnable: Boolean,
         isVoucherCashbackFirstTime: Boolean,
         isProductCouponFirstTime: Boolean
     ): PromoCreationListUiModel {

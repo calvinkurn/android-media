@@ -6,8 +6,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
+import com.tokopedia.centralizedpromo.domain.usecase.CheckNonTopAdsUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
@@ -334,6 +336,12 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
         coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
         } returns true
 
@@ -359,6 +367,12 @@ class CentralizedPromoViewModelTest {
         } returns false
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
@@ -388,6 +402,12 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
         coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns true
 
@@ -413,6 +433,12 @@ class CentralizedPromoViewModelTest {
         } returns false
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
