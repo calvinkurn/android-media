@@ -50,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -130,7 +131,8 @@ class BalanceAdapter(
         private var home_tv_btn_action_balance: TextView = itemView.findViewById(R.id.home_tv_btn_action_balance)
         private var home_iv_logo_balance: ImageView? = itemView.findViewById<ImageView>(R.id.home_iv_logo_balance)
         private var home_tv_balance: TextView = itemView.findViewById(R.id.home_tv_balance)
-        private var home_container_action_balance: LinearLayout? = itemView.findViewById(R.id.home_container_action_balance)
+        private var home_container_action_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_action_balance)
+        private var home_tv_reserve_balance: Typography? = itemView.findViewById(R.id.home_tv_reserve_balance)
 
         fun bind(drawerItem: BalanceDrawerItemModel?,
                  listener: HomeCategoryListener?,
@@ -182,6 +184,14 @@ class BalanceAdapter(
 
                     renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, home_tv_balance)
                     renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
+
+                    if (element.reserveBalance.isNotEmpty()) {
+                        home_tv_reserve_balance?.visible()
+                        home_tv_reserve_balance?.text = element.reserveBalance
+                    } else {
+                        home_tv_reserve_balance?.gone()
+                    }
+
                     home_container_balance?.handleItemCLickType(
                             element = element,
                             tokopointsAction = {

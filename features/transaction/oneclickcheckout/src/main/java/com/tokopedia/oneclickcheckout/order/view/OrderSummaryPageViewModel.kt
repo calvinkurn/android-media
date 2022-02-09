@@ -791,6 +791,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
         afpbJob?.cancel()
+        eligibleForAddressUseCase.cancelJobs()
         super.onCleared()
     }
 

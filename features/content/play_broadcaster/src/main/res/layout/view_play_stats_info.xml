@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/play_stats_info_height"
-    tools:background="@color/black">
+    tools:background="@color/Unify_Static_Black">
 
     <include
         android:id="@+id/view_bro_total_view_badge"

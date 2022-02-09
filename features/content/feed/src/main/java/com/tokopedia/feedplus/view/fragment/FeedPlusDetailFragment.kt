@@ -421,7 +421,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 finalID,
                 item.postType,
                 item.isFollowed,
-                item.shopId
+                item.shopId,
+                ""
         )
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
@@ -473,7 +474,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 activityId,
                 id.toString(),
                 type,
-                isFollowed, shopId
+                isFollowed, shopId,""
         )
 
         val urlString: String = if (isTopads) {
@@ -517,9 +518,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             playChannelId: String
     ) {
         if (type == TYPE_FEED_X_CARD_PLAY)
-            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, postTagItem.authorName, type, isFollowed)
+            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, postTagItem.authorName, type, isFollowed,"")
         else
-            feedAnalytics.eventAddToCartFeedVOD(activityId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, shopName, type, isFollowed)
+            feedAnalytics.eventAddToCartFeedVOD(activityId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, shopName, type, isFollowed,"")
         if (userSession.isLoggedIn) {
             feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId)
         } else {
@@ -541,7 +542,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 productId,
                 type,
                 isFollowed,
-                shopId
+                shopId,
+                ""
         )
 
         feedViewModel.addWishlist(
@@ -714,7 +716,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     shopId,
                     postType,
                     isFollowed,
-                    true
+                    true,
+                    ""
             )
         }
     }
