@@ -995,7 +995,11 @@ class PlayViewModel @AssistedInject constructor(
      * then we don't need to retrieve the product.
      */
     private fun updateTagItems() {
-        if (!_tagItems.value.product.canShow) return
+        if (!_tagItems.value.product.canShow) {
+            _tagItems.update { it.copy(resultState = ResultState.Success) }
+            return
+        }
+
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val tagItem = repo.getTagItem(channelId)
