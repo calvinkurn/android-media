@@ -70,7 +70,7 @@ open class ProductAttachmentUiModel protected constructor(
         }
     val stringBlastId: String get() = blastId.toString()
     var campaignId: Long = builder.campaignId
-    var isFulfillment: Boolean = false
+    var isFulfillment: Boolean = builder.isFulfillment
     var urlTokocabang: String = ""
     var parentId: String = "0"
 
@@ -349,6 +349,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var campaignId: Long = 0
         internal var locationStock: LocationStock = LocationStock()
         internal var isUpcomingCampaign: Boolean = false
+        internal var isFulfillment: Boolean = false
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)
@@ -377,6 +378,7 @@ open class ProductAttachmentUiModel protected constructor(
             withIsPreOrder(product.productProfile.isPreOrder)
             withLocationStock(product.productProfile.locationStock)
             withIsUpcomingCampaign(product.productProfile.isUpcomingCampaign)
+            withIsFulfillment(product.productProfile.isFulFillment)
             return self()
         }
 
@@ -517,6 +519,11 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withIsUpcomingCampaign(isUpcomingCampaign: Boolean): Builder {
             this.isUpcomingCampaign = isUpcomingCampaign
+            return self()
+        }
+
+        fun withIsFulfillment(isFulfillment: Boolean): Builder {
+            this.isFulfillment = isFulfillment
             return self()
         }
 
