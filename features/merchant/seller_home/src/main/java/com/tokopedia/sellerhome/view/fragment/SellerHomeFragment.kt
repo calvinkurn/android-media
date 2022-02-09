@@ -71,6 +71,7 @@ import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
@@ -78,6 +79,7 @@ import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.Utils
@@ -187,6 +189,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
+    private var dateFilters: List<DateFilterItem>? = null
+    private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
@@ -674,7 +678,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {
+        if (dateFilterBottomSheet == null) {
+            if (dateFilters.isNullOrEmpty()) {
+                dateFilters = DateFilterUtil.FilterList
+                    .getCalendarPickerFilterList(requireContext())
+            }
+            dateFilterBottomSheet = DateFilterBottomSheet.newInstance(dateFilters.orEmpty())
+        }
 
+        showCalendarDateFilter()
     }
 
     fun setNavigationOtherMenuView(view: View?) {
@@ -694,6 +706,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    private fun showCalendarDateFilter() {
+        if (!isAdded && childFragmentManager.isStateSaved) {
+            return
+        }
+
+        dateFilterBottomSheet?.run {
+            setFragmentManager(childFragmentManager)
+            setOnApplyChanges {
+                this@SellerHomeFragment.applyCalendarFilter(it)
+            }
+            show()
+        }
+    }
+
+    private fun applyCalendarFilter(dateFilter: DateFilterItem) {
+
     }
 
     private fun initPltPerformanceMonitoring() {

@@ -30,4 +30,23 @@
     <string name="mission_selling_tokopedia">Misi berjualan Tokopedia</string>
     <string name="shc_title_progress_milestone_widget">Kemajuan</string>
     <string name="shc_close_mission">Tutup Misi</string>
+    <string name="shc_select_date">Pilih Tanggal</string>
+    <string name="shc_select_same_month_only_info">Hanya bisa memilih tanggal di bulan yang sama.</string>
+    <string name="shc_today_fmt">Hari Ini (%1$s 00:00 - %2$s)</string>
+    <string name="shc_last_7_days_fmt">7 Hari Terakhir (%1$s)</string>
+    <string name="shc_last_30_days_fmt">30 Hari Terakhir (%1$s)</string>
+    <string name="shc_per_day_fmt">Per Hari (%1$s)</string>
+    <string name="shc_per_week_fmt">Per Minggu (%1$s)</string>
+    <string name="shc_per_month_fmt">Per Bulan (%1$s)</string>
+    <string name="shc_custom">Custom (%1$s)</string>
+    <string name="shc_show">Tampilkan</string>
+    <string name="shc_start_from">Mulai dari</string>
+    <string name="shc_until">Sampai dengan</string>
+    <string name="shc_date">Tanggal</string>
+    <string name="shc_per_day">Per Hari</string>
+    <string name="shc_per_week">Per Minggu</string>
+    <string name="shc_per_month">Per Bulan</string>
+    <string name="shc_custom_lbl">Custom</string>
+    <string name="shc_month">Bulan</string>
+    <string name="shc_change_date_range">Ubah Rentang Waktu</string>
 </resources>

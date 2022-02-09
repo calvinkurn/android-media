@@ -44,6 +44,7 @@
     <dimen name="shc_dimen_290dp">290dp</dimen>
     <dimen name="shc_dimen_312dp">312dp</dimen>
     <dimen name="shc_dimen_320dp">320dp</dimen>
+    <dimen name="shc_dimen_date_filter_height">72dp</dimen>
 
     <dimen category="font-size" name="shc_line_spacing_6">6sp</dimen>
 </resources>

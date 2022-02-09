@@ -1,0 +1,157 @@
+package com.tokopedia.sellerhomecommon.common
+
+import android.content.Context
+import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
+import java.util.*
+import java.util.concurrent.TimeUnit
+
+/**
+ * Created by @ilhamsuaib on 09/02/22.
+ */
+
+object DateFilterUtil {
+
+    private const val PATTERN_DAY = "dd"
+    private const val PATTERN_MONTH_MM = "MM"
+    private const val PATTERN_MONTH_MMM = "MMM"
+    private const val PATTERN_MONTH_MMMM = "MMMM"
+    private const val PATTERN_YEAR = "yyyy"
+
+    fun getDateRangeStr(startDate: Date, endDate: Date): String {
+        val startMonth = DateTimeUtil.format(startDate.time, PATTERN_MONTH_MM)
+        val endMonth = DateTimeUtil.format(endDate.time, PATTERN_MONTH_MM)
+        val startYear = DateTimeUtil.format(startDate.time, PATTERN_YEAR)
+        val endYear = DateTimeUtil.format(endDate.time, PATTERN_YEAR)
+
+        if (areStartAndEndDateSame(startDate, endDate)) {
+            val hourStr = DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00")
+            val singleDayPattern = "$PATTERN_DAY $PATTERN_MONTH_MMMM (00:00 - $hourStr)"
+            return DateTimeUtil.format(startDate.time, pattern = singleDayPattern)
+        }
+
+        val startDatePattern: String
+        val endDatePattern: String
+        when {
+            startMonth == endMonth && startYear == endYear -> {
+                //ex : 12 - 15 Apr 2020
+                startDatePattern = PATTERN_DAY
+                endDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM $PATTERN_YEAR"
+            }
+            startMonth != endMonth && startYear == endYear -> {
+                //ex : 12 Jan - 15 Apr 2020
+                startDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM"
+                endDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM $PATTERN_YEAR"
+            }
+            else -> {
+                //ex : 12 Jan 2020 - 15 Apr 2020
+                startDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM $PATTERN_YEAR"
+                endDatePattern = "$PATTERN_DAY $PATTERN_MONTH_MMM $PATTERN_YEAR"
+            }
+        }
+
+        val startDateStr = DateTimeUtil.format(startDate.time, pattern = startDatePattern)
+        val endDateStr = DateTimeUtil.format(endDate.time, pattern = endDatePattern)
+
+        return "$startDateStr - $endDateStr"
+    }
+
+    /**
+     * Get first and last date in the selected month. For example: February 2020 -> return 01 February 2020 and 29 February 2020
+     *
+     * @param   selectedMonth   date of the selected month
+     * @return  pair of first and last date of a month
+     */
+    fun getStartAndEndDateInAMonth(selectedMonth: Date): Pair<Date?, Date?> {
+        val startCalendar = getNewCalendarInstance(selectedMonth)
+        val endCalendar = getNewCalendarInstance(selectedMonth)
+        startCalendar.set(Calendar.DAY_OF_MONTH, startCalendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+        endCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+        return startCalendar.time to endCalendar.time
+    }
+
+    private fun getNewCalendarInstance(selectedMonth: Date): Calendar {
+        return Calendar.getInstance().apply {
+            time = selectedMonth
+        }
+    }
+
+    private fun areStartAndEndDateSame(startDate: Date, endDate: Date): Boolean {
+        val pattern = "$PATTERN_DAY $PATTERN_MONTH_MM $PATTERN_YEAR"
+        val startDateStr = DateTimeUtil.format(startDate.time, pattern = pattern)
+        val endDateStr = DateTimeUtil.format(endDate.time, pattern = pattern)
+        return startDateStr == endDateStr
+    }
+
+    object FilterList {
+
+        fun getCalendarPickerFilterList(context: Context): List<DateFilterItem> {
+            return listOf(
+                getDateFilterPerWeek(context, true, ShcConst.DAYS_91),
+                getFilterPerMonth(context, false, ShcConst.DAYS_91),
+                DateFilterItem.ApplyButton
+            )
+        }
+
+        private fun getDateFilterPerWeek(
+            context: Context,
+            isOnlyCompletedWeek: Boolean,
+            minDaysCount: Int
+        ): DateFilterItem.Pick {
+            val calendar: Calendar = Calendar.getInstance()
+            with(calendar) {
+                firstDayOfWeek = Calendar.MONDAY
+                set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+                set(Calendar.HOUR_OF_DAY, ShcConst.EMPTY)
+                set(Calendar.MINUTE, ShcConst.EMPTY)
+                set(Calendar.SECOND, ShcConst.EMPTY)
+                set(Calendar.MILLISECOND, ShcConst.EMPTY)
+            }
+            var firstDateOfWeek = calendar.time
+            var lastDateOfWeek = Date()
+
+            if (isOnlyCompletedWeek) {
+                val sevenDaysMillis = TimeUnit.DAYS.toMillis(ShcConst.DAYS_7.toLong())
+                val sixDaysMillis = TimeUnit.DAYS.toMillis(ShcConst.DAYS_6.toLong())
+                val firstDateOfWeekTimeStamp = calendar.time.time.minus(sevenDaysMillis)
+                firstDateOfWeek = Date(firstDateOfWeekTimeStamp)
+                lastDateOfWeek = Date(firstDateOfWeekTimeStamp.plus(sixDaysMillis))
+            }
+
+            val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(minDaysCount.toLong()))
+
+            val label = context.getString(R.string.shc_per_week)
+            return DateFilterItem.Pick(
+                label, firstDateOfWeek, lastDateOfWeek, type = DateFilterItem.TYPE_PER_WEEK,
+                calendarPickerMinDate = minDate, calendarPickerMaxDate = lastDateOfWeek
+            )
+        }
+
+        private fun getFilterPerMonth(
+            context: Context,
+            canSelectOnGoingMonth: Boolean,
+            minDaysCount: Int
+        ): DateFilterItem.MonthPickerItem {
+            val perMonthLabel = context.getString(R.string.shc_per_month)
+            val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(minDaysCount.toLong()))
+            val defaultDate: Date = if (canSelectOnGoingMonth) {
+                Date()
+            } else {
+                Date().apply {
+                    val millisOf31Days = TimeUnit.DAYS.toMillis(ShcConst.DAYS_31.toLong())
+                    time = time.minus(millisOf31Days)
+                }
+            }
+            val (startDate, endDate) = getStartAndEndDateInAMonth(defaultDate)
+            return DateFilterItem.MonthPickerItem(
+                perMonthLabel,
+                startDate = startDate,
+                endDate = endDate,
+                monthPickerMinDate = minDate,
+                monthPickerMaxDate = defaultDate
+            )
+        }
+    }
+}
