@@ -30,6 +30,8 @@ import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
+import com.tokopedia.discovery2.repository.section.SectionGQLRepository
+import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
@@ -164,6 +166,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideQuickFilterGQLRepository(): IQuickFilterGqlRepository {
         return QuickFilterGQLRepository()
+    }
+
+    @Provides
+    fun provideSectionRepository():SectionRepository{
+        return SectionGQLRepository()
     }
 
     @DiscoveryScope

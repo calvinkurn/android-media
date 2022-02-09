@@ -549,6 +549,10 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
+    private fun stopPerformanceMonitoring() {
+        pageLoadTimeMonitoring?.stopPerformanceMonitoring()
+    }
+
     private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
         context?.let {
             when {
@@ -1038,11 +1042,9 @@ class TokoNowHomeFragment: Fragment(),
         showFailedToFetchData()
         stickyLoginLoadContent()
         logHomeLayoutError(throwable)
-        stopRenderPerformanceMonitoring()
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
-        startRenderPerformanceMonitoring()
         showHomeLayout(data)
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
@@ -1059,10 +1061,11 @@ class TokoNowHomeFragment: Fragment(),
         showHomeLayout(data)
         hideHeaderBackground()
         stickyLoginLoadContent()
-        stopRenderPerformanceMonitoring()
+        stopPerformanceMonitoring()
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
+        startRenderPerformanceMonitoring()
         showHomeLayout(data)
         showHeaderBackground()
         stickyLoginLoadContent()
@@ -1078,7 +1081,9 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        adapter.submitList(data.items)
+        rvHome?.post {
+            adapter.submitList(data.items)
+        }
     }
 
     private fun addLoadMoreListener() {

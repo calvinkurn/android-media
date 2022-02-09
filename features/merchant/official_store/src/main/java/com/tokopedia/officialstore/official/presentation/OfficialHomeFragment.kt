@@ -901,18 +901,16 @@ class OfficialHomeFragment :
     }
 
     private fun observeFeaturedShopSuccessDC() {
-        viewModel.featuredShopResult.observe(viewLifecycleOwner) {
-            when (it) {
+        viewModel.featuredShopResult.observe(viewLifecycleOwner, {
+            when(it) {
                 is Success -> {
                     //update UI
-                    officialHomeMapper.updateFeaturedShopDC(
-                        it.data
-                    ) { newDataList ->
+                    officialHomeMapper.updateFeaturedShopDC(it.data) { newDataList ->
                         adapter?.submitList(newDataList)
                     }
                 }
             }
-        }
+        })
     }
 
     private fun observeFeaturedShopRemoveDC() {
