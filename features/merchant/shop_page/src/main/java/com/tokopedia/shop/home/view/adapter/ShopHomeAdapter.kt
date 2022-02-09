@@ -486,8 +486,18 @@ class ShopHomeAdapter(
         val newList = getNewVisitableItems()
         listWidgetContentData.onEach { widgetContentData ->
             // need to separate updating ui model for temporary purpose
-            newList.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
-                widgetContentData.key.first == it.widgetId
+            newList.filterIsInstance<Visitable<*>>().indexOfFirst {
+                when(it) {
+                    is BaseShopHomeWidgetUiModel -> {
+                        widgetContentData.key.first == it.widgetId
+                    }
+                    is ThematicWidgetUiModel -> {
+                        widgetContentData.key.first == it.widgetId
+                    }
+                    else -> {
+                        false
+                    }
+                }
             }.let{ position ->
                 if (position >= 0 && position < newList.size) {
                     when (widgetContentData.value) {
@@ -498,18 +508,6 @@ class ShopHomeAdapter(
                             (widgetContentData.value as BaseShopHomeWidgetUiModel).widgetState = WidgetState.FINISH
                             (widgetContentData.value as BaseShopHomeWidgetUiModel).isNewData = true
                             newList.setElement(position, widgetContentData.value)
-                        }
-                    }
-                }
-            }
-
-            newList.filterIsInstance<ThematicWidgetUiModel>().indexOfFirst {
-                widgetContentData.key.first == it.widgetId
-            }.let{ position ->
-                if (position >= 0 && position < newList.size) {
-                    when (widgetContentData.value) {
-                        null -> {
-                            newList.removeAt(position)
                         }
                         is ThematicWidgetUiModel -> {
                             (widgetContentData.value as ThematicWidgetUiModel).widgetState = WidgetState.FINISH
@@ -526,15 +524,27 @@ class ShopHomeAdapter(
     fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
         listWidgetLayout.onEach { widgetLayout ->
             // need to separate updating ui model for temporary purpose
-            visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().firstOrNull {
-                widgetLayout.widgetId == it.widgetId
+            visitables.filterIsInstance<Visitable<*>>().firstOrNull {
+                when(it) {
+                    is BaseShopHomeWidgetUiModel -> {
+                        widgetLayout.widgetId == it.widgetId
+                    }
+                    is ThematicWidgetUiModel -> {
+                        widgetLayout.widgetId == it.widgetId
+                    }
+                    else -> {
+                        false
+                    }
+                }
             }?.let{
-                it.widgetState = WidgetState.LOADING
-            }
-            visitables.filterIsInstance<ThematicWidgetUiModel>().firstOrNull {
-                widgetLayout.widgetId == it.widgetId
-            }?.let{
-                it.widgetState = WidgetState.LOADING
+                when(it) {
+                    is BaseShopHomeWidgetUiModel -> {
+                        it.widgetState = WidgetState.LOADING
+                    }
+                    is ThematicWidgetUiModel -> {
+                        it.widgetState = WidgetState.LOADING
+                    }
+                }
             }
         }
     }
@@ -592,14 +602,18 @@ class ShopHomeAdapter(
         // need to separate updating ui model for temporary purpose
         val newList = getNewVisitableItems()
         listShopWidgetLayout.onEach { shopWidgetLayout ->
-            newList.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
-                shopWidgetLayout.widgetId == it.widgetId
-            }.let { position ->
-                newList.removeAt(position)
-            }
-
-            newList.filterIsInstance<ThematicWidgetUiModel>().indexOfFirst {
-                shopWidgetLayout.widgetId == it.widgetId
+            newList.filterIsInstance<Visitable<*>>().indexOfFirst {
+                when(it) {
+                    is BaseShopHomeWidgetUiModel -> {
+                        shopWidgetLayout.widgetId == it.widgetId
+                    }
+                    is ThematicWidgetUiModel -> {
+                        shopWidgetLayout.widgetId == it.widgetId
+                    }
+                    else -> {
+                        false
+                    }
+                }
             }.let { position ->
                 newList.removeAt(position)
             }

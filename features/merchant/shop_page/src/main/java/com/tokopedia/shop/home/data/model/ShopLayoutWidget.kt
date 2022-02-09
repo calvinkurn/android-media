@@ -141,7 +141,7 @@ data class ShopLayoutWidget(
         ) {
             data class Banner(
                     @SerializedName("imageID")
-                    val imageId: Int = -1,
+                    val imageId: String = "",
                     @SerializedName("imageURL")
                     val imageUrl: String = "",
                     @SerializedName("bannerType")
