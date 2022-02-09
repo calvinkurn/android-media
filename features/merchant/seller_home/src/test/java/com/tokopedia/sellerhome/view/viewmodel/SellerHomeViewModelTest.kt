@@ -1182,6 +1182,186 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when new caching enabled, on first load and cache enabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, on first load and cache disabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, not first load and cache disabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `when new caching enabled, not first load and cache enabled should success when get milestone widget data`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+            val isCachingEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCachingEnabled
+
+            coEvery {
+                getMilestoneDataUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MilestoneDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            every {
+                getMilestoneDataUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            coVerify {
+                getMilestoneDataUseCase.executeOnBackground(
+                    any(),
+                    isFirstLoad && isCachingEnabled
+                )
+            }
+
+            coVerify {
+                getMilestoneDataUseCase.getResultFlow()
+            }
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.milestoneWidgetData.value)
+        }
+    }
+
+    @Test
     fun `when get milestone widget data then throw exception`() {
         coroutineTestRule.runBlockingTest {
             val dataKeys = listOf(anyString())
