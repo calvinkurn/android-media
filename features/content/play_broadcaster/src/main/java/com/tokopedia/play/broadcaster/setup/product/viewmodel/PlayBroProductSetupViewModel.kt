@@ -249,8 +249,6 @@ class PlayBroProductSetupViewModel @Inject constructor(
                 _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
             }
 
-            throw Exception("Testing")
-
             getProductTagSummary()
         }) {
             withContext(dispatchers.main) {
@@ -278,6 +276,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
             /** TODO: gonna delete this later */
             delay(1000)
 
+            throw Exception("Error")
             /** TODO: gonna uncomment this later */
 //                val productIds = productSectionList.sections.flatMap { section ->
 //                    section.products.filter { it.id != product.id }.map { it.id }
