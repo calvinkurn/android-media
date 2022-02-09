@@ -244,16 +244,12 @@ open class TopChatViewModel @Inject constructor(
     val errorSnackbar: LiveData<Throwable>
         get() = _errorSnackbar
 
-    private val _errorSnackbarStringRes = MutableLiveData<Int>()
-    val errorSnackbarStringRes: LiveData<Int>
-        get() = _errorSnackbarStringRes
-
     private val _uploadImageService = MutableLiveData<ImageUploadServiceModel>()
     val uploadImageService: LiveData<ImageUploadServiceModel>
         get() = _uploadImageService
 
-    private val _templateChat = MutableLiveData<Result<ArrayList<Visitable<Any>>>>()
-    val templateChat: LiveData<Result<ArrayList<Visitable<Any>>>>
+    private val _templateChat = MutableLiveData<Result<ArrayList<Visitable<*>>>>()
+    val templateChat: LiveData<Result<ArrayList<Visitable<*>>>>
         get() = _templateChat
 
     var attachProductWarehouseId = "0"
@@ -1079,18 +1075,12 @@ open class TopChatViewModel @Inject constructor(
         }
     }
 
-    private fun showErrorSnackbar(@StringRes stringId: Int) {
-        _errorSnackbarStringRes.value = stringId
-    }
-
     fun getTemplate(isSeller: Boolean) {
         launchCatchError(block = {
             val result = getTemplateChatRoomUseCase.getTemplateChat(isSeller)
-            val templateList = arrayListOf<Visitable<Any>>()
+            val templateList = arrayListOf<Visitable<*>>()
             if (result.isEnabled) {
-                result.listTemplate?.let {
-                    templateList.addAll(it)
-                }
+                templateList.addAll(result.listTemplate)
             }
             _templateChat.value = Success(templateList)
         }, onError = {
