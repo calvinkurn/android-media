@@ -42,15 +42,15 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
             itemView.clDetailParent.background = MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_gradient)
             itemView.clPartnerCard.background = MethodChecker.getDrawable(context, R.drawable.bg_paylater_card_border_recommendation)
-            itemView.recomrecommendationTitlemendationTitle.visible()
-            itemView.recomrecommendationTitlemendationTitle.text = element.recommendationDetail.text
+            itemView.tvRecommendationTitle.visible()
+            itemView.tvRecommendationTitle.text = element.recommendationDetail.text
 
         } else {
 
             itemView.clDetailParent.background = null
             itemView.clPartnerCard.background = null
 
-            itemView.recomrecommendationTitlemendationTitle.gone()
+            itemView.tvRecommendationTitle.gone()
         }
     }
 
@@ -108,7 +108,10 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             tvInstallmentAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.installment_per_month_ceil?: 0, false)
             if(element.tenure != 1)
                 tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.tenure)
-            else tvTenureMultiplier.gone()
+            else {
+                tvTenureMultiplier.gone()
+                tvInstallmentAmount.text = element.optionalTenureHeader
+            }
             if (element.subheader.isNullOrEmpty())
                 tvInstallmentDescription.gone()
             else {
