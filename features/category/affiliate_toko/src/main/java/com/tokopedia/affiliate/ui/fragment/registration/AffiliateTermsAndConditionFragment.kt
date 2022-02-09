@@ -51,7 +51,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
 
-    private lateinit var affiliateNavigationInterface: AffiliateActivityInterface
+    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
 
     override fun getViewModelType(): Class<AffiliateTermsAndConditionViewModel> {
         return AffiliateTermsAndConditionViewModel::class.java
@@ -78,6 +78,9 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? AffiliateActivityInterface)?.let {
+            affiliateNavigationInterface = it
+        }
         afterViewCreated()
     }
 
@@ -138,7 +141,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             customView(customView)
             setNavigationOnClickListener {
                 sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_BACK)
-                affiliateNavigationInterface.handleBackButton(false)
+                affiliateNavigationInterface?.handleBackButton(false)
             }
         }
 
@@ -147,7 +150,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     private fun initObserver() {
         affiliateTermsAndConditionViewModel.getOnBoardingData().observe(this, { onBoardingData ->
             if(onBoardingData.data?.status == REGISTRATION_SUCCESS){
-                affiliateNavigationInterface.onRegistrationSuccessful()
+                affiliateNavigationInterface?.onRegistrationSuccessful()
             }else {
                 view?.let {
                     Toaster.build(it, getString(com.tokopedia.affiliate_toko.R.string.affiliate_registeration_error),
@@ -200,10 +203,8 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     companion object {
         const val REGISTRATION_SUCCESS = 1
-        fun getFragmentInstance(affiliateActivityInterface: AffiliateActivityInterface): AffiliateTermsAndConditionFragment {
-            return AffiliateTermsAndConditionFragment().apply {
-                affiliateNavigationInterface = affiliateActivityInterface
-            }
+        fun getFragmentInstance(): AffiliateTermsAndConditionFragment {
+            return AffiliateTermsAndConditionFragment()
         }
     }
 

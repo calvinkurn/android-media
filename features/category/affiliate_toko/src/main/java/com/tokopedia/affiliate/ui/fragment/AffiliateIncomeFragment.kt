@@ -219,21 +219,18 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun showGlobalErrorEmptyState() {
-        val defaultSelected = affiliateIncomeViewModel.getSelectedDate() == AffiliateBottomDatePicker.SEVEN_DAYS
-        if(defaultSelected) view?.findViewById<DeferredImageView>(R.id.affiliate_no__default_transaction_iv)?.show()
-        else view?.findViewById<DeferredImageView>(R.id.affiliate_no_transaction_iv)?.show()
+        view?.findViewById<DeferredImageView>(R.id.affiliate_no_transaction_iv)?.show()
 
         view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.apply {
             show()
             errorIllustration.hide()
-            errorTitle.text = if(!defaultSelected) getString(R.string.affiliate_empty_transaction) else getString(R.string.affiliate_default_no_transaction)
-            errorDescription.text = if(!defaultSelected) getString(R.string.affiliate_empty_transaction_description) else getString(R.string.affiliate_default_no_transaction_description)
+            errorTitle.text = getString(R.string.affiliate_empty_transaction)
+            errorDescription.text = getString(R.string.affiliate_empty_transaction_description)
             setButtonFull(true)
             errorSecondaryAction.gone()
-            errorAction.text = if(!defaultSelected) getString(R.string.affiliate_choose_date) else getString(R.string.affiliate_promote_product_cta)
+            errorAction.text = getString(R.string.affiliate_choose_date)
             setActionClickListener {
-                if (!defaultSelected) AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this@AffiliateIncomeFragment).show(childFragmentManager, "")
-                else bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
+                AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this@AffiliateIncomeFragment).show(childFragmentManager, "")
             }
         }
     }

@@ -46,13 +46,11 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     private lateinit var affiliateLoginViewModel: AffiliateLoginViewModel
 
-    private lateinit var affiliateNavigationInterface: AffiliateActivityInterface
+    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
 
     companion object {
-        fun getFragmentInstance(affiliateActivityInterface: AffiliateActivityInterface): Fragment {
-            return AffiliateLoginFragment().apply {
-                affiliateNavigationInterface = affiliateActivityInterface
-            }
+        fun getFragmentInstance(): Fragment {
+            return AffiliateLoginFragment()
         }
     }
 
@@ -66,6 +64,9 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? AffiliateActivityInterface)?.let {
+            affiliateNavigationInterface = it
+        }
         afterViewCreated()
     }
 
@@ -128,7 +129,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_login_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface.handleBackButton(false)
+                affiliateNavigationInterface?.handleBackButton(false)
             }
             actionTextView?.setOnClickListener {
                 sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_PELJARI,if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN)
@@ -161,8 +162,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_login_card.hide()
 
         } else {
-
-            affiliateNavigationInterface.validateUserStatus()
+            affiliateNavigationInterface?.validateUserStatus()
 
             affiliate_login_text.isVisible = true
             affiliate_login_text.text = getString(R.string.affiliate_daftarkan_akun_ini)
@@ -172,7 +172,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_sign_up_btn.isVisible = true
             affiliate_sign_up_btn.setOnClickListener {
                 sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG)
-                affiliateNavigationInterface.navigateToPortfolioFragment()
+                affiliateNavigationInterface?.navigateToPortfolioFragment()
             }
 
             affiliate_keluar_btn.setOnClickListener {

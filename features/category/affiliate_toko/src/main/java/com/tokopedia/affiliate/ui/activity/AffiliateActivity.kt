@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.Group
@@ -131,14 +133,15 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun showLoginPortal() {
         if (fragmentStack.isEmpty() || (fragmentStack.peek() != (AffiliateLoginFragment::class.java.canonicalName)))
-            openFragment(AffiliateLoginFragment.getFragmentInstance(this))
+            openFragment(AffiliateLoginFragment.getFragmentInstance())
     }
 
     private fun showAffiliatePortal() {
         clearBackStack()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
+        if(findViewById<LottieBottomNavbar>(R.id.bottom_navbar)?.visibility !=  View.VISIBLE)
+            affiliateBottomNavigation?.populateBottomNavigationView()
         affiliateBottomNavigation?.showBottomNav()
-        affiliateBottomNavigation?.populateBottomNavigationView()
     }
 
     private val coachMarkItemList = ArrayList<CoachMark2Item>()
@@ -325,6 +328,15 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         showSplashScreen()
     }
 
+    var splashHandler: Handler? = null
+    var isBackEnabled = true
+
+    private val splashRunnable = Runnable {
+        isBackEnabled = true
+        findViewById<Group>(R.id.splash_group)?.hide()
+        showAffiliatePortal()
+    }
+
     private fun showSplashScreen() {
         findViewById<Typography>(R.id.splash_title).text =
             getString(R.string.affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate).replace(
@@ -332,10 +344,14 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 userSessionInterface.name
             )
         findViewById<Group>(R.id.splash_group)?.show()
-        Handler().postDelayed({
-            findViewById<Group>(R.id.splash_group)?.hide()
-            showAffiliatePortal()
-        }, AFFILIATE_SPLASH_TIME)
+        isBackEnabled = false
+        splashHandler = Handler(Looper.getMainLooper())
+        splashHandler?.postDelayed(splashRunnable, AFFILIATE_SPLASH_TIME)
+    }
+
+    override fun onDestroy() {
+        splashHandler?.removeCallbacks(splashRunnable)
+        super.onDestroy()
     }
 
     private fun openFragment(fragment: Fragment) {
@@ -401,6 +417,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun onBackPressed() {
+        if(!isBackEnabled) return
         val currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
         if (currentFragment != null && currentFragment.isVisible) {
@@ -464,7 +481,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun navigateToTermsFragment(channels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
-        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(this).apply {
+        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance().apply {
             setChannels(channels)
         })
         val currentFragment =
@@ -475,7 +492,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun navigateToPortfolioFragment() {
-        openFragment(AffiliatePortfolioFragment.getFragmentInstance(this))
+        openFragment(AffiliatePortfolioFragment.getFragmentInstance())
     }
 
     override fun validateUserStatus() {
