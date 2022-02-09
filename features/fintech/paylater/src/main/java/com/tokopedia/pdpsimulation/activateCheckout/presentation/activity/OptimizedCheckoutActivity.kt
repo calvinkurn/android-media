@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 
 class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent>,
-    PdpSimulationCallback,GatewaySelectActivityListner {
+    GatewaySelectActivityListner {
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
     private val REQUEST_CODE_LOGIN = 123
@@ -111,11 +111,11 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     }
 
     override fun getComponent() = pdpSimulationComponent
-    override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
-    }
-    override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
-        pdpSimulationAnalytics.get().sendPdpSimulationEvent(pdpSimulationEvent)
-    }
+//    override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
+//    }
+//    override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
+//        pdpSimulationAnalytics.get().sendPdpSimulationEvent(pdpSimulationEvent)
+//    }
 
     override fun setGatewayValue(gatewaySelected: Int) {
         activationCheckoutFragment.updateSelectedTenure(gatewaySelected)

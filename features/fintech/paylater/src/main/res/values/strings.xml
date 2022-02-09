@@ -13,7 +13,6 @@
     <string name="pay_later_action_find_more">Cari Tahu Lebih Lanjut</string>
 
     <string name="pay_later_unavailable_description">Maaf, ada gangguan saat nampilin pilihan cicilan. Coba lagi, ya.</string>
-    <string name="pay_later_unavailable_title">Oops, pilihan pembayaran tidak tersedia</string>
     <string name="pay_later_connect_gopay">Sambungin Gojek dulu, ya</string>
     <string name="paylater_to_use_gopay">Buat pakai GoPayLater Cicil, kamu perlu sambungin akun Gojek ke Tokopedia dulu. Cuma sebentar, kok!</string>
     <string name="paylater_gopay_connect_account">Sambungin Akun</string>
@@ -22,7 +21,6 @@
     <string name="activation_paylater_breakdown">Lihat Rincian</string>
     <string name="paylater_activation_change_variant">Ganti Varian</string>
     <string name="which_paylater_you_want">Mau pakai PayLater yang mana?</string>
-    <string name="pay_later_unavailable_description">Maaf, ada gangguan saat nampilin pilihan cicilan. Coba lagi, ya.</string>
     <string name="pay_later_unavailable_title">Oops, pilihan pembayaran tidak tersedia</string>
     <string name="paylater_see_more_offers">Lihat %1$d Lainnya</string>
 
