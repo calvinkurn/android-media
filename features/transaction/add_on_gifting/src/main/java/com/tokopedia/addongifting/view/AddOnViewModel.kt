@@ -8,6 +8,7 @@ import com.tokopedia.addongifting.data.response.GetAddOnByProductResponse
 import com.tokopedia.addongifting.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.domain.usecase.GetAddOnSavedStateUseCase
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
+import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.view.uimodel.ProductUiModel
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -18,20 +19,25 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                                          private val getAddOnSavedStateUseCase: GetAddOnSavedStateUseCase)
     : BaseViewModel(executorDispatchers.main) {
 
-    // Global event
+    // Global Event
     private val _globalEvent = SingleLiveEvent<GlobalEvent>()
     val globalEvent: LiveData<GlobalEvent>
         get() = _globalEvent
 
+    // Fragment / Global Data
+    private val _fragmentUiModel = MutableLiveData<FragmentUiModel>()
+    val fragmentUiModel: LiveData<FragmentUiModel>
+        get() = _fragmentUiModel
+
     // Product Data
-    private val _productData = MutableLiveData<ProductUiModel>()
-    val productData: LiveData<ProductUiModel>
-        get() = _productData
+    private val _productUiModel = MutableLiveData<ProductUiModel>()
+    val productUiModel: LiveData<ProductUiModel>
+        get() = _productUiModel
 
     // Add On Data
-    private val _addOnData = MutableLiveData<AddOnUiModel>()
-    val addOnData: LiveData<AddOnUiModel>
-        get() = _addOnData
+    private val _addOnUiModel = MutableLiveData<AddOnUiModel>()
+    val addOnUiModel: LiveData<AddOnUiModel>
+        get() = _addOnUiModel
 
     fun loadAddOnData(addOnProductData: AddOnProductData, mockAddOnResponse: String = "", mockAddOnSavedStateResponse: String = "") {
         getAddOnByProductUseCase.mockResponse = mockAddOnResponse
@@ -52,17 +58,28 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
         getAddOnSavedStateUseCase.execute(
                 onSuccess = {
                     val productUiModel = UiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
-                    _productData.value = productUiModel
+                    _productUiModel.value = productUiModel
                     val addOnUiModel = UiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, it)
-                    _addOnData.value = addOnUiModel
+                    _addOnUiModel.value = addOnUiModel
                 },
                 onError = {
                     val productUiModel = UiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
-                    _productData.value = productUiModel
+                    _productUiModel.value = productUiModel
                     val addOnUiModel = UiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)
-                    _addOnData.value = addOnUiModel
+                    _addOnUiModel.value = addOnUiModel
                 }
         )
     }
 
+    fun updateFragmentUiModel(addOnUiModel: AddOnUiModel) {
+        _fragmentUiModel.value = FragmentUiModel().apply {
+            if (addOnUiModel.isAddOnSelected) {
+                addOnTotalPrice = addOnUiModel.addOnPrice
+                addOnTotalQuantity = 1
+            } else {
+                addOnTotalPrice = 0
+                addOnTotalQuantity = 0
+            }
+        }
+    }
 }

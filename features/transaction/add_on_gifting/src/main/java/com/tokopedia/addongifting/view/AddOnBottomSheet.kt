@@ -130,6 +130,29 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         })
     }
 
+    private fun observeFragmentData(viewBinding: LayoutAddOnBottomSheetBinding) {
+        viewModel.fragmentUiModel.observe(this, {
+            renderTotalAmount(viewBinding, it)
+        })
+    }
+
+    private fun renderTotalAmount(viewBinding: LayoutAddOnBottomSheetBinding, fragmentUiModel: FragmentUiModel) {
+        with(viewBinding.totalAmount) {
+            setLabelTitle("Total Pelengkap")
+            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.addOnTotalPrice, false).removeDecimalSuffix())
+            if (fragmentUiModel.addOnTotalQuantity > 0) {
+                setCtaText("Simpan ${fragmentUiModel.addOnTotalQuantity}")
+            } else {
+                setCtaText("Simpan")
+            }
+            amountCtaView.setOnClickListener {
+                // Todo : hit save state
+                Toaster.build(viewBinding.root, "Will Save The State", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        .show()
+            }
+        }
+    }
+
     private fun addOrModify(it: Visitable<*>) {
         if (adapter?.data?.contains(it) == true) {
             adapter?.modifyData(adapter?.data?.indexOf(it) ?: RecyclerView.NO_POSITION)
