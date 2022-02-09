@@ -60,6 +60,9 @@ data class RechargeHomepageSections(
         @SerializedName("label_1")
         @Expose
         val label1: String = "#FFFFFF",
+        @SerializedName("label_2")
+        @Expose
+        val label2: String = "#FFFFFF",
         @SerializedName("items")
         @Expose
         val items: List<Item> = listOf()

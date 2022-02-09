@@ -10,8 +10,7 @@
     android:layout_marginRight="@dimen/unify_space_16"
     android:layout_marginBottom="@dimen/unify_space_8"
     android:paddingTop="@dimen/unify_space_12"
-    android:paddingBottom="@dimen/unify_space_12"
-    tools:background="@drawable/bg_digital_homepage_custom_last_item">
+    android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_recharge_custom_last_item_title"

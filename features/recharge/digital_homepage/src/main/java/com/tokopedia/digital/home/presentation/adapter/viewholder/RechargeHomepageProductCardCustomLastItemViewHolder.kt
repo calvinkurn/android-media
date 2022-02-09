@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
+import android.graphics.Color
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -43,8 +44,17 @@ class RechargeHomepageProductCardCustomLastItemViewHolder(
 
     private fun setupInitialView(element: RechargeHomepageProductCardCustomLastItemModel) {
         with(binding) {
-            containerRechargeCustomLastItem.setBackgroundResource(R.drawable.bg_digital_homepage_custom_last_item)
+            // handle background color
+            try {
+                containerRechargeCustomLastItem.setBackgroundColor(Color.parseColor(element.section.label2))
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
+
+            // title
             tvRechargeCustomLastItemTitle.text = element.section.title
+
+            // subtitle
             tvRechargeCustomLastItemSubtitle.text = element.section.subtitle
         }
     }
@@ -55,7 +65,7 @@ class RechargeHomepageProductCardCustomLastItemViewHolder(
                 LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
 
             val newList: MutableList<Visitable<DigitalUnifyCardTypeFactory>> = mutableListOf()
-            newList.addAll(element.digitalUnifyItems)
+            newList.addAll(element.digitalUnifyItems.subList(0, element.digitalUnifyItems.size - 1))
             newList.add(
                 RechargeHomepageProductCardCustomLastItemModel.LastItem(element.section) as Visitable<DigitalUnifyCardTypeFactory>
             )

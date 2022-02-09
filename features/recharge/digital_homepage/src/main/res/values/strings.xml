@@ -18,6 +18,4 @@
     <string name="recharge_home_search_empty_state">Oops, belum ada yang sesuai nih</string>
     <string name="recharge_home_search_empty_state_desc">Coba cari pakai kata kunci lain, ya.</string>
     <string name="recharge_home_search_empty_state_btn">Ganti Kata Kunci</string>
-    <string name="recharge_homepage_last_item_title">Belum cukup?</string>
-    <string name="recharge_homepage_last_item_subtitle">Masih banyak diskon lagi, kok!</string>
 </resources>

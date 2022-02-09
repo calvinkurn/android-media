@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ContentRechargeHomepageLastItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastItemModel
+import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.loader.loadImage
@@ -13,6 +14,8 @@ class RechargeHomepageLastItemViewHolder(
     private val binding: ContentRechargeHomepageLastItemBinding,
     private val listener: RechargeHomepageItemListener
 ) : AbstractViewHolder<RechargeHomepageProductCardCustomLastItemModel.LastItem>(binding.root) {
+
+    lateinit var item: RechargeHomepageSections.Item
 
     override fun bind(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
         renderView(element)
@@ -25,8 +28,10 @@ class RechargeHomepageLastItemViewHolder(
 
     private fun renderView(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
         with(binding) {
-            cardViewRechargeHomepageLastItem.title = getString(R.string.recharge_homepage_last_item_title)
-            cardViewRechargeHomepageLastItem.description = getString(R.string.recharge_homepage_last_item_subtitle)
+            item = element.section.items.last()
+
+            cardViewRechargeHomepageLastItem.title = item.title
+            cardViewRechargeHomepageLastItem.description = item.subtitle
             cardViewRechargeHomepageLastItem.ctaIconView.setImage(newIconId = IconUnify.CHEVRON_RIGHT)
             cardViewRechargeHomepageLastItem.setCta(getString(R.string.recharge_home_banner_see_all_label)) {
                 listener.onRechargeBannerAllItemClicked(element.section)
