@@ -198,7 +198,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             subtotal += fee
             subtotal -= cost.productDiscountAmount
             subtotal -= cost.shippingDiscountAmount
-            val orderCost = OrderCost(subtotal, cost.totalItemPrice, cost.shippingFee, cost.insuranceFee, fee, cost.shippingDiscountAmount, cost.productDiscountAmount, cost.purchaseProtectionPrice, cost.cashbacks, isNewBottomSheet = payment.walletData.isGoPaylaterCicil)
+            val orderCost = OrderCost(subtotal, cost.totalItemPrice, cost.shippingFee, cost.insuranceFee, cost.isUseInsurance, fee, cost.shippingDiscountAmount, cost.productDiscountAmount, cost.purchaseProtectionPrice, cost.cashbacks, isNewBottomSheet = payment.walletData.isGoPaylaterCicil)
             return@withContext orderCost to payment
         }
         OccIdlingResource.decrement()
@@ -256,9 +256,10 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             totalProductPrice += totalProductWholesalePrice
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
+            val isUseInsurance = shipping.isUseInsurance()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
             val subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice - productDiscount - shippingDiscount
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, 0.0, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, isUseInsurance, 0.0, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
             return@withContext orderCost to updatedProductIndex
         }
         OccIdlingResource.decrement()

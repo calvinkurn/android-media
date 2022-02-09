@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetOrderCostSummaryBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemCashbackDetailBinding
-import com.tokopedia.oneclickcheckout.databinding.ItemInstallmentSummaryDetailBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -20,13 +20,14 @@ class OrderCostSummaryBottomSheet {
             BottomSheetUnify().apply {
                 isDragable = true
                 isHideable = true
-                showKnob = true
-                showHeader = false
-                showCloseIcon = false
+                showKnob = false
+                showHeader = true
+                showCloseIcon = true
                 val binding = BottomSheetOrderCostSummaryBinding.inflate(LayoutInflater.from(view.context))
                 view.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
+                setTitle(binding.root.context.getString(R.string.occ_lbl_order_summary))
                 setupView(binding, orderCost)
                 setChild(binding.root)
                 show(it, null)
@@ -72,7 +73,7 @@ class OrderCostSummaryBottomSheet {
             }
         }
 
-        if (orderCost.insuranceFee > 0.0) {
+        if (orderCost.insuranceFee > 0.0 || orderCost.isUseInsurance) {
             binding.tvTotalInsurancePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.insuranceFee, false).removeDecimalSuffix()
             binding.tvTotalInsurancePriceLabel.visible()
             binding.tvTotalInsurancePriceValue.visible()
@@ -123,19 +124,34 @@ class OrderCostSummaryBottomSheet {
             binding.tvTotalInstallmentFeePriceValue.visible()
             binding.tvTotalInstallmentFeePriceLabel.visible()
 
-            binding.llInstallment.removeAllViews()
-            val layoutInflater = LayoutInflater.from(binding.root.context)
-            val installmentPeriod = ItemInstallmentSummaryDetailBinding.inflate(layoutInflater)
-            installmentPeriod.tvInstallmentSummaryLabel.text = "asdf"
-            installmentPeriod.tvInstallmentSummaryValue.text = "1234"
-            binding.llInstallment.addView(installmentPeriod.root)
+            binding.tvTotalInstallmentTermValue.text = "orderCost.installmentData.installmentTerm"
+            binding.tvTotalInstallmentTermValue.visible()
+            binding.tvTotalInstallmentTermLabel.visible()
 
-            binding.llInstallment.visible()
+            binding.tvTotalInstallmentPerPeriodValue.text = "orderCost.installmentData.installmentAmountPerPeriod"
+            binding.tvTotalInstallmentPerPeriodValue.visible()
+            binding.tvTotalInstallmentPerPeriodLabel.visible()
+
+            binding.tvTotalInstallmentFirstDateValue.text = "orderCost.installmentData.installmentFirstDate"
+            binding.tvTotalInstallmentFirstDateValue.visible()
+            binding.tvTotalInstallmentFirstDateLabel.visible()
+
+            binding.tvTotalInstallmentLastDateValue.text = "orderCost.installmentData.installmentLastDate"
+            binding.tvTotalInstallmentLastDateValue.visible()
+            binding.tvTotalInstallmentLastDateLabel.visible()
+
             binding.dividerInstallment.visible()
         } else {
             binding.tvTotalInstallmentFeePriceValue.gone()
             binding.tvTotalInstallmentFeePriceLabel.gone()
-            binding.llInstallment.gone()
+            binding.tvTotalInstallmentTermValue.gone()
+            binding.tvTotalInstallmentTermLabel.gone()
+            binding.tvTotalInstallmentPerPeriodValue.gone()
+            binding.tvTotalInstallmentPerPeriodLabel.gone()
+            binding.tvTotalInstallmentFirstDateValue.gone()
+            binding.tvTotalInstallmentFirstDateLabel.gone()
+            binding.tvTotalInstallmentLastDateValue.gone()
+            binding.tvTotalInstallmentLastDateLabel.gone()
             binding.dividerInstallment.gone()
         }
     }

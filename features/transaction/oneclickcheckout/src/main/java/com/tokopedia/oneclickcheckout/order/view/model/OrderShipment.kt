@@ -76,6 +76,10 @@ data class OrderShipment(
         } else shippingPrice ?: 0
     }
 
+    fun isUseInsurance(): Boolean {
+        return insurance.isCheckInsurance && insurance.insuranceData != null
+    }
+
     fun getRealInsurancePrice(): Int {
         return if (insurance.isCheckInsurance && insurance.insuranceData != null) {
             insurance.insuranceData.insurancePrice

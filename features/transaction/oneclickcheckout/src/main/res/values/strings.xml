@@ -29,7 +29,9 @@
     <string name="lbl_shipping_insurance">Asuransi Pengiriman</string>
     <string name="lbl_change_template">Ubah</string>
     <string name="lbl_order_summary">Ringkasan Belanja</string>
+    <string name="occ_lbl_order_summary">Ringkasan belanja</string>
     <string name="lbl_total_item_price">Total Harga Barang</string>
+    <string name="occ_lbl_total_item_price">Total Harga</string>
     <string name="lbl_purchase_protection_price">Total Proteksi Produk</string>
     <string name="lbl_additional_fee">Biaya Layanan</string>
     <string name="occ_lbl_installment_fee">Biaya Cicilan</string>
@@ -85,5 +87,7 @@
     <string name="occ_gopaylatercicil_bottom_sheet_title">Bayarnya mau berapa lama?</string>
     <string name="occ_gopaylatercicil_default_installment">Pilih periode cicilan</string>
     <string name="occ_lbl_installment_summary_period">Installment Period</string>
-    <string name="occ_lbl_installment_summary_amount_per_period">Cicilan per bulan</string>
+    <string name="occ_lbl_installment_summary_amount_per_period">Cicilan per Bulan*</string>
+    <string name="occ_lbl_installment_summary_first_date">Jatuh Tempo Pertama</string>
+    <string name="occ_lbl_installment_summary_last_date">Perkiraan Jatuh Tempo Terakhir</string>
 </resources>

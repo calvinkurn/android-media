@@ -33,7 +33,13 @@ data class OrderPayment(
     }
 
     fun getRealFee(): Double {
-        return creditCard.selectedTerm?.fee ?: fee
+        if (creditCard.selectedTerm != null) {
+            return creditCard.selectedTerm.fee
+        }
+        if (walletData.isGoPaylaterCicil) {
+            return 1.0
+        }
+        return fee
     }
 }
 

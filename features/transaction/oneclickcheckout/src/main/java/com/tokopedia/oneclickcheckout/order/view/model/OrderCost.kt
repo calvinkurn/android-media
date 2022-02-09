@@ -5,6 +5,7 @@ data class OrderCost(
         val totalItemPrice: Double = 0.0,
         val shippingFee: Double = 0.0,
         val insuranceFee: Double = 0.0,
+        val isUseInsurance: Boolean = false,
         val paymentFee: Double = 0.0,
         val shippingDiscountAmount: Int = 0,
         val productDiscountAmount: Int = 0,
