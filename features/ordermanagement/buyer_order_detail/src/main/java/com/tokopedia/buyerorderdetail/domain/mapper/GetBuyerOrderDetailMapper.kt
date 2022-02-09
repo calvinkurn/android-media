@@ -80,6 +80,16 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                     toStr = "Adam",
                     fromStr = "John",
                     message = message
+                ),
+                AddonsListUiModel.AddonItemUiModel(
+                    priceText = "Rp2.000",
+                    addOnsName = "Happy Birthday",
+                    addonsId = 1.toString(),
+                    quantity = 2,
+                    addOnsThumbnailUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
+                    toStr = "Adam",
+                    fromStr = "John",
+                    message = "happy birthday boss, happy birthday boss, happy birthday boss"
                 )
             )
         )
@@ -165,7 +175,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             } else {
                 emptyList()
             }
-        val message = "happy birthday boss, happy birthday boss, happy birthday hap"
+        val message = "happy birthday boss, happy birthday boss, happy birthday"
         return ProductListUiModel(
             productList = productList,
             productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),

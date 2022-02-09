@@ -1,15 +1,21 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter
 
+import android.content.Context
+import android.graphics.Color
+import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.common.utils.Utils.setAddonMessageFormatted
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailAddonsListBinding
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
 
 class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>) :
     RecyclerView.Adapter<AddonsItemAdapter.ViewHolder>() {
@@ -59,7 +65,8 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                 tvBomDetailAddonsToValue.hide()
                 tvBomDetailAddonsToLabel.hide()
             } else {
-                tvBomDetailAddonsToValue.text = itemView.context.getString(R.string.order_addons_to_value, toStr)
+                tvBomDetailAddonsToValue.text =
+                    itemView.context.getString(R.string.order_addons_to_value, toStr)
                 tvBomDetailAddonsToValue.show()
                 tvBomDetailAddonsToLabel.show()
             }
@@ -70,7 +77,8 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                 tvBomDetailAddonsFromLabel.hide()
                 tvBomDetailAddonsFromValue.hide()
             } else {
-                tvBomDetailAddonsFromValue.text = itemView.context.getString(R.string.order_addons_to_value, fromStr)
+                tvBomDetailAddonsFromValue.text =
+                    itemView.context.getString(R.string.order_addons_to_value, fromStr)
                 tvBomDetailAddonsFromLabel.show()
                 tvBomDetailAddonsFromValue.show()
             }
@@ -82,9 +90,91 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             } else {
                 tvBomDetailAddonsMessageValue.run {
                     show()
-                    setAddonMessageFormatted(message, context)
+                    setAddonMessageFormatted(message)
                 }
             }
         }
+
+
+        private fun setAddonMessageFormatted(
+            message: String
+        ) {
+            with(binding) {
+                tvBomDetailAddonsMessageValue.apply {
+                    if (ellipsize == TextUtils.TruncateAt.END && lineCount == Int.ONE) {
+                        showMessageCollapse(message)
+                    } else {
+                        hideMessageCollapse(message)
+                    }
+                }
+            }
+        }
+
+        private fun showMessageCollapse(message: String) {
+            with(binding) {
+                val hyperLinkText = root.context.getString(R.string.order_addons_close)
+                val messageFmt = message + hyperLinkText
+                tvBomDetailAddonsReadMoreMessage.hide()
+                tvBomDetailAddonsMessageValue.run {
+                    setupHyperlinkText(messageFmt, message)
+                    maxLines = Integer.MAX_VALUE
+                    ellipsize = null
+                    isSingleLine = false
+                }
+            }
+        }
+
+        private fun hideMessageCollapse(message: String) {
+            with(binding) {
+                tvBomDetailAddonsMessageValue.run {
+                    text = message
+                    post {
+                        if (lineCount > Int.ONE) {
+                            ellipsize = TextUtils.TruncateAt.END
+                        }
+                        maxLines = Int.ONE
+                        isSingleLine = true
+                        setupReadMoreMessage(message)
+                    }
+                }
+            }
+        }
+
+        private fun setupReadMoreMessage(message: String) {
+            with(binding) {
+                tvBomDetailAddonsReadMoreMessage.let {
+                    if (tvBomDetailAddonsMessageValue.ellipsize == TextUtils.TruncateAt.END) {
+                        it.show()
+                        it.setupHyperlinkText(
+                            root.context.getString(R.string.order_addons_read_more),
+                            message
+                        )
+                    } else {
+                        it.hide()
+                    }
+                }
+            }
+        }
+
+        private fun getHtmlLinkHelper(context: Context, hyperLinkText: String): HtmlLinkHelper {
+            return HtmlLinkHelper(context, hyperLinkText)
+        }
+
+        private fun Typography.setupHyperlinkText(
+            hyperLinkText: String,
+            message: String
+        ) {
+            val getHtmlLinkHelper = getHtmlLinkHelper(context, hyperLinkText)
+            text = getHtmlLinkHelper.spannedString
+            this.movementMethod = LinkMovementMethod.getInstance()
+            this.highlightColor = Color.TRANSPARENT
+            getHtmlLinkHelper.urlList.getOrNull(Int.ZERO)?.setOnClickListener {
+                setAddonMessageFormatted(message)
+            }
+        }
+    }
+
+    companion object {
+        const val MAX_CHAR_MESSAGE = 250
     }
 }
