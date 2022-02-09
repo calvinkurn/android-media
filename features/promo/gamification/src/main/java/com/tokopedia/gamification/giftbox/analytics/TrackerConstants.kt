@@ -23,6 +23,8 @@ object GiftBoxEvent {
     const val SELECT_CONTENT = "select_content"
     const val VIEW_ITEM_LIST = "view_item_list"
     const val OPEN_SCREEN = "openScreen"
+    const val CLICK_BGP = "clickBGP"
+    const val VIEW_BGP_IRIS = "viewBGPIris"
 }
 
 object GiftBoxCategory {
