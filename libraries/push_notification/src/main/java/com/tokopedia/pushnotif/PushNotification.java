@@ -239,7 +239,7 @@ public class PushNotification {
             Notification notifChat = new GeneralNotificationFactory(context)
                     .createNotification(applinkNotificationModel, notificationType, notificationType);
             notificationManagerCompat.notify(notificationType, notifChat);
-        }catch(Throwable th){}
+        }catch(Throwable ignored){}
     }
 
     private static boolean isNotificationEnabled(Context context) {
