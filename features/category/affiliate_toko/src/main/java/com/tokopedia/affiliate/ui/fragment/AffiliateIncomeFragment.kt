@@ -254,7 +254,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             AffiliateAnalytics.sendEvent(
                 AffiliateAnalytics.EventKeys.CLICK_PG,
                 eventAction,
-                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE_FILTER,
                 eventLabel,
                 UserSession(it).userId
             )

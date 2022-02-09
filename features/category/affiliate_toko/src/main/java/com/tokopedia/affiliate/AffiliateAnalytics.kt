@@ -169,6 +169,7 @@ object AffiliateAnalytics {
             const val AFFILIATE_HOME_PAGE_BOTTOM_SHEET = "affiliate home page - bottom sheet"
             const val AFFILIATE_PROMOSIKAN_PAGE = "affiliate promosikan page"
             const val AFFILIATE_PENDAPATAN_PAGE = "affiliate pendapatan page"
+            const val AFFILIATE_PENDAPATAN_PAGE_FILTER = "affiliate pendapatan page - filter date"
         }
     }
 
@@ -186,7 +187,7 @@ object AffiliateAnalytics {
             const val IMPRESSION_PROMOSIKAN_SRP_B_S = "impression - promosikan srp - bottom sheet"
             const val IMPRESSION_HOME_PORTAL = "impression - home portal"
             const val IMPRESSION_HOME_PORTAL_B_S = "impression - home portal - bottom sheet"
-            const val CLICK_SEARCH = "click - search"
+            const val CLICK_SEARCH = "click - search box"
             const val HOME_NAV_BAR_CLICK = "click - home nav"
             const val PROMOSIKAN_NAV_BAR_CLICK = "click - promosikan nav"
             const val BANUTAN_NAV_BAR_CLICK = "click - bantuan nav"
