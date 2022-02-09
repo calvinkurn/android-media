@@ -105,5 +105,5 @@ class CartShopBoAffordabilityData(
 )
 
 enum class CartShopBoAffordabilityState {
-    LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD
+    LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY
 }

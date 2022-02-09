@@ -434,6 +434,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         smallLoaderBoAffordability.show()
                         layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutBoAffordability.setOnClickListener(null)
+                        layoutBoAffordability.show()
                     }
                     CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD -> {
                         largeLoaderBoAffordability.gone()
@@ -450,6 +451,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                             actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
                             cartShopHolderData.boAffordability.hasSeenTicker = true
                         }
+                        layoutBoAffordability.show()
                     }
                     CartShopBoAffordabilityState.SUCCESS_AFFORD -> {
                         largeLoaderBoAffordability.gone()
@@ -463,6 +465,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                             actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
                             cartShopHolderData.boAffordability.hasSeenTicker = true
                         }
+                        layoutBoAffordability.show()
                     }
                     CartShopBoAffordabilityState.FAILED -> {
                         largeLoaderBoAffordability.gone()
@@ -475,9 +478,12 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         layoutBoAffordability.setOnClickListener {
                             actionListener.onCartBoAffordabilityRefreshClicked(adapterPosition, cartShopHolderData)
                         }
+                        layoutBoAffordability.show()
+                    }
+                    CartShopBoAffordabilityState.EMPTY -> {
+                        layoutBoAffordability.gone()
                     }
                 }
-                layoutBoAffordability.show()
             }
         } else {
             binding.layoutBoAffordability.gone()

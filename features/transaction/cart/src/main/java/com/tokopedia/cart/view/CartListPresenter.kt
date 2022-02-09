@@ -1634,16 +1634,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 val ratesParam = RatesParam.Builder(shopShipments, shipping).build()
                 val response = boAffordabilityUseCase.setParam(ratesParam).executeOnBackground()
                 cartShopHolderData.boAffordability.cartIds = shopProductList.joinToString(",") { it.cartId }
-                if (response.texts.tickerCart.isBlank()) {
-                    cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.FAILED
-                    withContext(dispatchers.main) {
-                        view?.updateCartBoAffordability(cartShopHolderData)
-                    }
-                    return@launch
-                }
                 cartShopHolderData.boAffordability.tickerText = response.texts.tickerCart
                 cartShopHolderData.boAffordability.hasSeenTicker = false
-                if (subtotalPrice >= response.minTransaction) {
+                if (response.texts.tickerCart.isBlank()) {
+                    cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.EMPTY
+                } else if (subtotalPrice >= response.minTransaction) {
                     cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS_AFFORD
                 } else {
                     cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD
