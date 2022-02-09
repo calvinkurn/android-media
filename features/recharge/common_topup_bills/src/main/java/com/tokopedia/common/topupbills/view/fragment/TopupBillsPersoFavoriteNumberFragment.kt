@@ -44,6 +44,7 @@ import com.tokopedia.common.topupbills.view.typefactory.PersoFavoriteNumberTypeF
 import com.tokopedia.common.topupbills.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.viewholder.PersoFavoriteNumberErrorViewHolder.PersoFavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.view.viewholder.PersoFavoriteNumberViewHolder.OnPersoFavoriteNumberClickListener
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_DELETE
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_UNDO_DELETE
@@ -96,6 +97,8 @@ class TopupBillsPersoFavoriteNumberFragment :
         )
     }
     private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
+    private val savedNumberViewModel by lazy {
+        viewModelFragmentProvider.get(TopupBillsSavedNumberViewModel::class.java) }
 
     private lateinit var numberListAdapter: TopupBillsPersoFavoriteNumberListAdapter
     private lateinit var clientNumberType: String
@@ -105,6 +108,7 @@ class TopupBillsPersoFavoriteNumberFragment :
     private var currentCategoryName = ""
     private var number: String = ""
     private var isHideCoachmark = false
+    private var isMultiTab = false
     private var lastDeletedNumber: UpdateFavoriteDetail? = null
 
     private var binding: FragmentPersoFavoriteNumberBinding? = null
@@ -144,6 +148,7 @@ class TopupBillsPersoFavoriteNumberFragment :
                 arguments.getIntegerArrayList(ARG_PARAM_DG_CATEGORY_IDS)?.toList() ?: listOf()
             operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
+            isMultiTab = arguments.getBoolean(ARG_PARAM_IS_MULTI_TAB, false)
         }
 
         operatorData?.rechargeCatalogPrefixSelect?.let { saveTelcoOperator(it) }
@@ -225,6 +230,16 @@ class TopupBillsPersoFavoriteNumberFragment :
                 is Fail -> onFailedUndoDeleteFavoriteNumber()
             }
         })
+
+        savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { keyword ->
+            filterData(keyword) })
+
+        savedNumberViewModel.refreshSearchBar.observe(viewLifecycleOwner, { position ->
+            if (position == TopupBillsSavedNumberFragment.POSITION_FAVORITE_NUMBER) {
+                savedNumberViewModel.setClueVisibility(clientNumbers.isNotEmpty())
+                savedNumberViewModel.enableSearchBar(clientNumbers.isNotEmpty())
+            }
+        })
     }
 
     private fun loadData() {
@@ -283,13 +298,23 @@ class TopupBillsPersoFavoriteNumberFragment :
             numberListAdapter.visitables[0] is TopupBillsPersoFavNumberDataView
         ) {
             binding?.run {
-                commonTopupbillsPersoFavoriteNumberClue.show()
-                commonTopupbillsPersoFavoriteNumberSearchbar.show()
+                if (isMultiTab) {
+                    savedNumberViewModel.setClueVisibility(true)
+                    savedNumberViewModel.enableSearchBar(true)
+                } else {
+                    commonTopupbillsPersoFavoriteNumberClue.show()
+                    commonTopupbillsPersoFavoriteNumberSearchbar.show()
+                }
             }
         } else {
             binding?.run {
-                commonTopupbillsPersoFavoriteNumberClue.hide()
-                commonTopupbillsPersoFavoriteNumberSearchbar.hide()
+                if (isMultiTab) {
+                    savedNumberViewModel.setClueVisibility(false)
+                    savedNumberViewModel.enableSearchBar(false)
+                } else {
+                    commonTopupbillsPersoFavoriteNumberClue.hide()
+                    commonTopupbillsPersoFavoriteNumberSearchbar.hide()
+                }
             }
         }
 
@@ -331,7 +356,11 @@ class TopupBillsPersoFavoriteNumberFragment :
             }
             else -> {
                 numberListAdapter.setErrorState(listOf(TopupBillsPersoFavNumberErrorDataView()))
-                binding?.commonTopupbillsPersoFavoriteNumberClue?.show()
+                if (isMultiTab) {
+                    savedNumberViewModel.setClueVisibility(false)
+                } else {
+                    binding?.commonTopupbillsPersoFavoriteNumberClue?.hide()
+                }
             }
         }
     }
@@ -496,7 +525,13 @@ class TopupBillsPersoFavoriteNumberFragment :
 
         if (searchClientNumbers.isNotEmpty()) {
             numberListAdapter.setNumbers(searchClientNumbers)
-            if (isVisible) binding?.commonTopupbillsPersoFavoriteNumberClue?.show()
+            if (isVisible) {
+                if (isMultiTab) {
+                    savedNumberViewModel.setClueVisibility(true)
+                } else {
+                    binding?.commonTopupbillsPersoFavoriteNumberClue?.show()
+                }
+            }
         } else {
             if (topUpBillsViewModel.persoFavNumberData.value is Success) {
                 if (clientNumbers.isNotEmpty()) {
@@ -505,7 +540,13 @@ class TopupBillsPersoFavoriteNumberFragment :
                     numberListAdapter.setNotFound(listOf(TopupBillsPersoFavNumberNotFoundDataView()))
                 }
             }
-            if (isVisible) binding?.commonTopupbillsPersoFavoriteNumberClue?.hide()
+            if (isVisible) {
+                if (isMultiTab) {
+                    savedNumberViewModel.setClueVisibility(false)
+                } else {
+                    binding?.commonTopupbillsPersoFavoriteNumberClue?.hide()
+                }
+            }
         }
     }
 
@@ -711,6 +752,7 @@ class TopupBillsPersoFavoriteNumberFragment :
         const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
+        const val ARG_PARAM_IS_MULTI_TAB = "ARG_PARAM_IS_MULTI_TAB"
         const val COACH_MARK_START_DELAY: Long = 200
         const val CACHE_SHOW_COACH_MARK_KEY = "show_coach_mark_key_favorite_number"
         const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
@@ -721,7 +763,8 @@ class TopupBillsPersoFavoriteNumberFragment :
         fun newInstance(
             clientNumberType: String, number: String,
             operatorData: TelcoCatalogPrefixSelect?,
-            categoryName: String, digitalCategoryIds: ArrayList<String>
+            categoryName: String, digitalCategoryIds: ArrayList<String>,
+            isMultiTab: Boolean = false
         ): Fragment {
             val fragment = TopupBillsPersoFavoriteNumberFragment()
             val bundle = Bundle()
@@ -734,6 +777,7 @@ class TopupBillsPersoFavoriteNumberFragment :
             )
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
+            bundle.putBoolean(ARG_PARAM_IS_MULTI_TAB, isMultiTab)
             fragment.arguments = bundle
             return fragment
         }
