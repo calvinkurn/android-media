@@ -21,7 +21,6 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
-import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -104,12 +103,15 @@ class ProductSectionViewHolder(
 
     private fun setupTimer(item : PlayProductSectionUiModel.ProductSection) {
         if(item.type == ProductSectionType.Active) timerTime = item.endTime else item.startTime
-        if(!isExpired(serverTime = item.serverTime, expiredTime = timerTime)){
+
+        val convertedServerTime = item.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
+        val convertedExpiredTime = timerTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
+
+        if(!isExpired(serverTime = convertedServerTime, expiredTime = convertedExpiredTime)){
             val dt = DateUtil.getCurrentCalendar().apply {
-                val currentDate = time
                 val diff = timerTime.toDate(
                     DateUtil.YYYY_MM_DD_T_HH_MM_SS
-                ).time - currentDate.time
+                ).time - convertedServerTime.time
                 val seconds = TimeUnit.MILLISECONDS.toSeconds(diff).toInt()
                 val minutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
                 val hours = TimeUnit.MILLISECONDS.toHours(diff).toInt()
@@ -131,12 +133,8 @@ class ProductSectionViewHolder(
         }
     }
 
-    private fun isExpired(serverTime: String, expiredTime: String): Boolean {
-        val serverTimeInMillis = serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
-        val expiredTimeInDate = expiredTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
-        val dtNow = DateUtil.getCurrentCalendar().time
-        dtNow.time = dtNow.time + serverTimeInMillis.timezoneOffset
-        return dtNow.after(expiredTimeInDate)
+    private fun isExpired(serverTime: Date, expiredTime: Date): Boolean {
+        return serverTime.after(expiredTime)
     }
 
     private fun isProductCountChanged(productSize: Int): Boolean {
