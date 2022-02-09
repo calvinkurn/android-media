@@ -55,6 +55,7 @@ public class ServiceData implements Parcelable {
     @SerializedName("ui_rates_hidden")
     @Expose
     private boolean uiRatesHidden;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("selected_shipper_product_id")
     @Expose
     private int selectedShipperProductId;
