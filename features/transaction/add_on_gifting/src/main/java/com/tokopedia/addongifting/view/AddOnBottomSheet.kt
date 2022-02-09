@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.addongifting.R
@@ -19,8 +20,14 @@ import com.tokopedia.addongifting.view.adapter.AddOnListAdapter
 import com.tokopedia.addongifting.view.adapter.AddOnListAdapterTypeFactory
 import com.tokopedia.addongifting.view.di.AddOnComponent
 import com.tokopedia.addongifting.view.di.DaggerAddOnComponent
+import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
+import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
@@ -35,6 +42,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     private var viewBinding: LayoutAddOnBottomSheetBinding? = null
+    private var measureRecyclerViewPaddingDebounceJob: Job? = null
 
     override fun getComponent(): AddOnComponent {
         return DaggerAddOnComponent
@@ -70,7 +78,6 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         isDragable = true
         isHideable = true
         clearContentPadding = true
-//        isFullpage = true
         customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
         setChild(viewBinding.root)
     }
@@ -124,10 +131,62 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         }
     }
 
+    private fun showLoading() {
+        adapter?.let {
+            it.removeErrorNetwork()
+            it.setLoadingModel(LoadingModel())
+            it.showLoading()
+        }
+        viewBinding?.totalAmount?.isTotalAmountLoading = true
+    }
+
+    private fun hideLoading() {
+        adapter?.hideLoading()
+        viewBinding?.totalAmount?.isTotalAmountLoading = false
+    }
+
+    private fun adjustRecyclerViewPaddingBottom(viewBinding: LayoutAddOnBottomSheetBinding) {
+        measureRecyclerViewPaddingDebounceJob?.cancel()
+        measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
+            delay(200L)
+            adjustRecyclerViewPadding(viewBinding)
+        }
+    }
+
+    private fun adjustRecyclerViewPadding(viewBinding: LayoutAddOnBottomSheetBinding) {
+        with(viewBinding) {
+            if (rvAddOn.canScrollVertically(-1) || rvAddOn.canScrollVertically(1) || isBottomSheetFullPage(viewBinding)) {
+                rvAddOn.setPadding(0, 0, 0, rvAddOn.resources?.getDimensionPixelSize(R.dimen.dp_64)
+                        ?: 0)
+            } else {
+                rvAddOn.setPadding(0, 0, 0, 0)
+            }
+        }
+    }
+
+    private fun isBottomSheetFullPage(viewBinding: LayoutAddOnBottomSheetBinding): Boolean {
+        val displayMetrics = Resources.getSystem().displayMetrics
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+
+        val bottomSheetHeight = (bottomSheetWrapper.parent as? View)?.height ?: 0
+        val recyclerViewPaddingBottom = viewBinding.rvAddOn.resources?.getDimensionPixelSize(R.dimen.dp_64)
+                ?: 0
+        val displayHeight = displayMetrics?.heightPixels ?: 0
+        return bottomSheetHeight != 0 && displayHeight != 0 && (bottomSheetHeight + (recyclerViewPaddingBottom / 2)) >= displayHeight
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         viewBinding = null
+        measureRecyclerViewPaddingDebounceJob?.cancel()
         activity?.finish()
         super.onDismiss(dialog)
+    }
+
+    override fun onCheckBoxCheckedChanged(addOnUiModel: AddOnUiModel) {
+        viewBinding?.let {
+            adjustRecyclerViewPaddingBottom(it)
+        }
+        viewModel.updateFragmentUiModel(addOnUiModel)
     }
 
 }
