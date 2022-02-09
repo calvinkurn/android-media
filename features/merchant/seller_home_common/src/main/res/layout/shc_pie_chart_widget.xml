@@ -96,7 +96,7 @@
                 app:constraint_referenced_ids="pieChartShc, btnShcPieChartEmpty" />
 
             <View
-                android:id="@+id/horLineShcMilestoneBtm"
+                android:id="@+id/horLineShcPieChartBtm"
                 android:layout_width="0dp"
                 android:layout_height="0.1dp"
                 android:layout_marginTop="20dp"
@@ -113,11 +113,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/horLineShcMilestoneBtm"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcPieChartBtm"
                 app:layout_constraintEnd_toStartOf="@+id/btnShcPieChartSeeMore"
                 app:layout_constraintHorizontal_bias="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/horLineShcMilestoneBtm" />
+                app:layout_constraintTop_toTopOf="@+id/horLineShcPieChartBtm" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btnShcPieChartSeeMore"
@@ -133,9 +133,9 @@
                 android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/fontSize_lvl3"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/horLineShcMilestoneBtm"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcPieChartBtm"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/horLineShcMilestoneBtm"
+                app:layout_constraintTop_toTopOf="@+id/horLineShcPieChartBtm"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
                 tools:text="Selengkapnya"

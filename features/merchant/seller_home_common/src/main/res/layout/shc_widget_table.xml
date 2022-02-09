@@ -103,6 +103,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
                 app:typographyType="body_3" />
 
+            <View
+                android:id="@+id/horLineShcTableBtm"
+                android:layout_width="0dp"
+                android:layout_height="0.1dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrierShcTable"
+                tools:layout_constraintTop_toBottomOf="@+id/shcTableView" />
+
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrierShcTable"
                 android:layout_width="wrap_content"
@@ -115,16 +127,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcTableBtm"
                 app:layout_constraintEnd_toStartOf="@+id/btnTableCta"
                 app:layout_constraintHorizontal_bias="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barrierShcTable"
-                app:layout_constraintVertical_bias="0"
-                tools:layout_constraintTop_toBottomOf="@+id/shcTableView" />
+                app:layout_constraintTop_toTopOf="@+id/horLineShcTableBtm" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btnTableCta"
@@ -139,12 +147,11 @@
                 android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/fontSize_lvl3"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcTableBtm"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barrierShcTable"
+                app:layout_constraintTop_toTopOf="@+id/horLineShcTableBtm"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                tools:layout_constraintTop_toBottomOf="@+id/shcTableView"
                 tools:text="Selengkapnya"
                 tools:visibility="visible" />
 

@@ -105,9 +105,10 @@ class TableViewHolder(
                     }
                 }
             }
-        }
+            setupCta(element)
 
-        setupCta(element)
+            horLineShcTableBtm.isVisible = btnTableCta.isVisible || luvShcTable.isVisible
+        }
     }
 
     private fun setupLastUpdatedInfo(element: TableWidgetUiModel) {
