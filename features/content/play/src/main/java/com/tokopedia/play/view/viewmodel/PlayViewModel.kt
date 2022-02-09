@@ -31,6 +31,7 @@ import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isAnyThreeDotsShown
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -254,7 +255,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _kebabMenuUiState = _bottomInsets.map {
         PlayKebabMenuUiState(
-            shouldShow = !isFreezeOrBanned
+            shouldShow = !isFreezeOrBanned && !it.isKeyboardShown
         )
     }.flowOn(dispatchers.computation)
 

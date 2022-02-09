@@ -50,12 +50,18 @@ class PlayMoreActionBottomSheet @Inject constructor(
     PlayUserReportSubmissionViewComponent.Listener {
 
     private val userReportSheetHeight: Int
-        get() = (requireView().height * 0.9).toInt()
+        get() = (displayMetrix.heightPixels * MAX_PERCENT_HEIGHT).toInt()
+
+    private val kebabMenuSheetHeight: Int
+        get() = (displayMetrix.heightPixels * MIN_PERCENT_HEIGHT).toInt()
 
     private var displayMetrix = DisplayMetrics()
 
     companion object {
         private const val TAG = "PlayMoreActionBottomSheet"
+
+        private const val MAX_PERCENT_HEIGHT = 0.9
+        private const val MIN_PERCENT_HEIGHT = 0.2
     }
 
     private var childView: View? = null
@@ -113,6 +119,10 @@ class PlayMoreActionBottomSheet @Inject constructor(
         setCloseClickListener { dismiss() }
     }
 
+    /***
+     *
+     * Setup Observer
+     */
     private fun setObserve(){
         observeBottomInsets()
         observeUserReport()
@@ -125,7 +135,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
             playViewModel.uiState.withCache().collectLatest { (_, type) ->
                 type.playKebabMenuBottomSheetUiState.kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
                     if (it is BottomInsetsState.Shown) {
-                        customPeekHeight = (displayMetrix.heightPixels * 0.2).toInt()
+                        customPeekHeight = kebabMenuSheetHeight
                         kebabMenuSheetView.showWithHeight(customPeekHeight)
                     }
                     else kebabMenuSheetView.hide()
@@ -133,7 +143,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
                 type.playKebabMenuBottomSheetUiState.kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
                     if (state is BottomInsetsState.Shown) {
-                        customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
+                        customPeekHeight = userReportSheetHeight
                         userReportSheetView.showWithHeight(customPeekHeight)
                     }
                     else userReportSheetView.hide()
@@ -141,7 +151,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
                 type.playKebabMenuBottomSheetUiState.kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
                     if (state is BottomInsetsState.Shown) {
-                        customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
+                        customPeekHeight = userReportSheetHeight
                         userReportSubmissionSheetView.showWithHeight(customPeekHeight)
                     }
                     else userReportSubmissionSheetView.hide()
@@ -182,6 +192,48 @@ class PlayMoreActionBottomSheet @Inject constructor(
         playViewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
     }
 
+    /***
+     * Private Methods
+     */
+    private fun doActionUserReport(){
+        analytic.clickUserReport()
+        playViewModel.onShowUserReportSheet(userReportSheetHeight)
+        playViewModel.getUserReportList()
+    }
+
+    private fun shouldOpenUserReport() {
+        playViewModel.doInteractionEvent(InteractionEvent.OpenUserReport)
+    }
+
+    private fun onSubmitUserReport(reasonId: Int, description: String) {
+        analytic.clickUserReportSubmissionDialogSubmit()
+        val channelData = playViewModel.latestCompleteChannelData
+
+        playViewModel.submitUserReport(
+            channelId = channelData.id.toLongOrZero(),
+            shopId = channelData.partnerInfo.id,
+            mediaUrl = getMediaUrl(channelData.id),
+            timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
+            reportDesc = description,
+            reasonId = reasonId
+        )
+    }
+
+    private fun getMediaUrl(channelId: String) : String = "${TokopediaUrl.getInstance().WEB}play/channel/$channelId"
+
+    private fun getTimestampVideo(startTime: String): Long{
+        return if(playViewModel.channelType.isLive){
+            val startTimeInSecond = startTime.toLongOrZero()
+            val duration = (userReportTimeMillis - startTimeInSecond) / 1
+            duration
+        }else{
+            playViewModel.getVideoTimestamp()
+        }
+    }
+
+    /****
+     * Common Methods can do better - move to parent
+     */
     private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
         if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
             playViewModel.requestPiPBrowsingPage(
@@ -217,97 +269,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
         }
     }
 
-    private fun doActionUserReport(){
-        analytic.clickUserReport()
-        playViewModel.onShowUserReportSheet(userReportSheetHeight)
-        playViewModel.getUserReportList()
-    }
-
-    private fun shouldOpenUserReport() {
-        playViewModel.doInteractionEvent(InteractionEvent.OpenUserReport)
-    }
-
     private fun openLoginPage() {
         openPageByApplink(ApplinkConst.LOGIN, requestCode = 911)
-    }
-
-    interface Listener {
-        fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet)
-        fun onNoAction(bottomSheet: PlayMoreActionBottomSheet)
-    }
-
-    override fun onReportClick(view: KebabMenuSheetViewComponent) {
-        shouldOpenUserReport()
-    }
-
-    override fun onCloseButtonClicked(view: KebabMenuSheetViewComponent) {
-        dismiss()
-    }
-
-    override fun onCloseButtonClicked(view: PlayUserReportSheetViewComponent) {
-       playViewModel.hideUserReportSheet()
-    }
-
-    override fun onItemReportClick(
-        view: PlayUserReportSheetViewComponent,
-        item: PlayUserReportReasoningUiModel.Reasoning
-    ) {
-        userReportTimeMillis = Calendar.getInstance().timeInMillis
-        playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
-        userReportSubmissionSheetView.setView(item)
-    }
-
-    override fun onFooterClicked(view: PlayUserReportSheetViewComponent) {
-        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
-    }
-
-    override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
-        playViewModel.hideUserReportSubmissionSheet()
-    }
-
-    override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
-        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
-    }
-
-    override fun onShowVerificationDialog(
-        view: PlayUserReportSubmissionViewComponent,
-        reasonId: Int,
-        description: String
-    ) {
-        val isUse = description.isNotEmpty()
-        analytic.clickUserReportSubmissionBtnSubmit(isUse)
-
-        showDialog(title = getString(R.string.play_user_report_verification_dialog_title), description = getString(R.string.play_user_report_verification_dialog_desc),
-            primaryCTAText = getString(R.string.play_user_report_verification_dialog_btn_ok), secondaryCTAText = getString(R.string.play_pip_cancel),
-            primaryAction = {
-                onSubmitUserReport( reasonId, description)
-            })
-    }
-
-    private fun onSubmitUserReport(reasonId: Int, description: String) {
-        analytic.clickUserReportSubmissionDialogSubmit()
-        val channelData = playViewModel.latestCompleteChannelData
-
-        playViewModel.submitUserReport(
-            channelId = channelData.id.toLongOrZero(),
-            shopId = channelData.partnerInfo.id,
-            mediaUrl = getMediaUrl(channelData.id),
-            timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
-            reportDesc = description,
-            reasonId = reasonId
-        )
-    }
-
-    private fun getMediaUrl(channelId: String) : String = "${TokopediaUrl.getInstance().WEB}play/channel/$channelId"
-
-    private fun getTimestampVideo(startTime: String): Long{
-        return if(playViewModel.channelType.isLive){
-            val startTimeInSecond = startTime.toLongOrZero()
-            val duration = (userReportTimeMillis - startTimeInSecond) / 1
-            duration
-        }else{
-            playViewModel.getVideoTimestamp()
-        }
     }
 
     private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}){
@@ -343,5 +306,71 @@ class PlayMoreActionBottomSheet @Inject constructor(
             actionText = actionText,
             clickListener = actionClickListener
         ).show()
+    }
+
+    /***
+     * KebabMenuSheetViewComponent Listener
+     */
+    override fun onReportClick(view: KebabMenuSheetViewComponent) {
+        shouldOpenUserReport()
+    }
+
+    override fun onCloseButtonClicked(view: KebabMenuSheetViewComponent) {
+        dismiss()
+    }
+
+    /***
+     * PlayUserReportSheetViewComponent Listener
+     */
+    override fun onCloseButtonClicked(view: PlayUserReportSheetViewComponent) {
+       playViewModel.hideUserReportSheet()
+    }
+
+    override fun onItemReportClick(
+        view: PlayUserReportSheetViewComponent,
+        item: PlayUserReportReasoningUiModel.Reasoning
+    ) {
+        userReportTimeMillis = Calendar.getInstance().timeInMillis
+        playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
+        userReportSubmissionSheetView.setView(item)
+    }
+
+    override fun onFooterClicked(view: PlayUserReportSheetViewComponent) {
+        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
+    }
+
+    /***
+     * PlayUserReportSubmissionViewComponent Listener
+     */
+    override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
+        playViewModel.hideUserReportSubmissionSheet()
+    }
+
+    override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
+        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
+    }
+
+    override fun onShowVerificationDialog(
+        view: PlayUserReportSubmissionViewComponent,
+        reasonId: Int,
+        description: String
+    ) {
+        val isUse = description.isNotEmpty()
+        analytic.clickUserReportSubmissionBtnSubmit(isUse)
+
+        showDialog(title = getString(R.string.play_user_report_verification_dialog_title), description = getString(R.string.play_user_report_verification_dialog_desc),
+            primaryCTAText = getString(R.string.play_user_report_verification_dialog_btn_ok), secondaryCTAText = getString(R.string.play_pip_cancel),
+            primaryAction = {
+                onSubmitUserReport( reasonId, description)
+            })
+    }
+
+    /***
+     * BottomSheet Listener
+     */
+
+    interface Listener {
+        fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet)
+        fun onNoAction(bottomSheet: PlayMoreActionBottomSheet)
     }
 }
