@@ -17,14 +17,16 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 
 class SectionTickerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-    fun bind(content: SectionContent) {
+    private val tickerDataList= arrayListOf<TickerData>()
+    var link = ""
+    var desc = ""
+    var linkDesc = ""
+    private val INDEX_TEXT = 0
+    private val INDEX_LINK = 1
 
+    fun bind(content: SectionContent) {
         val tickerContainer = view.findViewById<View>(R.id.cons_ticker_container)
         val pager: Ticker? = view.findViewById(R.id.ticker_new)
-        val tickerDataList= arrayListOf<TickerData>()
-        var link = ""
-        var desc = ""
-        var linkDesc = ""
         if (content.layoutTickerAttr == null || content.layoutTickerAttr.tickerList == null || content.layoutTickerAttr.tickerList.isEmpty()) {
             tickerContainer.visibility = View.GONE
             return
@@ -33,18 +35,19 @@ class SectionTickerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         if (!content.layoutTickerAttr.tickerList.isNullOrEmpty()) {
             content.layoutTickerAttr.tickerList?.let { tickerData ->
                 tickerData.forEachIndexed { index, tickerContainer ->
-                   val tickerItem =  tickerContainer.metadata?.get(0)?: TickerMetadata()
-                    link = if (tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
-                        tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK].toString()
+                    val tickerItemText =  tickerContainer.metadata?.get(INDEX_TEXT)?: TickerMetadata()
+                    val tickerItemLink =  tickerContainer.metadata?.get(INDEX_LINK)?: TickerMetadata()
+
+                    link = if (tickerItemLink.link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
+                        tickerItemLink.link[CommonConstant.TickerMapKeys.APP_LINK].toString()
                     } else {
-                        tickerItem.link[CommonConstant.TickerMapKeys.URL].toString()
+                        tickerItemLink.link[CommonConstant.TickerMapKeys.URL].toString()
                     }
                     if (link.isNotEmpty()) {
-                        linkDesc = tickerItem.text[CommonConstant.TickerMapKeys.CONTENT].toString()
-                    } else {
-                        desc = tickerItem.text[CommonConstant.TickerMapKeys.CONTENT].toString()
+                        linkDesc = tickerItemLink.text[CommonConstant.TickerMapKeys.CONTENT].toString()
                     }
-                    val descriptionText = desc + "<a href=\"${link}\">" + ". " + linkDesc + "</a>"
+                    desc = tickerItemText.text[CommonConstant.TickerMapKeys.CONTENT].toString()
+                    val descriptionText = desc + "<a href=\"${link}\">" + linkDesc + "</a>"
                     tickerDataList.add(index,TickerData(descriptionText,Ticker.TYPE_ANNOUNCEMENT))
                 }
             }
