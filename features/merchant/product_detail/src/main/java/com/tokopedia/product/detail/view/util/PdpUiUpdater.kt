@@ -802,14 +802,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
 
         updateData(ProductDetailConstant.SHIPMENT_V2) {
-            shipmentV2Data?.rates = data ?: P2RatesEstimateData()
-            shipmentV2Data?.isFullfillment = isFullfillment
-            shipmentV2Data?.isCod = isCod
-            shipmentV2Data?.shouldShowShipmentError = data == null
-            shipmentV2Data?.freeOngkirType = freeOngkirData.boType
-            shipmentV2Data?.freeOngkirUrl = freeOngkirData.imageURL
-            shipmentV2Data?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
-            shipmentV2Data?.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
+            shipmentV2Data?.apply {
+                this.rates = data ?: P2RatesEstimateData()
+                this.isFullfillment = isFullfillment
+                this.isCod = isCod
+                this.shouldShowShipmentError = data == null
+                this.freeOngkirType = freeOngkirData.boType
+                this.freeOngkirUrl = freeOngkirData.imageURL
+                this.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
+                this.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
+            }
         }
 
     }

@@ -109,6 +109,16 @@ class ShipmentViewHolder(
     ) = with(viewMain) {
         initialState()
         pdpShipmentTitle.text = rates.title
+
+        renderBo(element, rates)
+        renderShipment(element, rates)
+        renderCourier(element, rates)
+    }
+
+    private fun renderBo(
+        element: ProductShipmentDataModel,
+        rates: P2RatesEstimateData
+    ) = with(viewMain) {
         val originalShippingRate = rates.originalShippingRate
         pdpShipmentTitleStrike.showIfWithBlock(rates.originalShippingRate > 0) {
             text = originalShippingRate.getCurrencyFormatted()
@@ -125,7 +135,12 @@ class ShipmentViewHolder(
                 text = subtitle.renderHtmlBold(context)
             }
         }
+    }
 
+    private fun renderShipment(
+        element: ProductShipmentDataModel,
+        rates: P2RatesEstimateData
+    ) = with(viewMain) {
         val destination = if (element.localDestination.isEmpty()) rates.destination
         else context.getString(R.string.pdp_shipping_to_builder, element.localDestination)
         pdpShipmentDestination.showIfWithBlock(destination.isNotEmpty()) {
@@ -136,6 +151,12 @@ class ShipmentViewHolder(
         pdpShipmentEstimation.showIfWithBlock(estimation.isNotEmpty()) {
             text = rates.etaText
         }
+    }
+
+    private fun renderCourier(
+        element: ProductShipmentDataModel,
+        rates: P2RatesEstimateData
+    ) = with(viewMain) {
         val instantLabel = rates.instanLabel
         if (instantLabel.isEmpty() && !element.isCod) {
             pdpShipmentCourierLabel2.show()
@@ -154,7 +175,7 @@ class ShipmentViewHolder(
         }
 
         setOnClickOnViews(
-            listOf<View>(
+            listOf(
                 pdpShipmentCourierLabel1,
                 pdpShipmentCourierOption1,
                 pdpShipmentCourierOption2,
@@ -167,7 +188,6 @@ class ShipmentViewHolder(
                 rates.title, rates.instanLabel, element.isCod, componentTrackDataModel
             )
         }
-
     }
 
     private fun loadErrorState() = with(viewError.pdpShipmentLocalLoad) {

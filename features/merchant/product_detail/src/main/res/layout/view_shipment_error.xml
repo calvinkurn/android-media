@@ -5,6 +5,4 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:unify_local_load_description="@string/variant_failed_load_description"
-    app:unify_local_load_title="@string/pdp_shipping_failed_label">
-
-</com.tokopedia.unifycomponents.LocalLoad>
+    app:unify_local_load_title="@string/pdp_shipping_failed_label" />
