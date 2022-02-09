@@ -23,7 +23,6 @@ import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelp
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
@@ -42,7 +41,6 @@ import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.ProductIconView
@@ -174,8 +172,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
-
-    private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
@@ -381,15 +377,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setNewMetrics(metrics: List<PlayMetricUiModel>) {
         pmvMetrics.addMetricsToQueue(metrics)
-    }
-
-    private fun getProductLiveBottomSheet(): PlayProductLiveBottomSheet {
-        if (!::productLiveBottomSheet.isInitialized) {
-            val setupClass = PlayProductLiveBottomSheet::class.java
-            val fragmentFactory = childFragmentManager.fragmentFactory
-            productLiveBottomSheet = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayProductLiveBottomSheet
-        }
-        return productLiveBottomSheet
     }
 
     private fun showDialogWhenActionClose(): Boolean {
@@ -718,9 +705,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeProductTag() {
-        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
+//        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
 //            productTagView.setProducts(it)
-        }
+//        }
     }
     //endregion
 

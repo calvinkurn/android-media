@@ -22,11 +22,8 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
-import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
-import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalaseDetailFragment
-import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
@@ -34,7 +31,6 @@ import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.cleanBackstack
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -43,8 +39,6 @@ import javax.inject.Inject
 class PlayBroadcastSetupBottomSheet :
         BottomSheetDialogFragment(),
         PlayBottomSheetCoordinator,
-        PlayEtalasePickerFragment.Listener,
-        ProductSetupListener,
         PlayCoverSetupFragment.Listener
 {
 
@@ -133,25 +127,6 @@ class PlayBroadcastSetupBottomSheet :
         dialog?.onBackPressed()
     }
 
-    override fun onEtalaseClicked(id: String, sharedElements: List<View>) {
-        navigateToFragment(
-                PlayEtalaseDetailFragment::class.java,
-                extras = Bundle().apply {
-                    putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, id)
-                },
-                sharedElements = sharedElements
-        )
-    }
-
-    override suspend fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore): Throwable? {
-        navigateToFragment(
-                fragmentClass = PlayCoverSetupFragment::class.java,
-                sharedElements = sharedElements
-        )
-
-        return null
-    }
-
     override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
         dialog?.onBackPressed()
         return null
@@ -161,8 +136,6 @@ class PlayBroadcastSetupBottomSheet :
         super.onAttachFragment(childFragment)
 
         when (childFragment) {
-            is PlayEtalasePickerFragment -> childFragment.setListener(this)
-            is PlayEtalaseDetailFragment -> childFragment.setListener(this)
             is PlayCoverSetupFragment -> childFragment.setListener(this)
         }
     }

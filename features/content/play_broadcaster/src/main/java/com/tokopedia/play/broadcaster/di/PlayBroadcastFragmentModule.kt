@@ -9,7 +9,6 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChoo
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import dagger.Binds
@@ -39,11 +38,6 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroadcastUserInteractionFragment::class)
     abstract fun getPlayLiveBroadcastFragment(fragment: PlayBroadcastUserInteractionFragment): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayProductLiveBottomSheet::class)
-    abstract fun getProductLiveBottomSheet(fragment: PlayProductLiveBottomSheet): Fragment
 
     @Binds
     @IntoMap

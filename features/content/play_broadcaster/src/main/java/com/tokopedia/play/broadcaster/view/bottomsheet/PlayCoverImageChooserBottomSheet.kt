@@ -177,9 +177,9 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
      * Observe
      */
     private fun observeSelectedProduct() {
-        viewModel.observableSelectedProducts.observe(viewLifecycleOwner) {
-            pdpCoverAdapter.setItemsAndAnimateChanges(listOf(CarouselCoverUiModel.Camera) + it)
-        }
+//        viewModel.observableSelectedProducts.observe(viewLifecycleOwner) {
+//            pdpCoverAdapter.setItemsAndAnimateChanges(listOf(CarouselCoverUiModel.Camera) + it)
+//        }
     }
 
     interface Listener {
