@@ -248,6 +248,32 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       price_text
                       note
                       thumbnail
+                      addon_summary {
+                        addons {
+                          order_id
+                          id
+                          reference_id
+                          level
+                          name
+                          price
+                          price_str
+                          subtotal_price
+                          subtotal_price_str
+                          quantity
+                          type
+                          image_url
+                          metadata {
+                            from
+                            message
+                            to
+                          }
+                          create_time
+                        }
+                        total
+                        total_price
+                        total_price_str
+                        total_quantity
+                      }
                     }
                   }
                   non_bundle {
@@ -258,7 +284,64 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     price_text
                     note
                     thumbnail
+                    addon_summary {
+                      addons {
+                        order_id
+                        id
+                        reference_id
+                        level
+                        name
+                        price
+                        price_str
+                        subtotal_price
+                        subtotal_price_str
+                        quantity
+                        type
+                        image_url
+                        metadata {
+                          from
+                          message
+                          to
+                        }
+                        create_time
+                      }
+                      total
+                      total_price
+                      total_price_str
+                      total_quantity
+                    }
                   }
+                  bundle_icon
+                }
+                addon_info {
+                  order_level {
+                    addons {
+                      order_id
+                      id
+                      reference_id
+                      level
+                      name
+                      price
+                      price_str
+                      subtotal_price
+                      subtotal_price_str
+                      quantity
+                      type
+                      image_url
+                      metadata {
+                        from
+                        message
+                        to
+                      }
+                      create_time
+                    }
+                    total
+                    total_price
+                    total_price_str
+                    total_quantity
+                  }
+                  label
+                  addon_icon
                 }
               }
             }
