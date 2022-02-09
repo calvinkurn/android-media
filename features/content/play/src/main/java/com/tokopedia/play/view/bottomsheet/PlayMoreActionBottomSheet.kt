@@ -123,7 +123,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private fun observeBottomInsets() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { (_, type) ->
-                type.userReportUiState.kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
+                type.playKebabMenuBottomSheetUiState.kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
                     if (it is BottomInsetsState.Shown) {
                         customPeekHeight = (displayMetrix.heightPixels * 0.2).toInt()
                         kebabMenuSheetView.showWithHeight(customPeekHeight)
@@ -131,7 +131,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                     else kebabMenuSheetView.hide()
                 }
 
-                type.userReportUiState.kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
+                type.playKebabMenuBottomSheetUiState.kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
                     if (state is BottomInsetsState.Shown) {
                         customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
                         userReportSheetView.showWithHeight(customPeekHeight)
@@ -139,7 +139,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                     else userReportSheetView.hide()
                 }
 
-                type.userReportUiState.kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
+                type.playKebabMenuBottomSheetUiState.kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
                     if (state is BottomInsetsState.Shown) {
                         customPeekHeight = (displayMetrix.heightPixels * 0.8).toInt()
                         userReportSubmissionSheetView.showWithHeight(customPeekHeight)

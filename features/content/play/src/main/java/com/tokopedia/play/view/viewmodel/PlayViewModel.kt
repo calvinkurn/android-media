@@ -182,7 +182,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _tagItems = MutableStateFlow(data.tagItems)
     private val _quickReply = MutableStateFlow(data.quickReplyInfo)
-    private val _kebab = MutableStateFlow(emptyMap<KebabMenuType, BottomInsetsState>())
+    private val _kebabBottomSheet = MutableStateFlow(emptyMap<KebabMenuType, BottomInsetsState>())
 
     private val _interactiveUiState = combine(
         _interactive, _bottomInsets, _status
@@ -258,8 +258,8 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _userReportUiState = _kebab.map {
-        PlayUserReportUiState(
+    private val _userReportUiState = _kebabBottomSheet.map {
+        PlayKebabMenuBottomSheetUiState(
             shouldShow = !isFreezeOrBanned && it.isAnyThreeDotsShown,
             kebabMenuType = it
         )
@@ -288,7 +288,7 @@ class PlayViewModel @AssistedInject constructor(
         _userReportUiState.distinctUntilChanged(),
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, kebabMenu, userReport ->
+        status, quickReply, kebabMenu, playKebabMenuBottomSheet ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactiveView = interactive,
@@ -303,7 +303,7 @@ class PlayViewModel @AssistedInject constructor(
             status = status,
             quickReply = quickReply,
             kebabMenu = kebabMenu,
-            userReportUiState = userReport,
+            playKebabMenuBottomSheetUiState = playKebabMenuBottomSheet,
         )
     }.flowOn(dispatchers.computation)
 
@@ -665,7 +665,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isShown == true
             )
 
-        _kebab.value = insetsMap
+        _kebabBottomSheet.value = insetsMap
     }
 
     fun hideKebabMenuSheet() {
@@ -676,7 +676,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isHidden == true
             )
 
-        _kebab.value = insetsMap
+        _kebabBottomSheet.value = insetsMap
     }
 
     fun showCouponSheet(estimatedHeight: Int) {
@@ -711,7 +711,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.UserReportList]?.isShown == true
             )
 
-        _kebab.value = insetsMap
+        _kebabBottomSheet.value = insetsMap
     }
 
     fun hideUserReportSheet() {
@@ -722,7 +722,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.UserReportList]?.isHidden == true
             )
 
-        _kebab.value = insetsMap
+        _kebabBottomSheet.value = insetsMap
     }
 
     fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int) {
@@ -734,7 +734,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.UserReportSubmission]?.isShown == true
             )
 
-        _kebab.value = insetsMap
+        _kebabBottomSheet.value = insetsMap
     }
 
     fun hideUserReportSubmissionSheet() {
@@ -745,7 +745,7 @@ class PlayViewModel @AssistedInject constructor(
                 isPreviousStateSame = insetsMap[KebabMenuType.UserReportSubmission]?.isHidden == true
             )
 
-        _kebab.value = insetsMap
+        _kebabBottomSheet.value = insetsMap
     }
 
     fun hideInsets(isKeyboardHandled: Boolean) {
@@ -770,7 +770,7 @@ class PlayViewModel @AssistedInject constructor(
 
 
     private fun getLatestInset(): Map<KebabMenuType, BottomInsetsState> {
-        val currentValue = _kebab.value
+        val currentValue = _kebabBottomSheet.value
         currentValue.values.forEach {
             it.isPreviousStateSame = true
             if (it is BottomInsetsState.Shown) it.deepLevel += 1
@@ -854,7 +854,7 @@ class PlayViewModel @AssistedInject constructor(
             CloseSharingOptionAction -> handleCloseSharingOption()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
-            is OpenKebab -> onShowKebabMenuSheet(estimatedSheetHeight = 200)
+            is OpenKebab -> onShowKebabMenuSheet(estimatedSheetHeight = action.height * 10)
         }
     }
 

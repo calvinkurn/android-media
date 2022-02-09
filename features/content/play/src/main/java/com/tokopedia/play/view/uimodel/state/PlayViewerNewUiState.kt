@@ -27,7 +27,7 @@ data class PlayViewerNewUiState(
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
     val kebabMenu: PlayKebabMenuUiState,
-    val userReportUiState: PlayUserReportUiState
+    val playKebabMenuBottomSheetUiState: PlayKebabMenuBottomSheetUiState
 )
 
 data class PlayInteractiveViewUiState(
@@ -94,7 +94,7 @@ data class PlayKebabMenuUiState(
     val shouldShow: Boolean
 )
 
-data class PlayUserReportUiState(
+data class PlayKebabMenuBottomSheetUiState(
     val shouldShow: Boolean,
     val kebabMenuType: Map<KebabMenuType, BottomInsetsState>
 )
