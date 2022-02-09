@@ -21,6 +21,7 @@ class SomDetailAddOnViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.item_add_on
+        const val MAX_RECYCLED_VIEWS = 10
     }
 
     private val binding by viewBinding<ItemAddOnBinding>()
@@ -32,16 +33,16 @@ class SomDetailAddOnViewHolder(
     }
 
     override fun onDescriptionSeeLessClicked() {
-        element?.let {
+        element?.run {
+            descriptionExpanded = false
             binding?.layoutAddOnDescription?.collapse()
-            it.descriptionExpanded = false
         }
     }
 
     override fun onDescriptionSeeMoreClicked() {
-        element?.let {
+        element?.run {
+            descriptionExpanded = true
             binding?.layoutAddOnDescription?.expand()
-            it.descriptionExpanded = true
         }
     }
 

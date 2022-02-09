@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.factory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,7 +20,8 @@ import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiMod
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 
 class SomDetailAdapterFactoryImpl(
-    private val actionListener: ActionListener
+    private val actionListener: ActionListener,
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : SomDetailAdapterFactory, BaseAdapterTypeFactory() {
     override fun type(typeLayout: String): Int {
         return when (typeLayout) {
@@ -72,10 +74,10 @@ class SomDetailAdapterFactoryImpl(
                 SomDetailMVCUsageViewHolder(parent)
             }
             SomDetailNonProductBundleCardViewHolder.RES_LAYOUT -> {
-                SomDetailNonProductBundleCardViewHolder(actionListener, parent)
+                SomDetailNonProductBundleCardViewHolder(actionListener, recyclerViewSharedPool, parent)
             }
             SomDetailProductBundleCardViewHolder.RES_LAYOUT -> {
-                SomDetailProductBundleCardViewHolder(actionListener, parent)
+                SomDetailProductBundleCardViewHolder(actionListener, recyclerViewSharedPool, parent)
             }
             SomDetailDividerViewHolder.LAYOUT -> {
                 SomDetailDividerViewHolder(parent)

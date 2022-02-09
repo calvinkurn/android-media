@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
@@ -20,6 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class SomDetailProductBundleCardViewHolder(
     private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
     itemView: View?
 ) : AbstractViewHolder<ProductBundleUiModel>(itemView) {
 
@@ -48,6 +50,8 @@ class SomDetailProductBundleCardViewHolder(
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }
+            (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
+            setRecycledViewPool(recyclerViewSharedPool)
             adapter = productAdapter
             if (itemDecorationCount == 0) {
                 val margins = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.spacing_lvl4).toInt()

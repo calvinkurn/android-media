@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -16,10 +18,10 @@ import com.tokopedia.sellerorder.detail.presentation.model.AddOnSummaryUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnUiModel
 import com.tokopedia.unifycomponents.toPx
 
-class PartialSomDetailAddOnSummaryViewHolder constructor(
+class PartialSomDetailAddOnSummaryViewHolder(
     somDetailAddOnListener: SomDetailAddOnViewHolder.Listener,
     private val binding: PartialAddOnSummaryBinding?,
-    var element: AddOnSummaryUiModel?
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) {
 
     companion object {
@@ -31,6 +33,8 @@ class PartialSomDetailAddOnSummaryViewHolder constructor(
 
     init {
         binding?.rvAddOn?.run {
+            setRecycledViewPool(recyclerViewSharedPool)
+            (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
             adapter = this@PartialSomDetailAddOnSummaryViewHolder.adapter
             if (itemDecorationCount == Int.ZERO) {
                 addItemDecoration(
@@ -74,8 +78,8 @@ class PartialSomDetailAddOnSummaryViewHolder constructor(
         adapter.setElements(addons)
     }
 
-    fun bind() {
-        setupAddOnSummary(element)
+    fun bind(addOnSummary: AddOnSummaryUiModel?) {
+        setupAddOnSummary(addOnSummary)
     }
 
     fun isShowing() = binding?.root?.isVisible == true

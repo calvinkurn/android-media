@@ -15,8 +15,7 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAd
 
 class PartialSomDetailNonProductBundleDetailViewHolder(
     private var binding: PartialNonProductBundleDetailBinding?,
-    private var actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
-    var element: SomDetailOrder.Data.GetSomDetail.Details.Product?
+    private var actionListener: SomDetailAdapterFactoryImpl.ActionListener?
 ) {
 
     private fun setupProductDetail(element: SomDetailOrder.Data.GetSomDetail.Details.Product?) {
@@ -75,8 +74,8 @@ class PartialSomDetailNonProductBundleDetailViewHolder(
         }
     }
 
-    fun bind() {
-        setupProductDetail(element)
+    fun bind(product: SomDetailOrder.Data.GetSomDetail.Details.Product?) {
+        setupProductDetail(product)
     }
 
     fun isShowing() = binding?.root?.isVisible == true

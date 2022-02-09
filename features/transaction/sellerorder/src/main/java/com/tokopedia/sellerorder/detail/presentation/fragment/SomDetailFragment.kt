@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
@@ -104,6 +105,7 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticI
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactory
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnSummaryUiModel
@@ -164,6 +166,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var failEditAwbResponse = SomEditRefNumResponse.Error()
     private var listDetailData: ArrayList<Visitable<SomDetailAdapterFactory>> = arrayListOf()
     private var somDetailLoadTimeMonitoring: SomDetailLoadTimeMonitoring? = null
+    private var recyclerViewSharedPool = RecyclerView.RecycledViewPool()
     private var somDetailAdapter = BaseAdapter(getAdapterTypeFactory())
 
     private var refreshHandler: RefreshHandler? = null
@@ -372,6 +375,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 checkUserRole()
             }
         }
+        recyclerViewSharedPool.setMaxRecycledViews(SomDetailAddOnViewHolder.RES_LAYOUT, SomDetailAddOnViewHolder.MAX_RECYCLED_VIEWS)
     }
 
     protected open fun loadDetail() {
@@ -1531,6 +1535,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
-        return SomDetailAdapterFactoryImpl(this)
+        return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
     }
 }
