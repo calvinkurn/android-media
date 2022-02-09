@@ -5,5 +5,8 @@ data class VariantUiModel(
         var variantName: String = "",
         var sku: String = "",
         var price: String = "",
-        var soldNStock: String = ""
+        var priceTxt: String = "",
+        var soldNStock: String = "",
+        var isError: Boolean = false,
+        var errorMessage: String = ""
 )

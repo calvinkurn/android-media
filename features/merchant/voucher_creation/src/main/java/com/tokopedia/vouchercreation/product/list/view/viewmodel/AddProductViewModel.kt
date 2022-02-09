@@ -9,6 +9,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
+import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.list.domain.model.request.GoodsSortInput
 import com.tokopedia.vouchercreation.product.list.domain.model.response.*
 import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductListMetaResponse.Category
@@ -21,7 +24,7 @@ import javax.inject.Inject
 class AddProductViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers,
         private val getProductListUseCase: GetProductListUseCase,
-        private val getProductVariantsUseCase: GetProductVariantsUseCase,
+        private val validateVoucherUseCase: ValidateVoucherUseCase,
         private val getWarehouseLocationsUseCase: GetWarehouseLocationsUseCase,
         private val getShowCasesByIdUseCase: GetShowCasesByIdUseCase,
         private val getProductListMetaDataUseCase: GetProductListMetaDataUseCase
@@ -29,7 +32,18 @@ class AddProductViewModel @Inject constructor(
 
     companion object {
         const val SELLER_LOCATION_ID = 340735
+        const val TARGET_ALL_USER = 0
+        const val EMPTY_STRING = ""
+        const val BENEFIT_TYPE_IDR = "idr"
+        const val BENEFIT_TYPE_PERCENT = "percent"
+        const val COUPON_TYPE_CASHBACK = "cashback"
+        const val COUPON_TYPE_SHIPPING = "shipping"
     }
+
+    private var productUiModels: List<ProductUiModel> = listOf()
+
+    // VOUCHER VALIDATION PROPERTIES
+    private var couponSettings: CouponSettings? = null
 
     // SORT AND FILTER PROPERTIES
     private var searchKeyWord: String? = null
@@ -47,14 +61,14 @@ class AddProductViewModel @Inject constructor(
     // LIVE DATA
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
     val productListResult: LiveData<Result<ProductListResponse>> get() = getProductListResultLiveData
-    private val getProductVariantsResultLiveData = MutableLiveData<Result<GetProductV3Response>>()
-    val getProductVariantsResult: LiveData<Result<GetProductV3Response>> get() = getProductVariantsResultLiveData
     private val getWarehouseLocationsResultLiveData = MutableLiveData<Result<ShopLocGetWarehouseByShopIdsResponse>>()
-    val getSellerLocationsResult: LiveData<Result<ShopLocGetWarehouseByShopIdsResponse>> get() = getWarehouseLocationsResultLiveData
+    val getWarehouseLocationsResult: LiveData<Result<ShopLocGetWarehouseByShopIdsResponse>> get() = getWarehouseLocationsResultLiveData
     private val getShowCasesByIdResultLiveData = MutableLiveData<Result<ShopShowcasesByShopIdResponse>>()
     val getShowCasesByIdResult: LiveData<Result<ShopShowcasesByShopIdResponse>> get() = getShowCasesByIdResultLiveData
     private val getProductListMetaDataResultLiveData = MutableLiveData<Result<ProductListMetaResponse>>()
     val getProductListMetaDataResult: LiveData<Result<ProductListMetaResponse>> get() = getProductListMetaDataResultLiveData
+    private val validateVoucherResultLiveData = MutableLiveData<Result<VoucherValidationPartialResponse>>()
+    val validateVoucherResult: LiveData<Result<VoucherValidationPartialResponse>> get() = validateVoucherResultLiveData
 
     fun getProductList(
             keyword: String? = null,
@@ -83,17 +97,30 @@ class AddProductViewModel @Inject constructor(
         })
     }
 
-    fun getProductVariants(isVariantEmpty: Boolean, productId: String) {
-        if (!isVariantEmpty) return
+    fun validateProductList(benefitType: String,
+                            couponType: String,
+                            benefitIdr: Int,
+                            benefitMax: Int,
+                            benefitPercent: Int,
+                            minPurchase: Int,
+                            productIds: List<String>) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val params = GetProductVariantsUseCase.createRequestParams(productId)
-                getProductVariantsUseCase.setRequestParams(params = params.parameters)
-                getProductVariantsUseCase.executeOnBackground()
+                val params = ValidateVoucherUseCase.createRequestParams(
+                        benefitType = benefitType,
+                        couponType = couponType,
+                        benefitIdr = benefitIdr,
+                        benefitMax = benefitMax,
+                        benefitPercent = benefitPercent,
+                        minPurchase = minPurchase,
+                        productIds = productIds
+                )
+                validateVoucherUseCase.setRequestParams(params = params.parameters)
+                validateVoucherUseCase.executeOnBackground()
             }
-            getProductVariantsResultLiveData.value = Success(result)
+            validateVoucherResultLiveData.value = Success(result)
         }, onError = {
-            getProductVariantsResultLiveData.value = Fail(it)
+            validateVoucherResultLiveData.value = Fail(it)
         })
     }
 
@@ -145,7 +172,8 @@ class AddProductViewModel @Inject constructor(
                     productName = productData.name,
                     sku = "SKU : " + productData.sku,
                     price = "Rp " + productData.price.max.toString(),
-                    soldNStock = "Terjual " + productData.stock.toString() + " | " + "Stok " + productData.txStats.sold,
+                    sold = productData.txStats.sold,
+                    soldNStock = "Terjual " + productData.txStats.sold + " | " + "Stok " + productData.stock.toString(),
                     hasVariant = productData.isVariant
             )
         }
@@ -202,6 +230,36 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    fun applyValidationResult(productList: List<ProductUiModel>,
+                              validationResults: List<VoucherValidationPartialProduct>): List<ProductUiModel> {
+        val mutableProductList = productList.toMutableList()
+        validationResults.forEach { validationResult ->
+            val productUiModel = mutableProductList.first {
+                it.id == validationResult.parentProductId.toString()
+            }
+            productUiModel.isError = !validationResult.isEligible
+            productUiModel.errorMessage = validationResult.reason
+            productUiModel.hasVariant = validationResult.isVariant
+            productUiModel.variants = mapVariantDataToUiModel(validationResult.variants, productUiModel.sold)
+        }
+        return mutableProductList.toList()
+    }
+
+    private fun mapVariantDataToUiModel(variantValidationData: List<VariantValidationData>, sold: Int): List<VariantUiModel> {
+        return variantValidationData.map { data ->
+            VariantUiModel(
+                    variantId = data.productId.toString(),
+                    variantName = data.productName,
+                    sku = "SKU : " + data.sku,
+                    price = data.price.toString(),
+                    priceTxt = data.priceFormat,
+                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString(),
+                    isError = !data.is_eligible,
+                    errorMessage = data.reason
+            )
+        }
+    }
+
     private fun getVariantName(combination: List<Int>, selections: List<Selection>): String {
         val sb = StringBuilder()
         combination.forEach { index ->
@@ -209,6 +267,14 @@ class AddProductViewModel @Inject constructor(
             sb.append(" ")
         }
         return sb.toString().trim()
+    }
+
+    fun setProductUiModels(productUiModels: List<ProductUiModel>) {
+        this.productUiModels = productUiModels
+    }
+
+    fun getProductUiModels(): List<ProductUiModel> {
+        return productUiModels
     }
 
     // SORT AND FILTER
@@ -256,6 +322,53 @@ class AddProductViewModel @Inject constructor(
 
     fun getSelectedSort(): GoodsSortInput? {
         return selectedSort
+    }
+
+    fun setCouponSettings(couponSettings: CouponSettings?) {
+        this.couponSettings = couponSettings
+    }
+
+    fun getCouponSettings(): CouponSettings? {
+        return couponSettings
+    }
+
+    fun getIdsFromProductList(productList: List<ProductUiModel>): List<String> {
+        return productList.map { productUiModel ->
+            productUiModel.id
+        }
+    }
+
+    fun getBenefitType(couponSettings: CouponSettings): String {
+        return when {
+            couponSettings.type == CouponType.FREE_SHIPPING -> BENEFIT_TYPE_IDR
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> BENEFIT_TYPE_IDR
+            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> BENEFIT_TYPE_PERCENT
+            else -> BENEFIT_TYPE_IDR
+        }
+    }
+
+    fun getCouponType(couponSettings: CouponSettings): String {
+        return when (couponSettings.type) {
+            CouponType.NONE -> EMPTY_STRING
+            CouponType.CASHBACK -> COUPON_TYPE_CASHBACK
+            CouponType.FREE_SHIPPING -> COUPON_TYPE_SHIPPING
+        }
+    }
+
+    fun getBenefitIdr(couponSettings: CouponSettings): Int {
+        return couponSettings.discountAmount
+    }
+
+    fun getBenefitMax(couponSettings: CouponSettings): Int {
+        return couponSettings.maxDiscount
+    }
+
+    fun getBenefitPercent(couponSettings: CouponSettings): Int {
+        return couponSettings.discountPercentage
+    }
+
+    fun getMinimumPurchase(couponSettings: CouponSettings): Int {
+        return couponSettings.minimumPurchase
     }
 
     // PRODUCT SELECTIONS
