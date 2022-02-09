@@ -9,7 +9,7 @@ interface PlayBroSetupProductAnalytic {
 
     fun clickSaveButtonOnProductSetup(productId: String)
 
-    fun clickAddMoreProductonProductSetup(productId: String) /** TODO: where to get this productId? */
+    fun clickAddMoreProductOnProductSetup()
 
     fun clickSelectProductOnProductSetup(productId: String)
 
@@ -23,5 +23,13 @@ interface PlayBroSetupProductAnalytic {
 
     fun clickProductSortingType(sortName: String)
 
-    fun clickCampaignAndEtalase()
+    fun clickEtalaseCard()
+
+    fun clickCampaignCard()
+
+    fun clickCloseOnProductChooser(isProductSelected: Boolean)
+
+    fun clickConfirmCloseOnProductChooser()
+
+    fun clickCancelCloseOnProductChooser()
 }
