@@ -280,6 +280,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
             productCount += it.products.size
         }
 
+        throw Exception("Something went wrong.")
+
         _productTagSummary.value = if(productCount == 0) ProductTagSummaryUiModel.Empty
         else ProductTagSummaryUiModel.Success(response, productCount)
     }

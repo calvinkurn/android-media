@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
@@ -20,9 +21,11 @@ import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustom
 import com.tokopedia.play.broadcaster.util.extension.productEtalaseEmpty
 import com.tokopedia.play.broadcaster.util.extension.productTagSummaryEmpty
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.processNextEventInCurrentThread
 import javax.inject.Inject
@@ -148,12 +151,10 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.flBtnDoneContainer.visibility = View.GONE
                     }
                     is ProductTagSummaryUiModel.Error -> {
-                        view?.showErrorToaster(
+                        view?.rootView?.showErrorToaster(
                             err = state.productTagSummary.throwable,
-                            customErrMessage = state.productTagSummary.throwable.localizedMessage
-                                ?: getString(R.string.play_broadcaster_default_error),
                             actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = { viewModel.submitAction(PlayBroProductSummaryAction.LoadProductSummary) }
+                            actionListener = { viewModel.submitAction(PlayBroProductSummaryAction.LoadProductSummary) },
                         )
 
                         setTitle(null)
