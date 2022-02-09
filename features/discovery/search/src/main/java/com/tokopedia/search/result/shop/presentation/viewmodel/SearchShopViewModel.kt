@@ -868,10 +868,6 @@ internal class SearchShopViewModel(
             it.putAll(mapParameter)
         }
 
-    fun setChooseAddressData(chooseAddressData: LocalCacheModel?){
-        this.chooseAddressData = chooseAddressData
-    }
-
     fun onLocalizingAddressSelected() {
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         dynamicFilterModel = null
