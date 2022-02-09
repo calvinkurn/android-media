@@ -135,7 +135,7 @@ class ProductSectionViewHolder(
         val serverTimeInMillis = serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val expiredTimeInDate = expiredTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val dtNow = DateUtil.getCurrentCalendar().time
-        dtNow.time = dtNow.time + serverTimeInMillis.time
+        dtNow.time = dtNow.time + serverTimeInMillis.timezoneOffset
         return dtNow.after(expiredTimeInDate)
     }
 
