@@ -5,7 +5,6 @@ import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.databinding.ItemProductBinding
 import com.tokopedia.addongifting.view.AddOnActionListener
 import com.tokopedia.addongifting.view.uimodel.ProductUiModel
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.image_gallery.ImageGallery
+        android:id="@+id/image_gallery_add_on"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_margin="20dp"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CLOSE" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:padding="28dp">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_add_on_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kartu Ucapan"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_add_on_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rp10.000"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_3" />
+
+    </LinearLayout>
+
+</FrameLayout>

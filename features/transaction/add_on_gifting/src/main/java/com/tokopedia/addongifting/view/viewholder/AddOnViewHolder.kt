@@ -42,6 +42,9 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 labelAddOnHeader.text = "Bungkus barang dengan (opsional):"
             }
             imageAddOn.setImageUrl(element.addOnSquareImageUrl)
+            imageAddOn.setOnClickListener {
+                listener.onAddOnImageClicked(element)
+            }
             labelAddOnName.text = element.addOnName
             if (element.addOnDescription.isNotBlank()) {
                 labelAddOnDescription.text = element.addOnDescription

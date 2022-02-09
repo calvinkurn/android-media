@@ -6,4 +6,5 @@ interface AddOnActionListener {
 
     fun onCheckBoxCheckedChanged(addOnUiModel: AddOnUiModel)
 
+    fun onAddOnImageClicked(addOnUiModel: AddOnUiModel)
 }

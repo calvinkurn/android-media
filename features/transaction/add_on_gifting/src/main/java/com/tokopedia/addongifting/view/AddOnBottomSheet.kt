@@ -1,6 +1,7 @@
 package com.tokopedia.addongifting.view
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import com.tokopedia.addongifting.view.di.AddOnComponent
 import com.tokopedia.addongifting.view.di.DaggerAddOnComponent
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
+import com.tokopedia.addongifting.addonimagegallery.AddOnGalleryActivity
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -221,4 +223,11 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         viewModel.updateFragmentUiModel(addOnUiModel)
     }
 
+    override fun onAddOnImageClicked(addOnUiModel: AddOnUiModel) {
+        val intent = Intent(context, AddOnGalleryActivity::class.java)
+        val addOnImages = arrayListOf<String>()
+        addOnImages.addAll(addOnUiModel.addOnAllImageUrls)
+        intent.putStringArrayListExtra("ADD_ON_IMAGES", addOnImages)
+        startActivity(intent)
+    }
 }
