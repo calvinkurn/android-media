@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductSummaryListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -101,7 +102,6 @@ class ProductSummaryBottomSheet @Inject constructor(
 
         binding.btnDone.setOnClickListener {
             dismiss()
-            /** TODO: need to close all product bottomsheets as well */
         }
     }
 
@@ -171,9 +171,9 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun handleAddMoreProduct() {
-        /** TODO: there are 2 options
-         * 1. if user on select product -> just close this bottomsheet
-         * 2. if user want to edit product -> open product chooser bottomsheet*/
+        dismiss()
+        (parentFragment as? ProductSetupFragment)
+            ?.openProductChooser()
     }
 
     companion object {

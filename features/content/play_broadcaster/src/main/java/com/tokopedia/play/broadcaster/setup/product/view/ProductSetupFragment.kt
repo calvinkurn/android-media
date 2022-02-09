@@ -20,6 +20,12 @@ class ProductSetupFragment @Inject constructor() : Fragment() {
 //        openProductSummary()
     }
 
+    fun removeFragment() {
+        parentFragmentManager.beginTransaction()
+            .remove(this)
+            .commit()
+    }
+
     fun openCampaignAndEtalaseList() {
         EtalaseListBottomSheet.getFragment(
             childFragmentManager,
@@ -28,16 +34,10 @@ class ProductSetupFragment @Inject constructor() : Fragment() {
     }
 
     fun openProductChooser() {
-        val productChooser = ProductChooserBottomSheet.getFragment(
+        ProductChooserBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader,
-        )
-        productChooser.setOnDismissListener {
-            parentFragmentManager.beginTransaction()
-                .remove(this)
-                .commit()
-        }
-        productChooser.show(childFragmentManager)
+        ).show(childFragmentManager)
     }
 
     fun openProductSummary() {

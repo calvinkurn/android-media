@@ -114,6 +114,7 @@ class ProductChooserBottomSheet @Inject constructor(
         }
 
         binding.btnNext.setOnClickListener {
+            dismiss()
             (parentFragment as? ProductSetupFragment)
                 ?.openProductSummary()
         }
