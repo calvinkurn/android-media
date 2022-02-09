@@ -72,10 +72,6 @@ class ProductSectionViewHolder(
                     listener.onTimerExpired(product = item)
                 }
             }
-            ProductSectionType.OutOfStock -> {
-                tvTimerInfo.hide()
-                timerSection.hide()
-            }
             ProductSectionType.Upcoming -> {
                 tvTimerInfo.show()
                 timerSection.show()
@@ -104,8 +100,7 @@ class ProductSectionViewHolder(
                 }
                 val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, bgArray)
                 itemView.background = gradient
-            } catch (e: Exception) {
-            }
+            } catch (e: Exception) { }
         } else {
             ivBg.loadImage(background.imageUrl)
         }

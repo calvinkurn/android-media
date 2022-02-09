@@ -1,16 +1,19 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.view.type.OutOfStock
+import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.unifycomponents.Label
@@ -26,6 +29,7 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
     private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
     private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
     private val tvOutOfStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
+    private val llPrice: LinearLayout = itemView.findViewById(R.id.layout_product_button)
 
     override fun bind(item: PlayProductUiModel.Product) {
         super.bind(item)
@@ -53,6 +57,11 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
                     getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 )
             }
+        }
+
+        when(item.sectionType){
+            ProductSectionType.Upcoming -> llPrice.hide()
+            else -> llPrice.show()
         }
 
         btnProductBuy.setOnClickListener {

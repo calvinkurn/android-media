@@ -1,9 +1,6 @@
 package com.tokopedia.play.view.uimodel
 
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.ProductPrice
-import com.tokopedia.play.view.type.ProductStock
+import com.tokopedia.play.view.type.*
 
 /**
  * Created by jegul on 03/03/20
@@ -20,7 +17,8 @@ sealed class PlayProductUiModel {
             val price: ProductPrice,
             val minQty: Int,
             val isFreeShipping: Boolean,
-            val applink: String?
+            val applink: String?,
+            val sectionType: ProductSectionType?
     ) : PlayProductUiModel() {
         companion object {
             val Empty: Product
@@ -35,6 +33,7 @@ sealed class PlayProductUiModel {
                     minQty = 0,
                     isFreeShipping = false,
                     applink = null,
+                    sectionType = null
                 )
         }
     }

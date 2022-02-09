@@ -17,13 +17,10 @@ class PlayProductTagUiMapper @Inject constructor() {
     fun mapSection(input: Section): PlayProductSectionUiModel.ProductSection {
         return PlayProductSectionUiModel.ProductSection(
             title = input.sectionTitle,
-            type = when (input.sectionType){
-                "out_of_stock" -> ProductSectionType.OutOfStock
-                "upcoming" -> ProductSectionType.Upcoming
-                "active"  -> ProductSectionType.Active
-                else -> ProductSectionType.Other
+            type = ProductSectionType.getSectionValue(sectionType = input.sectionType),
+            productList = input.listOfProducts.map{
+                mapProductTag(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
             },
-            productList = input.listOfProducts.map(::mapProductTag),
             serverTime = input.serverTime,
             startTime = input.timerStartTime,
             endTime = input.timerEndTime,
@@ -33,7 +30,7 @@ class PlayProductTagUiMapper @Inject constructor() {
     }
 
 
-    fun mapProductTag(input: Product): PlayProductUiModel.Product {
+    fun mapProductTag(input: Product, sectionType: ProductSectionType? = null): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
                 id = input.id,
                 shopId = input.shopId,
@@ -51,10 +48,12 @@ class PlayProductTagUiMapper @Inject constructor() {
                             priceNumber = input.originalPrice)
                 },
                 isVariantAvailable = input.isVariant,
+                //TODO= TBD
                 stock = if (input.quantity > 0 || input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
                 minQty = input.minimumQuantity,
                 isFreeShipping = input.isFreeShipping,
-                applink = input.appLink
+                applink = input.appLink,
+                sectionType = sectionType
         )
     }
 }

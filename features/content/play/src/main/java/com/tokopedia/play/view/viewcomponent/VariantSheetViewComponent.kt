@@ -157,7 +157,8 @@ class VariantSheetViewComponent(
                         },
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         isFreeShipping = variantSheetUiModel?.product?.isFreeShipping ?: false,
-                        applink = variantSheetUiModel?.product?.applink
+                        applink = variantSheetUiModel?.product?.applink,
+                        sectionType = null
                 )
                 variantSheetUiModel?.stockWording = stock?.stockWordingHTML
                 variantSheetUiModel?.product = product
