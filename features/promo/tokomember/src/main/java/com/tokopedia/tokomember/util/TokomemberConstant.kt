@@ -8,8 +8,7 @@ const val IO = "IO"
 
 const val TM_REGISTRATION_SHOP_DATA ="""
      query membershipGetShopRegistrationWidget(${'$'}orderData: [MembershipOrderData]!) {
-  membershipGetShopRegistrationWidget(orderData: 
-        orderData: ${'$'}orderData  ) {
+  membershipGetShopRegistrationWidget( orderData: ${'$'}orderData  ) {
         resultStatus {
         code
         message

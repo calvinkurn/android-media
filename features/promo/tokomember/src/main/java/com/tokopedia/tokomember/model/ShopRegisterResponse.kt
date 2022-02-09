@@ -122,7 +122,7 @@ data class ResultStatusShopRegister(
 ) : Parcelable
 
 @SuppressLint("ResponseFieldAnnotation")
-data class ShopParams(
+data class MembershipOrderData(
 	@SerializedName("shopID")
 	var shopID: Int = 0,
 	@SerializedName("amount")

@@ -15,7 +15,6 @@ import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendati
 import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.tokomember.model.MembershipRegister
-import com.tokopedia.tokomember.model.ShopParams
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail

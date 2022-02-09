@@ -6,7 +6,7 @@ import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
-import com.tokopedia.tokomember.model.ShopParams
+import com.tokopedia.tokomember.model.MembershipOrderData
 import com.tokopedia.tokomember.trackers.TokomemberSource
 import org.json.JSONObject
 
@@ -50,7 +50,7 @@ object FeatureRecommendationMapper {
 
     fun getTokomemberRequestParams(thanksPageData: ThanksPageData): TokoMemberRequestParam {
         var index = 0
-        val shopParams = ArrayList<ShopParams>()
+        val shopParams = ArrayList<MembershipOrderData>()
         var amount = 0F
 
         thanksPageData.shopOrder.forEach {
@@ -58,7 +58,7 @@ object FeatureRecommendationMapper {
             it.purchaseItemList.forEach { orderItem ->
                 amount += orderItem.totalPrice
             }
-            shopParams.add(index, ShopParams(it.storeId.toInt(), amount))
+            shopParams.add(index, MembershipOrderData(it.storeId.toInt(), amount))
             index++
         }
 

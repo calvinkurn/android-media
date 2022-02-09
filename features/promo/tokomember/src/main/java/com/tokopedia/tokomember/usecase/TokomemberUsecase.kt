@@ -1,7 +1,7 @@
 package com.tokopedia.tokomember.usecase
 
+import com.tokopedia.tokomember.model.MembershipOrderData
 import com.tokopedia.tokomember.model.MembershipShopResponse
-import com.tokopedia.tokomember.model.ShopParams
 import com.tokopedia.tokomember.repository.TokomemberRepository
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -9,14 +9,14 @@ import javax.inject.Inject
 class TokomemberUsecase @Inject constructor(private val tokomemberRepository: TokomemberRepository) :
     UseCase<MembershipShopResponse>() {
 
-    var orderData : ArrayList<ShopParams> = arrayListOf()
+    var orderData : ArrayList<MembershipOrderData> = arrayListOf()
 
     override suspend fun executeOnBackground(): MembershipShopResponse {
         return tokomemberRepository.getTokomemberData(orderData)
     }
 
     fun setGqlParams(
-        orderData: List<ShopParams>,
+        orderData: List<MembershipOrderData>,
     ) {
         this.orderData.clear()
         this.orderData.addAll(orderData)
