@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
+import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
@@ -40,6 +41,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     private lateinit var productPrice: String
     private var idToProductUrl = HashMap<String,String>()
 
+    @Inject
+    lateinit var pdpWidgetAnalytics: dagger.Lazy<PdpFintechWidgetAnalytics>
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
