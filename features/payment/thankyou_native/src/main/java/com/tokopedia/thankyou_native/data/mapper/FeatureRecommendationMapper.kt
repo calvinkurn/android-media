@@ -51,14 +51,17 @@ object FeatureRecommendationMapper {
     fun getTokomemberRequestParams(thanksPageData: ThanksPageData): TokoMemberRequestParam {
         var index = 0
         val shopParams = ArrayList<ShopParams>()
+        var amount = 0F
 
         thanksPageData.shopOrder.forEach {
-            shopParams[index].shopID = it.storeId.toInt()
+            amount = 0F
             it.purchaseItemList.forEach { orderItem ->
-                shopParams[index].amount += orderItem.totalPrice
+                amount += orderItem.totalPrice
             }
+            shopParams.add(index, ShopParams(it.storeId.toInt(), amount))
             index++
         }
+
         return TokoMemberRequestParam (
             pageType = PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
             source = TokomemberSource.THANK_YOU,
