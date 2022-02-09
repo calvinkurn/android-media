@@ -27,7 +27,7 @@ data class HomeData(
     @SerializedName("token")
     @Expose
     var token: String = "",
-    @SerializedName("homeAtfData")
+    @SerializedName("atfData")
     @Expose
     var atfData: HomeAtfData? = HomeAtfData(),
     /**
