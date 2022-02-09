@@ -131,27 +131,34 @@
         tools:itemCount="3"
         tools:listitem="@layout/shc_item_recommendation" />
 
+    <View
+        android:id="@+id/horLineShcRecommendationBtm"
+        android:layout_width="0dp"
+        android:layout_height="0.1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvShcRecommendationList" />
+
     <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
         android:id="@+id/luvShcRecommendation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="12dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/horLineShcRecommendationBtm"
         app:layout_constraintEnd_toStartOf="@+id/tvShcRecommendationCta"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvShcRecommendationList"
-        app:layout_constraintVertical_bias="0" />
+        app:layout_constraintTop_toTopOf="@+id/horLineShcRecommendationBtm" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcRecommendationCta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginEnd="16dp"
         android:background="@android:color/transparent"
         android:ellipsize="end"
         android:gravity="end|center_vertical"
@@ -160,12 +167,11 @@
         android:text="@string/shc_more"
         android:textColor="@color/Unify_G500"
         android:textSize="@dimen/fontSize_lvl3"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/horLineShcRecommendationBtm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/luvShcRecommendation"
-        app:layout_constraintTop_toBottomOf="@+id/rvShcRecommendationList"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintTop_toTopOf="@+id/horLineShcRecommendationBtm"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 </androidx.constraintlayout.widget.ConstraintLayout>

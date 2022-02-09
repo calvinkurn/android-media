@@ -103,6 +103,10 @@ class PostListViewHolder(
             }
             else -> showSuccessState(postListWidgetUiModel)
         }
+
+        with(binding.shcPostListSuccessView) {
+            horLineShcPostListBtm.isVisible = luvShcPost.isVisible || tvPostListSeeDetails.isVisible
+        }
     }
 
     private fun setupLastUpdated(element: PostListWidgetUiModel) {

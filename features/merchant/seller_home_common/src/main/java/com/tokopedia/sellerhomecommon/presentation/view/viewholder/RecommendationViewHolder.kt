@@ -115,6 +115,9 @@ class RecommendationViewHolder(
             setupTooltip(tvShcRecommendationTitle, element)
             setupLastUpdatedInfo(element)
 
+            horLineShcRecommendationBtm.isVisible = luvShcRecommendation.isVisible
+                    || tvShcRecommendationCta.isVisible
+
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendRecommendationImpressionEvent(element)
             }
@@ -282,7 +285,12 @@ class RecommendationViewHolder(
                         val margin = root.context.dpToPx(DIMEN_16_DP).toInt()
                         val marginTopLastUpdated = root.context.dpToPx(DIMEN_20_DP).toInt()
                         tvShcRecommendationCta.setMargin(0, margin, margin8dp, margin)
-                        luvShcRecommendation.setMargin(0, marginTopLastUpdated, 0, margin)
+                        luvShcRecommendation.setMargin(
+                            luvShcRecommendation.left,
+                            marginTopLastUpdated,
+                            0,
+                            margin
+                        )
                     } else {
                         rvShcRecommendationList.visible()
                         tvShcRecommendationHeaderItem.setUnifyDrawableEnd(
@@ -296,7 +304,7 @@ class RecommendationViewHolder(
                         val marginBottom = root.context.dpToPx(DIMEN_16_DP).toInt()
                         tvShcRecommendationCta.setMargin(0, margin8dp, margin8dp, marginBottom)
                         luvShcRecommendation.setMargin(
-                            0,
+                            luvShcRecommendation.left,
                             marginTopLastUpdated,
                             0,
                             marginBottom
