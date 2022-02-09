@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -242,29 +243,41 @@ class PlayBroProductSetupViewModel @Inject constructor(
     /** TODO: gonna delete this later */
     @ExperimentalStdlibApi
     private fun handleLoadProductSummary() {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
-            _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
+        /** TODO: change dispatchers.io -> dispatchers.main instead later */
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            withContext(dispatchers.main) {
+                _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
+            }
+
+            throw Exception("Testing")
+
             getProductTagSummary()
         }) {
-            _uiEvent.emit(
-                PlayBroProductSummaryUiEvent.GetDataError(it) {
-                    submitAction(PlayBroProductSummaryAction.LoadProductSummary)
-                }
-            )
+            withContext(dispatchers.main) {
+                _productTagSummary.value = ProductTagSummaryUiModel.Unknown
+                _uiEvent.emit(
+                    PlayBroProductSummaryUiEvent.GetDataError(it) {
+                        submitAction(PlayBroProductSummaryAction.LoadProductSummary)
+                    }
+                )
+            }
         }
     }
 
     /** TODO: gonna delete this later */
     @ExperimentalStdlibApi
     private fun handleDeleteProduct(product: ProductUiModel) {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
-            _productTagSummary.value = ProductTagSummaryUiModel.Loading
+        /** TODO: change dispatchers.io -> dispatchers.main instead later */
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            withContext(dispatchers.main) {
+                _productTagSummary.value = ProductTagSummaryUiModel.Loading
+            }
+
 
             val productSectionList = _productTagSectionList.value
             /** TODO: gonna delete this later */
             delay(1000)
 
-            throw Exception("Error")
             /** TODO: gonna uncomment this later */
 //                val productIds = productSectionList.sections.flatMap { section ->
 //                    section.products.filter { it.id != product.id }.map { it.id }
@@ -273,11 +286,14 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
             getProductTagSummary()
         }) {
-            _uiEvent.emit(
-                PlayBroProductSummaryUiEvent.DeleteProductError(it) {
-                    submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
-                }
-            )
+            withContext(dispatchers.main) {
+                _productTagSummary.value = ProductTagSummaryUiModel.Unknown
+                _uiEvent.emit(
+                    PlayBroProductSummaryUiEvent.DeleteProductError(it) {
+                        submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
+                    }
+                )
+            }
         }
     }
 
@@ -285,7 +301,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
     @ExperimentalStdlibApi
     private suspend fun getProductTagSummary() {
         /** TODO: gonna remove this delay */
-        delay(1000)
+//        delay(1000)
         val response = repo.getProductTagSummarySection(channelId.toLong())
 
         var productCount = 0
@@ -293,8 +309,10 @@ class PlayBroProductSetupViewModel @Inject constructor(
             productCount += it.products.size
         }
 
-        _productTagSectionList.value = response
-        _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
+        withContext(dispatchers.main) {
+            _productTagSectionList.value = response
+            _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
+        }
     }
 
 
