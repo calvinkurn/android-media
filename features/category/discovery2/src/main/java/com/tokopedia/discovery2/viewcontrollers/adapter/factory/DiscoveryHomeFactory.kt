@@ -107,6 +107,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.myco
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardlViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
@@ -212,6 +216,11 @@ class DiscoveryHomeFactory {
 
             //Topads Headline View
             initializeComponent(ComponentsList.TopadsHeadlineView, ::TopAdsHeadlineViewHolder, ::TopAdsHeadlineViewModel)
+
+            //Rilisan Spesial View
+            initializeComponent(ComponentsList.ShopCardView, ::ShopCardlViewHolder, ::ShopCardViewModel)
+            //Rilisan Spesial ItemView
+            initializeComponent(ComponentsList.ShopCardItemView, ::ShopCardItemViewHolder, ::ShopCardItemViewModel)
 
             initializeComponent(ComponentsList.Section,::SectionViewHolder,::SectionViewModel)
 //            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)

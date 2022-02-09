@@ -28,12 +28,13 @@ import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
-import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
 import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
+import com.tokopedia.discovery2.repository.shopcard.ShopCardGQLRepository
+import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
 import com.tokopedia.discovery2.repository.section.SectionGQLRepository
 import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
@@ -175,6 +176,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideQuickFilterGQLRepository(): IQuickFilterGqlRepository {
         return QuickFilterGQLRepository()
+    }
+
+    @Provides
+    fun provideShopCardRepository(): ShopCardRepository {
+        return ShopCardGQLRepository()
     }
 
     @Provides

@@ -415,6 +415,33 @@ data class DataItem(
         @SerializedName("min_order")
         var minQuantity: Int = 0,
 
+        @SerializedName("shop_type")
+        val shopType: String? = null,
+
+        @SerializedName("shop_badge_image_url")
+        val shopBadgeImageUrl: String? = null,
+
+        @SerializedName("benefit_title")
+        val benefitTitle: String? = null,
+
+        @SerializedName("benefit_amount")
+        val benefitAmount: String? = null,
+
+        @SerializedName("benefit_symbol")
+        val benefitSymbol: String? = null,
+
+        @SerializedName("benefit_symbol_image_url")
+        val benefitSymbolImageUrl: String? = null,
+
+        @SerializedName("show_benefit_currency")
+        var showBenefitCurrency: Boolean? = null,
+
+        @SerializedName("show_timer")
+        var showTimer: Boolean? = null,
+
+        @SerializedName("time_description")
+        val timeDescription: String? = null,
+
         var quantity: Int = 0,
 
         @SerializedName("backgroud_image_url")
