@@ -6,6 +6,7 @@ package com.tokopedia.play.view.type
 enum class PlayChannelType(val value: String) {
     Live("live"),
     VOD("vod"),
+    Upcoming("upcoming"),
     Unknown("unknown");
 
     val isLive: Boolean
@@ -13,6 +14,9 @@ enum class PlayChannelType(val value: String) {
 
     val isVod: Boolean
         get() = this == VOD
+
+    val isUpcoming: Boolean
+        get() = this == Upcoming
 
     companion object {
         private val values = values()
