@@ -313,6 +313,7 @@
 /libraries/logger/										@tokopedia/android-core-dev
 /libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
+/libraries/network                                      @tokopedia/android-minionkevin-dev
 /libraries/oms/											@tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
