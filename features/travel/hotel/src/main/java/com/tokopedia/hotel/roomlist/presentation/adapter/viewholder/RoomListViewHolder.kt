@@ -12,6 +12,8 @@ import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.isValid
 import com.tokopedia.media.loader.loadImage
 import kotlin.math.min
 
@@ -62,7 +64,16 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
             } else {
                 roomDescriptionLayout.visibility = View.GONE
                 roomFullLayout.root.visibility = View.VISIBLE
-                if (roomListModel.images.isNotEmpty()) roomFullLayout.roomListRoomFullImageView.loadImage(roomListModel.images.first())
+                if (roomListModel.images.isNotEmpty()) {
+                    roomFullLayout.roomListRoomFullImageView.loadImage(roomListModel.images.first()){
+                        setPlaceHolder(R.drawable.ic_hotel_loading_image)
+                    }
+
+                    //cancel image request if context of itemView is invalid
+                    if (!itemView.context.isValid()){
+                        roomFullLayout.roomListRoomFullImageView.clearImage()
+                    }
+                }
                 roomFullLayout.roomFullRoomNameTextView.text = roomListModel.roomName
             }
         }
