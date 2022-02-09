@@ -1,11 +1,10 @@
 package com.tokopedia.play.broadcaster.setup.product.model
 
-import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 
 /**

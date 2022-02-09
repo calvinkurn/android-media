@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play_common.R as playCommonR
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.type.StockAvailable
@@ -22,12 +21,12 @@ class ProductTagViewHolder(
     itemView: View
 ): BaseViewHolder(itemView) {
 
-    private val ivProductTag: ImageUnify = itemView.findViewById(playCommonR.id.iv_product_tag)
-    private val ivProductTagCover: ImageUnify = itemView.findViewById(playCommonR.id.iv_product_tag_cover)
-    private val tvDiscount: Typography = itemView.findViewById(playCommonR.id.tv_product_tag_discount)
-    private val tvProductTagStock: Typography = itemView.findViewById(playCommonR.id.tv_product_tag_stock)
-    private val tvProductTagPrice: Typography = itemView.findViewById(playCommonR.id.tv_product_tag_price)
-    private val tvProductTagPriceOriginal: Typography = itemView.findViewById(playCommonR.id.tv_product_tag_normal_price)
+    private val ivProductTag: ImageUnify = itemView.findViewById(R.id.iv_product_tag)
+    private val ivProductTagCover: ImageUnify = itemView.findViewById(R.id.iv_product_tag_cover)
+    private val tvDiscount: Typography = itemView.findViewById(R.id.tv_product_tag_discount)
+    private val tvProductTagStock: Typography = itemView.findViewById(R.id.tv_product_tag_stock)
+    private val tvProductTagPrice: Typography = itemView.findViewById(R.id.tv_product_tag_price)
+    private val tvProductTagPriceOriginal: Typography = itemView.findViewById(R.id.tv_product_tag_normal_price)
 
     init {
         tvProductTagPriceOriginal.paintFlags = tvProductTagPriceOriginal.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -66,6 +65,6 @@ class ProductTagViewHolder(
     }
 
     companion object {
-        val LAYOUT = playCommonR.layout.item_play_product_tag
+        val LAYOUT = R.layout.item_play_bro_product_carousel
     }
 }

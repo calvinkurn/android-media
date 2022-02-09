@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductTagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductTagAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -48,13 +47,13 @@ class ProductTagViewComponent(
         setLoading()
     }
 
-    private fun getVisibleProduct(): Pair<ProductContentUiModel, Int>? {
+    private fun getVisibleProduct(): Pair<ProductUiModel, Int>? {
         val products = adapter.getItems()
         if (products.isNotEmpty()) {
             val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
             val endPosition = layoutManager.findLastVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
-                .filterIsInstance<ProductContentUiModel>()
+                .filterIsInstance<ProductUiModel>()
                 .mapIndexed { index, item ->
                     Pair(item, startPosition + index)
                 }
@@ -69,6 +68,15 @@ class ProductTagViewComponent(
         }
     }
 
+//    fun setProducts(products: List<ProductUiModel>) {
+//        if(!isProductInitialized && products.isNotEmpty()) {
+//            listener.impressProductTag(this)
+//            isProductInitialized = true
+//        }
+//
+//        adapter.setItemsAndAnimateChanges(products)
+//    }
+
     fun setProducts(products: List<ProductUiModel>) {
         if(!isProductInitialized && products.isNotEmpty()) {
             listener.impressProductTag(this)
@@ -79,7 +87,7 @@ class ProductTagViewComponent(
     }
 
     private fun setLoading() {
-        setProducts(List(MAX_PLACEHOLDER) { ProductLoadingUiModel })
+        adapter.setItemsAndAnimateChanges(List(MAX_PLACEHOLDER) { })
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -93,6 +101,6 @@ class ProductTagViewComponent(
 
     interface Listener {
         fun impressProductTag(view: ProductTagViewComponent)
-        fun scrollProductTag(view: ProductTagViewComponent, product: ProductContentUiModel, position: Int)
+        fun scrollProductTag(view: ProductTagViewComponent, product: ProductUiModel, position: Int)
     }
 }

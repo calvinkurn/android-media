@@ -28,9 +28,11 @@ import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
@@ -164,7 +166,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun scrollProductTag(
                 view: ProductTagViewComponent,
-                product: ProductContentUiModel,
+                product: ProductUiModel,
                 position: Int
             ) {
                 productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
@@ -673,10 +675,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            parentViewModel.uiState.withCache().collectLatest { cachedState ->
-                val state = cachedState.value
-                val prevState = cachedState.prevValue
+            parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
+                renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
 
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
@@ -700,7 +701,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeProductTag() {
         parentViewModel.observableProductList.observe(viewLifecycleOwner) {
-            productTagView.setProducts(it)
+//            productTagView.setProducts(it)
         }
     }
     //endregion
@@ -746,6 +747,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 clInteraction.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun renderProductTagView(
+        prevState: EtalaseProductListMap?,
+        state: EtalaseProductListMap
+    ) {
+        if (prevState == state) return
+
+        productTagView.setProducts(state.values.flatten())
     }
 
     private fun isPinnedFormVisible(): Boolean {

@@ -1,7 +1,6 @@
-package com.tokopedia.play.broadcaster.setup.product.view.model
+package com.tokopedia.play.broadcaster.ui.model.etalase
 
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 
 /**
  * Created by kenny.hadisaputra on 28/01/22

@@ -32,7 +32,7 @@ internal class ProductListViewHolder private constructor() {
             binding.imgProduct.loadImage(item.product.imageUrl)
             binding.tvName.text = item.product.name
             binding.tvStock.text = itemView.context.getString(
-                R.string.play_bro_product_chooser_stock, item.product.stock
+                R.string.play_bro_product_stock, item.product.stock
             )
 
             setCheckboxManually(item)

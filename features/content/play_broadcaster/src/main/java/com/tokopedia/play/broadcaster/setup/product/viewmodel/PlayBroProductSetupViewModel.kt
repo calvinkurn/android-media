@@ -11,9 +11,9 @@ import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserA
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
-import com.tokopedia.play.broadcaster.setup.product.view.model.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.setup.product.view.model.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 26/01/22

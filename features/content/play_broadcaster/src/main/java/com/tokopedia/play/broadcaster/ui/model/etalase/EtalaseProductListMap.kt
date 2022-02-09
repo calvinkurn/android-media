@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.product.view.model
+package com.tokopedia.play.broadcaster.ui.model.etalase
 
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 
