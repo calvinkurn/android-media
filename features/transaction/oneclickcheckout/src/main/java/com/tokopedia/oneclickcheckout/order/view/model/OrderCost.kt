@@ -11,6 +11,9 @@ data class OrderCost(
         val purchaseProtectionPrice: Int = 0,
         val cashbacks: List<OrderCostCashbackData> = emptyList(),
         val installmentData: OrderCostInstallmentData? = null,
+
+        // Flag
+        val isNewBottomSheet: Boolean = false,
 )
 
 data class OrderCostCashbackData(

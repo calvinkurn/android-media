@@ -83,6 +83,7 @@
 
     <!--GOPAYLATERCICIL-->
     <string name="occ_gopaylatercicil_bottom_sheet_title">Bayarnya mau berapa lama?</string>
+    <string name="occ_gopaylatercicil_default_installment">Pilih periode cicilan</string>
     <string name="occ_lbl_installment_summary_period">Installment Period</string>
     <string name="occ_lbl_installment_summary_amount_per_period">Cicilan per bulan</string>
 </resources>

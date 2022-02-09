@@ -67,6 +67,7 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
+import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderCostSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -85,6 +86,7 @@ import com.tokopedia.oneclickcheckout.payment.installment.GopayInstallmentDetail
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_FINTECH
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
@@ -1015,7 +1017,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun setSourceFromPDP() {
         var sourceArgs = arguments?.getString(QUERY_SOURCE, SOURCE_PDP)
-        if (sourceArgs != SOURCE_PDP && sourceArgs != SOURCE_MINICART) {
+        if (sourceArgs != SOURCE_PDP && sourceArgs != SOURCE_MINICART && sourceArgs != SOURCE_FINTECH) {
             sourceArgs = SOURCE_PDP
         }
         source = sourceArgs
@@ -1465,7 +1467,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         return object : OrderTotalPaymentCard.OrderTotalPaymentCardListener {
             override fun onOrderDetailClicked(orderCost: OrderCost) {
                 orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(orderCost.totalPrice.toLong().toString())
-                OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
+                if (orderCost.isNewBottomSheet) {
+                    OrderCostSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
+                } else {
+                    OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
+                }
             }
 
             override fun onPayClicked() {

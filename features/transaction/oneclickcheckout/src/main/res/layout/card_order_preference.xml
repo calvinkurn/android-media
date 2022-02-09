@@ -119,7 +119,7 @@
             <View
                 android:id="@+id/divider_address_shipping"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_1"
+                android:layout_height="1dp"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:background="@color/Unify_N75"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -398,7 +398,7 @@
             <View
                 android:id="@+id/divider_shipping_payment"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_1"
+                android:layout_height="1dp"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:background="@color/Unify_N75"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -435,7 +435,7 @@
             <View
                 android:id="@+id/divider_cc_payment"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_1"
+                android:layout_height="1dp"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:background="@color/Unify_N75"
                 android:visibility="gone"
@@ -446,8 +446,8 @@
             <!-- ImageUnify scaling issue -->
             <ImageView
                 android:id="@+id/iv_payment"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="14dp"
                 android:contentDescription="@string/content_description_img_payment"
@@ -587,7 +587,6 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintHorizontal_bias="0"
                 app:typographyType="body_3"
-                android:text="asdf asdf asdf asdf"
                 app:layout_constraintWidth_default="wrap"
                 app:typographyWeight="bold"
                 tools:ignore="RtlSymmetry" />
@@ -631,7 +630,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_installment_detail_wrap"
                 app:layout_constraintWidth_default="wrap"
                 app:typographyType="body_3"
-                android:text="asdf asdf asdf asdfa sdf asdf asdf asdf asdf asdfsa dfsa dfsd fasd fsdf "
                 app:typographyWeight="reguler"
                 tools:ignore="RtlSymmetry" />
 

@@ -670,14 +670,15 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
                     }
                 }
-            } else if (payment.walletData.walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAYLATERCICIL) {
+            } else if (payment.walletData.isGoPaylaterCicil) {
                 tvInstallmentType.visible()
                 tvInstallmentDetail.gone()
                 tvInstallmentDetailWrap.visible()
-                tvInstallmentDetailWrap.text = "asdf"
+                tvInstallmentDetailWrap.setText(R.string.occ_gopaylatercicil_default_installment)
                 btnChangeInstallment.gone()
                 btnChangeInstallmentWrap.visible()
-                tvInstallmentErrorMessage.gone()
+                tvInstallmentErrorMessage.text = payment.walletData.goCicilData.errorMessageInvalidTenure
+                tvInstallmentErrorMessage.visible()
                 tvInstallmentErrorAction.gone()
                 setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetailWrap, btnChangeInstallmentWrap) {
                     if (profile.enable) {
