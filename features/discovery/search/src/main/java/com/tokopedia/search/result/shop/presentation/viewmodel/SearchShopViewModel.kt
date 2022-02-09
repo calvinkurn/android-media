@@ -34,6 +34,7 @@ import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTit
 import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionDataView
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
 import com.tokopedia.search.utils.toSearchParams
 import com.tokopedia.sortfilter.SortFilterItem
@@ -56,7 +57,8 @@ internal class SearchShopViewModel(
         private val getShopCountUseCase: Lazy<UseCase<Int>>,
         private val shopCpmDataViewMapper: Lazy<Mapper<SearchShopModel, ShopCpmDataView>>,
         private val shopDataViewMapper: Lazy<Mapper<SearchShopModel, ShopDataView>>,
-        private val userSession: Lazy<UserSessionInterface>
+        private val userSession: Lazy<UserSessionInterface>,
+        private val chooseAddressWrapper: ChooseAddressWrapper
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -101,7 +103,9 @@ internal class SearchShopViewModel(
     val generalSearchTrackingLiveData: LiveData<GeneralSearchTrackingShop> =
             generalSearchTrackingMutableLiveData
     var dynamicFilterModel: DynamicFilterModel? = null
+        private set
     var chooseAddressData: LocalCacheModel? = null
+        private set
 
     init {
         setSearchParameterUniqueId()
@@ -137,8 +141,8 @@ internal class SearchShopViewModel(
         searchParameter[SearchApiConst.START] = startRow
     }
 
-    fun onViewCreated(chooseAddressData: LocalCacheModel? = null) {
-        this.chooseAddressData = chooseAddressData
+    fun onViewCreated() {
+        this.chooseAddressData = chooseAddressWrapper.getChooseAddressData()
 
         if (shouldLoadDataOnViewCreated() && !hasLoadData) {
             hasLoadData = true
@@ -863,6 +867,28 @@ internal class SearchShopViewModel(
         RequestParams.create().also {
             it.putAll(mapParameter)
         }
+
+    fun setChooseAddressData(chooseAddressData: LocalCacheModel?){
+        this.chooseAddressData = chooseAddressData
+    }
+
+    fun onLocalizingAddressSelected() {
+        chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        dynamicFilterModel = null
+
+        onViewReloadData()
+    }
+
+    fun onViewResume() {
+        reCheckChooseAddressData()
+    }
+
+    fun reCheckChooseAddressData() {
+        val chooseAddressData = chooseAddressData ?: return
+        val isAddressDataUpdated = chooseAddressWrapper.isChooseAddressUpdated(chooseAddressData)
+
+        if (isAddressDataUpdated) onLocalizingAddressSelected()
+    }
 
     fun getSearchParameter() = searchParameter.toMap()
 

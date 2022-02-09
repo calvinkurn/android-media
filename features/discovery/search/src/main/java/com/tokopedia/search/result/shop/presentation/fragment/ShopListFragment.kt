@@ -104,7 +104,7 @@ internal class ShopListFragment:
         initViews()
         observeViewModelData()
 
-        searchShopViewModel?.onViewCreated(getChooseAddressData())
+        searchShopViewModel?.onViewCreated()
     }
 
     private fun initViewModel() {
@@ -553,7 +553,7 @@ internal class ShopListFragment:
         searchViewModel?.changeBottomNavigationVisibility(false)
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
 
-        reCheckChooseAddressData()
+        searchShopViewModel?.reCheckChooseAddressData()
     }
 
     private fun trackScreen() {
@@ -641,10 +641,7 @@ internal class ShopListFragment:
     }
 
     override fun onLocalizingAddressSelected() {
-        searchShopViewModel?.chooseAddressData = getChooseAddressData()
-        searchShopViewModel?.dynamicFilterModel = null
-
-        searchShopViewModel?.onViewReloadData()
+        searchShopViewModel?.onLocalizingAddressSelected()
     }
 
     override fun getFragment(): Fragment {
@@ -654,33 +651,6 @@ internal class ShopListFragment:
     override fun onResume() {
         super.onResume()
 
-        reCheckChooseAddressData()
-    }
-
-    private fun reCheckChooseAddressData() {
-        val chooseAddressData = searchShopViewModel?.chooseAddressData ?: return
-        val isAddressDataUpdated = getIsLocalizingAddressHasUpdated(chooseAddressData)
-
-        if (isAddressDataUpdated) onLocalizingAddressSelected()
-    }
-
-    private fun getChooseAddressData() = context?.let {
-        try {
-            ChooseAddressUtils.getLocalizingAddressData(it)
-        } catch (e: Throwable) {
-            Timber.w(e)
-            ChooseAddressConstant.emptyAddress
-        }
-    } ?: ChooseAddressConstant.emptyAddress
-
-    private fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean {
-        return context?.let {
-            try {
-                ChooseAddressUtils.isLocalizingAddressHasUpdated(it, currentChooseAddressData)
-            } catch (e: Throwable) {
-                Timber.w(e)
-                false
-            }
-        } ?: false
+        searchShopViewModel?.onViewResume()
     }
 }

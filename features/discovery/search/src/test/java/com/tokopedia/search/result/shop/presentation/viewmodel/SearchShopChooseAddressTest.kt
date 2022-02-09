@@ -9,8 +9,8 @@ import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldNotContain
 import com.tokopedia.usecase.RequestParams
+import io.mockk.every
 import io.mockk.slot
-import io.mockk.verify
 import org.junit.Test
 
 internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
@@ -27,9 +27,9 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
     )
 
     @Test
-    fun `Test Show choose address widget in first page`() {
+    fun `Show choose address widget in first page`() {
         `Given search shop API call will be successful with request param`()
-        `Setup choose address`(dummyChooseAddressData)
+        `Given chosen address data`(dummyChooseAddressData)
 
         `When handle view is visible and added`()
 
@@ -44,12 +44,8 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
         searchShopFirstPageUseCase.stubExecute(requestParamsSlot).returns(searchShopModel)
     }
 
-    private fun `Setup choose address`(chooseAddressModel: LocalCacheModel?) {
-        `Given chosen address data`(chooseAddressModel)
-    }
-
     private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
-        searchShopViewModel.chooseAddressData = chooseAddressModel
+        searchShopViewModel.setChooseAddressData(chooseAddressModel)
     }
 
     private fun `When handle view is visible and added`() {
@@ -78,9 +74,9 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
     }
 
     @Test
-    fun `Test choose address data is null`() {
+    fun `When choose address data is null`() {
         `Given search shop API call will be successful with request param`()
-        `Setup choose address`(null)
+        `Given chosen address data`(null)
 
         `When handle view is visible and added`()
 
@@ -88,9 +84,9 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
     }
 
     @Test
-    fun `Test choose address data with empty values`() {
+    fun `When choose address data with empty values`() {
         `Given search shop API call will be successful with request param`()
-        `Setup choose address`(LocalCacheModel())
+        `Given chosen address data`(LocalCacheModel())
 
         `When handle view is visible and added`()
 
@@ -108,7 +104,7 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
     }
 
     @Test
-    fun `Test reload search page after choosing new address`() {
+    fun `Reload search page after choosing new address`() {
         val newChooseAddressData = LocalCacheModel(
             address_id = "125",
             city_id = "11",
@@ -120,11 +116,11 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
         )
 
         `Given search shop API call will be successful with request param`()
-        `Setup choose address`(dummyChooseAddressData)
+        `Given chosen address data`(dummyChooseAddressData)
 
         `When handle view is visible and added`()
 
-        `Setup choose address`(newChooseAddressData)
+        `Given chosen address data`(newChooseAddressData)
 
         `When chosen address data changes`()
 
@@ -142,5 +138,64 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
 
     private fun `Then verify view will fetch new chosen address and reload data`() {
         searchShopFirstPageUseCase.isExecuted(2)
+    }
+
+    @Test
+    fun `Choose address data has changed on view resume`() {
+        val newChooseAddressData = LocalCacheModel(
+            address_id = "125",
+            city_id = "11",
+            district_id = "999",
+            lat = "19.2167",
+            long = "17.01374",
+            postal_code = "53241",
+            warehouse_id = warehouseId,
+        )
+
+        `Given search shop API call will be successful with request param`()
+        `Given chosen address data`(dummyChooseAddressData)
+
+        `When handle view is visible and added`()
+
+        `Given chosen address data`(newChooseAddressData)
+        `Given choose address data has updated`()
+
+        `When view is resumed`()
+
+        `Then verify view will fetch new chosen address and reload data`()
+    }
+
+    private fun `Given choose address data has updated`() {
+        every { chooseAddressWrapper.isChooseAddressUpdated(dummyChooseAddressData) } returns true
+    }
+
+    @Test
+    fun `Choose address data does not change on view resume`() {
+        val newChooseAddressData = LocalCacheModel(
+            address_id = "125",
+            city_id = "11",
+            district_id = "999",
+            lat = "19.2167",
+            long = "17.01374",
+            postal_code = "53241",
+            warehouse_id = warehouseId,
+        )
+
+        `Given search shop API call will be successful with request param`()
+        `Given chosen address data`(dummyChooseAddressData)
+
+        `When handle view is visible and added`()
+
+        `When view is resumed`()
+
+        `Then verify fetch data only once`()
+    }
+
+    private fun `When view is resumed`() {
+        searchShopViewModel.onViewResume()
+    }
+
+    private fun `Then verify fetch data only once`() {
+        searchShopFirstPageUseCase.isExecuted(1)
     }
 }
