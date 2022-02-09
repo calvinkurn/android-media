@@ -98,7 +98,6 @@ class SuggestionPresenter @Inject constructor(
         clearListVisitable()
         updateListVisitable(suggestionUniverse)
 
-        val visit = listVisitable
         notifyView()
     }
 
