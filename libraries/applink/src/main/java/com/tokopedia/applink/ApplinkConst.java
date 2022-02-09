@@ -361,6 +361,7 @@ public interface ApplinkConst {
     String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
     String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
     String PAYLATER = "tokopedia://fintech/paylater";
+    String OPTIMIZED_CHECKOUT = "tokopedia://fintech/opt-checkout";
     String INBOX_HOST = "inbox";
     String INBOX = "tokopedia://inbox";
 

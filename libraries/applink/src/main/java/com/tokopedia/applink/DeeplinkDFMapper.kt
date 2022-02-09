@@ -279,6 +279,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OQR_PIN_URL_ENTRY) }, DF_BASE, R.string.ovo_pay_with_qr_title))
             add(DFP({ it.startsWith(OVO_WALLET) }, DF_BASE, R.string.applink_wallet_title))
             add(DFP({ it.startsWith(PAYLATER) }, DF_BASE, R.string.applink_pay_later_title))
+            add(DFP({ it.startsWith(OPTIMIZED_CHECKOUT) }, DF_BASE, R.string.applink_pay_later_title))
 
             add(DFP({
                 it.startsWith(SALDO_DEPOSIT) ||

@@ -13,10 +13,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-<!--                <data-->
-<!--                    android:host="@string/host_fintech"-->
-<!--                    android:path="@string/path_paylater"-->
-<!--                    android:scheme="@string/internal_scheme" />-->
+                <data
+                    android:host="@string/host_fintech"
+                    android:path="@string/path_paylater"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 
@@ -34,7 +34,7 @@
 
                 <data
                     android:host="@string/host_fintech"
-                    android:path="@string/path_paylater"
+                    android:path="@string/path_optimized_checkout"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
