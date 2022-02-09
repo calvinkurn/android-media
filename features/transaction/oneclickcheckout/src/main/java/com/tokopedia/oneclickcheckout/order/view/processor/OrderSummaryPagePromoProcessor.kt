@@ -60,20 +60,20 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         return resultValidateUse
     }
 
-    suspend fun clearOldLogisticPromo(oldPromoCode: String) {
+    suspend fun clearOldLogisticPromo(oldPromoCode: ArrayList<String>) {
         withContext(executorDispatchers.io) {
             try {
-                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true).executeOnBackground()
+                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, oldPromoCode, true).executeOnBackground()
             } catch (t: Throwable) {
                 //ignore throwable
             }
         }
     }
 
-    fun clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest: ValidateUsePromoRequest?, oldPromoCode: String): ValidateUsePromoRequest? {
+    fun clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest: ValidateUsePromoRequest?, oldPromoCode: ArrayList<String>): ValidateUsePromoRequest? {
         val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
         if (orders.isNotEmpty()) {
-            orders[0].codes.remove(oldPromoCode)
+            oldPromoCode.forEach { code ->   orders[0].codes.remove(code)}
         }
         return lastValidateUsePromoRequest
     }
@@ -196,12 +196,18 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             }
         }
 
-        if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-            if (!codes.contains(shipping.logisticPromoViewModel.promoCode)) {
-                codes.add(shipping.logisticPromoViewModel.promoCode)
+        if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null && shipping.logisticPromoList.isNotEmpty()) {
+            shipping.logisticPromoList.forEach { promo ->
+                if (!codes.contains(promo.promoCode)) {
+                    codes.add(promo.promoCode)
+                }
             }
-        } else if (shipping.logisticPromoViewModel?.promoCode?.isNotEmpty() == true) {
-            codes.remove(shipping.logisticPromoViewModel.promoCode)
+        } else if (shipping.logisticPromoList.any { it.promoCode.isNotEmpty() }) {
+            shipping.logisticPromoList.forEach { promo ->
+                if (promo.promoCode.isNotEmpty()) {
+                    codes.remove(promo.promoCode)
+                }
+            }
         }
         return codes
     }
@@ -256,8 +262,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
     }
 
     fun generateBboPromoCodes(shipping: OrderShipment): ArrayList<String> {
-        if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-            return arrayListOf(shipping.logisticPromoViewModel.promoCode)
+        if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null && shipping.logisticPromoList.isNotEmpty()) {
+            return shipping.logisticPromoList.map { it.promoCode }.toCollection(ArrayList())
         }
         return ArrayList()
     }

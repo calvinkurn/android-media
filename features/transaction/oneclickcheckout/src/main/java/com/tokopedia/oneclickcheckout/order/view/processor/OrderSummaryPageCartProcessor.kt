@@ -121,7 +121,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                     if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
                     orderShipment.getRealShipperId(),
                     orderShipment.getRealShipperProductId(),
-                    orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null
+                    orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null && orderShipment.logisticPromoList.isNotEmpty()
             )
             return UpdateCartOccRequest(cart, profile)
         }

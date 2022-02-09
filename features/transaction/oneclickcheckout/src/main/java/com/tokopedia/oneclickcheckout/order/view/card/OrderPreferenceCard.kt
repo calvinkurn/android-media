@@ -71,8 +71,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                     renderShippingDuration(shipping)
                     renderBboTicker(shipping)
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                        renderBboShipping(shipping, shipping.logisticPromoViewModel)
+                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoShipping != null && shipping.logisticPromoList.any { it.isApplied }) {
+                        renderBboShipping(shipping, shipping.logisticPromoList.first { it.isApplied })
                     } else if (shipping.shippingEta != null) {
                         renderShippingCourierWithEta(shipping, shipping.shippingEta)
                     } else {
@@ -154,10 +154,16 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                        val logisticPromo = shippingRecommendationData.logisticPromo
-                        if (logisticPromo != null) {
-                            list.add(0, logisticPromo)
-                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                        val listLogisticPromo = shippingRecommendationData.listLogisticPromo
+                        if (listLogisticPromo.isNotEmpty()) {
+                            listLogisticPromo.forEachIndexed { index, logisticPromoUiModel ->  list.add(index, logisticPromoUiModel)}
+                            if (listLogisticPromo.any { logisticPromo ->
+                                    logisticPromo.disabled && logisticPromo.description.contains(
+                                        BBO_DESCRIPTION_MINIMUM_LIMIT[0]
+                                    ) && logisticPromo.description.contains(
+                                        BBO_DESCRIPTION_MINIMUM_LIMIT[1]
+                                    )
+                                }) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
@@ -231,10 +237,16 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                        val logisticPromo = shippingRecommendationData.logisticPromo
-                        if (logisticPromo != null) {
-                            list.add(0, logisticPromo)
-                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                        val listLogisticPromo = shippingRecommendationData.listLogisticPromo
+                        if (listLogisticPromo.isNotEmpty()) {
+                            listLogisticPromo.forEachIndexed { index, logisticPromoUiModel ->  list.add(index, logisticPromoUiModel)}
+                            if (listLogisticPromo.any { logisticPromo ->
+                                    logisticPromo.disabled && logisticPromo.description.contains(
+                                        BBO_DESCRIPTION_MINIMUM_LIMIT[0]
+                                    ) && logisticPromo.description.contains(
+                                        BBO_DESCRIPTION_MINIMUM_LIMIT[1]
+                                    )
+                                }) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
@@ -340,10 +352,16 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                        val logisticPromo = shippingRecommendationData.logisticPromo
-                        if (logisticPromo != null) {
-                            list.add(0, logisticPromo)
-                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                        val listLogisticPromo = shippingRecommendationData.listLogisticPromo
+                        if (listLogisticPromo.isNotEmpty()) {
+                            listLogisticPromo.forEachIndexed { index, logisticPromoUiModel ->  list.add(index, logisticPromoUiModel)}
+                            if (listLogisticPromo.any { logisticPromo ->
+                                    logisticPromo.disabled && logisticPromo.description.contains(
+                                        BBO_DESCRIPTION_MINIMUM_LIMIT[0]
+                                    ) && logisticPromo.description.contains(
+                                        BBO_DESCRIPTION_MINIMUM_LIMIT[1]
+                                    )
+                                }) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
@@ -437,6 +455,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             iconReloadShipping.gone()
             tickerShippingPromo.gone()
             loaderShipping.gone()
+            // todo no need to change if logisticpromoviewmodel == listlogisticpromo[0] is always true
             if (shipping.isApplyLogisticPromo && shipping.logisticPromoShipping != null && shipping.logisticPromoViewModel != null) {
                 val formattedFreeShippingChosenCourierTitle = HtmlLinkHelper(tvShippingCourier.context, shipping.logisticPromoViewModel.freeShippingChosenCourierTitle).spannedString
                 tvShippingCourier.text = formattedFreeShippingChosenCourierTitle

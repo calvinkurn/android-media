@@ -268,7 +268,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderCost, orderShop.value.shopShipment)
         }
         if (result.clearOldPromoCode.isNotEmpty()) {
-            clearOldLogisticPromo(result.clearOldPromoCode)
+            clearOldLogisticPromo(arrayListOf(result.clearOldPromoCode))
         }
         if (result.autoApplyPromo != null) {
             autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment, result)
@@ -311,7 +311,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun clearOldLogisticPromo(oldPromoCode: String) {
+    private fun clearOldLogisticPromo(oldPromoCode: ArrayList<String>) {
         launch(executorDispatchers.io) {
             promoProcessor.clearOldLogisticPromo(oldPromoCode)
         }
@@ -366,9 +366,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun clearBboIfExist() {
-        val logisticPromoViewModel = orderShipment.value.logisticPromoViewModel
-        if (logisticPromoViewModel != null && orderShipment.value.isApplyLogisticPromo && orderShipment.value.logisticPromoShipping != null) {
-            clearOldLogisticPromo(logisticPromoViewModel.promoCode)
+        val logisticPromoViewModel = orderShipment.value.logisticPromoList
+        if (logisticPromoViewModel.isNotEmpty() && orderShipment.value.isApplyLogisticPromo && orderShipment.value.logisticPromoShipping != null) {
+            clearOldLogisticPromo(logisticPromoViewModel.map { promo -> promo.promoCode }.toCollection(ArrayList()))
         }
     }
 
