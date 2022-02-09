@@ -133,6 +133,15 @@ class BarChartViewHolder(
             animateHideEmptyState()
             setupLastUpdatedInfo(element)
         }
+
+        setBottomGuideLineVisibility()
+    }
+
+    private fun setBottomGuideLineVisibility() {
+        with(binding) {
+            horLineShcBarChartBtm.isVisible = luvShcBarChart.isVisible
+                    || btnShcBarChartMore.isVisible
+        }
     }
 
     private fun setupLastUpdatedInfo(element: BarChartWidgetUiModel) {
