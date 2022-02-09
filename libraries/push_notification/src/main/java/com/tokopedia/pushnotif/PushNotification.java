@@ -7,14 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-
 import androidx.core.app.NotificationManagerCompat;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.logger.ServerLogger;
-import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notification.common.PushNotificationApi;
 import com.tokopedia.notification.common.utils.NotificationTargetPriorities;
 import com.tokopedia.notification.common.utils.NotificationValidationManager;
@@ -31,11 +27,8 @@ import com.tokopedia.pushnotif.util.NotificationTracker;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.HashMap;
-
 import timber.log.Timber;
 
-import static com.google.android.gms.common.util.CollectionUtils.mapOf;
 import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DELIVERED;
 import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DROPPED;
 import static com.tokopedia.pushnotif.util.AdvanceTargetUtil.advanceTargetNotification;
