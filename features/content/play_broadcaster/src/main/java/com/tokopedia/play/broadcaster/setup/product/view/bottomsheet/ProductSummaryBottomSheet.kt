@@ -169,9 +169,6 @@ class ProductSummaryBottomSheet @Inject constructor(
                             actionListener = { event.action?.invoke() },
                         )
 
-                        setTitle(null)
-                        productSummaryListView.setProductList(emptyList())
-
                         binding.ivLoading.visibility = View.GONE
                     }
                 }
