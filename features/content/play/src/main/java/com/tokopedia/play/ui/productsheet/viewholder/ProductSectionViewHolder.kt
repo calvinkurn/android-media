@@ -107,9 +107,9 @@ class ProductSectionViewHolder(
         if(!isExpired(serverTime = item.serverTime, expiredTime = timerTime)){
             val dt = DateUtil.getCurrentCalendar().apply {
                 val currentDate = time
-                val diff = currentDate.time - timerTime.toDate(
+                val diff = timerTime.toDate(
                     DateUtil.YYYY_MM_DD_T_HH_MM_SS
-                ).time
+                ).time - currentDate.time
                 val seconds = TimeUnit.MILLISECONDS.toSeconds(diff).toInt()
                 val minutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
                 val hours = TimeUnit.MILLISECONDS.toHours(diff).toInt()
