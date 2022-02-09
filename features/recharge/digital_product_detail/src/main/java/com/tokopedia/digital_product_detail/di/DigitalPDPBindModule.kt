@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.di
 
+import com.tokopedia.digital_product_detail.data.repository.DigitalPDPTagihanListrikRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.DigitalPDPTelcoRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.DigitalPDPTokenListrikRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeAddToCartRepositoryImpl
@@ -8,6 +9,7 @@ import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogMenuD
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogPrefixSelectRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeFavoriteNumberRepositoryImpl
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartRepository
@@ -57,4 +59,8 @@ abstract class DigitalPDPBindModule {
     @Binds
     @DigitalPDPScope
     abstract fun bindDigitalPDPTokenListrikRepository(repo: DigitalPDPTokenListrikRepositoryImpl): DigitalPDPTokenListrikRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindDigitalPDPTagihanListrikRepository(repo: DigitalPDPTagihanListrikRepositoryImpl): DigitalPDPTagihanListrikRepository
 }
