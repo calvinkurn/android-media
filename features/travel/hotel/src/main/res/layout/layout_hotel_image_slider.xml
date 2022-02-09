@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.ImageUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/image_banner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:adjustViewBounds="true"
     android:focusable="true"
-    android:src="@drawable/imagestate_placeholder"
-    android:scaleType="centerCrop"
-    android:contentDescription="@string/hotel_image_slide_content_description" />
+    app:srcCompat="@drawable/ic_loading_image"
+    android:scaleType="centerCrop"/>

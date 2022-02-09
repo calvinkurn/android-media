@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <item>
         <inset
-            android:drawable="@drawable/imagestate_placeholder"
-            android:insetBottom="@dimen/hotel_34dp"
-            android:insetLeft="@dimen/hotel_34dp"
-            android:insetRight="@dimen/hotel_34dp"
-            android:insetTop="@dimen/hotel_34dp"
+            android:drawable="@drawable/ic_loading_toped_new"
+
+            android:insetBottom="@dimen/hotel_10dp"
+            android:insetLeft="@dimen/hotel_10dp"
+            android:insetRight="@dimen/hotel_10dp"
+            android:insetTop="@dimen/hotel_10dp"
             />
     </item>
+
+
+
 </layer-list>
