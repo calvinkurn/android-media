@@ -64,12 +64,13 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
     private fun renderAddOnState(viewBinding: ItemAddOnBinding, element: AddOnUiModel) {
         with(viewBinding) {
-            checkBoxAddOn.isChecked = element.isAddOnSelected
-            setNoteVisibility(viewBinding, element)
             checkBoxAddOn.setOnCheckedChangeListener { checkBox, isChecked ->
                 element.isAddOnSelected = isChecked
                 setNoteVisibility(viewBinding, element)
+                listener.onCheckBoxCheckedChanged(element)
             }
+            checkBoxAddOn.isChecked = element.isAddOnSelected
+            setNoteVisibility(viewBinding, element)
         }
     }
 
@@ -101,7 +102,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    element.addOnNote = s.toString()
+                    element.addOnNoteTo = s.toString()
                     textFieldAddOnTo.isInputError = false
                     textFieldAddOnTo.setMessage("")
                 }
@@ -127,7 +128,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    element.addOnNote = s.toString()
+                    element.addOnNoteFrom = s.toString()
                     textFieldAddOnFrom.isInputError = false
                     textFieldAddOnFrom.setMessage("")
                 }
@@ -155,32 +156,44 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
             textFieldAddOnNote.setCounter(250)
             textFieldAddOnNote.editText.setText(Utils.getHtmlFormat(element.addOnNote))
             textFieldAddOnNote.editText.setSelection(textFieldAddOnNote.editText.length())
+
+            if (textFieldAddOnNote.editText.text.isNotEmpty()) {
+                textFieldAddOnNote.setLabel("Pesan")
+            } else {
+                textFieldAddOnNote.setLabel("Tulis pesan di kartu ucapan")
+            }
+
             textFieldAddOnNote.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    textFieldAddOnFrom.isInputError = false
-                    textFieldAddOnFrom.setMessage("")
+                    textFieldAddOnNote.isInputError = false
+                    textFieldAddOnNote.setMessage("")
                     element.addOnNote = s.toString()
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-
-                }
-            })
-            textFieldAddOnNote.editText.setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
-                    textFieldAddOnNote.setLabel("Pesan")
-                } else {
                     if (textFieldAddOnNote.editText.text.isNotEmpty()) {
                         textFieldAddOnNote.setLabel("Pesan")
                     } else {
                         textFieldAddOnNote.setLabel("Tulis pesan di kartu ucapan")
                     }
                 }
-            }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+            })
+//            textFieldAddOnNote.editText.setOnFocusChangeListener { v, hasFocus ->
+//                if (hasFocus) {
+//                    textFieldAddOnNote.setLabel("Pesan")
+//                } else {
+//                    if (textFieldAddOnNote.editText.text.isNotEmpty()) {
+//                        textFieldAddOnNote.setLabel("Pesan")
+//                    } else {
+//                        textFieldAddOnNote.setLabel("Tulis pesan di kartu ucapan")
+//                    }
+//                }
+//            }
         }
     }
 
