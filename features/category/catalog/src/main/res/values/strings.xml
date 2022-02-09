@@ -18,4 +18,15 @@
     <string name="catalog_video_widget_title">Tonton video ulasannya, yuk!</string>
     <string name="catalog_feature_not_available">tidak tersedia</string>
     <string name="catalog_nav_bar_search_hint">Cari di Tokopedia</string>
+    <string name="catalog_share_string">Coba cek ini, deh: Katalog %1$s di Tokopedia. Infonya lengkap, dari spesifikasi sampai ulasan, ada semua! %2$s</string>
+    <string name="catalog_tn_title">Katalog %1$s</string>
+    <string name="catalog_share_link_name">Info Lengkap %1$s | Tokopedia</string>
+    <string name="catalog_share_link_description">Temukan semua info tentang produk ini di halaman Katalog Tokopedia, lengkap sampai rekomendasi produknya!</string>
+    <string name="catalog_ulasan">Ulasan paling membantu buatmu</string>
+    <string name="catalog_ulasan_produk">Ulasan produk</string>
+    <string name="catalog_lihat_semua">Lihat Semua</string>
+    <string name="catalog_review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
+    <string name="catalog_highlighted_reviews">dari %s rating produk</string>
+    <string name="catalog_numbering_images">%s/%s</string>
+    <string name="catalog_rating_total">/5,0</string>
 </resources>
