@@ -235,11 +235,11 @@ public class PushNotification {
 
     private static void notifyGeneral(Context context, ApplinkNotificationModel applinkNotificationModel,
                                       int notificationType, NotificationManagerCompat notificationManagerCompat) {
-        Notification notifChat = new GeneralNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationType, notificationType);
-
-        notificationManagerCompat.notify(notificationType, notifChat);
-
+        try{
+            Notification notifChat = new GeneralNotificationFactory(context)
+                    .createNotification(applinkNotificationModel, notificationType, notificationType);
+            notificationManagerCompat.notify(notificationType, notifChat);
+        }catch(Throwable th){}
     }
 
     private static boolean isNotificationEnabled(Context context) {
@@ -247,6 +247,8 @@ public class PushNotification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAllNotificationEnabled) {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel channel = manager.getNotificationChannel(Constant.NotificationChannel.GENERAL);
+            if(channel == null)
+                return true;
             return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
         } else {
             return isAllNotificationEnabled;
