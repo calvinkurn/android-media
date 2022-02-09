@@ -131,8 +131,8 @@ class MvcLockedToProductViewModel @Inject constructor(
         return nextPage.isMoreThanZero()
     }
 
-    fun getMiniCart(shopId: List<String>, warehouseId: String?) {
-        if (!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+    fun getMiniCart(shopId: List<String>) {
+        if (!shopId.isNullOrEmpty() && userSession.isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({

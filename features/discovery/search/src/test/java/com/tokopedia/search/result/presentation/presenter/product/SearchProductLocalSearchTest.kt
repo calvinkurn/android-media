@@ -3,16 +3,29 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_HEADLINE_ADS
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.CpmDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
+import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
@@ -198,17 +211,17 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify empty search view model during local search`() {
-        val emptySearchViewModelSlot = slot<EmptySearchProductDataView>()
         verify {
-            productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
+            productListView.setProductList(capture(visitableListSlot))
         }
 
-        val emptySearchViewModel = emptySearchViewModelSlot.captured
-        emptySearchViewModel.isFilterActive shouldBe false
-        emptySearchViewModel.isLocalSearch shouldBe true
-        emptySearchViewModel.globalSearchApplink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
-        emptySearchViewModel.keyword shouldBe keyword
-        emptySearchViewModel.pageTitle shouldBe searchProductPageTitle
+        val emptyStateDataView = visitableList.filterIsInstance<EmptyStateDataView>().first()
+
+        emptyStateDataView.isFilterActive shouldBe false
+        emptyStateDataView.isLocalSearch shouldBe true
+        emptyStateDataView.globalSearchApplink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
+        emptyStateDataView.keyword shouldBe keyword
+        emptyStateDataView.pageTitle shouldBe searchProductPageTitle
     }
 
     private fun `Then verify view added broad match`(searchProductModel: SearchProductModel) {
@@ -249,7 +262,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given getQueryKey will return keyword`()
-        every { productListView.isAnyFilterActive } returns true
+        `Given view has active filter`()
 
         `When Load Data`(searchParameter)
 
@@ -258,18 +271,22 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         `Then verify local search recommendation use case is called`()
     }
 
+    private fun `Given view has active filter`() {
+        every { productListView.isAnyFilterActive } returns true
+    }
+
     private fun `Then verify empty search view model by filter`() {
-        val emptySearchViewModelSlot = slot<EmptySearchProductDataView>()
         verify {
-            productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
+            productListView.setProductList(capture(visitableListSlot))
         }
 
-        val emptySearchViewModel = emptySearchViewModelSlot.captured
-        emptySearchViewModel.isFilterActive shouldBe true
-        emptySearchViewModel.isLocalSearch shouldBe false
-        emptySearchViewModel.globalSearchApplink shouldBe ""
-        emptySearchViewModel.keyword shouldBe ""
-        emptySearchViewModel.pageTitle shouldBe ""
+        val emptyStateDataView = visitableList.filterIsInstance<EmptyStateDataView>().first()
+
+        emptyStateDataView.isFilterActive shouldBe true
+        emptyStateDataView.isLocalSearch shouldBe false
+        emptyStateDataView.globalSearchApplink shouldBe ""
+        emptyStateDataView.keyword shouldBe keyword
+        emptyStateDataView.pageTitle shouldBe ""
     }
 
     @Test
@@ -293,18 +310,17 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify empty search view model for non local search`() {
-        val emptySearchViewModelSlot = slot<EmptySearchProductDataView>()
-
         verify {
-            productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
+            productListView.setProductList(capture(visitableListSlot))
         }
 
-        val emptySearchViewModel = emptySearchViewModelSlot.captured
-        emptySearchViewModel.isFilterActive shouldBe false
-        emptySearchViewModel.isLocalSearch shouldBe false
-        emptySearchViewModel.globalSearchApplink shouldBe ""
-        emptySearchViewModel.keyword shouldBe ""
-        emptySearchViewModel.pageTitle shouldBe ""
+        val emptyStateDataView = visitableList.filterIsInstance<EmptyStateDataView>().first()
+
+        emptyStateDataView.isFilterActive shouldBe false
+        emptyStateDataView.isLocalSearch shouldBe false
+        emptyStateDataView.globalSearchApplink shouldBe ""
+        emptyStateDataView.keyword shouldBe keyword
+        emptyStateDataView.pageTitle shouldBe ""
     }
 
     private fun `Then verify get local search recommendation is not called`() {

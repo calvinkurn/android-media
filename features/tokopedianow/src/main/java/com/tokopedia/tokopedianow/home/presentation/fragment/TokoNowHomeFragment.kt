@@ -48,6 +48,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -479,7 +480,7 @@ class TokoNowHomeFragment: Fragment(),
         AtcVariantHelper.goToAtcVariant(
             context = requireContext(),
             productId = data.productId,
-            pageSource = SOURCE,
+            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
             isTokoNow = true,
             shopId = data.shopId,
             startActivitResult = this::startActivityForResult
@@ -547,6 +548,10 @@ class TokoNowHomeFragment: Fragment(),
         rvHome?.addOneTimeGlobalLayoutListener {
             pageLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
         }
+    }
+
+    private fun stopPerformanceMonitoring() {
+        pageLoadTimeMonitoring?.stopPerformanceMonitoring()
     }
 
     private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
@@ -1038,11 +1043,9 @@ class TokoNowHomeFragment: Fragment(),
         showFailedToFetchData()
         stickyLoginLoadContent()
         logHomeLayoutError(throwable)
-        stopRenderPerformanceMonitoring()
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
-        startRenderPerformanceMonitoring()
         showHomeLayout(data)
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
@@ -1059,10 +1062,11 @@ class TokoNowHomeFragment: Fragment(),
         showHomeLayout(data)
         hideHeaderBackground()
         stickyLoginLoadContent()
-        stopRenderPerformanceMonitoring()
+        stopPerformanceMonitoring()
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
+        startRenderPerformanceMonitoring()
         showHomeLayout(data)
         showHeaderBackground()
         stickyLoginLoadContent()
@@ -1078,7 +1082,9 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        adapter.submitList(data.items)
+        rvHome?.post {
+            adapter.submitList(data.items)
+        }
     }
 
     private fun addLoadMoreListener() {

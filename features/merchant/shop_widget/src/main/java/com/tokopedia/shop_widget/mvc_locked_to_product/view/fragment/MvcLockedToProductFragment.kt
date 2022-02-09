@@ -24,13 +24,13 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shop_widget.R
@@ -90,7 +90,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var voucherId: String = ""
     private var shopId: String = ""
-    private var previousPage: String = ""
+    private var previousPage: String = "NULL"
     private var selectedSortData: MvcLockedToProductSortUiModel =
         MvcLockedToProductSortListFactory.getDefaultSortData()
     private val isUserLogin: Boolean
@@ -118,7 +118,9 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             if (shopIdSegmentData.toIntOrNull() != null) {
                 shopId = shopIdSegmentData
             }
-            previousPage = it.getQueryParameter(PAGE_SOURCE_KEY).orEmpty()
+            previousPage = it.getQueryParameter(PAGE_SOURCE_KEY)?.takeIf { queryParamValue ->
+                queryParamValue.isNotEmpty()
+            } ?: previousPage
             voucherId = it.pathSegments.getOrNull(5).orEmpty()
         }
     }
@@ -169,8 +171,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     private fun observeMiniCartLiveData() {
         viewModel?.miniCart?.observe(viewLifecycleOwner, Observer {
             if (it is Success) {
-                setupMiniCart(it.data, adapter.getVoucherUiModel())
-//                setupPadding(it.data.isShowMiniCartWidget)
+                initMiniCart(it.data, adapter.getVoucherUiModel())
             }
         })
     }
@@ -200,11 +201,6 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     updateMiniCartWidget()
-//                    getMiniCart()
-//                    showToaster(
-//                        message = it.data.errorMessage.joinToString(separator = ", "),
-//                        type = Toaster.TYPE_NORMAL
-//                    )
                 }
                 is Fail -> {
                     showToaster(
@@ -217,6 +213,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun updateMiniCartWidget() {
+        viewBinding?.miniCartSimplifiedWidget?.show()
         viewBinding?.miniCartSimplifiedWidget?.updateData()
     }
 
@@ -233,12 +230,12 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setupMiniCart(
-        miniCartSimplifiedData: MiniCartSimplifiedData,
+    private fun initMiniCart(
+        data: MiniCartSimplifiedData,
         voucherUiModel: MvcLockedToProductVoucherUiModel?
     ) {
         viewBinding?.miniCartSimplifiedWidget?.apply {
-            if (miniCartSimplifiedData.isShowMiniCartWidget) {
+            if (data.isShowMiniCartWidget) {
                 show()
                 initialize(
                     shopIds = listOf(shopId),
@@ -247,6 +244,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                     promoId = voucherId,
                     promoCode = voucherUiModel?.baseCode.orEmpty()
                 )
+                updateMiniCartWidget()
             } else {
                 hide()
             }
@@ -261,7 +259,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun refreshCartCounterData() {
-        if (isUserLogin)
+        if (isUserLogin && !MvcLockedToProductUtil.isSellerApp())
             viewBinding?.navigationToolbar?.setBadgeCounter(IconList.ID_CART, getCartCounter())
     }
 
@@ -276,6 +274,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun loadInitialData() {
+        resetEndlessScrollState()
         adapter.showInitialPagePlaceholderLoading()
         getMvcLockedToProductData(voucherId)
     }
@@ -324,6 +323,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                         setTotalProductAndSortSectionData(it.data.mvcLockedToProductTotalProductAndSortUiModel)
                         setProductListSectionData(it.data.mvcLockedToProductListGridProductUiModel)
                     }
+                    getMiniCart()
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
@@ -456,10 +456,12 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun setupToolbar() {
         viewBinding?.navigationToolbar?.apply {
-            val iconBuilder = IconBuilder()
-            iconBuilder.addIcon(IconList.ID_CART) {}
-            iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
-            setIcon(iconBuilder)
+            if (!MvcLockedToProductUtil.isSellerApp()) {
+                val iconBuilder = IconBuilder()
+                iconBuilder.addIcon(IconList.ID_CART) {}
+                iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
+                setIcon(iconBuilder)
+            }
             setToolbarPageName(getString(R.string.mvc_locked_to_product_toolbar_name))
         }
     }
@@ -516,6 +518,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun getNewProductListData() {
+        resetEndlessScrollState()
         adapter.updateTotalProductAndSortData(selectedSortData)
         adapter.showNewProductListPlaceholder()
         getProductListData(voucherId, START_PAGE)
@@ -532,7 +535,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             AtcVariantHelper.goToAtcVariant(
                 context = requireContext(),
                 productId = uiModel.productID,
-                pageSource = AtcVariantHelper.SHOP_COUPON_PAGESOURCE,
+                pageSource = VariantPageSource.SHOP_COUPON_PAGESOURCE,
                 isTokoNow = true,
                 shopId = shopId,
                 startActivitResult = this::startActivityForResult
@@ -550,11 +553,11 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         productId: String,
         quantity: Int
     ) {
-        if (isUserLogin) {
-            addProductToCart(productId, quantity, shopId)
-        } else {
-            redirectToLoginPage()
-        }
+//        if (isUserLogin) {
+//            addProductToCart(productId, quantity, shopId)
+//        } else {
+//            redirectToLoginPage()
+//        }
     }
 
     private fun addProductToCart(productId: String, quantity: Int, shopId: String) {
@@ -591,7 +594,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
             voucherId,
             shopId,
             userId,
-            adapter.getVoucherName()
+            adapter.getVoucherName(),
+            isSellerView
         )
     }
 
@@ -606,14 +610,19 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun resetEndlessScrollState() {
+        endlessRecyclerViewScrollListener?.resetState()
+    }
+
     private fun getMiniCart() {
-        val shopId = listOf(shopId)
-        val warehouseId = chooseAddressLocalCacheModel?.warehouse_id
-        viewModel?.getMiniCart(shopId, warehouseId)
+        adapter.getVoucherUiModel()?.let{
+            val shopId = listOf(shopId)
+//            val warehouseId = chooseAddressLocalCacheModel?.warehouse_id
+            viewModel?.getMiniCart(shopId)
+        }
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        TODO("Not yet implemented")
     }
 
 }

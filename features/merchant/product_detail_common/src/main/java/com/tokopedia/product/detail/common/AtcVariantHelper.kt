@@ -30,26 +30,14 @@ object AtcVariantHelper {
     const val ATC_VARIANT_CACHE_ID = "atc_variant_cache_id"
 
     const val ATC_VARIANT_RESULT_CODE = 19202
-
-    const val WISHLIST_PAGESOURCE = "wishlist"
-    const val PDP_PAGESOURCE = "product detail page"
-    const val PLAY_PAGESOURCE = "play"
-    const val TOPCHAT_PAGESOURCE = "topchat"
-    const val NOTIFCENTER_PAGESOURCE = "notifcenter"
-    const val HOMEPAGE_PAGESOURCE = "homepage"
-    const val DISCOVERY_PAGESOURCE = "discovery page"
-    const val SHOP_PAGE_PAGESOURCE = "shop page - buyer"
-    const val CART_PAGESOURCE = "cart"
-    const val SEARCH_PAGESOURCE = "search result"
-    const val CATEGORY_PAGESOURCE = "category page"
-    const val BUNDLING_PAGESOURCE = "bundling page"
-    const val SHOP_COUPON_PAGESOURCE = "shop-coupon-product"
+    const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
+    const val KEY_SAVE_AFTER_CLOSE = "save_after_close"
 
     /**
      * For PDP and ProductBundle only
      */
     fun pdpToAtcVariant(context: Context,
-                        pageSource: String,
+                        pageSource: VariantPageSource,
                         productId: String,
                         productInfoP1: DynamicProductInfoP1,
                         warehouseId: String,
@@ -66,6 +54,8 @@ object AtcVariantHelper {
                         restrictionData: RestrictionInfoResponse?,
                         isFavorite: Boolean = false,
                         uspImageUrl: String = "",
+                        dismissAfterTransaction: Boolean = false,
+                        saveAfterClose: Boolean = true,
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -73,11 +63,13 @@ object AtcVariantHelper {
 
         val parcelData = ProductVariantBottomSheetParams(
                 productId = productId,
-                pageSource = pageSource,
+                pageSource = pageSource.source,
                 whId = warehouseId,
                 pdpSession = pdpSession,
                 isTokoNow = isTokoNow,
                 isShopOwner = isShopOwner,
+                dismissAfterTransaction = dismissAfterTransaction,
+                saveAfterClose = saveAfterClose,
                 variantAggregator = ProductVariantAggregatorUiData(
                         variantData = productVariant,
                         cardRedirection = cartRedirection,
@@ -102,7 +94,7 @@ object AtcVariantHelper {
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, "", PDP_PAGESOURCE, "", "", "")
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, "", pageSource.source, "", "", "")
                 .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
         startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }
@@ -120,12 +112,21 @@ object AtcVariantHelper {
 
     fun goToAtcVariant(context: Context,
                        productId: String,
-                       pageSource: String,
+                       pageSource: VariantPageSource,
                        isTokoNow: Boolean = false,
                        shopId: String,
                        trackerCdListName: String = "",
+                       dismissAfterTransaction: Boolean = false,
+                       saveAfterClose: Boolean = true,
                        startActivitResult: (Intent, Int) -> Unit) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, shopId, pageSource, isTokoNow.toString(), trackerCdListName)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT,
+                productId,
+                shopId,
+                pageSource.source,
+                isTokoNow.toString(),
+                trackerCdListName)
+        intent.putExtra(KEY_DISMISS_AFTER_ATC, dismissAfterTransaction)
+        intent.putExtra(KEY_SAVE_AFTER_CLOSE, saveAfterClose)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 
@@ -167,4 +168,21 @@ object AtcVariantHelper {
                 hideFloatingButton = false
         )
     }
+}
+
+enum class VariantPageSource(val source: String) {
+    WISHLIST_PAGESOURCE("wishlist"),
+    PDP_PAGESOURCE("product detail page"),
+    TOPCHAT_PAGESOURCE("topchat"),
+    NOTIFCENTER_PAGESOURCE("notifcenter"),
+    PLAY_PAGESOURCE("play"),
+    HOMEPAGE_PAGESOURCE("homepage"),
+    DISCOVERY_PAGESOURCE("discovery page"),
+    SHOP_PAGE_PAGESOURCE("shop page - buyer"),
+    CART_PAGESOURCE("cart"),
+    SEARCH_PAGESOURCE("search result"),
+    CATEGORY_PAGESOURCE("category page"),
+    BUNDLING_PAGESOURCE("bundling page"),
+    TOKONOW_PAGESOURCE("tokonow"),
+    SHOP_COUPON_PAGESOURCE("shop-coupon-product")
 }

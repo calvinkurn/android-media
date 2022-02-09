@@ -48,7 +48,6 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.*
-import com.tokopedia.product.detail.common.AtcVariantHelper.SHOP_COUPON_PAGESOURCE
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -247,12 +246,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun setupButtonAbility(data: ProductVariantBottomSheetParams) {
-        val cartRedirCartType = data.variantAggregator.cardRedirection.values.toList()
-                .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
-        shouldSetActivityResult = when (cartRedirCartType) {
-            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
-            ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> false
-            else -> true
+        shouldSetActivityResult = data.saveAfterClose
+    }
+
+    private fun dismissAfterAtc() {
+        val shouldDismiss = sharedViewModel.aggregatorParams.value?.dismissAfterTransaction ?: false
+        if (shouldDismiss) {
+            dismiss()
         }
     }
 
@@ -415,6 +415,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             loadingProgressDialog?.dismiss()
             if (it is Success) {
                 onSuccessTransaction(it.data)
+                dismissAfterAtc()
             } else if (it is Fail) {
                 it.throwable.run {
                     trackAtcError(message ?: "")
@@ -668,7 +669,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     override fun hideVariantName(): Boolean = true
 
     override fun shouldHideTextHabis(): Boolean {
-        return sharedViewModel.aggregatorParams.value?.pageSource == SHOP_COUPON_PAGESOURCE
+        return sharedViewModel.aggregatorParams.value?.pageSource ==
+                VariantPageSource.SHOP_COUPON_PAGESOURCE.source
     }
 
     private fun onSaveButtonClicked() {

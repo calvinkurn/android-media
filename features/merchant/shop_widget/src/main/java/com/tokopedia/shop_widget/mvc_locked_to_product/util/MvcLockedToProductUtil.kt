@@ -1,6 +1,7 @@
 package com.tokopedia.shop_widget.mvc_locked_to_product.util
 
 import android.content.Context
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -14,12 +15,16 @@ object MvcLockedToProductUtil {
         } ?: LocalCacheModel()
     }
 
-    fun getActualPositionFromIndex(indexPosition: Int): Int{
+    fun getActualPositionFromIndex(indexPosition: Int): Int {
         return indexPosition + VALUE_INT_ONE
     }
 
-    fun isSellerView(shopId: String, userSessionShopId: String): Boolean{
+    fun isSellerView(shopId: String, userSessionShopId: String): Boolean {
         return shopId == userSessionShopId
+    }
+
+    fun isSellerApp(): Boolean {
+        return GlobalConfig.isSellerApp()
     }
 
     fun isMvcPhase2(): Boolean{

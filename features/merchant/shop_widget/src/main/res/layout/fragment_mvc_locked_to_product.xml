@@ -34,6 +34,7 @@
                 android:id="@+id/rv_product_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipToPadding="false"
                 android:paddingBottom="8dp" />
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
@@ -41,8 +42,8 @@
 
     <com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidget
         android:id="@+id/mini_cart_simplified_widget"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom"
+        android:visibility="gone" />
 </LinearLayout>
