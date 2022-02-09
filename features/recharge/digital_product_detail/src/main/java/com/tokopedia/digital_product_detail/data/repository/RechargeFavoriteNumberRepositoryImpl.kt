@@ -1,10 +1,9 @@
 package com.tokopedia.digital_product_detail.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberData
 import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
-import com.tokopedia.digital_product_detail.domain.usecase.GetRechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.usecase.GetRechargeFavoriteNumberUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

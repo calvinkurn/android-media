@@ -7,6 +7,7 @@ import com.tokopedia.common.topupbills.view.model.contact.TopupBillsContactDataV
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoComplete
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
+import com.tokopedia.common.topupbills.view.model.favoriteperso.TopupBillsPersoFavNumberDataView
 
 object CommonTopupBillsDataMapper {
 
@@ -35,13 +36,27 @@ object CommonTopupBillsDataMapper {
         }
     }
 
+    fun mapPersoFavNumberItemToDataView(clientNumbers: List<TopupBillsPersoFavNumberItem>): List<TopupBillsPersoFavNumberDataView> {
+        return clientNumbers.map {
+            TopupBillsPersoFavNumberDataView(
+                title = it.title,
+                subtitle = it.subtitle,
+                iconUrl = it.mediaUrl,
+                categoryId = it.trackingData.categoryId,
+                operatorId = it.trackingData.operatorId,
+                productId = it.trackingData.productId
+            )
+        }
+    }
+
     fun mapPersoFavNumberItemToContactDataView(clientNumbers: List<TopupBillsPersoFavNumberItem>): List<TopupBillsAutoComplete> {
         return clientNumbers.map {
-            if (it.subtitle.isNotEmpty()) {
-                TopupBillsAutoCompleteContactDataView(it.title, it.subtitle)
+            val (clientName, clientNumber) = if (it.subtitle.isNotEmpty()) {
+                it.title to it.subtitle
             } else {
-                TopupBillsAutoCompleteContactDataView("", it.title)
+                "" to it.title
             }
+            TopupBillsAutoCompleteContactDataView(clientName, clientNumber)
         }
     }
 }

@@ -11,5 +11,11 @@ data class TopupBillsPersoFavNumberTrackingData(
     @SerializedName("lastOrderDate")
     val lastOrderDate: String = "",
     @SerializedName("totalTransaction")
-    val totalTransaction: String = ""
+    val totalTransaction: String = "",
+    @SerializedName("categoryID")
+    val categoryId: String = "",
+    @SerializedName("operatorID")
+    val operatorId: String = "",
+    @SerializedName("productID")
+    val productId: String = ""
 ): Parcelable

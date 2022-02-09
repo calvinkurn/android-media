@@ -1,4 +1,4 @@
-package com.tokopedia.digital_product_detail.data.model.param
+package com.tokopedia.common.topupbills.data.requests
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose

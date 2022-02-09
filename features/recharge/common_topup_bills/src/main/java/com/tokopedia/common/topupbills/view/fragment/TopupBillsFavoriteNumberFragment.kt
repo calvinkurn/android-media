@@ -45,6 +45,7 @@ import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberEr
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberNotFoundDataView
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
+import com.tokopedia.common.topupbills.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberErrorViewHolder.FavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder.OnFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
@@ -603,10 +604,6 @@ class TopupBillsFavoriteNumberFragment:
 
     override fun refreshFavoriteNumberPage() {
         getSeamlessFavoriteNumber()
-    }
-
-    enum class FavoriteNumberActionType {
-        UPDATE, DELETE, UNDO_DELETE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

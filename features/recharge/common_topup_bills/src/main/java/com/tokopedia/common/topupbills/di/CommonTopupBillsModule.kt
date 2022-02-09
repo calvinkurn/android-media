@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.data.source.ContactDataSourceImpl
+import com.tokopedia.common.topupbills.usecase.GetRechargeFavoriteNumberUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -41,6 +42,12 @@ class CommonTopupBillsModule {
     @Provides
     fun provideDigitalCheckVoucherUseCase(@ApplicationContext context: Context): DigitalCheckVoucherUseCase {
         return DigitalCheckVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @CommonTopupBillsScope
+    @Provides
+    fun provideGetRechargeFavoriteNumberUseCase(graphqlRepository: GraphqlRepository): GetRechargeFavoriteNumberUseCase {
+        return GetRechargeFavoriteNumberUseCase(graphqlRepository)
     }
 
     @CommonTopupBillsScope
