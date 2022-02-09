@@ -57,18 +57,21 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initializeView()
-        initializeObserver()
+        val viewBinding = initializeView()
+        this.viewBinding = viewBinding
+
+        initializeObserver(viewBinding)
         initializeData(addOnProductData)
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initializeView() {
+    private fun initializeView(): LayoutAddOnBottomSheetBinding {
         val viewBinding = LayoutAddOnBottomSheetBinding.inflate(LayoutInflater.from(context))
-        this.viewBinding = viewBinding
-
         initializeBottomSheet(viewBinding)
         initializeRecyclerView(viewBinding)
+
+        return viewBinding
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutAddOnBottomSheetBinding) {
@@ -92,13 +95,15 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     private fun initializeData(addOnProductData: AddOnProductData) {
         val mockAddOnResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_response)
         val mockAddOnSavedStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_saved_state_response)
+        showLoading()
         viewModel.loadAddOnData(addOnProductData, mockAddOnResponse, mockAddOnSavedStateResponse)
     }
 
-    private fun initializeObserver() {
+    private fun initializeObserver(viewBinding: LayoutAddOnBottomSheetBinding) {
         observeGlobalEvent()
         observeProductData()
         observeAddOnData()
+        observeFragmentData(viewBinding)
     }
 
     private fun observeGlobalEvent() {
@@ -112,13 +117,15 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     private fun observeProductData() {
-        viewModel.productData.observe(this, {
+        viewModel.productUiModel.observe(this, {
+            hideLoading()
             addOrModify(it)
         })
     }
 
     private fun observeAddOnData() {
-        viewModel.addOnData.observe(this, {
+        viewModel.addOnUiModel.observe(this, {
+            hideLoading()
             addOrModify(it)
         })
     }
