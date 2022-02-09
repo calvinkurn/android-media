@@ -156,23 +156,32 @@
         app:unifyButtonVariant="ghost"
         tools:visibility="visible" />
 
+    <View
+        android:id="@+id/horLineShcMilestoneBtm"
+        android:layout_width="0dp"
+        android:layout_height="0.1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnShcCloseMission" />
+
     <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
         android:id="@+id/luvShcMilestone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/horLineShcMilestoneBtm"
         app:layout_constraintEnd_toStartOf="@+id/tvShcMilestoneCta"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneStart"
-        app:layout_constraintTop_toBottomOf="@+id/btnShcCloseMission" />
+        app:layout_constraintTop_toTopOf="@+id/horLineShcMilestoneBtm" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcMilestoneCta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:ellipsize="end"
         android:gravity="end|center_vertical"
@@ -181,10 +190,11 @@
         android:textColor="@color/Unify_G500"
         android:textSize="@dimen/fontSize_lvl3"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/horLineShcMilestoneBtm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/luvShcMilestone"
-        app:layout_constraintTop_toBottomOf="@+id/btnShcCloseMission"
+        app:layout_constraintTop_toTopOf="@+id/horLineShcMilestoneBtm"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         tools:visibility="visible" />

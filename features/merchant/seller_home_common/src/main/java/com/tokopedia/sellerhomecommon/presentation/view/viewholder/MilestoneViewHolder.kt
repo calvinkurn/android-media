@@ -101,6 +101,9 @@ class MilestoneViewHolder(
             showCloseWidgetButton(element)
             setupLastUpdatedInfo(element)
 
+            horLineShcMilestoneBtm.isVisible = luvShcMilestone.isVisible
+                    || tvShcMilestoneCta.isVisible
+
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
                 setupMilestoneList(element)
