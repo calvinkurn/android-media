@@ -18,12 +18,7 @@ import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -85,25 +80,34 @@ class PlayBroProductSetupViewModel @Inject constructor(
         productInEtalase[focusedEtalase]?.productMap?.values?.flatten().orEmpty()
     }
 
+    private val _uiEvent = MutableSharedFlow<PlayBroProductSetupUiEvent>(extraBufferCapacity = 50)
+
+    val uiEvent: Flow<PlayBroProductSetupUiEvent>
+        get() = _uiEvent
+
     val uiState = combine(
         _campaignAndEtalase,
         _focusedProductList,
         _selectedProductMap,
         _sort,
-        _productTagSummary,
-    ) { campaignAndEtalase, focusedProductList, selectedProductList, sort, productTagSummary ->
+    ) { campaignAndEtalase, focusedProductList, selectedProductList, sort ->
         PlayBroProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
             selectedProductList = selectedProductList,
             sort = sort,
-            productTagSummary = productTagSummary
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         PlayBroProductChooserUiState.Empty,
     )
+
+    val summaryUiState: Flow<PlayBroProductSummaryUiState> = _productTagSummary.map {
+        PlayBroProductSummaryUiState(
+            productTagSummary = it
+        )
+    }
 
     init {
         getCampaignList()
@@ -240,7 +244,11 @@ class PlayBroProductSetupViewModel @Inject constructor(
             _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
             getProductTagSummary()
         }) {
-            _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
+            _uiEvent.emit(
+                PlayBroProductSetupUiEvent.Error(it) {
+                    submitAction(PlayBroProductSummaryAction.LoadProductSummary)
+                }
+            )
         }
     }
 
@@ -263,7 +271,11 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
                 getProductTagSummary()
             }) {
-                _productTagSummary.value = ProductTagSummaryUiModel.Error(it)
+                _uiEvent.emit(
+                    PlayBroProductSetupUiEvent.Error(it) {
+                        submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
+                    }
+                )
             }
         }
     }

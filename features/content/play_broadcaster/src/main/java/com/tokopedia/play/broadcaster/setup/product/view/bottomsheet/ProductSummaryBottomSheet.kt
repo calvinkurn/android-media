@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSetupUiEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -26,6 +27,7 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.processNextEventInCurrentThread
 import javax.inject.Inject
@@ -119,7 +121,9 @@ class ProductSummaryBottomSheet @Inject constructor(
     /** TODO: gonna remove this annotation later */
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+            viewModel.summaryUiState.withCache().collectLatest { (prevState, state) ->
+//                if(prevState?.productTagSummary == state.productTagSummary) return@collectLatest
+
                 when(state.productTagSummary) {
                     is ProductTagSummaryUiModel.Loading -> {
                         binding.ivLoading.visibility = View.VISIBLE
@@ -150,20 +154,26 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.globalError.visibility = View.VISIBLE
                         binding.flBtnDoneContainer.visibility = View.GONE
                     }
-                    is ProductTagSummaryUiModel.Error -> {
+                    else -> {}
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when(event) {
+                    is PlayBroProductSetupUiEvent.Error -> {
                         view?.rootView?.showErrorToaster(
-                            err = state.productTagSummary.throwable,
+                            err = event.throwable,
                             actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = { viewModel.submitAction(PlayBroProductSummaryAction.LoadProductSummary) },
+                            actionListener = { event.action?.invoke() },
                         )
 
                         setTitle(null)
                         productSummaryListView.setProductList(emptyList())
 
                         binding.ivLoading.visibility = View.GONE
-                        binding.flBtnDoneContainer.visibility = View.GONE
                     }
-                    else -> {}
                 }
             }
         }
