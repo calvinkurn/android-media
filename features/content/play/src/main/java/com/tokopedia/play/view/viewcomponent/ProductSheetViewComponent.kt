@@ -64,7 +64,7 @@ class ProductSheetViewComponent(
             listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
         }
         override fun onTimerExpired(product: PlayProductSectionUiModel.ProductSection) {
-            TODO("Not yet implemented")
+//            TODO("Not yet implemented")
         }
         override fun onProductChanged() {
             listener.onProductCountChanged(this@ProductSheetViewComponent)
