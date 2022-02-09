@@ -50,12 +50,24 @@
         tools:text="SKU : ADN3" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_variant_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:textColor="@color/mvc_red_d6001c"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@id/cbu_variant_item"
+        app:layout_constraintTop_toBottomOf="@id/tpg_sku"
+        app:typographyType="small"
+        tools:text="Produk sudah terdaftar di kupon lain dengan keuntungan yang serupa" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_product_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
         app:layout_constraintLeft_toRightOf="@id/cbu_variant_item"
-        app:layout_constraintTop_toBottomOf="@id/tpg_sku"
+        app:layout_constraintTop_toBottomOf="@id/tpg_variant_error"
         app:typographyType="body_3"
         tools:text="Rp 380.000" />
 

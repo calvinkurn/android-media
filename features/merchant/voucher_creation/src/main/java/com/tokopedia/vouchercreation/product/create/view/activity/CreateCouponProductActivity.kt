@@ -24,8 +24,12 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     companion object {
         private const val PRODUCT_ID_SEGMENT_INDEX = 1
+        const val BUNDLE_KEY_TARGET_BUYER = "targetBuyer"
         const val BUNDLE_KEY_COUPON = "coupon"
+        const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
         const val REQUEST_CODE_CREATE_COUPON = 100
+        const val TARGET_ALL_USER = 0
+        private const val REQUEST_CODE_ADD_PRODUCT = 101
         private const val EMPTY_STRING = ""
         private const val APP_LINK = "create-voucher-product"
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
@@ -103,7 +107,13 @@ class CreateCouponProductActivity : AppCompatActivity() {
         val benefitPercent = couponSettings.discountPercentage
         val minPurchase = couponSettings.minimumPurchase
 
-        startActivity(Intent(this, ProductListActivity::class.java))
+        val addProductIntent = Intent(this, ProductListActivity::class.java).apply {
+            putExtras(Bundle().apply {
+                putInt(BUNDLE_KEY_TARGET_BUYER, TARGET_ALL_USER)
+                putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+            })
+        }
+        startActivityForResult(addProductIntent, REQUEST_CODE_ADD_PRODUCT)
     }
 
 

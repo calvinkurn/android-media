@@ -23,6 +23,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentMvcAddProductBinding
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.list.view.adapter.ProductListAdapter
 import com.tokopedia.vouchercreation.product.list.view.bottomsheet.CategoryBottomSheet
 import com.tokopedia.vouchercreation.product.list.view.bottomsheet.LocationBottomSheet
@@ -39,14 +40,23 @@ class AddProductFragment : BaseDaggerFragment(),
         ProductItemViewHolder.OnProductItemClickListener,
         ProductItemVariantViewHolder.OnVariantItemClickListener,
         LocationBottomSheet.OnApplyButtonClickListener,
-        ShowCaseBottomSheet.OnApplyButtonClickListener, CategoryBottomSheet.OnApplyButtonClickListener, SortBottomSheet.OnApplyButtonClickListener {
+        ShowCaseBottomSheet.OnApplyButtonClickListener,
+        CategoryBottomSheet.OnApplyButtonClickListener,
+        SortBottomSheet.OnApplyButtonClickListener {
 
     companion object {
 
         private const val NO_BACKGROUND: Int = 0
+        private const val BUNDLE_KEY_TARGET_BUYER = "targetBuyer"
+        private const val BUNDLE_KEY_COUPON_SETTINGS = "couponSettings"
 
         @JvmStatic
-        fun createInstance() = AddProductFragment()
+        fun createInstance(targetBuyer: Int, couponSettings: CouponSettings?) = AddProductFragment().apply {
+            this.arguments = Bundle().apply {
+                putInt(BUNDLE_KEY_TARGET_BUYER, targetBuyer)
+                putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+            }
+        }
     }
 
     @Inject
@@ -86,7 +96,7 @@ class AddProductFragment : BaseDaggerFragment(),
                 .inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val viewBinding = FragmentMvcAddProductBinding.inflate(inflater, container, false)
         binding = viewBinding
         return viewBinding.root
@@ -102,6 +112,9 @@ class AddProductFragment : BaseDaggerFragment(),
         setFragmentToUnifyBgColor()
         setupView(binding)
         observeLiveData()
+//        val targetBuyer = arguments?.getInt(BUNDLE_KEY_TARGET_BUYER)
+        val couponSettings = arguments?.getParcelable<CouponSettings>(BUNDLE_KEY_COUPON_SETTINGS)
+        viewModel.setCouponSettings(couponSettings)
         val shopId = userSession.shopId
         // get initial product list
         viewModel.setWarehouseLocationId(SELLER_LOCATION_ID)
@@ -254,23 +267,19 @@ class AddProductFragment : BaseDaggerFragment(),
                 is Success -> {
                     val productData = result.data.productList.data
                     val productUiModels = viewModel.mapProductDataToProductUiModel(productData)
-                    adapter?.setProductList(productUiModels)
+                    viewModel.setProductUiModels(productUiModels)
+
                     // TODO : handle empty product list
-                }
-                is Fail -> {
-                    // TODO : handle negative case
-                }
-            }
-        })
-        viewModel.getProductVariantsResult.observe(viewLifecycleOwner, { result ->
-            when (result) {
-                is Success -> {
-                    val variantData = result.data.product.variant
-                    val adapterPosition = viewModel.getClickedAdapterPosition()
-                    val productUiModel = adapterPosition?.run { adapter?.getProductUiModel(this) }
-                    productUiModel?.run {
-                        val variantUiModels = viewModel.mapVariantDataToVariantUiModel(variantData, productUiModel)
-                        adapter?.updateProductVariant(adapterPosition, variantUiModels)
+                    viewModel.getCouponSettings()?.run {
+                        viewModel.validateProductList(
+                                benefitType = viewModel.getBenefitType(this),
+                                couponType = viewModel.getCouponType(this),
+                                benefitIdr = viewModel.getBenefitIdr(this),
+                                benefitMax = viewModel.getBenefitMax(this),
+                                benefitPercent = viewModel.getBenefitPercent(this),
+                                minPurchase = viewModel.getMinimumPurchase(this),
+                                productIds = viewModel.getIdsFromProductList(productUiModels)
+                        )
                     }
                 }
                 is Fail -> {
@@ -278,7 +287,23 @@ class AddProductFragment : BaseDaggerFragment(),
                 }
             }
         })
-        viewModel.getSellerLocationsResult.observe(viewLifecycleOwner, { result ->
+        viewModel.validateVoucherResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    val validationResults = result.data.response.voucherValidationData.validationPartial
+                    val productList = viewModel.getProductUiModels()
+                    val updatedProductList = viewModel.applyValidationResult(
+                            productList = productList,
+                            validationResults = validationResults
+                    )
+                    adapter?.setProductList(updatedProductList)
+                }
+                is Fail -> {
+                    // TODO : handle negative case
+                }
+            }
+        })
+        viewModel.getWarehouseLocationsResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     val warehouseLocations = result.data.ShopLocGetWarehouseByShopIDs.warehouses
@@ -323,11 +348,6 @@ class AddProductFragment : BaseDaggerFragment(),
         if (isSelected) viewModel.addSelectedProduct(productUiModel)
         else viewModel.removeSelectedProduct(productUiModel)
         adapter?.updateSelectionState(isSelectAll = false, adapterPosition = adapterPosition)
-    }
-
-    override fun onVariantAccordionClicked(isVariantEmpty: Boolean, productId: String, adapterPosition: Int) {
-        viewModel.setClickedAdapterPosition(adapterPosition)
-        viewModel.getProductVariants(isVariantEmpty, productId)
     }
 
     override fun onVariantCheckBoxClicked(isSelected: Boolean, productVariant: VariantUiModel) {
