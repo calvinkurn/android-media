@@ -39,6 +39,8 @@ object ApplinkConstant {
     val OFFICIAL_PROMO_NATIVE = "${ApplinkConst.PROMO_LIST}?categoryID=8&menuID=363"
 }
 
-object TopAdsHeadlineParams{
+object TopAdsHeadlineConstant{
     const val PAGE = "homepage_os"
+    const val SEEN_ADS = 0
+
 }

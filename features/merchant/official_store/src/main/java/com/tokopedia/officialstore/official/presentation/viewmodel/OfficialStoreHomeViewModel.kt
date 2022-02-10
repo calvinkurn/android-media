@@ -9,7 +9,8 @@ import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.officialstore.TopAdsHeadlineParams.PAGE
+import com.tokopedia.officialstore.TopAdsHeadlineConstant.PAGE
+import com.tokopedia.officialstore.TopAdsHeadlineConstant.SEEN_ADS
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
 import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
@@ -70,6 +71,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     var isFeaturedShopAllowed: Boolean = false
         private set
+
+    private val impressedShop = mutableMapOf<String, MutableSet<String>>()
 
     //Pair first -> should show error message
     //Pair second -> official store banner value
@@ -181,7 +184,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 templateId = VALUE_TEMPLATE_ID,
                 headlineProductCount = VALUE_HEADLINE_PRODUCT_COUNT,
                 item = VALUE_ITEM,
-                seenAds = if (setOfImpressedShop == null) "0" else setOfImpressedShop?.size.toString()
+                seenAds = getSeenShopAdsWidgetCount()
             )
             getTopAdsHeadlineUseCase.setParams(params)
             val data = getTopAdsHeadlineUseCase.executeOnBackground()
@@ -190,6 +193,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
         } catch (t: Throwable) {
             null
         }
+    }
+
+    private fun getSeenShopAdsWidgetCount(): String {
+        var count = SEEN_ADS
+        impressedShop.forEach {
+            count += it.value.size
+        }
+        return count.toString()
     }
 
     private suspend fun getOfficialStoreBanners(
@@ -358,11 +369,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
         isFeaturedShopAllowed = false
     }
 
-
-    private val impressedShop = mutableMapOf<String, MutableSet<String>>()
-    private var setOfImpressedShop:MutableSet<String>? = mutableSetOf()
     fun recordShopWidgetImpression(channelId: String, shopId: String){
-        setOfImpressedShop = impressedShop[channelId]
+        val setOfImpressedShop = impressedShop[channelId]
         if (setOfImpressedShop.isNullOrEmpty()) {
             val newSet = mutableSetOf<String>()
             newSet.add(shopId)
@@ -376,7 +384,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     fun resetShopWidgetImpressionCount() {
-        setOfImpressedShop?.clear()
+        impressedShop.clear()
     }
 
     override fun onCleared() {
