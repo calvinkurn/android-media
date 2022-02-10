@@ -10,7 +10,8 @@ enum class ProductSectionType(val value: String) {
 
     companion object{
         fun getSectionValue(sectionType: String): ProductSectionType{
-            values().forEach {
+            val valueList = values()
+            valueList.forEach {
                 if (it.value.equals(sectionType, true)) return it
             }
             return Other
