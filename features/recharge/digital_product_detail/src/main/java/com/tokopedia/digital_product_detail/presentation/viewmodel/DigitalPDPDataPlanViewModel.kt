@@ -100,6 +100,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         menuId: Int,
         operator: String,
         clientNumber: String,
+        isOperatorChanged: Boolean = true,
         isFilterRefreshed: Boolean = true
     ) {
         catalogProductJob?.cancel()
@@ -113,7 +114,9 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
                 isFilterRefreshed
             )
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
-            setFilterDataParam(denomFull.filterTagComponents)
+            if (isOperatorChanged) {
+                setFilterDataParam(denomFull.filterTagComponents)
+            }
         }) {
             if (it !is CancellationException)
                 _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
