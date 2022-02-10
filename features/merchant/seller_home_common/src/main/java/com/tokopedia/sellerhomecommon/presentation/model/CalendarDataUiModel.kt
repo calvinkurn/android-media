@@ -9,9 +9,7 @@ data class CalendarDataUiModel(
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = false,
-    val eventGroups: List<CalendarEventGroupUiModel> = emptyList(),
-    val emptyState: CalendarEmptyStateUiModel? = null,
-    var filter: CalendarFilterDataKeyUiModel = CalendarWidgetUiModel.getCalendarFilter(dataKey)
+    val eventGroups: List<CalendarEventGroupUiModel> = emptyList()
 ) : BaseDataUiModel {
 
     override fun shouldRemove(): Boolean {
