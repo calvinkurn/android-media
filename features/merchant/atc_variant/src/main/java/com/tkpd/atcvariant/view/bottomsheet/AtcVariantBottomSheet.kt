@@ -647,7 +647,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         val parentId = viewModel.getVariantAggregatorData()?.variantData?.parentId ?: ""
 
         when (cartType) {
-            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> {
+            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
+            ProductDetailCommonConstant.KEY_DEFAULT_CHOOSE_VARIANT -> {
                 ProductTrackingCommon.eventClickPilihVariant(adapter.getHeaderDataModel()?.productId
                         ?: "", pageSource, cartType, parentId, productIdPreviousPage)
                 onSaveButtonClicked()

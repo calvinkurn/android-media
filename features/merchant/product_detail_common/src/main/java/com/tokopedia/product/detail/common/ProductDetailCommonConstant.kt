@@ -58,6 +58,7 @@ object ProductDetailCommonConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_SAVE_BUNDLING_BUTTON = "save_bundling"
     const val KEY_SAVE_TRADEIN_BUTTON = "save_tradein"
+    const val KEY_DEFAULT_CHOOSE_VARIANT = "default-choose-variant"
     const val KEY_CHAT = "chat"
     const val KEY_REMIND_ME = "remind_me"
     const val KEY_DEFAULT_OOS = "default-oos"
