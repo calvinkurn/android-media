@@ -1,5 +1,6 @@
 package com.tokopedia.addongifting.view
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -18,11 +19,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.addongifting.R
+import com.tokopedia.addongifting.data.saveaddonstate.SaveAddOnStateResponse
 import com.tokopedia.addongifting.databinding.LayoutAddOnBottomSheetBinding
 import com.tokopedia.addongifting.view.adapter.AddOnListAdapter
 import com.tokopedia.addongifting.view.adapter.AddOnListAdapterTypeFactory
 import com.tokopedia.addongifting.view.di.AddOnComponent
 import com.tokopedia.addongifting.view.di.DaggerAddOnComponent
+import com.tokopedia.addongifting.view.mapper.AddOnResultMapper
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
 import com.tokopedia.dialog.DialogUnify
@@ -147,12 +150,14 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
                     showCloseConfirmationDialog()
                 }
                 GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON -> {
-                    // Todo : return result & dismiss bottom sheet
+                    setResultOnSaveAddOn(it)
                     dismiss()
                 }
                 GlobalEvent.STATE_FAILED_SAVE_ADD_ON -> {
                     viewBinding.totalAmount.amountCtaView.isLoading = false
-                    Toaster.build(viewBinding.bottomsheetContainer, "Gagal menyimpan pelengkap. Silakan coba lagi.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    Toaster.build(viewBinding.bottomsheetContainer,
+                            "Gagal menyimpan pelengkap. Silakan coba lagi.",
+                            Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
                             .show()
                 }
                 GlobalEvent.STATE_DISMISS_BOTTOM_SHEET -> {
@@ -160,6 +165,17 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
                 }
             }
         })
+    }
+
+    private fun setResultOnSaveAddOn(globalEvent: GlobalEvent) {
+        val data = globalEvent.data
+        if (data != null && data is SaveAddOnStateResponse) {
+            val resultData = AddOnResultMapper.mapResult(data)
+            val result = Intent().apply {
+                putExtra("ADD_ON_PRODUCT_DATA_RESULT", resultData)
+            }
+            activity?.setResult(Activity.RESULT_OK, result)
+        }
     }
 
     private fun observeProductData() {

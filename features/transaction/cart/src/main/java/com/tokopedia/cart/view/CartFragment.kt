@@ -128,6 +128,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -409,6 +410,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
             NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
+            1999 -> {
+                Timber.d("result", "here")
+            }
         }
     }
 
@@ -569,7 +573,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 */
                 }
                 intent.putExtra("ADD_ON_PRODUCT_DATA", addOnProductData)
-                startActivity(intent)
+                startActivityForResult(intent, 1999)
             }
 //            goToCourierPageButton.setOnClickListener { checkGoToShipment("") }
             imgChevronSummary.setOnClickListener { onClickChevronSummaryTransaction() }

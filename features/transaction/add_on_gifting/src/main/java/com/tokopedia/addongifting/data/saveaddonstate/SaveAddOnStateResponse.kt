@@ -1,27 +1,19 @@
 package com.tokopedia.addongifting.data.saveaddonstate
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnBottomSheetResult
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnButtonResult
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnDataResult
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnMetadataResult
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnNoteResult
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnResult
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.ProductResult
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.TickerResult
 
 data class SaveAddOnStateResponse(
         @SerializedName("add_ons")
-        val addOns: List<AddOnResult> = emptyList()
+        val addOns: List<AddOnResponse> = emptyList()
 )
 
 data class AddOnResponse(
         @SerializedName("add_on_bottomsheet")
-        val addOnBottomSheet: AddOnBottomSheetResult = AddOnBottomSheetResult(),
+        val addOnBottomSheet: AddOnBottomSheetResponse = AddOnBottomSheetResponse(),
         @SerializedName("add_on_button")
-        val addOnButton: AddOnButtonResult = AddOnButtonResult(),
+        val addOnButton: AddOnButtonResponse = AddOnButtonResponse(),
         @SerializedName("add_on_data")
-        val addOnData: List<AddOnDataResult> = emptyList(),
+        val addOnData: List<AddOnDataResponse> = emptyList(),
         @SerializedName("add_on_key")
         val addOnKey: String = "",
         @SerializedName("add_on_level")
@@ -36,9 +28,9 @@ data class AddOnBottomSheetResponse(
         @SerializedName("header_title")
         val headerTitle: String = "",
         @SerializedName("products")
-        val products: List<ProductResult> = emptyList(),
+        val products: List<ProductResponse> = emptyList(),
         @SerializedName("ticker")
-        val ticker: TickerResult = TickerResult()
+        val ticker: TickerResponse = TickerResponse()
 )
 
 data class AddOnButtonResponse(
@@ -58,7 +50,7 @@ data class AddOnDataResponse(
         @SerializedName("add_on_id")
         val addOnId: String = "",
         @SerializedName("add_on_metadata")
-        val addOnMetadata: AddOnMetadataResult = AddOnMetadataResult(),
+        val addOnMetadata: AddOnMetadataResponse = AddOnMetadataResponse(),
         @SerializedName("add_on_price")
         val addOnPrice: Int = 0,
         @SerializedName("add_on_qty")
@@ -67,7 +59,7 @@ data class AddOnDataResponse(
 
 data class AddOnMetadataResponse(
         @SerializedName("add_on_note")
-        val addOnNote: AddOnNoteResult = AddOnNoteResult()
+        val addOnNote: AddOnNoteResponse = AddOnNoteResponse()
 )
 
 data class AddOnNoteResponse(

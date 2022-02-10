@@ -86,6 +86,7 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                 onSuccess = {
                     _globalEvent.value = GlobalEvent().apply {
                         state = GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON
+                        data = it
                     }
                 },
                 onError = {
