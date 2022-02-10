@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopoints.di.TokoPointScope
+import com.tokopedia.tokopoints.notification.PopupNotifUsecase
+import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
 import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
 import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
@@ -25,11 +27,13 @@ import javax.inject.Inject
 @TokoPointScope
 class TokoPointsHomeViewModel @Inject constructor(
     private val tokopointsHomeUsecase: TokopointsHomeUsecase,
-    private val recommUsecase: RewardsRecommUsecase
+    private val recommUsecase: RewardsRecommUsecase,
+    private val popupNotifUsecase: PopupNotifUsecase
 ) : BaseViewModel(Dispatchers.Main), TokoPointsHomeContract.Presenter {
 
     val tokopointDetailLiveData = MutableLiveData<Resources<TokopointSuccess>>()
     val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
+    val popUpNotifData = MutableLiveData<Resources<PopupNotification>>()
     var deferredSavingData: Deferred<UserSavingResponse>? = null
     var defferedRecomData: Deferred<RewardsRecommendation>? = null
     var defferedRewardTickerResponse: Deferred<RewardTickerListResponse>? = null
@@ -68,8 +72,6 @@ class TokoPointsHomeViewModel @Inject constructor(
             } else {
                 throw NullPointerException("error in data")
             }
-
-
         }) {
             tokopointDetailLiveData.value = ErrorMessage(it.localizedMessage)
         }
@@ -82,6 +84,14 @@ class TokoPointsHomeViewModel @Inject constructor(
             rewardIntroData.value = Success(data)
         }) {
         }
+    }
+
+    fun getPopNotifData(){
+        launchCatchError(block = {
+            val response = popupNotifUsecase.getPopupNotif("main")
+            val data = response.getData<PopupNotification>(PopupNotification::class.java)
+            popUpNotifData.value = Success(data)
+        }){}
     }
 
     private suspend fun getRecommendationData(): Deferred<RewardsRecommendation> {

@@ -36,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.*
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.BBO
@@ -58,6 +59,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
+import kotlin.math.roundToInt
 
 class TopSectionVH(
     itemView: View,
@@ -136,32 +138,49 @@ class TopSectionVH(
             cardRuntimeHeightListener.setCardLayoutHeight(it.height)
         }
         mTextMembershipLabel?.text = data?.introductionText
-
+        val currentAmount = data?.progressInfoList?.get(0)?.currentAmount.toString()
        tierIconProgress?.loadImage(data?.progressInfoList?.get(0)?.iconImageURL?:"")
-        var getdigitvalue:String = data?.progressInfoList?.get(0)?.currentAmount.toString()
-        val x = getdigitvalue.toCharArray()
-        for (i in x){
+        val getDigitValue = currentAmount.toCharArray()
+
+        if (isContainsRp(currentAmount)){
+            val dotView =Typography(itemView.context)
+            dotView.text="Rp"
+            dotView.setWeight(Typography.BOLD)
+            digitContainer?.gravity = Gravity.BOTTOM
+            dotView.setTextColor(Color.WHITE)
+            digitContainer?.addView(dotView)
+        }
+        for (i in getDigitValue){
             if(i.isDigit()){
                 val digitTextView = DigitTextView(itemView.context)
                 digitTextView.setValue(i.digitToInt())
                 digitContainer?.addView(digitTextView)
             }
-            else{
-                val dotviewv =Typography(itemView.context)
-                dotviewv.text="."
-                dotviewv.setWeight(Typography.BOLD)
+            else {
+                val dotView =Typography(itemView.context)
+                dotView.text="."
+                dotView.setWeight(Typography.BOLD)
                 digitContainer?.gravity = Gravity.BOTTOM
-                dotviewv.setTextColor(Color.WHITE)
-                digitContainer?.addView(dotviewv)
+                dotView.setTextColor(Color.WHITE)
+                digitContainer?.addView(dotView)
             }
         }
+        if (!isContainsRp(currentAmount)){
+            val dotView =Typography(itemView.context)
+            dotView.text="x"
+            dotView.setWeight(Typography.BOLD)
+            digitContainer?.gravity = Gravity.BOTTOM
+            dotView.setTextColor(Color.WHITE)
+            digitContainer?.addView(dotView)
+        }
+
         val container = progressBar?.progressBarContainer
         progressBar?.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
         (progressBar?.progressBarWrapper?.parent as ViewGroup).clipChildren = false
         (progressBar?.progressBarWrapper)?.clipChildren = false
         (progressBar?.progressBarIndicatorWrapper)?.clipChildren = false
         (progressBar?.progressBarWrapper?.parent as ViewGroup).clipToPadding = false
-        progressBar?.gravity= Gravity.CENTER_VERTICAL
+        progressBar?.gravity = Gravity.CENTER_VERTICAL
         progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.confetti))
 
         if(container?.childCount?.minus(1) ?:0  >= 0){
@@ -207,12 +226,12 @@ class TopSectionVH(
         }
 
         progressBar?.apply {
-            onValueChangeListener = { oldValue: Int, newValue: Int ->
-                if (newValue == finalProgress) {
-                    showBottomSheetMembership(this.context,tierUrls,data?.tier?.nameDesc)
-                }
-            }
-            setValue(finalProgress,true)
+            setValue(
+                getProgress(
+                    data?.progressInfoList?.get(0)?.currentAmount?.toFloat() ?: 0F,
+                    data?.progressInfoList?.get(0)?.nextAmount?.toFloat() ?: 1F
+                ), true
+            )
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
         }
 
@@ -531,6 +550,14 @@ class TopSectionVH(
      private fun hideStatusMatching() {
          cardStatusMatching?.hide()
          containerStatusMatching?.hide()
+    }
+
+    private fun isContainsRp(upgradeValue: String) : Boolean{
+        return upgradeValue.startsWith("Rp")
+    }
+
+    private fun getProgress(current:Float,next:Float) : Int{
+        return (((next-current)/next) * 100).roundToInt()
     }
 
     interface CardRuntimeHeightListener {

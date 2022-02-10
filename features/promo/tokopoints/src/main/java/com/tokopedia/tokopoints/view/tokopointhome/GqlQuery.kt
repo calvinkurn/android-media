@@ -210,9 +210,17 @@ query  tokopediaRewardTopSection(${'$'}apiVersion: String!) {
     isShowSavingPage
     progressInfoList {
       currentAmount
+      nextAmountStr
+      currentAmountStr
+      nextAmount
       iconImageURL
       tierID
       tierLevel
+      currentTierName
+      currentTierNameDesc
+      nextTierName
+      nextTierNameDesc
+      nextTierIconImageURL
     }
     lastVisitBackgroundImageURL
     lastVisitBackgroundImageURLMobile

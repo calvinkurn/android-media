@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.tokopointhome
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -31,6 +32,7 @@ import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
+import com.tokopedia.tokopoints.notification.view.TokomemberActivity
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT
@@ -137,6 +139,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         startNetworkRequestPerformanceMonitoring()
         initListener()
         mPresenter.getTokoPointDetail()
+        mPresenter.getPopNotifData()
         tokoPointToolbar?.setTitle(R.string.tp_title_tokopoints)
         initObserver()
     }
@@ -144,6 +147,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private fun initObserver() {
         addTokopointDetailObserver()
         addRewardIntroObserver()
+        addPopNotifObserver()
     }
 
     private fun setLayoutParams(cardheight: Int) {
@@ -221,6 +225,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 is Success -> {
                     showOnBoardingTooltip(it.data.tokopediaRewardIntroPage)
                 }
+                else -> {}
             }
         }
     })
@@ -240,6 +245,18 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     setOnRecyclerViewLayoutReady()
                     renderRewardUi(it.data.topSectionResponse, it.data.sectionList,it.data.recomData )
                 }
+                else -> {}
+            }
+        }
+    })
+
+    private fun addPopNotifObserver() = mPresenter.popUpNotifData.observe(viewLifecycleOwner,{
+        it?.let {
+            when (it) {
+                is Success -> {
+                    startActivity(Intent(TokomemberActivity.getIntent(activityContext, it.data)))
+                }
+                else -> {}
             }
         }
     })
