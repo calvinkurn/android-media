@@ -26,7 +26,6 @@ data class OrderShipment(
         val shippingPrice: Int? = null,
         val logisticPromoTickerMessage: String? = null,
         val logisticPromoViewModel: LogisticPromoUiModel? = null,
-        val logisticPromoList: List<LogisticPromoUiModel> = emptyList(),
         val logisticPromoShipping: ShippingCourierUiModel? = null,
         val isApplyLogisticPromo: Boolean = false,
         val shippingRecommendationData: ShippingRecommendationData? = null,
@@ -66,14 +65,14 @@ data class OrderShipment(
     }
 
     fun getRealOriginalPrice(): Int {
-        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoList.isNotEmpty()) {
-            logisticPromoList.first { it.isApplied }.shippingRate
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.shippingRate
         } else shippingPrice ?: 0
     }
 
     fun getRealShippingPrice(): Int {
-        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoList.isNotEmpty()) {
-            logisticPromoList.first { it.isApplied }.discountedRate
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.discountedRate
         } else shippingPrice ?: 0
     }
 

@@ -11,7 +11,6 @@ class RatesResponseStateConverter @Inject constructor() {
 
     fun fillState(response: ShippingRecommendationData, shopShipments: List<ShopShipment>,
                   selectedSpId: Int, selectedServiceId: Int): ShippingRecommendationData {
-        // todo yg ke apply pertama yg mn sobat
         val isPromoApplied = isPromoStackingApplied(response.logisticPromo)
         response.shippingDurationUiModels.forEach { duration ->
             duration.shippingCourierViewModelList.forEach { courier ->
