@@ -12,8 +12,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetSelectDateRangeBinding
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
-import com.tokopedia.sellerhomecommon.presentation.view.adapter.DateFilterAdapter
-import com.tokopedia.sellerhomecommon.presentation.view.adapter.listener.DateFilterListener
+import com.tokopedia.sellerhomecommon.presentation.adapter.DateFilterAdapter
+import com.tokopedia.sellerhomecommon.presentation.adapter.listener.DateFilterListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 

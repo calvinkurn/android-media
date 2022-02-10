@@ -1,9 +1,9 @@
-package com.tokopedia.sellerhomecommon.presentation.view.adapter
+package com.tokopedia.sellerhomecommon.presentation.adapter
 
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.sellerhomecommon.presentation.view.adapter.factory.DateFilterAdapterFactoryImpl
-import com.tokopedia.sellerhomecommon.presentation.view.adapter.listener.DateFilterListener
+import com.tokopedia.sellerhomecommon.presentation.adapter.factory.DateFilterAdapterFactoryImpl
+import com.tokopedia.sellerhomecommon.presentation.adapter.listener.DateFilterListener
 
 /**
  * Created by @ilhamsuaib on 09/02/22.

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.presentation.adapter.CalendarEventPagerAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 
 /**
@@ -20,7 +21,17 @@ class CalendarViewHolder(
         val RES_LAYOUT = R.layout.shc_calendar_widget
     }
 
+    private val pagerAdapter by lazy {
+        CalendarEventPagerAdapter {
+
+        }
+    }
+
     override fun bind(element: CalendarWidgetUiModel) {
+        setupEventPager(element)
+    }
+
+    private fun setupEventPager(element: CalendarWidgetUiModel) {
 
     }
 

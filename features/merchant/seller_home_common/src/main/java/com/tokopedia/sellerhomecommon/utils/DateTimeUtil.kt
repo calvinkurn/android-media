@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.utils
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -12,6 +13,8 @@ import java.util.concurrent.TimeUnit
 object DateTimeUtil {
 
     const val FORMAT_DD_MM_YYYY = "dd-MM-yyyy"
+    const val FORMAT_DD = "dd"
+    const val FORMAT_MMM = "MMM"
     private const val DEFAULT_TIME_MILLIS = 0L
 
     fun getLocale(): Locale {
@@ -30,6 +33,20 @@ object DateTimeUtil {
         return sdf.format(timeMillis)
     }
 
+    fun format(dateStr: String, sourcePattern: String, outputPattern: String): String {
+        return try {
+            val sdf = SimpleDateFormat(sourcePattern, getLocale())
+            val sourceDate = sdf.parse(dateStr)
+            val outputSdf = SimpleDateFormat(outputPattern, getLocale())
+            sourceDate?.let {
+                return outputSdf.format(it)
+            }
+            throw RuntimeException("invalid date format")
+        } catch (e: Exception) {
+            dateStr
+        }
+    }
+
     fun getNPastDaysTimestamp(daysBefore: Long): Long {
         return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
     }
@@ -45,7 +62,7 @@ object DateTimeUtil {
         return try {
             val date = sdf.parse(dateStr)
             date?.time.orZero()
-        } catch (e: RuntimeException) {
+        } catch (e: Exception) {
             DEFAULT_TIME_MILLIS
         }
     }

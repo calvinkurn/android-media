@@ -15,8 +15,8 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
-import com.tokopedia.sellerhomecommon.presentation.view.adapter.DateFilterAdapter
-import com.tokopedia.sellerhomecommon.presentation.view.adapter.listener.DateFilterListener
+import com.tokopedia.sellerhomecommon.presentation.adapter.DateFilterAdapter
+import com.tokopedia.sellerhomecommon.presentation.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.common.StatisticPageHelper

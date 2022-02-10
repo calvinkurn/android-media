@@ -95,10 +95,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        app:labelTitle="Sample Label"
         app:labelType="general_light_grey"
         app:layout_constraintStart_toStartOf="@+id/tvShcCalendarEventTitle"
-        app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarEventDesc" />
+        app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarEventDesc"
+        tools:labelTitle="Sample Label" />
 
     <View
         android:id="@+id/horLineShcCalendarEvent"

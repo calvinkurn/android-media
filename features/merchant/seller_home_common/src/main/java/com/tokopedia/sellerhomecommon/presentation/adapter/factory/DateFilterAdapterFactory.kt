@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomecommon.presentation.view.adapter.factory
+package com.tokopedia.sellerhomecommon.presentation.adapter.factory
 
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 

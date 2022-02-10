@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
-import com.tokopedia.sellerhomecommon.presentation.view.adapter.factory.DateFilterAdapterFactory
+import com.tokopedia.sellerhomecommon.presentation.adapter.factory.DateFilterAdapterFactory
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import kotlinx.parcelize.Parcelize
 import java.util.*
