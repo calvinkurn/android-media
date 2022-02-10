@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/img_bullet_more_info"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:src="@drawable/digital_pdp_bullet"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_view_more_info"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:typographyType="body_3"
+        app:layout_constraintLeft_toRightOf="@+id/img_bullet_more_info"
+        app:layout_constraintTop_toTopOf="@+id/img_bullet_more_info"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/img_bullet_more_info"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

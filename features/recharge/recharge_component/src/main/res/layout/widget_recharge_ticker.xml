@@ -31,6 +31,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:textColorLink="@color/Unify_G500"
             tools:text="Transaksi selama 23:40-00:20 WIB baru akan diproses pada 00:45 WIB. Selengkapnya"
             app:typographyType="body_3"
             app:layout_constraintTop_toTopOf="parent"
