@@ -153,6 +153,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 renderBottomSheetTitle(state.selectedProductList)
                 renderSaveButton(state.saveState)
                 renderProductError(state.campaignAndEtalase, state.focusedProductList)
+                renderChipsContainer(state.campaignAndEtalase, state.focusedProductList)
             }
         }
 
@@ -282,9 +283,7 @@ class ProductChooserBottomSheet @Inject constructor(
         campaignAndEtalase: CampaignAndEtalaseUiModel,
         productList: ProductListPaging,
     ) {
-        if (productList.resultState is PageResultState.Success &&
-            productList.productList.isEmpty()
-        ) {
+        if (isProductEmpty(productList)) {
             if (isEtalaseEmpty(campaignAndEtalase)) productErrorView.setHasNoProduct()
             else productErrorView.setProductNotFound()
 
@@ -292,6 +291,15 @@ class ProductChooserBottomSheet @Inject constructor(
         } else {
             productErrorView.hide()
         }
+    }
+
+    private fun renderChipsContainer(
+        campaignAndEtalase: CampaignAndEtalaseUiModel,
+        productList: ProductListPaging,
+    ) {
+        binding.containerChips.visibility =
+            if (hasNoProducts(campaignAndEtalase, productList)) View.GONE
+            else View.VISIBLE
     }
 
     /**
