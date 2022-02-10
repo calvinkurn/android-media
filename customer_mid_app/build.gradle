@@ -153,8 +153,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.explore)
     implementation projectOrAar(rootProject.ext.features.loyalty)
     implementation projectOrAar(rootProject.ext.features.commonElectronicMoney)
-    implementation projectOrAar(rootProject.ext.features.travelCountryCode)
-    implementation projectOrAar(rootProject.ext.features.travelPassenger)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
@@ -247,9 +245,9 @@ dependencies {
     }
 
     // in~house dependencies
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

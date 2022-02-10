@@ -32,7 +32,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

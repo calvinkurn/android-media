@@ -60,7 +60,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation rootProject.ext.miscDependencies.chips
     implementation projectOrAar(rootProject.ext.features.wishlistCommon)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.libraries.network)

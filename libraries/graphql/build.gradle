@@ -44,7 +44,7 @@ dependencies {
     api rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication

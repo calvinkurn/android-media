@@ -28,7 +28,7 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
