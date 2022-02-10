@@ -59,9 +59,11 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             }
         }
 
-        when(item.sectionType){
-            ProductSectionType.Upcoming -> llPrice.hide()
-            else -> llPrice.show()
+        item.sectionType?.let {
+            when(it){
+                ProductSectionType.Upcoming -> llPrice.hide()
+                else -> llPrice.show()
+            }
         }
 
         btnProductBuy.setOnClickListener {

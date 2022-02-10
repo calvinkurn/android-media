@@ -39,7 +39,6 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
                 response.playGetTagsItem.sectionList
             )
 
-            //TODO= Improve
             val prodArray = arrayListOf<Product>()
 
             response.playGetTagsItem.sectionList.forEach {

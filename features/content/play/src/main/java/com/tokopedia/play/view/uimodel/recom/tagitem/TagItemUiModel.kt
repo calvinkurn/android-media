@@ -2,7 +2,10 @@ package com.tokopedia.play.view.uimodel.recom.tagitem
 
 import com.tokopedia.play_common.model.result.ResultState
 
-//TODO() = section instead of product
+/**
+ * product: For tagged items
+ * section: For bottom sheet items
+ */
 data class TagItemUiModel(
     val section: SectionUiModel,
     val product: ProductUiModel,

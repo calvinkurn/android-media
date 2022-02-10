@@ -759,7 +759,6 @@ class PlayBottomSheetFragment @Inject constructor(
             )
         } else if (tagItem.section.sections.isNotEmpty()) {
             productSheetView.setProductSheet(
-                productList = tagItem.product.productList,
                 voucherList = tagItem.voucher.voucherList,
                 title = bottomSheetTitle,
                 sectionList = tagItem.section.sections
