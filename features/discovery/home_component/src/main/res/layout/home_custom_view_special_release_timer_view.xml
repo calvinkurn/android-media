@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/channel_title_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/special_release_timer_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/special_release_timer_text"
+        app:layout_constraintBottom_toBottomOf="@id/special_release_timer_text"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        app:icon_name="CLOCK"
+        app:icon_color_light_enable="@color/Unify_RN600"
+        app:icon_color_night_enable="@color/Unify_RN500"
+        />
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginStart="3dp"
+        android:id="@+id/special_release_timer_text"
+        app:layout_constraintStart_toEndOf="@id/special_release_timer_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyWeight="bold"
+        app:typographyType="small"
+        tools:text="Sisa 24 Menit"
+        android:textColor="@color/Unify_RN600"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

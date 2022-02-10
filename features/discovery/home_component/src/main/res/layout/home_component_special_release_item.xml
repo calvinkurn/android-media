@@ -76,19 +76,17 @@
             android:layout_marginTop="2dp"
             />
 
-<!--        Timer-->
-<!--        <com.tokopedia.unifyprinciples.Typography-->
-<!--            android:id="@+id/special_release_price"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/special_release_tag"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            tools:text="Rp850 rb"-->
-<!--            app:typographyType="heading_3"-->
-<!--            app:typographyWeight="bold"-->
-<!--            android:layout_marginTop="2dp"-->
-<!--            />-->
+        <com.tokopedia.home_component.customview.SpecialReleaseTimerView
+            android:id="@+id/special_release_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/special_release_price"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:layout_width="100dp"
+            tools:layout_height="20dp"
+            android:layout_marginTop="4dp"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
