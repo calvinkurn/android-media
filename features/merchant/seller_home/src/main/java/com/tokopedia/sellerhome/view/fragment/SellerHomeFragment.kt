@@ -1834,6 +1834,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         checkLoadingWidgets()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Suppress("UNCHECKED_CAST")
     private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
         try {
@@ -1846,6 +1847,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             adapter.data.addAll(newWidgets)
             diffUtilResult.dispatchUpdatesTo(adapter)
         } catch (e: Exception) {
+            adapter.notifyDataSetChanged()
             SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
         }
     }
