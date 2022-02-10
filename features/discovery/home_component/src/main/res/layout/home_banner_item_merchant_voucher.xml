@@ -51,13 +51,63 @@
         />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
         android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
         app:layout_constraintTop_toBottomOf="@id/image_badge"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/bg_line_voucher"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/container_image_product"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:cardCornerRadius="8dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title_cashback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Cashback"
+        app:typographyType="body_3"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@id/container_image_product"
+        app:layout_constraintTop_toTopOf="@id/container_image_product"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/total_other_coupon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="+5 Kupon Lainnya"
+        app:typographyType="small"
+        app:layout_constraintStart_toStartOf="@id/title_cashback"
+        app:layout_constraintBottom_toBottomOf="@id/container_image_product"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/benefit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Rp5.000.000"
+        app:typographyType="heading_2"
+        app:layout_constraintStart_toStartOf="@id/title_cashback"
+        app:layout_constraintTop_toBottomOf="@id/title_cashback"
+        app:layout_constraintBottom_toTopOf="@id/total_other_coupon"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
