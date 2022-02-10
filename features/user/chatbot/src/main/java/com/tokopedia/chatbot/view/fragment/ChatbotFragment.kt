@@ -3,10 +3,11 @@ package com.tokopedia.chatbot.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,12 +36,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.chat_common.view.adapter.AttachmentMenuAdapter
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FIVE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
@@ -47,8 +50,10 @@ import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_THREE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_TWO
 import com.tokopedia.chatbot.ChatbotConstant.ONE_SECOND_IN_MILLISECONDS
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_IMAGE
+import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_VIDEO
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
+import com.tokopedia.chatbot.ChatbotConstant.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
@@ -68,6 +73,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -83,7 +89,7 @@ import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
-import com.tokopedia.chatbot.view.adapter.ImageRetryBottomSheetAdapter
+import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
@@ -105,7 +111,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
-import java.io.File
 import javax.inject.Inject
 
 /**
@@ -130,7 +135,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener,
         TypingListener, ChatOptionListListener, CsatOptionListListener,
-        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener{
+        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener, VideoUploadListener, AttachmentMenu.AttachmentMenuListener{
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -164,6 +169,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isStickyButtonClicked = false
     private var isChatRefreshed = false
     private var isFirstPage = true
+    private lateinit var mediaPickerContainer : LinearLayout
+    private lateinit var imagePicker : ConstraintLayout
+    private lateinit var videoPicker : ConstraintLayout
+    private var userVideoUploadEligible : Boolean ?= null
+    private var maxFileSize : Int = 0
+    private var listOfAllowedExtention : List<String> = ArrayList()
+    private lateinit var attachmentRecyclerView : AttachmentMenuRecyclerView
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -252,8 +264,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         ticker = view.findViewById(R.id.chatbot_ticker)
         dateIndicator = view.findViewById(R.id.dateIndicator)
         dateIndicatorContainer = view.findViewById(R.id.dateIndicatorContainer)
+     //   mediaPickerContainer = view.findViewById(R.id.media_picker_layout)
+    //    imagePicker = view.findViewById(R.id.image_picker)
+    //    videoPicker = view.findViewById(R.id.video_picker)
+        attachmentRecyclerView = view.findViewById(R.id.rv_attachment_menu)
+     //   attachmentRecyclerView.show()
         setChatBackground()
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
+
         return view
     }
 
@@ -294,7 +312,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 this,
-                getUserSession()
+                getUserSession(),
+                this
         )
     }
 
@@ -323,12 +342,23 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         presenter.checkForSession(messageId)
+        presenter.checkVideoUploadEligibility(msgId = messageId,{
+            userVideoUploadEligible = true
+        },{
+            userVideoUploadEligible = false
+        })
         showTicker()
+
+        presenter.getVideoUploadPolicy("fLapDZ") {
+            maxFileSize = it.uploadPolicy.sourcePolicy.vodPolicy.maxFileSize
+            listOfAllowedExtention = it.uploadPolicy.sourcePolicy.vodPolicy.allowedExtention.split(",").toTypedArray().toList()
+        }
 
         if (savedInstanceState != null)
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
 
     }
+    private  val TAG = "ChatbotFragment2"
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
@@ -366,7 +396,47 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     val onChatMenuButtonClicked: () -> Unit = {
+
+//        val mediaPickerBottomSheet = MediaPickerBottomSheet()
+//        mediaPickerBottomSheet.show(childFragmentManager)
+  //      mediaPickerContainer.visibility = View.VISIBLE
+
+      //  imagePicker.setOnClickListener { pickImageFromDevice() }
+
+//        activity?.let {
+//            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+//            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+//            intent.putImagePickerBuilder(builder)
+//            intent.putParamPageSource(ImagePickerPageSource.CHAT_BOT_PAGE)
+//            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
+//        }
+
+//        videoPicker.setOnClickListener {
+//            pickVideoFromDevice()
+//        }
+    }
+
+    private fun pickVideoFromDevice(){
+
+//        val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+//            .withSimpleMultipleSelection(maxPick = 1).apply {
+//                maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
+//            }
+
         activity?.let {
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it).withSimpleEditor().apply {
+                maxFileSizeInKB = maxFileSize
+            }
+            //NEED to change these
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.VIDEO_PICKER)
+            intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.CHAT_BOT_PAGE)
+            startActivityForResult(intent, REQUEST_CODE_CHAT_VIDEO)
+        }
+    }
+
+    private fun pickImageFromDevice(){
+            activity?.let {
             val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
@@ -610,10 +680,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getViewState()?.showRetryUploadImages(image, true)
     }
 
+    //Test here
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             TOKOPEDIA_ATTACH_INVOICE_REQ_CODE -> onSelectedInvoiceResult(resultCode, data)
             REQUEST_CODE_CHAT_IMAGE -> onPickedAttachImage(resultCode, data)
+            REQUEST_CODE_CHAT_VIDEO -> onPickedAttachVideo(resultCode,data)
             REQUEST_SUBMIT_FEEDBACK -> if (resultCode == Activity.RESULT_OK) submitRating(data)
             REQUEST_SUBMIT_CSAT -> submitCsat(resultCode, data)
         }
@@ -697,6 +769,65 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     }
 
+    private fun onPickedAttachVideo(resultCode: Int, data: Intent?){
+        if (resultCode != Activity.RESULT_OK || data == null) {
+            return
+        }
+
+        uploadVideo(data)
+    }
+
+    private fun uploadVideo(data: Intent){
+        processVideoPathToUpload(data)?.let {
+            getViewState()?.onVideoUpload(it)
+            presenter.uploadVideo(it, SOURCE_ID_FOR_VIDEO_UPLOAD, true,SendableUiModel.generateStartTime(), messageId,onErrorVideoUpload())
+        }
+    }
+
+    //Change return type
+    private fun processVideoPathToUpload(data: Intent): VideoUploadUiModel? {
+        var videoPathList: ArrayList<String>? = data.getStringArrayListExtra("video_result")
+        if (videoPathList == null)
+            return null
+        if (videoPathList.size <= 0)
+            return null
+        val videoPath = videoPathList[0]
+
+        //GET VIDEO LENGTH
+        var uri = Uri.parse(videoPath)
+        var totalLength:Long = 0
+        MediaPlayer.create(context, uri).also {
+            totalLength = it.duration.toLong()
+
+            it.reset()
+            it.release()
+        }
+
+        if (!TextUtils.isEmpty(videoPath)) {
+            //Change the UI model here
+             var temp = generateChatViewModelWithVideo(videoPath,totalLength)
+            return temp
+        }
+
+        return null
+
+    }
+
+    fun generateChatViewModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
+        return VideoUploadUiModel.Builder().withMsgId(messageId)
+            .withFromUid(opponentId)
+            .withAttachmentId((System.currentTimeMillis() / ONE_SECOND_IN_MILLISECONDS).toString())
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
+            .withStartTime(SendableUiModel.generateStartTime())
+            .withVideoUrl(video)
+            .withIsDummy(true)
+            .withVideoUrlThumbnail("")
+            .withLength(totalLength)
+            .build()
+
+    }
+
     override fun uploadUsingSecureUpload(data: Intent) {
         val path = ImagePickerResultExtractor.extract(data).imageUrlOrPathList.getOrNull(0)
         processImagePathToUpload(data)?.let {
@@ -724,6 +855,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
 
         val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+        ImagePickerResultExtractor.extract(data)
         if (imagePathList.size <= 0) {
             return null
         }
@@ -899,8 +1031,19 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         return listOf(
-                ImageMenu()
+            ImageMenu(),
+            VideoMenu()
         )
+    }
+
+    override fun onClickAttachImage(menu: AttachmentMenu) {
+        super.onClickAttachImage(menu)
+        pickImageFromDevice()
+    }
+
+    override fun onClickAttachVideo(menu: AttachmentMenu) {
+        super.onClickAttachVideo(menu)
+        pickVideoFromDevice()
     }
 
     override fun showErrorToast(it: Throwable) {
@@ -958,47 +1101,68 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onRetrySendImage(element: ImageUploadUiModel) {
-        val bottomSheetPage = BottomSheetUnify()
-        val viewBottomSheetPage = View.inflate(context, R.layout.retry_upload_image_bottom_sheet_layout, null).apply {
-            val rvPages = findViewById<RecyclerView>(R.id.rv_image_upload_option)
-            rvPages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            val adapter = ImageRetryBottomSheetAdapter(onBottomSheetItemClicked(element, bottomSheetPage))
-            rvPages.adapter = adapter
-            adapter.setList(listOf<String>(context?.getString(R.string.chatbot_delete)
-                    ?: "", context?.getString(R.string.chatbot_resend) ?: ""))
-
-        }
-
-        bottomSheetPage.apply {
-            setTitle(this@ChatbotFragment.context?.getString(R.string.chatbot_retry_image_upload_bottom_sheet_title)
-                    ?: "")
-            showCloseIcon = false
-            setChild(viewBottomSheetPage)
-            showKnob = true
-        }
-        fragmentManager?.let {
-            bottomSheetPage.show(it, "retry image bottom sheet")
-        }
-
+        createRetryMediaUploadBottomSheet(element)
     }
 
-    fun onBottomSheetItemClicked(element: ImageUploadUiModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
+    fun onBottomSheetItemClicked(element: SendableUiModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
         return {
-            when (it) {
-                RESEND -> {
-                    removeDummy(element)
-                    getViewState()?.onImageUpload(element)
-                    presenter.uploadImages(element, messageId, opponentId, onErrorImageUpload())
-                    bottomSheetPage.dismiss()
-                }
-                DELETE -> {
-                    removeDummy(element)
-                    bottomSheetPage.dismiss()
-                    view?.let {
-                        Toaster.make(it, context?.getString(R.string.chatbot_your_picture_has_been_deleted)
-                                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            if (element is ImageUploadUiModel) {
+                when (it) {
+                    RESEND -> {
+                        removeDummy(element)
+                        getViewState()?.onImageUpload(element)
+                        presenter.uploadImages(element, messageId, opponentId, onErrorImageUpload())
+                        bottomSheetPage.dismiss()
+                    }
+                    DELETE -> {
+                        removeDummy(element)
+                        bottomSheetPage.dismiss()
+                        view?.let {
+                            Toaster.make(
+                                it,
+                                context?.getString(R.string.chatbot_your_picture_has_been_deleted)
+                                    ?: "",
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_NORMAL
+                            )
+                        }
                     }
                 }
+            }else{
+                if (element is VideoUploadUiModel){
+                    when (it) {
+                        RESEND -> {
+                            removeDummy(element)
+                            getViewState()?.onVideoUpload(element)
+                            presenter.uploadVideo(element,SOURCE_ID_FOR_VIDEO_UPLOAD,true,SendableUiModel.generateStartTime(),messageId,onErrorVideoUpload())
+                            bottomSheetPage.dismiss()
+                        }
+                        DELETE -> {
+                            removeDummy(element)
+                            bottomSheetPage.dismiss()
+                            view?.let {
+                                Toaster.make(
+                                    it,
+                                    context?.getString(R.string.chatbot_your_video_has_been_deleted)
+                                        ?: "",
+                                    Toaster.LENGTH_LONG,
+                                    Toaster.TYPE_NORMAL
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onErrorVideoUpload(): (String,VideoUploadUiModel) -> Unit {
+        return { errorMsg,video ->
+            if (view != null) {
+             //   Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, errorMsg), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+              //  getViewState()?.showRetryUploadImages(image, true)
+                    Toaster.showError(view!!,errorMsg,Snackbar.LENGTH_LONG)
+                getViewState()?.showRetryUploadVideos(video,true)
             }
         }
     }
@@ -1065,6 +1229,56 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun transactionNotFoundClick() {
         val selected = presenter.getActionBubbleforNoTrasaction()
         presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
+    }
+
+    override fun onRetrySendVideo(element: VideoUploadUiModel) {
+        createRetryMediaUploadBottomSheet(element)
+    }
+
+    override fun onVideoUploadCancelClicked(video: VideoUploadUiModel) {
+        //TODO changes to be made here
+        presenter.cancelVideoUpload(video.videoUrl!!,SOURCE_ID_FOR_VIDEO_UPLOAD)
+        //UI changes - what to do when the user cancels the video upload with progress bar clicked
+        getViewState()?.showRetryUploadVideos(video,true)
+    }
+
+    private fun createRetryMediaUploadBottomSheet(element: SendableUiModel) {
+        val bottomSheetPage = BottomSheetUnify()
+        val viewBottomSheetPage =
+            View.inflate(context, R.layout.retry_upload_media_bottom_sheet_layout, null).apply {
+                val rvPages = findViewById<RecyclerView>(R.id.rv_image_upload_option)
+                rvPages.layoutManager =
+                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                val adapter =
+                    MediaRetryBottomSheetAdapter(onBottomSheetItemClicked(element, bottomSheetPage))
+                rvPages.adapter = adapter
+                adapter.setList(
+                    listOf<String>(
+                        context?.getString(R.string.chatbot_delete)
+                            ?: "", context?.getString(R.string.chatbot_resend) ?: ""
+                    )
+                )
+
+            }
+
+        bottomSheetPage.apply {
+            if (element is ImageUploadUiModel)
+                setTitle(
+                    this@ChatbotFragment.context?.getString(R.string.chatbot_retry_image_upload_bottom_sheet_title)
+                        ?: ""
+                )
+            else
+                setTitle(
+                    this@ChatbotFragment.context?.getString(R.string.chatbot_retry_video_upload_bottom_sheet_title)
+                        ?: ""
+                )
+            showCloseIcon = false
+            setChild(viewBottomSheetPage)
+            showKnob = true
+        }
+        fragmentManager?.let {
+            bottomSheetPage.show(it, "retry media bottom sheet")
+        }
     }
 }
 

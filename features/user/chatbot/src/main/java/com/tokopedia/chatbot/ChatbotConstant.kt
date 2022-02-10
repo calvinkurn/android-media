@@ -4,9 +4,11 @@ object ChatbotConstant {
 
     const val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
     const val REQUEST_CODE_CHAT_IMAGE = 115
+    const val REQUEST_CODE_CHAT_VIDEO = 116
     const val REQUEST_SUBMIT_FEEDBACK = 909
     const val REQUEST_SUBMIT_CSAT = 911
     const val ONE_SECOND_IN_MILLISECONDS = 1000
+    const val SOURCE_ID_FOR_VIDEO_UPLOAD = "fLapDZ"
 
     object CsatRating {
         const val RATING_ONE = 1
@@ -38,5 +40,6 @@ object ChatbotConstant {
 
     object AttachmentType {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
+        const val TYPE_VIDEO_UPLOAD = "30"
     }
 }

@@ -43,7 +43,9 @@
     <string name="chatbot_sender_info_prefix">chatbot_</string>
     <string name="chatbot_action_bubble_text_color_prefix">#%s</string>
     <string name="chatbot_retry_image_upload_bottom_sheet_title">Gambarmu gagal di-upload</string>
+    <string name="chatbot_retry_video_upload_bottom_sheet_title">Videomu gagal di-upload</string>
     <string name="chatbot_your_picture_has_been_deleted">Gambarmu sudah dihapus.</string>
+    <string name="chatbot_your_video_has_been_deleted">Videomu sudah dihapus.</string>
     <string name="chatbot_text_for_no_transaction_found">Transaksi yang berkendala tidak ada di daftar pilihan.</string>
     <string name="chatbot_action_text_for_no_transaction_found">transaction_not_listed</string>
 

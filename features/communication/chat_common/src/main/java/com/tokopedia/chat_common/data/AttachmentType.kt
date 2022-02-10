@@ -28,7 +28,7 @@ class AttachmentType {
         const val TYPE_QUICK_REPLY_SEND = "10"
         const val TYPE_VOUCHER = "11"
         const val TYPE_QUOTATION = "19"
-
+        const val TYPE_VIDEO_UPLOAD = "30"
         const val TYPE_CHAT_RATING = "-1"
     }
 }

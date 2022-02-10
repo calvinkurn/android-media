@@ -11,6 +11,6 @@
         android:id="@+id/containerProductAttachment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_gravity="end"/>
+        tools:layout_gravity="end" />
 
 </LinearLayout>

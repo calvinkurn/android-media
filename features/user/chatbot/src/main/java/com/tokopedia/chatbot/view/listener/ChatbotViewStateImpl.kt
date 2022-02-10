@@ -29,6 +29,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
@@ -222,6 +223,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         scrollDownWhenInBottom()
     }
 
+    override fun onVideoUpload(it: VideoUploadUiModel) {
+        getAdapter().addElement(it)
+        scrollDownWhenInBottom()
+    }
+
     private fun isMyMessage(fromUid: String?): Boolean {
         return fromUid != null && userSession.userId == fromUid
     }
@@ -326,6 +332,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         getAdapter().showRetryFor(image, retry)
     }
 
+    override fun showRetryUploadVideos(video: VideoUploadUiModel, retry: Boolean) {
+        getAdapter().showRetryForVideo(video,retry)
+    }
+
     override fun removeDummy(visitable: Visitable<*>) {
         getAdapter().removeDummy(visitable)
     }
@@ -377,9 +387,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun setupChatMenu() {
-        chatMenuButton.setOnClickListener {
-            onChatMenuButtonClicked.invoke()
-        }
+        super.setupChatMenu()
+//        chatMenuButton.setOnClickListener {
+//            onChatMenuButtonClicked.invoke()
+//        }
     }
 
     override fun getRecyclerViewId(): Int {

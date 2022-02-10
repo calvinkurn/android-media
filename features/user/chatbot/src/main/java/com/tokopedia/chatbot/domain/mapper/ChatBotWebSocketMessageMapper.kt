@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
@@ -26,6 +27,8 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
+import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
@@ -59,6 +62,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
             TYPE_STICKED_BUTTON_ACTIONS -> convertToStickedButtonActionsViewModel(pojo)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes)
+            TYPE_VIDEO_UPLOAD -> convertToVideoUpload(pojo,jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
     }
@@ -73,6 +77,21 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 .withImageUrl(pojoAttribute.imageUrlSecure)
                 .withImageUrlThumbnail(pojoAttribute.thumbnail)
                 .build()
+    }
+
+    private fun convertToVideoUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
+            VideoUploadUiModel {
+        val pojoAttribute = GsonBuilder().create().fromJson<ChatbotVideoUploadAttributes>(
+            jsonAttribute,
+            ChatbotVideoUploadAttributes::class.java
+        )
+
+        return VideoUploadUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withVideoUrl(pojoAttribute.videoUrl)
+                //TODO change this
+            .withVideoUrlThumbnail(pojoAttribute.videoUrl)
+            .build()
     }
 
     private fun convertToStickedButtonActionsViewModel(pojo: ChatSocketPojo): Visitable<*> {

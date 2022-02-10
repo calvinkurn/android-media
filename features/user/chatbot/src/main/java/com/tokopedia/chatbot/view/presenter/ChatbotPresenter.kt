@@ -38,6 +38,8 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.uploadPolicy.ChatbotVODUploadPolicyResponse
+import com.tokopedia.chatbot.data.uploadeligibility.UploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
@@ -63,6 +65,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
@@ -79,6 +83,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.io.File
 import java.lang.reflect.Type
 import java.util.*
@@ -86,6 +91,14 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
+import android.provider.MediaStore
+
+import android.database.Cursor
+import android.media.MediaPlayer
+
+import android.net.Uri
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -109,7 +122,10 @@ class ChatbotPresenter @Inject constructor(
         private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
         private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
         private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
-        private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase
+        private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
+        private val chatbotVideoUploadEligibilityUseCase: ChatbotVideoUploadEligibilityUseCase,
+        private val chatbotUploadPolicyUseCase: ChatbotUploadPolicyUseCase,
+        private val uploaderUseCase : UploaderUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -524,6 +540,90 @@ class ChatbotPresenter @Inject constructor(
         }
 
     }
+
+    override fun checkVideoUploadEligibility(
+        msgId: String,
+        isEligible: (Boolean) -> Unit,
+        error: (UploadVideoEligibilityResponse.TopBotUploadVideoEligibility.HeaderVideoEligibility) -> Unit
+    ) {
+        launchCatchError(
+            block = {
+               val gqlResponse =  chatbotVideoUploadEligibilityUseCase.getUserVideoUploadEligibility(msgId)
+                val response = gqlResponse.getData<UploadVideoEligibilityResponse>(UploadVideoEligibilityResponse::class.java)
+                isEligible(response.topbotUploadVideoEligibility.data.isEligibile)
+                error(response.topbotUploadVideoEligibility.header.reason)
+
+                    },
+            onError = {
+
+            }
+        )
+
+    }
+
+    override fun getVideoUploadPolicy(
+        source: String,
+        response: (ChatbotVODUploadPolicyResponse) -> Unit
+    ) {
+        launchCatchError(
+            block = {
+                val gqlResponse = chatbotUploadPolicyUseCase.getChatbotUploadPolicy(source)
+                val uploadPolicyResponse = gqlResponse.getData<ChatbotVODUploadPolicyResponse>(ChatbotVODUploadPolicyResponse::class.java)
+                response(uploadPolicyResponse)
+            },
+            onError = {
+
+            }
+        )
+    }
+
+    override fun uploadVideo(
+        videoUploadUiModel: VideoUploadUiModel,
+        sourceId: String,
+        withTranscode: Boolean,
+        startTime: String,
+        messageId: String,
+        onErrorVideoUpload: (String,VideoUploadUiModel) -> Unit
+    ) {
+        val originalFile = File(videoUploadUiModel.videoUrl)
+
+        launchCatchError(
+            block = {
+                val param = uploaderUseCase.createParams(
+                    filePath = originalFile, // required
+                    sourceId = sourceId, // required
+                    withTranscode = withTranscode // optional, default: true
+                )
+
+                when (val result = uploaderUseCase.invoke(param)) {
+                    is UploadResult.Success -> {
+                        sendVideoAttachment(result.videoUrl,startTime, messageId)
+                    }
+                    is UploadResult.Error -> {
+                        result.message
+                        onErrorVideoUpload(result.message,videoUploadUiModel)
+                    }
+                }
+            },
+            onError = {
+
+            }
+        )
+    }
+
+
+    override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
+        RxWebSocket.send(
+            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                filePath, startTime, messageId
+            ), listInterceptor
+        )
+    }
+
+    override fun cancelVideoUpload(file: String, sourceId: String) {
+        //TODO cancel video upload
+    }
+
 
     override fun cancelImageUpload() {
         uploadImageUseCase.unsubscribe()

@@ -103,5 +103,31 @@ object SendChatbotWebsocketParam {
         return json
     }
 
+    fun generateParamSendVideoAttachment(
+        filePath: String,
+        startTime: String,
+        messageId: String
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+
+        val data = JsonObject()
+        data.addProperty("message_id", Integer.parseInt(messageId))
+        data.addProperty("message", "Uploaded Video")
+        data.addProperty(
+            "attachment_type", Integer.parseInt(
+                AttachmentType
+                    .Companion.TYPE_VIDEO_UPLOAD
+            )
+        )
+        data.addProperty("file_path", "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=41e55036b08144c38d9ae1144788e5cb")
+        data.addProperty("start_time", startTime)
+
+        json.add("data", data)
+        return json
+
+
+    }
+
 
 }

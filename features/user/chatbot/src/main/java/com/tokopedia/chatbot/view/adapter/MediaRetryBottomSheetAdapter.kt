@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
 import com.tokopedia.unifyprinciples.Typography
 
-class ImageRetryBottomSheetAdapter(private val onBottomSheetItemClicked: (position: Int) -> Unit) : RecyclerView.Adapter<ImageRetryBottomSheetAdapter.ImageRetryBottomSheetViewHoder>() {
+class MediaRetryBottomSheetAdapter(private val onBottomSheetItemClicked: (position: Int) -> Unit) : RecyclerView.Adapter<MediaRetryBottomSheetAdapter.MediaRetryBottomSheetViewHoder>() {
 
     val list = mutableListOf<String>()
 
-    inner class ImageRetryBottomSheetViewHoder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MediaRetryBottomSheetViewHoder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val item: Typography = itemView.findViewById<Typography>(R.id.retry_image_upload_bottom_sheet_item)
         fun bind(item: String, position: Int) {
             this.item.text = item
@@ -19,9 +19,9 @@ class ImageRetryBottomSheetAdapter(private val onBottomSheetItemClicked: (positi
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageRetryBottomSheetViewHoder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.retry_upload_image_bottom_sheet_item, parent, false)
-        return ImageRetryBottomSheetViewHoder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaRetryBottomSheetViewHoder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.retry_upload_media_bottom_sheet_item, parent, false)
+        return MediaRetryBottomSheetViewHoder(view)
 
     }
 
@@ -29,7 +29,7 @@ class ImageRetryBottomSheetAdapter(private val onBottomSheetItemClicked: (positi
         return list.size
     }
 
-    override fun onBindViewHolder(holder: ImageRetryBottomSheetViewHoder, position: Int) {
+    override fun onBindViewHolder(holder: MediaRetryBottomSheetViewHoder, position: Int) {
         holder.bind(list[position], position)
     }
 

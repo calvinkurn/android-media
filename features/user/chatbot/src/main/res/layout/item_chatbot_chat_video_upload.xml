@@ -34,6 +34,19 @@
 
     </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_group_chat_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/dateContainer"
+        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardCornerRadius="@dimen/chatcommon_3dp"
+        app:cardElevation="@dimen/layout_lvl0"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
+
+
     <FrameLayout
         android:id="@+id/fl_image_container"
         android:layout_width="@dimen/dp_chatbot_240"
@@ -66,36 +79,80 @@
 
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/llReadStatusContainer"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:gravity="end|center_vertical"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/spacing_lvl2"
-            android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="10dp"
-            tools:ignore="RtlSymmetry">
+           >
 
-            <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginLeft="8dp"
+                app:icon_name="PLAY"
+                app:icon_color_light_enable="@color/Unify_N0"
+                android:id="@+id/play_icon"
+                />
 
-        </LinearLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/play_icon"
+                android:text="11:00"
+                android:id="@+id/video_length"
+                android:textColor="@color/Unify_N0"
+                app:typographyType="body_3"
+
+                />
+
+            <LinearLayout
+                android:id="@+id/llReadStatusContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end|center_vertical"
+                android:paddingTop="@dimen/spacing_lvl2"
+                android:paddingEnd="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:paddingBottom="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="RtlSymmetry">
+
+                <include
+                    layout="@layout/item_chatcommon_chat_read_status_attachment" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
     </FrameLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/left_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/fl_image_container"
-        android:layout_alignBottom="@+id/fl_image_container"
+        android:layout_alignTop="@+id/card_group_chat_message"
+        android:layout_alignBottom="@+id/card_group_chat_message"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3"
-        android:layout_toStartOf="@+id/fl_image_container"
-        android:layout_toLeftOf="@+id/fl_image_container"
-        android:contentDescription="@null"
+        android:layout_toStartOf="@+id/card_group_chat_message"
+        android:layout_toLeftOf="@+id/card_group_chat_message"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_retry_image_send" />
+        app:srcCompat="@drawable/ic_retry_image_send"
+        android:contentDescription="@null"/>
 
 </RelativeLayout>

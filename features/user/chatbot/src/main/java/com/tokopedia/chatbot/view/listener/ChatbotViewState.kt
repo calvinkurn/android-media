@@ -14,6 +14,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
 /**
@@ -39,6 +40,8 @@ interface ChatbotViewState : BaseChatViewState {
     fun onClickReasonRating()
 
     fun onImageUpload(it: ImageUploadUiModel)
+
+    fun onVideoUpload(it: VideoUploadUiModel)
 
     fun scrollToBottom()
 
@@ -72,6 +75,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun handleReplyBox(isEnable: Boolean)
 
-
+    fun showRetryUploadVideos(it: VideoUploadUiModel, b: Boolean)
 
 }

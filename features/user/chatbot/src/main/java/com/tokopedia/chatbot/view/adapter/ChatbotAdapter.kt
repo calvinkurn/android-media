@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 
 /**
@@ -32,6 +33,15 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         if (position < 0) return
         if (visitables[position] is ImageUploadUiModel) {
             (visitables[position] as ImageUploadUiModel).isRetry = true
+            notifyItemChanged(position)
+        }
+    }
+
+    fun showRetryForVideo(model: VideoUploadUiModel, b: Boolean) {
+        val position = visitables.indexOf(model)
+        if (position < 0) return
+        if (visitables[position] is VideoUploadUiModel) {
+            (visitables[position] as VideoUploadUiModel).isRetry = true
             notifyItemChanged(position)
         }
     }

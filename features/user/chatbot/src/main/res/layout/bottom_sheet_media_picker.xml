@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:id="@+id/image_picker"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:id="@+id/image_icon"
+            app:unify_image_type="circle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:backgroundTint="#FF8B00"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            app:layout_constraintLeft_toLeftOf="@id/image_icon"
+            app:layout_constraintRight_toRightOf="@id/image_icon"
+            app:layout_constraintTop_toTopOf="@id/image_icon"
+            app:layout_constraintBottom_toBottomOf="@id/image_icon"
+            app:icon_name="IMAGE"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gambar"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintTop_toBottomOf="@id/image_icon"
+            app:layout_constraintLeft_toLeftOf="@id/image_picker"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:id="@+id/video_picker"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:id="@+id/video_icon"
+            app:unify_image_type="circle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:backgroundTint="#FF8B00"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            app:layout_constraintLeft_toLeftOf="@id/video_icon"
+            app:layout_constraintRight_toRightOf="@id/video_icon"
+            app:layout_constraintTop_toTopOf="@id/video_icon"
+            app:layout_constraintBottom_toBottomOf="@id/video_icon"
+            app:icon_name="VIDEO"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Video"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintTop_toBottomOf="@id/video_icon"
+            app:layout_constraintLeft_toLeftOf="@id/video_picker"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

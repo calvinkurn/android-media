@@ -15,6 +15,9 @@ import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.uploadPolicy.ChatbotVODUploadPolicyResponse
+import com.tokopedia.chatbot.data.uploadeligibility.UploadVideoEligibilityResponse
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
@@ -138,5 +141,25 @@ interface ChatbotContract {
             context: Context?
         )
 
+        fun checkVideoUploadEligibility(
+            msgId: String,
+            isEligible: (Boolean) -> Unit,
+            error: (UploadVideoEligibilityResponse.TopBotUploadVideoEligibility.HeaderVideoEligibility) -> Unit
+        )
+
+        fun getVideoUploadPolicy(source: String, response: (ChatbotVODUploadPolicyResponse) -> Unit)
+
+        fun uploadVideo(
+            videoModel: VideoUploadUiModel,
+            sourceId: String,
+            withTranscode: Boolean,
+            startTime: String,
+            messageId: String,
+            onErrorVideoUpload: (String,VideoUploadUiModel) -> Unit
+        )
+
+        fun sendVideoAttachment(filePath: String, startTime: String, messageId: String)
+
+        fun cancelVideoUpload(file: String, sourceId: String)
     }
 }
