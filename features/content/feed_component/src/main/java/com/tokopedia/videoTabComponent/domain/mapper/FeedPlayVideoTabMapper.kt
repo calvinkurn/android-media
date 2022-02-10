@@ -1,20 +1,142 @@
 package com.tokopedia.videoTabComponent.domain.mapper
 
 import com.tokopedia.play.widget.sample.data.PlayGetContentSlotResponse
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.sample.data.PlaySlot
+import com.tokopedia.play.widget.sample.data.PlaySlotItems
+import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 
-class FeedPlayVideoTabMapper {
-    fun map(playGetContentSlotResponse: PlayGetContentSlotResponse, cursor: String): PlayWidgetUiModel {
+private const val FEED_TYPE_PINNED_FEEDS = "pinnedFeeds"
+private const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
+private const val FEED_TYPE_TAB_MENU = "tabMenu"
+private const val FEED_TYPE_CHANNEL_RECOM = "channelRecom"
+private const val LIVE = "live"
+
+object FeedPlayVideoTabMapper {
+    fun map(
+        playGetContentSlotResponse: PlayGetContentSlotResponse, cursor: String
+    ): List<PlayFeedUiModel> {
+
+        val list = mutableListOf<PlayFeedUiModel>()
+
+        playGetContentSlotResponse.data.forEach { playSlot ->
+            when (playSlot.type) {
+                FEED_TYPE_PINNED_FEEDS -> {
+                    list.add(
+                        PlayWidgetJumboUiModel(
+                            getWidgetUiModel(playSlot, getWidgetItemUiModel(playSlot.mods))
+                        )
+                    )
+                }
+                FEED_TYPE_CHANNEL_BLOCK -> {
+                    list.add(
+                        PlayWidgetMediumUiModel(
+                            getWidgetUiModel(playSlot, getWidgetItemUiModel(playSlot.mods))
+                        )
+                    )
+                }
+                FEED_TYPE_TAB_MENU -> {
+                    list.add(
+                        PlayWidgetSlotTabUiModel(
+                            playSlot.mods.mapIndexed { index, item -> item.label to (index == 0) }
+                        )
+                    )
+                }
+                FEED_TYPE_CHANNEL_RECOM -> {
+                    list.add(
+                        PlayWidgetLargeUiModel(
+                            getWidgetUiModel(playSlot, getWidgetItemUiModel(playSlot.mods))
+                        )
+                    )
+                }
+            }
+        }
+
+        return list
+    }
+
+    private fun getWidgetUiModel(
+        playSlot: PlaySlot, playWidgetItemsUiModel: List<PlayWidgetItemUiModel>
+    ): PlayWidgetUiModel {
+
+        val item = playSlot.mods.firstOrNull() ?: return PlayWidgetUiModel.Empty
+
+        //check these values
+        val appLink = playSlot.mods.firstOrNull()?.appLink ?: ""
+        val autoRefresh = false
+        val autoRefreshTimer: Long = 0
+        val autoPlayAmount: Int = item.partner.max_autoplay_in_cell
+        val maxAutoPlayCellularDuration: Int = 30
+        val maxAutoPlayWifiDuration: Int = 30
+        val businessWidgetPosition: Int = 30
+        val gradientColor = listOf<String>()
+
+        //till here
 
         return PlayWidgetUiModel(
-                title = "",
-                actionTitle = "Lihat Semua",
-                actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
-                isActionVisible = true,
-                config = PlayWidgetUiMock.getPlayWidgetConfigUiModel(),
-                items = mutableListOf(),
-                background = PlayWidgetUiMock.getPlayWidgetBackgroundUiModel()
+            playSlot.title,
+            playSlot.lihat_semua.label,
+            appLink,
+            playSlot.lihat_semua.show,
+            PlayWidgetConfigUiModel(
+                autoRefresh, autoRefreshTimer, playSlot.is_autoplay, autoPlayAmount,
+                maxAutoPlayCellularDuration, maxAutoPlayWifiDuration, businessWidgetPosition
+            ),
+            PlayWidgetBackgroundUiModel(
+                item.image_url?:"", item.appLink, item.webLink, gradientColor, item.cover_url
+            ),
+            playWidgetItemsUiModel
         )
+    }
+
+    private fun getWidgetItemUiModel(items: List<PlaySlotItems>): List<PlayWidgetItemUiModel> {
+
+        //check these values
+        val isTotalViewVisible = true
+        //check PlayWidgetPromoType.getByType lineno: 4 after forEach
+        val hasGiveaway = false
+        //check PlayWidgetShareUiModel(item.share.text -> is it be `item.share.text for "fullShareContent"`
+        val performanceSummaryLink = ""
+        val poolType = ""
+        val recommendationType = ""
+        val hasAction = false
+        val channelTypeTransitionPrev = ""
+        val channelTypeTransitionNext = ""
+        //till here
+
+        val list = mutableListOf<PlayWidgetItemUiModel>()
+
+        items.forEach { item ->
+            list.add(
+                PlayWidgetChannelUiModel(
+                    item.id, item.title, item.appLink, item.start_time,
+                    PlayWidgetTotalView(item.stats.view.formatted, isTotalViewVisible),
+                    PlayWidgetPromoType.getByType(
+                        item.configurations.promoLabels.firstOrNull()?.type ?: "",
+                        item.configurations.promoLabels.firstOrNull()?.text ?: ""
+                    ),
+                    getReminderType(item.configurations.reminder.isSet),
+                    PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
+                    PlayWidgetVideoUiModel(
+                        item.video.id, item.video.type == LIVE,
+                        item.video.cover_url, item.video.stream_source
+                    ),
+                    PlayWidgetChannelType.getByValue(item.display_type),
+                    hasGiveaway,
+                    PlayWidgetShareUiModel(item.share.text, item.share.is_show_button),
+                    performanceSummaryLink,
+                    poolType,
+                    recommendationType,
+                    hasAction,
+                    PlayWidgetChannelTypeTransition(
+                        PlayWidgetChannelType.getByValue(channelTypeTransitionPrev),
+                        PlayWidgetChannelType.getByValue(channelTypeTransitionNext)
+                    )
+                )
+            )
+        }
+
+        return list
     }
 }

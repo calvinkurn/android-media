@@ -43,7 +43,8 @@ data class PlaySlotItems(
         var partner: PlayPartner = PlayPartner(),
         @SerializedName("quick_replies")
         var quick_replies: List<String> = emptyList(),
-
+        @SerializedName("configurations")
+        val configurations:Configurations,
         @SerializedName("stats")
         var stats: PlayChannelStats = PlayChannelStats(),
         @SerializedName("app_link")
@@ -68,7 +69,7 @@ data class PlaySlotItems(
         @SerializedName("broadcaster_name")
         var broadcaster_name: String = "",
         @SerializedName("image_url")
-        var image_url: String = "",
+        var image_url: String? = "",
 
         //PlaySlotTabMenu
         @SerializedName("label")
@@ -98,4 +99,25 @@ data class PlaySlotItems(
                 @SerializedName("formatted")
                 var formatted: String = "",
         )
+
+data class Configurations(
+        @SerializedName("has_promo")
+        val hasPromo: Boolean,
+        @SerializedName("promo_labels")
+        val promoLabels: List<PromoLabel>,
+        @SerializedName("reminder")
+        val reminder: Reminder
+) {
+        data class PromoLabel(
+                @SerializedName("text")
+                val text: String,
+                @SerializedName("type")
+                val type: String
+        )
+
+        data class Reminder(
+                @SerializedName("is_set")
+                val isSet: Boolean
+        )
+}
 

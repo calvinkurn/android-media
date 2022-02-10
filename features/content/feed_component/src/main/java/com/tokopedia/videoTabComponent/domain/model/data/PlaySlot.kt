@@ -12,9 +12,9 @@ data class PlaySlot(
         @SerializedName("items")
         var mods: List<PlaySlotItems> = emptyList(),
         @SerializedName("lihat_semua")
-        var lihat_semua: List<PlayLihatSemua> = emptyList(),
+        var lihat_semua: PlayLihatSemua = PlayLihatSemua(),
         @SerializedName("inplace_pager")
-        var inplace_pager: List<PlaySlotParams> = emptyList(),
+        var inplace_pager: PlaySlotParams = PlaySlotParams(),
         @SerializedName("hash")
         var hash: String = "",
         @SerializedName(" is_autoplay")
