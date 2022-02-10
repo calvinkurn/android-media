@@ -1,38 +1,68 @@
 package com.tokopedia.purchase_platform.common.feature.addongifting.data
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddOnSavedStateResult(
-        var addOns: List<AddOnSavedState> = emptyList()
+data class SaveAddOnStateResult(
+        var addOns: List<AddOnResult> = emptyList()
 ) : Parcelable
 
 @Parcelize
-data class AddOnSavedState(
+data class AddOnResult(
+        var addOnBottomSheet: AddOnBottomSheetResult = AddOnBottomSheetResult(),
+        var addOnButton: AddOnButtonResult = AddOnButtonResult(),
+        var addOnData: List<AddOnDataResult> = emptyList(),
         var addOnKey: String = "",
         var addOnLevel: String = "",
-        var addOnData: List<AddOnData> = emptyList()
+        var status: Int = 0
 ) : Parcelable
 
 @Parcelize
-data class AddOnData(
+data class AddOnBottomSheetResult(
+        var description: String = "",
+        var headerTitle: String = "",
+        var products: List<ProductResult> = emptyList(),
+        var ticker: TickerResult = TickerResult()
+) : Parcelable
+
+@Parcelize
+data class AddOnButtonResult(
+        var action: Int = 0,
+        var description: String = "",
+        var leftIconUrl: String = "",
+        var rightIconUrl: String = "",
+        var title: String = ""
+) : Parcelable
+
+@Parcelize
+data class AddOnDataResult(
         var addOnId: String = "",
-        var addOnQty: Int = 0,
-        var addOnPrice: Long = 0,
-        var addOnMetadata: AddOnMetadata = AddOnMetadata()
+        var addOnMetadata: AddOnMetadataResult = AddOnMetadataResult(),
+        var addOnPrice: Int = 0,
+        var addOnQty: Int = 0
 ) : Parcelable
 
 @Parcelize
-data class AddOnMetadata(
-        var addOnNote: AddOnNote = AddOnNote()
+data class AddOnMetadataResult(
+        var addOnNote: AddOnNoteResult = AddOnNoteResult()
 ) : Parcelable
 
 @Parcelize
-data class AddOnNote(
-        var isCustomNote: Boolean = false,
-        var to: String = "",
+data class AddOnNoteResult(
         var from: String = "",
-        var notes: String = ""
+        var isCustomNote: Boolean = false,
+        var notes: String = "",
+        var to: String = ""
+) : Parcelable
+
+@Parcelize
+data class ProductResult(
+        var productImageUrl: String = "",
+        var productName: String = ""
+) : Parcelable
+
+@Parcelize
+data class TickerResult(
+        var text: String = ""
 ) : Parcelable

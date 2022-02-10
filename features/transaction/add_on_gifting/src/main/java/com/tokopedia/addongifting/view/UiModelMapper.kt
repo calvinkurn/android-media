@@ -1,13 +1,12 @@
 package com.tokopedia.addongifting.view
 
-import com.tokopedia.addongifting.data.response.AddOnDataResponse
-import com.tokopedia.addongifting.data.response.GetAddOnByProductResponse
-import com.tokopedia.addongifting.data.response.GetAddOnSavedStateResponse
+import com.tokopedia.addongifting.data.getaddonbyproduct.GetAddOnByProductResponse
+import com.tokopedia.addongifting.data.getaddonsavedstate.AddOnDataResponse
+import com.tokopedia.addongifting.data.getaddonsavedstate.GetAddOnSavedStateResponse
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.ProductUiModel
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnData
+import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnDataResult
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnSavedStateResult
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import kotlin.math.roundToLong
 
@@ -55,7 +54,7 @@ object UiModelMapper {
             } else {
                 // Get saved state from previous page (Checkout / OSP)
                 val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
-                        ?: "", addOnProductData.addOnSavedState)
+                        ?: "", addOnProductData.addOnSavedStates)
                 isAddOnSelected = addonSavedStateData != null
                 initialAddOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
                 addOnNoteTo = initialAddOnNoteTo
@@ -84,13 +83,11 @@ object UiModelMapper {
         return null
     }
 
-    private fun getAddOnSavedStateById(addOnId: String, addOnSavedStateResult: AddOnSavedStateResult): AddOnData? {
+    private fun getAddOnSavedStateById(addOnId: String, addOnSavedStateResults: List<AddOnDataResult>): AddOnDataResult? {
         if (addOnId.isNotBlankOrZero()) {
-            addOnSavedStateResult.addOns.forEach {
-                it.addOnData.forEach {
-                    if (it.addOnId == addOnId) {
-                        return it
-                    }
+            addOnSavedStateResults.forEach {
+                if (it.addOnId == addOnId) {
+                    return it
                 }
             }
         }
