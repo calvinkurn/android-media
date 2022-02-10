@@ -2,9 +2,9 @@ package com.tokopedia.cart.journey.simple
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
+import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -30,6 +30,7 @@ class CartBoAffordabilityTest {
     fun setup() {
         setupGraphqlMockResponse {
             addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_bo_affordability_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(ONGKIR_GET_FREE_SHIPPING_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ongkir_get_free_shipping_success_afford_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -67,5 +68,6 @@ class CartBoAffordabilityTest {
 
     companion object {
         const val GET_CART_LIST_KEY = "cart_revamp"
+        const val ONGKIR_GET_FREE_SHIPPING_KEY = "ongkirGetFreeShipping"
     }
 }
