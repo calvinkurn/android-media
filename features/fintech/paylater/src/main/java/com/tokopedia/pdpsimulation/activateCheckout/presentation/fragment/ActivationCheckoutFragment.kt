@@ -104,7 +104,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?:"0"
         observerProductData()
         observerOtherDetail()
-        //observeCartDetail()
+        observeCartDetail()
         initView()
 
         startAllLoaders()
@@ -112,43 +112,32 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     }
 
-//    private fun observeCartDetail() {
-//        payLaterActivationViewModel.addToCartLiveData.observe(viewLifecycleOwner){
-//            when(it)
-//            {
-//                is Success -> {
-//                        showToaster("rtet")
-//                }
-//                is Fail -> TODO()
-//            }
-//        }
-//    }
-//
-//    private fun showToaster(atcErrorMessage: String?)
-//    {
-//        atcErrorMessage?.let { Toaster.build(parentView, it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
-//    }
+    private fun observeCartDetail() {
+        payLaterActivationViewModel.addToCartLiveData.observe(viewLifecycleOwner){
+            when(it)
+            {
+                is Success -> {
+                    if(!it.data.getAtcErrorMessage().isNullOrBlank())
+                    {
+                        showToaster(it.data.getAtcErrorMessage())
+                    }
+                    else
+                    {
 
+                    }
+                }
+                is Fail ->{
 
-//    private fun showToaster(view: View?, message: String, type: Int, ctaText: String, isShowCta: Boolean, onClickListener: View.OnClickListener?) {
-//        if (message.isBlank()) return
-//
-//        var toasterViewRoot = view
-//        if (toasterViewRoot == null) toasterViewRoot = this.view
-//        toasterViewRoot?.let {
-//            Toaster.toasterCustomBottomHeight = it.resources?.getDimensionPixelSize(com.tokopedia.minicart.R.dimen.dp_72)
-//                ?: 0
-//            if (isShowCta && ctaText.isNotBlank()) {
-//                var tmpCtaClickListener = OnClickListener { }
-//                if (onClickListener != null) {
-//                    tmpCtaClickListener = onClickListener
-//                }
-//                Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
-//            } else {
-//                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
-//            }
-//        }
-//    }
+                }
+            }
+        }
+    }
+
+    private fun showToaster(atcErrorMessage: String?)
+    {
+        atcErrorMessage?.let { Toaster.build(parentView, it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+    }
+
 
     private fun startAllLoaders() {
         productInfoActivationShimmer.visibility = View.VISIBLE

@@ -96,24 +96,36 @@ class PayLaterActivationViewModel @Inject constructor(
     fun addProductToCart(productId: String, productQuantity: Int) {
         shopId?.let {
 
-            launchCatchError(block = {
-                val response = addToCartUseCase.setParams(
-                    AddToCartOccMultiRequestParams(
-                        carts = arrayListOf(
-                            AddToCartOccMultiCartParam(
-                                productId = productId,
-                                shopId = it,
-                                quantity = productQuantity.toString()
-                            )
+            addToCartUseCase.setParams(
+                AddToCartOccMultiRequestParams(
+                    carts = arrayListOf(
+                        AddToCartOccMultiCartParam(
+                            productId = productId,
+                            shopId = it,
+                            quantity = productQuantity.toString()
                         )
                     )
-                ).executeOnBackground()
-                _addToCartLiveData.value = Success(response)
-            }) {
-                _addToCartLiveData.value = Fail(it)
-            }
+                )
+            )
+            addToCartUseCase.execute(
+                onSuccess = {
+                    onSuccessAddToCartForCheckout(it)
+                },
+                onError = {
+                    onErrorAddToCartForCheckout(it)
+                }
+            )
         }
     }
+
+    private fun onErrorAddToCartForCheckout(throwable: Throwable) {
+        _addToCartLiveData.value = Fail(throwable)
+    }
+
+    private fun onSuccessAddToCartForCheckout(addToCartOcc: AddToCartOccMultiDataModel) {
+        _addToCartLiveData.value = Success(addToCartOcc)
+    }
+
 
 
 }
