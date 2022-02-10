@@ -111,8 +111,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun afterViewCreated() {
-        initRollence()
-        initBottomNavigationView()
         setObservers()
         if (userSessionInterface.isLoggedIn)
             affiliateVM.getAffiliateValidateUser()
@@ -137,6 +135,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showAffiliatePortal() {
+        initRollence()
+        initBottomNavigationView()
         clearBackStack()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         if(findViewById<LottieBottomNavbar>(R.id.bottom_navbar)?.visibility !=  View.VISIBLE)
