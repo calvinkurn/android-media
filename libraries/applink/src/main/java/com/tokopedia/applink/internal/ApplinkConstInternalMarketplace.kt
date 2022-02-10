@@ -32,6 +32,7 @@ object ApplinkConstInternalMarketplace {
     const val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
     // OrderSummaryPageActivity
     const val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
+    const val ADD_ON_GIFTING = "$INTERNAL_MARKETPLACE/add-on-gifting"
 
     // AddEditProductCategoryActivity
     const val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
