@@ -14,4 +14,9 @@
     <declare-styleable name="NumberView">
         <attr name="numberview_text" format="string" />
     </declare-styleable>
+    <declare-styleable name="SpannableTypography">
+        <attr name="spannable_text" format="string" />
+        <attr name="spannable_drawable" format="reference" />
+        <attr name="spannable_drawable_position" format="integer" />
+    </declare-styleable>
 </resources>

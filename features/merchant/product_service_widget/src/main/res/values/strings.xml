@@ -1,9 +1,14 @@
 <resources>
 
+    <!-- gifting -->
+    <string name="gifting_tips_text_1">Pilih barang <![CDATA[<b>kategori Bingkisan</b>]]>. Beli langsung atau masukkan ke keranjang.</string>
+    <string name="gifting_tips_text_2">Di halaman <![CDATA[<b>Keranjang</b>]]>, pilih barang bertanda khusus ( ) dan lanjut ke Pengiriman.</string>
+    <string name="gifting_tips_text_3">Di halaman <![CDATA[<b>Pengiriman</b> atau <b>Beli Langsung</b>]]>, tambah pelengkap bingkisan yang tersedia.</string>
+    <string name="gifting_tips_text_4">Tulis pesan spesial di kartu ucapan.</string>
+    <string name="gifting_tips_text_5">Lanjut bayar untuk kirim ke orang spesial.</string>
+
     <!-- product bundle screen name -->
     <string name="product_bundle_page_title">Pilih Paket Bundling</string>
-
-    <!-- product bundle master -->
 
     <!-- product bundle detail -->
     <string name="text_sold_product_bundle">Terjual %d paket</string>

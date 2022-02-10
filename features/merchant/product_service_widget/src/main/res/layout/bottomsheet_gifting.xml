@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="36dp">
@@ -37,14 +38,13 @@
         app:layout_constraintTop_toTopOf="@+id/text_tips_1"
         app:numberview_text="1" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.gifting.presentation.customview.SpannableTypography
         android:id="@+id/text_tips_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="8dp"
-        android:text="Pilih barang kategori Bingkisan. Beli langsung atau masukkan ke keranjang."
-        app:typographyType="body_2"
+        app:spannable_text="@string/gifting_tips_text_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/number_tips_1"
         app:layout_constraintTop_toBottomOf="@+id/title_tips" />
@@ -53,20 +53,20 @@
         android:id="@+id/number_tips_2"
         android:layout_width="24dp"
         android:layout_height="24dp"
-
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_tips_2"
         app:numberview_text="2" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.gifting.presentation.customview.SpannableTypography
         android:id="@+id/text_tips_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="8dp"
-        android:text="Di halaman Keranjang, pilih barang bertanda khusus (    ) dan lanjut ke Pengiriman."
-        app:typographyType="body_2"
+        app:spannable_drawable="@drawable/iconunify_product"
+        app:spannable_drawable_position="52"
+        app:spannable_text="@string/gifting_tips_text_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/number_tips_1"
         app:layout_constraintTop_toBottomOf="@+id/text_tips_1" />
@@ -80,17 +80,68 @@
         app:layout_constraintTop_toTopOf="@+id/text_tips_3"
         app:numberview_text="3" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.gifting.presentation.customview.SpannableTypography
         android:id="@+id/text_tips_3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="16dp"
-        android:text="Di halaman Pengiriman atau Beli Langsung, tambah pelengkap bingkisan yang tersedia."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/number_tips_1"
         app:layout_constraintTop_toBottomOf="@+id/text_tips_2"
+        app:spannable_text="@string/gifting_tips_text_3"
         app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_add_on"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:card_background_color="@color/Unify_NN50"
+        app:card_type="clear"
+        app:layout_constraintEnd_toEndOf="@+id/text_tips_3"
+        app:layout_constraintStart_toStartOf="@+id/text_tips_3"
+        app:layout_constraintTop_toBottomOf="@+id/text_tips_3">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_add_on"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_add_on"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                tools:text="Kemasan dan Kartu Ucapan"
+                app:typographyType="heading_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_add_on"
+                app:layout_constraintTop_toTopOf="@+id/image_add_on" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/desc_add_on"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_add_on"
+                app:layout_constraintTop_toBottomOf="@+id/title_add_on"
+                app:typographyType="body_3"
+                tools:text="Rp5.000" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.gifting.presentation.customview.NumberView
         android:id="@+id/number_tips_4"
@@ -101,16 +152,16 @@
         app:layout_constraintTop_toTopOf="@+id/text_tips_4"
         app:numberview_text="4" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.gifting.presentation.customview.SpannableTypography
         android:id="@+id/text_tips_4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="16dp"
-        android:text="Tulis pesan spesial di kartu ucapan."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/number_tips_1"
-        app:layout_constraintTop_toBottomOf="@+id/text_tips_3"
+        app:layout_constraintTop_toBottomOf="@+id/card_add_on"
+        app:spannable_text="@string/gifting_tips_text_4"
         app:typographyType="body_2" />
 
     <com.tokopedia.gifting.presentation.customview.NumberView
@@ -122,13 +173,13 @@
         app:layout_constraintTop_toTopOf="@+id/text_tips_5"
         app:numberview_text="5" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.gifting.presentation.customview.SpannableTypography
         android:id="@+id/text_tips_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="16dp"
-        android:text="Lanjut bayar untuk kirim ke orang spesial."
+        app:spannable_text="@string/gifting_tips_text_5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/number_tips_1"
         app:layout_constraintTop_toBottomOf="@+id/text_tips_4"
@@ -144,8 +195,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_tips_5" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/dasdf"
+     <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_shop"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="19dp"
@@ -155,28 +206,40 @@
         app:layout_constraintTop_toBottomOf="@+id/divider_shop" />
 
     <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_shop_location"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
         app:icon_name="LOCATION"
-        app:layout_constraintBottom_toBottomOf="@+id/dasdffgcc"
+        app:layout_constraintBottom_toBottomOf="@+id/text_shop_location"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dasdffgcc" />
+        app:layout_constraintTop_toTopOf="@+id/text_shop_location" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/dasdffg"
-        android:layout_width="0dp"
+        android:id="@+id/text_caption_shop_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="19dp"
         android:layout_marginStart="10dp"
-        android:text="Disediakan oleh Banana Indonesia"
+        android:text="Disediakan oleh "
         app:typographyType="body_3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dasdf"
+        app:layout_constraintStart_toEndOf="@+id/icon_shop"
         app:layout_constraintTop_toBottomOf="@+id/divider_shop" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/dasdffgcc"
+        android:id="@+id/text_shop_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="Banana Indonesia"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_caption_shop_name"
+        app:layout_constraintTop_toBottomOf="@+id/divider_shop"
+        app:typographyWeight="bold"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_shop_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
@@ -184,7 +247,7 @@
         android:text="Tersedia di wilayah tertentu. Info Selengkapnya."
         app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dasdf"
-        app:layout_constraintTop_toBottomOf="@+id/dasdffg" />
+        app:layout_constraintStart_toEndOf="@+id/icon_shop"
+        app:layout_constraintTop_toBottomOf="@+id/text_caption_shop_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
