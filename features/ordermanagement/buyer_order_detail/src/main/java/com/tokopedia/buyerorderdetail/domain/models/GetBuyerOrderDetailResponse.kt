@@ -537,16 +537,28 @@ data class GetBuyerOrderDetailResponse(
                         val type: String = ""
                     ) {
                         data class Metadata(
-                            @SerializedName("from")
+                            @SerializedName("addon_note")
                             @Expose
-                            val from: String = "",
-                            @SerializedName("message")
-                            @Expose
-                            val message: String = "",
-                            @SerializedName("to")
-                            @Expose
-                            val to: String = ""
-                        )
+                            val addonNote: AddonNote = AddonNote()
+                        ) {
+                            data class AddonNote(
+                                @Expose
+                                @SerializedName("is_custom_note")
+                                val isCustomNote: Boolean = false,
+                                @SerializedName("notes")
+                                @Expose
+                                val notes: String = "",
+                                @SerializedName("short_notes")
+                                @Expose
+                                val shortNotes: String = "",
+                                @SerializedName("to")
+                                @Expose
+                                val to: String = "",
+                                @SerializedName("from")
+                                @Expose
+                                val from: String = "",
+                            )
+                        }
                     }
                 }
             }
@@ -800,7 +812,7 @@ data class GetBuyerOrderDetailResponse(
                             val orderId: String = "0",
                             @SerializedName("price")
                             @Expose
-                            val price: String = "0",
+                            val price: Double = 0.0,
                             @SerializedName("price_str")
                             @Expose
                             val priceStr: String = "",
@@ -821,16 +833,28 @@ data class GetBuyerOrderDetailResponse(
                             val type: String = ""
                         ) {
                             data class Metadata(
-                                @SerializedName("from")
+                                @SerializedName("addon_note")
                                 @Expose
-                                val from: String = "",
-                                @SerializedName("message")
-                                @Expose
-                                val message: String = "",
-                                @SerializedName("to")
-                                @Expose
-                                val to: String = ""
-                            )
+                                val addonNote: AddonNote = AddonNote()
+                            ) {
+                                data class AddonNote(
+                                    @Expose
+                                    @SerializedName("is_custom_note")
+                                    val isCustomNote: Boolean = false,
+                                    @SerializedName("notes")
+                                    @Expose
+                                    val notes: String = "",
+                                    @SerializedName("short_notes")
+                                    @Expose
+                                    val shortNotes: String = "",
+                                    @SerializedName("to")
+                                    @Expose
+                                    val to: String = "",
+                                    @SerializedName("from")
+                                    @Expose
+                                    val from: String = "",
+                                )
+                            }
                         }
                     }
                 }
