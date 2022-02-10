@@ -149,7 +149,7 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
                 listSize += dataList.size
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
-            } else {
+            } else if(dataList.isNullOrEmpty() && listSize == 0){
                 showNoAffiliate()
             }
         })
