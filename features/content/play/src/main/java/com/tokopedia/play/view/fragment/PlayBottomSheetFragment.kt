@@ -42,21 +42,32 @@ import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collectLatest
+import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
+import java.util.Date
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -81,8 +92,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
         private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
-
-        private const val TO_SECONDS_DIVIDER = 1000L
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
@@ -107,20 +116,19 @@ class PlayBottomSheetFragment @Inject constructor(
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
-    private val generalErrorMessage: String
-        get() = getString(R.string.play_general_err_message)
-
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
 
-    private var userReportTimeMillis: Long = 0L
+    private var userReportTimeMillis: Date = Date()
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(
+            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
+        ).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayBottomSheetViewModel::class.java)
     }
 
@@ -255,7 +263,7 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning) {
         unlistenKeyboard()
 
-        userReportTimeMillis = Calendar.getInstance().timeInMillis
+        userReportTimeMillis = Calendar.getInstance().time
         playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
         userReportSubmissionSheetView.setView(item)
     }
@@ -295,11 +303,17 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
-            val startTimeInSecond = startTime.toLongOrZero()
-            val duration = (userReportTimeMillis - startTimeInSecond) / TO_SECONDS_DIVIDER
-            duration
+            val startTimeInMiliSecond : Date = try {
+                startTime.toDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS
+                )
+            }catch (e: Exception){
+                Date()
+            }
+            val duration = userReportTimeMillis.time - startTimeInMiliSecond.time
+            TimeUnit.MILLISECONDS.toSeconds(duration)
         }else{
-            playViewModel.getVideoTimestamp()
+            TimeUnit.MILLISECONDS.toSeconds(playViewModel.getVideoTimestamp())
         }
     }
 
@@ -360,12 +374,9 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun setupObserve() {
         observeLoggedInInteractionEvent()
-        observeProductSheetContent()
-        observePinned()
         observeVariantSheetContent()
         observeBottomInsetsState()
         observeBuyEvent()
-        observeStatusInfo()
         observeUserReport()
         observeUserReportSubmission()
 
@@ -546,35 +557,6 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observePinned() {
-        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner) {
-            if (it.productTags is PlayProductTagsUiModel.Complete) {
-                if (it.productTags.productList.isNotEmpty()) {
-                    productSheetView.setProductSheet(it.productTags)
-                    val vouchers = it.productTags.voucherList.filterIsInstance<MerchantVoucherUiModel>()
-                    couponSheetView.setVoucherList(vouchers)
-
-                    trackImpressedProduct()
-                    return@observe
-                }
-            }
-
-            productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
-        }
-    }
-
-    private fun observeProductSheetContent() {
-        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PlayResult.Loading -> if (it.showPlaceholder) productSheetView.showPlaceholder()
-                is PlayResult.Failure -> productSheetView.showError(
-                        isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
-                        onError = it.onRetry
-                )
-            }
-        })
-    }
-
     private fun observeVariantSheetContent() {
         viewModel.observableProductVariant.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
@@ -674,15 +656,6 @@ class PlayBottomSheetFragment @Inject constructor(
         })
     }
 
-    private fun observeStatusInfo() {
-        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.statusType.isFreeze || it.statusType.isBanned) {
-                viewModel.onFreezeBan()
-                hideLoadingView()
-            }
-        })
-    }
-
     private fun observeLoggedInInteractionEvent() {
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
     }
@@ -729,7 +702,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            playViewModel.uiState.withCache().collectLatest { (_, state) ->
+            playViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 when(state.winnerBadge.leaderboards) {
                     is PlayLeaderboardWrapperUiModel.Success ->
                         leaderboardSheetView.setData(state.winnerBadge.leaderboards.data.leaderboardWinners)
@@ -739,6 +712,21 @@ class PlayBottomSheetFragment @Inject constructor(
                         leaderboardSheetView.setLoading()
                     PlayLeaderboardWrapperUiModel.Unknown -> {}
                 }
+
+                if (state.status.channelStatus.statusType.isFreeze ||
+                    state.status.channelStatus.statusType.isBanned) {
+                    viewModel.onFreezeBan()
+                    hideLoadingView()
+                }
+
+                renderProductSheet(
+                    prevState?.tagItems,
+                    state.tagItems,
+                    state.channel.bottomSheetTitle,
+                    state.partner.id
+                )
+
+                renderVoucherSheet(state.tagItems)
             }
         }
     }
@@ -749,5 +737,43 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
+    }
+
+    /**
+     * Render View
+     */
+    private fun renderProductSheet(
+        prevTagItem: TagItemUiModel?,
+        tagItem: TagItemUiModel,
+        bottomSheetTitle: String,
+        partnerId: Long,
+    ) {
+        if (tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
+            productSheetView.showPlaceholder()
+        } else if (tagItem.resultState is ResultState.Fail) {
+            productSheetView.showError(
+                isConnectionError = tagItem.resultState.error is ConnectException ||
+                        tagItem.resultState.error is UnknownHostException,
+                onError = { playViewModel.submitAction(RetryGetTagItemsAction) }
+            )
+        } else if (tagItem.product.productList.isNotEmpty()) {
+            productSheetView.setProductSheet(
+                productList = tagItem.product.productList,
+                voucherList = tagItem.voucher.voucherList,
+                title = bottomSheetTitle,
+            )
+
+            if (tagItem.product.productList != prevTagItem?.product?.productList) trackImpressedProduct()
+        } else {
+            productSheetView.showEmpty(partnerId)
+        }
+    }
+
+    private fun renderVoucherSheet(tagItem: TagItemUiModel) {
+        if (tagItem.voucher.voucherList.isNotEmpty()) {
+            couponSheetView.setVoucherList(
+                voucherList = tagItem.voucher.voucherList
+            )
+        }
     }
 }

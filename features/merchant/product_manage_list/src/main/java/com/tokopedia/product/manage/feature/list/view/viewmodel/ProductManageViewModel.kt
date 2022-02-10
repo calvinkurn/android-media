@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -271,7 +272,7 @@ class ProductManageViewModel @Inject constructor(
         getProductListJob?.cancel()
 
         launchCatchError(block = {
-            val productList = withContext(dispatchers.io) {
+            val productListResponse = withContext(dispatchers.io) {
                 if (withDelay) {
                     delay(REQUEST_DELAY)
                 }
@@ -279,12 +280,12 @@ class ProductManageViewModel @Inject constructor(
                 val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, warehouseId, filterOptions, sortOption, extraInfo)
                 val getProductList = getProductListUseCase.execute(requestParams)
-                val productListResponse = getProductList.productList
-                productListResponse?.data
+                getProductList.productList
             }
             _refreshList.value = isRefresh
 
-            showProductList(productList)
+            totalProductCount = productListResponse?.meta?.totalHits.orZero()
+            showProductList(productListResponse?.data)
             showTicker()
             hideProgressDialog()
         }, onError = {
@@ -341,7 +342,6 @@ class ProductManageViewModel @Inject constructor(
 
             _productFiltersTab.apply {
                 val data = mapToFilterTabResult(response)
-                totalProductCount = data.totalProductCount
                 value = Success(data)
             }
         }, onError = {
