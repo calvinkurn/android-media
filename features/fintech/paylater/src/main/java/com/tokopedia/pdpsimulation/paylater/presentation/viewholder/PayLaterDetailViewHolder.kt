@@ -13,9 +13,9 @@ import com.tokopedia.pdpsimulation.common.analytics.PayLaterCtaClick
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.paylater_partner_card_item.view.*
 
@@ -105,7 +105,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     private fun setPayLaterHeader(element: Detail) {
         itemView.apply {
             tvTitlePaymentPartner.text = element.gatewayDetail?.name
-            tvInstallmentAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.installment_per_month_ceil?: 0, false)
+            tvInstallmentAmount.text = PayLaterHelper.convertPriceValueToIdrFormat(element.installment_per_month_ceil?: 0, false)
             if(element.tenure != 1)
                 tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.tenure)
             else {

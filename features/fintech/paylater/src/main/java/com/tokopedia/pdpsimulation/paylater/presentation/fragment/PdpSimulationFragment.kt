@@ -23,7 +23,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterArgsDescriptor
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
-import com.tokopedia.pdpsimulation.paylater.helper.ActionHandler
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterBundleGenerator
 import com.tokopedia.pdpsimulation.paylater.helper.PdpSimulationException
@@ -36,7 +36,6 @@ import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterTok
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
 import kotlinx.android.synthetic.main.product_detail.view.*
 import java.net.SocketTimeoutException
@@ -86,7 +85,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     )
 
     private fun handleAction(detail: Detail) {
-        ActionHandler.handleClickNavigation(context, detail, payLaterArgsDescriptor.productId,
+        PayLaterHelper.handleClickNavigation(context, detail, payLaterArgsDescriptor.productId,
             openHowToUse = { bottomSheetNavigator.showBottomSheet(PayLaterActionStepsBottomSheet::class.java, it) },
             openGoPay = { bottomSheetNavigator.showBottomSheet(PayLaterTokopediaGopayBottomsheet::class.java, it) }
         )
@@ -272,7 +271,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         }
 
         productDetail.productPrice.text =
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
+            PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
 
         showProductVariant(data)
     }
