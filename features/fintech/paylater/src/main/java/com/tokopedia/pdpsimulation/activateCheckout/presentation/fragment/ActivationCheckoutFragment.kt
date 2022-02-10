@@ -104,7 +104,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?:"0"
         observerProductData()
         observerOtherDetail()
-        observeCartDetail()
+        //observeCartDetail()
         initView()
 
         startAllLoaders()
