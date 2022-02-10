@@ -107,7 +107,6 @@ class ProductSectionViewHolder(
         val convertedServerTime = item.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
 
         val dt = DateUtil.getCurrentCalendar().apply {
-                time.time + convertedServerTime.time
                 val diff = timerTime.toDate(
                     DateUtil.YYYY_MM_DD_T_HH_MM_SS
                 ).time - getTimeDiff(serverTime = convertedServerTime, time).time
