@@ -78,6 +78,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.playWidget)
     implementation projectOrAar(rootProject.ext.features.rechargeComponent)
     implementation projectOrAar(rootProject.ext.features.questWidget)
+    implementation projectOrAar(rootProject.ext.features.cmHomeWidget)
 
     // Library
     implementation projectOrAar(rootProject.ext.libraries.analytics)
