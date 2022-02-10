@@ -142,6 +142,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         super.onCreate(savedInstanceState);
         initInjector();
         imageEditPreviewPresenter.attachView(this);
+        imageEditPreviewPresenter.subscribe();
     }
 
     @Nullable

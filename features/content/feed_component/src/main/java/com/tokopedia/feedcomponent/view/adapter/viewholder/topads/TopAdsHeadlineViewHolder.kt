@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,7 +20,6 @@ import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
 const val TOPADS_HEADLINE_VALUE_SRC = "fav_product"
-const val TOPADS_DEFAULT_VARIANT = 1
 
 class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface,
                                private val topAdsHeadlineListener: TopAdsHeadlineListener? = null) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener, TopAdsBannerClickListener {
@@ -88,13 +88,13 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     private fun showHeadlineView(cpmModel: CpmModel?) {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
-        val layoutType = cpmModel?.data?.firstOrNull()?.cpm?.layout
-        if (layoutType == TOPADS_DEFAULT_VARIANT) {
+        if (!TopadsRollenceUtil.shouldShowFeedNewDesignValue(itemView.context)) {
             cpmModel?.let {
                 topadsHeadlineView.displayAds(it)
             }
             topadsHeadlineUiModel?.let { setImpressionListener(it) }
         } else {
+            //remove old design
             removeTopadsView()
         }
     }
@@ -123,4 +123,5 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         this.itemView.hide()
         topAdsHeadlineListener?.hideTopadsView(adapterPosition)
     }
+
 }
