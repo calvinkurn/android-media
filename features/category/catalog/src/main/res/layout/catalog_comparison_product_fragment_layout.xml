@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/catalog_no_product_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_220"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_40"
+        android:visibility="gone"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/catalog_no_product_view"
+        tools:visibility="gone" />
+
+    <com.tokopedia.catalog.model.util.DisallowInterceptView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"
+        android:visibility="visible"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/catalog_staggered_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            tools:itemCount="4"
+            tools:listitem="@layout/catalog_staggered_product_card_item_layout"
+            tools:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible"
+            android:visibility="visible"
+            />
+
+    </com.tokopedia.catalog.model.util.DisallowInterceptView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

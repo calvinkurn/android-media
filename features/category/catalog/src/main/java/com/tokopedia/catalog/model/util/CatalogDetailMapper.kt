@@ -5,12 +5,12 @@ import com.tokopedia.catalog.model.raw.*
 
 object CatalogDetailMapper {
 
-    fun mapIntoVisitable(catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular): MutableList<BaseCatalogDataModel> {
+    fun mapIntoVisitable(comparedCatalogId : String, catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular): MutableList<BaseCatalogDataModel> {
         val listOfComponents : MutableList<BaseCatalogDataModel> = mutableListOf()
 
         catalogGetDetailModular.basicInfo.run {
             listOfComponents.add(CatalogInfoDataModel(name = CatalogConstant.CATALOG_INFO_NAME, type= CatalogConstant.CATALOG_INFO,
-                    productName = name, productBrand = brand, tag = tag,
+                    productName = name, productBrand = brand, departmentId = departmentID, tag = tag,
                     priceRange = "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}" ,
                     description = description, shortDescription = shortDescription,
                     images = catalogGetDetailModular.basicInfo.catalogImage, url = url))
@@ -53,49 +53,78 @@ object CatalogDetailMapper {
                             , component.name, component.type, crudeReviewData))
                 }
 
-                CatalogConstant.COMPARISION -> {
-                    component.data?.firstOrNull()?.let { comparisionData ->
-                        val keySet = LinkedHashSet<String>()
-                        val baseCatalog = HashMap<String, ComparisionModel>()
-                        val comparisionCatalog = HashMap<String,ComparisionModel>()
-
-                        keySet.add(CatalogConstant.COMPARISION_DETAIL)
-
-                        catalogGetDetailModular.basicInfo.run {
-                            baseCatalog.put(CatalogConstant.COMPARISION_DETAIL, ComparisionModel(id,brand,name,
-                                    "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}",
-                                     catalogImage?.firstOrNull()?.imageURL,null,null))
+                CatalogConstant.COMPARISON -> {
+                    component.data?.firstOrNull()?.let { comparisonData ->
+                        if(comparedCatalogId.isBlank()) {
+                            listOfComponents.add(getComparisonComponent(comparedCatalogId,catalogGetDetailModular,
+                                baseCatalogTopSpecs,
+                                comparisonData))
                         }
-
-                        baseCatalogTopSpecs.forEach { topSpec ->
-                            if(!topSpec.key.isNullOrEmpty()){
-                                keySet.add(topSpec.key)
-                                baseCatalog[topSpec.key] = ComparisionModel(null,null,null,null,null,
-                                        topSpec.key,topSpec.value)
-                            }
-                        }
-
-                        comparisionData.topSpecifications?.forEach { comparisionTopSpec ->
-                            if(keySet.contains(comparisionTopSpec.key)){
-                                comparisionCatalog[comparisionTopSpec.key] = ComparisionModel(null,null,null,null,null,
-                                        comparisionTopSpec.key,comparisionTopSpec.value)
-                            }
-                        }
-
-                        comparisionData.run {
-                            comparisionCatalog.put(CatalogConstant.COMPARISION_DETAIL, ComparisionModel(id,brand,name,
-                                    "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}",
-                                    catalogImage?.firstOrNull()?.imageURL,null,null))
-                        }
-
-                        listOfComponents.add(CatalogComparisionDataModel(component.name,component.type,
-                                keySet,baseCatalog,comparisionCatalog))
                     }
                 }
             }
         }
 
+        if(comparedCatalogId.isNotBlank()){
+            catalogGetDetailModular.comparisonInfoComponentData?.run {
+                listOfComponents.add(getComparisonComponent(comparedCatalogId,catalogGetDetailModular,
+                    baseCatalogTopSpecs,
+                    this))
+            }
+        }
         return listOfComponents
+    }
+
+    private fun getComparisonComponent(comparedCatalogId : String?, catalogGetDetailModular: CatalogResponseData.CatalogGetDetailModular,
+                                       baseCatalogTopSpecs : ArrayList<TopSpecificationsComponentData>,
+                                       comparisonComponentData: ComponentData) : CatalogComparisionDataModel {
+        val keySet = LinkedHashSet<String>()
+        val baseCatalog = HashMap<String, ComparisionModel>()
+        val comparisonCatalog = HashMap<String,ComparisionModel>()
+
+        keySet.add(CatalogConstant.COMPARISION_DETAIL)
+
+        catalogGetDetailModular.basicInfo.run {
+            baseCatalog.put(CatalogConstant.COMPARISION_DETAIL, ComparisionModel(id,brand,name,
+                "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}",
+                catalogImage?.firstOrNull()?.imageURL,null,null))
+        }
+
+        baseCatalogTopSpecs.forEach { topSpec ->
+            if(!topSpec.key.isNullOrEmpty()){
+                keySet.add(topSpec.key)
+                baseCatalog[topSpec.key] = ComparisionModel(null,null,null,null,null,
+                    topSpec.key,topSpec.value)
+            }
+        }
+
+        if(comparedCatalogId.isNullOrBlank()){
+            comparisonComponentData.topSpecifications?.forEach { comparisonTopSpec ->
+                if(keySet.contains(comparisonTopSpec.key)){
+                    comparisonCatalog[comparisonTopSpec.key] = ComparisionModel(null,null,null,null,null,
+                        comparisonTopSpec.key,comparisonTopSpec.value)
+                }
+            }
+        }else {
+            comparisonComponentData.fullSpecifications?.forEach { comparisonFullSpec ->
+                comparisonFullSpec.specificationsRow?.forEach { row ->
+                    if(keySet.contains(row.key)){
+                        comparisonCatalog[row.key ?: ""] = ComparisionModel(null,null,null,null,null,
+                            row.key,row.value)
+                    }
+                }
+            }
+        }
+
+
+        comparisonComponentData.run {
+            comparisonCatalog.put(CatalogConstant.COMPARISION_DETAIL, ComparisionModel(id,brand,name,
+                "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}",
+                catalogImage?.firstOrNull()?.imageURL,null,null))
+        }
+
+        return CatalogComparisionDataModel(CatalogConstant.COMPARISON,CatalogConstant.COMPARISON,
+            keySet,baseCatalog,comparisonCatalog)
     }
 
     private fun mapIntoReviewDataModel(catalogName : String, catalogId : String, componentName : String,

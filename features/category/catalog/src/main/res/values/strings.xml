@@ -29,4 +29,6 @@
     <string name="catalog_highlighted_reviews">dari %s rating produk</string>
     <string name="catalog_numbering_images">%s/%s</string>
     <string name="catalog_rating_total">/5,0</string>
+    <string name="catalog_perbandingan_produk">Perbandingan produk</string>
+    <string name="catalog_ganti_perbandingan">Ganti Perbandingan</string>
 </resources>

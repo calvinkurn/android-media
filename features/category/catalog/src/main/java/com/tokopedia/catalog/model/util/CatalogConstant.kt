@@ -13,7 +13,7 @@ object CatalogConstant {
     const val TOP_SPECIFICATIONS = "catalog-spec-horizontal-scroll"
     const val VIDEO = "catalog-video-horizontal-scroll"
     const val REVIEW = "catalog-product-review"
-    const val COMPARISION = "catalog-product-recommendation"
+    const val COMPARISON = "catalog-product-recommendation"
     const val CATALOG_PRODUCT_FILTER = "product-filter"
     const val CATALOG_PRODUCT_LIST = "product-list-infinite-scroll"
     // Self Made
