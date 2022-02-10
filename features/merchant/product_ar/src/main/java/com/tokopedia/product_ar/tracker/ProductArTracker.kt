@@ -7,6 +7,8 @@ import com.tokopedia.track.TrackApp
 
 object ProductArTracker {
 
+    private const val SCREEN_NAME_AR = "ProductAR"
+
     private const val EVENT_AR = "clickProductAR"
     private const val EVENT_ATC = "add_to_cart"
     private const val CATEGORY_AR = "product augmented reality"
@@ -26,6 +28,7 @@ object ProductArTracker {
                 "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
                 "productId" to productId,
                 "userId" to userId,
+                "screenName" to SCREEN_NAME_AR,
                 "isLoggedInStatus" to userId.isNotEmpty().toString()
         )
 
