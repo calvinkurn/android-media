@@ -102,13 +102,12 @@ class ProductSectionViewHolder(
     }
 
     private fun setupTimer(item : PlayProductSectionUiModel.ProductSection) {
-        if(item.type == ProductSectionType.Active) timerTime = item.endTime else timerTime = item.startTime
+        timerTime = if(item.type == ProductSectionType.Active) item.endTime else item.startTime
 
         val convertedServerTime = item.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
-        val convertedExpiredTime = timerTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
 
-        if(!isExpired(serverTime = convertedServerTime, expiredTime = convertedExpiredTime)){
-            val dt = DateUtil.getCurrentCalendar().apply {
+        val dt = DateUtil.getCurrentCalendar().apply {
+                time.time + convertedServerTime.time
                 val diff = timerTime.toDate(
                     DateUtil.YYYY_MM_DD_T_HH_MM_SS
                 ).time - convertedServerTime.time
@@ -127,14 +126,6 @@ class ProductSectionViewHolder(
                 listener.onTimerExpired(product = item)
             }
             timerSection.resume()
-        }else{
-            tvTimerInfo.hide()
-            timerSection.hide()
-        }
-    }
-
-    private fun isExpired(serverTime: Date, expiredTime: Date): Boolean {
-        return serverTime.after(expiredTime)
     }
 
     private fun isProductCountChanged(productSize: Int): Boolean {
