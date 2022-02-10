@@ -1,6 +1,7 @@
 <resources>
 
     <!-- gifting -->
+    <string name="gifting_title_bottomsheet">Cara atur bingkisan</string>
     <string name="gifting_tips_text_1">Pilih barang <![CDATA[<b>kategori Bingkisan</b>]]>. Beli langsung atau masukkan ke keranjang.</string>
     <string name="gifting_tips_text_2">Di halaman <![CDATA[<b>Keranjang</b>]]>, pilih barang bertanda khusus ( ) dan lanjut ke Pengiriman.</string>
     <string name="gifting_tips_text_3">Di halaman <![CDATA[<b>Pengiriman</b> atau <b>Beli Langsung</b>]]>, tambah pelengkap bingkisan yang tersedia.</string>
