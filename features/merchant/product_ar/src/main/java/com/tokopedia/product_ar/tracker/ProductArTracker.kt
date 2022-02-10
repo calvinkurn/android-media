@@ -9,7 +9,7 @@ object ProductArTracker {
 
     private const val EVENT_AR = "clickProductAR"
     private const val EVENT_ATC = "add_to_cart"
-    private const val CATEGORY_AR = " augmented reality"
+    private const val CATEGORY_AR = "product augmented reality"
     private const val ACTION_CLICK_VARIANT_AR = "click - select variant on product augmented reality"
     private const val ACTION_CLICK_GALLERY_AR = "click - open image from gallery"
     private const val ACTION_CLICK_COMPARISSON_AR = "click - comparing variants floating button"
