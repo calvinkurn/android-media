@@ -133,7 +133,7 @@ class OvoAdditionalData(
 
 class WalletAdditionalData(
         @SerializedName("wallet_type")
-        val walletType: Int = 0, // 1 for ovo, 2 for gopay, 3 for gopaylater
+        val walletType: Int = 0,
         @SerializedName("enable_wallet_amount_validation")
         val enableWalletAmountValidation: Boolean = false,
         @SerializedName("activation")

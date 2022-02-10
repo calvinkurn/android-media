@@ -36,7 +36,7 @@ data class OrderPayment(
         if (creditCard.selectedTerm != null) {
             return creditCard.selectedTerm.fee
         }
-        if (walletData.isGoPaylaterCicil) {
+        if (walletData.isGoCicil) {
             return walletData.goCicilData.selectedTerm?.feeAmount ?: 0.0
         }
         return fee
@@ -156,7 +156,7 @@ data class OrderPaymentWalletAdditionalData(
     val isPhoneNumberMissing: Boolean
         get() = phoneNumber.isRequired
 
-    val isGoPaylaterCicil: Boolean
+    val isGoCicil: Boolean
         get() = walletType == WALLET_TYPE_GOPAYLATERCICIL
 
     companion object {

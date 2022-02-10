@@ -83,7 +83,7 @@ import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebVie
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardInstallmentDetailBottomSheet
-import com.tokopedia.oneclickcheckout.payment.installment.GopayInstallmentDetailBottomSheet
+import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.purchase_platform.common.constant.*
@@ -1344,9 +1344,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun onGopayInstallmentDetailClicked() {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
-                GopayInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment,
+                GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment,
                     viewModel.orderCart, orderTotal.orderCost, userSession.get().userId,
-                    object : GopayInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                    object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                         override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
                             viewModel.chooseInstallment(selectedInstallment, installmentList)
                         }

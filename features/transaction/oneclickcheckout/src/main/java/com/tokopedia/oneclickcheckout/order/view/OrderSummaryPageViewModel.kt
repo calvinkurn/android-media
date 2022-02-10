@@ -663,10 +663,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
                 adjustCCAdminFee()
             }
-        } else if (orderPayment.value.walletData.isGoPaylaterCicil) {
+        } else if (orderPayment.value.walletData.isGoCicil) {
             dynamicPaymentFeeJob?.cancel()
             dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
-                adjustGoPaylaterCicilFee()
+                adjustGoCicilFee()
             }
         } else {
             launch(executorDispatchers.immediate) {
@@ -805,7 +805,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         )
     }
 
-    private suspend fun adjustGoPaylaterCicilFee() {
+    private suspend fun adjustGoCicilFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
             validateUsePromoRevampUiModel, orderPayment.value)
         Log.i("qwerty", orderCost.toString())

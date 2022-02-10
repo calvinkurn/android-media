@@ -105,7 +105,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, message = payment.walletData.activation.errorMessage, buttonTitle = payment.walletData.activation.buttonTitle,
                                 type = OrderPaymentWalletErrorData.TYPE_ACTIVATION, callbackUrl = payment.walletData.callbackUrl)) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
-            if (!payment.walletData.isGoPaylaterCicil && payment.minimumAmount > subtotal) {
+            if (!payment.walletData.isGoCicil && payment.minimumAmount > subtotal) {
                 var buttonType = OccButtonType.CHOOSE_PAYMENT
                 if (payment.isOvoOnlyCampaign) {
                     currentState = disableButtonState(currentState)
@@ -118,7 +118,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMinimumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = buttonType, buttonState = currentState)
             }
-            if (payment.walletData.isGoPaylaterCicil && payment.minimumAmount > orderCost.totalPriceWithoutPaymentFees) {
+            if (payment.walletData.isGoCicil && payment.minimumAmount > orderCost.totalPriceWithoutPaymentFees) {
                 var buttonType = OccButtonType.CHOOSE_PAYMENT
                 if (payment.isOvoOnlyCampaign) {
                     currentState = disableButtonState(currentState)
@@ -131,7 +131,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(message = payment.walletData.goCicilData.errorMessageBottomLimit)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = buttonType, buttonState = currentState)
             }
-            if (!payment.walletData.isGoPaylaterCicil && payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
+            if (!payment.walletData.isGoCicil && payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
                 var buttonType = OccButtonType.CHOOSE_PAYMENT
                 if (payment.isOvoOnlyCampaign) {
                     currentState = disableButtonState(currentState)
@@ -144,7 +144,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMaximumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
                         buttonType = buttonType, buttonState = currentState)
             }
-            if (payment.walletData.isGoPaylaterCicil && payment.maximumAmount > 0 && payment.maximumAmount < orderCost.totalPriceWithoutPaymentFees) {
+            if (payment.walletData.isGoCicil && payment.maximumAmount > 0 && payment.maximumAmount < orderCost.totalPriceWithoutPaymentFees) {
                 var buttonType = OccButtonType.CHOOSE_PAYMENT
                 if (payment.isOvoOnlyCampaign) {
                     currentState = disableButtonState(currentState)
@@ -182,7 +182,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             if (payment.creditCard.isAfpb && payment.creditCard.selectedTerm == null) {
                 currentState = disableButtonState(currentState)
             }
-            if (payment.walletData.isGoPaylaterCicil && !payment.walletData.goCicilData.hasValidTerm) {
+            if (payment.walletData.isGoCicil && !payment.walletData.goCicilData.hasValidTerm) {
                 currentState = disableButtonState(currentState)
             }
             return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.PAY, buttonState = currentState)
@@ -209,7 +209,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             subtotal += fee
             var installmentData: OrderCostInstallmentData? = null
             val selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
-            if (orderPayment.walletData.isGoPaylaterCicil && selectedTerm != null) {
+            if (orderPayment.walletData.isGoCicil && selectedTerm != null) {
                 installmentData = OrderCostInstallmentData(
                         installmentFee = selectedTerm.interestAmount,
                         installmentTerm = selectedTerm.installmentTerm,
@@ -236,7 +236,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     totalItemPriceAndShippingFee = cost.totalItemPriceAndShippingFee,
                     totalAdditionalFee = cost.totalAdditionalFee,
                     totalDiscounts = cost.totalDiscounts,
-                    isNewBottomSheet = payment.walletData.isGoPaylaterCicil
+                    isNewBottomSheet = payment.walletData.isGoCicil
             )
             return@withContext orderCost to payment
         }

@@ -670,15 +670,15 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
                     }
                 }
-            } else if (payment.walletData.isGoPaylaterCicil) {
+            } else if (payment.walletData.isGoCicil) {
                 val goCicilData = payment.walletData.goCicilData
                 if (goCicilData.hasValidTerm) {
-                    tvInstallmentDetailWrap.setText(R.string.occ_gopaylatercicil_default_installment)
+                    tvInstallmentDetailWrap.setText(R.string.occ_gocicil_default_installment)
                     tvInstallmentDetailWrap.visible()
                     tvInstallmentErrorMessage.text = goCicilData.errorMessageInvalidTenure
                     tvInstallmentErrorMessage.visible()
                 } else {
-                    tvInstallmentDetailWrap.text = tvInstallmentDetailWrap.context.getString(R.string.occ_lbl_gopaylatercicil_installment_detail,
+                    tvInstallmentDetailWrap.text = tvInstallmentDetailWrap.context.getString(R.string.occ_lbl_gocicil_installment_detail,
                         goCicilData.selectedTerm?.installmentTerm ?: 0,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(goCicilData.selectedTerm?.installmentAmountPerPeriod ?: 0.0, false).removeDecimalSuffix())
                     tvInstallmentDetailWrap.visible()

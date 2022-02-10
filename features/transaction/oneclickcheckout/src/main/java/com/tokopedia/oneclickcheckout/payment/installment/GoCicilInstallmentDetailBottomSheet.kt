@@ -24,7 +24,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class GopayInstallmentDetailBottomSheet(private var paymentProcessor: OrderSummaryPagePaymentProcessor) : CoroutineScope {
+class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSummaryPagePaymentProcessor) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Main.immediate
@@ -46,7 +46,7 @@ class GopayInstallmentDetailBottomSheet(private var paymentProcessor: OrderSumma
                 isHideable = true
                 showCloseIcon = true
                 showHeader = true
-                setTitle(fragment.getString(R.string.occ_gopaylatercicil_bottom_sheet_title))
+                setTitle(fragment.getString(R.string.occ_gocicil_bottom_sheet_title))
                 binding = BottomSheetGopayInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
                 setupChild(context, fragment, orderCart, orderCost, userId)
                 fragment.view?.height?.div(2)?.let { height ->
