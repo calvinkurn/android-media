@@ -227,6 +227,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private fun setupPageMode() {
         if (pageMode == PAGE_MODE_HISTORY) {
             viewModel.setStatusFilter(VoucherStatus.HISTORY)
+            filterStatus.title = getString(R.string.mvc_coupon_status_inactive)
         }
     }
 
