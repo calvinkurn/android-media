@@ -21,6 +21,7 @@
             android:name=".view.activity.UserIdentificationFormActivity"
             android:label="@string/title_kyc_form_upload"
             android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -38,6 +39,7 @@
             android:name=".view.activity.UserIdentificationInfoActivity"
             android:label="@string/title_kyc_info"
             android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -55,6 +57,7 @@
             android:name=".view.activity.UserIdentificationInfoSimpleActivity"
             android:label="@string/title_kyc_info_simple"
             android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
