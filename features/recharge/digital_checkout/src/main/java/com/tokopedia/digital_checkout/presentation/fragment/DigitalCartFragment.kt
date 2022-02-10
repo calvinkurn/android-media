@@ -541,6 +541,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     override fun onSubscriptionMoreInfoClicked(fintechProduct: FintechProduct) {
+        digitalAnalytics.eventSubscriptionMoreInfoClicked(
+            userSession.userId,
+            getCategoryName(),
+            getOperatorName()
+        )
         renderSubscriptionMoreInfoBottomSheet()
     }
 
@@ -765,7 +770,20 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             val bottomSheetUnify = BottomSheetUnify()
             bottomSheetUnify.setTitle(getString(com.tokopedia.digital_checkout.R.string.subscription_more_info_bottomsheet_title))
             bottomSheetUnify.setChild(typographyContent)
+            bottomSheetUnify.setCloseClickListener {
+                digitalAnalytics.eventSubscriptionMoreInfoCloseClicked(
+                    userSession.userId,
+                    getCategoryName(),
+                    getOperatorName()
+                )
+            }
             bottomSheetUnify.show(childFragmentManager, SUBSCRIPTION_BOTTOM_SHEET_TAG)
+
+            digitalAnalytics.eventSubscriptionViewMoreInfoBottomSheet(
+                userSession.userId,
+                getCategoryName(),
+                getOperatorName()
+            )
         }
     }
 
