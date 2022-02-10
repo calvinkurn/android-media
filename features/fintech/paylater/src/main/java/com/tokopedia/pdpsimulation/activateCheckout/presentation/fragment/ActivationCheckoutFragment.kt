@@ -119,7 +119,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             when(it)
             {
                 is Success -> {
-                    if(!it.data.getAtcErrorMessage().isNullOrBlank())
+                    if(it.data.isStatusError())
                     {
                         showToaster(it.data.getAtcErrorMessage())
                     }
