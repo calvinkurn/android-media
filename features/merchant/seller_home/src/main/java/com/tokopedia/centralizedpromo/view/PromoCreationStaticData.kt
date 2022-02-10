@@ -15,7 +15,8 @@ object PromoCreationStaticData {
         broadcastChatExtra: String,
         broadcastChatUrl: String,
         freeShippingEnabled: Boolean,
-        isVoucherCashbackEligible: Boolean
+        isVoucherCashbackEligible: Boolean,
+        isTopAdsOnBoardingEnable: Boolean
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
@@ -23,7 +24,12 @@ object PromoCreationStaticData {
                 resourceProvider.getPromoCreationTitleTopAds(),
                 resourceProvider.getPromoCreationDescriptionTopAds(),
                 "",
-                ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                if (isTopAdsOnBoardingEnable){
+                    ApplinkConst.SellerApp.TOPADS_ONBOARDING
+                }else{
+                    ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                }
+
             ),
             PromoCreationUiModel(
                 R.drawable.ic_broadcast_chat,
