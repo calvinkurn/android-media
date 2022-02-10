@@ -75,7 +75,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val viewBinding = initializeView()
+        val viewBinding = initializeView(addOnProductData)
         this.viewBinding = viewBinding
 
         initializeObserver(viewBinding)
@@ -95,16 +95,20 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         return super.onCreateDialog(savedInstanceState)
     }
 
-    private fun initializeView(): LayoutAddOnBottomSheetBinding {
+    private fun initializeView(addOnProductData: AddOnProductData): LayoutAddOnBottomSheetBinding {
         val viewBinding = LayoutAddOnBottomSheetBinding.inflate(LayoutInflater.from(context))
-        initializeBottomSheet(viewBinding)
+        initializeBottomSheet(viewBinding, addOnProductData)
         initializeRecyclerView(viewBinding)
 
         return viewBinding
     }
 
-    private fun initializeBottomSheet(viewBinding: LayoutAddOnBottomSheetBinding) {
-        setTitle(getString(R.string.add_on_bottomsheet_title))
+    private fun initializeBottomSheet(viewBinding: LayoutAddOnBottomSheetBinding, addOnProductData: AddOnProductData) {
+        var bottomSheetTitle = addOnProductData.bottomSheetTitle
+        if (bottomSheetTitle.isEmpty()) {
+            bottomSheetTitle = getString(R.string.add_on_bottomsheet_title)
+        }
+        setTitle(bottomSheetTitle)
         showCloseIcon = true
         showHeader = true
         isDragable = true

@@ -552,6 +552,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     productQuantity = 3
                 }
                 products = listOf(product1, product2, product3)
+                bottomSheetTitle = "Judul Bottom Sheet"
                 isTokoCabang = false
                 shopBadgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
                 addOnFooterMessages = listOf(
