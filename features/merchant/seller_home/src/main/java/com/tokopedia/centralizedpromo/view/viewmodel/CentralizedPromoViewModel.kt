@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
+import com.tokopedia.centralizedpromo.domain.usecase.CheckNonTopAdsUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
@@ -28,6 +30,8 @@ class CentralizedPromoViewModel @Inject constructor(
     private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
     private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
     private val voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase,
+    private val checkNonTopAdsUserUseCase: CheckNonTopAdsUserUseCase,
+    private val sellerHomeGetWhiteListedUserUseCase: SellerHomeGetWhiteListedUserUseCase,
     private val remoteConfig: FirebaseRemoteConfigImpl,
     private val sharedPreferences: SharedPreferences,
     private val dispatcher: CoroutineDispatchers
@@ -97,6 +101,19 @@ class CentralizedPromoViewModel @Inject constructor(
                 )
             }
 
+            val isNonTopAdsUserDeferred = async {
+                checkNonTopAdsUserUseCase.execute(userSession.shopId)
+            }
+
+            val isNonTopAdsUser = isNonTopAdsUserDeferred.await()
+            var isTopAdsOnBoardingEnable = false
+            if (isNonTopAdsUser) {
+                val isUserWhiteListedDeferred = async {
+                    sellerHomeGetWhiteListedUserUseCase.executeQuery()
+                }
+                isTopAdsOnBoardingEnable = isUserWhiteListedDeferred.await()
+            }
+
             val (broadcastChatExtra, chatBlastSellerUrl) = broadcastChatPairDeferred.await()
             val isFreeShippingEnabled = isFreeShippingEnabledDeferred.await()
             val isVoucherCashbackEligible = isVoucherCashbackEligibleDeferred.await()
@@ -109,6 +126,7 @@ class CentralizedPromoViewModel @Inject constructor(
                     chatBlastSellerUrl,
                     isFreeShippingEnabled,
                     isVoucherCashbackEligible,
+                    isTopAdsOnBoardingEnable,
                     isVoucherCashbackFirstTime,
                     isProductCouponFirstTime
                 )

@@ -106,8 +106,8 @@
     <string name="affiliate_transaction_history">Riwayat Transaksi</string>
     <string name="affiliate_zero_amount">Rp 0</string>
     <string name="affiliate_komisi_produk">Komisi Produk Affiliate</string>
-    <string name="affiliate_empty_transaction">Tidak ada transaksi pada rentang waktu ini</string>
-    <string name="affiliate_empty_transaction_description">Coba pilih tanggal lainnya. Mungkin kamu akan menemukan transaksi.</string>
+    <string name="affiliate_empty_transaction">Yaah, belum ada transaksi pada rentang tanggal ini </string>
+    <string name="affiliate_empty_transaction_description">Coba pilih tanggal lainnya, ya. Mungkin kamu akan menemukan transaksi.</string>
     <string name="affiliate_choose_date">Pilih Tanggal</string>
     <string name="affiliate_transaksi_selesai">Transaksi selesai</string>
     <string name="affiliate_rincian_komisi">Rincian Komisi</string>

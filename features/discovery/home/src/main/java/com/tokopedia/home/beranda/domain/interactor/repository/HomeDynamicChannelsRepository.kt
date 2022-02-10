@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home.beranda.di.module.query.QueryHome
+import com.tokopedia.home.beranda.di.module.query.DynamicChannelQuery
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.network.exception.MessageErrorException
@@ -32,7 +32,7 @@ class HomeDynamicChannelsRepository @Inject constructor(
     }
 
     private fun buildRequest(params: RequestParams): GraphqlRequest {
-        return GraphqlRequest(QueryHome.dynamicChannelQuery, HomeChannelData::class.java, params.parameters)
+        return GraphqlRequest(DynamicChannelQuery(), HomeChannelData::class.java, params.parameters)
     }
 
     companion object{

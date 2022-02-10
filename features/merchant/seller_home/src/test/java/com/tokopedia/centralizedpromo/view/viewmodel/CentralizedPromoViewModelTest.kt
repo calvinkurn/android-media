@@ -3,10 +3,13 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
+import com.tokopedia.centralizedpromo.domain.usecase.CheckNonTopAdsUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
@@ -54,6 +57,12 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var sharedPref: SharedPreferences
+
+    @RelaxedMockK
+    lateinit var checkNonTopAdsUserUseCase: CheckNonTopAdsUserUseCase
+
+    @RelaxedMockK
+    lateinit var sellerHomeGetWhiteListedUserUseCase: SellerHomeGetWhiteListedUserUseCase
 
     @RelaxedMockK
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
@@ -105,6 +114,8 @@ class CentralizedPromoViewModelTest {
             getOnGoingPromotionUseCase,
             getChatBlastSellerMetadataUseCase,
             voucherCashbackEligibleUseCase,
+            checkNonTopAdsUserUseCase,
+            sellerHomeGetWhiteListedUserUseCase,
             remoteConfig,
             sharedPref,
             coroutineTestRule.dispatchers
@@ -178,6 +189,14 @@ class CentralizedPromoViewModelTest {
         } returns false
 
         coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+
+        coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
         } returns true
 
@@ -214,6 +233,14 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
 
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -239,6 +266,14 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
 
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -248,6 +283,44 @@ class CentralizedPromoViewModelTest {
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
                 (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
+    }
+
+    @Test
+    fun `When isNonTopAdsUser false, topads applink should go straight to the dashboard`() = runBlocking {
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify(exactly = 0) {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        }
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+
+        assert(result != null && result is Success &&
+                result.data is PromoCreationListUiModel &&
+                (result.data as PromoCreationListUiModel).items[0].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+        )
     }
 
     @Test
@@ -261,6 +334,12 @@ class CentralizedPromoViewModelTest {
         } returns false
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
@@ -290,6 +369,12 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
         coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
         } returns false
 
@@ -317,6 +402,12 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
         coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns true
 
@@ -342,6 +433,12 @@ class CentralizedPromoViewModelTest {
         } returns false
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
             sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
