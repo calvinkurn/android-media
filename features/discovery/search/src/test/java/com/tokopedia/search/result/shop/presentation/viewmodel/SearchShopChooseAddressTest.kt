@@ -83,7 +83,7 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
     }
 
     @Test
-    fun `Null or empty choose address data will not send choose address parameter`() {
+    fun `Null choose address data will not send choose address parameter`() {
         setUp(null)
 
         `Then verify choose address data is not sent`(requestParamsSlot.captured.parameters as Map<String, String>)
