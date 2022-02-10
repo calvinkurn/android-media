@@ -246,9 +246,13 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 )
                 updateMiniCartWidget()
             } else {
-                hide()
+                hideMiniCartWidget()
             }
         }
+    }
+
+    private fun hideMiniCartWidget() {
+        viewBinding?.miniCartSimplifiedWidget?.hide()
     }
 
     override fun onResume() {
@@ -274,6 +278,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun loadInitialData() {
+        hideMiniCartWidget()
         resetEndlessScrollState()
         adapter.showInitialPagePlaceholderLoading()
         getMvcLockedToProductData(voucherId)
@@ -408,6 +413,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
 
     private fun setupRecyclerView() {
         viewBinding?.rvProductList?.apply {
+            staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
             adapter = this@MvcLockedToProductFragment.adapter
             layoutManager = staggeredGridLayoutManager
             itemAnimator = null
@@ -553,11 +559,11 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         productId: String,
         quantity: Int
     ) {
-//        if (isUserLogin) {
-//            addProductToCart(productId, quantity, shopId)
-//        } else {
-//            redirectToLoginPage()
-//        }
+        if (isUserLogin) {
+            addProductToCart(productId, quantity, shopId)
+        } else {
+            redirectToLoginPage()
+        }
     }
 
     private fun addProductToCart(productId: String, quantity: Int, shopId: String) {
