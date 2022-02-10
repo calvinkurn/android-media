@@ -33,7 +33,11 @@ class AddOnUnavailableBottomSheet(val addOnProductData: AddOnProductData) : Bott
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutAddOnUnavailableBottomSheetBinding) {
-        setTitle(getString(R.string.add_on_bottomsheet_title))
+        var bottomSheetTitle = addOnProductData.bottomSheetTitle
+        if (bottomSheetTitle.isEmpty()) {
+            bottomSheetTitle = getString(R.string.add_on_bottomsheet_title)
+        }
+        setTitle(bottomSheetTitle)
         showCloseIcon = true
         showHeader = true
         isDragable = true
