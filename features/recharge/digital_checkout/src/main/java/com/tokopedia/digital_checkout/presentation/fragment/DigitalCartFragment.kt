@@ -3,6 +3,9 @@ package com.tokopedia.digital_checkout.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.LeadingMarginSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -731,6 +734,24 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun renderSubscriptionMoreInfoBottomSheet() {
         context?.let {
+            // setup subscriptions description text
+            val descriptionArray =
+                resources.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description)
+            val description = SpannableStringBuilder()
+            descriptionArray.forEachIndexed { index, text ->
+                val contentStart: Int = description.length
+                val leadingString = "${index + 1}. "
+                description.append(leadingString)
+                description.append(text)
+                val contentEnd: Int = description.length
+                description.setSpan(
+                    LeadingMarginSpan.Standard(LEADING_MARGIN_SPAN_FIRST, LEADING_MARGIN_SPAN_REST),
+                    contentStart,
+                    contentEnd,
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                )
+            }
+
             val typographyContent = Typography(it)
             typographyContent.fontType = Typography.BODY_2
             typographyContent.setTextColor(
@@ -739,8 +760,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                     com.tokopedia.unifyprinciples.R.color.Unify_N700_68
                 )
             )
-            typographyContent.text =
-                MethodChecker.fromHtml(getString(com.tokopedia.digital_checkout.R.string.subscription_more_info_bottomsheet_description))
+            typographyContent.text = description.toString()
 
             val bottomSheetUnify = BottomSheetUnify()
             bottomSheetUnify.setTitle(getString(com.tokopedia.digital_checkout.R.string.subscription_more_info_bottomsheet_title))
@@ -777,6 +797,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         private const val DEFAULT_ANDROID_DEVICE_ID = 5
 
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
+        private const val LEADING_MARGIN_SPAN_FIRST = 0
+        private const val LEADING_MARGIN_SPAN_REST = 66
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,
