@@ -3,31 +3,31 @@ package com.tokopedia.common.topupbills.favorite.view.viewholder
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.databinding.ItemTopupBillsPersoFavoriteNumberBinding
+import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberBinding
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 
 class PersoFavoriteNumberViewHolder(
-    private val binding: ItemTopupBillsPersoFavoriteNumberBinding,
+    private val binding: ItemTopupBillsFavoriteNumberBinding,
     private val favoriteNumberListener: OnPersoFavoriteNumberClickListener
 ): AbstractViewHolder<TopupBillsPersoFavNumberDataView>(binding.root) {
 
     override fun bind(item: TopupBillsPersoFavNumberDataView) {
         binding.run {
             if (item.subtitle.isNotEmpty())
-                commonTopupbillsPersoFavoriteNumberSubtitle.show()
+                commonTopupbillsFavoriteNumberClientNumber.show()
             else
-                commonTopupbillsPersoFavoriteNumberSubtitle.hide()
+                commonTopupbillsFavoriteNumberClientNumber.hide()
 
-            commonTopupbillsPersoFavoriteNumberTitle.text = item.title
-            commonTopupbillsPersoFavoriteNumberSubtitle.text = item.subtitle
+            commonTopupbillsFavoriteNumberClientName.text = item.title
+            commonTopupbillsFavoriteNumberClientNumber.text = item.subtitle
 
             if (item.iconUrl.isNotEmpty())
-                commonTopupbillsPersoFavoriteNumberIcon.loadImage(item.iconUrl)
+                commonTopupbillsFavoriteNumberIcon.loadImage(item.iconUrl)
 
-            commonTopupbillsPersoFavoriteNumberContainer.setOnClickListener {
+            commonTopupbillsFavoriteNumberContainer.setOnClickListener {
                 favoriteNumberListener.onFavoriteNumberClick(item, adapterPosition+1)
             }
             commonTopupbillsFavoriteNumberMenu.setOnClickListener {
@@ -43,6 +43,6 @@ class PersoFavoriteNumberViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_topup_bills_perso_favorite_number
+        val LAYOUT = R.layout.item_topup_bills_favorite_number
     }
 }

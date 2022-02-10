@@ -3,7 +3,7 @@ package com.tokopedia.common.topupbills.favorite.view.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.databinding.BottomSheetPersoFavoriteNumberModifyBinding
+import com.tokopedia.common.topupbills.databinding.BottomSheetSeamlessFavoriteNumberModifyBinding
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberDataView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -12,7 +12,8 @@ class PersoFavoriteNumberModifyBottomSheet(
     private val listener: PersoFavoriteNumberModifyListener
 ): BottomSheetUnify() {
 
-    private lateinit var binding: BottomSheetPersoFavoriteNumberModifyBinding
+    // reuse seamless layout
+    private lateinit var binding: BottomSheetSeamlessFavoriteNumberModifyBinding
 
     init {
         showCloseIcon = true
@@ -29,11 +30,11 @@ class PersoFavoriteNumberModifyBottomSheet(
         setTitle(getString(R.string.common_topup_fav_number_modify_bottom_sheet_title))
         setCloseClickListener { dismiss() }
 
-        binding = BottomSheetPersoFavoriteNumberModifyBinding.inflate(LayoutInflater.from(context))
+        binding = BottomSheetSeamlessFavoriteNumberModifyBinding.inflate(LayoutInflater.from(context))
         setChild(binding.root)
 
         if (favNumberItem.subtitle.isNotEmpty()) {
-            binding.commonTopupbillsPersoFavoriteNumberNameField.run {
+            binding.commonTopupbillsFavoriteNumberNameField.run {
                 setLabelStatic(true)
                 textFieldInput.setText(favNumberItem.title)
                 textFieldInput.setOnFocusChangeListener { _, hasFocus ->
@@ -44,20 +45,20 @@ class PersoFavoriteNumberModifyBottomSheet(
                     }
                 }
             }
-            binding.commonTopupbillsPersoFavoriteNumberPhoneField.textFieldWrapper.hint = favNumberItem.subtitle
+            binding.commonTopupbillsFavoriteNumberPhoneField.textFieldWrapper.hint = favNumberItem.subtitle
         } else {
-            binding.commonTopupbillsPersoFavoriteNumberPhoneField.textFieldWrapper.hint = favNumberItem.title
+            binding.commonTopupbillsFavoriteNumberPhoneField.textFieldWrapper.hint = favNumberItem.title
         }
 
-        binding.commonTopupbillsPersoFavoriteNumberPhoneField.textFiedlLabelText.setTextColor(
+        binding.commonTopupbillsFavoriteNumberPhoneField.textFiedlLabelText.setTextColor(
             resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75)
         )
     }
 
     private fun initListener() {
         with(binding) {
-            commonTopupbillsPersoFavoriteNumberModifyButton.setOnClickListener {
-                commonTopupbillsPersoFavoriteNumberNameField.run {
+            commonTopupbillsFavoriteNumberModifyButton.setOnClickListener {
+                commonTopupbillsFavoriteNumberNameField.run {
                     val newClientName = textFieldInput.text.toString()
                     val errMsg = validateClientName(newClientName)
                     if (errMsg.isNullOrEmpty()) {
@@ -68,16 +69,16 @@ class PersoFavoriteNumberModifyBottomSheet(
                         setError(true)
                     }
                 }
-                if (!commonTopupbillsPersoFavoriteNumberNameField.isTextFieldError) {
+                if (!commonTopupbillsFavoriteNumberNameField.isTextFieldError) {
                     listener.onChangeName(
-                        commonTopupbillsPersoFavoriteNumberNameField.textFieldInput.text.toString(),
+                        commonTopupbillsFavoriteNumberNameField.textFieldInput.text.toString(),
                         favNumberItem
                     )
                     dismiss()
                 }
             }
 
-            commonTopupbillsPersoFavoriteNumberPhoneField.textFieldInput.run {
+            commonTopupbillsFavoriteNumberPhoneField.textFieldInput.run {
                 isClickable = false
                 isFocusable = false
             }

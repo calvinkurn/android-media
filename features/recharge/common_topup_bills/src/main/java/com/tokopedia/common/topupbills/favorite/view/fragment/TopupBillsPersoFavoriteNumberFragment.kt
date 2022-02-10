@@ -22,7 +22,7 @@ import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberIte
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.databinding.FragmentPersoFavoriteNumberBinding
+import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.favorite.data.UpdateFavoriteDetail
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -111,7 +111,7 @@ class TopupBillsPersoFavoriteNumberFragment :
     private var isHideCoachmark = false
     private var lastDeletedNumber: UpdateFavoriteDetail? = null
 
-    private var binding: FragmentPersoFavoriteNumberBinding? = null
+    private var binding: FragmentFavoriteNumberBinding? = null
     private var operatorData: TelcoCatalogPrefixSelect? = null
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
     private var clientNumbers: List<TopupBillsPersoFavNumberDataView> = listOf()
@@ -165,7 +165,7 @@ class TopupBillsPersoFavoriteNumberFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPersoFavoriteNumberBinding.inflate(inflater, container, false)
+        binding = FragmentFavoriteNumberBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -187,7 +187,7 @@ class TopupBillsPersoFavoriteNumberFragment :
             getListOfShimmeringDataView(), typeFactory
         )
 
-        binding?.commonTopupbillsPersoFavoriteNumberRv?.run {
+        binding?.commonTopupbillsFavoriteNumberRv?.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = numberListAdapter
         }
@@ -462,7 +462,7 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     private fun getKebabMenuView(): View? {
-        return binding?.commonTopupbillsPersoFavoriteNumberRv?.findViewHolderForAdapterPosition(0)?.itemView
+        return binding?.commonTopupbillsFavoriteNumberRv?.findViewHolderForAdapterPosition(0)?.itemView
             ?.findViewById<IconUnify>(R.id.common_topupbills_favorite_number_menu)
     }
 

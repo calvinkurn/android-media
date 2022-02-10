@@ -2,7 +2,7 @@ package com.tokopedia.common.topupbills.favorite.view.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import com.tokopedia.common.topupbills.databinding.BottomSheetPersoFavoriteNumberMenuBinding
+import com.tokopedia.common.topupbills.databinding.BottomSheetSeamlessFavoriteNumberMenuBinding
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,7 +14,8 @@ class PersoFavoriteNumberMenuBottomSheet(
     private val isShowDelete: Boolean
 ): BottomSheetUnify() {
 
-    private lateinit var binding: BottomSheetPersoFavoriteNumberMenuBinding
+    // reuse seamless layout
+    private lateinit var binding: BottomSheetSeamlessFavoriteNumberMenuBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,28 +28,28 @@ class PersoFavoriteNumberMenuBottomSheet(
         showCloseIcon = true
         setCloseClickListener { dismiss() }
 
-        binding = BottomSheetPersoFavoriteNumberMenuBinding.inflate(LayoutInflater.from(context))
+        binding = BottomSheetSeamlessFavoriteNumberMenuBinding.inflate(LayoutInflater.from(context))
         setChild(binding.root)
     }
 
     private fun initView() {
         with(binding) {
             if (isShowDelete) {
-                commonTopupPersoBillsFavoriteNumberDelete.show()
+                commonTopupBillsFavoriteNumberDelete.show()
             } else {
-                commonTopupPersoBillsFavoriteNumberDelete.hide()
+                commonTopupBillsFavoriteNumberDelete.hide()
             }
         }
     }
 
     private fun initListener() {
         with(binding) {
-            commonTopupbillsPersoFavoriteNumberChangeName.setOnClickListener {
+            commonTopupbillsFavoriteNumberChangeName.setOnClickListener {
                 listener.onChangeNameMenuClicked(favNumberItem)
                 dismiss()
             }
 
-            commonTopupPersoBillsFavoriteNumberDelete.setOnClickListener {
+            commonTopupBillsFavoriteNumberDelete.setOnClickListener {
                 listener.onDeleteContactClicked(favNumberItem)
                 dismiss()
             }

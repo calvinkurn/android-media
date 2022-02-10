@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.databinding.FragmentPersoSavedNumberBinding
+import com.tokopedia.common.topupbills.databinding.FragmentSavedNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.favorite.view.adapter.TopupBillsPersoSavedNumTabAdapter
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
@@ -32,7 +32,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
     private var isSwitchChecked: Boolean = false
 
-    private var binding: FragmentPersoSavedNumberBinding? = null
+    private var binding: FragmentSavedNumberBinding? = null
     private var pagerAdapter: TopupBillsPersoSavedNumTabAdapter? = null
 
     @Inject
@@ -44,7 +44,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            binding?.commonTopupBillsPersoSavedNumSwitcher?.isChecked = (position == POSITION_FAVORITE_NUMBER)
+            binding?.commonTopupBillsSavedNumSwitcher?.isChecked = (position == POSITION_FAVORITE_NUMBER)
             savedNumberViewModel.refreshSearchBar(position)
         }
     }
@@ -80,7 +80,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPersoSavedNumberBinding.inflate(inflater, container, false)
+        binding = FragmentSavedNumberBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -94,24 +94,24 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
     private fun observeData() {
         savedNumberViewModel.clueVisibility.observe(viewLifecycleOwner, { isVisible ->
             if (isVisible) {
-                binding?.commonTopupBillsPersoFavoriteNumberClue?.show()
+                binding?.commonTopupBillsFavoriteNumberClue?.show()
             } else {
-                binding?.commonTopupBillsPersoFavoriteNumberClue?.hide()
+                binding?.commonTopupBillsFavoriteNumberClue?.hide()
             }
         })
 
         savedNumberViewModel.enableSearchBar.observe(viewLifecycleOwner, { isEnable ->
             if (isEnable) {
-                binding?.commonTopupBillsPersoSavedNumSearchbar?.show()
+                binding?.commonTopupBillsSavedNumSearchbar?.show()
             } else {
-                binding?.commonTopupBillsPersoSavedNumSearchbar?.hide()
+                binding?.commonTopupBillsSavedNumSearchbar?.hide()
             }
         })
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding?.commonTopupBillsPersoSavedNumSearchbar?.searchBarTextField?.removeTextChangedListener(
+        binding?.commonTopupBillsSavedNumSearchbar?.searchBarTextField?.removeTextChangedListener(
             getSearchTextWatcher
         )
     }
@@ -120,34 +120,34 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
         pagerAdapter = TopupBillsPersoSavedNumTabAdapter(
             this, clientNumberType, number,
             dgCategoryIds, currentCategoryName, operatorData)
-        binding?.commonTopupBillsPersoSavedNumViewpager?.run {
+        binding?.commonTopupBillsSavedNumViewpager?.run {
             adapter = pagerAdapter
             registerOnPageChangeCallback(viewPagerCallback)
         }
         if (isSwitchChecked) {
             binding?.run {
-                commonTopupBillsPersoSavedNumViewpager.currentItem =
+                commonTopupBillsSavedNumViewpager.currentItem =
                     TopupBillsPersoSavedNumTabAdapter.POSITION_FAVORITE_NUMBER
-                commonTopupBillsPersoSavedNumSwitcher.isChecked = isSwitchChecked
+                commonTopupBillsSavedNumSwitcher.isChecked = isSwitchChecked
             }
         }
     }
 
     private fun initListener() {
         binding?.run {
-            commonTopupBillsPersoSavedNumSwitcher.setOnCheckedChangeListener { _, isChecked ->
+            commonTopupBillsSavedNumSwitcher.setOnCheckedChangeListener { _, isChecked ->
                 isSwitchChecked = isChecked
                 if (isChecked) {
-                    commonTopupBillsPersoSavedNumViewpager.setCurrentItem(
+                    commonTopupBillsSavedNumViewpager.setCurrentItem(
                         POSITION_FAVORITE_NUMBER, true
                     )
                 } else {
-                    commonTopupBillsPersoSavedNumViewpager.setCurrentItem(
+                    commonTopupBillsSavedNumViewpager.setCurrentItem(
                         POSITION_CONTACT_LIST, true
                     )
                 }
             }
-            commonTopupBillsPersoSavedNumSearchbar.searchBarTextField.addTextChangedListener(
+            commonTopupBillsSavedNumSearchbar.searchBarTextField.addTextChangedListener(
                 getSearchTextWatcher
             )
         }
@@ -182,7 +182,7 @@ class DualTabSavedNumberFragment: BaseDaggerFragment() {
     }
 
     override fun onDestroy() {
-        binding?.commonTopupBillsPersoSavedNumViewpager?.run {
+        binding?.commonTopupBillsSavedNumViewpager?.run {
             adapter = null
             unregisterOnPageChangeCallback(viewPagerCallback)
         }

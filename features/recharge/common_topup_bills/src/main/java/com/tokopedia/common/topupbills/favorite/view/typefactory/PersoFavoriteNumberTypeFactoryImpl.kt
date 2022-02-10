@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberErrorStateBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberNotFoundBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberShimmerBinding
-import com.tokopedia.common.topupbills.databinding.ItemTopupBillsPersoFavoriteNumberBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsSavedNumberEmptyStateBinding
 import com.tokopedia.common.topupbills.favorite.view.listener.PersoFavoriteNumberNotFoundStateListener
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNumberDataView
@@ -56,7 +56,7 @@ class PersoFavoriteNumberTypeFactoryImpl(
     }
 
     private fun createPersoFavoriteNumberViewHolder(parent: View): AbstractViewHolder<Visitable<*>> {
-        val binding = ItemTopupBillsPersoFavoriteNumberBinding.inflate(
+        val binding = ItemTopupBillsFavoriteNumberBinding.inflate(
             LayoutInflater.from(parent.context), parent as ViewGroup, false
         )
         return PersoFavoriteNumberViewHolder(
