@@ -32,6 +32,7 @@ object GqlQueryConstant {
                       voucher_type
                       voucher_image
                       voucher_image_square
+                      voucher_image_portrait
                       voucher_status
                       voucher_discount_type
                       voucher_discount_amt

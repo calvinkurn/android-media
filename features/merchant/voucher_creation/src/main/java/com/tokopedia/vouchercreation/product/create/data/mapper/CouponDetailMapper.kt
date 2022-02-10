@@ -22,6 +22,7 @@ class CouponDetailMapper @Inject constructor() {
             typeFormatted = voucher.voucherTypeFormatted,
             image = voucher.voucherImage,
             imageSquare = voucher.imageSquare,
+            imagePortrait = voucher.imagePortrait,
             status = voucher.voucherStatus,
             discountTypeFormatted = voucher.discountTypeFormatted,
             discountAmt = voucher.discountAmt,

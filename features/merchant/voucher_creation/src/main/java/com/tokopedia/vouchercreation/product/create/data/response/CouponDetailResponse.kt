@@ -67,6 +67,9 @@ data class Voucher(
         @SerializedName("voucher_image_square")
         val imageSquare: String = "",
         @Expose
+        @SerializedName("voucher_image_portrait")
+        val imagePortrait: String = "",
+        @Expose
         @SerializedName("voucher_minimum_amt")
         val voucherMinimumAmt: Int = 0,
         @Expose

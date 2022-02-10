@@ -1,7 +1,6 @@
 package com.tokopedia.vouchercreation.product.voucherlist.view.fragment
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -38,8 +37,6 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticCon
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
-import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
-import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherUiModel
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
@@ -49,6 +46,8 @@ import com.tokopedia.vouchercreation.common.exception.VoucherCancellationExcepti
 import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
+import com.tokopedia.vouchercreation.product.download.DownloadCouponImageBottomSheet
 import com.tokopedia.vouchercreation.product.update.period.UpdateCouponPeriodBottomSheet
 import com.tokopedia.vouchercreation.product.update.quota.UpdateCouponQuotaBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
@@ -584,7 +583,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             is BroadCastChat -> broadCastChat(coupon)
             is ShareCoupon -> shareCoupon(coupon)
             is EditPeriodCoupon -> editPeriodCoupon(coupon)
-            is DownloadCoupon -> downloadCoupon(coupon)
+            is DownloadCoupon -> downloadCoupon(coupon.image, coupon.imageSquare, coupon.imagePortrait)
             is CancelCoupon -> cancelCoupon(coupon)
             is StopCoupon -> stopCoupon(coupon)
             is DuplicateCoupon -> duplicateCoupon(coupon)
@@ -626,17 +625,19 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         showUpdateCouponPeriodBottomSheet(coupon)
     }
 
-    private fun downloadCoupon(coupon: VoucherUiModel) {
-        if (!isAdded) return
 
-        DownloadVoucherBottomSheet.createInstance(
-            bannerUrl = coupon.image,
-            squareUrl = coupon.imageSquare,
-            userId = userSession.userId
-        ).setOnDownloadClickListener { couponList ->
-            clickDownloadCoupon(couponList)
-        }.show(childFragmentManager)
+    private fun downloadCoupon(bannerImageUrl : String, squareImageUrl : String, portraitImageUrl : String) {
+        if (!isAdded) return
+        val bottomSheet = DownloadCouponImageBottomSheet.newInstance(
+            bannerImageUrl,
+            squareImageUrl,
+            portraitImageUrl,
+            userSession.userId
+        )
+        bottomSheet.setOnDownloadClickListener { couponList -> checkDownloadPermission(couponList) }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
+
 
     private fun cancelCoupon(coupon: VoucherUiModel) {
         CancelVoucherDialog(
@@ -764,84 +765,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
-    private fun clickDownloadCoupon(couponList: List<DownloadVoucherUiModel>) {
-        context?.run {
-            permissionCheckerHelper.checkPermission(
-                fragment = this@CouponListFragment,
-                permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                listener = permissionCheckListenerImpl(this@run, couponList)
-            )
-        }
-
-        VoucherCreationTracking.sendVoucherListClickTracking(
-            action = VoucherCreationAnalyticConstant.EventAction.Click.DOWNLOAD_VOUCHER,
-            isActive = false,
-            userId = userSession.userId
-        )
-    }
-
-    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    private fun downloadFiles(uri: String) {
-        activity?.let {
-            try {
-                val helper = DownloadHelper(
-                    context = it,
-                    uri = uri,
-                    filename = System.currentTimeMillis().toString() + VoucherCreationConst.JPEG_EXT,
-                    listener = downloadHelperListenerImpl()
-                )
-                helper.downloadFile { true }
-            } catch (se: SecurityException) {
-                MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
-                view?.showDownloadActionTicker(
-                    isSuccess = false,
-                    isInternetProblem = false
-                )
-            } catch (iae: IllegalArgumentException) {
-                MvcErrorHandler.logToCrashlytics(iae, MvcError.ERROR_URI)
-                view?.showDownloadActionTicker(
-                    isSuccess = false,
-                    isInternetProblem = false
-                )
-            } catch (ex: Exception) {
-                MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
-                view?.showDownloadActionTicker(
-                    isSuccess = false
-                )
-            }
-        }
-    }
-
-    private fun permissionCheckListenerImpl(context: Context, couponList: List<DownloadVoucherUiModel>) = object : PermissionCheckerHelper.PermissionCheckListener {
-        override fun onPermissionDenied(permissionText: String) {
-            permissionCheckerHelper.onPermissionDenied(context, permissionText)
-            view?.let {
-                Toaster.build(
-                    view = it,
-                    text = getString(R.string.mvc_storage_permission_enabled_needed),
-                    duration = Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-
-        override fun onNeverAskAgain(permissionText: String) {
-            permissionCheckerHelper.onNeverAskAgain(context, permissionText)
-        }
-
-        override fun onPermissionGranted() {
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                couponList.forEach {
-                    downloadFiles(it.downloadVoucherType.imageUrl)
-                }
-            }
-        }
-    }
-
-    private fun downloadHelperListenerImpl() = object : DownloadHelper.DownloadHelperListener {
-        override fun onDownloadComplete() {
-            view?.showDownloadActionTicker(true)
-        }
-    }
 
     private fun SortFilterItem.initRemovableFilterItem(onRemoveIconClicked: () -> Unit) {
         view?.post {
@@ -852,5 +775,117 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             }
             refChipUnify.gone()
         }
+    }
+
+    private fun checkDownloadPermission(couponList: List<CouponImageUiModel>) {
+        val listener = object : PermissionCheckerHelper.PermissionCheckListener {
+            override fun onPermissionDenied(permissionText: String) {
+                permissionCheckerHelper.onPermissionDenied(requireActivity(), permissionText)
+                Toaster.build(
+                    view = view ?: return,
+                    text = getString(R.string.mvc_storage_permission_enabled_needed),
+                    duration = Toast.LENGTH_LONG
+                ).show()
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+                permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
+            }
+
+            override fun onPermissionGranted() {
+                if (ActivityCompat.checkSelfPermission(
+                        requireActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    couponList.forEach {
+                        downloadFiles(it.imageType.imageUrl)
+                    }
+                }
+            }
+        }
+
+        permissionCheckerHelper.checkPermission(
+            fragment = this,
+            permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+            listener = listener
+        )
+
+        VoucherCreationTracking.sendVoucherListClickTracking(
+            action = VoucherCreationAnalyticConstant.EventAction.Click.DOWNLOAD_VOUCHER,
+            isActive = false,
+            userId = userSession.userId
+        )
+    }
+
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private fun downloadFiles(uri: String) {
+        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
+            override fun onDownloadComplete() {
+                showDownloadCompleteStatus(true)
+            }
+        }
+
+        try {
+            val helper = DownloadHelper(
+                context = requireActivity(),
+                uri = uri,
+                filename = System.currentTimeMillis()
+                    .toString() + VoucherCreationConst.JPEG_EXT,
+                listener = downloadCompleteListener
+            )
+            helper.downloadFile { true }
+        } catch (se: SecurityException) {
+            MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
+            showDownloadCompleteStatus(
+                isSuccess = false,
+                isInternetProblem = false
+            )
+        } catch (iae: IllegalArgumentException) {
+            MvcErrorHandler.logToCrashlytics(iae, MvcError.ERROR_URI)
+            showDownloadCompleteStatus(
+                isSuccess = false,
+                isInternetProblem = false
+            )
+        } catch (ex: Exception) {
+            MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
+            showDownloadCompleteStatus(
+                isSuccess = false
+            )
+        }
+
+    }
+
+    fun showDownloadCompleteStatus(isSuccess: Boolean, isInternetProblem: Boolean = true) {
+        val toasterType: Int
+        val toasterMessage: String
+
+        if (isSuccess) {
+            toasterType = Toaster.TYPE_NORMAL
+            toasterMessage = getString(R.string.download_coupon_product_success).toBlankOrString()
+        } else {
+            toasterType = Toaster.TYPE_ERROR
+            val errorMessageSuffix =
+                if (isInternetProblem) {
+                    getString(R.string.mvc_fail_download_voucher_suffix).toBlankOrString()
+                } else {
+                    ""
+                }
+            toasterMessage = "${getString(R.string.download_coupon_product_failed).toBlankOrString()}$errorMessageSuffix"
+        }
+
+        longToaster(toasterMessage, toasterType)
+    }
+
+
+    private fun longToaster(text: String, toasterType: Int) {
+        if (text.isEmpty()) return
+        Toaster.build(
+            view ?: return,
+            text,
+            Toaster.LENGTH_LONG,
+            toasterType,
+            getString(R.string.mvc_oke)
+        ).show()
     }
 }
