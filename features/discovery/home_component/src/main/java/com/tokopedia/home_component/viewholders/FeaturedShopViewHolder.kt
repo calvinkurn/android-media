@@ -54,7 +54,6 @@ class FeaturedShopViewHolder(
         },{
             if(element.channelModel.channelGrids.size < SIZE_2){
                 binding?.contentContainer?.hide()
-                binding?.loadingView?.root?.hide()
             } else {
                 binding?.contentContainer?.show()
                 binding?.loadingView?.root?.hide()

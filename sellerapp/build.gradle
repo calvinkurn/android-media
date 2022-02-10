@@ -271,6 +271,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.withdraw)
     implementation projectOrAar(rootProject.ext.features.mediaCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.topAdsOnBoarding)
 
     implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
     implementation projectOrAar(rootProject.ext.features.loginregister)
@@ -303,7 +304,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.miscDependencies.newRelic
     // Embrace
