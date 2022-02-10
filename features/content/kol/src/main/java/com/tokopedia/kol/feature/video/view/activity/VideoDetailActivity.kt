@@ -44,6 +44,8 @@ class VideoDetailActivity : BaseSimpleActivity() {
         extras.putInt(PARAM_VIDEO_INDEX, intent.getIntExtra(PARAM_VIDEO_INDEX, 0))
         extras.putString(PARAM_CALL_SOURCE, intent.getStringExtra(PARAM_CALL_SOURCE))
         extras.putString(PARAM_IS_POST_FOLLOWED, intent.getStringExtra(PARAM_IS_POST_FOLLOWED))
+        extras.putLong(PARAM_START_TIME, intent.getLongExtra(PARAM_START_TIME, 0L))
+
         extras.putString(PARAM_POST_TYPE, intent.getStringExtra(PARAM_POST_TYPE))
         extras.putString(PARAM_VIDEO_AUTHOR_TYPE, intent.getStringExtra(PARAM_VIDEO_AUTHOR_TYPE))
 

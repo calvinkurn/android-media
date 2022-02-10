@@ -98,6 +98,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
@@ -203,7 +204,6 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -1037,7 +1037,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = recomItem.productId.toString(),
-                    pageSource = "tokonow",
+                    pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                     isTokoNow = true,
                     shopId = recomItem.shopId.toString(),
                     startActivitResult = { data, _ ->
@@ -2272,16 +2272,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     )
 
                     val p2Data = viewModel.p2Data.value
-                    val cartTypeData = if (customCartRedirection != null)
-                        customCartRedirection
-                    else
-                        p2Data?.cartRedirection
+                    var saveAfterClose = true
+                    var cartTypeData = p2Data?.cartRedirection
+                    if (customCartRedirection != null) {
+                        saveAfterClose = false
+                        cartTypeData = customCartRedirection
+                    }
 
                     viewModel.clearCacheP2Data()
 
                     AtcVariantHelper.pdpToAtcVariant(
                             context = ctx,
-                            pageSource = AtcVariantHelper.PDP_PAGESOURCE,
+                            pageSource = VariantPageSource.PDP_PAGESOURCE,
                             productId = p1.basic.productID,
                             productInfoP1 = p1,
                             warehouseId = warehouseId ?: "",
@@ -2297,7 +2299,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             rates = p2Data?.ratesEstimate ?: listOf(),
                             restrictionData = p2Data?.restrictionInfo,
                             isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
-                            uspImageUrl = p2Data?.uspImageUrl ?: ""
+                            uspImageUrl = p2Data?.uspImageUrl ?: "",
+                            saveAfterClose = saveAfterClose
                     ) { data, code ->
                         startActivityForResult(data, code)
                     }

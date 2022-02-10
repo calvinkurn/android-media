@@ -54,6 +54,16 @@ class LinkAccountViewModelTest {
     }
 
     @Test
+    fun `on Success Get Link Status, without get profile - default param` () {
+        coEvery { getLinkStatusUseCase.invoke(any()) } returns mockLinkStatusResponse
+        viewModel.getLinkStatus()
+
+        verify {
+            linkStatusResponse.onChanged(Success(mockLinkStatusResponse))
+        }
+    }
+
+    @Test
     fun `on Success Get Link Status, with get profile` () {
         val mockPhoneNo = "08123123123"
         every { mockGetUserProfile.profileInfo.phone } returns mockPhoneNo
