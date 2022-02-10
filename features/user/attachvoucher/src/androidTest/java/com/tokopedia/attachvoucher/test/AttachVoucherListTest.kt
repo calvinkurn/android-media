@@ -90,4 +90,19 @@ class AttachVoucherListTest: AttachVoucherTest() {
             .atPositionOnView(0, R.id.validStatus))
             .check(matches(withSubstring("Tersisa : 5")))
     }
+
+    @Test
+    fun should_show_additional_text_for_private_voucher() {
+        //Given
+        getVoucherUseCase.response = successGetMerchantPromotionGetMVListResponse
+        launchAttachVoucherActivity()
+
+        //When
+        scrollListToPosition(1)
+
+        //Then
+        onView(withRecyclerView(R.id.recycler_view)
+            .atPositionOnView(1, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc))
+            .check(matches(withSubstring("untuk produk tertentu")))
+    }
 }
