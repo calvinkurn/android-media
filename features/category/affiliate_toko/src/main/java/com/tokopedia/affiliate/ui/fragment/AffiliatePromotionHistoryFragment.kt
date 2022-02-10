@@ -174,8 +174,11 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
             }
         })
         affiliatePromotionViewModel.getAffiliateItemCount().observe(this, { itemCount ->
-            view?.findViewById<Typography>(R.id.affiliate_products_count)?.text = getString(R.string.affiliate_product_count, itemCount.toString())
-            totalDataItemsCount = itemCount
+            if(itemCount != 0) {
+                view?.findViewById<Typography>(R.id.affiliate_products_count)?.text =
+                    getString(R.string.affiliate_product_count, itemCount.toString())
+                totalDataItemsCount = itemCount
+            }
         })
     }
 
