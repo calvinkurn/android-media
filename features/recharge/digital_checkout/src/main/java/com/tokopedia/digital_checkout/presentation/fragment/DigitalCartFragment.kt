@@ -753,7 +753,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                     LeadingMarginSpan.Standard(LEADING_MARGIN_SPAN_FIRST, LEADING_MARGIN_SPAN_REST),
                     contentStart,
                     contentEnd,
-                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
 
