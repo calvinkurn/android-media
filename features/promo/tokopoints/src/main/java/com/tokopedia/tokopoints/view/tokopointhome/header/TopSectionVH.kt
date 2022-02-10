@@ -92,7 +92,6 @@ class TopSectionVH(
     private var tierIconProgress: ImageUnify? = null
     private val MEMBER_STATUS_BG_RADII = 16F
     private val ANIMATION_DURATION = 800L
-    private val finalProgress = 100
     private val TP_CONFETTI_STATUS_MATCHING = "tp_confetti_entry_point.zip"
     private var digitContainer: LinearLayout? = null
 
@@ -143,12 +142,7 @@ class TopSectionVH(
         val getDigitValue = currentAmount.toCharArray()
 
         if (isContainsRp(currentAmount)){
-            val dotView =Typography(itemView.context)
-            dotView.text="Rp"
-            dotView.setWeight(Typography.BOLD)
-            digitContainer?.gravity = Gravity.BOTTOM
-            dotView.setTextColor(Color.WHITE)
-            digitContainer?.addView(dotView)
+            addRPToTransaction()
         }
         for (i in getDigitValue){
             if(i.isDigit()){
@@ -166,49 +160,9 @@ class TopSectionVH(
             }
         }
         if (!isContainsRp(currentAmount)){
-            val dotView =Typography(itemView.context)
-            dotView.text="x"
-            dotView.setWeight(Typography.BOLD)
-            digitContainer?.gravity = Gravity.BOTTOM
-            dotView.setTextColor(Color.WHITE)
-            digitContainer?.addView(dotView)
+           addXToTransaction()
         }
-
-        val container = progressBar?.progressBarContainer
-        progressBar?.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
-        (progressBar?.progressBarWrapper?.parent as ViewGroup).clipChildren = false
-        (progressBar?.progressBarWrapper)?.clipChildren = false
-        (progressBar?.progressBarIndicatorWrapper)?.clipChildren = false
-        (progressBar?.progressBarWrapper?.parent as ViewGroup).clipToPadding = false
-        progressBar?.gravity = Gravity.CENTER_VERTICAL
-        progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.confetti))
-
-        if(container?.childCount?.minus(1) ?:0  >= 0){
-            val target = container?.getChildAt(container.childCount - 1)
-            val moveXX = ObjectAnimator.ofFloat(target, "scaleX", 2f).setDuration(ANIMATION_DURATION)
-            val animatorContainerX =
-                ObjectAnimator.ofFloat(target, "scaleY", 2f).setDuration(ANIMATION_DURATION)
-            val animSet = AnimatorSet()
-
-        animSet.addListener(object :Animator.AnimatorListener{
-            override fun onAnimationStart(p0: Animator?) {
-            }
-
-            override fun onAnimationEnd(p0: Animator?) {
-                progressBar?.setProgressIcon(null)
-            }
-
-            override fun onAnimationCancel(p0: Animator?) {
-            }
-
-            override fun onAnimationRepeat(p0: Animator?) {
-            }
-
-        })
-            animSet.playTogether(animatorContainerX,moveXX)
-            animSet.start()
-
-        }
+       progressBarAnimation()
         var tierUrls:Pair<String,String>? = null
         when(data?.tier?.nameDesc) {
             itemView.context.getString(R.string.tp_silver_loyalty) -> {
@@ -557,7 +511,67 @@ class TopSectionVH(
     }
 
     private fun getProgress(current:Float,next:Float) : Int{
-        return (((next-current)/next) * 100).roundToInt()
+        val progressPercentage = 100 - (((next-current)/next) * 100).roundToInt()
+        return if (progressPercentage == 0){
+            5
+        } else progressPercentage
+    }
+
+    private fun addRPToTransaction(){
+        val dotView =Typography(itemView.context)
+        dotView.text="Rp"
+        dotView.setWeight(Typography.BOLD)
+        digitContainer?.gravity = Gravity.BOTTOM
+        dotView.setTextColor(Color.WHITE)
+        digitContainer?.addView(dotView)
+    }
+
+    private fun addXToTransaction(){
+        val dotView =Typography(itemView.context)
+        dotView.text="x"
+        dotView.setWeight(Typography.BOLD)
+        dotView.setType(Typography.BODY_3)
+        dotView.setTextColor(Color.WHITE)
+        digitContainer?.addView(dotView)
+    }
+
+    private fun progressBarAnimation(){
+
+        val container = progressBar?.progressBarContainer
+        progressBar?.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
+        (progressBar?.progressBarWrapper?.parent as ViewGroup).clipChildren = false
+        (progressBar?.progressBarWrapper)?.clipChildren = false
+        (progressBar?.progressBarIndicatorWrapper)?.clipChildren = false
+        (progressBar?.progressBarWrapper?.parent as ViewGroup).clipToPadding = false
+        progressBar?.gravity = Gravity.CENTER_VERTICAL
+        progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+
+        if(container?.childCount?.minus(1) ?:0  >= 0){
+            val target = container?.getChildAt(container.childCount - 1)
+            val moveXX = ObjectAnimator.ofFloat(target, "scaleX", 2f).setDuration(ANIMATION_DURATION)
+            val animatorContainerX =
+                ObjectAnimator.ofFloat(target, "scaleY", 2f).setDuration(ANIMATION_DURATION)
+            val animSet = AnimatorSet()
+
+            animSet.addListener(object :Animator.AnimatorListener{
+                override fun onAnimationStart(p0: Animator?) {
+                }
+
+                override fun onAnimationEnd(p0: Animator?) {
+                    progressBar?.setProgressIcon(null)
+                }
+
+                override fun onAnimationCancel(p0: Animator?) {
+                }
+
+                override fun onAnimationRepeat(p0: Animator?) {
+                }
+
+            })
+            animSet.playTogether(animatorContainerX,moveXX)
+            animSet.start()
+
+        }
     }
 
     interface CardRuntimeHeightListener {
