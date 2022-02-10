@@ -11,7 +11,6 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
-import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.paylater_gopay_activation_bottomsheet.*
@@ -107,7 +106,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private fun sendEvent(event: PdpSimulationEvent) {
         activity?.let {
-            (it as PdpSimulationCallback).sendAnalytics(event)
+            (it as PdpSimulationCallback).sendGoPayAnalytics(event)
         }
     }
 

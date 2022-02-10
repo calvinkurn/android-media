@@ -96,8 +96,8 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     override fun getScreenName() = SCREEN_NAME
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {}
-    override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
-        pdpSimulationAnalytics.get().sendPdpSimulationEvent(pdpSimulationEvent)
+    override fun sendGoPayAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
+        pdpSimulationAnalytics.get().sendGoPayBottomSheetEvent(pdpSimulationEvent)
     }
     override fun sendAnalytics(pdpSimulationEvent: PayLaterAnalyticsBase) {
         pdpSimulationEvent.productId = productId

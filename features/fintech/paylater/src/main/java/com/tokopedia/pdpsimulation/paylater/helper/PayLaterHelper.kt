@@ -5,9 +5,12 @@ import android.os.Bundle
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
 
 /* Handling of cta redirection on paylater card */
-object ActionHandler {
+object PayLaterHelper {
 
     private const val TYPE_APP_LINK = 1
     private const val TYPE_WEB_VIEW = 2
@@ -52,4 +55,18 @@ object ActionHandler {
     private fun shouldShowGoPayBottomSheet(detail: Detail) = !detail.cta.android_url.isNullOrEmpty()
             && detail.cta.bottomSheet != null && detail.cta.bottomSheet.isShow == true
 
+    fun convertPriceValueToIdrFormat(price: Number, hasSpace: Boolean): String {
+        val kursIndonesia = DecimalFormat.getInstance(Locale.ENGLISH) as DecimalFormat
+        kursIndonesia.maximumFractionDigits = 0
+        val formatRp = DecimalFormatSymbols()
+        formatRp.currencySymbol = "Rp" + if (hasSpace) " " else ""
+        formatRp.groupingSeparator = '.'
+        formatRp.monetaryDecimalSeparator = '.'
+        formatRp.decimalSeparator = '.'
+        kursIndonesia.decimalFormatSymbols = formatRp
+        val result: String = if (price is Int)
+            kursIndonesia.format(price.toLong())
+        else kursIndonesia.format(price)
+        return result.replace(",", ".")
+    }
 }

@@ -4,7 +4,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 
 class PdpSimulationAnalytics @Inject constructor(
@@ -23,31 +22,16 @@ class PdpSimulationAnalytics @Inject constructor(
         }
     }
 
-    fun sendPdpSimulationEvent(event: PdpSimulationEvent) {
+    fun sendGoPayBottomSheetEvent(event: PdpSimulationEvent) {
         when (event) {
-            is PdpSimulationEvent.PayLater.GopayBottomSheetButtonClick -> sendGopayClick(
-                event.emiAmount,
-                event.partnerName,
-                event.productId,
-                event.tenure,
-                event.url
-            )
-            is PdpSimulationEvent.PayLater.GopayBottomSheetImpression -> sendGopayImpression(
-                event.emiAmount,
-                event.partnerName,
-                event.productId,
-                event.tenure
-            )
+            is PdpSimulationEvent.PayLater.GopayBottomSheetButtonClick ->
+                sendGopayClick(event.emiAmount, event.partnerName, event.productId, event.tenure, event.url)
+            is PdpSimulationEvent.PayLater.GopayBottomSheetImpression ->
+                sendGopayImpression(event.emiAmount, event.partnerName, event.productId, event.tenure)
         }
     }
 
-    private fun sendGopayClick(
-        emiAmount: String,
-        partnerName: String,
-        productId: String,
-        tenure: String,
-        url: String
-    ) {
+    private fun sendGopayClick(emiAmount: String, partnerName: String, productId: String, tenure: String, url: String) {
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_FIN_TECH,
             EVENT_CATEGORY_FIN_TECH,
@@ -76,7 +60,7 @@ class PdpSimulationAnalytics @Inject constructor(
 
     private fun sendPayLaterImpressionEvent(event: PayLaterAnalyticsBase) {
         val label = computeLabel(event.productId, event.userStatus,
-            event.tenureOption.toString(), event.payLaterPartnerName)
+            event.tenureOption.toString())
         val map = TrackAppUtils.gtmData(
             IRIS_EVENT_NAME_FIN_TECH_V3,
             EVENT_CATEGORY_FIN_TECH,
@@ -86,11 +70,9 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
-    private fun sendClickCtaEvent(
-        event: PayLaterCtaClick
-    ) {
+    private fun sendClickCtaEvent(event: PayLaterCtaClick) {
         val label = computeLabel(event.productId, event.userStatus, event.tenureOption.toString(),
-            event.emiAmount, event.limit, event.redirectLink, event.payLaterPartnerName,event.ctaWording)
+            event.emiAmount, event.limit, event.redirectLink, event.payLaterPartnerName, event.ctaWording)
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_FIN_TECH,
             EVENT_CATEGORY_FIN_TECH,
@@ -99,8 +81,6 @@ class PdpSimulationAnalytics @Inject constructor(
         )
         sendGeneralEvent(map)
     }
-
-    private fun computeLabel(vararg args: String) = args.filter { it.isNotEmpty() }.joinToString(" - ")
 
     private fun sendBottomSheetImpressionEvent(event: PayLaterBottomSheetImpression) {
         val label = computeLabel(event.productId, event.userStatus, event.tenureOption.toString(),
@@ -114,9 +94,7 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
-    private fun sendPayLaterProductImpressionTracking(
-        event: PayLaterProductImpressionEvent
-    ) {
+    private fun sendPayLaterProductImpressionTracking(event: PayLaterProductImpressionEvent) {
         val label = computeLabel(event.productId, event.userStatus, event.tenureOption.toString(),
             event.emiAmount, event.payLaterPartnerName)
         val map = TrackAppUtils.gtmData(
@@ -135,6 +113,7 @@ class PdpSimulationAnalytics @Inject constructor(
         analyticTracker.sendGeneralEvent(map)
     }
 
+    private fun computeLabel(vararg args: String) = args.filter { it.isNotEmpty() }.joinToString(" - ")
 
     companion object {
         const val KEY_USER_ID = "userId"
