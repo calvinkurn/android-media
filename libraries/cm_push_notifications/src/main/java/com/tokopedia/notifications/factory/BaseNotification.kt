@@ -269,6 +269,8 @@ abstract class BaseNotification internal constructor(
     }
 
     fun loadBitmap(url: String?) : Bitmap?{
+        if(url.isNullOrBlank())
+            return null
         return try {
             Glide.with(context)
                 .asBitmap()
