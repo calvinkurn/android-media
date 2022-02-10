@@ -111,8 +111,12 @@ open class MerchantVoucherView : CustomVoucherView {
         return R.layout.widget_merchant_voucher_view
     }
 
-    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?, hasActionButton: Boolean = true) {
-        setData(merchantVoucherViewModel)
+    fun setData(
+        merchantVoucherViewModel: MerchantVoucherViewModel?,
+        hasActionButton: Boolean = true,
+        source: String = ""
+    ) {
+        setData(merchantVoucherViewModel, source)
         if (!hasActionButton) {
             btnUseVoucher?.visibility = View.GONE
             btnUseVoucher?.isEnabled = false
@@ -122,7 +126,7 @@ open class MerchantVoucherView : CustomVoucherView {
         }
     }
 
-    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
+    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?, source: String) {
         this.merchantVoucherViewModel = merchantVoucherViewModel
         merchantVoucherViewModel?.run {
             var voucherImageUrl = ""
@@ -148,7 +152,9 @@ open class MerchantVoucherView : CustomVoucherView {
                     merchantVoucherViewModel.getAmountShortString()
             ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_20)).getCharSequence()
             tvVoucherTitle?.text = spannedVoucherTitle
-            val voucherDesc = merchantVoucherViewModel.getMinSpendLongString(context)
+            val voucherDesc = merchantVoucherViewModel
+                .getMinSpendLongString(context)
+                .getAdditionalText(merchantVoucherViewModel.isPublic, source)
             tvVoucherDesc?.text = SpanText(
                     voucherDesc,
                     merchantVoucherViewModel.getMinSpendAmountShortString()
@@ -198,6 +204,20 @@ open class MerchantVoucherView : CustomVoucherView {
             tvCode?.hide()
             btnUseVoucher?.hide()
         }
+    }
+
+//    This text only for topchat
+    private fun String.getAdditionalText(
+        isPublic: Boolean,
+        source: String
+    ): String {
+        return if(!isPublic && source == SOURCE_TOPCHAT) {
+            "$this \n${context.getString(R.string.voucher_public_suffix)}"
+        } else this
+    }
+
+    companion object {
+        const val SOURCE_TOPCHAT = "topchat"
     }
 
 }

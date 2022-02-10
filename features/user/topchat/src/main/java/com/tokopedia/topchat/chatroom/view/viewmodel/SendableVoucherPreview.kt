@@ -32,6 +32,10 @@ class SendableVoucherPreview(
             MerchantVoucherStatus()
     )
 
+    fun isPublic(): Boolean {
+        return voucherPreview.isPublic == 1
+    }
+
     override fun type(attachmentPreviewFactory: AttachmentPreviewFactory): Int {
         return attachmentPreviewFactory.type(this)
     }

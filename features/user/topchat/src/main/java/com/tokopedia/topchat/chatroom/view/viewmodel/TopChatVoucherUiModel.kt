@@ -18,8 +18,8 @@ class TopChatVoucherUiModel private constructor(
         return typeFactory.type(this)
     }
 
-    fun hasCtaCopy(): Boolean {
-        return isPublic == 0
+    fun isPublic(): Boolean {
+        return isPublic == 1
     }
 
     class Builder : SendableUiModel.Builder<Builder, TopChatVoucherUiModel>() {

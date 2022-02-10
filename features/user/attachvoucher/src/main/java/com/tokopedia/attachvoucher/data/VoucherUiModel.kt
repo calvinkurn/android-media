@@ -39,6 +39,10 @@ open class VoucherUiModel constructor(
     val amountType: Int? get() = merchantVoucherAmount?.type
     val type: Int? get() = merchantVoucherType?.type
 
+    fun isPublic(): Boolean {
+        return isPublic == 1
+    }
+
     override fun type(typeFactory: AttachVoucherTypeFactory): Int {
         return typeFactory.type(this)
     }

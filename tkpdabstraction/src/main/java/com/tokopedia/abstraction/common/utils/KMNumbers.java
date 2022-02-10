@@ -21,11 +21,11 @@ public class KMNumbers {
     public static NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
     public static DecimalFormat amountDf = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 
-    public static final String SUFFIX_RB = "rb";
-    public static final String SUFFIX_JT = "jt";
-    public static final String SUFFIX_M = "M";
-    public static final String SUFFIX_T = "T";
-    public static final String SUFFIX_B = "B";
+    public static final String SUFFIX_RB = " rb";
+    public static final String SUFFIX_JT = " jt";
+    public static final String SUFFIX_M = " M";
+    public static final String SUFFIX_T = " T";
+    public static final String SUFFIX_B = " B";
 
     static {
         suffixes.put(1000L, SUFFIX_RB);
