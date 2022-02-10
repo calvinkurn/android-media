@@ -53,7 +53,8 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         var selectedServiceId = 0
         var selectedShippingCourierUiModel = shippingCourierUiModelList[0]
         for (shippingCourierUiModel in shippingCourierUiModelList) {
-            val recommend = shippingCourierUiModel.productData.isRecommend
+            val recommend =
+                if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
             if (recommend) {
                 selectedShippingCourierUiModel = shippingCourierUiModel
             }
