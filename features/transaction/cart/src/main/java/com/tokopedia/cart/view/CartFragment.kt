@@ -552,6 +552,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     productQuantity = 3
                 }
                 products = listOf(product1, product2, product3)
+                bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET
+                unavailableBottomSheetData = UnavailableBottomSheetData().apply {
+                    description = "This is description for unavailable add on bottom sheet"
+                    tickerMessage = "This is ticker message for unavailable add on bottom sheet"
+                    unavailableProducts = listOf(
+                            Product().apply {
+                                productName = "Product 2"
+                                productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
+                            },
+                            Product().apply {
+                                productName = "Product 3"
+                                productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"
+                            }
+                    )
+                }
                 bottomSheetTitle = "Judul Bottom Sheet"
                 isTokoCabang = false
                 shopBadgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
@@ -1709,7 +1724,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
         }
-//        tempInitializeAddOnNavigation()
+        tempInitializeAddOnNavigation()
     }
 
     override fun onCartDataDisableToCheckout() {

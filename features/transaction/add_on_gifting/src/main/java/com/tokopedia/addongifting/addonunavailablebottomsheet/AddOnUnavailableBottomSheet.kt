@@ -21,6 +21,7 @@ class AddOnUnavailableBottomSheet(val addOnProductData: AddOnProductData) : Bott
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewBinding = initializeView()
         this.viewBinding = viewBinding
+        renderData()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -28,7 +29,6 @@ class AddOnUnavailableBottomSheet(val addOnProductData: AddOnProductData) : Bott
         val viewBinding = LayoutAddOnUnavailableBottomSheetBinding.inflate(LayoutInflater.from(context))
         initializeBottomSheet(viewBinding)
         initializeRecyclerView(viewBinding)
-        renderData()
         return viewBinding
     }
 
