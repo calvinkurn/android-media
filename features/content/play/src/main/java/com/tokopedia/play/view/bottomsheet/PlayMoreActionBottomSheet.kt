@@ -34,10 +34,14 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collectLatest
+import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -77,7 +81,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private lateinit var playViewModel: PlayViewModel
 
-    private var userReportTimeMillis: Long = 0L
+    private var userReportTimeMillis: Date = Date()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -223,11 +227,17 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
-            val startTimeInSecond = startTime.toLongOrZero()
-            val duration = (userReportTimeMillis - startTimeInSecond) / 1
-            duration
+            val startTimeInMiliSecond : Date = try {
+                startTime.toDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS
+                )
+            }catch (e: Exception){
+                Date()
+            }
+            val duration = userReportTimeMillis.time - startTimeInMiliSecond.time
+            TimeUnit.MILLISECONDS.toSeconds(duration)
         }else{
-            playViewModel.getVideoTimestamp()
+            TimeUnit.MILLISECONDS.toSeconds(playViewModel.getVideoTimestamp())
         }
     }
 
@@ -330,7 +340,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         view: PlayUserReportSheetViewComponent,
         item: PlayUserReportReasoningUiModel.Reasoning
     ) {
-        userReportTimeMillis = Calendar.getInstance().timeInMillis
+        userReportTimeMillis = Calendar.getInstance().time
         playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
         userReportSubmissionSheetView.setView(item)
     }
