@@ -33,6 +33,7 @@ import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.raw.ComparisionModel
@@ -99,6 +100,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var catalogDepartmentId : String = ""
     private var catalogImages  =  arrayListOf<CatalogImage>()
     private var comparisonCatalogId: String = ""
+    private var recommendedCatalogId: String = ""
 
 
     private var navToolbar: NavToolbar? = null
@@ -220,6 +222,9 @@ class CatalogDetailPageFragment : Fragment(),
                 is Success -> {
                     it.data.listOfComponents.forEach { component ->
                         catalogUiUpdater.updateModel(component)
+                        if(component is CatalogComparisionDataModel && comparisonCatalogId.isBlank()){
+                            recommendedCatalogId = (component).comparisionCatalog[CatalogConstant.COMPARISION_DETAIL]?.id ?: ""
+                        }
                     }
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
@@ -227,6 +232,9 @@ class CatalogDetailPageFragment : Fragment(),
                     catalogName = catalogUiUpdater.productInfoMap?.productName ?: ""
                     catalogBrand = catalogUiUpdater.productInfoMap?.productBrand ?: ""
                     catalogDepartmentId = catalogUiUpdater.productInfoMap?.departmentId ?: ""
+                    if(comparisonCatalogId.isNotBlank()){
+                        recommendedCatalogId = catalogUiUpdater.productInfoMap?.comparisonInfoCatalogId ?: ""
+                    }
                     updateUi()
                     setCatalogUrlForTracking()
                 }
@@ -537,15 +545,16 @@ class CatalogDetailPageFragment : Fragment(),
         }
     }
 
-    override fun onClickChangeComparisonButton(comparisonCatalog: ComparisionModel?) {
+    override fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?) {
         val catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
-            catalogBrand, catalogDepartmentId,
+            catalogBrand, catalogDepartmentId, recommendedCatalogId,
             CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
         catalogAllReviewBottomSheet.show(childFragmentManager, "")
     }
 
     override fun changeComparison(comparedCatalogId: String) {
         comparisonCatalogId = comparedCatalogId
+        recommendedCatalogId = comparedCatalogId
         catalogDetailPageViewModel.getProductCatalog(catalogId,comparedCatalogId,userSession.userId,CatalogConstant.DEVICE)
     }
 
@@ -555,7 +564,8 @@ class CatalogDetailPageFragment : Fragment(),
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_ON_LIHAT_SEMUA_REVIEW,
             "$catalogName - $catalogId",userSession.userId,catalogId)
-        val catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,"","",
+        val catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
+            "","","",
             CatalogComponentBottomSheet.ORIGIN_ALL_REVIEWS,this)
         catalogAllReviewBottomSheet.show(childFragmentManager, "")
     }

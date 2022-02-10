@@ -60,13 +60,13 @@
                 tools:text="Rp15.500.000 - Rp16.150.000" />
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/ganti_perbandingan_button"
+                android:id="@+id/catalog_bandingkan_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/unify_space_24"
                 android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:layout_marginEnd="@dimen/unify_space_8"
-                android:text="@string/catalog_ganti_perbandingan"
+                android:text="@string/catalog_bandingkan"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="main"
                 app:unifyButtonVariant="ghost"

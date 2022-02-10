@@ -54,6 +54,11 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
           value
         }
       }
+      topSpec {
+        key
+        value
+        icon
+      }
     }
     components{
       id

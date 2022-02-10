@@ -40,6 +40,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     private var catalogName = ""
     private var brand  = ""
     private var categoryId = ""
+    private var recommendedCatalogId: String = ""
     private var catalogDetailListener : CatalogDetailListener? = null
     private var catalogBottomSheetListener : CatalogComponentBottomSheetListener? = null
 
@@ -82,7 +83,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         extractArguments()
         setUpRecyclerView(view)
         setUpEmptyState()
-        catalogProductComparisonViewModel.getComparisonProducts(
+        catalogProductComparisonViewModel.getComparisonProducts(recommendedCatalogId,
             catalogId,brand,
             categoryId,LIMIT,PAGE_FIRST.toString(),"")
     }
@@ -92,6 +93,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         catalogName = requireArguments().getString(ARG_EXTRA_CATALOG_NAME, "")
         brand = requireArguments().getString(ARG_EXTRA_CATALOG_BRAND, "")
         categoryId = requireArguments().getString(ARG_EXTRA_CATALOG_CATEGORY_ID, "")
+        recommendedCatalogId = requireArguments().getString(ARG_EXTRA_RECOMMENDED_CATALOG_ID, "")
     }
 
     private fun setUpRecyclerView(view : View){
@@ -112,7 +114,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if(hasNextPage)
-                    catalogProductComparisonViewModel.getComparisonProducts(
+                    catalogProductComparisonViewModel.getComparisonProducts(recommendedCatalogId,
                         catalogId,brand,
                         categoryId,LIMIT,page.toString(),"")
             }
@@ -211,12 +213,14 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
         private const val ARG_EXTRA_CATALOG_BRAND = "ARG_EXTRA_CATALOG_BRAND"
         private const val ARG_EXTRA_CATALOG_CATEGORY_ID = "ARG_EXTRA_CATALOG_CATEGORY_ID"
+        private const val ARG_EXTRA_RECOMMENDED_CATALOG_ID = "ARG_EXTRA_RECOMMENDED_CATALOG_ID"
 
         private const val GRID_SPAN_COUNT: Int = 2
         private const val LIMIT = 10
         private const val PAGE_FIRST = 1
 
         fun newInstance(catalogName : String, catalogId: String, brand: String, categoryId : String,
+                        recommendedCatalogId : String,
                         catalogListener: CatalogDetailListener? ,
                         catalogComponentBottomSheetListener: CatalogComponentBottomSheetListener?):
                 CatalogProductComparisonFragment {
@@ -226,6 +230,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
                 bundle.putString(ARG_EXTRA_CATALOG_NAME, catalogName)
                 bundle.putString(ARG_EXTRA_CATALOG_BRAND, brand)
                 bundle.putString(ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
+                bundle.putString(ARG_EXTRA_RECOMMENDED_CATALOG_ID, recommendedCatalogId)
                 arguments = bundle
                 catalogDetailListener = catalogListener
                 catalogBottomSheetListener = catalogComponentBottomSheetListener

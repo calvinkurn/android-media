@@ -30,11 +30,18 @@ class CatalogStaggeredProductCardItemVH(itemView: View, val catalogDetailListene
         element?.comparisonItem?.catalogImage?.firstOrNull()?.let { image ->
             itemView.findViewById<ImageUnify>(R.id.first_catalog_image).loadImageWithoutPlaceholder(image.imageUrl ?: "")
         }
-        itemView.findViewById<UnifyButton>(R.id.ganti_perbandingan_button)?.apply {
+        itemView.findViewById<UnifyButton>(R.id.catalog_bandingkan_button)?.apply {
             show()
-            setOnClickListener {
-                catalogDetailListener?.changeComparison(element?.comparisonItem?.id ?: "")
+            if(element?.comparisonItem?.isActive == false){
+                isEnabled = false
+                setOnClickListener(null)
+            }else {
+                isEnabled = true
+                setOnClickListener {
+                    catalogDetailListener?.changeComparison(element?.comparisonItem?.id ?: "")
+                }
             }
+
         }
     }
 }

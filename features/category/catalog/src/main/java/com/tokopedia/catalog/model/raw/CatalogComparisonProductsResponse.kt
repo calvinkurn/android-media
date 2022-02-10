@@ -24,7 +24,9 @@ data class CatalogComparisonProductsResponse(
             @Expose @SerializedName("marketPrice")
             val marketPrice: List<MarketPrice?>?,
             @Expose @SerializedName("name")
-            val name: String?
+            val name: String?,
+            @Expose @SerializedName("isActive")
+            var isActive : Boolean? = true
         ) {
             data class CatalogImage(
                 @Expose @SerializedName("imageUrl")

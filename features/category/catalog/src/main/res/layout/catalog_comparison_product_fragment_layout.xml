@@ -31,35 +31,19 @@
         app:layout_constraintTop_toBottomOf="@id/catalog_no_product_view"
         tools:visibility="gone" />
 
-    <com.tokopedia.catalog.model.util.DisallowInterceptView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/catalog_staggered_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:itemCount="4"
+        tools:listitem="@layout/catalog_staggered_product_card_item_layout"
+        tools:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"
         android:visibility="visible"
-        >
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/catalog_staggered_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            tools:itemCount="4"
-            tools:listitem="@layout/catalog_staggered_product_card_item_layout"
-            tools:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"
-            android:visibility="visible"
-            />
-
-    </com.tokopedia.catalog.model.util.DisallowInterceptView>
-
-
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

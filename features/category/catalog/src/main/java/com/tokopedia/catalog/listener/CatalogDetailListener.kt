@@ -39,7 +39,7 @@ interface CatalogDetailListener {
      */
     fun comparisonCatalogClicked(comparisonCatalogId : String){}
 
-    fun onClickChangeComparisonButton(comparisonCatalog: ComparisionModel?){}
+    fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?){}
 
     fun changeComparison(comparedCatalogId: String){}
 

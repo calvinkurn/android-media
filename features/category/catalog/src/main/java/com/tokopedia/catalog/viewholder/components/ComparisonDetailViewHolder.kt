@@ -27,7 +27,7 @@ class ComparisonDetailViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.second_catalog_product_name).displayTextOrHide(name ?: "")
             itemView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.second_catalog_product_price).displayTextOrHide(price ?: "")
             itemView.findViewById<UnifyButton>(R.id.ganti_perbandingan_button).setOnClickListener {
-                catalogDetailListener?.onClickChangeComparisonButton(comparisonCatalog)
+                catalogDetailListener?.openComparisonBottomSheet(comparisonCatalog)
             }
             url?.let {imageUrl ->
                 itemView.findViewById<ImageUnify>(R.id.second_catalog_image).loadImageWithoutPlaceholder(imageUrl)

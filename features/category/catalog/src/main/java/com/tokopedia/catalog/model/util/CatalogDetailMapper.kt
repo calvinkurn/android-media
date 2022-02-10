@@ -8,11 +8,12 @@ object CatalogDetailMapper {
     fun mapIntoVisitable(comparedCatalogId : String, catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular): MutableList<BaseCatalogDataModel> {
         val listOfComponents : MutableList<BaseCatalogDataModel> = mutableListOf()
 
+        val comparisonInfoCatalogId = catalogGetDetailModular.comparisonInfoComponentData?.id ?: ""
         catalogGetDetailModular.basicInfo.run {
             listOfComponents.add(CatalogInfoDataModel(name = CatalogConstant.CATALOG_INFO_NAME, type= CatalogConstant.CATALOG_INFO,
                     productName = name, productBrand = brand, departmentId = departmentID, tag = tag,
                     priceRange = "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}" ,
-                    description = description, shortDescription = shortDescription,
+                    description = description, shortDescription = shortDescription, comparisonInfoCatalogId = comparisonInfoCatalogId,
                     images = catalogGetDetailModular.basicInfo.catalogImage, url = url))
         }
 
@@ -106,16 +107,13 @@ object CatalogDetailMapper {
                 }
             }
         }else {
-            comparisonComponentData.fullSpecifications?.forEach { comparisonFullSpec ->
-                comparisonFullSpec.specificationsRow?.forEach { row ->
-                    if(keySet.contains(row.key)){
-                        comparisonCatalog[row.key ?: ""] = ComparisionModel(null,null,null,null,null,
-                            row.key,row.value)
-                    }
+            comparisonComponentData.topSpecifications?.forEach { comparisonTopSpec ->
+                if(keySet.contains(comparisonTopSpec.key)){
+                    comparisonCatalog[comparisonTopSpec.key] = ComparisionModel(null,null,null,null,null,
+                        comparisonTopSpec.key,comparisonTopSpec.value)
                 }
             }
         }
-
 
         comparisonComponentData.run {
             comparisonCatalog.put(CatalogConstant.COMPARISION_DETAIL, ComparisionModel(id,brand,name,

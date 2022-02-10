@@ -31,4 +31,5 @@
     <string name="catalog_rating_total">/5,0</string>
     <string name="catalog_perbandingan_produk">Perbandingan produk</string>
     <string name="catalog_ganti_perbandingan">Ganti Perbandingan</string>
+    <string name="catalog_bandingkan">Bandingkan</string>
 </resources>

@@ -11,6 +11,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class CatalogComponentBottomSheet : BottomSheetUnify() , CatalogComponentBottomSheetListener {
 
     private var catalogId: String = ""
+    private var recommendedCatalogId: String = ""
     private var catalogDetailListener: CatalogDetailListener? = null
     private var catalogName = ""
     private var brand = ""
@@ -41,6 +42,7 @@ class CatalogComponentBottomSheet : BottomSheetUnify() , CatalogComponentBottomS
             catalogName = requireArguments().getString(ARG_EXTRA_CATALOG_NAME, "")
             brand = requireArguments().getString(ARG_EXTRA_CATALOG_BRAND, "")
             categoryId = requireArguments().getString(ARG_EXTRA_CATALOG_CATEGORY_ID, "")
+            recommendedCatalogId = requireArguments().getString(ARG_EXTRA_RECOMMENDED_CATALOG_ID, "")
             origin = requireArguments().getInt(ARG_SHEET_ORIGIN,0)
         }
         setUpTitle()
@@ -55,7 +57,7 @@ class CatalogComponentBottomSheet : BottomSheetUnify() , CatalogComponentBottomS
                 ORIGIN_ULTIMATE_VERSION -> {
                     childFragmentManager.beginTransaction().replace(R.id.frame_content,
                         CatalogProductComparisonFragment.newInstance(catalogName, catalogId, brand,
-                            categoryId, catalogDetailListener ,this)).commit()
+                            categoryId, recommendedCatalogId ,catalogDetailListener ,this)).commit()
                 }
             }
         }
@@ -77,12 +79,14 @@ class CatalogComponentBottomSheet : BottomSheetUnify() , CatalogComponentBottomS
         private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
         private const val ARG_EXTRA_CATALOG_BRAND = "ARG_EXTRA_CATALOG_BRAND"
         private const val ARG_EXTRA_CATALOG_CATEGORY_ID = "ARG_EXTRA_CATALOG_CATEGORY_ID"
+        private const val ARG_EXTRA_RECOMMENDED_CATALOG_ID = "ARG_EXTRA_RECOMMENDED_CATALOG_ID"
 
         private const val ARG_SHEET_ORIGIN = "ARG_SHEET_ORIGIN"
         const val ORIGIN_ALL_REVIEWS = 0
         const val ORIGIN_ULTIMATE_VERSION = 1
 
         fun newInstance(catalogName : String, catalogId : String, brand : String, categoryId : String,
+                        recommendedCatalogId : String,
                         origin : Int ,listener: CatalogDetailListener?): CatalogComponentBottomSheet {
             return CatalogComponentBottomSheet().apply {
                 catalogDetailListener = listener
@@ -91,6 +95,7 @@ class CatalogComponentBottomSheet : BottomSheetUnify() , CatalogComponentBottomS
                     putString(ARG_EXTRA_CATALOG_NAME, catalogName)
                     putString(ARG_EXTRA_CATALOG_BRAND, brand)
                     putString(ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
+                    putString(ARG_EXTRA_RECOMMENDED_CATALOG_ID, recommendedCatalogId)
                     putInt(ARG_SHEET_ORIGIN,origin)
                 }
             }

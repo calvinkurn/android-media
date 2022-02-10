@@ -7,11 +7,11 @@ import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogStaggeredProductModel
 import com.tokopedia.catalog.model.datamodel.CatalogStaggeredShimmerModel
 import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
+import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class CatalogProductComparisonViewModel @Inject constructor(
@@ -24,7 +24,7 @@ class CatalogProductComparisonViewModel @Inject constructor(
     private var hasMoreItems = MutableLiveData<Boolean>()
     private var errorMessage = MutableLiveData<String>()
 
-    fun getComparisonProducts(catalogId: String, brand : String, categoryId : String,
+    fun getComparisonProducts(recommendedCatalogId : String, catalogId: String, brand : String, categoryId : String,
                                        limit: Int, page : String, name : String) {
         addShimmer()
         launchCatchError(block = {
@@ -33,7 +33,7 @@ class CatalogProductComparisonViewModel @Inject constructor(
             removeShimmer()
             when(result){
                 is Success -> {
-                    addToMasterList(result.data.catalogComparisonList)
+                    addToMasterList(recommendedCatalogId,result.data.catalogComparisonList)
                     dataList.value = masterDataList
                     hasMoreItems.value = true
                 }
@@ -48,11 +48,13 @@ class CatalogProductComparisonViewModel @Inject constructor(
         })
     }
 
-    private fun addToMasterList(it: CatalogComparisonProductsResponse.CatalogComparisonList?) {
+    private fun addToMasterList(recommendedCatalogId : String, it: CatalogComparisonProductsResponse.CatalogComparisonList?) {
         it?.catalogComparisonList?.let { items ->
             for (product in items){
                 product?.let {
-                    masterDataList.add(CatalogStaggeredProductModel("","",product))
+                    if(product.id == recommendedCatalogId){ product.isActive = false }
+                    masterDataList.add(CatalogStaggeredProductModel(CatalogConstant.COMPARISON_PRODUCT,
+                        CatalogConstant.COMPARISON_PRODUCT,product))
                 }
             }
         }
