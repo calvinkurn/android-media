@@ -1,9 +1,10 @@
 package com.tokopedia.shop_widget.common.uimodel
 
+import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shop_widget.common.typefactory.ProductCardTypeFactory
 
-class ProductCardUiModel(
+data class ProductCardUiModel(
     var id: String? = null,
     var name: String? = null,
     var displayedPrice: String? = null,
@@ -32,7 +33,8 @@ class ProductCardUiModel(
     var minimumOrder: Int = 1,
     var isProductPlaceHolder: Boolean = false,
     var totalProduct: Int = 0,
-    var totalProductWording: String = ""
+    var totalProductWording: String = "",
+    var rvState: Parcelable? = null
 ): Visitable<ProductCardTypeFactory> {
     override fun type(typeFactory: ProductCardTypeFactory): Int {
         return typeFactory.type(this)

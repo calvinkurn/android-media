@@ -2,11 +2,12 @@ package com.tokopedia.shop_widget.common.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.shop_widget.common.uimodel.ProductCardSeeAllUiModel
 import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
 
 class ProductCardDiffer: DiffUtil.Callback() {
-    private var oldList: List<ProductCardUiModel> = emptyList()
-    private var newList: List<ProductCardUiModel> = emptyList()
+    private var oldList: List<Visitable<*>> = emptyList()
+    private var newList: List<Visitable<*>> = emptyList()
 
     /**
      * @see areItemsTheSame
@@ -16,7 +17,14 @@ class ProductCardDiffer: DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return oldItem.id == newItem.id
+
+        return if (oldItem is ProductCardUiModel && newItem is ProductCardUiModel) {
+            oldItem.id == newItem.id
+        } else if (oldItem is ProductCardSeeAllUiModel && newItem is ProductCardSeeAllUiModel) {
+            oldItem.appLink == newItem.appLink
+        } else {
+            false
+        }
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -31,8 +39,8 @@ class ProductCardDiffer: DiffUtil.Callback() {
         oldList: List<Visitable<*>>,
         newList: List<Visitable<*>>
     ): ProductCardDiffer {
-        this.oldList = oldList as List<ProductCardUiModel>
-        this.newList = newList as List<ProductCardUiModel>
+        this.oldList = oldList
+        this.newList = newList
         return this
     }
 }

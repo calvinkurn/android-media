@@ -3,7 +3,6 @@ package com.tokopedia.shop_widget.common.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop_widget.common.typefactory.ProductCardTypeFactoryImpl
 
 open class ProductCardAdapter(
@@ -17,10 +16,5 @@ open class ProductCardAdapter(
         visitables.clear()
         visitables.addAll(items)
         result.dispatchUpdatesTo(this)
-    }
-
-    override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
-        super.onViewRecycled(holder)
-        holder.onViewRecycled()
     }
 }

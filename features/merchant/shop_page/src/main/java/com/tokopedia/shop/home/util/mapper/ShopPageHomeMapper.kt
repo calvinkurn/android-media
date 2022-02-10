@@ -27,6 +27,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
+import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
@@ -468,9 +469,32 @@ object ShopPageHomeMapper {
                 totalProduct = 12
             ),
             widgetMasterId = widgetResponse.widgetMasterID,
-            productList = listOf(),
-            firstBackgroundColor = "",
-            secondBackgroundColor = ""
+            productList = widgetResponse.data.firstOrNull()?.listProduct?.map {
+                 ProductCardUiModel(
+                     id = it.id,
+                     name = it.name,
+                     displayedPrice = it.discountedPrice,
+                     originalPrice = it.displayedPrice,
+                     discountPercentage = it.discountPercentage,
+                     imageUrl = it.imageUrl,
+                     imageUrl300 = "",
+                     productUrl = it.urlApps,
+                     hideGimmick = false,
+                     stockLabel = it.stockWording.title,
+                     stockSoldPercentage =  it.stockSoldPercentage.toInt(),
+                     labelGroupList  = it.labelGroups.map { labelGroup ->
+                         com.tokopedia.shop_widget.common.uimodel.LabelGroupUiModel(
+                             position = labelGroup.position,
+                             title = labelGroup.title,
+                             type = labelGroup.type,
+                             url = labelGroup.url
+                         )
+                     }
+                 )
+            } ?: listOf(),
+            imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
+            firstBackgroundColor = "ff5733",
+            secondBackgroundColor = "ee5534"
         )
     }
 

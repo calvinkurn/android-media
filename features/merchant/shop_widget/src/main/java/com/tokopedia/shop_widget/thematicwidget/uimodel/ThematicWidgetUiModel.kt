@@ -17,7 +17,9 @@ data class ThematicWidgetUiModel(
     val secondBackgroundColor: String,
     var widgetState: WidgetState = WidgetState.INIT,
     var isNewData: Boolean = false,
-    var widgetMasterId: String = ""
+    var widgetMasterId: String = "",
+    var imageBanner: String = "",
+    var rvState: Int = 0
 ): Visitable<ThematicWidgetTypeFactory> {
     override fun type(typeFactory: ThematicWidgetTypeFactory): Int {
         return typeFactory.type(this)

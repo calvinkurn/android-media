@@ -583,10 +583,12 @@ class ShopHomeAdapter(
 
     fun isLoadFirstWidgetContentData(): Boolean {
         // need to separate checking ui model for temporary purpose
-        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().none {
-            it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
-        } || visitables.filterIsInstance<ThematicWidgetUiModel>().none {
-            it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
+        return visitables.filterIsInstance<Visitable<*>>().none {
+            when(it) {
+                is BaseShopHomeWidgetUiModel -> it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
+                is ThematicWidgetUiModel -> it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
+                else -> false
+            }
         }
     }
 
