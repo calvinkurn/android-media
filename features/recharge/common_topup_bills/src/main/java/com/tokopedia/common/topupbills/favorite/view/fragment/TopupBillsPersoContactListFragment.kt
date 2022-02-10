@@ -18,10 +18,10 @@ import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.databinding.FragmentContactListBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.favoritecommon.view.adapter.TopupBillsContactListAdapter
-import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.favoritecommon.view.typefactory.ContactListTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.utils.permission.PermissionCheckerHelper
