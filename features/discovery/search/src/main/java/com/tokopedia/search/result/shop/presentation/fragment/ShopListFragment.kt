@@ -552,8 +552,6 @@ internal class ShopListFragment:
 
         searchViewModel?.changeBottomNavigationVisibility(false)
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
-
-        searchShopViewModel?.reCheckChooseAddressData()
     }
 
     private fun trackScreen() {

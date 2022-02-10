@@ -58,7 +58,7 @@ internal class SearchShopViewModel(
         private val shopCpmDataViewMapper: Lazy<Mapper<SearchShopModel, ShopCpmDataView>>,
         private val shopDataViewMapper: Lazy<Mapper<SearchShopModel, ShopDataView>>,
         private val userSession: Lazy<UserSessionInterface>,
-        private val chooseAddressWrapper: ChooseAddressWrapper
+        private val chooseAddressWrapper: ChooseAddressWrapper,
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -159,6 +159,8 @@ internal class SearchShopViewModel(
             hasLoadData = true
             searchShop()
         }
+
+        reCheckChooseAddressData()
     }
 
     private fun searchShop() {
@@ -195,11 +197,6 @@ internal class SearchShopViewModel(
         return requestParams
     }
 
-    private fun putRequestParamsChooseAddress(requestParams: RequestParams) {
-        val chooseAddressData = chooseAddressData ?: return
-        requestParams.putAllString(chooseAddressData.toSearchParams())
-    }
-
     private fun putRequestParamsParameters(requestParams: RequestParams) {
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
@@ -207,6 +204,11 @@ internal class SearchShopViewModel(
         requestParams.putString(SearchApiConst.ROWS, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS)
         requestParams.putString(SearchApiConst.IMAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE)
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE)
+    }
+
+    private fun putRequestParamsChooseAddress(requestParams: RequestParams) {
+        val chooseAddressData = chooseAddressData ?: return
+        requestParams.putAllString(chooseAddressData.toSearchParams())
     }
 
     private fun onSearchShopSuccess(searchShopModel: SearchShopModel) {
