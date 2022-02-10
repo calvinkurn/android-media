@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryAction
@@ -33,6 +34,7 @@ import javax.inject.Inject
 class ProductSummaryBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetUnify(), ProductSummaryListViewComponent.Listener {
 
     private val container: ProductSetupFragment?
@@ -50,6 +52,7 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     @ExperimentalStdlibApi
     override fun onProductDeleteClicked(product: ProductUiModel) {
+        analytic.clickDeleteProductOnProductSetup(productId = product.id)
         viewModel.submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
     }
 
@@ -100,6 +103,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         }
         setTitle(getString(R.string.play_bro_product_summary_title))
         setAction(getString(R.string.play_bro_product_add_more)) {
+            analytic.clickAddMoreProductOnProductSetup()
             handleAddMoreProduct()
         }
         setCloseClickListener {
@@ -108,6 +112,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         }
 
         binding.btnDone.setOnClickListener {
+            analytic.clickDoneOnProductSetup()
             dismiss()
             container?.removeFragment()
         }
