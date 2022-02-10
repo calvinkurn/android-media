@@ -1728,7 +1728,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
         }
-        tempInitializeAddOnNavigation()
+//        tempInitializeAddOnNavigation()
     }
 
     override fun onCartDataDisableToCheckout() {
