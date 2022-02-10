@@ -478,6 +478,22 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when getAfterEditImageList contains cached image from cloud should replace it with real image url`() {
+        val imagePickerResult = mutableListOf("picture1.0", "picture2.jpg")
+        val imagesFedIntoPicker = mutableListOf("https://example.com/picture1.jpg", "https://example.com/picture1.jpg")
+
+        val expectedData = mutableListOf(
+            ImageReviewUiModel("https://example.com/picture1.jpg"),
+            ImageReviewUiModel("picture2.jpg"),
+            DefaultImageReviewUiModel()
+        )
+
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, imagesFedIntoPicker)
+
+        assertEquals(expectedData, actualData)
+    }
+
+    @Test
     fun `when editReview with images should execute expected usecases`() {
         val expectedResponse =
             ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
