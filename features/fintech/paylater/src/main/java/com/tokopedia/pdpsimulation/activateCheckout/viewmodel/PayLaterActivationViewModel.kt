@@ -36,8 +36,8 @@ class PayLaterActivationViewModel @Inject constructor(
     val payLaterActivationDetailLiveData: LiveData<Result<PaylaterGetOptimizedModel>> =
         _payLaterActivationDetailLiveData
 
-    private val _addToProductLiveData = MutableLiveData<Result<AddToCartOccMultiDataModel>>()
-    val addToProductLiveData: LiveData<Result<AddToCartOccMultiDataModel>> = _addToProductLiveData
+    private val _addToCartLiveData = MutableLiveData<Result<AddToCartOccMultiDataModel>>()
+    val addToCartLiveData: LiveData<Result<AddToCartOccMultiDataModel>> = _addToCartLiveData
 
     var price = 0.0
     var shopId: String? = null
@@ -108,9 +108,9 @@ class PayLaterActivationViewModel @Inject constructor(
                         )
                     )
                 ).executeOnBackground()
-                _addToProductLiveData.value = Success(response)
+                _addToCartLiveData.value = Success(response)
             }) {
-                _addToProductLiveData.value = Fail(it)
+                _addToCartLiveData.value = Fail(it)
             }
         }
     }

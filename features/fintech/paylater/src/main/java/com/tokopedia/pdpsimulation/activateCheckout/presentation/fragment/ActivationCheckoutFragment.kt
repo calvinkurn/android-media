@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.dialog.DialogUnify
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -33,6 +32,8 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -75,6 +76,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private lateinit var paylaterGetOptimizedModel :PaylaterGetOptimizedModel
     private lateinit var listOfGateway: PaylaterGetOptimizedModel
     private var selectedTenurePosition = 0
+    private lateinit var parentView: View
     var quantity = 1
     var isDisabled = false
     private var gatewayToChipMap: MutableMap<Int,CheckoutData> = HashMap()
@@ -92,7 +94,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_activation_checkout, container, false)
+        parentView = inflater.inflate(R.layout.fragment_activation_checkout, container, false)
+        return parentView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,12 +104,51 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?:"0"
         observerProductData()
         observerOtherDetail()
+        observeCartDetail()
         initView()
 
         startAllLoaders()
         payLaterActivationViewModel.getProductDetail(productId)
 
     }
+
+//    private fun observeCartDetail() {
+//        payLaterActivationViewModel.addToCartLiveData.observe(viewLifecycleOwner){
+//            when(it)
+//            {
+//                is Success -> {
+//                        showToaster("rtet")
+//                }
+//                is Fail -> TODO()
+//            }
+//        }
+//    }
+//
+//    private fun showToaster(atcErrorMessage: String?)
+//    {
+//        atcErrorMessage?.let { Toaster.build(parentView, it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+//    }
+
+
+//    private fun showToaster(view: View?, message: String, type: Int, ctaText: String, isShowCta: Boolean, onClickListener: View.OnClickListener?) {
+//        if (message.isBlank()) return
+//
+//        var toasterViewRoot = view
+//        if (toasterViewRoot == null) toasterViewRoot = this.view
+//        toasterViewRoot?.let {
+//            Toaster.toasterCustomBottomHeight = it.resources?.getDimensionPixelSize(com.tokopedia.minicart.R.dimen.dp_72)
+//                ?: 0
+//            if (isShowCta && ctaText.isNotBlank()) {
+//                var tmpCtaClickListener = OnClickListener { }
+//                if (onClickListener != null) {
+//                    tmpCtaClickListener = onClickListener
+//                }
+//                Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
+//            } else {
+//                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
+//            }
+//        }
+//    }
 
     private fun startAllLoaders() {
         productInfoActivationShimmer.visibility = View.VISIBLE
@@ -444,9 +486,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         activationTenureAdapter = ActivationTenureAdapter(listOf(), this)
         detailHeader.showVariantBottomSheet.setOnClickListener {
             context?.let {
-//                AtcVariantHelper.goToAtcVariant(it, productId, "", false, "") { data, code ->
-//                    startActivityForResult(data, code)
-//                }
+                AtcVariantHelper.goToAtcVariant(context  = it,productId = productId,pageSource=VariantPageSource.BNPL_PAGESOURCE,isTokoNow= false,shopId = "",saveAfterClose = false) { data, code ->
+                    startActivityForResult(data, code)
+                }
             }
         }
 
