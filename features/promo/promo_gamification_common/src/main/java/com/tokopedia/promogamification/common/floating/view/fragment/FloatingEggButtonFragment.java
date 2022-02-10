@@ -332,7 +332,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (isDraggable && hasCoordPreference()) {
             int coordPref[] = getCoordPreference();
             boolean isRight  = getSharedPrefVisibility().getBoolean(ISRIGHT,false);
-            if (checkEggVisibility()) {
+            if (!checkEggVisibility()) {
                 setCoordFloatingEgg(coordPref[0], coordPref[1]);
             } else {
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
