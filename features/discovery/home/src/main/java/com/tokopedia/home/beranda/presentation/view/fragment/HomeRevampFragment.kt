@@ -76,8 +76,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -178,20 +176,21 @@ import kotlin.collections.ArrayList
  */
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment : BaseDaggerFragment(),
-    OnRefreshListener,
-    HomeCategoryListener,
-    AllNotificationListener,
-    FragmentListener,
-    HomeEggListener,
-    HomeTabFeedListener,
-    HomeFeedsListener,
-    HomeReviewListener,
-    PopularKeywordListener,
-    FramePerformanceIndexInterface,
-    HomeAutoRefreshListener,
-    PlayWidgetListener,
-    RecommendationWidgetListener,
-    QuestWidgetCallbacks {
+        OnRefreshListener,
+        HomeCategoryListener,
+        AllNotificationListener,
+        FragmentListener,
+        HomeEggListener,
+        HomeTabFeedListener,
+        HomeFeedsListener,
+        HomeReviewListener,
+        PopularKeywordListener,
+        FramePerformanceIndexInterface,
+        HomeAutoRefreshListener,
+        PlayWidgetListener,
+        RecommendationWidgetListener,
+        QuestWidgetCallbacks,
+        CMHomeWidgetCallback {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -992,6 +991,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         refreshQuestWidget()
 
+        // refresh home-to-do-widget data if needed
+        getHomeViewModel().getCMHomeWidgetData(false)
     }
 
     private fun refreshQuestWidget() {
@@ -1161,10 +1162,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun observeBeautyFestData() {
         getHomeViewModel().beautyFestLiveData.observe(viewLifecycleOwner, Observer { beautyFestData ->
             if(beautyFestData == BEAUTY_FEST_NOT_SET) {
-                if(beautyFestEvent == BEAUTY_FEST_NOT_SET) {
-                    beautyFestEvent = BEAUTY_FEST_FALSE
-                    renderBeautyFestHeader()
-                }
+                renderBeautyFestHeader()
             }
             else {
                 beautyFestEvent = beautyFestData
@@ -1390,7 +1388,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun setBeautyFest(dynamicChannel: HomeDynamicChannelModel) {
         val isEligibleForBeautyFest = isEligibleForBeautyFest()
         if (isEligibleForBeautyFest && !dynamicChannel.isCache && counterBypassFirstNetworkHomeData > 0) {
-            getHomeViewModel().getBeautyFest(dynamicChannel.list)
+            getHomeViewModel().getBeautyFest(dynamicChannel)
         } else if (isEligibleForBeautyFest) {
             beautyFestEvent = BEAUTY_FEST_NOT_SET
             renderBeautyFestHeader()
@@ -1531,7 +1529,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
-            this
+                    this,
+                    this
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2784,5 +2783,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun updateQuestWidget(position: Int) {
         this.questWidgetPosition = position
+    }
+
+    override fun onCMHomeWidgetDismissClick() {
+        getHomeViewModel().deleteCMHomeWidget()
+    }
+
+    override fun onRemoveCMWidgetLocally() {
+        getHomeViewModel().deleteCMHomeWidgetLocally()
+    }
+
+    override fun getCMHomeWidget() {
+        getHomeViewModel().getCMHomeWidgetData()
     }
 }

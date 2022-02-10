@@ -2,14 +2,17 @@ package com.tokopedia.developer_options.presentation.activity
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.CheckBox
+import android.widget.Spinner
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -50,21 +53,43 @@ class ProductDetailDevActivity : BaseActivity() {
 
         val productIdVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_productid_vbs)
         val shopIdVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_shopid_vbs)
-        val pageSourceVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_pagesource_vbs)
+        val saveAfterCloseEditText = findViewById<TextFieldUnify>(R.id.pdp_save_after_close_atc_vbs)
+        val dismissAfterAtc = findViewById<TextFieldUnify>(R.id.pdp_dismiss_after_atc_vbs)
         val toggleTokoNow = findViewById<CheckBox>(R.id.toggle_is_tokonow)
+        val spinnerPageSource = findViewById<Spinner>(R.id.page_source_spinner)
+
+        val listOfPageSource: List<String> = VariantPageSource.values().toList().map {
+            it.source
+        }
+
+        val envSpinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.customized_spinner_item, listOfPageSource)
+        spinnerPageSource?.adapter = envSpinnerAdapter
+        spinnerPageSource?.setSelection(0)
 
         findViewById<UnifyButton>(R.id.pdp_vbs_btn).setOnClickListener {
             val isTokonow = toggleTokoNow.isChecked
+            val dismissAfterAtcData = dismissAfterAtc.textFieldInput.text.toString().toBoolean()
+            val saveAfterClose = saveAfterCloseEditText.textFieldInput.text.toString().toBoolean()
 
-            val intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalMarketplace.ATC_VARIANT,
-                    productIdVbsEditText.textFieldInput.text.toString(),
-                    shopIdVbsEditText.textFieldInput.text.toString(),
-                    pageSourceVbsEditText.textFieldInput.text.toString(),
-                    isTokonow.toString(),
-                    "")
+            val productId = productIdVbsEditText.textFieldInput.text.toString()
+            val shopId = shopIdVbsEditText.textFieldInput.text.toString()
+            val pageSource = VariantPageSource.values().firstOrNull {
+                it.source == spinnerPageSource.selectedItem.toString()
+            } ?: VariantPageSource.PDP_PAGESOURCE
 
-            startActivityForResult(intent, 19202)
+            AtcVariantHelper.goToAtcVariant(
+                    this,
+                    productId = productId,
+                    pageSource = pageSource,
+                    isTokoNow = isTokonow,
+                    shopId = shopId,
+                    trackerCdListName = "",
+                    dismissAfterTransaction = dismissAfterAtcData,
+                    saveAfterClose = saveAfterClose,
+                    startActivitResult = { data, _ ->
+                        startActivity(data)
+                    }
+            )
         }
     }
 }
