@@ -2,6 +2,7 @@ package com.tokopedia.gifting.presentation.customview
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.style.ImageSpan
 import android.util.AttributeSet

@@ -7,6 +7,7 @@
     <string name="gifting_tips_text_4">Tulis pesan spesial di kartu ucapan.</string>
     <string name="gifting_tips_text_5">Lanjut bayar untuk kirim ke orang spesial.</string>
     <string name="gifting_title_tips_text">Langkah mudah lengkapi bingkisanmu:</string>
+    <string name="gifting_tips_detail"> <![CDATA[<i>*Invoice tidak dikirim ke penerima pesanan</i>]]></string>
     <string name="gifting_shop_caption">Disediakan oleh</string>
     <string name="gifting_shop_location">Tersedia di wilayah tertentu. <![CDATA[<font color=\'#42b549\'><b>Info Selengkapnya</b></font>]]>.</string>
 
