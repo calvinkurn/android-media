@@ -11,6 +11,7 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.interest_pick_common.di.InterestPickCommonModule
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -30,6 +31,7 @@ interface FeedPlusComponent {
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
     fun userSessionUserSessionInterface(): UserSessionInterface
     fun inject(feedPlusFragment: FeedPlusFragment)
+    fun inject(videoTabFragment: VideoTabFragment)
     fun inject(feedPlusDetailFragment: FeedPlusDetailFragment)
     fun inject(dynamicFeedFragment: DynamicFeedFragment)
     fun inject(feedOnboardingFragment: FeedOnboardingFragment)

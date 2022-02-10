@@ -80,7 +80,7 @@ object PlayWidgetUiMock {
             isLive = channelType == PlayWidgetChannelType.Live
     )
 
-    private fun getPlayWidgetConfigUiModel() = PlayWidgetConfigUiModel(
+     fun getPlayWidgetConfigUiModel() = PlayWidgetConfigUiModel(
             autoRefresh = true,
             autoRefreshTimer = 30,
             autoPlay = true,
@@ -90,7 +90,7 @@ object PlayWidgetUiMock {
             businessWidgetPosition = 0
     )
 
-    private fun getPlayWidgetBackgroundUiModel() = PlayWidgetBackgroundUiModel(
+     fun getPlayWidgetBackgroundUiModel() = PlayWidgetBackgroundUiModel(
             overlayImageUrl = "https://ecs7.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
             overlayImageAppLink = "tokopedia://webview?titlebar=false&url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
             overlayImageWebLink = "www.tokopedia.com/play/channels",

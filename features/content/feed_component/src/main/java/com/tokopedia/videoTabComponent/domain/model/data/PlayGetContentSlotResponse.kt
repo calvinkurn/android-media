@@ -1,0 +1,10 @@
+package com.tokopedia.play.widget.sample.data
+
+import com.google.gson.annotations.SerializedName
+
+data class PlayGetContentSlotResponse(
+        @SerializedName("data")
+        var data: List<PlaySlot> = emptyList(),
+        @SerializedName("meta")
+        var meta: PlayPagingProperties = PlayPagingProperties(),
+)
