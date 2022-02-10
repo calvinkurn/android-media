@@ -24,6 +24,7 @@
 
     <string name="content_desc_featured_brand_icon">featured brand icon</string>
     <string name="content_desc_featured_brand_image">featured brand image</string>
+    <string name="content_desc_merchant_background">Background merchant voucher</string>
 
     <string name="content_desc_campaign_image">campaign image</string>
 
