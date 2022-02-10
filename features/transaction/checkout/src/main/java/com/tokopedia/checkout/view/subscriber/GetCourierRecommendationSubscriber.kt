@@ -96,6 +96,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
 
     private fun generateCourierItemData(shippingCourierUiModel: ShippingCourierUiModel, shippingRecommendationData: ShippingRecommendationData): CourierItemData {
         val courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+        // todo need to use logistipromolist instead?
         shippingRecommendationData.logisticPromo?.let {
             val disableMsg = it.disableText
             courierItemData.logPromoMsg = disableMsg

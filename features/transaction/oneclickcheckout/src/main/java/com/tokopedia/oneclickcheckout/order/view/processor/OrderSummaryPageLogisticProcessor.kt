@@ -174,7 +174,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     preselectedSpId = preselectedId3
                 }
 
-                val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
+                val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.listLogisticPromo.firstOrNull { it.isApplied }
                 if (logisticPromo != null && !logisticPromo.disabled) {
                     shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
                     if (currPromo.isNotEmpty() || (!isReload && profileShipment.isFreeShippingSelected) || profileShipment.isDisableChangeCourier) {
@@ -515,6 +515,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         if (shippingRecommendationData != null) {
             val shippingDurationViewModels = shippingRecommendationData.shippingDurationUiModels
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
+            val logisticPromoList = shippingRecommendationData.listLogisticPromo
+            shippingRecommendationData.listLogisticPromo = logisticPromoList.map { it.copy(isApplied = false) }
             for (shippingDurationViewModel in shippingDurationViewModels) {
                 if (shippingDurationViewModel.serviceData.serviceId == shipping.serviceId) {
                     shippingDurationViewModel.isSelected = true
@@ -563,6 +565,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 }
             }
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
+            val logisticPromoList = shippingRecommendationData.listLogisticPromo
+            shippingRecommendationData.listLogisticPromo = logisticPromoList.map { it.copy(isApplied = false) }
             var newShipping = shipping.copy(
                     isLoading = false,
                     needPinpoint = flagNeedToSetPinpoint,
@@ -588,6 +592,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     isApplyLogisticPromo = false)
 
             if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
+                // todo which promo is used for this?
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
                     newShipping = newShipping.copy(logisticPromoTickerMessage = logisticPromo.tickerAvailableFreeShippingCourierTitle, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
@@ -614,7 +619,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 shippingDurationViewModel.isSelected = false
             }
             if (logisticPromoShipping != null) {
-                var logisticPromoList = shippingRecommendationData.listLogisticPromo
+                val logisticPromoList = shippingRecommendationData.listLogisticPromo
                 shippingRecommendationData.listLogisticPromo = logisticPromoList.map { it.copy(isApplied = logisticPromoUiModel.promoCode == it.promoCode) }
                 if (shippingRecommendationData.logisticPromo?.promoCode == logisticPromoUiModel.promoCode) {
                     shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = true)
@@ -622,6 +627,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 val needPinpoint = logisticPromoShipping.productData.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                 return Pair(
                         shipping.copy(isLoading = false,
+                            // todo is this necessary?
+                                logisticPromoViewModel = logisticPromoUiModel,
                                 shippingRecommendationData = shippingRecommendationData,
                                 isServicePickerEnable = true,
                                 insurance = OrderInsurance(logisticPromoShipping.productData.insurance),
@@ -642,7 +649,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         val shippingRecommendationData = orderShipment.shippingRecommendationData
         if (shippingRecommendationData != null && logisticPromoViewModel != null && orderShipment.isApplyLogisticPromo && logisticPromoShipping != null) {
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
-            var logisticPromoList = shippingRecommendationData.listLogisticPromo
+            val logisticPromoList = shippingRecommendationData.listLogisticPromo
             shippingRecommendationData.listLogisticPromo = logisticPromoList.map { it.copy(isApplied = false) }
             val shippingDuration = shippingRecommendationData.shippingDurationUiModels.first { it.serviceData.serviceId == logisticPromoShipping.serviceData.serviceId }
             shippingDuration.isSelected = true
