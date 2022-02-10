@@ -6,7 +6,7 @@ import android.view.KeyEvent
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.jetbrains.annotations.NotNull
 
-class TextField3 @JvmOverloads constructor(
+class RechargeTextFieldImeBack @JvmOverloads constructor(
     @NotNull context: Context, attrs: AttributeSet) : TextFieldUnify2(context, attrs) {
 
     var keyImeChangeListener: KeyImeChange? = null
