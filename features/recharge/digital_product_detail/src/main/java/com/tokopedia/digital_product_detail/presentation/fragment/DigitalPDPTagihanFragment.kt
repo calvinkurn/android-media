@@ -22,12 +22,14 @@ import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
@@ -44,6 +46,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
+import com.tokopedia.recharge_component.listener.ClientNumberSortFilterListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.model.InputFieldType
 import com.tokopedia.recharge_component.model.InputNumberActionType
@@ -134,7 +137,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
 
         viewModel.catalogSelectGroup.observe(viewLifecycleOwner, {
             when (it) {
-                is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
+                is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
                 is RechargeNetworkResult.Loading -> {}
             }
@@ -167,7 +170,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
             setListener(
                 inputFieldListener = object : ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
-                        viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
+                        viewModel.operatorData.attributes.prefix.isEmpty().let {
                             if (it) {
                                 getOperatorSelectGroup()
                             } else {
@@ -275,6 +278,11 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
                             )
                         }
                     }
+                },
+                sortFilterListener = object : ClientNumberSortFilterListener {
+                    override fun getSelectedChipOperator(operator: CatalogOperator) {
+                        viewModel.operatorData = operator
+                    }
                 }
             )
         }
@@ -300,7 +308,8 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
         }
     }
 
-    private fun onSuccessGetPrefixOperator() {
+    private fun onSuccessGetPrefixOperator(operatorGroup: DigitalCatalogOperatorSelectGroup) {
+        renderChipsAndTitle(operatorGroup)
         renderProduct()
     }
 
@@ -441,6 +450,16 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
     private fun onLoadingBuyWidget(isLoading: Boolean){
         binding?.let {
             it.rechargePdpTagihanListrikBuyWidget.isLoadingButton(isLoading)
+        }
+    }
+
+    private fun renderChipsAndTitle(catalogOperators: DigitalCatalogOperatorSelectGroup){
+        binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
+            val operators = catalogOperators.response.operatorGroups?.firstOrNull()?.operators
+            if (!operators.isNullOrEmpty()){
+                setChipOperators(operators, viewModel.operatorData)
+            }
+            setTitleGeneral(catalogOperators.response.text)
         }
     }
 

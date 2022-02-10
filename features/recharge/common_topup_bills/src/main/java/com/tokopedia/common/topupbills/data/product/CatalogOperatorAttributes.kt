@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -34,5 +35,8 @@ class CatalogOperatorAttributes(
         val helpImage: String = "",
         @SerializedName("operator_labels")
         @Expose
-        val operatorLabel: List<String> = listOf()
+        val operatorLabel: List<String> = listOf(),
+        @SerializedName("prefix")
+        @Expose
+        val prefix: List<RechargePrefix> = listOf()
 ) : Parcelable

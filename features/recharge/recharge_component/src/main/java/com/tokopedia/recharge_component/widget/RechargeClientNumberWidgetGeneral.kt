@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
@@ -23,6 +24,7 @@ import com.tokopedia.recharge_component.databinding.WidgetRechargeClientNumberGe
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
+import com.tokopedia.recharge_component.listener.ClientNumberSortFilterListener
 import com.tokopedia.recharge_component.model.InputFieldType
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -44,6 +46,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
     private var mInputFieldListener: ClientNumberInputFieldListener? = null
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
     private var mFilterChipListener: ClientNumberFilterChipListener? = null
+    private var mSortFilterListener: ClientNumberSortFilterListener? = null
 
     private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
 
@@ -337,10 +340,47 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
     fun setListener(
         inputFieldListener: ClientNumberInputFieldListener?,
         autoCompleteListener: ClientNumberAutoCompleteListener?,
-        filterChipListener: ClientNumberFilterChipListener?
+        filterChipListener: ClientNumberFilterChipListener?,
+        sortFilterListener: ClientNumberSortFilterListener?
     ) {
         mInputFieldListener = inputFieldListener
         mAutoCompleteListener = autoCompleteListener
         mFilterChipListener = filterChipListener
+        mSortFilterListener = sortFilterListener
     }
+
+    fun setTitleGeneral(title: String){
+        if (!title.isNullOrEmpty()) {
+            binding.clientNumberWidgetGeneralTgTitle.run {
+                show()
+                text = title
+            }
+        }
+    }
+
+    fun setChipOperators(operators: List<CatalogOperator>, selectedOperator: CatalogOperator){
+        binding.clientNumberWidgetGeneralChipOperator.run {
+            show()
+            val filterItems = arrayListOf<SortFilterItem>()
+            operators.forEach {
+                val item = SortFilterItem(it.attributes.name)
+                filterItems.add(item)
+            }
+
+            filterItems.forEachIndexed{ index, sortFilterItem ->
+                if (selectedOperator.id == operators.get(index).id){
+                    sortFilterItem.type = ChipsUnify.TYPE_SELECTED
+                }
+                sortFilterItem.listener = {
+                    sortFilterItem.toggle()
+                    if (sortFilterItem.type == ChipsUnify.TYPE_SELECTED){
+                        mSortFilterListener?.getSelectedChipOperator(operators.get(index))
+                    }
+                }
+            }
+            addItem(filterItems)
+        }
+    }
+
+
 }

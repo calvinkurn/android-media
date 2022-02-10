@@ -5,6 +5,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.toPx
 
 
@@ -69,5 +71,13 @@ fun validateContactName(textFieldStaticLabel: String, contactName: String): Stri
         }
     } else {
         textFieldStaticLabel
+    }
+}
+
+fun SortFilterItem.toggle() {
+    type = if (type == ChipsUnify.TYPE_NORMAL) {
+        ChipsUnify.TYPE_SELECTED
+    } else {
+        ChipsUnify.TYPE_NORMAL
     }
 }

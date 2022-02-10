@@ -3,6 +3,7 @@ package com.tokopedia.digital_product_detail.data.model.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
+import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 
 data class DigitalCatalogOperatorSelectGroup(
     @SerializedName("rechargeCatalogOperatorSelectGroup")
