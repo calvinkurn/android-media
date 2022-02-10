@@ -38,6 +38,61 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
+    override fun userClickEntryPointOnMVCLockToProduct(
+        shopId: String,
+        userId: String?,
+        source: Int,
+        productId: String
+    ) {
+        val map = mutableMapOf<String, Any>()
+        when (source) {
+            MvcSource.PDP -> {
+                map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
+                map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_MVC_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.PDP_VIEW}-$productId"
+
+            }
+            MvcSource.SHOP -> {
+                map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.SHOP_PAGE_BUYER
+                map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_MVC_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.SHOP_PAGE}-$shopId"
+
+            }
+        }
+        Tracker.fillCommonItems(map, userId, Tracker.Constants.BUSINESSUNIT_PROMO)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun viewMVCLockToProduct(
+        shopId: String,
+        userId: String?,
+        source: Int,
+        productId: String
+    ) {
+
+        val map = mutableMapOf<String, Any>()
+        when (source) {
+            MvcSource.PDP -> {
+                map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_LOCK_TO_PRODUCT_VIEW
+                map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
+                map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_MVC_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.PDP_VIEW}-$productId"
+
+            }
+            MvcSource.SHOP -> {
+                map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_LOCK_TO_PRODUCT_VIEW
+                map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.SHOP_PAGE_BUYER
+                map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_MVC_LOCK_TO_PRODUCT
+                map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.SHOP_PAGE}-$shopId"
+
+            }
+        }
+        Tracker.fillCommonItems(map, userId, Tracker.Constants.BUSINESSUNIT_PROMO)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
     //3, 18
     override fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?) {
         val map = mutableMapOf<String, Any>()

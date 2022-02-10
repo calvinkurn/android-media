@@ -61,7 +61,14 @@ class MvcDetailView @JvmOverloads constructor(
     private val CONTAINER_SHIMMER = 1
     private val CONTAINER_ERROR = 2
     private var shopId = ""
+    private var productId = ""
+
+    override fun getProductId(): String {
+        return this.productId
+    }
+
     var bundleForDataUpdate:Bundle? = null
+
     override fun getShopId(): String {
         return this.shopId
     }
@@ -220,12 +227,14 @@ class MvcDetailView @JvmOverloads constructor(
         }
     }
 
-    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int, mvcTracker: MvcTracker?) {
+    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int, mvcTracker: MvcTracker?, productId: String) {
         this.addBottomMarginOnToast = addBottomMarginOnToast
         this.mvcTracker = mvcTracker
         this.shopId = shopId
+        this.productId = productId
         this.mvcSource = mvcSource
         viewModel.getListData(shopId)
+        this.adapter.setTracker(mvcTracker)
     }
 
     fun setupData(response: TokopointsCatalogMVCListResponse) {

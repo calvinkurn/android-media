@@ -14,7 +14,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcCouponListItem
 import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.views.MvcDetailViewContract
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 
 class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val rvImage: RecyclerView = itemView.findViewById(R.id.rvImage)
@@ -33,7 +35,7 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         rvImage.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    fun setData(data: MvcCouponListItem) {
+    fun setData(data: MvcCouponListItem, contract: MvcDetailViewContract) {
         tv1.text = data.title1
         tv2.text = data.title2
         tv3.text = data.title3
@@ -42,12 +44,16 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 REDIRECT_CHECK -> {
                     rel_cta.show()
                     if (data.ctaCatalog.text.isNullOrEmpty().not()) {
+                        contract.getMvcTracker()?.viewMVCLockToProduct(
+                            shopId = contract.getShopId(), userId = UserSession(itemView.context).userId, source = contract.getMvcSource(),productId = contract.getProductId())
                         tv4.text = data.ctaCatalog.text
                     } else {
                         rel_cta.hide()
                     }
                     if (data.ctaCatalog.appLink.isNullOrEmpty().not()) {
                         rel_cta.setOnClickListener {
+                            contract.getMvcTracker()?.userClickEntryPointOnMVCLockToProduct(
+                                shopId = contract.getShopId(), userId = UserSession(itemView.context).userId, source = contract.getMvcSource(),productId = contract.getProductId())
                             RouteManager.route(itemView.context, data.ctaCatalog.appLink)
                         }
                     } else {
