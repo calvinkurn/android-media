@@ -72,22 +72,34 @@ data class DynamicHomeChannel(
             @SerializedName("banner")
             val banner: Banner = Banner(),
             @SerializedName("promoName")
+            @Expose
             var promoName: String = "",
             @SerializedName("homeAttribution")
+            @Expose
             val homeAttribution: String = "",
             @SerializedName("has_close_button")
+            @Expose
             val hasCloseButton: Boolean = false,
             @SerializedName("isAutoRefreshAfterExpired")
+            @Expose
             val isAutoRefreshAfterExpired: Boolean = false,
             @SerializedName("contextualInfo")
+            @Expose
             val contextualInfo: Int = 0,
             @SerializedName("widgetParam")
+            @Expose
             val widgetParam: String = "",
             @SerializedName("token")
+            @Expose
             var token: String = "",
             @SerializedName("dividerType")
+            @Expose
             val dividerType: Int = DIVIDER_NO_DIVIDER,
+            @SerializedName("timestamp")
+            @Expose
             var timestamp: String = "",
+            @SerializedName("isCache")
+            @Expose
             var isCache: Boolean = true
     ) : ImpressHolder() {
 
@@ -306,6 +318,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
             const val LAYOUT_QUESTWIDGET = "quest_widget"
             const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"
+            const val LAYOUT_CM_HOME_TO_DO: String = "home_todo"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
