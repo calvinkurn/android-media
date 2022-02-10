@@ -30,6 +30,16 @@
             app:typographyType="heading_5"
             app:typographyWeight="bold" />
 
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconEligiblePm"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:icon_name="BADGE_PM_FILLED"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@id/titleShopStatus"
+            app:layout_constraintBottom_toBottomOf="@id/titleShopStatus"
+            app:layout_constraintEnd_toStartOf="@id/regularMerchantStatus"
+            />
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/regularMerchantStatus"
             android:layout_width="wrap_content"
