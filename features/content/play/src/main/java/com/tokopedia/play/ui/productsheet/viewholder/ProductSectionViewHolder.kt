@@ -20,6 +20,7 @@ import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -135,8 +136,7 @@ class ProductSectionViewHolder(
 
     private fun getTimeDiff(serverTime: Date, currentTime: Date): Date {
         val diff = serverTime.time - currentTime.time
-        currentTime.time = currentTime.time + diff
-        return currentTime
+        return currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
     }
 
     companion object {
