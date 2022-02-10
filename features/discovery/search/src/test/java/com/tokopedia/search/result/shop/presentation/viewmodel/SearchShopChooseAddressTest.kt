@@ -28,17 +28,21 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `Show choose address widget in first page`() {
-        `Given search shop API call will be successful with request param`()
-        `Given chosen address data`(dummyChooseAddressData)
-
-        `Given already view created`()
-        `Given handle view is visible and added`()
+        setUp(dummyChooseAddressData)
 
         `Then verify parameters contains choose address data`(
             requestParamsSlot.captured.parameters as Map<String, String>,
             dummyChooseAddressData,
         )
         `Then assert search shop state is success and contains choose address model at first index`()
+    }
+
+    private fun setUp(chooseAddressModel: LocalCacheModel?) {
+        `Given search shop API call will be successful with request param`()
+        `Given chosen address data`(chooseAddressModel)
+
+        `Given already view created`()
+        `Given handle view is visible and added`()
     }
 
     private fun `Given search shop API call will be successful with request param`() {
@@ -80,22 +84,14 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `Null or empty choose address data will not send choose address parameter`() {
-        `Given search shop API call will be successful with request param`()
-        `Given chosen address data`(null)
-
-        `Given already view created`()
-        `Given handle view is visible and added`()
+        setUp(null)
 
         `Then verify choose address data is not sent`(requestParamsSlot.captured.parameters as Map<String, String>)
     }
 
     @Test
     fun `Empty Choose Address data will not send choose address parameter`() {
-        `Given search shop API call will be successful with request param`()
-        `Given chosen address data`(LocalCacheModel())
-
-        `Given already view created`()
-        `Given handle view is visible and added`()
+        setUp(LocalCacheModel())
 
         `Then verify choose address data is not sent`(requestParamsSlot.captured.parameters as Map<String, String>)
     }
@@ -122,11 +118,7 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
             warehouse_id = warehouseId,
         )
 
-        `Given search shop API call will be successful with request param`()
-        `Given chosen address data`(dummyChooseAddressData)
-
-        `Given already view created`()
-        `Given handle view is visible and added`()
+        setUp(dummyChooseAddressData)
 
         `Given chosen address data`(newChooseAddressData)
 
@@ -160,11 +152,7 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
             warehouse_id = warehouseId,
         )
 
-        `Given search shop API call will be successful with request param`()
-        `Given chosen address data`(dummyChooseAddressData)
-
-        `Given already view created`()
-        `Given handle view is visible and added`()
+        setUp(dummyChooseAddressData)
 
         `Given chosen address data`(newChooseAddressData)
         `Given choose address data has updated`()
@@ -185,11 +173,7 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `Choose address data does not change on view resume`() {
-        `Given search shop API call will be successful with request param`()
-        `Given chosen address data`(dummyChooseAddressData)
-
-        `Given already view created`()
-        `Given handle view is visible and added`()
+        setUp(dummyChooseAddressData)
 
         `Given view is already resumed`()
 
