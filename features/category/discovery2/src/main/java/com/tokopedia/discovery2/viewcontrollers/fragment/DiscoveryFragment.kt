@@ -89,6 +89,7 @@ import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -1420,7 +1421,7 @@ class DiscoveryFragment :
             AtcVariantHelper.goToAtcVariant(
                 it,
                 productId,
-                AtcVariantHelper.DISCOVERY_PAGESOURCE,
+                VariantPageSource.DISCOVERY_PAGESOURCE,
                 true,
                 userAddressData?.shop_id?: "",
                 startActivitResult = { intent, reqCode ->
