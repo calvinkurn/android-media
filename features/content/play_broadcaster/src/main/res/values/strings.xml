@@ -235,4 +235,5 @@
     <string name="play_bro_etalase_sort">Urutkan</string>
     <string name="play_bro_selected_product_title">Pilih produk (%d/%d)</string>
     <string name="play_bro_product_stock">Stok %d</string>
+    <string name="play_bro_add_product">Tambah Produk</string>
 </resources>

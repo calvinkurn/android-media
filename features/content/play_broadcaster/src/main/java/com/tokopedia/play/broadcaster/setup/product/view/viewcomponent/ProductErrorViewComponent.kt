@@ -11,14 +11,22 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class ProductErrorViewComponent(
     private val view: GlobalError,
-    eventBus: EventBus<in Any>,
+    private val eventBus: EventBus<in Event>,
 ) : ViewComponent(view) {
 
     fun setProductNotFound() {
         view.productNotFoundState()
+        view.setActionClickListener {  }
     }
 
-    fun setEmptyProduct() {
+    fun setHasNoProduct() {
         view.productEtalaseEmpty()
+        view.setActionClickListener {
+            eventBus.emit(Event.AddProductClicked)
+        }
+    }
+
+    sealed class Event {
+        object AddProductClicked : Event()
     }
 }

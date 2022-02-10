@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.setup.product.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -17,6 +18,7 @@ import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -54,8 +56,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         ): PlayBroProductSetupViewModel
     }
 
-    private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
-    private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
+//    private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
+//    private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
+    private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductMap = MutableStateFlow(productMap)
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
@@ -67,18 +70,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private var getProductListJob: Job? = null
 
     private val _uiEvent = MutableSharedFlow<PlayBroProductChooserEvent>(extraBufferCapacity = 5)
-
-    private val _campaignAndEtalase = combine(
-        _loadParam,
-        _campaignList,
-        _etalaseList
-    ) { loadParam, campaignList, etalaseList ->
-        CampaignAndEtalaseUiModel(
-            selected = loadParam.etalase,
-            campaignList = campaignList,
-            etalaseList = etalaseList,
-        )
-    }
 
     val uiEvent: SharedFlow<PlayBroProductChooserEvent>
         get() = _uiEvent
@@ -105,8 +96,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     )
 
     init {
-        getCampaignList()
-        getEtalaseList()
+        getCampaignAndEtalaseList()
 
         viewModelScope.launch {
             searchQuery.debounce(300)
@@ -146,32 +136,36 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
             is PlayBroProductChooserAction.SearchProduct -> handleSearchProduct(action.keyword)
             PlayBroProductChooserAction.SaveProducts -> handleSaveProducts()
+            PlayBroProductChooserAction.AddProduct -> handleAddProduct()
         }
     }
 
-//    private fun getCampaignAndEtalaseList() {
-//        viewModelScope.launchCatchError(dispatchers.io, block = {
-//            val
-//        }) {
-//
-//        }
-//    }
-
-    private fun getEtalaseList() {
+    private fun getCampaignAndEtalaseList() {
+        _campaignAndEtalase.update {
+            it.copy(state = NetworkState.Loading)
+        }
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            _etalaseList.value = repo.getEtalaseList()
+            val campaignListDeferred = asyncCatchError(block = {
+                repo.getCampaignList()
+            }) { emptyList() }
+            val etalaseListDeferred = asyncCatchError(block = {
+                repo.getEtalaseList()
+            }) { emptyList() }
+
+            _campaignAndEtalase.update {
+                it.copy(
+                    campaignList = campaignListDeferred.await().orEmpty(),
+                    etalaseList = etalaseListDeferred.await().orEmpty(),
+                    state = NetworkState.Success,
+                )
+            }
         }) {
-            print(it)
+            _campaignAndEtalase.update {
+                it.copy(state = NetworkState.Failed)
+            }
         }
     }
 
-    private fun getCampaignList() {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            _campaignList.value = repo.getCampaignList()
-        }) {
-            print(it)
-        }
-    }
 
     private fun handleSetSort(sort: SortUiModel) {
         _loadParam.update {
@@ -301,6 +295,12 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     it.copy(isLoading = false)
                 }
             }
+        }
+    }
+
+    private fun handleAddProduct() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroProductChooserEvent.OpenShopPage(userSession.shopId))
         }
     }
 }

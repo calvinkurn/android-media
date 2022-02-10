@@ -32,7 +32,8 @@ internal fun GlobalError.productEtalaseEmpty() {
     errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
     errorTitle.text = context.getString(R.string.play_product_etalase_empty_title)
     errorDescription.text = context.getString(R.string.play_product_etalase_empty_desc)
-    errorAction.gone()
+    errorAction.text = context.getString(R.string.play_bro_add_product)
+    errorSecondaryAction.gone()
 }
 
 internal fun GlobalError.channelNotFound(onAction: () -> Unit) {

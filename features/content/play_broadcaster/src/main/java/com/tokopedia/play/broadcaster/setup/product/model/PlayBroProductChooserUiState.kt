@@ -1,11 +1,10 @@
 package com.tokopedia.play.broadcaster.setup.product.model
 
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -33,16 +32,16 @@ data class PlayBroProductChooserUiState(
 }
 
 data class CampaignAndEtalaseUiModel(
-    val selected: SelectedEtalaseModel,
     val campaignList: List<CampaignUiModel>,
     val etalaseList: List<EtalaseUiModel>,
+    val state: NetworkState,
 ) {
     companion object {
         val Empty: CampaignAndEtalaseUiModel
             get() = CampaignAndEtalaseUiModel(
-                selected = SelectedEtalaseModel.None,
                 campaignList = emptyList(),
                 etalaseList = emptyList(),
+                state = NetworkState.Loading,
             )
     }
 }
