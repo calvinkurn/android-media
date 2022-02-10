@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home.beranda.di.module.query.QueryHome
+import com.tokopedia.home.beranda.di.module.query.HomeIconQuery
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.HomeIconData
 import com.tokopedia.network.exception.MessageErrorException
@@ -25,7 +25,7 @@ class HomeIconRepository @Inject constructor(
     }
 
     private fun buildRequest(param: String, locationParams: String): GraphqlRequest {
-        return GraphqlRequest(QueryHome.homeIconQuery, HomeIconData::class.java, mapOf(PARAM to param, PARAM_LOCATION to locationParams))
+        return GraphqlRequest(HomeIconQuery(), HomeIconData::class.java, mapOf(PARAM to param, PARAM_LOCATION to locationParams))
     }
 
     companion object{

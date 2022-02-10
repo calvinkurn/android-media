@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.otaliastudios.cameraview.size.AspectRatio
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
@@ -22,17 +23,19 @@ import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
-import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.toPx
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.util.VideoUtil
+import com.tokopedia.imagepicker_insta.util.VideoUtil.getImageDimensions
+import com.tokopedia.imagepicker_insta.util.VideoUtil.getVideoDimensions
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.imagepicker_insta.views.MediaView
@@ -488,11 +491,26 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
                 if (isSelected) {
 
+                    var zoomInfo: ZoomInfo? = null
+                    imageAdapter.getListOfIndexWhichAreSelected()
+
                     if (!isMultiSelectEnable()) {
                         zoomImageAdapterDataMap.clear()
                     }
-
-                    selectedMediaView.loadAsset(imageAdapterData, prepareZoomInfo(imageAdapterData))
+                    else {
+                        val firstSelectedMedia = imageAdapter.selectionOrder.getOrderList().last()
+                        if(imageAdapterData.asset is PhotosData) {
+                            zoomInfo = getZoomInfoForImage(firstSelectedMedia, imageAdapterData)
+                        }
+                        else{
+                            zoomInfo = getZoomInfoForVideo(firstSelectedMedia, imageAdapterData)
+                        }
+                        zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
+                    }
+                    if(zoomInfo == null){
+                        zoomInfo = prepareZoomInfo(imageAdapterData)
+                    }
+                    selectedMediaView.loadAsset(imageAdapterData, zoomInfo)
                 } else {
                     //DO nothing
                 }
@@ -508,6 +526,81 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 imageMultiSelect.toggle(true)
             }
         }
+    }
+
+    private fun getZoomInfoForVideo(firstSelectedMedia: ImageAdapterData, originalImageAdapterData: ImageAdapterData): ZoomInfo {
+        val originalWidth = originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).width
+        val originalHeight = originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
+
+        val width = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpWidth
+        val height = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpHeight
+
+        var ratio = 0.0f
+
+        try {
+            if (width != null && height != null)
+            {
+                val ar = AspectRatio.of(width, height)
+                ratio = (ar.x.toFloat()/ar.y)
+            }
+        }
+        catch (e: Exception) {e.printStackTrace()}
+
+        /*
+        * As we are supposed to maintain the orientation PORTRAIT
+        * So will keep the width same
+        * And change height according to aspect ratio
+        */
+
+        val zoomInfo = ZoomInfo()
+        zoomInfo.bmpWidth = originalWidth
+        if(ratio != 0.0F) {
+            zoomInfo.bmpHeight = originalWidth.div(ratio).toInt()
+        }
+        else{
+            zoomInfo.bmpHeight = originalHeight
+        }
+        return zoomInfo
+    }
+
+    private fun getZoomInfoForImage(firstSelectedMedia: ImageAdapterData, originalImageAdapterData: ImageAdapterData): ZoomInfo {
+
+        // getting original width of the new selected video
+        val originalWidth = originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext()).width
+        val originalHeight = originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
+
+        //TODO get selected media ki list ka first index
+        val width = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpWidth
+        val height = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpHeight
+
+        var ratio = 0.0f
+
+        try {
+            if (width != null && height != null)
+            {
+                val ar = AspectRatio.of(width, height)
+                ratio = (ar.x.toFloat()/ar.y)
+            }
+        }
+        catch (e: Exception) {e.printStackTrace()}
+
+        /*
+        * As we are supposed to maintain the orientation PORTRAIT
+        * So will keep the width same
+        * And change height according to aspect ratio
+        */
+
+
+        val zoomInfo = ZoomInfo()
+        zoomInfo.bmpWidth = originalWidth
+        if(ratio != 0.0F) {
+            zoomInfo.bmpHeight = originalWidth.div(ratio).toInt()
+        }
+        else{
+            zoomInfo.bmpHeight = originalHeight
+        }
+        return zoomInfo
+
     }
 
     private fun updateMediaToUi(mediaVmMData: MediaVmMData?) {
@@ -611,10 +704,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun handleSuccessSelectedUri(uris: List<Uri>) {
-//        if(true){
-//            startActivity(Intent(context,DummyActivity::class.java))
-//            return
-//        }
+
         if (!uris.isNullOrEmpty()) {
 
             val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
@@ -636,6 +726,17 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         var zoomInfo = zoomImageAdapterDataMap[imageAdapterData]
         if (zoomInfo == null) {
             zoomInfo = ZoomInfo()
+
+            if(imageAdapterData.asset is PhotosData){
+                val size = imageAdapterData.asset.contentUri.getImageDimensions(requireContext())
+                zoomInfo.bmpWidth = size.width
+                zoomInfo.bmpHeight = size.height
+            }
+            else{
+                val size = imageAdapterData.asset.contentUri.getVideoDimensions(requireContext())
+                zoomInfo.bmpWidth = size.width
+                zoomInfo.bmpHeight = size.height
+            }
             zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
         }
         return zoomInfo

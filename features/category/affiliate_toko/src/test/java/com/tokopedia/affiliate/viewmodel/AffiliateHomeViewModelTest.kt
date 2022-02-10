@@ -157,7 +157,7 @@ class AffiliateHomeViewModelTest{
     /**************************** getSelectedDate() *******************************************/
     @Test
     fun getSelectedDataTest(){
-        val selectedDate = AffiliateBottomDatePicker.SEVEN_DAYS
+        val selectedDate = AffiliateBottomDatePicker.THIRTY_DAYS
         assertEquals(affiliateHomeViewModel.getSelectedDate(),selectedDate)
     }
 
