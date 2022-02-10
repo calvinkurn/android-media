@@ -110,7 +110,7 @@ class ProductSectionViewHolder(
                 time.time + convertedServerTime.time
                 val diff = timerTime.toDate(
                     DateUtil.YYYY_MM_DD_T_HH_MM_SS
-                ).time - convertedServerTime.time
+                ).time - getTimeDiff(serverTime = convertedServerTime, time).time
                 val seconds = TimeUnit.MILLISECONDS.toSeconds(diff).toInt()
                 val minutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
                 val hours = TimeUnit.MILLISECONDS.toHours(diff).toInt()
@@ -132,6 +132,12 @@ class ProductSectionViewHolder(
         return adapter.getItems().isNotEmpty() &&
                 adapter.getItems().first() is PlayProductUiModel.Product &&
                 adapter.itemCount != productSize
+    }
+
+    private fun getTimeDiff(serverTime: Date, currentTime: Date): Date {
+        val diff = serverTime.time - currentTime.time
+        currentTime.time = currentTime.time + diff
+        return currentTime
     }
 
     companion object {
