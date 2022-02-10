@@ -273,7 +273,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             }
         } else {
             for (shippingCourierUiModel in shippingCourierUiModelList) {
-                shippingCourierUiModel.isSelected = shippingCourierUiModel.productData.isRecommend
+                shippingCourierUiModel.isSelected = if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
                 if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     flagNeedToSetPinpoint = true
                     selectedServiceId = shippingCourierUiModel.serviceData.serviceId
