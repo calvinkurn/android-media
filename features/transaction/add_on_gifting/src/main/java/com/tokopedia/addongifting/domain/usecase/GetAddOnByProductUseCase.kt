@@ -2,7 +2,7 @@ package com.tokopedia.addongifting.domain.usecase
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.addongifting.data.response.GetAddOnByProductResponse
+import com.tokopedia.addongifting.data.getaddonbyproduct.GetAddOnByProductResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

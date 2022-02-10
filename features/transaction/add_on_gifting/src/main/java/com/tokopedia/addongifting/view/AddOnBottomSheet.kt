@@ -146,6 +146,15 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
                 GlobalEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION -> {
                     showCloseConfirmationDialog()
                 }
+                GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON -> {
+                    // Todo : return result & dismiss bottom sheet
+                    dismiss()
+                }
+                GlobalEvent.STATE_FAILED_SAVE_ADD_ON -> {
+                    viewBinding.totalAmount.amountCtaView.isLoading = false
+                    Toaster.build(viewBinding.bottomsheetContainer, "Gagal menyimpan pelengkap. Silakan coba lagi.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            .show()
+                }
                 GlobalEvent.STATE_DISMISS_BOTTOM_SHEET -> {
                     dismiss()
                 }
@@ -184,9 +193,9 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
             }
             amountCtaView.show()
             amountCtaView.setOnClickListener {
-                // Todo : hit save state
-                Toaster.build(viewBinding.bottomsheetContainer, "Will Save The State", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                        .show()
+                val mockSaveAddOnStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_save_add_on_state_response)
+                viewBinding.totalAmount.amountCtaView.isLoading = true
+                viewModel.saveAddOnState(mockSaveAddOnStateResponse)
             }
         }
     }
@@ -294,6 +303,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         viewBinding = null
         measureRecyclerViewPaddingDebounceJob?.cancel()
         activity?.finish()
+        activity?.overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
         super.onDismiss(dialog)
     }
 

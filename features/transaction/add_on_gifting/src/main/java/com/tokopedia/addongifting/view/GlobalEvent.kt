@@ -10,5 +10,7 @@ data class GlobalEvent(
         const val STATE_FAILED_LOAD_ADD_ON_DATA = 11
         const val STATE_SHOW_CLOSE_DIALOG_CONFIRMATION = 21
         const val STATE_DISMISS_BOTTOM_SHEET = 31
+        const val STATE_SUCCESS_SAVE_ADD_ON = 40
+        const val STATE_FAILED_SAVE_ADD_ON = 41
     }
 }

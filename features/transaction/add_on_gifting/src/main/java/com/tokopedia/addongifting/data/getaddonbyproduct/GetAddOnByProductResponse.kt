@@ -1,4 +1,4 @@
-package com.tokopedia.addongifting.data.response
+package com.tokopedia.addongifting.data.getaddonbyproduct
 
 import com.google.gson.annotations.SerializedName
 
