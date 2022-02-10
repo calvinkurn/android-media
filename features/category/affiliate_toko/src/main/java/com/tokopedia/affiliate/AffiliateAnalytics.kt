@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate
 
+import android.os.Bundle
 import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.EVENT_PROMO_CLICK
 import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.KEY_PROMOTIONS
 import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.PROMO_CLICK
@@ -83,34 +84,22 @@ object AffiliateAnalytics {
         itemId: String,
         userId: String
     ){
-        val list = ArrayList<Map<String, Any>>()
-        val productMap = HashMap<String, Any>()
-        productMap[EventKeys.KEY_ITEM_ID] = itemId
-        productMap[EventKeys.KEY_CREATIVE_NAME] = ""
-        productMap[EventKeys.KEY_CREATIVE_SLOT] = (position + 1).toString()
-        productMap[EventKeys.KEY_ITEM_NAME] = ItemKeys.AFFILIATE_TRANSACTION_PAGE
-        list.add(productMap)
-        val map = HashMap<String,Any>()
-        if(event == PROMO_CLICK){
-            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-            EVENT_PROMO_CLICK to mapOf(
-                KEY_PROMOTIONS to list))
-            map[EventKeys.KEY_ECOMMERCE] = eCommerce
-        }else{
-            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> =mapOf(
-                "detail" to mapOf(
-                    "products" to list))
-            map[EventKeys.KEY_ECOMMERCE] = eCommerce
+        val bundle = Bundle()
+        val itemBundle = Bundle().apply {
+            putString(EventKeys.KEY_ITEM_ID,itemId)
+            putString(EventKeys.KEY_CREATIVE_SLOT, (position + 1).toString())
+            putString(EventKeys.KEY_ITEM_NAME,ItemKeys.AFFILIATE_TRANSACTION_PAGE)
         }
-        map[EventKeys.KEY_EVENT] = event
-        map[EventKeys.KEY_EVENT_CATEGORY] = category
-        map[EventKeys.KEY_EVENT_ACTION] = action
-        map[EventKeys.KEY_EVENT_LABEL] = eventLabel
-        map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
-        map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
-        map[EventKeys.KEY_USER_ID] = userId
+        bundle.putString(EventKeys.KEY_EVENT , event)
+        bundle.putString(EventKeys.KEY_EVENT_CATEGORY,category)
+        bundle.putString(EventKeys.KEY_EVENT_ACTION,action)
+        bundle.putString(EventKeys.KEY_EVENT_LABEL,eventLabel)
+        bundle.putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
+        bundle.putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+        bundle.putString(EventKeys.KEY_USER_ID,userId)
+        bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
 
-        getTracker().sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(EventKeys.KEY_EVENT,bundle)
     }
 
     interface EventKeys {
@@ -139,7 +128,7 @@ object AffiliateAnalytics {
             const val KEY_ITEM_NAME = "item_name"
 
             const val KEY_PROMOTIONS = "promotions"
-            const val SELECT_CONTENT = "selectContent"
+            const val SELECT_CONTENT = "select_content"
             const val PROMO_CLICK = "promoclick"
 
             const val KEY_ECOMMERCE = "ecommerce"
@@ -147,7 +136,7 @@ object AffiliateAnalytics {
 
             const val CLICK_REGISTER = "clickRegister"
             const val CLICK_PG = "clickPG"
-            const val VIEW_PRODUCT = "viewproduct"
+            const val VIEW_ITEM = "view_item"
         }
     }
 

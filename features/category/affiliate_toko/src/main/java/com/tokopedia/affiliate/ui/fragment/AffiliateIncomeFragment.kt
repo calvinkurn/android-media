@@ -38,9 +38,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
-import com.tokopedia.affiliate.ui.viewholder.AffiliateTransactionHistoryItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -362,7 +360,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
         context?.let {
             AffiliateAnalytics.sendIcomeTracker(
-                AffiliateAnalytics.EventKeys.VIEW_PRODUCT,AffiliateAnalytics.ActionKeys.IMPRESSION_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                AffiliateAnalytics.EventKeys.VIEW_ITEM,AffiliateAnalytics.ActionKeys.IMPRESSION_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
                 label,listSize,transactionID,UserSession(it).userId
             )
         }
