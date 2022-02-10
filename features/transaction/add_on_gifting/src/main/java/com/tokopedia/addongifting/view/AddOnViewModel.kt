@@ -4,9 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.addongifting.data.response.GetAddOnByProductResponse
+import com.tokopedia.addongifting.data.getaddonbyproduct.GetAddOnByProductResponse
 import com.tokopedia.addongifting.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.domain.usecase.GetAddOnSavedStateUseCase
+import com.tokopedia.addongifting.domain.usecase.SaveAddOnStateUseCase
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.view.uimodel.ProductUiModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatchers,
                                          private val getAddOnByProductUseCase: GetAddOnByProductUseCase,
-                                         private val getAddOnSavedStateUseCase: GetAddOnSavedStateUseCase)
+                                         private val getAddOnSavedStateUseCase: GetAddOnSavedStateUseCase,
+                                         private val saveAddOnStateUseCase: SaveAddOnStateUseCase)
     : BaseViewModel(executorDispatchers.main) {
 
     // Global Event
@@ -74,6 +76,22 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                     _productUiModel.value = productUiModel
                     val addOnUiModel = UiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)
                     _addOnUiModel.value = addOnUiModel
+                }
+        )
+    }
+
+    fun saveAddOnState(mockSaveStateResponse: String? = null) {
+        saveAddOnStateUseCase.mockResponse = mockSaveStateResponse ?: ""
+        saveAddOnStateUseCase.execute(
+                onSuccess = {
+                    _globalEvent.value = GlobalEvent().apply {
+                        state = GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON
+                    }
+                },
+                onError = {
+                    _globalEvent.value = GlobalEvent().apply {
+                        state = GlobalEvent.STATE_FAILED_SAVE_ADD_ON
+                    }
                 }
         )
     }
