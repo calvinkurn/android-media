@@ -117,7 +117,7 @@ class CouponListActivity : BaseSimpleActivity() {
     }
 
     private fun showBroadCastVoucherBottomSheet(coupon: Coupon) {
-        val bottomSheet = BroadcastCouponBottomSheet.newInstance(coupon.id, coupon.information)
+        val bottomSheet = BroadcastCouponBottomSheet.newInstance(coupon.id, coupon)
         bottomSheet.setCloseClickListener {
             VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.REVIEW,

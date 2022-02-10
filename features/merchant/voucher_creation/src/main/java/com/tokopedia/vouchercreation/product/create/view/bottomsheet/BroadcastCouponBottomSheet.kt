@@ -14,24 +14,36 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.consts.NumberConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.databinding.BottomsheetBroadcastCouponBinding
+import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.BroadcastCouponViewModel
+import com.tokopedia.vouchercreation.product.share.SharingComponentHandler
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import javax.inject.Inject
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 
 class BroadcastCouponBottomSheet : BottomSheetUnify() {
 
@@ -41,24 +53,27 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var sharingComponentHandler: SharingComponentHandler
+
     private var nullableBinding: BottomsheetBroadcastCouponBinding? = null
     private val binding: BottomsheetBroadcastCouponBinding
         get() = requireNotNull(nullableBinding)
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(BroadcastCouponViewModel::class.java) }
-    private val coupon by lazy { arguments?.getParcelable(BUNDLE_KEY_COUPON_INFORMATION) as? CouponInformation }
+    private val coupon by lazy { arguments?.getParcelable(BUNDLE_KEY_COUPON) as? Coupon }
 
     companion object {
-        private const val BUNDLE_KEY_COUPON_INFORMATION = "coupon-information"
-        private const val BUNDLE_KEY_COUPON_ID = "coupon"
+        private const val BUNDLE_KEY_COUPON = "coupon"
+        private const val BUNDLE_KEY_COUPON_ID = "couponId"
         private const val TPD_VOUCHER_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/mvc/mvc_voucher.png"
         private const val ZERO: Long = 0
 
-        fun newInstance(couponId: Long, couponInformation: CouponInformation): BroadcastCouponBottomSheet {
+        fun newInstance(couponId: Long, coupon: Coupon): BroadcastCouponBottomSheet {
             val args = Bundle()
-            args.putParcelable(BUNDLE_KEY_COUPON_INFORMATION, couponInformation)
+            args.putParcelable(BUNDLE_KEY_COUPON, coupon)
             args.putLong(BUNDLE_KEY_COUPON_ID, couponId)
 
             val fragment = BroadcastCouponBottomSheet()
@@ -85,6 +100,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         nullableBinding = BottomsheetBroadcastCouponBinding.inflate(inflater, container, false)
         setChild(binding.root)
         clearContentPadding = true
+        viewModel.setCoupon(coupon)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -92,23 +108,25 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeBroadcastMetaDataResult()
-        observeShopDetail()
+        observeGenerateImage()
         viewModel.getBroadcastMetaData()
     }
 
     private fun setupView() {
-        displayCouponPeriod(coupon ?: return)
+        displayCouponPeriod(viewModel.getCoupon()?.information ?: return)
         binding.imgVoucher.loadImage(TPD_VOUCHER_IMAGE_URL)
         binding.layoutBroadcastCoupon.setOnClickListener {
             val couponId = arguments?.getLong(BUNDLE_KEY_COUPON_ID).orZero()
             broadcastCoupon(couponId)
         }
-        binding.layoutShareToSocialMedia.setOnClickListener { viewModel.getShopDetail() }
+        binding.layoutShareToSocialMedia.setOnClickListener {
+            viewModel.generateImage(viewModel.getCoupon() ?: return@setOnClickListener)
+        }
         handleShareToSocialMediaCardVisibility()
     }
 
     private fun handleShareToSocialMediaCardVisibility() {
-        if (coupon?.target== CouponInformation.Target.PRIVATE) {
+        if (coupon?.information?.target == CouponInformation.Target.PRIVATE) {
             binding.layoutShareToSocialMedia.visible()
         } else {
             binding.layoutShareToSocialMedia.gone()
@@ -132,14 +150,19 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         })
     }
 
-    private fun observeShopDetail() {
-        viewModel.shop.observe(viewLifecycleOwner, { result ->
+
+    private fun observeGenerateImage() {
+        viewModel.couponImageWithShop.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    displayShareBottomSheet(result.data.shopName, coupon ?: return@observe)
+                    displayShareBottomSheet(
+                        viewModel.getCoupon() ?: return@observe,
+                        result.data.imageUrl,
+                        result.data.shop
+                    )
                 }
                 is Fail -> {
-                   showError(result.throwable)
+                    showError(result.throwable)
                 }
             }
         })
@@ -172,21 +195,98 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
             category = VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.PAGE,
             shopId = userSession.shopId
         )
-        SharingUtil.shareToBroadCastChat(requireActivity(), couponId.toInt())
+        com.tokopedia.vouchercreation.common.utils.SharingUtil.shareToBroadCastChat(requireActivity(), couponId.toInt())
     }
 
-    private fun displayShareBottomSheet(shopName: String, coupon: CouponInformation) {
-        //TODO implement share component
-        val startDate =
-            coupon.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT_DAY_MONTH)
-        val endDate = coupon.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT_DAY_MONTH)
+    private fun displayShareBottomSheet(coupon: Coupon, imageUrl: String, shop: ShopBasicDataResult) {
+        val title = String.format(getString(R.string.placeholder_share_component_outgoing_title), shop.shopName)
+        val endDate = coupon.information.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
+        val endHour = coupon.information.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+        val description = String.format(getString(R.string.placeholder_share_component_text_description), shop.shopName, endDate, endHour)
 
-        val template = getString(R.string.placeholder_share_coupon_product_wording)
-        val wording = String.format(template, shopName, startDate, endDate, "")
+
+        val bottomSheet = buildShareComponentInstance(
+            imageUrl,
+            title,
+            coupon.id,
+            onShareOptionsClicked = { shareModel ->
+                handleShareOptionSelection(shareModel, title, description, shop.shopDomain)
+            }, onCloseOptionClicked = {}
+        )
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun showError(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(requireActivity(), throwable)
         Toaster.build(binding.root, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
+
+    private fun buildShareComponentInstance(
+        imageUrl: String,
+        title: String,
+        couponId: Long,
+        onShareOptionsClicked : (ShareModel) -> Unit,
+        onCloseOptionClicked : () -> Unit
+    ): UniversalShareBottomSheet {
+        val iconUrl = "https://images.tokopedia.net/img/android/campaign_list/npl_icon.png"
+        return UniversalShareBottomSheet.createInstance().apply {
+            val listener = object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    onShareOptionsClicked(shareModel)
+                }
+
+                override fun onCloseOptionClicked() {
+                    onCloseOptionClicked()
+                }
+            }
+
+            init(listener)
+            setMetaData(tnTitle = title, tnImage = iconUrl, previewImgUrl = imageUrl)
+            setOgImageUrl(imageUrl)
+            setUtmCampaignData(
+                pageName = "shop page - rilisan spesial",
+                userId = userSession.userId,
+                pageId = couponId.toString(),
+                feature = "share"
+            )
+        }
+    }
+
+    private fun handleShareOptionSelection(
+        shareModel: ShareModel,
+        title: String,
+        description: String,
+        shopDomain: String
+    ) {
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                SharingUtil.executeShareIntent(
+                    shareModel,
+                    linkerShareData,
+                    activity,
+                    view,
+                    description
+                )
+                dismiss()
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+        val linkerShareData = sharingComponentHandler.generateLinkerShareData(
+            userSession.shopId,
+            shopDomain,
+            shareModel,
+            title,
+            description
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                NumberConstant.ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
+    }
+
 }

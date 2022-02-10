@@ -8,9 +8,12 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
+import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
+import com.tokopedia.vouchercreation.product.share.domain.entity.CouponImageWithShop
+import com.tokopedia.vouchercreation.product.share.domain.usecase.GenerateImageFacadeUseCase
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
-import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.vouchercreation.shop.voucherlist.model.remote.ChatBlastSellerMetadata
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -18,7 +21,7 @@ import javax.inject.Inject
 class BroadcastCouponViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase,
-    private val getShopBasicDataUseCase: ShopBasicDataUseCase
+    private val generateImageFacadeUseCase: GenerateImageFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
 
@@ -27,6 +30,11 @@ class BroadcastCouponViewModel @Inject constructor(
 
     private val _shop = MutableLiveData<Result<ShopBasicDataResult>>()
     val shop: LiveData<Result<ShopBasicDataResult>> = _shop
+
+    private val _couponImageWithShop = MutableLiveData<Result<CouponImageWithShop>>()
+    val couponImageWithShop: LiveData<Result<CouponImageWithShop>> = _couponImageWithShop
+
+    private var coupon: Coupon? = null
 
     fun getBroadcastMetaData() {
         launchCatchError(
@@ -42,16 +50,28 @@ class BroadcastCouponViewModel @Inject constructor(
         )
     }
 
-    fun getShopDetail() {
+    fun setCoupon(coupon: Coupon?) {
+        this.coupon = coupon
+    }
+
+    fun getCoupon(): Coupon? {
+        return coupon
+    }
+
+    fun generateImage(coupon: Coupon) {
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    getShopBasicDataUseCase.executeOnBackground()
+                    generateImageFacadeUseCase.execute(
+                        this,
+                        ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
+                        coupon
+                    )
                 }
-                _shop.value = Success(result)
+                _couponImageWithShop.value = Success(result)
             },
             onError = {
-                _shop.setValue(Fail(it))
+                _couponImageWithShop.setValue(Fail(it))
             }
         )
     }

@@ -43,7 +43,6 @@ import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
-import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
@@ -115,8 +114,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
-    @Inject
-    lateinit var couponMapper: CouponMapper
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
