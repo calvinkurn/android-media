@@ -12,23 +12,23 @@
             android:id="@+id/client_number_widget_operator_view"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl3"
-            android:orientation="vertical"
             android:background="@drawable/bg_client_number_operator_icon"
-            app:layout_constraintTop_toTopOf="@id/client_number_widget_main_layout"
+            android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@id/client_number_widget_main_layout"
-            app:layout_constraintStart_toStartOf="@id/client_number_widget_main_layout" />
+            app:layout_constraintStart_toStartOf="@id/client_number_widget_main_layout"
+            app:layout_constraintTop_toTopOf="@id/client_number_widget_main_layout" />
 
         <ImageView
             android:id="@+id/client_number_widget_operator_icon"
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_gravity="center"
-            android:src="@drawable/placeholder_grey"
             android:elevation="4dp"
-            app:layout_constraintTop_toTopOf="@id/client_number_widget_operator_view"
+            android:src="@drawable/placeholder_grey"
             app:layout_constraintBottom_toBottomOf="@id/client_number_widget_operator_view"
+            app:layout_constraintEnd_toEndOf="@id/client_number_widget_operator_view"
             app:layout_constraintStart_toStartOf="@id/client_number_widget_operator_view"
-            app:layout_constraintEnd_toEndOf="@id/client_number_widget_operator_view"/>
+            app:layout_constraintTop_toTopOf="@id/client_number_widget_operator_view" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/client_number_widget_operator_group"
@@ -37,55 +37,15 @@
             android:visibility="gone"
             app:constraint_referenced_ids="client_number_widget_operator_view, client_number_widget_operator_icon" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <include
             android:id="@+id/client_number_widget_main_layout"
+            layout="@layout/view_client_number_widget_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/bg_client_number_widget_shadow"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <com.tokopedia.recharge_component.widget.RechargeTextFieldImeBack
-                android:id="@+id/client_number_widget_input_field"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:textColor="@color/Unify_N700_44"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unify_text_field_clearable="true"
-                app:unify_text_field_input_type="phone" />
-
-            <com.tokopedia.sortfilter.SortFilter
-                android:id="@+id/client_number_widget_sort_filter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/client_number_widget_input_field" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:id="@+id/client_number_widget_sort_filter_shimmer"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_lvl3"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:visibility="gone"
-                app:corners="@integer/corner_radius_shimmering"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/client_number_widget_sort_filter" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <include
             android:id="@+id/include_layout"
@@ -94,10 +54,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.recharge_component.widget.RechargeTextFieldImeBack
+        android:id="@+id/client_number_widget_input_field"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_44"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_text_field_clearable="true"
+        app:unify_text_field_input_type="phone" />
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/client_number_widget_sort_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/client_number_widget_input_field" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/client_number_widget_sort_filter_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/client_number_widget_sort_filter" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

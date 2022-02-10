@@ -41,7 +41,12 @@ import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
+import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
+import com.tokopedia.recharge_component.model.InputFieldType
+import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -75,7 +80,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
     private var operator = TelcoOperator()
     private var menuId = 0
     private var categoryId = GeneralCategoryType.CATEGORY_LISTRIK_PLN
-    private var inputNumberActionType = RechargeClientNumberWidget.InputNumberActionType.MANUAL
+    private var inputNumberActionType = InputNumberActionType.MANUAL
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -158,10 +163,9 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
                     com.tokopedia.recharge_component.R.string.label_recharge_client_number_token_listrik
                 )
             )
-            setInputFieldType(RechargeClientNumberWidget.InputFieldType.Listrik)
+            setInputFieldType(InputFieldType.Listrik)
             setListener(
-                inputFieldListener = object :
-                    RechargeClientNumberWidget.ClientNumberInputFieldListener {
+                inputFieldListener = object : ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
                         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
                             if (it) {
@@ -204,10 +208,9 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
                         return false
                     }
                 },
-                autoCompleteListener = object :
-                    RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
+                autoCompleteListener = object : ClientNumberAutoCompleteListener {
                     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
-                        inputNumberActionType = RechargeClientNumberWidget.InputNumberActionType.AUTOCOMPLETE
+                        inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
                         if (isFavoriteContact) {
                             digitalPDPTelcoAnalytics.clickFavoriteContactAutoComplete(
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -225,8 +228,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
                         }
                     }
                 },
-                filterChipListener = object :
-                    RechargeClientNumberWidget.ClientNumberFilterChipListener {
+                filterChipListener = object : ClientNumberFilterChipListener {
                     override fun onShowFilterChip(isLabeled: Boolean) {
                         if (isLabeled) {
                             digitalPDPTelcoAnalytics.impressionFavoriteContactChips(
@@ -244,7 +246,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
                     }
 
                     override fun onClickFilterChip(isLabeled: Boolean) {
-                        inputNumberActionType = RechargeClientNumberWidget.InputNumberActionType.CHIP
+                        inputNumberActionType = InputNumberActionType.CHIP
                         if (isLabeled) {
                             onHideBuyWidget()
                             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
@@ -517,7 +519,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
         inputNumberActionTypeIndex: Int
     ) {
         if (!inputNumberActionTypeIndex.isLessThanZero()) {
-            inputNumberActionType = RechargeClientNumberWidget.InputNumberActionType.values()[inputNumberActionTypeIndex]
+            inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         }
 
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
