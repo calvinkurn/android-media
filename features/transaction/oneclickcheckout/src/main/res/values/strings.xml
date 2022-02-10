@@ -90,4 +90,5 @@
     <string name="occ_lbl_installment_summary_amount_per_period">Cicilan per Bulan*</string>
     <string name="occ_lbl_installment_summary_first_date">Jatuh Tempo Pertama</string>
     <string name="occ_lbl_installment_summary_last_date">Perkiraan Jatuh Tempo Terakhir</string>
+    <string name="occ_lbl_gopaylatercicil_installment_detail">%1$d bulan x %2$s</string>
 </resources>

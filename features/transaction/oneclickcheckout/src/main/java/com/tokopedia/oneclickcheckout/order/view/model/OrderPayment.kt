@@ -37,7 +37,7 @@ data class OrderPayment(
             return creditCard.selectedTerm.fee
         }
         if (walletData.isGoPaylaterCicil) {
-            return 1.0
+            return walletData.goCicilData.selectedTerm?.feeAmount ?: 0.0
         }
         return fee
     }
@@ -149,7 +149,6 @@ data class OrderPaymentWalletAdditionalData(
     val topUp: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
     val phoneNumber: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
     val goCicilData: OrderPaymentGoCicilData = OrderPaymentGoCicilData(),
-    val errorToaster: String = "",
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired
@@ -211,7 +210,27 @@ data class OrderPaymentWalletErrorData(
 }
 
 data class OrderPaymentGoCicilData(
+    val selectedTerm: OrderPaymentGoCicilTerms? = null,
+    val availableTerms: List<OrderPaymentGoCicilTerms> = emptyList(),
     val errorMessageInvalidTenure: String = "tenure invalid",
     val errorMessageTopLimit: String = "over top limit",
     val errorMessageBottomLimit: String = "below bottom limit",
+) {
+    val hasValidTerm: Boolean
+        get() = selectedTerm != null && selectedTerm.isActive && availableTerms.isNotEmpty()
+}
+
+data class OrderPaymentGoCicilTerms(
+    val installmentTerm: Int = 0,
+    val optionId: String = "",
+    val firstInstallmentDate: String = "",
+    val lastInstallmentDate: String = "",
+    val firstDueMessage: String = "",
+    val interestAmount: Double = 0.0,
+    val feeAmount: Double = 0.0,
+    val installmentAmountPerPeriod: Double = 0.0,
+    val labelType: String = "",
+    val labelMessage: String = "",
+    val isActive: Boolean = true,
+    val description: String = ""
 )

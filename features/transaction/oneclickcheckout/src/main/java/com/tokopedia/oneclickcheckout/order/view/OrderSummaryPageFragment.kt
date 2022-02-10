@@ -1316,8 +1316,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, payment.creditCard.additionalData.profileCode)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_MERCHANT, payment.creditCard.additionalData.merchantCode)
                 val orderCost = viewModel.orderTotal.value.orderCost
-                val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
-                putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, orderCost.totalPriceWithoutPaymentFees)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, payment.bid)
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)

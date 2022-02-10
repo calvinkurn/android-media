@@ -268,7 +268,7 @@ class GetOccCartMapper @Inject constructor() {
                 isCalculationError = false,
                 gatewayCode = payment.gatewayCode,
                 gatewayName = payment.gatewayName,
-                minimumAmount = payment.minimumAmount,
+                minimumAmount = payment.minimumAmount + 300000,
                 maximumAmount = payment.maximumAmount,
                 fee = payment.fee,
                 walletAmount = payment.walletAmount,

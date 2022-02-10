@@ -671,14 +671,23 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     }
                 }
             } else if (payment.walletData.isGoPaylaterCicil) {
+                val goCicilData = payment.walletData.goCicilData
+                if (goCicilData.hasValidTerm) {
+                    tvInstallmentDetailWrap.setText(R.string.occ_gopaylatercicil_default_installment)
+                    tvInstallmentDetailWrap.visible()
+                    tvInstallmentErrorMessage.text = goCicilData.errorMessageInvalidTenure
+                    tvInstallmentErrorMessage.visible()
+                } else {
+                    tvInstallmentDetailWrap.text = tvInstallmentDetailWrap.context.getString(R.string.occ_lbl_gopaylatercicil_installment_detail,
+                        goCicilData.selectedTerm?.installmentTerm ?: 0,
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(goCicilData.selectedTerm?.installmentAmountPerPeriod ?: 0.0, false).removeDecimalSuffix())
+                    tvInstallmentDetailWrap.visible()
+                    tvInstallmentErrorMessage.gone()
+                }
                 tvInstallmentType.visible()
                 tvInstallmentDetail.gone()
-                tvInstallmentDetailWrap.visible()
-                tvInstallmentDetailWrap.setText(R.string.occ_gopaylatercicil_default_installment)
                 btnChangeInstallment.gone()
                 btnChangeInstallmentWrap.visible()
-                tvInstallmentErrorMessage.text = payment.walletData.goCicilData.errorMessageInvalidTenure
-                tvInstallmentErrorMessage.visible()
                 tvInstallmentErrorAction.gone()
                 setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetailWrap, btnChangeInstallmentWrap) {
                     if (profile.enable) {

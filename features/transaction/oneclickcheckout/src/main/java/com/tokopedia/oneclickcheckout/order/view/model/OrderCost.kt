@@ -13,6 +13,13 @@ data class OrderCost(
         val cashbacks: List<OrderCostCashbackData> = emptyList(),
         val installmentData: OrderCostInstallmentData? = null,
 
+        // Easy access for calculation
+        val totalPriceWithoutPaymentFees: Double = 0.0,
+        val totalPriceWithoutDiscountsAndPaymentFees: Double = 0.0,
+        val totalItemPriceAndShippingFee: Double = 0.0,
+        val totalAdditionalFee: Double = 0.0,
+        val totalDiscounts: Int = 0,
+
         // Flag
         val isNewBottomSheet: Boolean = false,
 )

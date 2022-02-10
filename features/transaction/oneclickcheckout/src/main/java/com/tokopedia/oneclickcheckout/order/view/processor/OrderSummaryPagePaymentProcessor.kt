@@ -42,11 +42,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
     private fun generateCreditCardTenorListRequest(orderPaymentCreditCard: OrderPaymentCreditCard,
                                                    userId: String, orderCost: OrderCost, orderCart: OrderCart): CreditCardTenorListRequest {
         val cartDetailsItemList = ArrayList<CartDetailsItem>()
-        val paymentAmount = orderCost.totalItemPrice + orderCost.shippingFee
-        val cartDetailsItem = CartDetailsItem(shopType = orderCart.shop.shopTier, paymentAmount = paymentAmount)
+        val cartDetailsItem = CartDetailsItem(shopType = orderCart.shop.shopTier, paymentAmount = orderCost.totalItemPriceAndShippingFee)
         cartDetailsItemList.add(cartDetailsItem)
-        val totalDiscount = orderCost.productDiscountAmount + orderCost.shippingDiscountAmount
-        val totalOtherAmount = orderCost.purchaseProtectionPrice + orderCost.insuranceFee
 
         return CreditCardTenorListRequest(
                 tokenId = orderPaymentCreditCard.tokenId,
@@ -55,8 +52,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
                 profileCode = orderPaymentCreditCard.additionalData.profileCode,
                 ccfeeSignature = orderPaymentCreditCard.tenorSignature,
                 timestamp = orderPaymentCreditCard.unixTimestamp,
-                otherAmount = totalOtherAmount,
-                discountAmount = totalDiscount.toDouble(),
+                otherAmount = orderCost.totalAdditionalFee,
+                discountAmount = orderCost.totalDiscounts.toDouble(),
                 cartDetails = cartDetailsItemList
         )
     }

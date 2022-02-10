@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import android.util.Log
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -87,7 +88,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
-    private var afpbJob: Job? = null
+    private var dynamicPaymentFeeJob: Job? = null
 
     private var hasSentViewOspEe = false
 
@@ -141,9 +142,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
                 uiMessage is OccToasterAction -> {
                     globalEvent.value = OccGlobalEvent.ToasterAction(uiMessage)
-                }
-                result.orderPayment.walletData.errorToaster.isNotBlank() -> {
-                    globalEvent.value = OccGlobalEvent.ToasterInfo(result.orderPayment.walletData.errorToaster)
                 }
                 result.addressState.popupMessage.isNotBlank() -> {
                     globalEvent.value = OccGlobalEvent.ToasterInfo(result.addressState.popupMessage)
@@ -661,9 +659,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun calculateTotal() {
         orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
         if (orderPayment.value.creditCard.isAfpb) {
-            afpbJob?.cancel()
-            afpbJob = launch(executorDispatchers.immediate) {
-                adjustAdminFee()
+            dynamicPaymentFeeJob?.cancel()
+            dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
+                adjustCCAdminFee()
+            }
+        } else if (orderPayment.value.walletData.isGoPaylaterCicil) {
+            dynamicPaymentFeeJob?.cancel()
+            dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
+                adjustGoPaylaterCicilFee()
             }
         } else {
             launch(executorDispatchers.immediate) {
@@ -770,7 +773,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private suspend fun adjustAdminFee() {
+    private suspend fun adjustCCAdminFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
         val installmentTermList = paymentProcessor.get().getCreditCardAdminFee(orderPayment.value.creditCard, userSession.userId,
@@ -802,11 +805,35 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         )
     }
 
+    private suspend fun adjustGoPaylaterCicilFee() {
+        val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
+            validateUsePromoRevampUiModel, orderPayment.value)
+        Log.i("qwerty", orderCost.toString())
+        val payment = orderPayment.value
+        if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount) {
+//        val installmentTermList = paymentProcessor.get().getCreditCardAdminFee(orderPayment.value.creditCard, userSession.userId,
+//            orderCost, orderCart)
+//        if (installmentTermList == null) {
+//            val newOrderPayment = orderPayment.value
+//            orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = null, availableTerms = emptyList()))
+            globalEvent.value = OccGlobalEvent.AdjustAdminFeeError
+//        } else {
+//            val newOrderPayment = orderPayment.value
+//            val selectedTerm = orderPayment.value.creditCard.selectedTerm?.term ?: -1
+//            val selectedInstallmentTerm = installmentTermList.firstOrNull { it.term == selectedTerm }
+//            selectedInstallmentTerm?.isSelected = true
+//            orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentTermList))
+//        }
+        }
+        calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+            validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
-        afpbJob?.cancel()
+        dynamicPaymentFeeJob?.cancel()
         eligibleForAddressUseCase.cancelJobs()
         super.onCleared()
     }
