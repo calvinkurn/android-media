@@ -25,6 +25,7 @@ internal fun GlobalError.productNotFoundState() {
     errorTitle.text = context.getString(R.string.play_product_not_found_title)
     errorDescription.text = context.getString(R.string.play_product_not_found_desc)
     errorAction.gone()
+    errorSecondaryAction.gone()
 }
 
 internal fun GlobalError.productEtalaseEmpty() {

@@ -65,6 +65,18 @@
         app:layout_constraintTop_toBottomOf="@id/container_chips"
         />
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/error_product"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/fl_next_btn_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_chips"
+        />
+
     <FrameLayout
         android:id="@+id/fl_next_btn_container"
         android:layout_width="0dp"

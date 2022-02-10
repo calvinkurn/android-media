@@ -14,7 +14,7 @@ data class PlayBroProductChooserUiState(
     val campaignAndEtalase: CampaignAndEtalaseUiModel,
     val focusedProductList: ProductListPaging,
     val selectedProductList: EtalaseProductListMap,
-    val sort: SortUiModel?,
+    val loadParam: ProductListPaging.Param,
     val shopName: String,
     val saveState: ProductSaveStateUiModel,
 ) {
@@ -25,7 +25,7 @@ data class PlayBroProductChooserUiState(
                 campaignAndEtalase = CampaignAndEtalaseUiModel.Empty,
                 focusedProductList = ProductListPaging.Empty,
                 selectedProductList = emptyMap(),
-                sort = null,
+                loadParam = ProductListPaging.Param.Empty,
                 shopName = "",
                 saveState = ProductSaveStateUiModel.Empty,
             )

@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
+import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductErrorViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SaveButtonViewComponent
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SearchBarViewComponent
@@ -69,6 +70,9 @@ class ProductChooserBottomSheet @Inject constructor(
     }
     private val saveButtonView by viewComponent {
         SaveButtonViewComponent(binding.btnNext, eventBus)
+    }
+    private val productErrorView by viewComponent {
+        ProductErrorViewComponent(binding.errorProduct, eventBus)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -134,11 +138,12 @@ class ProductChooserBottomSheet @Inject constructor(
                     prevState?.selectedProductList,
                     state.selectedProductList,
                 )
-                renderSortChips(prevState?.sort, state.sort, state.campaignAndEtalase)
+                renderSortChips(prevState?.loadParam, state.loadParam, state.campaignAndEtalase)
                 renderEtalaseChips(prevState?.campaignAndEtalase, state.campaignAndEtalase)
                 renderSearchBar(state.campaignAndEtalase, prevState?.shopName, state.shopName)
                 renderBottomSheetTitle(state.selectedProductList)
                 renderSaveButton(state.saveState)
+                renderProductError(state.loadParam, state.focusedProductList)
             }
         }
 
@@ -188,12 +193,12 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderSortChips(
-        prevSort: SortUiModel?,
-        sort: SortUiModel?,
+        prevParam: ProductListPaging.Param?,
+        param: ProductListPaging.Param,
         campaignAndEtalase: CampaignAndEtalaseUiModel,
     ) {
-        if (prevSort?.id != sort?.id) {
-            sortChipsView.setText(sort?.text.orEmpty())
+        if (prevParam?.sort?.id != param.sort?.id) {
+            sortChipsView.setText(param.sort?.text.orEmpty())
         }
 
         if (campaignAndEtalase.selected !is SelectedEtalaseModel.Campaign) sortChipsView.show()
@@ -255,6 +260,20 @@ class ProductChooserBottomSheet @Inject constructor(
         saveButtonView.setState(isLoading = saveState.isLoading, isEnabled = saveState.canSave)
     }
 
+    private fun renderProductError(
+        param: ProductListPaging.Param,
+        productList: ProductListPaging,
+    ) {
+        if (productList.resultState is PageResultState.Success &&
+            productList.productList.isEmpty()
+        ) {
+            productErrorView.setProductNotFound()
+            productErrorView.show()
+        } else {
+            productErrorView.hide()
+        }
+    }
+
     /**
      * View Event
      */
@@ -264,7 +283,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 ProductSortBottomSheet.getFragment(
                     childFragmentManager,
                     requireActivity().classLoader,
-                    selectedId = viewModel.uiState.value.sort?.id
+                    selectedId = viewModel.uiState.value.loadParam.sort?.id
                 ).show(childFragmentManager)
             }
         }

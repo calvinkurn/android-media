@@ -94,7 +94,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
             selectedProductList = selectedProductList,
-            sort = loadParam.sort,
+            loadParam = loadParam,
             shopName = userSession.shopName,
             saveState = saveState,
         )
@@ -148,6 +148,14 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             PlayBroProductChooserAction.SaveProducts -> handleSaveProducts()
         }
     }
+
+//    private fun getCampaignAndEtalaseList() {
+//        viewModelScope.launchCatchError(dispatchers.io, block = {
+//            val
+//        }) {
+//
+//        }
+//    }
 
     private fun getEtalaseList() {
         viewModelScope.launchCatchError(dispatchers.io, block = {
