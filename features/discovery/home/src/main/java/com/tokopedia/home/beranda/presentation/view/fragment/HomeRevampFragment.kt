@@ -176,20 +176,21 @@ import kotlin.collections.ArrayList
  */
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment : BaseDaggerFragment(),
-    OnRefreshListener,
-    HomeCategoryListener,
-    AllNotificationListener,
-    FragmentListener,
-    HomeEggListener,
-    HomeTabFeedListener,
-    HomeFeedsListener,
-    HomeReviewListener,
-    PopularKeywordListener,
-    FramePerformanceIndexInterface,
-    HomeAutoRefreshListener,
-    PlayWidgetListener,
-    RecommendationWidgetListener,
-    QuestWidgetCallbacks {
+        OnRefreshListener,
+        HomeCategoryListener,
+        AllNotificationListener,
+        FragmentListener,
+        HomeEggListener,
+        HomeTabFeedListener,
+        HomeFeedsListener,
+        HomeReviewListener,
+        PopularKeywordListener,
+        FramePerformanceIndexInterface,
+        HomeAutoRefreshListener,
+        PlayWidgetListener,
+        RecommendationWidgetListener,
+        QuestWidgetCallbacks,
+        CMHomeWidgetCallback {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -990,6 +991,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         refreshQuestWidget()
 
+        // refresh home-to-do-widget data if needed
+        getHomeViewModel().getCMHomeWidgetData(false)
     }
 
     private fun refreshQuestWidget() {
@@ -1526,7 +1529,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
-            this
+                    this,
+                    this
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2779,5 +2783,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun updateQuestWidget(position: Int) {
         this.questWidgetPosition = position
+    }
+
+    override fun onCMHomeWidgetDismissClick() {
+        getHomeViewModel().deleteCMHomeWidget()
+    }
+
+    override fun onRemoveCMWidgetLocally() {
+        getHomeViewModel().deleteCMHomeWidgetLocally()
+    }
+
+    override fun getCMHomeWidget() {
+        getHomeViewModel().getCMHomeWidgetData()
     }
 }
