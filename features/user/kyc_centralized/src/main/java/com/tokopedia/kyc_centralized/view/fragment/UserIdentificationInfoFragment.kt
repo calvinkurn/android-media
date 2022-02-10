@@ -66,7 +66,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var statusCode = 0
     private var projectId = -1
     private var kycType = ""
-    private var callback: String? = null
+    private var redirectUrl: String? = null
     private var kycBenefitLayout: View? = null
     private var defaultStatusBarColor = 0
     private var allowedSelfie = false
@@ -88,7 +88,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         if (arguments != null) {
             isSourceSeller = arguments?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER)?: false
             projectId = arguments?.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, KYCConstant.KYC_PROJECT_ID)?: KYCConstant.KYC_PROJECT_ID
-            callback = arguments?.getString(ApplinkConstInternalGlobal.PARAM_CALL_BACK)
+            redirectUrl = arguments?.getString(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
             kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
         }
         if (isSourceSeller) {
@@ -226,12 +226,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         image?.loadImage(KycUrl.ICON_SUCCESS_VERIFY)
         title?.setText(R.string.kyc_verified_title)
         text?.setText(R.string.kyc_verified_text)
-        if (callback == null) {
+        if (redirectUrl == null) {
             button?.setText(R.string.kyc_verified_button)
             button?.setOnClickListener(onGoToTermsButton())
         } else {
             button?.setText(R.string.camera_next_button)
-            button?.setOnClickListener(goToCallBackUrl(callback))
+            button?.setOnClickListener(goToCallBackUrl(redirectUrl))
         }
         button?.buttonVariant = FILLED
         button?.buttonType = MAIN
@@ -243,12 +243,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         image?.loadImage(KycUrl.ICON_WAITING)
         title?.setText(R.string.kyc_pending_title)
         text?.setText(R.string.kyc_pending_text)
-        if (callback == null) {
+        if (redirectUrl == null) {
             button?.setText(R.string.kyc_pending_button)
             button?.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING))
         } else {
             button?.setText(R.string.camera_next_button)
-            button?.setOnClickListener(goToCallBackUrl(callback))
+            button?.setOnClickListener(goToCallBackUrl(redirectUrl))
         }
         button?.buttonVariant = GHOST
         button?.visibility = View.VISIBLE
@@ -393,12 +393,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     companion object {
         private const val FLAG_ACTIVITY_KYC_FORM = 1301
         const val ALLOW_SELFIE_FLOW_EXTRA = "allow_selfie_flow"
-        fun createInstance(isSourceSeller: Boolean, projectid: Int, kycType: String = "", callback: String?): UserIdentificationInfoFragment {
+        fun createInstance(isSourceSeller: Boolean, projectid: Int, kycType: String = "", redirectUrl: String?): UserIdentificationInfoFragment {
             return UserIdentificationInfoFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller)
                     putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
-                    putString(ApplinkConstInternalGlobal.PARAM_CALL_BACK, callback)
+                    putString(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL, redirectUrl)
                     putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
                 }
             }

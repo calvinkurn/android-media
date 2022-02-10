@@ -132,7 +132,7 @@ object ApplinkConstInternalGlobal {
 
     // UserIdentificationFormActivity
     // tokopedia-android-internal://global/user-identification-form
-    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&type={type}"
+    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&type={type}&redirectUrl={redirectUrl}"
     const val PARAM_PROJECT_ID = "projectId"
 
     const val PARAM_CALL_BACK = "callBack"

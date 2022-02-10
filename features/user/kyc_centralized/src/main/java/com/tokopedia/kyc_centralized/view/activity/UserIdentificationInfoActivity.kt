@@ -42,8 +42,7 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
         intent?.data?.let {
             projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
-            callbackUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+            callbackUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
         }
         return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId, kycType, callbackUrl)
     }

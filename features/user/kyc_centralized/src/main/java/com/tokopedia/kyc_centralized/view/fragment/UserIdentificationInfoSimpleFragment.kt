@@ -93,7 +93,8 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         val intent = RouteManager.getIntent(requireContext(),
                 ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
                 projectId.toString(),
-                kycType
+                kycType,
+                redirectUrl
         )
         startActivityForResult(intent, KYC_REQUEST_CODE)
     }
