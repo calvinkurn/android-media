@@ -13,8 +13,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class CancelDeactivationSubmissionWidget(
-        itemView: View,
-        private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<WidgetCancelDeactivationSubmissionUiModel>(itemView) {
 
     companion object {
@@ -25,7 +25,11 @@ class CancelDeactivationSubmissionWidget(
 
     override fun bind(element: WidgetCancelDeactivationSubmissionUiModel) {
         binding?.run {
-            tvPmQuitPmMessage.text = getString(R.string.pm_deactivate_power_merchant_message_info, element.expiredTime).parseAsHtml()
+            tvPmQuitPmMessage.text = root.context.getString(
+                R.string.pm_deactivate_power_merchant_pro_message_info,
+                element.deactivatedStatusName,
+                element.expiredTime
+            ).parseAsHtml()
 
             btnPmCancelQuitSubmission.isLoading = false
             btnPmCancelQuitSubmission.setOnClickListener {

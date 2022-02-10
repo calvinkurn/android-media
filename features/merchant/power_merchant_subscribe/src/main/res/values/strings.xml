@@ -105,7 +105,7 @@
     <string name="pm_shop_grade_shop_score_threshold_description_pm_active_new_seller"><![CDATA[<b>Sebagai Seller baru,</b> Tokomu akan dapat skor &amp; level sesuai dengan Performa setelah 90 hari (%1$s).]]></string>
     <string name="pm_shop_grade_shop_score_threshold_description_pm_idle"><![CDATA[Yuk, tingkatkan skor jadi <font color="%1$s"><b>min. %2$d poin</b></font> agar %3$s-mu kembali aktif!]]></string>
     <string name="pm_deactivate_power_merchant_bottom_cta">Atur status keanggotaanmu <font color="#03AC0E"><b>di sini</b></font></string>
-    <string name="pm_deactivate_power_merchant_message_info"><![CDATA[Pengajuan penurunan status jadi Power Merchant berhasil. Layanan dan status PM otomatis berhenti pada <b>%1$s WIB.</b>]]></string>
+    <string name="pm_deactivate_power_merchant_pro_message_info"><![CDATA[Pengajuan penurunan menjadi %1$s berhasil. Perubahan akan efektif berlaku pada <b>%2$s WIB.</b>]]></string>
 
     <string name="pm_expired_time_format">%1$s, pukul %2$s</string>
     <string name="pm_system_error_message">Terjadi kesalahan pada sistem</string>

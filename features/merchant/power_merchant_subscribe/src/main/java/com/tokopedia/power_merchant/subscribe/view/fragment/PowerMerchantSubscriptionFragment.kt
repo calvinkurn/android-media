@@ -624,13 +624,21 @@ open class PowerMerchantSubscriptionFragment :
             pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
                     pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE
         val isPmActive = isPm && isActive
+        val deactivatedStatusName = if (pmBasicInfo?.pmStatus?.subscriptionType.isZero()) {
+            getString(R.string.pm_regular_merchant)
+        } else {
+            getString(R.string.pm_power_merchant)
+        }
 
         if (!tickerList.isNullOrEmpty() && !isModeratedShop) {
             widgets.add(WidgetTickerUiModel(tickerList))
         }
 
         if (!isAutoExtendEnabled) {
-            widgets.add(WidgetCancelDeactivationSubmissionUiModel(getExpiredTimeFmt()))
+            widgets.add(WidgetCancelDeactivationSubmissionUiModel(
+                getExpiredTimeFmt(),
+                deactivatedStatusName
+            ))
         }
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
