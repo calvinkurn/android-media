@@ -55,7 +55,7 @@
                 app:tickerShapeType="loose"
                 tools:visibility="gone"/>
 
-            <com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
+            <com.tokopedia.recharge_component.widget.RechargeClientNumberWidgetGeneral
                 android:id="@+id/recharge_pdp_tagihan_listrik_client_number_widget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

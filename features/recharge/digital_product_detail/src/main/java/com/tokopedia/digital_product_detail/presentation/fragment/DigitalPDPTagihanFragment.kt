@@ -110,7 +110,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
         initEmptyState()
         observeData()
         getCatalogMenuDetail()
-        getPrefixOperatorData()
+        getOperatorSelectGroup()
         onShowGreenBox()
     }
 
@@ -132,7 +132,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
             }
         })
 
-        viewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
+        viewModel.catalogSelectGroup.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
@@ -169,7 +169,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
                     override fun onRenderOperator(isDelayed: Boolean) {
                         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
                             if (it) {
-                                getPrefixOperatorData()
+                                getOperatorSelectGroup()
                             } else {
                                 renderProduct()
                             }
@@ -383,8 +383,8 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
         binding?.rechargePdpTagihanListrikClientNumberWidget?.setInputNumber(data.prefill, true)
     }
 
-    private fun getPrefixOperatorData() {
-        viewModel.getPrefixOperator(menuId)
+    private fun getOperatorSelectGroup() {
+        viewModel.getOperatorSelectGroup(menuId)
     }
 
     private fun getFavoriteNumber() {

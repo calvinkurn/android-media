@@ -6,6 +6,7 @@ import com.tokopedia.digital_product_detail.data.repository.DigitalPDPTokenListr
 import com.tokopedia.digital_product_detail.data.repository.RechargeAddToCartRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogInputMultiTabRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogMenuDetailRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogOperatorSelectGroupRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogPrefixSelectRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeFavoriteNumberRepositoryImpl
@@ -14,6 +15,7 @@ import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRep
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeAddToCartRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogOperatorSelectGroupRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogRepository
@@ -51,6 +53,10 @@ abstract class DigitalPDPBindModule {
     @Binds
     @DigitalPDPScope
     abstract fun bindRechargeInputMultiTabRepository(repo: RechargeCatalogInputMultiTabRepositoryImpl): RechargeCatalogProductInputMultiTabRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindRechargeSelectGroupRepository(repo: RechargeCatalogOperatorSelectGroupRepositoryImpl): RechargeCatalogOperatorSelectGroupRepository
 
     @Binds
     @DigitalPDPScope

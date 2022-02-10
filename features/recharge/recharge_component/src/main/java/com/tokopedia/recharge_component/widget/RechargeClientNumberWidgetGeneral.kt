@@ -56,6 +56,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
     init {
         initInputField()
         initSortFilterChip()
+        initAutoComplete()
     }
 
     private fun initInputField() {
