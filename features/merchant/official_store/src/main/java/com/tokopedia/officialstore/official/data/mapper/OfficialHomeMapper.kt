@@ -311,4 +311,11 @@ class OfficialHomeMapper (
             adapter?.submitList(this.toMutableList())
         }
     }
+
+    fun removeTopAdsHeadlineWidget(adapter: OfficialHomeAdapter?) {
+        listOfficialStore.run {
+            removeAll { it is OfficialTopAdsHeadlineDataModel}
+            adapter?.submitList(this.toMutableList())
+        }
+    }
 }

@@ -710,7 +710,8 @@ class OfficialHomeFragment :
                         userId = userSession.userId
                 ) as HashMap<String, Any>
         )
-        viewModel.impressedShopWidget(position + 1)
+
+        viewModel.recordShopWidgetImpression(channelModel.id, channelGrid.id)
     }
 
     override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
@@ -935,7 +936,11 @@ class OfficialHomeFragment :
             counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
             officialHomeMapper.removeRecomWidget(adapter)
+            officialHomeMapper.removeTopAdsHeadlineWidget(adapter)
             loadData(true)
+            viewModel.resetShopWidgetImpressionCount()
+            viewModel.resetIsFeatureShopAllowed()
+            resetData()
         }
 
         if (parentFragment is RecyclerViewScrollListener) {

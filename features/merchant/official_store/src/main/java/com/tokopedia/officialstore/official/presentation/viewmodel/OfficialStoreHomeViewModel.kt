@@ -63,13 +63,13 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private var impressedShopWidgetCount: Int = 0
     var currentSlug: String = ""
         private set
     var currentSlugDC: String = ""
         private set
 
-    private var isFeaturedShopAllowed: Boolean = false
+    var isFeaturedShopAllowed: Boolean = false
+        private set
 
     //Pair first -> should show error message
     //Pair second -> official store banner value
@@ -172,7 +172,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTopAdsHeadlineData(pageNumber: Int): OfficialTopAdsHeadlineDataModel? {
+    suspend fun getTopAdsHeadlineData(pageNumber: Int): OfficialTopAdsHeadlineDataModel? {
         return try {
             val params = getTopAdsHeadlineUseCase.createParams(
                 userId = userSessionInterface.userId,
@@ -181,7 +181,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 templateId = VALUE_TEMPLATE_ID,
                 headlineProductCount = VALUE_HEADLINE_PRODUCT_COUNT,
                 item = VALUE_ITEM,
-                seenAds = impressedShopWidgetCount.toString()
+                seenAds = if (setOfImpressedShop == null) "0" else setOfImpressedShop?.size.toString()
             )
             getTopAdsHeadlineUseCase.setParams(params)
             val data = getTopAdsHeadlineUseCase.executeOnBackground()
@@ -354,8 +354,29 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     fun getUserId() = userSessionInterface.userId
 
-    fun impressedShopWidget(count: Int) {
-        impressedShopWidgetCount = count
+    fun resetIsFeatureShopAllowed() {
+        isFeaturedShopAllowed = false
+    }
+
+
+    private val impressedShop = mutableMapOf<String, MutableSet<String>>()
+    private var setOfImpressedShop:MutableSet<String>? = mutableSetOf()
+    fun recordShopWidgetImpression(channelId: String, shopId: String){
+        setOfImpressedShop = impressedShop[channelId]
+        if (setOfImpressedShop.isNullOrEmpty()) {
+            val newSet = mutableSetOf<String>()
+            newSet.add(shopId)
+            impressedShop[channelId] = newSet
+        }else{
+            setOfImpressedShop?.let {
+                it.add(shopId)
+                impressedShop[channelId] = it
+            }
+        }
+    }
+
+    fun resetShopWidgetImpressionCount() {
+        setOfImpressedShop?.clear()
     }
 
     override fun onCleared() {

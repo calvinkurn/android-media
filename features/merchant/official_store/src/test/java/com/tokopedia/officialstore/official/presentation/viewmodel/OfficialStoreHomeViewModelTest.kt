@@ -21,12 +21,15 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -79,6 +82,9 @@ class OfficialStoreHomeViewModelTest {
     lateinit var getDisplayHeadlineAds: GetDisplayHeadlineAds
 
     @RelaxedMockK
+    lateinit var getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase
+
+    @RelaxedMockK
     lateinit var getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 
     @RelaxedMockK
@@ -94,19 +100,20 @@ class OfficialStoreHomeViewModelTest {
 
     private val viewModel by lazy {
         OfficialStoreHomeViewModel(
-                getOfficialStoreBannersUseCase,
-                getOfficialStoreBenefitUseCase,
-                getOfficialStoreFeaturedShopUseCase,
-                getOfficialStoreDynamicChannelUseCase,
-                getRecommendationUseCase,
-                userSessionInterface,
-                addWishListUseCase,
-                topAdsWishlishedUseCase,
-                removeWishListUseCase,
-                getDisplayHeadlineAds,
-                getRecommendationUseCaseCoroutine,
-                bestSellerMapper,
-                CoroutineTestDispatchersProvider
+            getOfficialStoreBannersUseCase,
+            getOfficialStoreBenefitUseCase,
+            getOfficialStoreFeaturedShopUseCase,
+            getOfficialStoreDynamicChannelUseCase,
+            getRecommendationUseCase,
+            userSessionInterface,
+            addWishListUseCase,
+            topAdsWishlishedUseCase,
+            removeWishListUseCase,
+            getDisplayHeadlineAds,
+            getRecommendationUseCaseCoroutine,
+            bestSellerMapper,
+            getTopAdsHeadlineUseCase,
+            CoroutineTestDispatchersProvider
         )
     }
 
@@ -168,6 +175,7 @@ class OfficialStoreHomeViewModelTest {
         val page = 1
         val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
         val listOfRecom = mutableListOf(RecommendationWidget())
+        val productRecommendationWithTopAdsHeadline = ProductRecommendationWithTopAdsHeadline(listOfRecom.first(), null)
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
@@ -179,7 +187,34 @@ class OfficialStoreHomeViewModelTest {
             getRecommendationUseCase.createObservable(any())
         }
         print(viewModel.productRecommendation.value)
-        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, listOfRecom[0])
+        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, productRecommendationWithTopAdsHeadline)
+    }
+
+    @Test
+    fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation_with_topads_headline_ads() {
+        val page = 1
+        val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
+        val listOfRecom = mutableListOf(RecommendationWidget())
+        val topAdsHeadlineAd = OfficialTopAdsHeadlineDataModel()
+        val productRecommendationWithTopAdsHeadline = ProductRecommendationWithTopAdsHeadline(listOfRecom.first(), topAdsHeadlineAd)
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+//        coEvery { viewModel.isFeaturedShopAllowed } returns true
+
+        coEvery {
+            viewModel.getTopAdsHeadlineData(page)
+        } returns topAdsHeadlineAd
+
+        viewModel.loadMoreProducts(categoryId, page)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any())
+        }
+        print(viewModel.productRecommendation.value)
+        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, productRecommendationWithTopAdsHeadline)
     }
 
     @Test
