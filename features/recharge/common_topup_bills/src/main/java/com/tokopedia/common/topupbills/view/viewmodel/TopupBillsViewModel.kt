@@ -8,13 +8,10 @@ import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
-import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumber
-import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.usecase.GetRechargeFavoriteNumberUseCase
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsPersoFavoriteNumberFragment
-import com.tokopedia.common.topupbills.view.util.FavoriteNumberActionType
-import com.tokopedia.common.topupbills.view.util.FavoriteNumberActionType.*
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
+import com.tokopedia.common.topupbills.favorite.domain.usecase.GetRechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.*
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -23,7 +20,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
@@ -36,7 +32,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
 import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
 
 /**
