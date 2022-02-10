@@ -249,12 +249,12 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
     }
 
-    private fun sendPendapatanEvent(eventAction: String, eventLabel: String) {
+    private fun sendPendapatanEvent(eventAction: String,eventCategory:String ,eventLabel: String) {
         context?.let {
             AffiliateAnalytics.sendEvent(
                 AffiliateAnalytics.EventKeys.CLICK_PG,
                 eventAction,
-                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE_FILTER,
+                eventCategory,
                 eventLabel,
                 UserSession(it).userId
             )
@@ -285,7 +285,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             })
         }
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
-           sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,"")
+           sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,"")
            openWithdrawalScreen()
         }
         ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
@@ -333,7 +333,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
     private fun initDateRangeClickListener() {
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
-            sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_FILTER_DATE,"")
+            sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_FILTER_DATE,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,"")
             AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this).show(childFragmentManager, "")
         }
     }
@@ -391,7 +391,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 //    }
 
     override fun rangeChanged(range: AffiliateDatePickerData) {
-        sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,range.value)
+        sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE_FILTER,range.value)
         affiliateIncomeViewModel.onRangeChanged(range)
     }
 
