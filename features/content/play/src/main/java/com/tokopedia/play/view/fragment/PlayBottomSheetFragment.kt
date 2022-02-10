@@ -722,7 +722,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 renderProductSheet(
                     prevState?.tagItems,
                     state.tagItems,
-                    state.channel.bottomSheetTitle,
+                    state.tagItems.bottomSheetTitle,
                     state.partner.id
                 )
 

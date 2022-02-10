@@ -62,12 +62,13 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
                 ),
                 maxFeatured = response.playGetTagsItem.config.peekProductCount,
                 resultState = ResultState.Success,
-                section = SectionUiModel(sectionList)
+                section = SectionUiModel(sectionList),
+                bottomSheetTitle = response.playGetTagsItem.config.bottomSheetTitle
             )
         }catch (e: Exception){
             return@withContext TagItemUiModel(product = ProductUiModel( productList = emptyList(), canShow = false),
                 voucher = VoucherUiModel(voucherList = emptyList()), maxFeatured = 1, resultState = ResultState.Success, section = SectionUiModel(
-                    emptyList())
+                    emptyList()), bottomSheetTitle = ""
             )
         }
     }

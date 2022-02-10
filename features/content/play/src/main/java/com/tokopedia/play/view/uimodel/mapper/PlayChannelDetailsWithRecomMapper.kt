@@ -176,7 +176,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         voucher = VoucherUiModel.Empty,
         maxFeatured = 0,
         resultState = ResultState.Loading,
-        section = SectionUiModel.Empty
+        section = SectionUiModel.Empty,
+        bottomSheetTitle = ""
     )
 
     private fun mapProduct(configResponse: ChannelDetailsWithRecomResponse.Config) = ProductUiModel(

@@ -234,9 +234,9 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _titleUiState = _channelDetail.map {
+    private val _titleUiState = _tagItems.map {
         PlayTitleUiState(
-            title = it.channelInfo.title
+            title = it.bottomSheetTitle
         )
     }.flowOn(dispatchers.computation)
 

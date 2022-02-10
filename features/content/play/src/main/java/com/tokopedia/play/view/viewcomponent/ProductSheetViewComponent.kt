@@ -206,12 +206,6 @@ class ProductSheetViewComponent(
         }
     }
 
-    private fun isProductCountChanged(productSize: Int): Boolean {
-        return productSectionAdapter.getItems().isNotEmpty() &&
-                productSectionAdapter.getItems().first() is PlayProductSectionUiModel.ProductSection &&
-                productSectionAdapter.itemCount != productSize
-    }
-
     private fun sendImpression() {
         if (isProductSheetsInitialized) {
             //TODO() = tracker

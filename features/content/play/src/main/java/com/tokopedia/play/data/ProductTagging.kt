@@ -34,5 +34,8 @@ data class MerchantVoucher(
 
 data class Config(
         @SerializedName("peek_product_count")
-        val peekProductCount: Int = 0
+        val peekProductCount: Int = 0,
+
+        @SerializedName("title_bottomsheet")
+        val bottomSheetTitle: String = ""
 )
