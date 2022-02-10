@@ -8,7 +8,7 @@ data class AddOnProductData(
         var isTokoCabang: Boolean = false,
         var shopBadgeUrl: String = "",
         var addOnFooterMessages: List<String> = emptyList(),
-        var addOnSavedStates: List<AddOnDataResult> = emptyList(),
+        var addOnSavedStates: List<AddOnData> = emptyList(),
         var products: List<Product> = emptyList()
 ) : Parcelable
 

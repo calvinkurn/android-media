@@ -32,6 +32,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -45,17 +46,20 @@ import javax.inject.Inject
 
 class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
 
+    companion object {
+        const val DELAY_ADJUST_RECYCLER_VIEW_MARGIN = 200L
+    }
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var adapter: AddOnListAdapter? = null
+    private var viewBinding: LayoutAddOnBottomSheetBinding? = null
+    private var measureRecyclerViewPaddingDebounceJob: Job? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AddOnViewModel::class.java)
     }
-
-    private var viewBinding: LayoutAddOnBottomSheetBinding? = null
-    private var measureRecyclerViewPaddingDebounceJob: Job? = null
 
     override fun getComponent(): AddOnComponent {
         return DaggerAddOnComponent
@@ -99,7 +103,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutAddOnBottomSheetBinding) {
-        setTitle("Atur pelengkap barang")
+        setTitle(getString(R.string.add_on_bottomsheet_title))
         showCloseIcon = true
         showHeader = true
         isDragable = true
@@ -156,7 +160,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
                 GlobalEvent.STATE_FAILED_SAVE_ADD_ON -> {
                     viewBinding.totalAmount.amountCtaView.isLoading = false
                     Toaster.build(viewBinding.bottomsheetContainer,
-                            "Gagal menyimpan pelengkap. Silakan coba lagi.",
+                            getString(R.string.add_on_toaster_message_failed_save_add_on),
                             Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
                             .show()
                 }
@@ -172,7 +176,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         if (data != null && data is SaveAddOnStateResponse) {
             val resultData = AddOnResultMapper.mapResult(data)
             val result = Intent().apply {
-                putExtra("ADD_ON_PRODUCT_DATA_RESULT", resultData)
+                putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT, resultData)
             }
             activity?.setResult(Activity.RESULT_OK, result)
         }
@@ -200,12 +204,12 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
 
     private fun renderTotalAmount(viewBinding: LayoutAddOnBottomSheetBinding, fragmentUiModel: FragmentUiModel) {
         with(viewBinding.totalAmount) {
-            setLabelTitle("Total Pelengkap")
+            setLabelTitle(context.getString(R.string.add_on_label_total_amount))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.addOnTotalPrice, false).removeDecimalSuffix())
             if (fragmentUiModel.addOnTotalQuantity > 0) {
-                setCtaText("Simpan (${fragmentUiModel.addOnTotalQuantity})")
+                setCtaText(String.format(context.getString(R.string.add_on_label_total_amount_cta_save), fragmentUiModel.addOnTotalQuantity))
             } else {
-                setCtaText("Simpan")
+                setCtaText(context.getString(R.string.add_on_label_total_amount_cta_save))
             }
             amountCtaView.show()
             amountCtaView.setOnClickListener {
@@ -240,7 +244,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     private fun adjustRecyclerViewPaddingBottom(viewBinding: LayoutAddOnBottomSheetBinding) {
         measureRecyclerViewPaddingDebounceJob?.cancel()
         measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
-            delay(200L)
+            delay(DELAY_ADJUST_RECYCLER_VIEW_MARGIN)
             adjustRecyclerViewPadding(viewBinding)
         }
     }
@@ -248,7 +252,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     private fun adjustRecyclerViewPadding(viewBinding: LayoutAddOnBottomSheetBinding) {
         with(viewBinding) {
             if (rvAddOn.canScrollVertically(-1) || rvAddOn.canScrollVertically(1) || isBottomSheetFullPage(viewBinding)) {
-                rvAddOn.setPadding(0, 0, 0, rvAddOn.resources?.getDimensionPixelSize(R.dimen.dp_64)
+                rvAddOn.setPadding(0, 0, 0, rvAddOn.resources?.getDimensionPixelSize(R.dimen.dp_32)
                         ?: 0)
             } else {
                 rvAddOn.setPadding(0, 0, 0, 0)
@@ -261,7 +265,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
 
         val bottomSheetHeight = (bottomSheetWrapper.parent as? View)?.height ?: 0
-        val recyclerViewPaddingBottom = viewBinding.rvAddOn.resources?.getDimensionPixelSize(R.dimen.dp_64)
+        val recyclerViewPaddingBottom = viewBinding.rvAddOn.resources?.getDimensionPixelSize(R.dimen.dp_32)
                 ?: 0
         val displayHeight = displayMetrics?.heightPixels ?: 0
         return bottomSheetHeight != 0 && displayHeight != 0 && (bottomSheetHeight + (recyclerViewPaddingBottom / 2)) >= displayHeight
@@ -301,10 +305,10 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     private fun showCloseConfirmationDialog() {
         activity?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle("Batal tambah pelengkap?")
-                setDescription("Pesan kartu ucapan nggak akan tersimpan kalau kamu keluar dari sini.")
-                setPrimaryCTAText("Ya, Batal")
-                setSecondaryCTAText("Tetap di Sini")
+                setTitle(getString(R.string.add_on_label_dialog_confirmation_title))
+                setDescription(getString(R.string.add_on_label_dialog_confirmation_description))
+                setPrimaryCTAText(getString(R.string.add_on_label_dialog_confirmation_primary_cta))
+                setSecondaryCTAText(getString(R.string.add_on_label_dialog_confirmation_secondary_cta))
                 setPrimaryCTAClickListener {
                     this@AddOnBottomSheet.dismiss()
                 }
@@ -325,7 +329,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
 
     override fun onCheckBoxCheckedChanged(addOnUiModel: AddOnUiModel) {
         viewBinding?.let {
-//            adjustRecyclerViewPaddingBottom(it)
+            adjustRecyclerViewPaddingBottom(it)
         }
         viewModel.updateFragmentUiModel(addOnUiModel)
     }
@@ -334,7 +338,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         val intent = Intent(context, AddOnGalleryActivity::class.java)
         val addOnImages = arrayListOf<String>()
         addOnImages.addAll(addOnUiModel.addOnAllImageUrls)
-        intent.putStringArrayListExtra("ADD_ON_IMAGES", addOnImages)
+        intent.putStringArrayListExtra(AddOnConstant.EXTRA_ADD_ON_IMAGES, addOnImages)
         startActivity(intent)
     }
 }

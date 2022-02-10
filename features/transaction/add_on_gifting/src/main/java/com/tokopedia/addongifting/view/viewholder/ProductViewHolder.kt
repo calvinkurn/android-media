@@ -20,11 +20,11 @@ class ProductViewHolder(private val viewBinding: ItemProductBinding, private val
     override fun bind(element: ProductUiModel) {
         with(viewBinding) {
             if (element.isTokoCabang) {
-                labelHeaderMessage.text = "Eksklusif dari Tokocabang"
+                labelHeaderMessage.text = itemView.context.getString(R.string.add_on_label_header_product_from_toko_cabang)
                 labelOtherProducts.text = "+${element.otherProductCount} Barang Lainnya"
                 labelOtherProducts.show()
             } else {
-                labelHeaderMessage.text = "Disediakan oleh ${element.shopName}"
+                labelHeaderMessage.text = String.format(itemView.context.getString(R.string.add_on_label_header_product), element.shopName)
                 labelOtherProducts.gone()
                 imageShopBadge.setImageUrl(element.shopBadgeUrl)
             }

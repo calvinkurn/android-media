@@ -23,6 +23,10 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
     companion object {
         val LAYOUT = R.layout.item_add_on
+        const val FROM_MAX_CHAR = 25
+        const val TO_MAX_CHAR = 25
+        const val NOTE_MAX_CHAR = 250
+        const val QUANTITY_PLACEHOLDER = "{{qty}}"
     }
 
     override fun bind(element: AddOnUiModel) {
@@ -34,12 +38,12 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
         with(viewBinding) {
             if (element.isTokoCabang) {
                 if (element.productCount > 1) {
-                    labelAddOnHeader.text = "Bungkus ${element.productCount} barang jadi satu dengan (opsional):"
+                    labelAddOnHeader.text = String.format(itemView.context.getString(R.string.add_on_label_header_toko_cabang_multiple_product), element.productCount)
                 } else {
-                    labelAddOnHeader.text = "Bungkus barang jadi satu dengan (opsional):"
+                    labelAddOnHeader.text = itemView.context.getString(R.string.add_on_label_header_toko_cabang_single_product)
                 }
             } else {
-                labelAddOnHeader.text = "Bungkus barang dengan (opsional):"
+                labelAddOnHeader.text = itemView.context.getString(R.string.add_on_label_header)
             }
             imageAddOn.setImageUrl(element.addOnSquareImageUrl)
             imageAddOn.setOnClickListener {
@@ -96,7 +100,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
             textFieldAddOnTo.editText.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
             textFieldAddOnTo.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldAddOnTo.editText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS)
-            textFieldAddOnTo.setCounter(25)
+            textFieldAddOnTo.setCounter(TO_MAX_CHAR)
             textFieldAddOnTo.editText.setText(Utils.getHtmlFormat(element.addOnNoteTo))
             textFieldAddOnTo.editText.setSelection(textFieldAddOnTo.editText.length())
             textFieldAddOnTo.editText.addTextChangedListener(object : TextWatcher {
@@ -122,7 +126,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
             textFieldAddOnFrom.editText.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
             textFieldAddOnFrom.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldAddOnFrom.editText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS)
-            textFieldAddOnFrom.setCounter(25)
+            textFieldAddOnFrom.setCounter(FROM_MAX_CHAR)
             textFieldAddOnFrom.editText.setText(Utils.getHtmlFormat(element.addOnNoteFrom))
             textFieldAddOnFrom.editText.setSelection(textFieldAddOnFrom.editText.length())
             textFieldAddOnFrom.editText.addTextChangedListener(object : TextWatcher {
@@ -147,23 +151,23 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
         with(viewBinding) {
             if (element.isCustomNote) {
                 textFieldAddOnNote.editText.isEnabled = true
-                textFieldAddOnNote.setMessage("Bisa ubah pesan yang disediakan")
+                textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_custom_note))
             } else {
                 textFieldAddOnNote.editText.isEnabled = true
-                textFieldAddOnNote.setMessage("Menggunakan pesan yang disediakan")
+                textFieldAddOnNote.setMessage(itemView.context.getString(R.string.add_on_label_message_pre_defined_note))
             }
 
             textFieldAddOnNote.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             textFieldAddOnNote.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldAddOnNote.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
-            textFieldAddOnNote.setCounter(250)
+            textFieldAddOnNote.setCounter(NOTE_MAX_CHAR)
             textFieldAddOnNote.editText.setText(Utils.getHtmlFormat(element.addOnNote))
             textFieldAddOnNote.editText.setSelection(textFieldAddOnNote.editText.length())
 
             if (textFieldAddOnNote.editText.text.isNotEmpty()) {
-                textFieldAddOnNote.setLabel("Pesan")
+                textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_filled))
             } else {
-                textFieldAddOnNote.setLabel("Tulis pesan di kartu ucapan")
+                textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_empty))
             }
 
             textFieldAddOnNote.editText.addTextChangedListener(object : TextWatcher {
@@ -176,9 +180,9 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                     textFieldAddOnNote.setMessage("")
                     element.addOnNote = s.toString()
                     if (textFieldAddOnNote.editText.text.isNotEmpty()) {
-                        textFieldAddOnNote.setLabel("Pesan")
+                        textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_filled))
                     } else {
-                        textFieldAddOnNote.setLabel("Tulis pesan di kartu ucapan")
+                        textFieldAddOnNote.setLabel(itemView.context.getString(R.string.add_on_label_note_empty))
                     }
                 }
 
@@ -186,17 +190,6 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
 
                 }
             })
-//            textFieldAddOnNote.editText.setOnFocusChangeListener { v, hasFocus ->
-//                if (hasFocus) {
-//                    textFieldAddOnNote.setLabel("Pesan")
-//                } else {
-//                    if (textFieldAddOnNote.editText.text.isNotEmpty()) {
-//                        textFieldAddOnNote.setLabel("Pesan")
-//                    } else {
-//                        textFieldAddOnNote.setLabel("Tulis pesan di kartu ucapan")
-//                    }
-//                }
-//            }
         }
     }
 
@@ -205,7 +198,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
             containerFooterMessages.removeAllViews()
             element.addOnFooterMessages.forEach {
                 val messageView = SubLayoutAddOnFooterMessageBinding.inflate(LayoutInflater.from(itemView.context))
-                val message = it.replace("{{qty}}", element.productCount.toString())
+                val message = it.replace(QUANTITY_PLACEHOLDER, element.productCount.toString())
                 messageView.labelFooterMessage.text = message
                 containerFooterMessages.addView(messageView.root)
             }

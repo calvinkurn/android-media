@@ -9,7 +9,7 @@
         <activity
             android:name="com.tokopedia.addongifting.view.AddOnActivity"
             android:exported="false"
-            android:label="Add on activity"
+            android:label="@string/add_on_gifting_activity_add_on_label"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -27,7 +27,7 @@
             android:name="com.tokopedia.addongifting.view.AddOnGalleryActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:label="Add on gallery activity"
+            android:label="@string/add_on_gifting_activity_add_on_gallery_label"
             android:theme="@style/Theme.WhiteUnify"/>
     </application>
 

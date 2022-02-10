@@ -47,8 +47,8 @@ object AddOnResultMapper {
         }
     }
 
-    private fun mapAddOnDataResult(addOnDataResponse: AddOnDataResponse): AddOnDataResult {
-        return AddOnDataResult().apply {
+    private fun mapAddOnDataResult(addOnDataResponse: AddOnDataResponse): AddOnData {
+        return AddOnData().apply {
             addOnId = addOnDataResponse.addOnId
             addOnMetadata = mapAddOnMetadataResult(addOnDataResponse.addOnMetadata)
             addOnPrice = addOnDataResponse.addOnPrice
@@ -56,14 +56,14 @@ object AddOnResultMapper {
         }
     }
 
-    private fun mapAddOnMetadataResult(addOnMetadataResponse: AddOnMetadataResponse): AddOnMetadataResult {
-        return AddOnMetadataResult().apply {
+    private fun mapAddOnMetadataResult(addOnMetadataResponse: AddOnMetadataResponse): AddOnMetadata {
+        return AddOnMetadata().apply {
             addOnNote = mapAddOnNoteResult(addOnMetadataResponse.addOnNote)
         }
     }
 
-    private fun mapAddOnNoteResult(addOnNoteResponse: AddOnNoteResponse): AddOnNoteResult {
-        return AddOnNoteResult().apply {
+    private fun mapAddOnNoteResult(addOnNoteResponse: AddOnNoteResponse): AddOnNote {
+        return AddOnNote().apply {
             from = addOnNoteResponse.from
             isCustomNote = addOnNoteResponse.isCustomNote
             notes = addOnNoteResponse.notes

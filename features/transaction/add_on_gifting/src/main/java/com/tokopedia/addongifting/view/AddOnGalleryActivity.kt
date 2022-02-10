@@ -8,6 +8,7 @@ import com.tokopedia.addongifting.databinding.GalleryActivityBinding
 import com.tokopedia.image_gallery.ImageGalleryItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 
 class AddOnGalleryActivity : BaseSimpleActivity() {
 
@@ -22,7 +23,7 @@ class AddOnGalleryActivity : BaseSimpleActivity() {
 
     private fun renderImageGallery() {
         val imageGalleryItems = arrayListOf<ImageGalleryItem>()
-        intent.extras?.getStringArrayList("ADD_ON_IMAGES")?.forEach {
+        intent.extras?.getStringArrayList(AddOnConstant.EXTRA_ADD_ON_IMAGES)?.forEach {
             imageGalleryItems.add(ImageGalleryItem(null, it))
         }
         if (imageGalleryItems.isNotEmpty()) {
@@ -44,6 +45,11 @@ class AddOnGalleryActivity : BaseSimpleActivity() {
 
     override fun getLayoutRes(): Int {
         return R.layout.gallery_activity
+    }
+
+    override fun onDestroy() {
+        viewBinding = null
+        super.onDestroy()
     }
 
 }

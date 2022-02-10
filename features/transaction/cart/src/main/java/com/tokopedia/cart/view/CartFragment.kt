@@ -128,7 +128,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -410,9 +409,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
             NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
-            1999 -> {
-                Timber.d("result", "here")
-            }
         }
     }
 
@@ -522,63 +518,61 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun initViewListener() {
         binding?.apply {
-            goToCourierPageButton.setOnClickListener {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
-                val addOnProductData = AddOnProductData().apply {
-                    val product1 = Product().apply {
-                        productId = "10001"
-                        productName = "Product 1"
-                        productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
-                        productPrice = 10000
-                        productQuantity = 1
-                    }
-                    val product2 = Product().apply {
-                        productId = "10002"
-                        productName = "Product 2"
-                        productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
-                        productPrice = 20000
-                        productQuantity = 2
-                    }
-                    val product3 = Product().apply {
-                        productId = "10003"
-                        productName = "Product 3"
-                        productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"
-                        productPrice = 30000
-                        productQuantity = 3
-                    }
-                    products = listOf(product1, product2, product3)
-                    isTokoCabang = false
-                    shopBadgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
-                    addOnFooterMessages = listOf(
-                            "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
-                            "{{qty}} barang hanya dapat 1 kartu ucapan",
-                            "Invoice tidak dikirim ke penerima pesanan"
-                    )
-/*
-                    addOnSavedState = AddOnSavedStateResult().apply {
-                        addOns = listOf(AddOnSavedState().apply {
-                            addOnData = listOf(AddOnData().apply {
-                                addOnId = "898"
-                                addOnMetadata = AddOnMetadata().apply {
-                                    addOnNote = AddOnNote().apply {
-                                        isCustomNote = true
-                                        to = "Irfan"
-                                        from = "Khoirul"
-                                        notes = "Selamat Hari Raya Idul Fitri"
-                                    }
-                                }
-                            })
-                        })
-                    }
-*/
-                }
-                intent.putExtra("ADD_ON_PRODUCT_DATA", addOnProductData)
-                startActivityForResult(intent, 1999)
-            }
-//            goToCourierPageButton.setOnClickListener { checkGoToShipment("") }
+            goToCourierPageButton.setOnClickListener { checkGoToShipment("") }
             imgChevronSummary.setOnClickListener { onClickChevronSummaryTransaction() }
             textTotalPaymentLabel.setOnClickListener { onClickChevronSummaryTransaction() }
             tvTotalPrices.setOnClickListener { onClickChevronSummaryTransaction() }
+        }
+    }
+
+    // Todo : remove this before merge to release
+    private fun tempInitializeAddOnNavigation() {
+        binding?.goToCourierPageButton?.setOnClickListener {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+            val addOnProductData = AddOnProductData().apply {
+                val product1 = Product().apply {
+                    productId = "10001"
+                    productName = "Product 1"
+                    productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
+                    productPrice = 10000
+                    productQuantity = 1
+                }
+                val product2 = Product().apply {
+                    productId = "10002"
+                    productName = "Product 2"
+                    productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
+                    productPrice = 20000
+                    productQuantity = 2
+                }
+                val product3 = Product().apply {
+                    productId = "10003"
+                    productName = "Product 3"
+                    productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"
+                    productPrice = 30000
+                    productQuantity = 3
+                }
+                products = listOf(product1, product2, product3)
+                isTokoCabang = false
+                shopBadgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
+                addOnFooterMessages = listOf(
+                        "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
+                        "{{qty}} barang hanya dapat 1 kartu ucapan",
+                        "Invoice tidak dikirim ke penerima pesanan"
+                )
+                addOnSavedStates = listOf(AddOnData().apply {
+                    addOnId = "898"
+                    addOnMetadata = AddOnMetadata().apply {
+                        addOnNote = AddOnNote().apply {
+                            isCustomNote = true
+                            to = "Irfan"
+                            from = "Khoirul"
+                            notes = "Selamat Hari Raya Idul Fitri"
+                        }
+                    }
+                })
+            }
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData)
+            startActivityForResult(intent, 1999)
         }
     }
 
@@ -1712,8 +1706,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isAdded) {
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
-//            binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
+            binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
         }
+        tempInitializeAddOnNavigation()
     }
 
     override fun onCartDataDisableToCheckout() {

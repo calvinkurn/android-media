@@ -8,6 +8,7 @@ import com.tokopedia.addongifting.data.getaddonbyproduct.GetAddOnByProductRespon
 import com.tokopedia.addongifting.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.domain.usecase.GetAddOnSavedStateUseCase
 import com.tokopedia.addongifting.domain.usecase.SaveAddOnStateUseCase
+import com.tokopedia.addongifting.view.mapper.AddOnUiModelMapper
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.view.uimodel.ProductUiModel
@@ -63,18 +64,18 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                     _globalEvent.value = GlobalEvent().apply {
                         state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
                     }
-                    val productUiModel = UiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
+                    val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
                     _productUiModel.value = productUiModel
-                    val addOnUiModel = UiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, it)
+                    val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, it)
                     _addOnUiModel.value = addOnUiModel
                 },
                 onError = {
                     _globalEvent.value = GlobalEvent().apply {
                         state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
                     }
-                    val productUiModel = UiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
+                    val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
                     _productUiModel.value = productUiModel
-                    val addOnUiModel = UiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)
+                    val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)
                     _addOnUiModel.value = addOnUiModel
                 }
         )

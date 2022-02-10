@@ -12,7 +12,7 @@ data class SaveAddOnStateResult(
 data class AddOnResult(
         var addOnBottomSheet: AddOnBottomSheetResult = AddOnBottomSheetResult(),
         var addOnButton: AddOnButtonResult = AddOnButtonResult(),
-        var addOnData: List<AddOnDataResult> = emptyList(),
+        var addOnData: List<AddOnData> = emptyList(),
         var addOnKey: String = "",
         var addOnLevel: String = "",
         var status: Int = 0
@@ -33,27 +33,6 @@ data class AddOnButtonResult(
         var leftIconUrl: String = "",
         var rightIconUrl: String = "",
         var title: String = ""
-) : Parcelable
-
-@Parcelize
-data class AddOnDataResult(
-        var addOnId: String = "",
-        var addOnMetadata: AddOnMetadataResult = AddOnMetadataResult(),
-        var addOnPrice: Int = 0,
-        var addOnQty: Int = 0
-) : Parcelable
-
-@Parcelize
-data class AddOnMetadataResult(
-        var addOnNote: AddOnNoteResult = AddOnNoteResult()
-) : Parcelable
-
-@Parcelize
-data class AddOnNoteResult(
-        var from: String = "",
-        var isCustomNote: Boolean = false,
-        var notes: String = "",
-        var to: String = ""
 ) : Parcelable
 
 @Parcelize

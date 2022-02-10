@@ -1,16 +1,16 @@
-package com.tokopedia.addongifting.view
+package com.tokopedia.addongifting.view.mapper
 
 import com.tokopedia.addongifting.data.getaddonbyproduct.GetAddOnByProductResponse
 import com.tokopedia.addongifting.data.getaddonsavedstate.AddOnDataResponse
 import com.tokopedia.addongifting.data.getaddonsavedstate.GetAddOnSavedStateResponse
 import com.tokopedia.addongifting.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.view.uimodel.ProductUiModel
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnDataResult
+import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnData
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import kotlin.math.roundToLong
 
-object UiModelMapper {
+object AddOnUiModelMapper {
 
     fun mapProduct(addOnProductData: AddOnProductData, getAddOnByProductResponse: GetAddOnByProductResponse): ProductUiModel {
         val addOnByProduct = getAddOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
@@ -83,7 +83,7 @@ object UiModelMapper {
         return null
     }
 
-    private fun getAddOnSavedStateById(addOnId: String, addOnSavedStateResults: List<AddOnDataResult>): AddOnDataResult? {
+    private fun getAddOnSavedStateById(addOnId: String, addOnSavedStateResults: List<AddOnData>): AddOnData? {
         if (addOnId.isNotBlankOrZero()) {
             addOnSavedStateResults.forEach {
                 if (it.addOnId == addOnId) {

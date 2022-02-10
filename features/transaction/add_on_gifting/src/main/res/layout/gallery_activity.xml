@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -29,18 +30,18 @@
             android:id="@+id/label_add_on_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kartu Ucapan"
             android:textColor="@color/Unify_Static_White"
             app:typographyType="body_3"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="Kartu Ucapan" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_add_on_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rp10.000"
             android:textColor="@color/Unify_Static_White"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:text="Rp10.000" />
 
     </LinearLayout>
 
