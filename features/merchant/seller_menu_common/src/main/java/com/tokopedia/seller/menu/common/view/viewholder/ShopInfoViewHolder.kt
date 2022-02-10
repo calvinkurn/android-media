@@ -233,7 +233,10 @@ class ShopInfoViewHolder(
         val shopStatusLayout: View? = when (shopType) {
             is RegularMerchant -> {
                 itemView?.apply {
-                    setRegularMerchantShopStatus(shopType, shopStatusUiModel)
+                    setRegularMerchantShopStatus(
+                        shopType,
+                        shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
+                    )
                     sendSettingShopInfoImpressionTracking(
                         shopStatusUiModel,
                         trackingListener::sendImpressionDataIris
@@ -325,10 +328,8 @@ class ShopInfoViewHolder(
             else -> null
         }
 
-        val paddingTop =
-            itemView?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-        val paddingBottom =
-            itemView?.resources?.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
+        val paddingTop = itemView?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+        val paddingBottom = itemView?.resources?.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
         if (paddingTop != null && paddingBottom != null) {
             itemView.setPadding(0, paddingTop, 0, paddingBottom)
         }
@@ -357,15 +358,15 @@ class ShopInfoViewHolder(
 
     private fun View.setRegularMerchantShopStatus(
         regularMerchant: RegularMerchant,
-        shopStatusUiModel: ShopStatusUiModel
+        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
     ): View {
-        val iconPm = if (shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isEligiblePm == true) {
+        val iconPm = if (userShopInfoUiModel?.isEligiblePm == true) {
             IconUnify.BADGE_PM_FILLED
         } else {
             null
         }
 
-        val iconPmPro = if (shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isEligiblePmPro == true) {
+        val iconPmPro = if (userShopInfoUiModel?.isEligiblePmPro == true) {
             IconUnify.BADGE_PMPRO_FILLED
         } else {
             null
@@ -389,7 +390,7 @@ class ShopInfoViewHolder(
             else -> setRegularMerchantNeedUpgrade()
         }
 
-        setupTransactionSection(shopStatusUiModel)
+        setupTransactionSection(userShopInfoUiModel)
         return this
     }
 
@@ -429,22 +430,21 @@ class ShopInfoViewHolder(
         }
     }
 
-    private fun View.setupTransactionSection(shopStatusUiModel: ShopStatusUiModel) {
-        val userShopInfo = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
+    private fun View.setupTransactionSection(userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?) {
         val txStatsRM = findViewById<Typography>(R.id.tx_stats_rm)
         val txTotalStatsRM = findViewById<Typography>(R.id.tx_total_stats_rm)
-        val totalTransaction = userShopInfo?.totalTransaction ?: 0
+        val totalTransaction = userShopInfoUiModel?.totalTransaction ?: 0
         if (totalTransaction >= Constant.ShopStatus.THRESHOLD_TRANSACTION) {
             hideTransactionSection()
         } else {
-            if (userShopInfo?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
+            if (userShopInfoUiModel?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
                 showTransactionSection()
                 if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
                     txStatsRM.text =
                         MethodChecker.fromHtml(getString(R.string.transaction_passed))
                     txTotalStatsRM.hide()
                 } else {
-                    txStatsRM.setupStatsWordingRM(userShopInfo)
+                    txStatsRM.setupStatsWordingRM(userShopInfoUiModel)
                     txTotalStatsRM.show()
                     txTotalStatsRM.text =
                         getString(R.string.total_transaction, totalTransaction.toString())
