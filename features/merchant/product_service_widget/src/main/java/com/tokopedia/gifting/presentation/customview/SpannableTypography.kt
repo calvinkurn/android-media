@@ -52,7 +52,9 @@ class SpannableTypography : BaseCustomView {
                 text = styledAttributes.getString(R.styleable.SpannableTypography_spannable_text).orEmpty()
                 val drawableRes = styledAttributes.getResourceId(R.styleable.SpannableTypography_spannable_drawable, Int.ZERO)
                 val drawableStart = styledAttributes.getInteger(R.styleable.SpannableTypography_spannable_drawable_position, Int.ZERO)
+                val useSmallText = styledAttributes.getBoolean(R.styleable.SpannableTypography_spannable_use_small_text, false)
                 setDrawable(drawableRes, drawableStart)
+                if (useSmallText) setAsSmallText()
             } finally {
                 styledAttributes.recycle()
             }
@@ -63,7 +65,7 @@ class SpannableTypography : BaseCustomView {
         tvLabel?.text = MethodChecker.fromHtml(text)
     }
 
-    private fun setDrawable(drawableRes: Int, drawableStart: Int) {
+    fun setDrawable(drawableRes: Int, drawableStart: Int) {
         if (drawableRes.isMoreThanZero()) {
             val imageSpan = ImageSpan(context, drawableRes)
             val spannableString = SpannableString(tvLabel?.text)
@@ -72,5 +74,9 @@ class SpannableTypography : BaseCustomView {
             spannableString.setSpan(imageSpan, drawableStart, drawableStart.inc(), Int.ZERO)
             tvLabel?.text = spannableString
         }
+    }
+
+    fun setAsSmallText() {
+        tvLabel?.setType(Typography.BODY_3)
     }
 }

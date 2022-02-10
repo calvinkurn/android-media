@@ -18,5 +18,6 @@
         <attr name="spannable_text" format="string" />
         <attr name="spannable_drawable" format="reference" />
         <attr name="spannable_drawable_position" format="integer" />
+        <attr name="spannable_use_small_text" format="boolean" />
     </declare-styleable>
 </resources>

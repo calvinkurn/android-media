@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:text="Langkah mudah lengkapi bingkisanmu:"
+        android:text="@string/gifting_title_tips_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2" />
@@ -221,7 +221,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="19dp"
         android:layout_marginStart="10dp"
-        android:text="Disediakan oleh "
+        android:text="@string/gifting_shop_caption"
         app:typographyType="body_3"
         app:layout_constraintStart_toEndOf="@+id/icon_shop"
         app:layout_constraintTop_toBottomOf="@+id/divider_shop" />
@@ -231,6 +231,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="19dp"
+        android:layout_marginStart="4dp"
         android:text="Banana Indonesia"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_caption_shop_name"
@@ -238,14 +239,14 @@
         app:typographyWeight="bold"
         app:typographyType="body_3" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.gifting.presentation.customview.SpannableTypography
         android:id="@+id/text_shop_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:layout_marginStart="10dp"
-        android:text="Tersedia di wilayah tertentu. Info Selengkapnya."
-        app:typographyType="body_3"
+        app:spannable_text="@string/gifting_shop_location"
+        app:spannable_use_small_text="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icon_shop"
         app:layout_constraintTop_toBottomOf="@+id/text_caption_shop_name" />
