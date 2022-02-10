@@ -23,5 +23,13 @@ interface PlayBroSetupProductAnalytic {
 
     fun clickProductSortingType(sortName: String)
 
-    fun clickCampaignAndEtalase()
+    fun clickEtalaseCard()
+
+    fun clickCampaignCard()
+
+    fun clickCloseOnProductChooser(isProductSelected: Boolean)
+
+    fun clickConfirmCloseOnProductChooser()
+
+    fun clickCancelCloseOnProductChooser()
 }

@@ -164,7 +164,7 @@
     },
     {
       "event": "clickPG",
-      "eventAction": "click - etalase filter",
+      "eventAction": "click - campaign & etalase filter",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
       "businessUnit": "play",
@@ -202,7 +202,46 @@
       "sessionIris": ".*",
       "userId": ".*"
     },
-
+    {
+      "event": "clickPG",
+      "eventAction": "click - campaign card",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - close button on product bottom sheet",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - (select product section|selected product list section)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - confirm close on add product page",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - cancel close on add product page",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
 
 
     {

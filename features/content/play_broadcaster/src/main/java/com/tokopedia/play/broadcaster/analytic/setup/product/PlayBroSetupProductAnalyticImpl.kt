@@ -63,7 +63,9 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
     }
 
     override fun clickCampaignAndEtalaseFilter() {
-        sendEvent("click - etalase filter")
+        /** TODO: in thanos, the label should be "click - campaign & \netalase filter", with \n
+         * but for now i remove it */
+        sendEvent("click - campaign & etalase filter")
     }
 
     override fun clickProductSorting() {
@@ -77,8 +79,28 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickCampaignAndEtalase() {
+    override fun clickEtalaseCard() {
         sendEvent("click - etalase card")
+    }
+
+    override fun clickCampaignCard() {
+        sendEvent("click - campaign card")
+    }
+
+    override fun clickCloseOnProductChooser(isProductSelected: Boolean) {
+        val productState = if(isProductSelected) "selected product list section" else "select product section"
+        sendEvent(
+            "click - close button on product bottom sheet",
+            "$shopId - $productState"
+        )
+    }
+
+    override fun clickConfirmCloseOnProductChooser() {
+        sendEvent("click - confirm close on add product page")
+    }
+
+    override fun clickCancelCloseOnProductChooser() {
+        sendEvent("click - cancel close on add product page")
     }
 
     private fun sendEvent(
