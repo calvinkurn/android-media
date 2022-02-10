@@ -27,9 +27,6 @@ data class CalendarWidgetDataModel(
     @SerializedName("events")
     val events: List<CalendarEventModel> = emptyList(),
     @Expose
-    @SerializedName("emptyState")
-    val emptyState: CalendarEmptyStateModel = CalendarEmptyStateModel(),
-    @Expose
     @SerializedName("errorMsg")
     val errorMsg: String = "",
     @Expose
@@ -56,16 +53,4 @@ data class CalendarEventModel(
     @Expose
     @SerializedName("applink")
     val appLink: String = ""
-)
-
-data class CalendarEmptyStateModel(
-    @Expose
-    @SerializedName("imageUrl")
-    val imageUrl: String = "",
-    @Expose
-    @SerializedName("title")
-    val title: String = "",
-    @Expose
-    @SerializedName("description")
-    val description: String = ""
 )

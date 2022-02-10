@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -56,7 +57,8 @@ class GetCalendarDataUseCase(
     }
 
     override suspend fun executeOnBackground(): List<CalendarDataUiModel> {
-        val typeClass = GetCalendarDataResponse::class.java
+        return dummy()
+        /*val typeClass = GetCalendarDataResponse::class.java
         val gqlRequest = GraphqlRequest(GqlGetCalendarData, typeClass, params.parameters)
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
@@ -67,6 +69,56 @@ class GetCalendarDataUseCase(
             return calendarMapper.mapRemoteDataToUiData(responseData, isFromCache)
         } else {
             throw MessageErrorException(gqlErrors.firstOrNull()?.message.orEmpty())
-        }
+        }*/
     }
+
+    private fun dummy(): List<CalendarDataUiModel> {
+        val response: GetCalendarDataResponse =
+            Gson().fromJson(dummyResponse, GetCalendarDataResponse::class.java)
+        return calendarMapper.mapRemoteDataToUiData(response, true)
+    }
+
+    private val dummyResponse = """
+        {
+          "fetchCalendarWidgetData": {
+            "data": [
+              {
+                "dataKey": "sellerCalendarEvent",
+                "events": [
+                  {
+                    "eventName": "WIB",
+                    "description": "waktu indonesia belanja",
+                    "label": "campaign",
+                    "startDate": "25-01-2022",
+                    "endDate": "31-01-2022",
+                    "url": "tokopedia.com",
+                    "applink": "app://tokopedia"
+                  },
+                  {
+                    "eventName": "WIB",
+                    "description": "waktu indonesia belanja",
+                    "label": "campaign",
+                    "startDate": "25-01-2022",
+                    "endDate": "31-01-2022",
+                    "url": "tokopedia.com",
+                    "applink": "app://tokopedia"
+                  },
+                  {
+                    "eventName": "WIB",
+                    "description": "waktu indonesia belanja",
+                    "label": "campaign",
+                    "startDate": "25-01-2022",
+                    "endDate": "31-01-2022",
+                    "url": "tokopedia.com",
+                    "applink": "app://tokopedia"
+                  }
+                ],
+                "error": false,
+                "errorMsg": "",
+                "showWidget": true
+              }
+            ]
+          }
+        }
+    """.trimIndent()
 }

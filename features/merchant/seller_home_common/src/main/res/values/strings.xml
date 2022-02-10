@@ -49,4 +49,5 @@
     <string name="shc_custom_lbl">Custom</string>
     <string name="shc_month">Bulan</string>
     <string name="shc_change_date_range">Ubah Rentang Waktu</string>
+    <string name="shc_calendar_date_range">(%1$s - %2$s)</string>
 </resources>

@@ -27,7 +27,8 @@ data class CalendarWidgetUiModel(
     override var isLoading: Boolean,
     override var isFromCache: Boolean,
     override var isNeedToBeRemoved: Boolean = false,
-    override var emptyState: WidgetEmptyStateUiModel
+    override var emptyState: WidgetEmptyStateUiModel,
+    var filter: CalendarFilterDataKeyUiModel = getCalendarFilter(dataKey)
 ) : BaseWidgetUiModel<CalendarDataUiModel> {
 
     companion object {

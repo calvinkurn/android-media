@@ -23,11 +23,6 @@ object GqlGetCalendarData : GqlQueryInterface {
                 url
                 applink
               }
-              emptyState {
-                imageUrl
-                title
-                description
-              }
               error
               errorMsg
               showWidget

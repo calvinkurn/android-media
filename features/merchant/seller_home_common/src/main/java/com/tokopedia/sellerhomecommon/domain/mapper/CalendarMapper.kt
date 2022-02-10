@@ -1,10 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.domain.model.CalendarEventModel
-import com.tokopedia.sellerhomecommon.domain.model.CalendarWidgetDataModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCalendarDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.CalendarEmptyStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventGroupUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -33,8 +31,7 @@ class CalendarMapper @Inject constructor() :
                 error = data.errorMsg,
                 isFromCache = isFromCache,
                 showWidget = data.showWidget,
-                eventGroups = getEventGroups(data.events),
-                emptyState = getEmptyState(data)
+                eventGroups = getEventGroups(data.events)
             )
         }
     }
@@ -56,21 +53,6 @@ class CalendarMapper @Inject constructor() :
             return@minByOrNull abs(millis.minus(todayMillis))
         }
         return closestEvent
-    }
-
-    private fun getEmptyState(data: CalendarWidgetDataModel): CalendarEmptyStateUiModel? {
-        val emptyState = data.emptyState
-        val isEmptyStateBlank = emptyState.title.isBlank() || emptyState.description.isBlank()
-                || emptyState.imageUrl.isBlank()
-        return if (isEmptyStateBlank) {
-            null
-        } else {
-            CalendarEmptyStateUiModel(
-                imageUrl = emptyState.imageUrl,
-                title = emptyState.title,
-                description = emptyState.description
-            )
-        }
     }
 
     private fun getEventList(events: List<CalendarEventModel>): List<CalendarEventUiModel> {

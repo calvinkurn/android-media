@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetItemBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -16,6 +18,10 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 class CalendarEventAdapter(
     private val onItemClick: (CalendarEventUiModel) -> Unit
 ) : RecyclerView.Adapter<CalendarEventAdapter.ViewHolder>() {
+
+    companion object {
+        private const val ONE = 1
+    }
 
     private var items = listOf<CalendarEventUiModel>()
 
@@ -50,6 +56,12 @@ class CalendarEventAdapter(
             with(binding) {
                 tvShcCalendarEventTitle.text = item.eventName
                 tvShcCalendarEventDesc.text = item.description
+
+                if (adapterPosition < items.size.minus(ONE)) {
+                    horLineShcCalendarEvent.visible()
+                } else {
+                    horLineShcCalendarEvent.invisible()
+                }
 
                 showDateEvent(item)
             }

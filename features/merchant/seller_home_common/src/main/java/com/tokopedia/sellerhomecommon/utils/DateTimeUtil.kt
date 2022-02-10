@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit
 object DateTimeUtil {
 
     const val FORMAT_DD_MM_YYYY = "dd-MM-yyyy"
+    const val FORMAT_DD_MMM = "dd-MMM"
     const val FORMAT_DD = "dd"
     const val FORMAT_MMM = "MMM"
     private const val DEFAULT_TIME_MILLIS = 0L

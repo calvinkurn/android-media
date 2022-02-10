@@ -41,7 +41,9 @@ class CalendarEventPagerAdapter(
             CalendarEventAdapter(::onEventItemClick)
         }
         private val layoutManager by lazy {
-            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            object : LinearLayoutManager(itemView.context) {
+                override fun canScrollVertically(): Boolean = false
+            }
         }
         private var onEventClicked: ((CalendarEventUiModel) -> Unit)? = null
 

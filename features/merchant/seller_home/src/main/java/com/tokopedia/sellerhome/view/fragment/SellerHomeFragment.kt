@@ -938,10 +938,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
         widgets.setLoading()
         val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>()
-            .filter { it.data != null }
             .map {
-                val defaultFilter = CalendarWidgetUiModel.getCalendarFilter(it.dataKey)
-                it.data?.filter ?: defaultFilter
+                it.filter
             }
         sellerHomeViewModel.getCalendarWidgetData(dataKeys)
     }
