@@ -32,4 +32,6 @@ data class LogisticPromoUiModel(val promoCode: String,
                                 val freeShippingChosenCourierTitle: String,
                                 val tickerAvailableFreeShippingCourierTitle: String = "",
                                 val isBebasOngkirExtra: Boolean,
-                                val bottomSheetDescription: String = "") : RatesViewModelType, Parcelable
+                                val bottomSheetDescription: String = "",
+                                val lastPromoItem: Boolean = false
+                                ) : RatesViewModelType, Parcelable
