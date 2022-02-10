@@ -38,6 +38,27 @@ class VerificationPref @Inject constructor(
         hasTimer = false
     }
 
+    fun resetByMode(mode: String) {
+        setExpireByMode(mode, 0)
+        hasTimer = false
+    }
+
+    fun setExpireByMode(mode: String, time: Int) {
+        sharedPreferences.edit().putInt(mode, time).apply()
+        timestamp = System.currentTimeMillis() / 1000
+    }
+
+    fun isExpiredByMode(mode: String): Boolean {
+        val mExpiredTime = sharedPreferences.getInt(mode, 0)
+        return ((System.currentTimeMillis() / 1000) - timestamp) > mExpiredTime
+    }
+
+    fun getRemainingTimeByMode(mode: String): Int {
+        val mExpiredTime = sharedPreferences.getInt(mode, 0)
+        return (mExpiredTime - ((System.currentTimeMillis() / 1000) - timestamp)).toInt()
+    }
+
+
     companion object {
         private const val OTP_SHARED_PREF = "otp_shared_ref"
         private const val EXPIRED_TIME_KEY = "expired_time_key"
