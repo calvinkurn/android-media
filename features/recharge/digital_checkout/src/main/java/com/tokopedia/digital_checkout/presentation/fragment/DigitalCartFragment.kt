@@ -42,7 +42,6 @@ import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
-import com.tokopedia.digital_checkout.presentation.utils.NumberOrderedListSpan
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
@@ -745,10 +744,16 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 resources.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description)
             val description = SpannableStringBuilder()
             descriptionArray.forEachIndexed { index, text ->
-                description.append(
-                    text + "\n",
-                    NumberOrderedListSpan(LEADING_MARGIN_SPAN_REST, (index+1).toString()),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                val contentStart: Int = description.length
+                val leadingString = "${index + 1}. "
+                description.append(leadingString)
+                description.append(text)
+                val contentEnd: Int = description.length
+                description.setSpan(
+                    LeadingMarginSpan.Standard(LEADING_MARGIN_SPAN_FIRST, LEADING_MARGIN_SPAN_REST),
+                    contentStart,
+                    contentEnd,
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                 )
             }
 
@@ -816,6 +821,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         private const val DEFAULT_ANDROID_DEVICE_ID = 5
 
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
+        private const val LEADING_MARGIN_SPAN_FIRST = 0
         private const val LEADING_MARGIN_SPAN_REST = 66
 
         fun newInstance(
