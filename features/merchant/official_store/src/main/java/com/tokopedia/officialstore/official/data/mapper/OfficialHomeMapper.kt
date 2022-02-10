@@ -39,7 +39,7 @@ class OfficialHomeMapper (
     fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?, isDisableForMappingBanner: Boolean) {
         val newList = mutableListOf<Visitable<*>>()
         if (isDisableForMappingBanner) {
-            listOfficialStore.forEach {
+            listOfficialStore.toMutableList().forEach {
                 if (it !is OfficialLoadingMoreDataModel && it !is OfficialLoadingDataModel && it !is OfficialBannerDataModel){
                     newList.add(it)
                 }
@@ -48,7 +48,7 @@ class OfficialHomeMapper (
         }
         else {
             val officialBanner = OfficialBannerDataModel(banner.banners, categoryName.toEmptyStringIfNull())
-            listOfficialStore.forEach {
+            listOfficialStore.toMutableList().forEach {
                 if (it is OfficialBannerDataModel) {
                     newList.add(officialBanner)
                 }
@@ -282,7 +282,7 @@ class OfficialHomeMapper (
 
     fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
         val newList = mutableListOf<Visitable<*>>()
-        listOfficialStore.forEach {
+        listOfficialStore.toMutableList().forEach {
             if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
                 newData.channelModel.channelHeader = it.channelModel.channelHeader
@@ -308,7 +308,8 @@ class OfficialHomeMapper (
 
     fun mappingRecomWidget(data: BestSellerDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
         val newList = mutableListOf<Visitable<*>>()
-        listOfficialStore.forEach {
+        val copyListOfficialStore = listOfficialStore.toMutableList()
+        copyListOfficialStore.forEach {
             if (it is BestSellerDataModel && it.channelId == data.channelId) {
                 newList.add(data)
             }
@@ -316,7 +317,7 @@ class OfficialHomeMapper (
                 newList.add(it)
             }
         }
-        val isBestSellerWidgetNotExist = listOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
+        val isBestSellerWidgetNotExist = copyListOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
         if (isBestSellerWidgetNotExist) {
             newList.add(RECOM_WIDGET_POSITION, data)
         }
