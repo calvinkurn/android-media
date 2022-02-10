@@ -39,16 +39,12 @@ class PlayBottomSheetViewModel @Inject constructor(
 
     private val _observableAddToCart = MutableLiveData<PlayResult<Event<CartFeedbackUiModel>>>()
     private val _observableProductVariant = MutableLiveData<PlayResult<VariantSheetUiModel>>()
-    private val _observableUserReportReasoning = MutableLiveData<PlayResult<PlayUserReportUiModel.Loaded>>()
-    private val _observableUserReportSubmission = MutableLiveData<PlayResult<Event<Unit>>>()
 
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
     val observableAddToCart: LiveData<PlayResult<Event<CartFeedbackUiModel>>> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
-    val observableUserReportReasoning : LiveData<PlayResult<PlayUserReportUiModel.Loaded>> = _observableUserReportReasoning
-    val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>> = _observableUserReportSubmission
 
     fun getProductVariant(product: PlayProductUiModel.Product, action: ProductAction) {
         _observableProductVariant.value = PlayResult.Loading(true)
@@ -114,53 +110,6 @@ class PlayBottomSheetViewModel @Inject constructor(
                     )
             ))
         }
-    }
-
-    fun getUserReportList(){
-        _observableUserReportReasoning.value = PlayResult.Loading(true)
-
-        viewModelScope.launchCatchError(block = {
-            val userReportUiModel = withContext(dispatchers.io){
-                repo.getReasoningList()
-            }
-            val data = PlayUserReportUiModel.Loaded(
-                reasoningList = userReportUiModel
-            )
-            _observableUserReportReasoning.value = PlayResult.Success(data = data)
-
-        }){
-            _observableUserReportReasoning.value = PlayResult.Failure(it){
-                getUserReportList()
-            }
-        }
-    }
-
-    fun submitUserReport(channelId: Long,
-               mediaUrl: String,
-               shopId: Long,
-               reasonId: Int,
-               timestamp: Long,
-               reportDesc: String){
-        viewModelScope.launchCatchError(block = {
-           val isSuccess = withContext(dispatchers.io) {
-                repo.submitReport(
-                    channelId = channelId,
-                    mediaUrl = mediaUrl,
-                    shopId = shopId,
-                    reasonId = reasonId,
-                    timestamp = timestamp,
-                    reportDesc = reportDesc
-                )
-           }
-            if(isSuccess){
-                _observableUserReportSubmission.value = PlayResult.Success(Event(Unit))
-            }else{
-                throw Throwable()
-            }
-        }){
-            _observableUserReportSubmission.value = PlayResult.Failure(it)
-        }
-
     }
 
     fun onFreezeBan() {
