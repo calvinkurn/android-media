@@ -84,7 +84,7 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun populateData(dataItem: DataItem) {
         try {
-            imageShop.loadImage(dataItem.imageClickUrl)
+            imageShop.loadImage(dataItem.products?.firstOrNull()?.imageURL)
             shopLogo.loadImage(dataItem.shopLogo)
             shopSubLogo.loadImage(dataItem.shopBadgeImageUrl)
             if (!dataItem.shopName.isNullOrEmpty()) {
@@ -133,15 +133,15 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
         when (view) {
             parentCardView -> {
                 mShopCardItemViewModel.navigate(fragment.context, shopCardDataItem?.applinks)
-                sendClickEvent()
+//                sendClickEvent()
             }
         }
     }
 
-    private fun sendClickEvent() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                .trackProductCardClick(mShopCardItemViewModel.components,
-                        mShopCardItemViewModel.isUserLoggedIn())
-    }
+//    private fun sendClickEvent() {
+//        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+//                .trackProductCardClick(mShopCardItemViewModel.components,
+//                        mShopCardItemViewModel.isUserLoggedIn())
+//    }
 
 }

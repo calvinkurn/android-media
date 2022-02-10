@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parentLayout"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="2dp"
     android:layout_marginLeft="2dp"
@@ -17,15 +17,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_parent"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
         tools:layout_height="match_parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageShop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="fitXY"
@@ -34,9 +34,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_height="300dp"
-            tools:layout_width="match_parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.legacy.widget.Space
             android:id="@+id/marginSpacer"
@@ -49,8 +47,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginBottom="8dp"
             android:adjustViewBounds="true"
             android:gravity="center"
@@ -63,17 +61,15 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_sub_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="@id/shop_logo"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="@id/shop_logo"
-            app:unify_image_type="circle"
-            tools:layout_height="40dp"
-            tools:layout_width="40dp" />
+            app:unify_image_type="circle" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_name"
@@ -162,7 +158,7 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/benefit_symbol_image"
-                android:layout_width="wrap_content"
+                android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="4dp"
@@ -191,8 +187,9 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/timer_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center"
                 android:src="@drawable/unify_timer2_ic"
                 android:scaleType="fitXY"
                 app:layout_constraintDimensionRatio="H,1:1"
@@ -207,7 +204,6 @@
                 android:maxLines="1"
                 android:textColor="@color/Unify_RN600"
                 android:visibility="gone"
-                app:layout_goneMarginTop="4dp"
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="Sisa 24 Menit"

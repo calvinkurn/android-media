@@ -329,6 +329,13 @@ class Utils {
                 ?: (component.getComponentsItem()?.size.isMoreThanZero()
                         && component.getComponentsItem()?.size?.rem(productPerPage) == 0)
         }
+
+        fun nextShopPageAvailable(component: ComponentsItem, productPerPage: Int): Boolean {
+            return component.compAdditionalInfo?.nextPage?.isNotEmpty()
+                    ?: (component.getComponentsItem()?.size.isMoreThanZero()
+                            && component.getComponentsItem()?.size?.rem(productPerPage) == 0)
+        }
+
         fun getUserId(context: Context?): String {
             return context?.let { UserSession(it).userId } ?: ""
         }

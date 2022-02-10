@@ -30,6 +30,7 @@ class ShopCardViewModel(val application: Application, val components: Components
 
     fun getShopCardItemsListData(): LiveData<ArrayList<ComponentsItem>> = shopCardList
     fun getShopCardBackgroundData(): LiveData<ComponentsItem?> = shopCardBackgroundData
+    fun getShopLoadState(): LiveData<Boolean> = shopCardLoadError
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -47,10 +48,10 @@ class ShopCardViewModel(val application: Application, val components: Components
         }
     }
 
-    private fun fetchShopCardData() {
+    fun fetchShopCardData() {
         launchCatchError(block = {
             shopCardUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, SHOP_PER_PAGE)
-            setProductsList()
+            setShopList()
         }, onError = {
             components.noOfPagesLoaded = 1
             components.verticalProductFailState = true
@@ -67,7 +68,7 @@ class ShopCardViewModel(val application: Application, val components: Components
         components.pageLoadedCounter = 1
     }
 
-    private fun setProductsList() {
+    private fun setShopList() {
         getProductList()?.let {
             if (it.isNotEmpty()) {
                 shopCardLoadError.value = false
@@ -108,7 +109,7 @@ class ShopCardViewModel(val application: Application, val components: Components
     private fun addLoadMore(shopCardDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val shopCardDataLoadState: ArrayList<ComponentsItem> = ArrayList()
         shopCardDataLoadState.addAll(shopCardDataList)
-        if (Utils.nextPageAvailable(components, SHOP_PER_PAGE)) {
+        if (Utils.nextShopPageAvailable(components, SHOP_PER_PAGE)) {
             shopCardDataLoadState.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
                 pageEndPoint = components.pageEndPoint
                 parentComponentId = components.id

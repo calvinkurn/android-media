@@ -52,7 +52,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         carouselEmptyState?.hide()
         errorHolder.gone()
         addDefaultItemDecorator()
-//        handleCarouselPagination()
+        handleCarouselPagination()
     }
 
     private fun handleCarouselPagination() {

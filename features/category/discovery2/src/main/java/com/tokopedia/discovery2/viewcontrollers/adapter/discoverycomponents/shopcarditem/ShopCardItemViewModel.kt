@@ -56,10 +56,7 @@ class ShopCardItemViewModel(val application: Application, val components: Compon
     }
 
     private fun getShopCardDataItem(): DataItem? {
-        components.data?.let {
-            if (it.isNotEmpty()) return it.first()
-        }
-        return null
+        return components.data?.firstOrNull()
     }
 
 }
