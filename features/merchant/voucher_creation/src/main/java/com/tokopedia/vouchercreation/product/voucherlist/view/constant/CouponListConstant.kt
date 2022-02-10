@@ -1,6 +1,10 @@
 package com.tokopedia.vouchercreation.product.voucherlist.view.constant
 
 object CouponListConstant {
+    const val PAGE_MODE_SEGMENT_INDEX = 1
+    const val PAGE_MODE_ACTIVE = "active"
+    const val PAGE_MODE_HISTORY = "history"
+
     const val LIST_COUPON_PER_PAGE = 10
     const val IS_SUCCESS_VOUCHER = "is_success"
     const val IS_UPDATE_VOUCHER = "is_update"

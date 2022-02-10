@@ -60,6 +60,8 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponLis
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_UPDATE_VOUCHER
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_UPDATE_VOUCHER_DEFAULT_VALUE
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.PAGE_MODE_ACTIVE
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.PAGE_MODE_HISTORY
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.STOP_VOUCHER_ERROR
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.SUCCESS_VOUCHER_DEFAULT_VALUE
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_CANCEL_VOUCHER_ERROR
@@ -89,14 +91,16 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     companion object {
         fun newInstance(
+            pageMode: String,
             onCreateCouponMenuSelected: () -> Unit,
             onEditCouponMenuSelected: (Long) -> Unit,
             onDuplicateCouponMenuSelected: (Long) -> Unit,
-            onViewCouponDetailMenuSelected : (Long) -> Unit = {}
+            onViewCouponDetailMenuSelected: (Long) -> Unit = {}
         ): CouponListFragment {
             val args = Bundle()
             val fragment = CouponListFragment().apply {
                 arguments = args
+                this.pageMode = pageMode
                 this.onCreateCouponMenuSelected = onCreateCouponMenuSelected
                 this.onEditCouponMenuSelected = onEditCouponMenuSelected
                 this.onDuplicateCouponMenuSelected = onDuplicateCouponMenuSelected
@@ -105,6 +109,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             return fragment
         }
     }
+
+    private var pageMode: String = PAGE_MODE_ACTIVE
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -164,6 +170,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setupPageMode()
         return inflater.inflate(R.layout.fragment_mvc_coupon_list, container, false)
     }
 
@@ -211,6 +218,16 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     override fun onGetListError(message: String) {
 
+    }
+
+    /**
+     * Initiate page mode, should be called before setupObservers() function to prevent
+     * re-invoking data
+     */
+    private fun setupPageMode() {
+        if (pageMode == PAGE_MODE_HISTORY) {
+            viewModel.setStatusFilter(VoucherStatus.HISTORY)
+        }
     }
 
     private fun getInitialValues() {
