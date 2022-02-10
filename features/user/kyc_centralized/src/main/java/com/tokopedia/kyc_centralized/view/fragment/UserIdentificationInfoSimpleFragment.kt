@@ -100,11 +100,17 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     }
 
     private fun finishAndRedirectKycResult() {
-        val intent = Intent().also {
-            it.putExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL, redirectUrl)
+        activity?.let {
+            gotoRedirectUrl()
+            it.setResult(Activity.RESULT_OK)
+            it.finish()
         }
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+    }
+
+    private fun gotoRedirectUrl() {
+        activity?.let {
+            RouteManager.route(it, redirectUrl)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
