@@ -102,7 +102,7 @@ class ProductSectionViewHolder(
     }
 
     private fun setupTimer(item : PlayProductSectionUiModel.ProductSection) {
-        if(item.type == ProductSectionType.Active) timerTime = item.endTime else item.startTime
+        if(item.type == ProductSectionType.Active) timerTime = item.endTime else timerTime = item.startTime
 
         val convertedServerTime = item.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val convertedExpiredTime = timerTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
