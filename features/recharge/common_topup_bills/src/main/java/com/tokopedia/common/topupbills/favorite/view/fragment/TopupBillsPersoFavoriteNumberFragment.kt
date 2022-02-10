@@ -25,6 +25,7 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSele
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.favorite.data.UpdateFavoriteDetail
+import com.tokopedia.common.topupbills.favorite.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.favorite.view.adapter.TopupBillsPersoFavoriteNumberListAdapter
@@ -268,7 +269,7 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsPersoFavNumberItem>) {
-        clientNumbers = CommonTopupBillsDataMapper.mapPersoFavNumberItemToDataView(newClientNumbers)
+        clientNumbers = FavoriteNumberDataMapper.mapPersoFavNumberItemToDataView(newClientNumbers)
         val namedFavNumber = clientNumbers.count { it.subtitle.isNotEmpty() }
         commonTopupBillsAnalytics.eventImpressionTotalFavoriteNumber(
             totalUnnamedFavNumber = clientNumbers.size - namedFavNumber,
