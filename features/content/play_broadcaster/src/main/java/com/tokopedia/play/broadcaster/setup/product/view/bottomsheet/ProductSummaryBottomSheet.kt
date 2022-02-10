@@ -103,6 +103,7 @@ class ProductSummaryBottomSheet @Inject constructor(
             handleAddMoreProduct()
         }
         setCloseClickListener {
+            dismiss()
             container?.removeFragment()
         }
 

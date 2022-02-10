@@ -113,6 +113,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun setupView() {
         setCloseClickListener {
+            dismiss()
             container?.removeFragment()
         }
 
