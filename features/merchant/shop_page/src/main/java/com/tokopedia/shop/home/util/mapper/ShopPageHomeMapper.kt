@@ -493,8 +493,8 @@ object ShopPageHomeMapper {
                  )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
-            firstBackgroundColor = "ff5733",
-            secondBackgroundColor = "ee5534"
+            firstBackgroundColor = "",
+            secondBackgroundColor = ""
         )
     }
 

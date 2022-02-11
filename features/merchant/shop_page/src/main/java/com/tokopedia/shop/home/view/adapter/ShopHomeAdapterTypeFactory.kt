@@ -37,6 +37,7 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolde
 import com.tokopedia.shop_widget.common.util.WidgetState
 import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFactory
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 
 class ShopHomeAdapterTypeFactory(
@@ -136,6 +137,10 @@ class ShopHomeAdapterTypeFactory(
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
+    private fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
+        return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
+    }
+
     override fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int {
         return ShopHomeProductEtalaseTitleViewHolder.LAYOUT
     }
@@ -149,7 +154,10 @@ class ShopHomeAdapterTypeFactory(
     }
 
     override fun type(uiModel: ThematicWidgetUiModel): Int {
-        return ThematicWidgetViewHolder.LAYOUT
+        return if(isShowThematicWidgetPlaceHolder(uiModel))
+            ThematicWidgetLoadingStateViewHolder.LAYOUT
+        else
+            ThematicWidgetViewHolder.LAYOUT
     }
 
     override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
@@ -242,6 +250,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderSquarePlaceholderViewHolder(parent)
             ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnPlaceholderViewHolder(parent)
             ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent)
+            ThematicWidgetLoadingStateViewHolder.LAYOUT -> ThematicWidgetLoadingStateViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder
