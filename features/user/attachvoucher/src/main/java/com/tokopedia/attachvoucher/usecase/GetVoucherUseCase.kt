@@ -113,6 +113,7 @@ open class GetVoucherUseCase @Inject constructor(
                             stop
                             share
                         }
+                        is_lock_to_product
                     }
                 }
             }

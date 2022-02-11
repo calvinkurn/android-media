@@ -21,11 +21,8 @@ object TopChatVoucherViewHolderBinder {
                 return element.isSender
             }
         }
-        val merchantVoucherViewModel = element.voucher.apply {
-            this.isPublic = element.isPublic()
-        }
-        merchantVoucherView?.setData(merchantVoucherViewModel,
-            false, source = MerchantVoucherView.SOURCE_TOPCHAT)
+        val merchantVoucherViewModel = element.voucher
+        merchantVoucherView?.setData(merchantVoucherViewModel, false)
     }
 
     fun bindClick(

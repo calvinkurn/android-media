@@ -101,6 +101,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             .withResponseFromWs(item)
             .withVoucherModel(voucherModel)
             .withIsPublic(voucher.isPublic)
+            .withIsLockToProduct(voucher.isLockToProduct)
             .build()
     }
 

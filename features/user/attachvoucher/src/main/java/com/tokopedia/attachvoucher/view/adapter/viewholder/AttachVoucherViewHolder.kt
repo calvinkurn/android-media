@@ -8,8 +8,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.databinding.ItemAttachVoucherBinding
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.utils.view.binding.viewBinding
 
 class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : AbstractViewHolder<VoucherUiModel>(itemView) {
@@ -61,11 +59,8 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
     }
 
     private fun bindVoucherView(voucher: VoucherUiModel) {
-        val voucherModel = MerchantVoucherViewModel(voucher).apply {
-            this.isPublic = voucher.isPublic()
-        }
-        binding?.voucher?.setData(voucherModel,
-            hasActionButton = false, source = MerchantVoucherView.SOURCE_TOPCHAT)
+        val voucherModel = voucher.getMerchantVoucherViewModel()
+        binding?.voucher?.setData(voucherModel, hasActionButton = false)
     }
 
     private fun bindClick(voucher: VoucherUiModel) {

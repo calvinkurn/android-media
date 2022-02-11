@@ -114,9 +114,8 @@ open class MerchantVoucherView : CustomVoucherView {
     fun setData(
         merchantVoucherViewModel: MerchantVoucherViewModel?,
         hasActionButton: Boolean = true,
-        source: String = ""
     ) {
-        setData(merchantVoucherViewModel, source)
+        setData(merchantVoucherViewModel)
         if (!hasActionButton) {
             btnUseVoucher?.visibility = View.GONE
             btnUseVoucher?.isEnabled = false
@@ -126,7 +125,7 @@ open class MerchantVoucherView : CustomVoucherView {
         }
     }
 
-    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?, source: String) {
+    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
         this.merchantVoucherViewModel = merchantVoucherViewModel
         merchantVoucherViewModel?.run {
             var voucherImageUrl = ""
@@ -154,7 +153,7 @@ open class MerchantVoucherView : CustomVoucherView {
             tvVoucherTitle?.text = spannedVoucherTitle
             val voucherDesc = merchantVoucherViewModel
                 .getMinSpendLongString(context)
-                .getAdditionalText(merchantVoucherViewModel.isPublic, source)
+                .getAdditionalText(merchantVoucherViewModel.isLockToProduct)
             tvVoucherDesc?.text = SpanText(
                     voucherDesc,
                     merchantVoucherViewModel.getMinSpendAmountShortString()
@@ -206,18 +205,9 @@ open class MerchantVoucherView : CustomVoucherView {
         }
     }
 
-//    This text only for topchat
-    private fun String.getAdditionalText(
-        isPublic: Boolean,
-        source: String
-    ): String {
-        return if(!isPublic && source == SOURCE_TOPCHAT) {
+    private fun String.getAdditionalText(isLockToProduct: Boolean): String {
+        return if (isLockToProduct) {
             "$this \n${context.getString(R.string.voucher_public_suffix)}"
         } else this
     }
-
-    companion object {
-        const val SOURCE_TOPCHAT = "topchat"
-    }
-
 }

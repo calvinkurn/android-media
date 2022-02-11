@@ -2,8 +2,6 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment
 
 import android.view.View
 import android.widget.ImageView
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
 import kotlinx.android.synthetic.main.item_voucher_preview.view.*
@@ -21,11 +19,8 @@ class VoucherPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     }
 
     private fun bindVoucherView(model: SendableVoucherPreview) {
-        val voucherModel = MerchantVoucherViewModel(model.voucher).apply {
-            this.isPublic = model.isPublic()
-        }
-        itemView.voucher?.setData(voucherModel,
-            false, MerchantVoucherView.SOURCE_TOPCHAT)
+        val voucherModel = model.merchantVoucherViewModel
+        itemView.voucher?.setData(voucherModel, false)
     }
 
     companion object {
