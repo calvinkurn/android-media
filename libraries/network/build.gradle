@@ -12,24 +12,22 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-project.ext {
-    artifactId = 'network'
-    groupId = 'com.tokopedia.network'
-    versionName = "1.1.30"
-    artifactName = "network-debug"
-}
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
-    implementation rootProject.ext.tkpdInternalLibDependencies.logger
-
+    implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation rootProject.ext.debugToolsDependencies.chuck
 }
 
-apply from: '../publish_local.gradle'
+project.ext {
+    artifactId = 'network'
+    groupId = 'com.tokopedia.network'
+    versionName = "0.0.1"
+    artifactName = "network-release"
+}
+
+apply from: '../../publish_local.gradle'

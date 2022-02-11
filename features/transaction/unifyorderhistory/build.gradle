@@ -36,7 +36,7 @@ android {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
     buildFeatures {
-        viewBinding = true
+        viewBinding true
     }
 }
 
@@ -64,7 +64,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
