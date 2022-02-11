@@ -110,15 +110,15 @@ class CatalogFragmentTest
                 assert(false)
             }
         }.assertTest {
-//            val query = listOf(
-//                    mapOf(
-//                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-//                            Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-//                            Event.ACTION_KEY to Event.ALL_STAR,
-//                            Event.LABEL_KEY to Event.ALL_STAR
-//                    )
-//            )
-//            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
+            val query = listOf(
+                    mapOf(
+                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                            Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                            Event.ACTION_KEY to Event.ALL_STAR,
+                            Event.LABEL_KEY to Event.ALL_STAR
+                    )
+            )
+            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
         }
     }
 
@@ -162,15 +162,15 @@ class CatalogFragmentTest
                     withId(R.id.view_pager_specs),
                     ViewMatchers.isDisplayed())))
         }.assertTest {
-//            val query = listOf(
-//                    mapOf(
-//                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-//                            Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-//                            Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
-//                            Event.LABEL_KEY to Event.ALL_STAR
-//                    )
-//            )
-//            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
+            val query = listOf(
+                    mapOf(
+                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                            Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                            Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
+                            Event.LABEL_KEY to Event.ALL_STAR
+                    )
+            )
+            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
         }
     }
 
@@ -200,15 +200,15 @@ class CatalogFragmentTest
             onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.catalog_specification_rv),
                     ViewMatchers.isDisplayed())))
         }.assertTest {
-//            val query = listOf(
-//                    mapOf(
-//                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-//                        Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-//                        Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-//                        Event.LABEL_KEY to Event.ALL_STAR
-//                    )
-//            )
-//            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
+            val query = listOf(
+                    mapOf(
+                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                        Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                        Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
+                        Event.LABEL_KEY to Event.ALL_STAR
+                    )
+            )
+            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
         }
     }
 
