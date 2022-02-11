@@ -18,7 +18,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/play_widget_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:minHeight="@dimen/play_widget_card_jumbo_height"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
