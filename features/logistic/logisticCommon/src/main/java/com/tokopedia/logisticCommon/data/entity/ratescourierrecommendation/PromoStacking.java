@@ -19,9 +19,6 @@ public class PromoStacking {
     @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("title_service")
-    @Expose
-    private String titleService;
     @SuppressLint("Invalid Data Type")
     @SerializedName("service_id")
     @Expose
@@ -260,13 +257,5 @@ public class PromoStacking {
 
     public Texts getTexts() {
         return texts;
-    }
-
-    public String getTitleService() {
-        return titleService;
-    }
-
-    public void setTitleService(String titleService) {
-        this.titleService = titleService;
     }
 }
