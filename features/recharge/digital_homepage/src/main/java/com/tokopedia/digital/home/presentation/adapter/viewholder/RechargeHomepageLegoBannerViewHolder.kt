@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeLegoBannerBinding
+import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.decoration.clearDecorations
@@ -49,9 +50,13 @@ class RechargeHomepageLegoBannerViewHolder(
 
     override fun bind(element: DynamicLegoBannerDataModel) {
         val binding = ViewRechargeHomeLegoBannerBinding.bind(itemView)
+
+        val isCacheData = element.isCache
+        val isLego24UsingRollenceVariant = HomeComponentRollenceController.isHomeComponentLego24BannerUsingRollenceVariant()
+
         setHeader(binding, element)
         setChannelDivider(binding, element)
-        setGrid(binding, element, element.isCache)
+        setGrid(binding, element, isCacheData, isLego24UsingRollenceVariant)
     }
 
     private fun setHeader(
@@ -65,7 +70,6 @@ class RechargeHomepageLegoBannerViewHolder(
                     DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> listener.onSeeAllFourImage(element.channelModel, adapterPosition)
                     DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> listener.onSeeAllThreemage(element.channelModel, adapterPosition)
                     DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> listener.onSeeAllTwoImage(element.channelModel, adapterPosition)
-
                 }
             }
 
@@ -89,11 +93,12 @@ class RechargeHomepageLegoBannerViewHolder(
     private fun setGrid(
         binding: ViewRechargeHomeLegoBannerBinding,
         element: DynamicLegoBannerDataModel,
-        isCacheData: Boolean
+        isCacheData: Boolean,
+        isLegoRolleceVariant: Boolean
     ){
         if (element.channelModel.channelGrids.isNotEmpty()){
             val defaultSpanCount = getRecyclerviewDefaultSpanCount(element)
-            if (isCacheData){
+            if (!isCacheData){
                 setViewportImpression(element)
             }
             with(binding.recycleList){
@@ -112,13 +117,14 @@ class RechargeHomepageLegoBannerViewHolder(
                     element.channelModel,
                     adapterPosition + 1,
                     isCacheData,
-                    false
+                    isLegoRolleceVariant
                 )
 
                 clearDecorations()
                 var marginValue = 0
+
                 //setup lego banner grid
-                if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE){
+                if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLegoRolleceVariant){
                     if (itemDecorationCount == 0){
                         addItemDecoration(
                             GridSpacingItemDecoration(
@@ -129,7 +135,7 @@ class RechargeHomepageLegoBannerViewHolder(
                         )
                     }
                     marginValue = getDimens(resHome.dimen.home_component_margin_default)
-                }else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE){
+                }else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLegoRolleceVariant){
                     if (itemDecorationCount == 0) {
                         addItemDecoration(
                             GridSpacingItemDecoration(
