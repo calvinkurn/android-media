@@ -71,7 +71,7 @@ object AddOnUiModelMapper {
 
     private fun getAddOnSavedStateById(addOnId: String, addOnSavedStateResponse: GetAddOnSavedStateResponse): AddOnDataResponse? {
         if (addOnId.isNotBlankOrZero()) {
-            addOnSavedStateResponse.addOns.forEach {
+            addOnSavedStateResponse.getAddOns.data.addOns.forEach {
                 it.addOnData.forEach {
                     if (it.addOnId == addOnId) {
                         return it

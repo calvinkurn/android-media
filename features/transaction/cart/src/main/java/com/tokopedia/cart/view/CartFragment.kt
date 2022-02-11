@@ -530,7 +530,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.goToCourierPageButton?.setOnClickListener {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             val addOnProductData = AddOnProductData().apply {
-                bottomSheetType = AddOnProductData.ADD_ON_UNAVAILABLE_BOTTOM_SHEET
+                bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET
                 bottomSheetTitle = "Judul Bottom Sheet"
 
                 unavailableBottomSheetData = UnavailableBottomSheetData().apply {
@@ -1728,7 +1728,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
         }
-//        tempInitializeAddOnNavigation()
+        tempInitializeAddOnNavigation()
     }
 
     override fun onCartDataDisableToCheckout() {

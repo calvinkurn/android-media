@@ -3,6 +3,20 @@ package com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate
 import com.google.gson.annotations.SerializedName
 
 data class SaveAddOnStateResponse(
+        @SerializedName("save_add_ons")
+        val getAddOns: SaveAddOnsResponse = SaveAddOnsResponse()
+)
+
+data class SaveAddOnsResponse(
+        @SerializedName("error_message")
+        val errorMessage: List<String> = emptyList(),
+        @SerializedName("status")
+        val status: String = "",
+        @SerializedName("data")
+        val data: DataResponse = DataResponse()
+)
+
+data class DataResponse(
         @SerializedName("add_ons")
         val addOns: List<AddOnResponse> = emptyList()
 )

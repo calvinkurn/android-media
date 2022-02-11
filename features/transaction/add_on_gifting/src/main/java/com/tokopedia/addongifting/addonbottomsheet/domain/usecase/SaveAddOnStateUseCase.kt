@@ -2,6 +2,7 @@ package com.tokopedia.addongifting.addonbottomsheet.domain.usecase
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateResponse
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.SaveAddOnStateResult
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -11,16 +12,16 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 @GqlQuery(SaveAddOnStateUseCase.QUERY_NAME, SaveAddOnStateUseCase.QUERY)
-class SaveAddOnStateUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) : UseCase<SaveAddOnStateResult>() {
+class SaveAddOnStateUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) : UseCase<SaveAddOnStateResponse>() {
 
     var mockResponse: String = ""
 
-    override suspend fun executeOnBackground(): SaveAddOnStateResult {
+    override suspend fun executeOnBackground(): SaveAddOnStateResponse {
         if (mockResponse.isNotBlank()) {
-            return Gson().fromJson(mockResponse, SaveAddOnStateResult::class.java)
+            return Gson().fromJson(mockResponse, SaveAddOnStateResponse::class.java)
         }
 
-        val request = GraphqlRequest(SaveAddOnStateQuery(), SaveAddOnStateResult::class.java)
+        val request = GraphqlRequest(SaveAddOnStateQuery(), SaveAddOnStateResponse::class.java)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 
