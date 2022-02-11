@@ -123,13 +123,4 @@
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N100" />
 
-    <View
-        android:id="@+id/v_separator_bo"
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:layout_below="@+id/rl_content"
-        android:layout_marginTop="16dp"
-        android:background="@color/Unify_N100"
-        android:visibility="gone"/>
-
 </RelativeLayout>

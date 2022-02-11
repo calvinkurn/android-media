@@ -25,11 +25,13 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         this.mData = shippingDurationUiModels.toMutableList()
         if (preOrderModel?.display == true)  {
             preOrderModel.let { this.mData.add(0, it) }
-            promoUiModel.mapIndexed { index, logisticPromoUiModel ->  this.mData.add(1 + index, logisticPromoUiModel) }
-            // todo add divider here
+            if (promoUiModel.isNotEmpty()) {
+                this.mData.addAll(1, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+            }
         } else {
-            promoUiModel.mapIndexed { index, logisticPromoUiModel ->  this.mData.add(index, logisticPromoUiModel) }
-            // todo add divider here
+            if (promoUiModel.isNotEmpty()) {
+                this.mData.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+            }
         }
         if (shippingDurationUiModels[0].etaErrorCode == 1) {
             this.mData.add(0, NotifierModel())
@@ -71,6 +73,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         is PreOrderModel -> PreOrderViewHolder.LAYOUT
         is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT
+        is DividerModel -> DividerViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
 
@@ -80,6 +83,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             PreOrderViewHolder.LAYOUT -> PreOrderViewHolder(view)
             ArmyViewHolder.LAYOUT -> ArmyViewHolder(view)
             NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
+            DividerViewHolder.LAYOUT -> DividerViewHolder(view)
             else -> ShippingDurationViewHolder(view, cartPosition)
         }
     }

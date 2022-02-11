@@ -26,8 +26,6 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var imgLogo: ImageView = itemView.findViewById(R.id.img_logo)
     private var flImageContainer: FrameLayout = itemView.findViewById(R.id.fl_image_container)
     private var imgCheck: IconUnify = itemView.findViewById(R.id.img_check)
-    private var divider: View = itemView.findViewById(R.id.v_separator)
-    private var promoDivider: View = itemView.findViewById(R.id.v_separator_bo)
 
     companion object {
         @JvmStatic
@@ -36,6 +34,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?, isOcc: Boolean = false) {
+        // todo need to confirm if this impacting all or only bo eko
         val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
         
         tvTitle.text = formattedTitle
@@ -73,14 +72,6 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 //            ImageHandler.LoadImage(imgLogo, data.imageUrl)
 //        } else {
 //            imgLogo.visibility = View.GONE
-//        }
-//
-//        if (showBoDivider) {
-//            promoDivider.visibility = View.VISIBLE
-//            divider.visibility = View.GONE
-//        } else {
-//            promoDivider.visibility = View.GONE
-//            divider.visibility = View.VISIBLE
 //        }
 
         val fontColor = if (data.disabled) {
