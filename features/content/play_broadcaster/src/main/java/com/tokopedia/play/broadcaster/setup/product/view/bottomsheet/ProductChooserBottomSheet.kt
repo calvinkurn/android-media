@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
@@ -34,7 +35,9 @@ import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collect
@@ -77,6 +80,32 @@ class ProductChooserBottomSheet @Inject constructor(
     private val productErrorView by viewComponent {
         ProductErrorViewComponent(binding.errorProduct, eventBus)
     }
+    private val exitConfirmationDialog by lifecycleBound(
+        creator = {
+            DialogUnify(
+                it.requireContext(),
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE,
+            ).apply {
+                setTitle(it.getString(R.string.play_bro_product_chooser_exit_dialog_title))
+                setDescription(it.getString(R.string.play_bro_product_chooser_exit_dialog_desc))
+                setPrimaryCTAText(it.getString(R.string.play_yes))
+                setSecondaryCTAText(it.getString(R.string.play_batal))
+
+                setPrimaryCTAClickListener {
+                    this@apply.dismiss()
+                    this@ProductChooserBottomSheet.dismiss()
+                }
+
+                setSecondaryCTAClickListener {
+                    this@apply.dismiss()
+                }
+            }
+        },
+        onLifecycle = whenLifecycle {
+            onDestroy { it.dismiss() }
+        }
+    )
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -129,6 +158,10 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * 0.85f).toInt()
+        }
+
+        setCloseClickListener {
+            exitConfirmationDialog.show()
         }
     }
 

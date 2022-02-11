@@ -37,6 +37,7 @@
     <string name="play_broadcast_try_again">Coba Lagi</string>
     <string name="play_broadcast_exit">Keluar</string>
     <string name="play_broadcast_end">Akhiri</string>
+    <string name="play_batal">Batal</string>
 
     <string name="play_selected_products">Produk Dipilih (%d)</string>
 
@@ -236,4 +237,6 @@
     <string name="play_bro_selected_product_title">Pilih produk (%d/%d)</string>
     <string name="play_bro_product_stock">Stok %d</string>
     <string name="play_bro_add_product">Tambah Produk</string>
+    <string name="play_bro_product_chooser_exit_dialog_title">Yakin ingin keluar?</string>
+    <string name="play_bro_product_chooser_exit_dialog_desc">Semua produk yang kamu pilih akan hilang jika keluar dari halaman ini.</string>
 </resources>
