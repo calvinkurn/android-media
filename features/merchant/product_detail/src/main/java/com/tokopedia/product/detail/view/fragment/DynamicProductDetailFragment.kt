@@ -771,7 +771,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             if (fintechRedirectionWidgetDataClass.cta == 2 &&
                 fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == false) {
-                openWebViewUrl(url = rediretionLink, showTitleBar = true)
+                openWebViewUrl(url = rediretionLink, false)
             } else if (fintechRedirectionWidgetDataClass.cta == 2 &&
                 fintechRedirectionWidgetDataClass.widgetBottomSheet?.show == true) {
 
