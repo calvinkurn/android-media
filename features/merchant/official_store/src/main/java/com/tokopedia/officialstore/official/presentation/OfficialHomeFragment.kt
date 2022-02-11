@@ -224,7 +224,7 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    if (!isEligibleForDeleteBestSellerWidget()) {
+                    if (!isEligibleForDisableBestSellerWidget()) {
                         officialHomeMapper.mappingRecomWidget(it.data) { newDataList ->
                             adapter?.submitList(newDataList)
                         }
@@ -909,7 +909,7 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> {
                     //update UI
-                    if (!isEligibleForDeleteShopWidget()) {
+                    if (!isEligibleForDisableShopWidget()) {
                         officialHomeMapper.updateFeaturedShopDC(
                             it.data
                         ) { newDataList ->
@@ -923,11 +923,11 @@ class OfficialHomeFragment :
     }
 
     private fun observeFeaturedShopRemoveDC() {
-        viewModel.featuredShopRemove.observe(viewLifecycleOwner, {
+        viewModel.featuredShopRemove.observe(viewLifecycleOwner) {
             officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
                 adapter?.submitList(newDataList)
             }
-        })
+        }
     }
 
     private fun showErrorNetwork(t: Throwable) {
@@ -938,12 +938,20 @@ class OfficialHomeFragment :
         }
     }
 
+    private fun removeRecomWidget() {
+        if (!isEligibleForDisableRemoveRecomWidget()) {
+            officialHomeMapper.removeRecomWidget() {
+                adapter?.submitList(it)
+            }
+        }
+    }
+
     private fun setListener() {
         setLoadMoreListener()
         swipeRefreshLayout?.setOnRefreshListener {
             counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
-            officialHomeMapper.removeRecomWidget(adapter)
+            removeRecomWidget()
             loadData(true)
         }
 
@@ -1099,7 +1107,7 @@ class OfficialHomeFragment :
 
     }
 
-    private fun isEligibleForDeleteShopWidget(): Boolean {
+    private fun isEligibleForDisableShopWidget(): Boolean {
         return try {
             return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_SHOP_WIDGET)
                 ?: false
@@ -1108,7 +1116,7 @@ class OfficialHomeFragment :
         }
     }
 
-    private fun isEligibleForDeleteBestSellerWidget(): Boolean {
+    private fun isEligibleForDisableBestSellerWidget(): Boolean {
         return try {
             return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_BEST_SELLER_WIDGET)
                 ?: false
@@ -1120,6 +1128,24 @@ class OfficialHomeFragment :
     private fun isEligibleForDisableMappingBanner(): Boolean {
         return try {
             return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_BANNERS)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableRemoveRecomWidget(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_RECOM_WIDGET)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableRemoveShopWidget(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET)
                 ?: false
         } catch (e: Exception) {
             false

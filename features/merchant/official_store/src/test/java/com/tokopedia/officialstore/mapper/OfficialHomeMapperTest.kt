@@ -8,6 +8,7 @@ import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.Companion.WIDGET_NOT_FOUND
 import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -298,7 +299,7 @@ class OfficialHomeMapperTest {
     }
 
     @Test
-    fun `given list official store contains different channel id best seller when mapping recom widgetthen data will not replace best seller data from the list`() {
+    fun `given list official store contains different channel id best seller when mapping recom widget then data will not replace best seller data from the list`() {
         `given list official store contains best seller`()
         Assert.assertNotEquals(officialHomeMapper.listOfficialStore[8], mockBestSellerDataModel)
         officialHomeMapper.mappingRecomWidget(data = mockBestSellerDataModel) {}
@@ -343,5 +344,43 @@ class OfficialHomeMapperTest {
         Assert.assertNotEquals(officialHomeMapper.listOfficialStore[3], mockFeaturedShopDataModel)
         Assert.assertEquals(officialHomeMapper.listOfficialStore[4], mockFeaturedShopDataModel)
     }
-}
 
+    @Test
+    fun `given list official store contains best seller when remove recom then the size of the list will different with the list not contains best seller data`() {
+        `given list official store contains best seller`()
+        val totalPreviousData = officialHomeMapper.listOfficialStore.toMutableList().size
+        officialHomeMapper.removeRecomWidget {}
+        val totalAfterRemoveRecomWidget = officialHomeMapper.listOfficialStore.toMutableList().size
+        Assert.assertTrue(totalPreviousData > totalAfterRemoveRecomWidget)
+        val isBestSellerWidgetNotExist = officialHomeMapper.listOfficialStore.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
+        Assert.assertTrue(isBestSellerWidgetNotExist)
+    }
+
+    @Test
+    fun `given list official store not contains best seller when remove recom then the size of the list will the same as before`() {
+        `given list official store not contains best seller`()
+        val totalPreviousData = officialHomeMapper.listOfficialStore.toMutableList().size
+        officialHomeMapper.removeRecomWidget {}
+        val totalAfterRemoveRecomWidget = officialHomeMapper.listOfficialStore.toMutableList().size
+        Assert.assertEquals(totalPreviousData, totalAfterRemoveRecomWidget)
+    }
+
+    @Test
+    fun `given list official store contains featured shop when remove shop widget then data will data will be removed from the list`() {
+        `given list official store contains featured shop`()
+        val totalPreviousData = officialHomeMapper.listOfficialStore.toMutableList().size
+        officialHomeMapper.removeFeaturedShopDC(newData = mockFeaturedShopDataModel) {}
+        val totalAfterRemoveShopWidget = officialHomeMapper.listOfficialStore.toMutableList().size
+        Assert.assertTrue(totalPreviousData > totalAfterRemoveShopWidget)
+        Assert.assertNotEquals(officialHomeMapper.listOfficialStore[3], mockFeaturedShopDataModel)
+    }
+
+    @Test
+    fun `given list official store contains different channel id featured shop when when remove shop widget then total data in the list will be same`() {
+        addDefaultDynamicChannel()
+        val totalPreviousData = officialHomeMapper.listOfficialStore.toMutableList().size
+        officialHomeMapper.removeFeaturedShopDC(newData = mockFeaturedShopDataModel) {}
+        val totalAfterRemoveShopWidget = officialHomeMapper.listOfficialStore.toMutableList().size
+        Assert.assertTrue(totalPreviousData == totalAfterRemoveShopWidget)
+    }
+}

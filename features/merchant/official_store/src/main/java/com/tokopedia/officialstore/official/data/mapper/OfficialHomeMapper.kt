@@ -33,7 +33,7 @@ class OfficialHomeMapper (
         private const val BENEFIT_POSITION = 1
         private const val FEATURE_SHOP_POSITION = 2
         const val RECOM_WIDGET_POSITION = 3
-        private const val WIDGET_NOT_FOUND = -1
+        const val WIDGET_NOT_FOUND = -1
     }
 
     fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?, isDisableForMappingBanner: Boolean) {
@@ -298,7 +298,7 @@ class OfficialHomeMapper (
 
     fun removeFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
         val newList = mutableListOf<Visitable<*>>()
-        listOfficialStore.forEach {
+        listOfficialStore.toMutableList().forEach {
             if (it !is FeaturedShopDataModel || ((it is FeaturedShopDataModel && it.channelModel.id != newData.channelModel.id)))  {
                 newList.add(it)
             }
@@ -325,10 +325,16 @@ class OfficialHomeMapper (
         action.invoke(newList)
     }
 
-    fun removeRecomWidget(adapter: OfficialHomeAdapter?){
-        listOfficialStore.run {
-            removeAll { it is BestSellerDataModel}
-            adapter?.submitList(this.toMutableList())
+    fun removeRecomWidget(
+        action: (listSubmitted: MutableList<Visitable<*>>) -> Unit
+    ) {
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.toMutableList().forEach {
+            if (it !is BestSellerDataModel) {
+                newList.add(it)
+            }
         }
+        listOfficialStore = newList
+        action.invoke(newList)
     }
 }

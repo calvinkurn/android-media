@@ -294,7 +294,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block={
             getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
             val data = getDisplayHeadlineAds.executeOnBackground()
-            if(data.isEmpty()){
+            if (data.isEmpty()) {
                 _featuredShopResult.value = Success(
                     featuredShopDataModel.copy(
                         state = FeaturedShopDataModel.STATE_READY,
@@ -302,12 +302,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     )
                 )
             } else {
-                _featuredShopResult.value = Success(featuredShopDataModel.copy(
+                _featuredShopResult.value = Success(
+                    featuredShopDataModel.copy(
                         channelModel = featuredShopDataModel.channelModel.copy(
-                                channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                            channelGrids = data.mappingTopAdsHeaderToChannelGrid()
                         ),
                         state = FeaturedShopDataModel.STATE_READY,
-                        page = featuredShopDataModel.page)
+                        page = featuredShopDataModel.page
+                    )
                 )
             }
         }){
