@@ -180,11 +180,6 @@ class TopupBillsPersoContactListFragment:
         }
     }
 
-    inner class Contact(
-        val name: String,
-        val phoneNumber: String
-    )
-
     companion object {
         fun newInstance(): Fragment {
             return TopupBillsPersoContactListFragment()
