@@ -6,5 +6,6 @@ data class ShopPageTabModel(
         val tabTitle: String,
         var tabIconInactive: Int,
         val tabIconActive: Int,
-        val tabFragment: Fragment
+        val tabFragment: Fragment,
+        val tabIconUrl: String = ""
 )
