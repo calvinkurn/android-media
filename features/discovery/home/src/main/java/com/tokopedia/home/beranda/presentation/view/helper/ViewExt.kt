@@ -30,5 +30,7 @@ fun String.isHexColor(): Boolean {
 fun View.getPositionWidgetVertical(): Int {
     val originalPosition = intArrayOf(0,0)
     this.getLocationInWindow(originalPosition)
-    return originalPosition[1]
+    return if (originalPosition.size > 1)
+        originalPosition[1]
+    else 0
 }

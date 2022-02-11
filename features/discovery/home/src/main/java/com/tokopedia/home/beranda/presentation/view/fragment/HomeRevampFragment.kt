@@ -1533,7 +1533,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun dismissTokonowCoachmark(parentPosition: Int) {
         if (tokonowIconParentPosition == parentPosition) {
-            coachmarkTokonow?.dismissCoachMark()
+            coachmarkTokonow?.let {
+                if (it.isShowing) {
+                    it.dismissCoachMark()
+                }
+            }
         }
     }
 
