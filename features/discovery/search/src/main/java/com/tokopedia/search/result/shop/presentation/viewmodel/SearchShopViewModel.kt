@@ -22,8 +22,10 @@ import com.tokopedia.filter.common.helper.getFilterParams
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.analytics.GeneralSearchTrackingShop
 import com.tokopedia.search.analytics.SearchEventTracking
+import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopDataView
@@ -32,7 +34,9 @@ import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTit
 import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionDataView
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
+import com.tokopedia.search.utils.toSearchParams
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -53,7 +57,8 @@ internal class SearchShopViewModel(
         private val getShopCountUseCase: Lazy<UseCase<Int>>,
         private val shopCpmDataViewMapper: Lazy<Mapper<SearchShopModel, ShopCpmDataView>>,
         private val shopDataViewMapper: Lazy<Mapper<SearchShopModel, ShopDataView>>,
-        private val userSession: Lazy<UserSessionInterface>
+        private val userSession: Lazy<UserSessionInterface>,
+        private val chooseAddressWrapper: ChooseAddressWrapper,
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -98,6 +103,9 @@ internal class SearchShopViewModel(
     val generalSearchTrackingLiveData: LiveData<GeneralSearchTrackingShop> =
             generalSearchTrackingMutableLiveData
     var dynamicFilterModel: DynamicFilterModel? = null
+        private set
+    var chooseAddressData: LocalCacheModel? = null
+        private set
 
     init {
         setSearchParameterUniqueId()
@@ -134,6 +142,8 @@ internal class SearchShopViewModel(
     }
 
     fun onViewCreated() {
+        this.chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+
         if (shouldLoadDataOnViewCreated() && !hasLoadData) {
             hasLoadData = true
             searchShop()
@@ -149,6 +159,8 @@ internal class SearchShopViewModel(
             hasLoadData = true
             searchShop()
         }
+
+        reCheckChooseAddressData()
     }
 
     private fun searchShop() {
@@ -180,6 +192,7 @@ internal class SearchShopViewModel(
 
         putRequestParamsParameters(requestParams)
         requestParams.putAll(searchParameter)
+        putRequestParamsChooseAddress(requestParams)
 
         return requestParams
     }
@@ -191,6 +204,11 @@ internal class SearchShopViewModel(
         requestParams.putString(SearchApiConst.ROWS, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS)
         requestParams.putString(SearchApiConst.IMAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE)
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE)
+    }
+
+    private fun putRequestParamsChooseAddress(requestParams: RequestParams) {
+        val chooseAddressData = chooseAddressData ?: return
+        requestParams.putAllString(chooseAddressData.toSearchParams())
     }
 
     private fun onSearchShopSuccess(searchShopModel: SearchShopModel) {
@@ -287,6 +305,7 @@ internal class SearchShopViewModel(
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
+        processChooseAddress(visitableList)
         processCPM(searchShopModel, visitableList)
         processSuggestion(searchShopModel, visitableList)
         processShopItem(searchShopModel, visitableList)
@@ -294,6 +313,10 @@ internal class SearchShopViewModel(
         addLoadingMoreModel(visitableList)
 
         return visitableList
+    }
+
+    private fun processChooseAddress(visitableList: MutableList<Visitable<*>>) {
+        visitableList.add(ChooseAddressDataView())
     }
 
     private fun processCPM(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
@@ -846,6 +869,24 @@ internal class SearchShopViewModel(
         RequestParams.create().also {
             it.putAll(mapParameter)
         }
+
+    fun onLocalizingAddressSelected() {
+        chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        dynamicFilterModel = null
+
+        onViewReloadData()
+    }
+
+    fun onViewResume() {
+        reCheckChooseAddressData()
+    }
+
+    fun reCheckChooseAddressData() {
+        val chooseAddressData = chooseAddressData ?: return
+        val isAddressDataUpdated = chooseAddressWrapper.isChooseAddressUpdated(chooseAddressData)
+
+        if (isAddressDataUpdated) onLocalizingAddressSelected()
+    }
 
     fun getSearchParameter() = searchParameter.toMap()
 
