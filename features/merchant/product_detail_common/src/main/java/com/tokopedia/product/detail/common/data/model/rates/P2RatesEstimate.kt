@@ -22,7 +22,11 @@ data class P2RatesEstimate(
 
         @SerializedName("bottomsheet")
         @Expose
-        val errorBottomSheet: ErrorBottomSheet = ErrorBottomSheet()
+        val errorBottomSheet: ErrorBottomSheet = ErrorBottomSheet(),
+
+        @SerializedName("isNewRatesComponent")
+        @Expose
+        val isNewRatesComponent: Boolean = false
 )
 
 data class P2RatesEstimateData(

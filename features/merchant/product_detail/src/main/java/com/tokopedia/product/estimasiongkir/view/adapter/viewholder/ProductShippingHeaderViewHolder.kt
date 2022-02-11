@@ -59,7 +59,8 @@ class ProductShippingHeaderViewHolder(view: View,
             element.shouldShowTxtTokoNow(),
             element.freeOngkirTokoNowText,
             element.freeOngkirPriceOriginal,
-            element.freeOngkirDesc
+            element.freeOngkirDesc,
+            element.isNewRatesComponent
         )
         renderWeight(element.weight)
     }
@@ -105,12 +106,13 @@ class ProductShippingHeaderViewHolder(view: View,
         shouldShowTxtTokoNow: Boolean,
         freeOngkirTokoNowText: String,
         freeOngkirPriceOriginal: Double,
-        freeOngkirDesc: String
-    ) = with(itemView) {
+        freeOngkirDesc: String,
+        isNewRatesComponent: Boolean
+    ) {
         if (shouldShowTxtTokoNow) {
             renderBoTokoNow(shouldShowTxtTokoNow, freeOngkirEstimation, freeOngkirPrice, freeOngkirTokoNowText)
         } else {
-            renderBoNormal(isFreeOngkir, freeOngkirEstimation, freeOngkirImageUrl, freeOngkirPrice, freeOngkirPriceOriginal, freeOngkirDesc)
+            renderBoNormal(isFreeOngkir, freeOngkirEstimation, freeOngkirImageUrl, freeOngkirPrice, freeOngkirPriceOriginal, freeOngkirDesc, isNewRatesComponent)
         }
     }
 
@@ -120,7 +122,8 @@ class ProductShippingHeaderViewHolder(view: View,
         freeOngkirImageUrl: String,
         freeOngkirPrice: String,
         freeOngkirPriceOriginal: Double,
-        freeOngkirDesc: String
+        freeOngkirDesc: String,
+        isNewRatesComponent: Boolean
     ) = with(itemView) {
         txtFreeOngkirPrice?.shouldShowWithAction(isFreeOngkir && freeOngkirPrice.isNotEmpty()) {
             txtFreeOngkirPrice.text = freeOngkirPrice
@@ -133,16 +136,24 @@ class ProductShippingHeaderViewHolder(view: View,
             txtFreeOngkirEstimation.text = freeOngkirEstimation
         }
 
-        txtFreeOngkirDesc?.showIfWithBlock(isFreeOngkir && freeOngkirDesc.isNotEmpty()) {
+        /**
+         * BO Affordability changes
+         * will show when flag isNewRatesComponent is true
+         */
+        txtFreeOngkirDesc?.showIfWithBlock(isNewRatesComponent && isFreeOngkir && freeOngkirDesc.isNotEmpty()) {
             text = freeOngkirDesc
         }
 
-        txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && freeOngkirPriceOriginal > 0){
+        txtFreeOngkirPriceOriginal?.showIfWithBlock(isNewRatesComponent && isFreeOngkir && freeOngkirPriceOriginal > 0){
             text = freeOngkirPriceOriginal.getCurrencyFormatted()
             paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
 
-        dividerFreeOngkir?.showWithCondition(isFreeOngkir)
+        dividerFreeOngkir?.showWithCondition(isNewRatesComponent && isFreeOngkir)
+        /**
+         * end of changes
+         */
+
         txtTokoNow?.hide()
     }
 

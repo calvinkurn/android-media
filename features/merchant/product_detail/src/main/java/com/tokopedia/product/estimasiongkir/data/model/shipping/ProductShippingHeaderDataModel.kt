@@ -21,6 +21,7 @@ data class ProductShippingHeaderDataModel(
         val freeOngkirDesc: String = "",
         val freeOngkirImageUrl: String = "",
         val freeOngkirTokoNowText:String = "",
+        val isNewRatesComponent: Boolean = false,
 
         val isFulfillment: Boolean = false,
         val tokoCabangIcon: String = "",

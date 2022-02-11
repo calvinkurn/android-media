@@ -2438,7 +2438,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     isTokoNow = it.basic.isTokoNow,
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
-                    orderValue =  it.data.price.value.roundToIntOrZero()
+                    orderValue =  it.data.price.value.roundToIntOrZero(),
+                    isNewRatesComponent = viewModel.getIsNewRatesComponentByProductId()
             ))
             shouldRefreshShippingBottomSheet = false
             val shippingBs = ProductDetailShippingBottomSheet()
