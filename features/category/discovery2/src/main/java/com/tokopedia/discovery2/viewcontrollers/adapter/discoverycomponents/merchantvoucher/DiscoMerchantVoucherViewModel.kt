@@ -12,8 +12,8 @@ import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.util.*
 import javax.inject.Inject
+import java.util.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 class DiscoMerchantVoucherViewModel(
