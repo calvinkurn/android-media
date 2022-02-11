@@ -27,7 +27,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.playServicesDependencies.ads
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.miscDependencies.workManager
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
