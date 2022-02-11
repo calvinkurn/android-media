@@ -40,13 +40,15 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             setRequestParams(GetCampaignListUseCase.createParams(shopId = userSession.shopId))
         }.executeOnBackground()
 
-        return@withContext productMapper.mapCampaignList(response)
+//        return@withContext productMapper.mapCampaignList(response)
+        return@withContext emptyList()
     }
 
     override suspend fun getEtalaseList(): List<EtalaseUiModel> = withContext(dispatchers.io) {
         val response = getSelfEtalaseListUseCase.executeOnBackground()
 
-        return@withContext productMapper.mapEtalaseList(response)
+//        return@withContext productMapper.mapEtalaseList(response)
+        return@withContext emptyList()
     }
 
     override suspend fun getProductsInEtalase(
@@ -70,13 +72,14 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             )
         }.executeOnBackground()
 
-        return@withContext productMapper.mapProductsInEtalase(response)
+//        return@withContext productMapper.mapProductsInEtalase(response)
+        return@withContext PagedDataUiModel(emptyList(), false)
     }
 
     override suspend fun getProductsInCampaign(
         campaignId: String,
         page: Int,
-    ) = withContext(dispatchers.io) {
+    ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
         if (userSession.userId.isBlank()) error("User does not exist")
 
         val response = getProductsInCampaignUseCase.apply {
@@ -90,7 +93,8 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             )
         }.executeOnBackground()
 
-        return@withContext productMapper.mapProductsInCampaign(response)
+//        return@withContext productMapper.mapProductsInCampaign(response)
+        return@withContext PagedDataUiModel(emptyList(), false)
     }
 
     override suspend fun saveProducts(

@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
-import com.tokopedia.play.broadcaster.util.extension.productEtalaseEmpty
-import com.tokopedia.play.broadcaster.util.extension.productNotFoundState
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -24,6 +24,22 @@ class ProductErrorViewComponent(
         view.setActionClickListener {
             eventBus.emit(Event.AddProductClicked)
         }
+    }
+
+    private fun GlobalError.productNotFoundState() {
+        errorIllustration.setImageResource(com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)
+        errorTitle.text = context.getString(R.string.play_product_not_found_title)
+        errorDescription.text = context.getString(R.string.play_product_not_found_desc)
+        errorAction.gone()
+        errorSecondaryAction.gone()
+    }
+
+    private fun GlobalError.productEtalaseEmpty() {
+        errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
+        errorTitle.text = context.getString(R.string.play_product_etalase_empty_title)
+        errorDescription.text = context.getString(R.string.play_product_etalase_empty_desc)
+        errorAction.text = context.getString(R.string.play_bro_add_product)
+        errorSecondaryAction.gone()
     }
 
     sealed class Event {
