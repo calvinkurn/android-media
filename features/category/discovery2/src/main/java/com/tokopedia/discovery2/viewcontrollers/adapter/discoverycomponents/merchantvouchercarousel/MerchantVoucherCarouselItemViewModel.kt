@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
 import com.tokopedia.mvcwidget.multishopmvc.data.DataMapperMultiShopView.map
@@ -27,5 +28,13 @@ class MerchantVoucherCarouselItemViewModel(application: Application, val compone
     private fun mapToShopModel(dataItem: DataItem):MultiShopModel{
         val catalogItem  = CatalogMVCWithProductsListItem(dataItem.shopInfo,dataItem.subtitle,dataItem.title,dataItem.maximumBenefitAmountStr,null,dataItem.products)
         return  map(catalogItem)
+    }
+
+    fun syncParentPosition() {
+        if (components.parentComponentId.isNotEmpty()) {
+            getComponent(components.parentComponentId, components.pageEndPoint)?.let {
+                components.parentComponentPosition = it.position
+            }
+        }
     }
 }

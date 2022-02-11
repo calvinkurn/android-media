@@ -281,7 +281,21 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             if (isPositiveFlow) {
                 viewModel.getDistrictData(currentLat, currentLong)
             } else {
-                currentDistrictName?.let { viewModel.getAutoComplete(it) }
+                if (currentLong != 0.0 && currentLat != 0.0) {
+                    // negative flow but already pinpoint before
+                    binding?.mapsEmpty?.visibility = View.GONE
+                    binding?.mapViews?.visibility = View.VISIBLE
+
+                    showDistrictBottomSheet()
+                    moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
+                    saveAddressDataModel?.let {
+                        viewModel.setAddress(it)
+                        updateGetDistrictBottomSheet(it)
+                    }
+                } else {
+                    currentDistrictName?.let { viewModel.getAutoComplete(it) }
+                }
+
             }
         }
     }
@@ -467,8 +481,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 } else {
                     activity?.run {
                         setResult(Activity.RESULT_OK, Intent().apply {
-                            putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
-                            putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
                             putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
                         })
                         finish()

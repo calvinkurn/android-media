@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -46,21 +48,23 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeRevampViewModel @Inject constructor(
-        private val homeBalanceWidgetUseCase: Lazy<HomeBalanceWidgetUseCase>,
-        private val homeUseCase: Lazy<HomeDynamicChannelUseCase>,
-        private val homeSuggestedReviewUseCase: Lazy<HomeSuggestedReviewUseCase>,
-        private val homeRecommendationUseCase: Lazy<HomeRecommendationUseCase>,
-        private val homePlayUseCase: Lazy<HomePlayUseCase>,
-        private val homePopularKeywordUseCase: Lazy<HomePopularKeywordUseCase>,
-        private val homeListCarouselUseCase: Lazy<HomeListCarouselUseCase>,
-        private val homeRechargeBuWidgetUseCase: Lazy<HomeRechargeBuWidgetUseCase>,
-        private val homeSearchUseCase: Lazy<HomeSearchUseCase>,
-        private val homeRechargeRecommendationUseCase: Lazy<HomeRechargeRecommendationUseCase>,
-        private val homeSalamRecommendationUseCase: Lazy<HomeSalamRecommendationUseCase>,
-        private val userSession: Lazy<UserSessionInterface>,
-        private val homeBusinessUnitUseCase: Lazy<HomeBusinessUnitUseCase>,
-        private val homeDispatcher: Lazy<CoroutineDispatchers>,
-        private val homeBeautyFestUseCase: Lazy<HomeBeautyFestUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
+    private val homeBalanceWidgetUseCase: Lazy<HomeBalanceWidgetUseCase>,
+    private val homeUseCase: Lazy<HomeDynamicChannelUseCase>,
+    private val homeSuggestedReviewUseCase: Lazy<HomeSuggestedReviewUseCase>,
+    private val homeRecommendationUseCase: Lazy<HomeRecommendationUseCase>,
+    private val homePlayUseCase: Lazy<HomePlayUseCase>,
+    private val homePopularKeywordUseCase: Lazy<HomePopularKeywordUseCase>,
+    private val homeListCarouselUseCase: Lazy<HomeListCarouselUseCase>,
+    private val homeRechargeBuWidgetUseCase: Lazy<HomeRechargeBuWidgetUseCase>,
+    private val homeSearchUseCase: Lazy<HomeSearchUseCase>,
+    private val homeRechargeRecommendationUseCase: Lazy<HomeRechargeRecommendationUseCase>,
+    private val homeSalamRecommendationUseCase: Lazy<HomeSalamRecommendationUseCase>,
+    private val userSession: Lazy<UserSessionInterface>,
+    private val homeBusinessUnitUseCase: Lazy<HomeBusinessUnitUseCase>,
+    private val homeDispatcher: Lazy<CoroutineDispatchers>,
+    private val homeBeautyFestUseCase: Lazy<HomeBeautyFestUseCase>,
+    private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
+    private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -262,6 +266,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun refreshHomeData() {
         if (getHomeDataJob?.isActive == true) return
         if (homeDataModel.flowCompleted == false) return
+        homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
         onRefreshState = true
         getBalanceWidgetLoadingState()
 
@@ -552,15 +557,56 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getBeautyFest(data: List<Visitable<*>>) {
-        launch{
-            _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(data))
-        }
+    fun getBeautyFest(homeDynamicChannelModel: HomeDynamicChannelModel) {
+        _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(homeDynamicChannelModel))
     }
 
     fun deleteQuestWidget() {
         findWidget<QuestWidgetModel> { questWidgetModel, index ->
             deleteWidget(questWidgetModel, index)
+        }
+    }
+
+    fun getCMHomeWidgetData(isForceRefresh: Boolean = true) {
+        findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
+            launchCatchError(coroutineContext, {
+                getCMHomeWidgetDataUseCase.get().getCMHomeWidgetData(
+                    {
+                        val newCMHomeWidgetDataModel =
+                            cmHomeWidgetDataModel.copy(cmHomeWidgetData = it.cmHomeWidgetData)
+                        updateWidget(newCMHomeWidgetDataModel, index)
+                    }, {
+                        deleteWidget(cmHomeWidgetDataModel, index)
+                    },
+                    isForceRefresh
+                )
+            }){
+                deleteWidget(cmHomeWidgetDataModel, index)
+            }
+        }
+    }
+
+    fun deleteCMHomeWidget() {
+        findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
+            launchCatchError(coroutineContext, {
+                cmHomeWidgetDataModel.cmHomeWidgetData?.let { it ->
+                    deleteCMHomeWidgetUseCase.get().deleteCMHomeWidgetData(
+                        {
+                            deleteWidget(cmHomeWidgetDataModel, index)
+                        }, {
+                            updateWidget(cmHomeWidgetDataModel.copy(), index)
+                        }, it.parentId, it.campaignId
+                    )
+                }
+            }) {
+                updateWidget(cmHomeWidgetDataModel.copy(), index)
+            }
+        }
+    }
+
+    fun deleteCMHomeWidgetLocally(){
+        findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
+            deleteWidget(cmHomeWidgetDataModel, index)
         }
     }
 }

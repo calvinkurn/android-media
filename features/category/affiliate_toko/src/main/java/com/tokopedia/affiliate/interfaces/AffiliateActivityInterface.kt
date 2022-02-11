@@ -12,6 +12,7 @@ interface AffiliateActivityInterface {
 
     fun onRegistrationSuccessful()
 
-    fun handleBackButton()
+    fun handleBackButton(fromCoacher: Boolean )
 
+    fun showCoachMarker()
 }

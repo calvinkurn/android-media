@@ -99,6 +99,7 @@ object PayloadConverter {
         model.userTransactionId = data.getString(USER_TRANSACTION_ID)
         model.userId = data.getString(USER_ID)
         model.shopId = data.getString(SHOP_ID)
+        model.isBigImage = isBooleanTrue(data, IS_BIG_IMAGE)
         model.blastId = data.getString(BLAST_ID)
 
         // webHook parameters
@@ -205,6 +206,7 @@ object PayloadConverter {
         model.userTransactionId = data.userTransactionId
         model.userId = data.userId
         model.shopId = data.shopId
+        model.isBigImage = data.isBigImage ?: false
         model.blastId = data.blastId
 
         // webHook parameters

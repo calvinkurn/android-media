@@ -311,4 +311,30 @@ class KycUploadViewModelTest {
         val result = viewModel.kycResponseLiveData.value
         Assert.assertTrue(result is Fail)
     }
+
+    @Test
+    fun `failed file path krp empty`() {
+        mockkObject(ImageEncryptionUtil)
+        mockEncryptionUtil()
+
+        coEvery { viewModel.decryptImage(ktpPath, any(), any()) } returns ""
+
+        uploadWithEncrypt()
+
+        val result = viewModel.kycResponseLiveData.value
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `failed file path face empty`() {
+        mockkObject(ImageEncryptionUtil)
+        mockEncryptionUtil()
+
+        coEvery { viewModel.decryptImage(facePath, any(), any()) } returns ""
+
+        uploadWithEncrypt()
+
+        val result = viewModel.kycResponseLiveData.value
+        assert(result is Fail)
+    }
 }

@@ -381,10 +381,10 @@
     <!-- Admin Revamp -->
     <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
     <string name="ticker_add_product_main_location_desc">Produk akan ditambahkan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
-    <string name="ticker_edit_variant_main_location">Hanya mengatur stok varian di lokasi utama. Atur stok varian di lokasi lain lewat desktop, ya.</string>
-    <string name="ticker_variant_only_main_location">Stok akan dilokasikan ke lokasi utamamu. Kamu bisa alokasikan produk lewat Atur Sekaligus di desktop, ya.</string>
-    <string name="message_edit_product_price_only_main_location">Tentukan harga sesuai pasaran produkmu</string>
-    <string name="message_add_product_price_only_main_location">Tentukan harga sesuai pasaran produkmu</string>
+    <string name="ticker_edit_variant_main_location">Hanya mengatur harga dan stok varian di lokasi utama. Atur harga dan stok varian di lokasi lain lewat desktop, ya.</string>
+    <string name="ticker_variant_only_main_location">Harga akan berlaku untuk lokasi utama dan TokoCabang (jika ada), sedangkan stok hanya akan dialokasikan ke lokasi utama. Kamu bisa atur produk lewat Atur Sekaligus.</string>
+    <string name="message_edit_product_price_only_main_location">Harga akan dialokasikan ke lokasi utama dan digunakan untuk Toko Cabang (jika ada). Kamu bisa atur produk lewat Atur Sekaligus, ya.</string>
+    <string name="message_add_product_price_only_main_location">Harga akan berlaku untuk lokasi utama dan Toko Cabang (jika ada). Kamu bisa atur produk lewat Atur Sekaligus.</string>
     <string name="message_edit_product_stock_only_main_location">Hanya menampilkan dan mengubah stok di lokasi utama. Alokasikan stok lokasi lain di desktop, ya.</string>
     <string name="message_add_product_stock_only_main_location">Stok akan dialokasikan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
 

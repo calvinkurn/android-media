@@ -32,6 +32,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
+import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
@@ -53,7 +54,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
-import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
@@ -76,14 +77,12 @@ import kotlinx.coroutines.withContext
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import rx.Subscriber
-import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class TopChatViewModel @Inject constructor(
+open class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
@@ -115,7 +114,7 @@ class TopChatViewModel @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var payloadGenerator: WebsocketPayloadGenerator,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private var compressImageUseCase: CompressImageUseCase
+    private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
 ) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -245,20 +244,20 @@ class TopChatViewModel @Inject constructor(
     val errorSnackbar: LiveData<Throwable>
         get() = _errorSnackbar
 
-    private val _errorSnackbarStringRes = MutableLiveData<Int>()
-    val errorSnackbarStringRes: LiveData<Int>
-        get() = _errorSnackbarStringRes
-
     private val _uploadImageService = MutableLiveData<ImageUploadServiceModel>()
     val uploadImageService: LiveData<ImageUploadServiceModel>
         get() = _uploadImageService
 
+    private val _templateChat = MutableLiveData<Result<ArrayList<Visitable<*>>>>()
+    val templateChat: LiveData<Result<ArrayList<Visitable<*>>>>
+        get() = _templateChat
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
+    val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
-    private val compressImageSubscription = CompositeSubscription()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -1024,6 +1023,7 @@ class TopChatViewModel @Inject constructor(
     fun clearAttachmentPreview() {
         attachmentsPreview.clear()
     }
+
     fun initAttachmentPreview() {
         _showableAttachmentPreviews.value = attachmentsPreview
     }
@@ -1052,9 +1052,9 @@ class TopChatViewModel @Inject constructor(
     private fun isEnableUploadImageService(): Boolean {
         return try {
             remoteConfig.getBoolean(
-                TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, false
+                ENABLE_UPLOAD_IMAGE_SERVICE, false
             ) && !isProblematicDevice()
-        } catch (ex: Exception) {
+        } catch (ex: Throwable) {
             false
         }
     }
@@ -1069,48 +1069,32 @@ class TopChatViewModel @Inject constructor(
         return uploadImageUseCase.isUploading
     }
 
-    fun startCompressImages(it: ImageUploadUiModel) {
-        val isValidImage = ImageUtil.validateImageAttachment(it.imageUrl)
-        if (isValidImage.first) {
-            it.imageUrl?.let { it1 ->
-                val subscription = compressImageUseCase.compressImage(it1)
-                    .subscribe(object : Subscriber<String>() {
-                        override fun onNext(compressedImageUrl: String?) {
-                            it.imageUrl = compressedImageUrl
-                            startUploadImages(it)
-                        }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable?) {
-                            showErrorSnackbar(R.string.error_compress_image)
-                        }
-                    })
-                compressImageSubscription.clear()
-                compressImageSubscription.add(subscription)
-            }
-        } else {
-            when (isValidImage.second) {
-                ImageUtil.IMAGE_UNDERSIZE -> showErrorSnackbar(R.string.undersize_image)
-                ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> showErrorSnackbar(R.string.oversize_image)
-            }
-        }
-    }
-
     private fun <T> updateLiveDataOnMainThread(liveData: MutableLiveData<T>, value: T) {
         viewModelScope.launch(dispatcher.main) {
             liveData.value = value
         }
     }
 
-    override fun onCleared() {
-        compressImageSubscription.unsubscribe()
-        super.onCleared()
+    fun getTemplate(isSeller: Boolean) {
+        launchCatchError(block = {
+            val result = getTemplateChatRoomUseCase.getTemplateChat(isSeller)
+            val templateList = arrayListOf<Visitable<*>>()
+            if (result.isEnabled) {
+                templateList.addAll(result.listTemplate)
+            }
+            _templateChat.value = Success(templateList)
+        }, onError = {
+            _templateChat.value = Fail(it)
+        })
     }
 
-    private fun showErrorSnackbar(@StringRes stringId: Int) {
-        _errorSnackbarStringRes.value = stringId
+    fun addOngoingUpdateProductStock(
+        productId: String,
+        product: ProductAttachmentUiModel, adapterPosition: Int,
+        parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
+    ) {
+        val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)
+        onGoingStockUpdate[productId] = result
     }
 
     companion object {

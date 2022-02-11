@@ -236,8 +236,8 @@ data class Block(
         var isPromoBlocked: Boolean = false,
         @Expose
         @SerializedName("isBlocked")
-        val isBlocked: Boolean = false,
+        var isBlocked: Boolean = false,
         @Expose
         @SerializedName("blockedUntil")
-        val blockedUntil: String = ""
+        var blockedUntil: String = ""
 )
