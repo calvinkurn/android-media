@@ -924,8 +924,10 @@ class OfficialHomeFragment :
 
     private fun observeFeaturedShopRemoveDC() {
         viewModel.featuredShopRemove.observe(viewLifecycleOwner) {
-            officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
-                adapter?.submitList(newDataList)
+            if (!isEligibleForDisableRemoveShopWidget()) {
+                officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
+                    adapter?.submitList(newDataList)
+                }
             }
         }
     }

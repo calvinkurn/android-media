@@ -303,6 +303,7 @@ class OfficialHomeMapper (
                 newList.add(it)
             }
         }
+        listOfficialStore = newList
         action.invoke(newList.toMutableList())
     }
 
