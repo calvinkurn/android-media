@@ -5,9 +5,13 @@ import com.tokopedia.search.*
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.IsCollectionContaining.hasItem
+import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Test
 import rx.Subscriber
 
@@ -60,9 +64,16 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then assert view will only show empty search`() {
+        val visitableListSlot = slot<List<Visitable<*>>>()
         verify {
-            productListView.setEmptyProduct(null, any())
+            productListView.setProductList(capture(visitableListSlot))
         }
+
+        val visitableList = visitableListSlot.captured
+        assertThat(
+            visitableList,
+            hasItem(instanceOf<EmptyStateDataView>(EmptyStateDataView::class.java))
+        )
     }
 
     @Test

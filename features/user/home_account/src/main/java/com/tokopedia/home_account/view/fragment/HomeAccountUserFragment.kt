@@ -85,6 +85,12 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker.Companion.EVENT_LABEL_SUCCESS
+import com.tokopedia.loginfingerprint.view.activity.RegisterFingerprintActivity
+import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
+import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -134,6 +140,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     lateinit var homeAccountAnalytic: HomeAccountAnalytics
 
     @Inject
+    lateinit var biometricTracker: BiometricTracker
+
+    @Inject
     lateinit var menuGenerator: StaticMenuGenerator
 
     @Inject
@@ -144,6 +153,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
+
+    private var biometricOfferingDialog: BottomSheetUnify? = null
 
     private val binding by viewBinding(HomeAccountUserFragmentBinding::bind)
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -179,11 +190,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun enableLinkingAccountRollout(): Boolean =
-        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
-
     private fun isEnableLinkAccount(): Boolean  {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true) && enableLinkingAccountRollout()
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true)
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -476,6 +484,30 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             REQUEST_CODE_LINK_ACCOUNT -> {
                 viewModel.refreshPhoneNo()
             }
+            REQUEST_CODE_REGISTER_BIOMETRIC -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    biometricOfferingDialog?.dismiss()
+                    biometricTracker.trackOnAktivasiResult(EVENT_LABEL_SUCCESS)
+                    FingerprintDialogHelper.createBiometricOfferingSuccessDialog(requireActivity(), onPrimaryBtnClicked = {
+                        doLogout()
+                    })
+                } else {
+                    activity?.supportFragmentManager?.run {
+                        biometricOfferingDialog?.show(this, "")
+                    }
+
+                    val reason = if(data?.hasExtra(RegisterFingerprintActivity.RESULT_INTENT_REGISTER_BIOM) == true) {
+                        data.getStringExtra(RegisterFingerprintActivity.RESULT_INTENT_REGISTER_BIOM)
+                    } else {
+                        "otp failed"
+                    }
+
+                    biometricTracker.trackOnBiometricResultFail(reason ?: "")
+                    view?.run {
+                        Toaster.build(this, getString(R.string.label_failed_register_biometric_offering), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    }
+                }
+            }
         }
 
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
@@ -515,6 +547,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             isShowDarkModeToggle = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
             isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
+    }
+
+    private fun isEnableBiometricOffering(): Boolean {
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING, false)
     }
 
     private fun setupObserver() {
@@ -595,6 +631,52 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             updateSafeModeSwitch(it)
         })
 
+        viewModel.checkFingerprintStatus.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onSuccessGetFingerprintStatus(it.data)
+                is Fail -> onFailedGetFingerprintStatus(it.throwable)
+            }
+            hideLoading()
+        })
+    }
+
+    fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintResult) {
+        if(checkFingerprintResponse.isRegistered) {
+            homeAccountAnalytic.trackOnShowLogoutDialog()
+            showDialogLogout()
+        } else {
+            if(activity != null) {
+                if(BiometricPromptHelper.isBiometricAvailable(requireActivity())) {
+                    homeAccountAnalytic.trackOnShowBiometricOffering()
+                    biometricOfferingDialog = FingerprintDialogHelper.createBiometricOfferingDialog(
+                        requireActivity(),
+                        onPrimaryBtnClicked = {
+                            biometricTracker.trackClickOnAktivasi()
+                            val intent = RouteManager.getIntent(
+                                requireContext(),
+                                ApplinkConstInternalGlobal.REGISTER_BIOMETRIC
+                            )
+                            startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
+                            biometricOfferingDialog?.dismiss()
+                        },
+                        onSecondaryBtnClicked = {
+                            biometricTracker.trackClickOnTetapKeluar()
+                            showDialogLogout()
+                            biometricOfferingDialog?.dismiss()
+                        }, onCloseBtnClicked = {
+                            biometricOfferingDialog?.dismiss()
+                            biometricTracker.trackClickOnCloseBtnOffering()
+                        })
+                } else {
+                    showDialogLogout()
+                }
+            }
+        }
+    }
+
+    fun onFailedGetFingerprintStatus(throwable: Throwable) {
+        homeAccountAnalytic.trackOnShowBiometricOfferingFailed(throwable.message ?: "")
+        showDialogLogout()
     }
 
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
@@ -1065,7 +1147,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
-                showDialogLogout()
+                if(isEnableBiometricOffering()) {
+                    homeAccountAnalytic.trackOnClickLogoutDialog()
+                    viewModel.getFingerprintStatus()
+                } else {
+                    showDialogLogout()
+                }
             }
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
                 RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
@@ -1464,6 +1551,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REQUEST_CODE_PROFILE_SETTING = 301
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LINK_ACCOUNT = 302
+        private const val REQUEST_CODE_REGISTER_BIOMETRIC = 303
 
         private const val START_TRANSITION_PIXEL = 200
         private const val TOOLBAR_TRANSITION_RANNGE_PIXEL = 50
@@ -1479,8 +1567,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             "android_user_home_account_tokopoints"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
+        private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING = "android_user_home_account_biometric_offering"
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
-        private const val LINK_STATUS_ROLLOUT = "goto_linking"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
