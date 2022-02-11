@@ -73,12 +73,8 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment(), PlayWidgetListener {
 
         rvWidget?.adapter = adapter
 
-        adapter.setItemsAndAnimateChanges(
-            FeedPlayVideoTabMapper.map(
-                Gson().fromJson(dummyJson, ContentSlotResponse::class.java).data.playGetContentSlot,
-                ""
-            )
-        )
+        val data = FeedPlayVideoTabMapper.map(Gson().fromJson(dummyJson, PlayGetContentSlotResponse::class.java), "")
+        adapter.setItemsAndAnimateChanges(data)
     }
 
     private fun getSampleWidgets(): List<PlayFeedUiModel> {
