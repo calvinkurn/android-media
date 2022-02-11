@@ -672,7 +672,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 }
             } else if (payment.walletData.isGoCicil) {
                 val goCicilData = payment.walletData.goCicilData
-                if (goCicilData.hasValidTerm) {
+                if (!goCicilData.hasValidTerm) {
                     tvInstallmentDetailWrap.setText(R.string.occ_gocicil_default_installment)
                     tvInstallmentDetailWrap.visible()
                     tvInstallmentErrorMessage.text = goCicilData.errorMessageInvalidTenure

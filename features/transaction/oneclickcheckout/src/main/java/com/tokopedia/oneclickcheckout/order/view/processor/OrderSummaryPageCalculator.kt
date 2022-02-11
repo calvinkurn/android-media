@@ -62,6 +62,12 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = false,
                         errorData = OrderPaymentErrorData(payment.revampErrorMessage.message, payment.revampErrorMessage.button.text, payment.revampErrorMessage.button.action)) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
+            if (payment.walletData.isGoCicil && payment.walletData.goCicilData.availableTerms.isNotEmpty() &&
+                    payment.walletData.goCicilData.availableTerms.find { it.isActive } == null) {
+                // no active terms
+                return@withContext payment.copy(isCalculationError = false,
+                        errorData = OrderPaymentErrorData(payment.walletData.goCicilData.errorMessageUnavailableTenures)) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            }
             if (payment.isOvo && payment.ovoData.isPhoneNumberMissing) {
                 if (payment.isOvoOnlyCampaign) {
                     return@withContext payment.copy(isCalculationError = true, errorData = null,

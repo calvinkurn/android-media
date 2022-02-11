@@ -2,24 +2,26 @@ package com.tokopedia.oneclickcheckout.order.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorList
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListResponse
 import com.tokopedia.oneclickcheckout.order.data.creditcard.TenorListItem
 import com.tokopedia.oneclickcheckout.order.view.model.CreditCardTenorListData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) {
 
     @GqlQuery(GoCicilInstallmentOptionQuery, QUERY)
-    suspend fun executeSuspend(param: CreditCardTenorListRequest): CreditCardTenorListData {
-        val request = GraphqlRequest(GoCicilInstallmentOptionQuery(), CreditCardTenorListResponse::class.java, generateParam(param))
-        val response = graphqlRepository.response(listOf(request)).getSuccessData<CreditCardTenorListResponse>()
-        return mapCreditCardTenorListData(response.ccTenorList)
+    suspend fun executeSuspend(param: CreditCardTenorListRequest): List<OrderPaymentGoCicilTerms> {
+//        val request = GraphqlRequest(GoCicilInstallmentOptionQuery(), CreditCardTenorListResponse::class.java, generateParam(param))
+//        val response = graphqlRepository.response(listOf(request)).getSuccessData<CreditCardTenorListResponse>()
+        delay(5_000)
+        return listOf(
+                OrderPaymentGoCicilTerms()
+        )
     }
 
     fun generateParam(input: CreditCardTenorListRequest): Map<String, Any?> {

@@ -10,9 +10,9 @@ import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCa
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -72,23 +72,25 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         )
     }
 
-    suspend fun getGopayAdminFee() {
+    suspend fun getGopayAdminFee(selectedTerm: Int): Pair<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
+                val installmentList = goCicilInstallmentOptionUseCase.executeSuspend(CreditCardTenorListRequest())
+                val selectedInstallment = installmentList.first { it.installmentTerm == selectedTerm }
+                return@withContext selectedInstallment to installmentList
 //                val creditCardData = creditCardTenorListUseCase.executeSuspend(generateCreditCardTenorListRequest(orderPaymentCreditCard, userId, orderCost, orderCart))
 //                if (creditCardData.errorMsg.isNotEmpty()) {
 //                    return@withContext null
 //                } else {
 //                    return@withContext creditCardData.tenorList.map { mapAfpbToInstallmentTerm(it) }
 //                }
-                delay(5_000)
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
             }
         }
         OccIdlingResource.decrement()
-//        return result
+        return result
     }
 }

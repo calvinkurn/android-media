@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import android.util.Log
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -544,7 +543,43 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     it.isError = false
                 }
                 orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
-                calculateTotal()
+                calculateTotal(skipDynamicFee = true)
+                globalEvent.value = OccGlobalEvent.Normal
+                return@launch
+            }
+            globalEvent.value = newGlobalEvent
+        }
+    }
+
+    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>) {
+        launch(executorDispatchers.immediate) {
+            var param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
+            val walletData = orderPayment.value.walletData
+            if (param == null) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                return@launch
+            }
+            globalEvent.value = OccGlobalEvent.Loading
+//            try {
+//                val metadata = JsonParser().parse(param.profile.metadata)
+//                val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+//                if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
+//                    // unexpected null installment term param
+//                    throw IllegalStateException()
+//                }
+//                expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
+//                param = param.copy(profile = param.profile.copy(metadata = metadata.toString()),
+//                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+//                        source = SOURCE_UPDATE_OCC_PAYMENT)
+//            } catch (e: RuntimeException) {
+//                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+//                return@launch
+//            }
+            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
+            if (isSuccess) {
+                val newWalletData = walletData.copy(goCicilData = walletData.goCicilData.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
+                orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
+                calculateTotal(skipDynamicFee = true)
                 globalEvent.value = OccGlobalEvent.Normal
                 return@launch
             }
@@ -656,14 +691,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         calculateTotal()
     }
 
-    fun calculateTotal() {
+    fun calculateTotal(skipDynamicFee: Boolean = false) {
         orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-        if (orderPayment.value.creditCard.isAfpb) {
+        if (orderPayment.value.creditCard.isAfpb && !skipDynamicFee) {
             dynamicPaymentFeeJob?.cancel()
             dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
                 adjustCCAdminFee()
             }
-        } else if (orderPayment.value.walletData.isGoCicil) {
+        } else if (orderPayment.value.walletData.isGoCicil && !skipDynamicFee) {
             dynamicPaymentFeeJob?.cancel()
             dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
                 adjustGoCicilFee()
@@ -807,26 +842,21 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private suspend fun adjustGoCicilFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
-            validateUsePromoRevampUiModel, orderPayment.value)
-        Log.i("qwerty", orderCost.toString())
+                validateUsePromoRevampUiModel, orderPayment.value)
         val payment = orderPayment.value
         if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount) {
-//        val installmentTermList = paymentProcessor.get().getCreditCardAdminFee(orderPayment.value.creditCard, userSession.userId,
-//            orderCost, orderCart)
-//        if (installmentTermList == null) {
-//            val newOrderPayment = orderPayment.value
-//            orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = null, availableTerms = emptyList()))
-            globalEvent.value = OccGlobalEvent.AdjustAdminFeeError
-//        } else {
-//            val newOrderPayment = orderPayment.value
-//            val selectedTerm = orderPayment.value.creditCard.selectedTerm?.term ?: -1
-//            val selectedInstallmentTerm = installmentTermList.firstOrNull { it.term == selectedTerm }
-//            selectedInstallmentTerm?.isSelected = true
-//            orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentTermList))
-//        }
+            val result = paymentProcessor.get().getGopayAdminFee(0)
+            if (result != null) {
+                val newWalletData = orderPayment.value.walletData
+                orderPayment.value = orderPayment.value.copy(walletData = newWalletData.copy(goCicilData = newWalletData.goCicilData.copy(selectedTerm = result.first, availableTerms = result.second)))
+            } else {
+                val newWalletData = orderPayment.value.walletData
+                orderPayment.value = orderPayment.value.copy(walletData = newWalletData.copy(goCicilData = newWalletData.goCicilData.copy(availableTerms = emptyList())))
+                globalEvent.value = OccGlobalEvent.AdjustAdminFeeError
+            }
         }
         calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
-            validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+                validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
     }
 
     override fun onCleared() {

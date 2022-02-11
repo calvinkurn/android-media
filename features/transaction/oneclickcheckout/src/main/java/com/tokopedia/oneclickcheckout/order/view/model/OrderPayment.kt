@@ -215,6 +215,7 @@ data class OrderPaymentGoCicilData(
     val errorMessageInvalidTenure: String = "tenure invalid",
     val errorMessageTopLimit: String = "over top limit",
     val errorMessageBottomLimit: String = "below bottom limit",
+    val errorMessageUnavailableTenures: String = "unavailable tenures",
 ) {
     val hasValidTerm: Boolean
         get() = selectedTerm != null && selectedTerm.isActive && availableTerms.isNotEmpty()
