@@ -61,6 +61,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private var productId: String = ""
+    private var shopId:String = ""
 
     private val gatewayCode: String by lazy {
         arguments?.getString(PARAM_GATEWAY_CODE) ?:""
@@ -164,6 +165,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         productInfoActivationShimmer.visibility = View.GONE
                         detailHeader.visibility = View.VISIBLE
                         setProductData(it.data)
+                        it.data.shopDetail?.shopId?.let {
+                            shopId = it
+                        }
                         it.data.stock?.let { productStock ->
                             detailHeader.quantityEditor.maxValue = productStock
                         }
@@ -482,7 +486,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         activationTenureAdapter = ActivationTenureAdapter(listOf(), this)
         detailHeader.showVariantBottomSheet.setOnClickListener {
             context?.let {
-                AtcVariantHelper.goToAtcVariant(context  = it,productId = productId,pageSource=VariantPageSource.BNPL_PAGESOURCE,isTokoNow= false,shopId = "",saveAfterClose = false) { data, code ->
+                AtcVariantHelper.goToAtcVariant(context  = it,productId = productId,pageSource=VariantPageSource.BNPL_PAGESOURCE,isTokoNow= false,shopId = shopId,saveAfterClose = false) { data, code ->
                     startActivityForResult(data, code)
                 }
             }

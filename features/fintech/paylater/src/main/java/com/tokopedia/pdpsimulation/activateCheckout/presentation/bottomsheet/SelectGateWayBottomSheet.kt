@@ -59,18 +59,17 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
                 GatewayListAdapter(listOfGateway,object :GateWayCardClicked{
                     override fun gatewayCardSelected(
                         gatewayId: Int,
-                        oldPosition: Int,
                         newPosition: Int
                     ) {
                         activity?.let { fragmentActivity->
                             (fragmentActivity as GatewaySelectActivityListner).setGatewayValue(gatewayId)
                         }
-                        if(oldPosition != newPosition)
-                        {
-                            listOfGateway[oldPosition].selectedGateway = false
-                            listOfGateway[newPosition].selectedGateway = true
-                            gatewayListAdapter?.updateList(listOfGateway,oldPosition,newPosition)
-                        }
+                       for(i in 0 until listOfGateway.size)
+                       {
+                           listOfGateway[i].selectedGateway = i == newPosition
+                       }
+                            gatewayListAdapter?.updateList(listOfGateway)
+
 
                     }
 
@@ -124,5 +123,5 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
 
 interface GateWayCardClicked
 {
-    fun gatewayCardSelected(gatewayId: Int,oldPosition: Int, newPosition: Int)
+    fun gatewayCardSelected(gatewayId: Int, newPosition: Int)
 }

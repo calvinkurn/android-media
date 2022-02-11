@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view
 class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayCardClicked, val context: Context) :
     RecyclerView.ViewHolder(itemView) {
 
-    var oldSelectedposition = -1
 
     fun bindData(checkoutData: CheckoutData,position: Int) {
         itemView.apply {
@@ -30,7 +29,6 @@ class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayC
 
             if(!checkoutData.disable && checkoutData.selectedGateway)
             {
-                oldSelectedposition = position
                 individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 radioGatewaySelector.isChecked = true
             }
@@ -39,16 +37,16 @@ class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayC
                 radioGatewaySelector.isChecked = false
             }
 
-            if(!checkoutData.disable) {
+            if(!checkoutData.disable && !checkoutData.selectedGateway) {
                 itemView.radioGatewaySelector.setOnClickListener {
                     individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
-                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id,oldPosition=oldSelectedposition, newPosition = position)
+                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id, newPosition = position)
                 }
                 itemView.setOnClickListener {
                     individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
-                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id,oldPosition=oldSelectedposition, newPosition = position)
+                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id, newPosition = position)
 
                 }
             }

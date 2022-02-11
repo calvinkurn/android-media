@@ -34,12 +34,9 @@ class GatewayListAdapter(
         holder.bindData(gatewayDetailList[position],position)
     }
 
-    fun updateList(listOfGateway: List<CheckoutData>, oldPosition: Int, newPosition: Int) {
+    fun updateList(listOfGateway: List<CheckoutData>) {
         this.gatewayDetailList = listOfGateway
-        if(oldPosition >=0 && newPosition>=0) {
-            notifyItemChanged(oldPosition)
-            notifyItemChanged(newPosition)
-        }
+        notifyDataSetChanged()
     }
 
 }
