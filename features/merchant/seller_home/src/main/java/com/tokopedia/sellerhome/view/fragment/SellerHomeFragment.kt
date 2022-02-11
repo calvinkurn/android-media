@@ -71,7 +71,6 @@ import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
-import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
@@ -82,6 +81,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -189,7 +189,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
-    private var dateFilters: List<DateFilterItem>? = null
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
@@ -679,14 +678,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {
         if (dateFilterBottomSheet == null) {
-            if (dateFilters.isNullOrEmpty()) {
-                dateFilters = DateFilterUtil.FilterList
-                    .getCalendarPickerFilterList(requireContext())
-            }
-            dateFilterBottomSheet = DateFilterBottomSheet.newInstance(dateFilters.orEmpty())
+            dateFilterBottomSheet = DateFilterBottomSheet.newInstance(requireContext())
         }
-
-        showCalendarDateFilter()
+        showCalendarDateFilter(element)
     }
 
     fun setNavigationOtherMenuView(view: View?) {
@@ -708,22 +702,56 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }, NOTIFICATION_BADGE_DELAY)
     }
 
-    private fun showCalendarDateFilter() {
+    private fun showCalendarDateFilter(element: CalendarWidgetUiModel) {
         if (!isAdded && childFragmentManager.isStateSaved) {
             return
         }
 
         dateFilterBottomSheet?.run {
-            setFragmentManager(childFragmentManager)
+            setFragmentManager(this@SellerHomeFragment.childFragmentManager)
             setOnApplyChanges {
-                this@SellerHomeFragment.applyCalendarFilter(it)
+                this@SellerHomeFragment.applyCalendarFilter(element, it)
             }
             show()
         }
     }
 
-    private fun applyCalendarFilter(dateFilter: DateFilterItem) {
+    private fun applyCalendarFilter(element: CalendarWidgetUiModel, dateFilter: DateFilterItem) {
+        val calendarWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        val widgets = adapter.data.map {
+            if (it.dataKey == element.dataKey && it is CalendarWidgetUiModel) {
+                val startDate = dateFilter.startDate
+                val endData = dateFilter.endDate
+                if (startDate != null && endData != null) {
+                    val calendarWidget = it.apply {
+                        data = null
+                        filter = CalendarFilterDataKeyUiModel(
+                            dataKey = dataKey,
+                            startDate = DateTimeUtil.format(
+                                startDate.time,
+                                DateTimeUtil.FORMAT_DD_MM_YYYY
+                            ),
+                            endDate = DateTimeUtil.format(
+                                endData.time,
+                                DateTimeUtil.FORMAT_DD_MM_YYYY
+                            )
+                        )
+                    }.copyWidget()
+                    calendarWidgets.add(calendarWidget)
+                    return@map calendarWidget
+                } else {
+                    return@map it
+                }
+            } else {
+                return@map it
+            }
+        }
 
+        getWidgetsData(calendarWidgets)
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
+        }
     }
 
     private fun initPltPerformanceMonitoring() {
@@ -1769,11 +1797,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
+    private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<*>>) {
         try {
             val diffUtilCallback = SellerHomeDiffUtilCallback(
                 adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-                newWidgets
+                newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>
             )
             val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
             adapter.data.clear()

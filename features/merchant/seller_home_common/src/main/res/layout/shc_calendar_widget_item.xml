@@ -95,9 +95,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp"
         app:labelType="general_light_grey"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvShcCalendarEventTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarEventDesc"
+        app:layout_constraintVertical_bias="1"
         tools:labelTitle="Sample Label" />
 
     <View

@@ -13,6 +13,7 @@ object ShcConst {
     const val DAYS_31 = 31
     const val DAYS_90 = 90
     const val DAYS_91 = 91
+    const val DAYS_121 = 121
     const val DAYS_365 = 365
 
     const val FORMAT_DD_MM_YYYY = "dd MMM yyyy"

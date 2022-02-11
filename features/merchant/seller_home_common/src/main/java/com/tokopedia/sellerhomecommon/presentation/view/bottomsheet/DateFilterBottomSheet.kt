@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.view.bottomsheet
 
 import android.annotation.SuppressLint
-import android.graphics.Color
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetSelectDateRangeBinding
-import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.adapter.DateFilterAdapter
 import com.tokopedia.sellerhomecommon.presentation.adapter.listener.DateFilterListener
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -29,12 +31,12 @@ class DateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelectDateRangeBindi
         private const val KEY_DATE_FILTERS = "date_filter_items"
 
         fun newInstance(
-            dateFilters: List<DateFilterItem>
+            context: Context
         ): DateFilterBottomSheet {
+            val dateFilters = DateFilterUtil.FilterList
+                .getCalendarPickerFilterList(context)
             return DateFilterBottomSheet().apply {
                 clearContentPadding = true
-                showHeader = false
-                showCloseIcon = false
                 arguments = Bundle().apply {
                     putParcelableArrayList(KEY_DATE_FILTERS, ArrayList(dateFilters))
                 }
@@ -64,17 +66,12 @@ class DateFilterBottomSheet : BaseBottomSheet<ShcBottomSheetSelectDateRangeBindi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setTitle(getString(R.string.shc_change_date_range))
         dismissBottomSheet(view)
     }
 
     override fun setupView() = binding?.run {
-        root.setBackgroundColor(Color.TRANSPARENT)
-        view?.setBackgroundColor(Color.TRANSPARENT)
         showFilterItems()
-
-        icShcCloseDateFilter.setOnClickListener {
-            dismiss()
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

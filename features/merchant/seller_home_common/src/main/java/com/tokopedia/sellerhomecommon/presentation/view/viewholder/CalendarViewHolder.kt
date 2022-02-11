@@ -133,7 +133,7 @@ class CalendarViewHolder(
             filter.startDate, DateTimeUtil.FORMAT_DD_MM_YYYY, DateTimeUtil.FORMAT_DD_MMM
         )
         val endDateFmt = DateTimeUtil.format(
-            filter.startDate, DateTimeUtil.FORMAT_DD_MM_YYYY, DateTimeUtil.FORMAT_DD_MMM
+            filter.endDate, DateTimeUtil.FORMAT_DD_MM_YYYY, DateTimeUtil.FORMAT_DD_MMM
         )
         return itemView.context.getString(
             R.string.shc_calendar_date_range, startDateFmt, endDateFmt
