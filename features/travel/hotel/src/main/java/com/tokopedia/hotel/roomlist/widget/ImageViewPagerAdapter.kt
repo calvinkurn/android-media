@@ -22,16 +22,16 @@ class ImageViewPagerAdapter(private val images: MutableList<String>, private val
     override fun getItemCount(): Int = images.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (images[position] != null && images[position].isNotEmpty()) {
-            if (clickListener != null) holder.bannerImage.setOnClickListener { clickListener.onImageClicked(position) }
-        }
-        holder.bannerImage.loadImage(images[position]){
-            setPlaceHolder(R.drawable.ic_hotel_loading_image)
-        }
+        if (images.size <= position) return
 
-        //cancel image request if context of itemView is invalid
-        if (!holder.itemView.context.isValid()){
-            holder.bannerImage.clearImage()
+        val imageUrl = images[position]
+        if (imageUrl.isNotEmpty()) {
+            holder.bannerImage.loadImage(imageUrl){
+                setPlaceHolder(com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder)
+            }
+            holder.bannerImage.setOnClickListener {
+                clickListener?.onImageClicked(position)
+            }
         }
     }
 

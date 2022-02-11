@@ -5,5 +5,4 @@
     android:layout_height="wrap_content"
     android:adjustViewBounds="true"
     android:focusable="true"
-    android:src="@drawable/imagestate_placeholder"
     android:scaleType="centerCrop" />

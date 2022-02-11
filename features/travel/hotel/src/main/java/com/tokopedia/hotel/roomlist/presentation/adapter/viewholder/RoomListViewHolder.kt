@@ -66,12 +66,7 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
                 roomFullLayout.root.visibility = View.VISIBLE
                 if (roomListModel.images.isNotEmpty()) {
                     roomFullLayout.roomListRoomFullImageView.loadImage(roomListModel.images.first()){
-                        setPlaceHolder(R.drawable.ic_hotel_loading_image)
-                    }
-
-                    //cancel image request if context of itemView is invalid
-                    if (!itemView.context.isValid()){
-                        roomFullLayout.roomListRoomFullImageView.clearImage()
+                        setPlaceHolder(com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder)
                     }
                 }
                 roomFullLayout.roomFullRoomNameTextView.text = roomListModel.roomName
