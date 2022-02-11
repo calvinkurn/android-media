@@ -5,12 +5,18 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AddOnProductData(
-        var isTokoCabang: Boolean = false,
-        var shopBadgeUrl: String = "",
-        var addOnFooterMessages: List<String> = emptyList(),
-        var addOnSavedStates: List<AddOnData> = emptyList(),
-        var products: List<Product> = emptyList()
-) : Parcelable
+        var bottomSheetType: Int = ADD_ON_BOTTOM_SHEET,
+        var bottomSheetTitle: String = "",
+        var availableBottomSheetData: AvailableBottomSheetData = AvailableBottomSheetData(),
+        var unavailableBottomSheetData: UnavailableBottomSheetData = UnavailableBottomSheetData()
+) : Parcelable {
+
+    companion object {
+        const val ADD_ON_BOTTOM_SHEET = 1
+        const val ADD_ON_UNAVAILABLE_BOTTOM_SHEET = 2
+    }
+
+}
 
 @Parcelize
 data class Product(
@@ -19,4 +25,20 @@ data class Product(
         var productImageUrl: String = "",
         var productPrice: Long = 0,
         var productQuantity: Int = 0
+) : Parcelable
+
+@Parcelize
+data class AvailableBottomSheetData(
+        var isTokoCabang: Boolean = false,
+        var shopBadgeUrl: String = "",
+        var addOnFooterMessages: List<String> = emptyList(),
+        var addOnSavedStates: List<AddOnData> = emptyList(),
+        var products: List<Product> = emptyList()
+) : Parcelable
+
+@Parcelize
+data class UnavailableBottomSheetData(
+        var unavailableProducts: List<Product> = emptyList(),
+        var description: String = "",
+        var tickerMessage: String = ""
 ) : Parcelable
