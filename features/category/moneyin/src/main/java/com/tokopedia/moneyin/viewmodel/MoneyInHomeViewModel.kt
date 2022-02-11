@@ -193,7 +193,7 @@ class MoneyInHomeViewModel @Inject constructor(
 
     fun getMaxPrice(laku6TradeIn: Laku6TradeIn) {
         progBarVisibility.value = true
-        laku6TradeIn.getMinMaxPrice(this)
+        laku6TradeIn.getMinMaxPrice(-1, this)
     }
 
     fun setDeviceId(deviceId: String?) {
