@@ -5,12 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
+import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogDynamicInput
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -18,6 +22,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -43,6 +48,14 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     private val _catalogSelectGroup = MutableLiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>()
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
         get() = _catalogSelectGroup
+
+    private val _dynamicInput = MutableLiveData<RechargeNetworkResult<DigitalCatalogDynamicInput>>()
+    val dynamicInput: LiveData<RechargeNetworkResult<DigitalCatalogDynamicInput>>
+        get() = _dynamicInput
+
+    private val _inquiry = MutableLiveData<RechargeNetworkResult<TopupBillsEnquiryData>>()
+    val inquiry: LiveData<RechargeNetworkResult<TopupBillsEnquiryData>>
+        get() = _inquiry
 
     private val _clientNumberValidatorMsg = MutableLiveData<String>()
     val clientNumberValidatorMsg: LiveData<String>
@@ -70,7 +83,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     }
 
     fun getOperatorSelectGroup(menuId: Int) {
-        _catalogSelectGroup.postValue(RechargeNetworkResult.Loading)
+        _catalogSelectGroup.value = RechargeNetworkResult.Loading
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getOperatorSelectGroup(menuId)
             val operatorList = data.response.operatorGroups?.firstOrNull()?.operators
@@ -80,6 +93,33 @@ class DigitalPDPTagihanViewModel @Inject constructor(
             _catalogSelectGroup.value =  RechargeNetworkResult.Success(data)
         }) {
             _catalogSelectGroup.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun getDynamicInput(menuID: Int, operator: String){
+        _dynamicInput.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val data  = repo.getDynamicInput(menuID, operator)
+            _dynamicInput.value = RechargeNetworkResult.Success(data)
+        }){
+            _dynamicInput.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun inquiry(productId: String, clientNumber: String, inputData: Map<String, String>){
+        _inquiry.value = RechargeNetworkResult.Loading
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            var data: TopupBillsEnquiryData
+            do {
+                data = repo.inquiryProduct(productId, clientNumber, inputData)
+
+                with (data.enquiry) {
+                    if (status == STATUS_PENDING && retryDuration > 0) delay((retryDuration.toLong()) * MS_TO_S_DURATION)
+                }
+            } while (data.enquiry.status != STATUS_DONE)
+            _inquiry.value = RechargeNetworkResult.Success(data)
+        }){
+            _inquiry.value = RechargeNetworkResult.Fail(it)
         }
     }
 
@@ -109,6 +149,9 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     companion object {
         const val DELAY_TIME = 200L
         const val VALIDATOR_DELAY_TIME = 3000L
+        const val STATUS_DONE = "DONE"
+        const val STATUS_PENDING = "PENDING"
+        const val MS_TO_S_DURATION = 1000
     }
 
 }

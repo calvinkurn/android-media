@@ -143,6 +143,22 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
             }
         })
 
+        viewModel.dynamicInput.observe(viewLifecycleOwner, {
+            when(it) {
+                is RechargeNetworkResult.Success -> {}
+                is RechargeNetworkResult.Fail -> {}
+                is RechargeNetworkResult.Loading -> {}
+            }
+        })
+
+        viewModel.inquiry.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> {}
+                is RechargeNetworkResult.Fail -> {}
+                is RechargeNetworkResult.Loading -> {}
+            }
+        })
+
 
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
@@ -309,6 +325,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
     }
 
     private fun onSuccessGetPrefixOperator(operatorGroup: DigitalCatalogOperatorSelectGroup) {
+        viewModel.getDynamicInput(menuId, viewModel.operatorData.id)
         renderChipsAndTitle(operatorGroup)
         renderProduct()
     }
