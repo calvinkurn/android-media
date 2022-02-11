@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment
 import com.tokopedia.user_identification_common.KYCConstant
 
@@ -15,7 +14,7 @@ import com.tokopedia.user_identification_common.KYCConstant
 class UserIdentificationInfoActivity : BaseSimpleActivity() {
     var isSourceSeller = false
     private var projectId = -1
-    private var callbackUrl: String? = null
+    private var redirectUrl: String? = null
     private var kycType = ""
 
     interface Listener {
@@ -42,8 +41,8 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
         intent?.data?.let {
             projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
-            callbackUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
+            redirectUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
         }
-        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId, kycType, callbackUrl)
+        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId, kycType, redirectUrl)
     }
 }

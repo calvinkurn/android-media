@@ -101,15 +101,10 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
     private fun finishAndRedirectKycResult() {
         activity?.let {
-            gotoRedirectUrl()
-            it.setResult(Activity.RESULT_OK)
+            it.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL, redirectUrl)
+            })
             it.finish()
-        }
-    }
-
-    private fun gotoRedirectUrl() {
-        activity?.let {
-            RouteManager.route(it, redirectUrl)
         }
     }
 
