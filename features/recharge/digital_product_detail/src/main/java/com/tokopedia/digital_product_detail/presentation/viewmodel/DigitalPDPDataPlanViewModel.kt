@@ -113,7 +113,9 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
                 isFilterRefreshed
             )
             _observableDenomMCCMData.postValue(RechargeNetworkResult.Success(denomFull))
-            setFilterDataParam(denomFull.filterTagComponents)
+            if (isFilterRefreshed) {
+                setFilterDataParam(denomFull.filterTagComponents)
+            }
         }) {
             if (it !is CancellationException)
                 _observableDenomMCCMData.postValue(RechargeNetworkResult.Fail(it))
