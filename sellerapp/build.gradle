@@ -127,6 +127,9 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig true
+    }
 
     dexOptions {
         javaMaxHeapSize "8g"

@@ -39,6 +39,9 @@ android {
             java.srcDirs += "$projectDir/src/testCommon/java"
         }
     }
+    buildFeatures {
+        buildConfig true
+    }
 
 
     testOptions {
