@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.GetAddOnByProductResponse
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateRequest
+import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.*
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnSavedStateUseCase
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.SaveAddOnStateUseCase
@@ -105,8 +106,42 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
         )
     }
 
-    fun saveAddOnState(mockSaveStateResponse: String? = null) {
+    fun saveAddOnState(addOnProductData: AddOnProductData, mockSaveStateResponse: String? = null) {
         saveAddOnStateUseCase.mockResponse = mockSaveStateResponse ?: ""
+
+        val params = SaveAddOnStateRequest().apply {
+            source = addOnProductData.source
+            addOns = listOf(
+                    AddOnRequest().apply {
+                        if (addOnProductData.availableBottomSheetData.isTokoCabang) {
+                            addOnKey = addOnProductData.availableBottomSheetData.cartString
+                            addOnLevel = AddOnRequest.ADD_ON_LEVEL_ORDER
+                        } else {
+                            addOnKey = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productId
+                                    ?: ""
+                            addOnLevel = AddOnRequest.ADD_ON_LEVEL_PRODUCT
+                        }
+                        addOnUiModel.value?.let {
+                            addOnData = listOf(
+                                    AddOnDataRequest().apply {
+                                        addOnId = it.addOnId ?: ""
+                                        addOnQty = it.addOnQty ?: 0
+                                        addOnMetadata = AddOnMetadataRequest().apply {
+                                            addOnNote = AddOnNoteRequest().apply {
+                                                isCustomNote = it.isCustomNote
+                                                        ?: false
+                                                to = it.addOnNoteTo ?: ""
+                                                from = it.addOnNoteFrom ?: ""
+                                                notes = it.addOnNote ?: ""
+                                            }
+                                        }
+                                    }
+                            )
+                        }
+                    }
+            )
+        }
+        saveAddOnStateUseCase.setParams(params)
         saveAddOnStateUseCase.execute(
                 onSuccess = {
                     if (it.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {

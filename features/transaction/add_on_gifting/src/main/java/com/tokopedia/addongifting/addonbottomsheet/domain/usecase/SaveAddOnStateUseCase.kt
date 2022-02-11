@@ -2,8 +2,8 @@ package com.tokopedia.addongifting.addonbottomsheet.domain.usecase
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateRequest
 import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateResponse
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.SaveAddOnStateResult
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,6 +15,12 @@ import javax.inject.Inject
 class SaveAddOnStateUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) : UseCase<SaveAddOnStateResponse>() {
 
     var mockResponse: String = ""
+
+    private var params: Map<String, Any>? = null
+
+    fun setParams(saveAddOnStateRequest: SaveAddOnStateRequest) {
+        params = mapOf("params" to saveAddOnStateRequest)
+    }
 
     override suspend fun executeOnBackground(): SaveAddOnStateResponse {
         if (mockResponse.isNotBlank()) {

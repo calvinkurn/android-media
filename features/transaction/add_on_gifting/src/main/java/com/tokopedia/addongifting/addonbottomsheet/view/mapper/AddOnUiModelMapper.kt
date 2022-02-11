@@ -31,9 +31,11 @@ object AddOnUiModelMapper {
         return AddOnUiModel().apply {
             isTokoCabang = addOnProductData.availableBottomSheetData.isTokoCabang
             productCount = addOnProductData.availableBottomSheetData.products.size
+            addOnId = addOn?.basicInfo?.id ?: ""
             addOnName = addOn?.basicInfo?.name ?: ""
             addOnDescription = ""
             addOnPrice = addOn?.inventory?.price?.roundToLong() ?: 0
+            addOnQty = 1
             addOnSquareImageUrl = addOn?.pictures?.firstOrNull()?.url100 ?: ""
             val imageUrls = mutableListOf<String>()
             addOn?.pictures?.forEach {
@@ -44,7 +46,8 @@ object AddOnUiModelMapper {
                 // Get saved state from API
                 val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
                         ?: "", addOnSavedStateResponse)
-                isAddOnSelected = addonSavedStateData != null
+                initialSelectedState = addonSavedStateData != null
+                isAddOnSelected = initialSelectedState
                 initialAddOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
                 addOnNoteTo = initialAddOnNoteTo
                 initialAddOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
@@ -55,7 +58,8 @@ object AddOnUiModelMapper {
                 // Get saved state from previous page (Checkout / OSP)
                 val addonSavedStateData = getAddOnSavedStateById(addOn?.basicInfo?.id
                         ?: "", addOnProductData.availableBottomSheetData.addOnSavedStates)
-                isAddOnSelected = addonSavedStateData != null
+                initialSelectedState = addonSavedStateData != null
+                isAddOnSelected = initialSelectedState
                 initialAddOnNoteTo = addonSavedStateData?.addOnMetadata?.addOnNote?.to ?: ""
                 addOnNoteTo = initialAddOnNoteTo
                 initialAddOnNoteFrom = addonSavedStateData?.addOnMetadata?.addOnNote?.from ?: ""
