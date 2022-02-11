@@ -5,10 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_date"
         android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_32"
+        android:layout_height="@dimen/dp_40"
         app:card_type="border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
@@ -38,4 +39,14 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/filter_message"
+        app:typographyType="body_2"
+        android:text="Selected filter show data between"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_6"
+        app:layout_constraintTop_toBottomOf="@id/card_date"
+        app:layout_constraintStart_toStartOf="@id/card_date"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterface {
@@ -102,10 +103,33 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     }
     private val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
     private fun getData() {
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,"0")))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,"1")))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,"7")))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,"30")))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,"0",getMessage(TODAY))))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,"1",getMessage(YESTERDAY))))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,"7",getMessage(SEVEN_DAYS))))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,"30",getMessage(THIRTY_DAYS))))
+    }
+
+    private fun getMessage(dayRange: String): String {
+        val calendar = Calendar.getInstance()
+        when(dayRange){
+            TODAY -> {
+                calendar.set(Calendar.HOUR,-2)
+                return SimpleDateFormat("HH",Locale.ENGLISH).format(calendar.time)
+            }
+            YESTERDAY -> {
+                calendar.add(Calendar.DATE,-1)
+                return SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(calendar.time)
+            }
+            SEVEN_DAYS -> {
+                calendar.add(Calendar.DATE,-7)
+                return SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(calendar.time)
+            }
+            THIRTY_DAYS -> {
+                calendar.add(Calendar.DATE,-30)
+                return SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(calendar.time)
+            }
+        }
+        return ""
     }
 
     override fun onDateRangeClicked(position: Int) {

@@ -4,4 +4,5 @@ class AffiliateDatePickerData (
     var text:String="",
     var isSelected:Boolean=false,
     var value:String="",
-        )
+    var message: String = ""
+)

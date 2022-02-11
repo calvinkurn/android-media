@@ -118,7 +118,7 @@ class AffiliateHomeViewModel @Inject constructor(
     ): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         if (page == PAGE_ZERO) {
-            tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange)))
+            tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange,selectedDateMessage)))
             tempList.add(
                 AffiliateUserPerformanceModel(
                     AffiliateUserPerformaData(
@@ -160,6 +160,7 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
+    private var selectedDateMessage = ""
     private var selectedDateValue = "30"
     fun getSelectedDate(): String {
         return selectedDateRange
@@ -169,6 +170,7 @@ class AffiliateHomeViewModel @Inject constructor(
         if (selectedDateRange != range.text) {
             selectedDateRange = range.text
             selectedDateValue = range.value
+            selectedDateMessage = range.message
             rangeChanged.value = true
         }
     }
