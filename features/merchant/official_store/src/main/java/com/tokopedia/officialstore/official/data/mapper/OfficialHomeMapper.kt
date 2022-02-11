@@ -28,7 +28,7 @@ class OfficialHomeMapper (
         private val context: Context,
         private val dispatchers: CoroutineDispatchers
 ){
-    val listOfficialStore = mutableListOf<Visitable<*>>()
+    var listOfficialStore = mutableListOf<Visitable<*>>()
     companion object {
         private const val BANNER_POSITION = 0
         private const val BENEFIT_POSITION = 1
@@ -173,16 +173,18 @@ class OfficialHomeMapper (
         adapter: OfficialHomeAdapter?,
         listener: RecommendationListener
     ) {
+        val newList = listOfficialStore.toMutableList()
         val headlineIndex =
             productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel?.topAdsHeadlineResponse?.displayAds?.data?.firstOrNull()?.cpm?.position
         productRecommendationWithTopAdsHeadline.recommendationWidget.recommendationItemList.forEachIndexed { index, recommendationItem ->
             if (index == headlineIndex) productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel.let {
-                listOfficialStore.add(it)
+                newList.add(it)
             }
-            listOfficialStore.add(ProductRecommendationDataModel(recommendationItem, listener))
+            newList.add(ProductRecommendationDataModel(recommendationItem, listener))
         }
-        listOfficialStore.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
-        adapter?.submitList(listOfficialStore.toMutableList())
+        newList.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
+        listOfficialStore = newList
+        adapter?.submitList(newList)
     }
 
     fun removeRecommendation(adapter: OfficialHomeAdapter?){
@@ -313,9 +315,14 @@ class OfficialHomeMapper (
     }
 
     fun removeTopAdsHeadlineWidget(adapter: OfficialHomeAdapter?) {
-        listOfficialStore.run {
-            removeAll { it is OfficialTopAdsHeadlineDataModel}
-            adapter?.submitList(this.toMutableList())
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.toMutableList().forEach {
+            if (it !is OfficialTopAdsHeadlineDataModel) {
+                newList.add(it)
+            }
         }
+        listOfficialStore = newList
+        adapter?.submitList(newList)
     }
+
 }
