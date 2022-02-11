@@ -120,6 +120,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
             rvPayLaterRegisterSteps.adapter = PayLaterActionStepsAdapter(it)
             rvPayLaterRegisterSteps.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rvPayLaterRegisterSteps.setHasFixedSize(true)
         }
 
     }

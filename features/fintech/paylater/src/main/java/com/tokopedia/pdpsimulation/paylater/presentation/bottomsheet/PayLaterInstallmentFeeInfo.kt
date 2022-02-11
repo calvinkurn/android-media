@@ -60,6 +60,7 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
         rvInstallmentDetail.adapter = simulationAdapter
         rvInstallmentDetail.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvInstallmentDetail.setHasFixedSize(true)
         simulationAdapter.addAllElements(installmentDetails?.content ?: listOf())
         sendEvent(impression)
     }

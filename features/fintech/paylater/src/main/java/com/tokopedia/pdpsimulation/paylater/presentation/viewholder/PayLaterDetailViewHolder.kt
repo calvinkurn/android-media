@@ -65,14 +65,12 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
     private fun setUpFooter(element: Detail) {
         if (element.paylaterDisableDetail?.status == true) {
-            itemView.clPartnerCard.alpha = 0.38f
             itemView.payLaterActionCta.gone()
             itemView.llBenefits.gone()
             itemView.payLaterStatusTicker.visible()
             itemView.payLaterStatusTicker.tickerTitle = element.paylaterDisableDetail.header
             itemView.payLaterStatusTicker.setHtmlDescription(element.paylaterDisableDetail.description.orEmpty())
         } else {
-            itemView.clPartnerCard.alpha = 1.0f
             itemView.payLaterActionCta.visible()
             itemView.payLaterStatusTicker.gone()
             setPayLaterBenefits(element)
