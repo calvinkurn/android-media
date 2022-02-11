@@ -3,12 +3,15 @@ package com.tokopedia.play.broadcaster.ui.mapper
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.ProductSectionKey
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
@@ -101,6 +104,33 @@ class PlayBroProductUiMapper @Inject constructor() {
                 )
             },
             hasNextPage = response.getCampaignProduct.products.isNotEmpty(),
+        )
+    }
+
+    fun mapSectionedProduct(response: SectionedProductTagSocketResponse): EtalaseProductListMap {
+        return response.sections.associateBy(
+            keySelector = { ProductSectionKey(it.title, it.type) },
+            valueTransform = {
+                it.products.map { product ->
+                    ProductUiModel(
+                        id = product.id,
+                        name = product.name,
+                        imageUrl = product.imageUrl,
+                        stock = product.quantity.toInt(),
+                        price = if (product.discount <= 0) {
+                            OriginalPrice(product.originalPriceFmt, product.originalPrice)
+                        } else {
+                            DiscountedPrice(
+                                originalPrice = product.originalPriceFmt,
+                                originalPriceNumber = product.originalPrice,
+                                discountPercent = product.discount.toInt(),
+                                discountedPrice = product.priceFmt,
+                                discountedPriceNumber = product.price,
+                            )
+                        }
+                    )
+                }
+            }
         )
     }
 

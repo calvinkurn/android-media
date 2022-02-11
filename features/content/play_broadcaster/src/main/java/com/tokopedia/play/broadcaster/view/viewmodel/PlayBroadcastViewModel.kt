@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
@@ -29,6 +30,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.ui.model.etalase.ProductSectionKey
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
@@ -343,8 +345,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
                         val deferredChannel = async { getChannelById(configUiModel.channelId) }
                         val deferredProductMap = async {
                             //TODO("Use real data")
-                            mapOf<SelectedEtalaseModel, List<ProductUiModel>>(
-                                SelectedEtalaseModel.None to listOf(
+                            mapOf(
+                                ProductSectionKey("", "") to listOf(
                                     ProductUiModel(
                                         id = "1",
                                         name = "Test",
@@ -760,6 +762,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
             }
             //TODO("Set new selected product")
 //            is ProductTagging -> setSelectedProduct(playBroadcastMapper.mapProductTag(result))
+            is SectionedProductTagSocketResponse -> {
+                setSelectedProduct(productMapper.mapSectionedProduct(result))
+            }
             is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(result))
             is Freeze -> {
                 if (_observableLiveTimerState.value !is PlayLiveTimerState.Finish) {

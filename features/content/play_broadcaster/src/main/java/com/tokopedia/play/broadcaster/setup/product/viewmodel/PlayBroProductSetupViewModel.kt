@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.ProductSectionKey
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
@@ -192,8 +193,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProduct(product: ProductUiModel) {
-        //when select product, we can just treat it as no etalase/campaign
-        val etalase = SelectedEtalaseModel.None
+        //when select product, we can just use default key
+        val etalase = ProductSectionKey("", "")
         _selectedProductMap.update { map ->
             val prevSelectedProducts = map[etalase].orEmpty()
             val newSelectedProducts = if (prevSelectedProducts.any { it.id == product.id }) {
