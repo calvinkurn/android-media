@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
-import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.isValid
 import com.tokopedia.media.loader.loadImage
 
 /**

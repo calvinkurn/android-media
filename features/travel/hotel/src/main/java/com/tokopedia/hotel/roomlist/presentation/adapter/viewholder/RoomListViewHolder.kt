@@ -12,8 +12,6 @@ import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.isValid
 import com.tokopedia.media.loader.loadImage
 import kotlin.math.min
 
