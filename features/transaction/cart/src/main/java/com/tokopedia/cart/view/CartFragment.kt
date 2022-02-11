@@ -532,6 +532,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val addOnProductData = AddOnProductData().apply {
                 bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET
                 bottomSheetTitle = "Judul Bottom Sheet"
+                source = AddOnProductData.SOURCE_NORMAL_CHECKOUT
 
                 unavailableBottomSheetData = UnavailableBottomSheetData().apply {
                     description = "This is description for unavailable add on bottom sheet"
@@ -572,6 +573,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                     products = listOf(product1, product2, product3)
                     isTokoCabang = false
+                    cartString = "123-456-789"
                     shopBadgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
                     addOnFooterMessages = listOf(
                             "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
@@ -1728,7 +1730,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
         }
-        tempInitializeAddOnNavigation()
+//        tempInitializeAddOnNavigation()
     }
 
     override fun onCartDataDisableToCheckout() {

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.GetAddOnByProductResponse
+import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateRequest
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnSavedStateUseCase
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.SaveAddOnStateUseCase
@@ -65,6 +66,19 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
 
     private fun loadSavedStateData(addOnProductData: AddOnProductData, addOnByProductResponse: GetAddOnByProductResponse, mockAddOnSavedStateResponse: String? = "") {
         getAddOnSavedStateUseCase.mockResponse = mockAddOnSavedStateResponse ?: ""
+
+        val params = GetAddOnSavedStateRequest().apply {
+            source = addOnProductData.source
+            addOnKeys = listOf(
+                    if (addOnProductData.availableBottomSheetData.isTokoCabang) {
+                        addOnProductData.availableBottomSheetData.cartString
+                    } else {
+                        addOnProductData.availableBottomSheetData.products.firstOrNull()?.productId
+                                ?: ""
+                    }
+            )
+        }
+        getAddOnSavedStateUseCase.setParams(params)
         getAddOnSavedStateUseCase.execute(
                 onSuccess = {
                     if (it.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
