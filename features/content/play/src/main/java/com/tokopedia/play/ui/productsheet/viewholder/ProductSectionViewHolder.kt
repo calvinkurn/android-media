@@ -132,7 +132,7 @@ class ProductSectionViewHolder(
      */
     private fun getTimeDiff(serverTime: Date, currentTime: Date): Date {
         val diff = serverTime.time - currentTime.time
-        return if (diff > 0) currentTime else currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
+        return currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
     }
 
     companion object {
