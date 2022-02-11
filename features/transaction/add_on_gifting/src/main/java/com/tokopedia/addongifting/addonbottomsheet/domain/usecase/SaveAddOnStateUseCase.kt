@@ -39,7 +39,50 @@ class SaveAddOnStateUseCase @Inject constructor(@ApplicationContext private val 
     companion object {
         const val QUERY_NAME = "SaveAddOnStateQuery"
         const val QUERY = """
-            
+            mutation save_add_ons {
+                save_add_ons {
+                    error_message
+                    status
+                    data {
+                        add_ons {
+                            add_on_key
+                            add_on_level
+                            status
+                            add_on_data {
+                                add_on_id
+                                add_on_qty
+                                add_on_price
+                                add_on_metadata {
+                                    add_on_note{
+                                        is_custom_note
+                                        to
+                                        from
+                                        notes
+                                    }
+                                }
+                            }
+                            add_on_button {
+                                title
+                                description
+                                left_icon_url
+                                right_icon_url
+                                action
+                            }
+                            add_on_bottomsheet {
+                                header_title
+                                description
+                                products {
+                                    product_name
+                                    product_image_url
+                                }
+                                ticker {
+                                    text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         """
     }
 }

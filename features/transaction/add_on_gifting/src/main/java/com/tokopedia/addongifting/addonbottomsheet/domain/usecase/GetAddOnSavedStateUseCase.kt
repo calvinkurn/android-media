@@ -40,7 +40,31 @@ class GetAddOnSavedStateUseCase @Inject constructor(@ApplicationContext private 
     companion object {
         const val QUERY_NAME = "GetAddOnSavedStateQuery"
         const val QUERY = """
-            
+            query get_add_ons {
+                get_add_ons {
+                    error_message
+                    status
+                    data {
+                        add_ons {
+                            add_on_key
+                            add_on_level
+                            add_on_data {
+                                add_on_id
+                                add_on_qty
+                                add_on_price
+                                add_on_metadata {
+                                    add_on_note{
+                                        is_custom_note
+                                        to
+                                        from
+                                        notes
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         """
     }
 }

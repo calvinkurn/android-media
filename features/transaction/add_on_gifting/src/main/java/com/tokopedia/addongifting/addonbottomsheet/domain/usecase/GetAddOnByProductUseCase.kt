@@ -47,9 +47,6 @@ class GetAddOnByProductUseCase @Inject constructor(@ApplicationContext private v
                   reason
                   errorCode
                 }
-                StaticInfo {
-                  InfoURL
-                }
                 GetAddOnByProductResponse {
                   AddOnByProductResponse {
                     ProductID
@@ -90,15 +87,6 @@ class GetAddOnByProductUseCase @Inject constructor(@ApplicationContext private v
                         Price
                         Stock
                         UnlimitedStock
-                      }
-                      Warehouse {
-                        WarehouseName
-                        CityName
-                      }
-                      Shop {
-                        Name
-                        ShopTier
-                        ShopType
                       }
                     }
                   }
