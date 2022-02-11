@@ -131,6 +131,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     private fun initializeData(addOnProductData: AddOnProductData) {
+        // Todo : remove mock data before merge to release
         val mockAddOnResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_response)
         val mockAddOnSavedStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_add_on_saved_state_response)
         showLoading()
@@ -218,9 +219,14 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
             }
             amountCtaView.show()
             amountCtaView.setOnClickListener {
-                val mockSaveAddOnStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_save_add_on_state_response)
-                viewBinding.totalAmount.amountCtaView.isLoading = true
-                viewModel.saveAddOnState(mockSaveAddOnStateResponse)
+                if (viewModel.hasChangedState()) {
+                    // Todo : remove mock data before merge to release
+                    val mockSaveAddOnStateResponse = GraphqlHelper.loadRawString(context?.resources, R.raw.dummy_save_add_on_state_response)
+                    viewBinding.totalAmount.amountCtaView.isLoading = true
+                    viewModel.saveAddOnState(addOnProductData, mockSaveAddOnStateResponse)
+                } else {
+                    dismiss()
+                }
             }
         }
     }
