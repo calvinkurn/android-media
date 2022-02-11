@@ -15,29 +15,31 @@ import org.jetbrains.uast.UParameter
 import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.kotlin.KotlinConstructorUMethod
 
-class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
+class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
 
     companion object {
         val ISSUE = Issue.create(
-            id = "ResponseFieldAnnotation",
-            briefDescription = "Response field without @SerializedName and @Expose annotation can cause data parsing error.",
-            explanation = "Response field without @SerializedName and @Expose annotation can cause data parsing error. " +
+            id = "SerializedNameAnnotation",
+            briefDescription = "Field without @SerializedName and @Expose annotation can cause data parsing error.",
+            explanation = "Field without @SerializedName and @Expose annotation can cause data parsing error. " +
                 "Add @SerializedName and @Expose annotation to avoid error.",
             category = Category.CORRECTNESS,
-            priority = 5,
+            priority = 10,
             severity = Severity.WARNING,
             implementation = Implementation(
-                ResponseFieldAnnotationDetector::class.java,
+                SerializedNameAnnotationDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
             )
         )
 
         private const val RESPONSE_KEYWORD = "Response"
         private const val PARAM_KEYWORD = "Param"
+        private const val ENTITY_KEYWORD = "Entity"
         private const val DOMAIN_MODEL_PATH= "domain/model"
         private const val SERIALIZED_NAME_ANNOTATION = "com.google.gson.annotations.SerializedName"
         private const val EXPOSE_ANNOTATION = "com.google.gson.annotations.Expose"
-        private const val MESSAGE = "Response field \"%s\" without @SerializedName and @Expose annotation can cause data parsing error. " +
+        private const val ENTITY_ANNOTATION = "androidx.room.Entity"
+        private const val MESSAGE = "Field \"%s\" without @SerializedName and @Expose annotation can cause data parsing error. " +
             "Add @SerializedName and @Expose annotation to avoid error."
     }
 
@@ -50,9 +52,10 @@ class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
             override fun visitParameter(node: UParameter) {
                 val serializedNameAnnotation = node.findAnnotation(SERIALIZED_NAME_ANNOTATION)
                 val exposeAnnotation = node.findAnnotation(EXPOSE_ANNOTATION)
+                val shouldReportIssue = serializedNameAnnotation == null ||
+                    exposeAnnotation == null
 
-                if(shouldCheckAnnotation(context, node) &&
-                    (serializedNameAnnotation == null || exposeAnnotation == null)) {
+                if(shouldCheckAnnotation(context, node) && shouldReportIssue) {
                     reportError(context, node)
                 }
             }
@@ -64,9 +67,12 @@ class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
         val filePath = context.file.path
         val isDataClass = node.getContainingUClass()?.methods?.map { it.name }
             ?.containsAll(listOf("equals", "hashCode")) == true
+        val isEntityClass = node.getContainingUClass()?.findAnnotation(ENTITY_ANNOTATION) != null
+
         return (fileName.contains(RESPONSE_KEYWORD) || fileName.contains(PARAM_KEYWORD) ||
-                filePath.contains(DOMAIN_MODEL_PATH)) && node.uastParent is KotlinConstructorUMethod &&
-                isDataClass
+            fileName.contains(ENTITY_KEYWORD) || filePath.contains(DOMAIN_MODEL_PATH)) &&
+            node.uastParent is KotlinConstructorUMethod &&
+            (isDataClass || isEntityClass)
     }
 
     private fun reportError(context: JavaContext, node: UElement) {
