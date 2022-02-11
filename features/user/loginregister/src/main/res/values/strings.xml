@@ -342,6 +342,8 @@
     <string name="desc_name_shop_creation">Kerahasiaan datamu akan kami jaga</string>
     <string name="btn_continue_shop_creation">Lanjut</string>
     <string name="please_fill_name">Harap isi Nama anda</string>
+    <string name="deleted_shop_info">Tokomu hilang? Pelajari Selengkapnya</string>
+    <string name="deleted_shop_info_clickable">Pelajari Selengkapnya</string>
 
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_create_password">Cancel create password</string>

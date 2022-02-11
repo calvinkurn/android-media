@@ -5,9 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -22,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
@@ -36,6 +42,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -55,6 +62,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private lateinit var mainView: View
     private lateinit var baseView: View
     private lateinit var sharedPrefs: SharedPreferences
+    private var btnDeletedShop: Typography? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -81,6 +89,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         landingImage = view.findViewById(R.id.landing_shop_creation_image)
         loading = view.findViewById(R.id.loading)
         mainView = view.findViewById(R.id.main_view)
+        btnDeletedShop = view.findViewById(R.id.btnDeletedShopInfo)
         activity?.let {
             baseView = it.findViewById(R.id.base_view)
         }
@@ -153,6 +162,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initView() {
         ImageHandler.LoadImage(landingImage, LANDING_PICT_URL)
+        setupViewDeletedShopInfo()
     }
 
     private fun initButtonListener() {
@@ -336,6 +346,40 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
+    private fun setupViewDeletedShopInfo() {
+        val clickableMessage = getString(R.string.deleted_shop_info_clickable)
+        val message = getString(R.string.deleted_shop_info)
+        val spannable = SpannableString(message).apply {
+            setSpan(clickableSpan { RouteManager.route(context, URL_DELETED_SHOP) },
+                    message.indexOf(clickableMessage),
+                    message.indexOf(clickableMessage) + clickableMessage.length,
+                    0
+            )
+        }
+
+        btnDeletedShop?.apply {
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            setText(spannable, TextView.BufferType.SPANNABLE)
+            movementMethod = LinkMovementMethod.getInstance()
+        }
+    }
+
+    private fun clickableSpan(callback: () -> Unit): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                callback.invoke()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                context?.let {
+                    ds.isUnderlineText = false
+                    ds.color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                }
+            }
+        }
+    }
+
     companion object {
 
         private const val REQUEST_CODE_NAME_SHOP_CREATION = 100
@@ -344,6 +388,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         private const val LANDING_PICT_URL = "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
+        private const val URL_DELETED_SHOP = "https://www.tokopedia.com/help/article/kebijakan-penonaktifan-toko-secara-permanen"
 
         private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
