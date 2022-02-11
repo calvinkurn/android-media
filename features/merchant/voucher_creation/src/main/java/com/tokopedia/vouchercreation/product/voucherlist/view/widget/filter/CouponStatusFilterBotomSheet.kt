@@ -30,8 +30,8 @@ class CouponStatusFilterBotomSheet(
         val rvCouponStatus: RecyclerView? = contentView?.findViewById(R.id.rvCouponStatus)
         val adapter = CouponStatusFilterAdapter(::onCouponStatusClicked)
         val adapterItems = mutableListOf(
-            Pair(getString(R.string.dmvc_coupon_status_active), VoucherStatus.NOT_STARTED_AND_ONGOING),
-            Pair(getString(R.string.dmvc_coupon_status_inactive), VoucherStatus.HISTORY)
+            Pair(getString(R.string.mvc_coupon_status_active), VoucherStatus.NOT_STARTED_AND_ONGOING),
+            Pair(getString(R.string.mvc_coupon_status_inactive), VoucherStatus.HISTORY)
         )
 
         adapter.setItems(adapterItems)

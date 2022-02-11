@@ -66,6 +66,8 @@ import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponList
 import com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet.CouponFilterBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.CANCEL_VOUCHER_ERROR
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.PAGE_MODE_ACTIVE
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.PAGE_MODE_HISTORY
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.STOP_VOUCHER_ERROR
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_CANCEL_VOUCHER_ERROR
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_STOP_VOUCHER_ERROR
@@ -86,6 +88,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     companion object {
         fun newInstance(
+            pageMode: String,
             onCreateCouponMenuSelected: () -> Unit,
             onEditCouponMenuSelected: (Long) -> Unit,
             onDuplicateCouponMenuSelected: (Long) -> Unit,
@@ -94,6 +97,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             val args = Bundle()
             val fragment = CouponListFragment().apply {
                 arguments = args
+                this.pageMode = pageMode
                 this.onCreateCouponMenuSelected = onCreateCouponMenuSelected
                 this.onEditCouponMenuSelected = onEditCouponMenuSelected
                 this.onDuplicateCouponMenuSelected = onDuplicateCouponMenuSelected
@@ -102,6 +106,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             return fragment
         }
     }
+
+    private var pageMode: String = PAGE_MODE_ACTIVE
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -124,7 +130,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         return@lazy MoreMenuBottomSheet.createInstance()
     }
 
-    private var shopBasicData: ShopBasicDataResult? = null
     private val filterStatus by lazy { SortFilterItem("Status Aktif") }
     private val filterType by lazy { SortFilterItem("Gratis Ongkir") }
     private val filterTarget by lazy { SortFilterItem("Publik") }
@@ -149,6 +154,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setupPageMode()
         return inflater.inflate(R.layout.fragment_mvc_coupon_list, container, false)
     }
 
@@ -196,6 +202,18 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     override fun onGetListError(message: String) {
 
     }
+
+    /**
+     * Initiate page mode, should be called before setupObservers() function to prevent
+     * re-invoking data
+     */
+    private fun setupPageMode() {
+        if (pageMode == PAGE_MODE_HISTORY) {
+            viewModel.setStatusFilter(VoucherStatus.HISTORY)
+            filterStatus.title = getString(R.string.mvc_coupon_status_inactive)
+        }
+    }
+
 
     private fun onFilterSelected(
         selectedType: CouponFilterBottomSheet.FilterType,
