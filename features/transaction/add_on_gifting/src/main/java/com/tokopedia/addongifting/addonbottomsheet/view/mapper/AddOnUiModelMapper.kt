@@ -16,12 +16,12 @@ object AddOnUiModelMapper {
         val addOnByProduct = getAddOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
         return ProductUiModel().apply {
             isTokoCabang = addOnProductData.availableBottomSheetData.isTokoCabang
-            shopBadgeUrl = addOnProductData.availableBottomSheetData.shopBadgeUrl
             shopName = addOnByProduct?.addOns?.firstOrNull()?.shop?.name ?: ""
             mainProductImageUrl = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productImageUrl ?: ""
             mainProductName = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productName ?: ""
             mainProductPrice = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productPrice ?: 0
             otherProductCount = addOnProductData.availableBottomSheetData.products.size - 1
+            promoMessage = addOnByProduct?.couponText ?: ""
         }
     }
 

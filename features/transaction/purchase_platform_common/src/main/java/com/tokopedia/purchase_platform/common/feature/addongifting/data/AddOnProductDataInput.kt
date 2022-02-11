@@ -36,7 +36,6 @@ data class Product(
 @Parcelize
 data class AvailableBottomSheetData(
         var isTokoCabang: Boolean = false,
-        var shopBadgeUrl: String = "",
         var addOnFooterMessages: List<String> = emptyList(),
         var addOnSavedStates: List<AddOnData> = emptyList(),
         var products: List<Product> = emptyList(),

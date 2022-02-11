@@ -21,12 +21,19 @@ class ProductViewHolder(private val viewBinding: ItemProductBinding, private val
         with(viewBinding) {
             if (element.isTokoCabang) {
                 labelHeaderMessage.text = itemView.context.getString(R.string.add_on_label_header_product_from_toko_cabang)
-                labelOtherProducts.text = "+${element.otherProductCount} Barang Lainnya"
+                labelOtherProducts.text = String.format(itemView.context.getString(R.string.add_on_label_other_product), element.otherProductCount)
                 labelOtherProducts.show()
             } else {
                 labelHeaderMessage.text = String.format(itemView.context.getString(R.string.add_on_label_header_product), element.shopName)
                 labelOtherProducts.gone()
-                imageShopBadge.setImageUrl(element.shopBadgeUrl)
+            }
+
+            if (element.promoMessage.isNotBlank()) {
+                iconPromo.show()
+                labelPromoInfo.text = element.promoMessage
+            } else {
+                iconPromo.gone()
+                labelPromoInfo.gone()
             }
 
             imageProduct.setImageUrl(element.mainProductImageUrl)

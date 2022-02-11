@@ -575,9 +575,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productQuantity = 3
                     }
                     products = listOf(product1, product2, product3)
-                    isTokoCabang = false
+                    isTokoCabang = true
                     cartString = "123-456-789"
-                    shopBadgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
                     addOnFooterMessages = listOf(
                             "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
                             "{{qty}} barang hanya dapat 1 kartu ucapan",
