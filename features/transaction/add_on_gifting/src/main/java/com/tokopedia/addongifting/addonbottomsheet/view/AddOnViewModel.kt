@@ -123,15 +123,18 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                         addOnUiModel.value?.let {
                             addOnData = listOf(
                                     AddOnDataRequest().apply {
-                                        addOnId = it.addOnId ?: ""
-                                        addOnQty = it.addOnQty ?: 0
+                                        addOnId = it.addOnId
+                                        addOnQty = it.addOnQty
                                         addOnMetadata = AddOnMetadataRequest().apply {
                                             addOnNote = AddOnNoteRequest().apply {
                                                 isCustomNote = it.isCustomNote
-                                                        ?: false
-                                                to = it.addOnNoteTo ?: ""
-                                                from = it.addOnNoteFrom ?: ""
-                                                notes = it.addOnNote ?: ""
+                                                to = it.addOnNoteTo
+                                                from = it.addOnNoteFrom
+                                                notes = if (isCustomNote) {
+                                                    it.addOnNote
+                                                } else {
+                                                    ""
+                                                }
                                             }
                                         }
                                     }
