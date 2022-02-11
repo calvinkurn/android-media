@@ -291,7 +291,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     variantData.children[i].url?.let {
                         productIdToProductUrl[variantData.children[i].productId] = it
                     }
-
                 }
             }
 
@@ -306,18 +305,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
                 }
             }
-        }?: kotlin.run {
-            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
-            {
-                fintechWidgetMap?.run {
-                    productId = selectedProductId
-                }
-            }
-
         }
-
-
-
     }
 
     fun updateVariantError() {
