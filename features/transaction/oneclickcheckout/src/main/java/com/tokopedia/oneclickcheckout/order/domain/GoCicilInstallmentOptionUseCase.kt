@@ -20,7 +20,9 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
 //        val response = graphqlRepository.response(listOf(request)).getSuccessData<CreditCardTenorListResponse>()
         delay(5_000)
         return listOf(
-                OrderPaymentGoCicilTerms()
+                OrderPaymentGoCicilTerms(isActive = true),
+                OrderPaymentGoCicilTerms(isActive = false),
+                OrderPaymentGoCicilTerms(isActive = true, installmentTerm = 1),
         )
     }
 

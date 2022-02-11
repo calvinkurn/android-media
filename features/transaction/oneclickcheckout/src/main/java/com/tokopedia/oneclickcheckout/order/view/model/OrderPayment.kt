@@ -224,9 +224,9 @@ data class OrderPaymentGoCicilData(
 data class OrderPaymentGoCicilTerms(
     val installmentTerm: Int = 0,
     val optionId: String = "",
-    val firstInstallmentDate: String = "",
+    val firstInstallmentDate: String = "1234",
     val lastInstallmentDate: String = "",
-    val firstDueMessage: String = "",
+    val firstDueMessage: String = "qwerty",
     val interestAmount: Double = 0.0,
     val feeAmount: Double = 0.0,
     val installmentAmountPerPeriod: Double = 0.0,
