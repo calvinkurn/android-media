@@ -15,7 +15,6 @@ import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticLi
 import com.tokopedia.play.widget.sample.adapter.feed.PlayWidgetSampleFeedAdapter
 import com.tokopedia.play.widget.sample.analytic.PlayWidgetFeedSampleAnalytic
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.sample.data.ContentSlotResponse
 import com.tokopedia.play.widget.sample.data.PlayGetContentSlotResponse
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView

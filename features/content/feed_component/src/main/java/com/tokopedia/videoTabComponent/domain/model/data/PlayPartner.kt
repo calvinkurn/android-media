@@ -16,12 +16,5 @@ data class PlayPartner(
     @SerializedName("app_link")
     var appLink: String = "",
     @SerializedName("web_link")
-    val webLink: String = "",
-
-    @SerializedName("next_cursor")
-    var next_cursor: String = "",
-    @SerializedName("is_autoplay")
-    var is_autoplay: Boolean = false,
-    @SerializedName("max_autoplay_in_cell")
-    var max_autoplay_in_cell: Int = 0
+    val webLink: String = ""
 )
