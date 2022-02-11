@@ -10,6 +10,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
@@ -26,6 +30,7 @@ import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.ClientNumberSortFilterListener
 import com.tokopedia.recharge_component.model.InputFieldType
+import com.tokopedia.recharge_component.presentation.adapter.InquiryRechargeClientNumberAdapter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -382,5 +387,20 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         }
     }
 
-
+    fun setInquiryList(attribute: TopupBillsEnquiryAttribute){
+        val listInquiry = attribute.mainInfoList.toMutableList()
+        if (!attribute.additionalMainInfo.isNullOrEmpty()){
+            attribute.additionalMainInfo.forEach {
+                listInquiry.addAll(it.detail.map {
+                    TopupBillsEnquiryMainInfo(it.label, it.value)
+                })
+            }
+        }
+        val adapterInquiry = InquiryRechargeClientNumberAdapter()
+        adapterInquiry.setListMainInfo(listInquiry)
+        binding?.clientNumberWidgetGeneralRvInquiryList.run {
+            adapter = adapterInquiry
+            layoutManager = LinearLayoutManager(context)
+        }
+    }
 }

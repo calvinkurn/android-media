@@ -33,4 +33,5 @@
     <dimen name="digital_unify_card_item_top_background_height">88dp</dimen>
     <dimen name="digital_unify_card_floating_icon_background_size">46dp</dimen>
     <dimen name="digital_unify_card_campaign_height">20dp</dimen>
+    <dimen name="widget_client_number_inquiry_width">120dp</dimen>
 </resources>

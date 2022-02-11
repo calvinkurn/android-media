@@ -145,7 +145,9 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
 
         viewModel.dynamicInput.observe(viewLifecycleOwner, {
             when(it) {
-                is RechargeNetworkResult.Success -> {}
+                is RechargeNetworkResult.Success -> {
+
+                }
                 is RechargeNetworkResult.Fail -> {}
                 is RechargeNetworkResult.Loading -> {}
             }
@@ -153,7 +155,9 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
 
         viewModel.inquiry.observe(viewLifecycleOwner, {
             when (it) {
-                is RechargeNetworkResult.Success -> {}
+                is RechargeNetworkResult.Success -> {
+                    binding?.rechargePdpTagihanListrikClientNumberWidget?.setInquiryList(it.data.enquiry.attributes)
+                }
                 is RechargeNetworkResult.Fail -> {}
                 is RechargeNetworkResult.Loading -> {}
             }
