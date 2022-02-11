@@ -32,6 +32,7 @@ import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.convertPriceValueToIdrFormat
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -392,7 +393,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
 
         detailHeader.productDetailWidget.productPrice.text =
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(productData.price ?: 0.0, false)
+            convertPriceValueToIdrFormat(productData.price ?: 0.0, false)
 
         showVariantProductHeader(productData)
     }
