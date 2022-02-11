@@ -8,6 +8,7 @@ import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutReques
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
+import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.DataProvider
@@ -653,6 +654,36 @@ class ShipmentPresenterCheckoutTest {
             view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
             analyticsPurchaseProtection.eventClickOnBuy(any(), any())
             view.renderCheckoutCartSuccess(any())
+        }
+    }
+
+    @Test
+    fun `WHEN checkout error with prompt THEN should show prompt`(){
+        // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.listShipmentCrossSellModel = arrayListOf()
+
+        val prompt = Prompt().apply {
+            eligible = true
+            title = "Title"
+            description = "Description"
+        }
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.isError = true
+            this.prompt = prompt
+        })
+
+        // When
+        presenter.processCheckout(false, false, false, "", "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.hideLoading()
+            view.renderPrompt(prompt)
         }
     }
 
