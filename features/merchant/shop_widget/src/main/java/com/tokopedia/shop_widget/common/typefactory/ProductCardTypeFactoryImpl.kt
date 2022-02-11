@@ -9,14 +9,14 @@ import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.common.viewholder.ProductCardSeeAllViewHolder
 import com.tokopedia.shop_widget.common.viewholder.ProductCardViewHolder
 
-class ProductCardTypeFactoryImpl:  BaseAdapterTypeFactory(), ProductCardTypeFactory {
+class ProductCardTypeFactoryImpl(private val productCardListener: ProductCardViewHolder.ProductCardListener):  BaseAdapterTypeFactory(), ProductCardTypeFactory {
     override fun type(uiModel: ProductCardUiModel): Int = ProductCardViewHolder.LAYOUT
 
     override fun type(uiModel: ProductCardSeeAllUiModel): Int = ProductCardSeeAllViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ProductCardViewHolder.LAYOUT -> ProductCardViewHolder(view)
+            ProductCardViewHolder.LAYOUT -> ProductCardViewHolder(view, productCardListener)
             ProductCardSeeAllViewHolder.LAYOUT -> ProductCardSeeAllViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

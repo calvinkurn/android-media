@@ -19,7 +19,7 @@ import com.tokopedia.shop_widget.common.typefactory.ProductCardTypeFactoryImpl
 import com.tokopedia.shop_widget.common.uimodel.ProductCardSeeAllUiModel
 import com.tokopedia.shop_widget.common.util.ColorUtil.getBackGroundColor
 import com.tokopedia.shop_widget.common.util.ProductCardItemDecoration
-import com.tokopedia.shop_widget.databinding.ItemProductCardBinding
+import com.tokopedia.shop_widget.common.viewholder.ProductCardViewHolder
 import com.tokopedia.shop_widget.databinding.ItemThematicWidgetBinding
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -30,7 +30,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class ThematicWidgetViewHolder (
-    itemView: View
+    itemView: View,
+    private val listener: ThematicWidgetListener
 ) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope {
 
     companion object {
@@ -43,15 +44,17 @@ class ThematicWidgetViewHolder (
     private var binding: ItemThematicWidgetBinding? by viewBinding()
 
     private val masterJob = SupervisorJob()
+
     private var ivParallaxImage: AppCompatImageView? = null
     private var rvProduct: RecyclerView? = null
     private var viewParallaxBackground: View? = null
     private var layoutManager: LinearLayoutManager? = null
     private var dynamicHeaderCustomView: DynamicHeaderCustomView? = null
     private var uiModel: ThematicWidgetUiModel? = null
+
     private val adapter by lazy {
         ProductCardAdapter(
-            baseListAdapterTypeFactory = ProductCardTypeFactoryImpl(),
+            baseListAdapterTypeFactory = ProductCardTypeFactoryImpl(productCardListenerImpl()),
             differ = ProductCardDiffer()
         )
     }
@@ -171,5 +174,15 @@ class ThematicWidgetViewHolder (
         )
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
         viewParallaxBackground?.background = gradientDrawable
+    }
+
+    private fun productCardListenerImpl(): ProductCardViewHolder.ProductCardListener = object : ProductCardViewHolder.ProductCardListener {
+        override fun onProductCardClickListener(appLink: String?) {
+            listener.onThematicWidgetProductClickListener(appLink)
+        }
+    }
+
+    interface ThematicWidgetListener {
+        fun onThematicWidgetProductClickListener(appLink: String?)
     }
 }

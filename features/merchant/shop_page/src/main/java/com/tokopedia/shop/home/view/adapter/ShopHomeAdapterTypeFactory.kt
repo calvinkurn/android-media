@@ -52,7 +52,8 @@ class ShopHomeAdapterTypeFactory(
         private val playWidgetCoordinator: PlayWidgetCoordinator,
         private val isShowTripleDot: Boolean,
         private val shopHomeShowcaseListWidgetListener: ShopHomeShowcaseListWidgetListener,
-        private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener
+        private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener,
+        private val thematicWidgetListener: ThematicWidgetViewHolder.ThematicWidgetListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var previousViewHolder: AbstractViewHolder<*>? = null
@@ -249,7 +250,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderBannerPlaceholderViewHolder(parent)
             ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderSquarePlaceholderViewHolder(parent)
             ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnPlaceholderViewHolder(parent)
-            ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent)
+            ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent, thematicWidgetListener)
             ThematicWidgetLoadingStateViewHolder.LAYOUT -> ThematicWidgetLoadingStateViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }

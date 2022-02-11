@@ -11,7 +11,8 @@ import com.tokopedia.shop_widget.databinding.ItemProductCardBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardViewHolder(
-    itemView: View
+    itemView: View,
+    private var listener: ProductCardListener? = null
 ): AbstractViewHolder<ProductCardUiModel>(itemView) {
 
     companion object {
@@ -31,5 +32,13 @@ class ProductCardViewHolder(
                 productCardUiModel = element
             ))
         }
+
+        binding?.productCardGridView?.setOnClickListener {
+            listener?.onProductCardClickListener(element.productUrl)
+        }
+    }
+
+    interface ProductCardListener {
+        fun onProductCardClickListener(appLink: String?)
     }
 }

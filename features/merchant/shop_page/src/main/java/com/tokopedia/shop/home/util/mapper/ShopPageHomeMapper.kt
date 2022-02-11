@@ -1,8 +1,10 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
@@ -433,40 +435,20 @@ object ShopPageHomeMapper {
     }
 
     private fun mapToThematicWidget(widgetResponse: ShopLayoutWidget.Widget): ThematicWidgetUiModel {
-//        return ThematicWidgetUiModel(
-//            widgetId = widgetResponse.widgetID,
-//            layoutOrder = widgetResponse.layoutOrder,
-//            name = widgetResponse.name,
-//            type = widgetResponse.type,
-//            header = DynamicHeaderUiModel(
-//                campaignId = widgetResponse.data.firstOrNull()?.campaignId.orEmpty(),
-//                title = widgetResponse.header.title,
-//                subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
-//                ctaText = widgetResponse.header.ctaText,
-//                ctaTextLink = widgetResponse.header.ctaLink,
-//                startDate = widgetResponse.data.firstOrNull()?.startDate.orEmpty(),
-//                endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
-//                timeDescription = widgetResponse.data.firstOrNull()?.description.orEmpty(),
-//                timeCounter = widgetResponse.data.firstOrNull()?.timeCounter.toLongOrZero(),
-//                statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty()
-//            ),
-//            widgetMasterId = widgetResponse.widgetMasterID
-//        )
-
         return ThematicWidgetUiModel(
             widgetId = widgetResponse.widgetID,
             layoutOrder = widgetResponse.layoutOrder,
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = DynamicHeaderUiModel(
-                title = "Ada saja",
-                subTitle = "",
-                ctaText = "",
-                ctaTextLink = "https://tokopedia.com",
+                title = widgetResponse.header.title,
+                subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
+                ctaText = widgetResponse.header.ctaText,
+                ctaTextLink = widgetResponse.header.ctaLink,
                 endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
-                timeCounter = 1000,
-                statusCampaign = "ongoing",
-                totalProduct = 12
+                timeCounter = widgetResponse.data.firstOrNull()?.timeCounter.toLongOrZero(),
+                statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty(),
+                totalProduct = widgetResponse.data.firstOrNull()?.totalProduct.orZero()
             ),
             widgetMasterId = widgetResponse.widgetMasterID,
             productList = widgetResponse.data.firstOrNull()?.listProduct?.map {
@@ -479,7 +461,7 @@ object ShopPageHomeMapper {
                      imageUrl = it.imageUrl,
                      imageUrl300 = "",
                      productUrl = it.urlApps,
-                     hideGimmick = false,
+                     hideGimmick = it.hideGimmick,
                      stockLabel = it.stockWording.title,
                      stockSoldPercentage =  it.stockSoldPercentage.toInt(),
                      labelGroupList  = it.labelGroups.map { labelGroup ->
@@ -493,8 +475,8 @@ object ShopPageHomeMapper {
                  )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
-            firstBackgroundColor = "",
-            secondBackgroundColor = ""
+            firstBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.firstColor.orEmpty(),
+            secondBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.secondColor.orEmpty()
         )
     }
 
@@ -654,17 +636,20 @@ object ShopPageHomeMapper {
             isLoggedIn: Boolean
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
+            // need to separate updating ui model for temporary purpose
             responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC}.onEach {
-                val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn)
-                if (widgetUiModel is BaseShopHomeWidgetUiModel) {
-                    widgetUiModel.let { model ->
-                        model.widgetMasterId = it.widgetMasterID
-                        add(model)
+                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn)) {
+                    is BaseShopHomeWidgetUiModel -> {
+                        widgetUiModel.let { model ->
+                            model.widgetMasterId = it.widgetMasterID
+                            add(model)
+                        }
                     }
-                } else if (widgetUiModel is ThematicWidgetUiModel) {
-                    widgetUiModel.let { model ->
-                        model.widgetMasterId = it.widgetMasterID
-                        add(model)
+                    is ThematicWidgetUiModel -> {
+                        widgetUiModel.let { model ->
+                            model.widgetMasterId = it.widgetMasterID
+                            add(model)
+                        }
                     }
                 }
             }
@@ -693,6 +678,7 @@ object ShopPageHomeMapper {
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             listWidgetLayout.onEach {
+                // need to separate updating ui model for temporary purpose
                 mapToWidgetUiModel(
                         ShopLayoutWidget.Widget(
                                 widgetID = it.widgetId,
@@ -700,12 +686,15 @@ object ShopPageHomeMapper {
                                 name = it.widgetName
                         ), myShop, isLoggedIn
                 )?.let{ resModel ->
-                    if (resModel is BaseShopHomeWidgetUiModel) {
-                        resModel.widgetMasterId = it.widgetMasterId
-                        add(resModel)
-                    } else if (resModel is ThematicWidgetUiModel) {
-                        resModel.widgetMasterId = it.widgetMasterId
-                        add(resModel)
+                    when (resModel) {
+                        is BaseShopHomeWidgetUiModel -> {
+                            resModel.widgetMasterId = it.widgetMasterId
+                            add(resModel)
+                        }
+                        is ThematicWidgetUiModel -> {
+                            resModel.widgetMasterId = it.widgetMasterId
+                            add(resModel)
+                        }
                     }
                 }
             }
