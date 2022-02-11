@@ -72,7 +72,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     var isFeaturedShopAllowed: Boolean = false
         private set
 
-    private val impressedShop = mutableMapOf<String, MutableSet<String>>()
+    val impressedShop = mutableMapOf<String, MutableSet<String>>()
 
     //Pair first -> should show error message
     //Pair second -> official store banner value
@@ -376,10 +376,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             newSet.add(shopId)
             impressedShop[channelId] = newSet
         }else{
-            setOfImpressedShop?.let {
-                it.add(shopId)
-                impressedShop[channelId] = it
-            }
+            setOfImpressedShop.add(shopId)
         }
     }
 
