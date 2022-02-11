@@ -807,7 +807,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             }
 
             init(listener)
-            setMetaData(tnTitle = title, tnImage = ShareComponentConstant.THUMBNAIL_ICON_IMAGE_URL, previewImgUrl = imageUrl)
+            setMetaData(tnTitle = title, tnImage = ShareComponentConstant.THUMBNAIL_ICON_IMAGE_URL)
             setOgImageUrl(imageUrl)
             setUtmCampaignData(
                 pageName = ShareComponentConstant.PAGE_NAME,
