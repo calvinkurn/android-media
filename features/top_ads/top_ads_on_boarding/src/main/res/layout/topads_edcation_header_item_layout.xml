@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/headerImage"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintDimensionRatio="H,16:9"
+        android:contentDescription="@null"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/headerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_24"
+        app:typographyType="small"
+        app:layout_constraintTop_toBottomOf="@id/headerImage"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="JENIS IKLAN YANG COCOK"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/headerSubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        app:typographyType="body_1"
+        app:layout_constraintTop_toBottomOf="@id/headerTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Iklan Toko dan TDN"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/headerDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:typographyType="body_2"
+        app:layout_constraintTop_toBottomOf="@id/headerSubTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Buat toko dan brand-mu makin dikenali dengan Iklan Toko dan TDN yang muncul di tempat-tempat strategis di pencarian dan rekomendasi."/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

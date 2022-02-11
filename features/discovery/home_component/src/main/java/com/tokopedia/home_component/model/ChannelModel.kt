@@ -11,7 +11,7 @@ data class ChannelModel(
         val contextualInfo: Int = 0,
         val widgetParam: String = "",
         val pageName: String = "",
-        val channelHeader: ChannelHeader = ChannelHeader(),
+        var channelHeader: ChannelHeader = ChannelHeader(),
         val channelBanner: ChannelBanner = ChannelBanner(),
         val channelConfig: ChannelConfig = ChannelConfig(),
         val channelViewAllCard: ChannelViewAllCard = ChannelViewAllCard(),

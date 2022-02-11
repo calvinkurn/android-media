@@ -13,6 +13,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CATEGORY
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.EDUCATIONAL_INFORMATION
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
@@ -43,6 +44,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiMo
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.MixLeftCarouselMapper.mapToMixLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
@@ -64,7 +66,8 @@ object HomeLayoutMapper {
         REPURCHASE_PRODUCT,
         EDUCATIONAL_INFORMATION,
         SHARING_EDUCATION,
-        MAIN_QUEST
+        MAIN_QUEST,
+        MIX_LEFT_CAROUSEL
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -409,15 +412,18 @@ object HomeLayoutMapper {
         state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
         miniCartData: MiniCartSimplifiedData? = null
     ): HomeLayoutItemUiModel? {
+        val loadedState = HomeLayoutItemState.LOADED
+
         return when (response.layout) {
             CATEGORY -> mapToCategoryLayout(response, state)
-            LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, HomeLayoutItemState.LOADED)
-            BANNER_CAROUSEL -> mapSliderBannerModel(response, HomeLayoutItemState.LOADED)
-            PRODUCT_RECOM -> mapProductRecomDataModel(response, HomeLayoutItemState.LOADED, miniCartData)
+            LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, loadedState)
+            BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
+            PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState, miniCartData)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, state)
-            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, HomeLayoutItemState.LOADED)
+            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, state)
             MAIN_QUEST -> mapQuestUiModel(response, state)
+            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, state)
             else -> null
         }
     }
