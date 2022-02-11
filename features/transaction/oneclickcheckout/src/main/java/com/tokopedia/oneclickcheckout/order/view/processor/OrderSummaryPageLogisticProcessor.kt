@@ -627,7 +627,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 val needPinpoint = logisticPromoShipping.productData.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                 return Pair(
                         shipping.copy(isLoading = false,
-                            // todo is this necessary?
                                 logisticPromoViewModel = logisticPromoUiModel,
                                 shippingRecommendationData = shippingRecommendationData,
                                 isServicePickerEnable = true,
@@ -655,6 +654,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             shippingDuration.isSelected = true
             shippingDuration.shippingCourierViewModelList.first { it.productData.shipperProductId == logisticPromoShipping.productData.shipperProductId }.isSelected = true
             return orderShipment.copy(isLoading = false,
+                    logisticPromoViewModel = null,
                     shippingRecommendationData = shippingRecommendationData,
                     isApplyLogisticPromo = false,
                     logisticPromoShipping = null,
