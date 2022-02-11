@@ -32,10 +32,10 @@ class ShippingDurationConverter @Inject constructor() {
                     ratesData.ratesDetailData.services.isNotEmpty()) {
 
                 // Setting up for Logistic Promo
-                shippingRecommendationData.logisticPromo = convertToPromoModel(ratesData.ratesDetailData.promoStacking)
+                shippingRecommendationData.logisticPromo = convertToPromoModel(ratesData.ratesDetailData.promoStacking, true)
 
                 // Setting up for List of Logistic Promo
-                shippingRecommendationData.listLogisticPromo = ratesData.ratesDetailData.listPromoStacking.mapNotNull { promo -> convertToPromoModel(promo) }
+                shippingRecommendationData.listLogisticPromo = ratesData.ratesDetailData.listPromoStacking.mapIndexedNotNull { index, promo -> convertToPromoModel(promo, index == 0) }
 
                 // Setting up for Logistic Pre Order
                 shippingRecommendationData.preOrderModel = convertToPreOrderModel(ratesData.ratesDetailData.preOrder)
@@ -137,14 +137,15 @@ class ShippingDurationConverter @Inject constructor() {
     }
 
     // todo need to adjust this to add image/bo divicer
-    private fun convertToPromoModel(promo: PromoStacking?): LogisticPromoUiModel? {
+    private fun convertToPromoModel(promo: PromoStacking?, showPromoBadge: Boolean): LogisticPromoUiModel? {
         if (promo == null || promo.isPromo != 1) return null
         val applied = promo.isApplied == 1
+        val promoBadge = if (showPromoBadge) promo.imageUrl else ""
         return LogisticPromoUiModel(
                 promo.promoCode, promo.title, promo.benefitDesc,
                 promo.shipperName, promo.serviceId, promo.shipperId,
                 promo.shipperProductId, promo.shipperDesc, promo.shipperDisableText,
-                promo.promoTncHtml, applied, promo.imageUrl, promo.discontedRate,
+                promo.promoTncHtml, applied, promoBadge, promo.discontedRate,
                 promo.shippingRate, promo.benefitAmount, promo.isDisabled, promo.isHideShipperName,
                 promo.cod, promo.eta, promo.texts.bottomSheet, promo.texts.chosenCourier,
                 promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription)

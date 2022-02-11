@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
-import android.text.Spanned
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -66,13 +65,13 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
         if (data.bottomSheetDescription.isEmpty()) tvInfo.visibility = View.GONE
-//        todo wait for this flag
-//        if (showBoLogo) {
-//            imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)
-//            ImageHandler.LoadImage(imgLogo, data.imageUrl)
-//        } else {
-//            imgLogo.visibility = View.GONE
-//        }
+
+        if (data.imageUrl.isNotEmpty()) {
+            imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)
+            ImageHandler.LoadImage(imgLogo, data.imageUrl)
+        } else {
+            imgLogo.visibility = View.GONE
+        }
 
         val fontColor = if (data.disabled) {
             ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
