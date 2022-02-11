@@ -13,6 +13,7 @@ import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Url;
 import rx.Observable;
 import static com.tokopedia.graphql.GraphqlConstant.GqlApiKeys.ANDROID_FLAG;
 
@@ -22,9 +23,10 @@ import static com.tokopedia.graphql.GraphqlConstant.GqlApiKeys.ANDROID_FLAG;
 public interface GraphqlApi {
 
 
-    @POST("./")
+    @POST()
     @Headers(ANDROID_FLAG)
-    Observable<Response<JsonArray>> getResponse(@Body List<GraphqlRequest> requestObject,
+    Observable<Response<JsonArray>> getResponse(@Url String url,
+                                                @Body List<GraphqlRequest> requestObject,
                                                 @HeaderMap Map<String, String> headerMap,
                                                 @Header(GraphqlConstant.GqlApiKeys.CACHE) String values,
                                                 @Header(GraphqlConstant.GqlApiKeys.QUERY_IDENTIFIER) String queryIdentifier);

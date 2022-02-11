@@ -195,7 +195,7 @@ class GraphqlCloudDataStore @Inject constructor(
                             } else {
                                 header[QUERY_HASHING_HEADER] = ""
                             }
-                            val opName = requests[0]./Name
+                            val opName = requests[0].operationName
                             ServerLogger.log(
                                 Priority.P1, "GQL_HASHING",
                                 mapOf(
