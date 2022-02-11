@@ -44,6 +44,7 @@ class SectionViewModel(
             val shouldRefresh =
                 sectionUseCase.getChildComponents(components.id, components.pageEndPoint)
             if (shouldRefresh) {
+//                Todo:: Add handling to update anchor view in case of empty List.
                 syncData.value = true
                 components.shouldRefreshComponent = true
             }

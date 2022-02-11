@@ -429,6 +429,9 @@ data class DataItem(
         @field:SerializedName("shopInfo")
         val shopInfo: ShopInfo? = null,
 
+        @field:SerializedName("target_section_id")
+        val targetSectionID: String? = null,
+
         var shopAdsClickURL: String? = "",
 
         var shopAdsViewURL: String? = "",

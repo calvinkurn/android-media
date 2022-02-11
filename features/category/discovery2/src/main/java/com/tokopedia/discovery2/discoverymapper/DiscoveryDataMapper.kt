@@ -198,6 +198,34 @@ class DiscoveryDataMapper {
         return list
     }
 
+    fun mapAnchorListToComponentList(itemList: List<DataItem>, subComponentName: String = "",
+                               parentComponentName: String?,
+                               position: Int, design: String = "", compId : String = "",anchorMap: MutableMap<String,Int>): ArrayList<ComponentsItem> {
+        val list = ArrayList<ComponentsItem>()
+        itemList.forEachIndexed { index, it ->
+            val componentsItem = ComponentsItem()
+            componentsItem.position = index
+            val id = "${CHIPS}_$index"
+            componentsItem.name = subComponentName
+            componentsItem.id = id
+            componentsItem.design = design
+            componentsItem.parentComponentId = compId
+            it.parentComponentName = parentComponentName
+            componentsItem.parentComponentPosition = position
+            val dataItem = mutableListOf<DataItem>()
+            dataItem.add(it)
+            componentsItem.data = dataItem
+            if (index == 0) {
+                it.isSelected = true
+            }
+            it.targetSectionID?.let { targetId ->
+                anchorMap[targetId] = index
+            }
+            list.add(componentsItem)
+        }
+        return list
+    }
+
     fun mapFiltersToDynamicFilterModel(dataItem: DataItem?): DynamicFilterModel? {
         val filter = dataItem?.filter
         filter?.forEach {

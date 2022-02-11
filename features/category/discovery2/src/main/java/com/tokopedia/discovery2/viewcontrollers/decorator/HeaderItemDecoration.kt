@@ -51,6 +51,8 @@ class HeaderItemDecoration(
 
         val headerPosition = getHeaderPositionForItem(itemPosition)
         if (headerPosition == RecyclerView.NO_POSITION) return null
+//        Todo:: update sectionId to notify viewholder
+        getRecyclerAdapter().currentList[itemPosition].parentSectionId
         val headerType = parent.adapter?.getItemViewType(headerPosition) ?: return null
         if (getRecyclerAdapter().getCurrentHeader()?.second?.itemViewType == headerType) {
             return getRecyclerAdapter().getCurrentHeader()?.second?.itemView

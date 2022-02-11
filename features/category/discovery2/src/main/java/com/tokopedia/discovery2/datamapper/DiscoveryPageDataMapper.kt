@@ -125,6 +125,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 listComponents.add(component)
             }
             ComponentNames.Section.componentName ->{
+                saveSectionPosition(component)
                 listComponents.addAll(parseSectionComponent(component))
             }
             ComponentNames.QuickCoupon.componentName -> {
@@ -186,6 +187,15 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             else -> listComponents.add(component)
         }
         return listComponents
+    }
+
+    private fun saveSectionPosition(component: ComponentsItem) {
+        if (getSectionPositionMap(component.pageEndPoint) == null) {
+            setSectionPositionMap(mutableMapOf(), component.pageEndPoint)
+        }
+        getSectionPositionMap(component.pageEndPoint)?.let {
+            it.put(component.sectionId, component.position)
+        }
     }
 
     private fun addAutoPlayController(component: ComponentsItem) {
@@ -489,10 +499,24 @@ fun getCartData(pageName: String):MutableMap<String,MiniCartItem>?{
     }
     return null
 }
+
 fun setCartData(cartMap:MutableMap<String,MiniCartItem>,pageName: String){
     discoveryPageData[pageName]?.let {
         it.cartMap = cartMap
     }
+}
+
+fun setSectionPositionMap(map: MutableMap<String, Int>, pageName: String) {
+    discoveryPageData[pageName]?.let {
+        it.sectionMap = map
+    }
+}
+
+fun getSectionPositionMap(pageName: String):MutableMap<String, Int>?{
+    discoveryPageData[pageName]?.let {
+        return it.sectionMap
+    }
+    return null
 }
 
 fun updateComponentsQueryParams(categoryId: String) {

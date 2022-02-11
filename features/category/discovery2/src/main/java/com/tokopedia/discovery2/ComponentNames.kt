@@ -94,6 +94,8 @@ enum class ComponentNames(val componentName: String) {
     MerchantVoucherCarouselItem("merchant_voucher_carousel_item"),
 
     Section("section"),
+    AnchorTabs("anchor_tabs"),
+    AnchorTabsItem("anchor_tabs_item"),
 
     //Calendar Widget
     CalendarWidgetCarousel("calendar"),
