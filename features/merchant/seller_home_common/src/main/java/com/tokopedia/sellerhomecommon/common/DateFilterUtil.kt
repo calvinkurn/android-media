@@ -117,10 +117,13 @@ object DateFilterUtil {
 
             val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(minDaysCount.toLong()))
 
-            val label = context.getString(R.string.shc_per_week)
             return DateFilterItem.Pick(
-                label, Date(), lastDateOfWeek, type = DateFilterItem.TYPE_PER_WEEK,
-                calendarPickerMinDate = Date(), calendarPickerMaxDate = maxDate
+                label = context.getString(R.string.shc_per_week),
+                startDate = Date(),
+                endDate = lastDateOfWeek,
+                type = DateFilterItem.TYPE_PER_WEEK,
+                calendarPickerMinDate = Date(),
+                calendarPickerMaxDate = maxDate
             )
         }
 
@@ -128,12 +131,11 @@ object DateFilterUtil {
             context: Context,
             maxDaysCount: Int
         ): DateFilterItem.MonthPickerItem {
-            val perMonthLabel = context.getString(R.string.shc_per_month)
             val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(maxDaysCount.toLong()))
-            val defaultDate: Date = Date()
+            val defaultDate = Date()
             val (startDate, endDate) = getStartAndEndDateInAMonth(defaultDate)
             return DateFilterItem.MonthPickerItem(
-                perMonthLabel,
+                label = context.getString(R.string.shc_per_month),
                 startDate = startDate,
                 endDate = endDate,
                 monthPickerMinDate = defaultDate,
