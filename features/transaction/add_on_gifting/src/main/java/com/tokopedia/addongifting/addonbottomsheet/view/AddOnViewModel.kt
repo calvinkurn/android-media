@@ -12,6 +12,7 @@ import com.tokopedia.addongifting.addonbottomsheet.view.mapper.AddOnUiModelMappe
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.ProductUiModel
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
@@ -46,7 +47,12 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
         getAddOnByProductUseCase.mockResponse = mockAddOnResponse ?: ""
         getAddOnByProductUseCase.execute(
                 onSuccess = {
-                    loadSavedStateData(addOnProductData, it, mockAddOnSavedStateResponse)
+                    // Todo : adjust error validation
+                    if (it.dataResponse.error.message.isBlank()) {
+                        loadSavedStateData(addOnProductData, it, mockAddOnSavedStateResponse)
+                    } else {
+                        throw ResponseErrorException(it.dataResponse.error.message)
+                    }
                 },
                 onError = {
                     _globalEvent.value = GlobalEvent().apply {
@@ -61,13 +67,17 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
         getAddOnSavedStateUseCase.mockResponse = mockAddOnSavedStateResponse ?: ""
         getAddOnSavedStateUseCase.execute(
                 onSuccess = {
-                    _globalEvent.value = GlobalEvent().apply {
-                        state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+                    if (it.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
+                        throw ResponseErrorException(it.getAddOns.errorMessage.joinToString(". "))
+                    } else {
+                        _globalEvent.value = GlobalEvent().apply {
+                            state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+                        }
+                        val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
+                        _productUiModel.value = productUiModel
+                        val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, it)
+                        _addOnUiModel.value = addOnUiModel
                     }
-                    val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
-                    _productUiModel.value = productUiModel
-                    val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, it)
-                    _addOnUiModel.value = addOnUiModel
                 },
                 onError = {
                     _globalEvent.value = GlobalEvent().apply {
@@ -85,9 +95,13 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
         saveAddOnStateUseCase.mockResponse = mockSaveStateResponse ?: ""
         saveAddOnStateUseCase.execute(
                 onSuccess = {
-                    _globalEvent.value = GlobalEvent().apply {
-                        state = GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON
-                        data = it
+                    if (it.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
+                        throw ResponseErrorException(it.getAddOns.errorMessage.joinToString(". "))
+                    } else {
+                        _globalEvent.value = GlobalEvent().apply {
+                            state = GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON
+                            data = it
+                        }
                     }
                 },
                 onError = {
