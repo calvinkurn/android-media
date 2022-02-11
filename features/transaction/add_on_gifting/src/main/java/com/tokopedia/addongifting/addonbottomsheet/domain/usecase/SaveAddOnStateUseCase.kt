@@ -23,11 +23,16 @@ class SaveAddOnStateUseCase @Inject constructor(@ApplicationContext private val 
     }
 
     override suspend fun executeOnBackground(): SaveAddOnStateResponse {
+        // Todo : remove mock data before merge to release
         if (mockResponse.isNotBlank()) {
             return Gson().fromJson(mockResponse, SaveAddOnStateResponse::class.java)
         }
 
-        val request = GraphqlRequest(SaveAddOnStateQuery(), SaveAddOnStateResponse::class.java)
+        if (params.isNullOrEmpty()) {
+            throw RuntimeException("Parameter can't be null or empty!")
+        }
+
+        val request = GraphqlRequest(SaveAddOnStateQuery(), SaveAddOnStateResponse::class.java, params)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 

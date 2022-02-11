@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.coroutines.UseCase
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 @GqlQuery(GetAddOnSavedStateUseCase.QUERY_NAME, GetAddOnSavedStateUseCase.QUERY)
@@ -19,15 +20,20 @@ class GetAddOnSavedStateUseCase @Inject constructor(@ApplicationContext private 
     private var params: Map<String, Any>? = null
 
     fun setParams(getAddOnSavedStateRequest: GetAddOnSavedStateRequest) {
-        params = mapOf("param" to getAddOnSavedStateRequest)
+        params = mapOf("params" to getAddOnSavedStateRequest)
     }
 
     override suspend fun executeOnBackground(): GetAddOnSavedStateResponse {
+        // Todo : remove mock data before merge to release
         if (mockResponse.isNotBlank()) {
             return Gson().fromJson(mockResponse, GetAddOnSavedStateResponse::class.java)
         }
 
-        val request = GraphqlRequest(GetAddOnByProductQuery(), GetAddOnSavedStateResponse::class.java)
+        if (params.isNullOrEmpty()) {
+            throw RuntimeException("Parameter can't be null or empty!")
+        }
+
+        val request = GraphqlRequest(GetAddOnByProductQuery(), GetAddOnSavedStateResponse::class.java, params)
         return graphqlRepository.response(listOf(request)).getSuccessData()
     }
 
