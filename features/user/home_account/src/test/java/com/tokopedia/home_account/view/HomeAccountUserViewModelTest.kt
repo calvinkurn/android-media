@@ -14,6 +14,9 @@ import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
+import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.navigation_common.model.DebitInstantData
 import com.tokopedia.navigation_common.model.DebitInstantModel
 import com.tokopedia.navigation_common.model.ProfileModel
@@ -65,6 +68,7 @@ class HomeAccountUserViewModelTest {
     private val getPhoneUseCase = mockk<GetUserProfile>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
     private val userProfileSafeModeUseCase = mockk<UserProfileSafeModeUseCase>(relaxed = true)
+    private val checkFingerprintToggleUseCase = mockk<CheckFingerprintToggleStatusUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -81,6 +85,7 @@ class HomeAccountUserViewModelTest {
 
     private val throwable = Fail(Throwable(message = "Error"))
     private var buyerAccountObserver = mockk<Observer<Result<UserAccountDataModel>>>(relaxed = true)
+    private var checkFingerprintResult = mockk<Observer<Result<CheckFingerprintResult>>>(relaxed = true)
 
     private val shortcut = ShortcutResponse()
     private val responseResult = UserAccountDataModel()
@@ -106,6 +111,7 @@ class HomeAccountUserViewModelTest {
             getLinkStatusUseCase,
             getPhoneUseCase,
             userProfileSafeModeUseCase,
+            checkFingerprintToggleUseCase,
             walletPref,
             dispatcher
         )
@@ -113,6 +119,7 @@ class HomeAccountUserViewModelTest {
         viewModel.buyerAccountDataData.observeForever(buyerAccountObserver)
         viewModel.shortcutData.observeForever(shortCutResponse)
         viewModel.safeModeStatus.observeForever(safeStatusResponse)
+        viewModel.checkFingerprintStatus.observeForever(checkFingerprintResult)
     }
 
     @Test
@@ -285,6 +292,74 @@ class HomeAccountUserViewModelTest {
 
         Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data.tdnBanner, null)
     }
+
+    @Test
+    fun `Successfully get recommendation with tdn data - less than tdn_index`() {
+        val recomList = listOf(
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3)
+        )
+        val testPage = 1
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data.tdnBanner, null)
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data - less than check first false`() {
+        val recomList = listOf(
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3)
+        )
+        val testPage = 2
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, recomList)
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data - check first false`() {
+        val recomList = listOf(
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3),
+            RecommendationItem(4)
+        )
+        val testPage = 2
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, recomList)
+    }
+
 
     @Test
     fun `Failed to get first recommendation`() {
@@ -736,6 +811,69 @@ class HomeAccountUserViewModelTest {
 
         val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
         assert(result.throwable is IllegalArgumentException)
+    }
+
+    @Test
+    fun `Get fingerprint status success`() {
+        val data = CheckFingerprintResult(isSuccess = true, isRegistered = false, errorMessage = "")
+        val mockResponse = CheckFingerprintPojo(data)
+
+        /* When */
+        coEvery {
+            checkFingerprintToggleUseCase.invoke(any())
+        } returns mockResponse
+
+        viewModel.getFingerprintStatus()
+
+        verify {
+            checkFingerprintResult.onChanged(Success(data))
+        }
+    }
+
+    @Test
+    fun `Get fingerprint status fail - success trie, has errors `() {
+        val errorMsg = "error"
+        val data = CheckFingerprintResult(isSuccess = true, isRegistered = false, errorMessage = errorMsg)
+        val mockResponse = CheckFingerprintPojo(data)
+
+        /* When */
+        coEvery {
+            checkFingerprintToggleUseCase.invoke(any())
+        } returns mockResponse
+
+        viewModel.getFingerprintStatus()
+
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+    }
+
+    @Test
+    fun `Get fingerprint status fail - has errors `() {
+        val errorMsg = "error"
+        val data = CheckFingerprintResult(isSuccess = false, isRegistered = false, errorMessage = errorMsg)
+        val mockResponse = CheckFingerprintPojo(data)
+
+        /* When */
+        coEvery {
+            checkFingerprintToggleUseCase.invoke(any())
+        } returns mockResponse
+
+        viewModel.getFingerprintStatus()
+
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+    }
+
+    @Test
+    fun `Get fingerprint status fail - throw exception `() {
+        /* When */
+        coEvery {
+            checkFingerprintToggleUseCase.invoke(any())
+        } throws throwableMock
+
+        viewModel.getFingerprintStatus()
+
+        verify {
+            checkFingerprintResult.onChanged(Fail(throwableMock))
+        }
     }
 
     companion object {

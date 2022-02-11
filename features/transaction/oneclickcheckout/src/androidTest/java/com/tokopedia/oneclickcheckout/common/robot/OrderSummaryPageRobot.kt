@@ -238,7 +238,7 @@ class OrderSummaryPageRobot {
         }))
     }
 
-    fun clickOvoActivationButtonRevamp(func: OvoActivationBottomSheetRobot.() -> Unit) {
+    fun clickOvoActivationButtonRevamp(func: (OvoActivationBottomSheetRobot.() -> Unit)? = null) {
         onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
             override fun describeTo(description: Description?) {
 
@@ -256,7 +256,9 @@ class OrderSummaryPageRobot {
                 view.findViewById<View>(R.id.tv_payment_ovo_error_action).performClick()
             }
         }))
-        OvoActivationBottomSheetRobot().apply(func)
+        if (func != null) {
+            OvoActivationBottomSheetRobot().apply(func)
+        }
     }
 
     fun clickOvoTopUpButtonRevamp() {

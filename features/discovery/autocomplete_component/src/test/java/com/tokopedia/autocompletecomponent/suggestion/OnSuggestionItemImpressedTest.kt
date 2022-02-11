@@ -8,6 +8,7 @@ import io.mockk.verifyOrder
 import org.junit.Test
 
 private const val suggestionCommonResponse = "autocomplete/suggestion/suggestion-common-response.json"
+private const val suggestionShopAdsResponse = "autocomplete/suggestion/shopads/suggestion-shop-ads-response.json"
 
 internal class OnSuggestionItemImpressedTest: SuggestionPresenterTestFixtures() {
 
@@ -88,6 +89,31 @@ internal class OnSuggestionItemImpressedTest: SuggestionPresenterTestFixtures() 
     private fun `Then verify impression tracking is called`(item: SuggestionSingleLineDataDataView) {
         verify {
             suggestionView.trackEventImpression(item.data)
+        }
+    }
+
+    @Test
+    fun `impress shop ads item`() {
+        `Given View already load data`(suggestionShopAdsResponse, searchParameter)
+
+        val item = visitableList.findShopAds()
+
+        `when suggestion item impressed`(item.data)
+
+        `Then verify top ads impression for shop ads`(item)
+    }
+
+    private fun `Then verify top ads impression for shop ads`(item: SuggestionDoubleLineDataDataView) {
+        val shopAdsDataView = item.data.shopAdsDataView!!
+
+        verify {
+            topAdsUrlHitter.hitImpressionUrl(
+                suggestionView.className,
+                shopAdsDataView.impressionUrl,
+                any(),
+                any(),
+                shopAdsDataView.imageUrl,
+            )
         }
     }
 }

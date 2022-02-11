@@ -88,7 +88,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.playServicesDependencies.core
 
@@ -107,6 +107,9 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCore
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestUtil rootProject.ext.testDependencies.orchestrator
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

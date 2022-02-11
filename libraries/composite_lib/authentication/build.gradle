@@ -10,13 +10,14 @@ android {
 project.ext {
     artifactId = 'authentication'
     groupId = 'com.tokopedia.authentication'
-    versionName = "1.0.23"
+    versionName = "1.0.24"
     artifactName = "authentication-release"
 }
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.logger
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 }

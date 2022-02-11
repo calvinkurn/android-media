@@ -1,11 +1,11 @@
 package com.tokopedia.flight.dummy
 
 import com.tokopedia.flight.cancellation.data.FlightCancellationPassengerEntity
+import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationReasonAndAttachmentModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 
 /**
  * @author by furqan on 22/07/2020
@@ -67,7 +67,7 @@ val DUMMY_CANCELLATION_WRAPPER_ATTACHMENT =
                 arrayListOf(
                         FlightCancellationModel(
                                 "1234567890",
-                                FlightCancellationJourney(
+                                FlightCancellationResponseEntity(
                                         "54321",
                                         "Jakarta",
                                         "JKTA",
@@ -110,7 +110,7 @@ val DUMMY_CANCELLATION_WRAPPER_ATTACHMENT =
                         ),
                         FlightCancellationModel(
                                 "1234567890",
-                                FlightCancellationJourney(
+                                FlightCancellationResponseEntity(
                                         "54321",
                                         "Banda Aceh",
                                         "",

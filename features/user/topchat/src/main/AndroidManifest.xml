@@ -117,7 +117,8 @@
 
         <receiver
             android:name=".chatroom.service.NotificationChatServiceReceiver"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:exported="false">
             <intent-filter>
                 <action android:name="NotificationChatServiceReceiver.REPLY_CHAT" />
             </intent-filter>

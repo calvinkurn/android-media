@@ -29,13 +29,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.response.DistrictItem
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
@@ -56,7 +56,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
@@ -88,7 +88,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var districtBottomSheet: DiscomBottomSheetRevamp? = null
 
-    private var binding by autoCleared<FragmentAddressFormBinding>()
+    private var binding by autoClearedNullable<FragmentAddressFormBinding>()
 
     private val viewModel: AddressFormViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AddressFormViewModel::class.java)
@@ -106,9 +106,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         getComponent(AddNewAddressRevampComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentAddressFormBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,39 +144,42 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 contact = context?.let { AddEditAddressUtil.convertContactUriToData(it.contentResolver, contactURI) }
             }
             val phoneNumberOnly = removeSpecialChars(contact?.contactNumber.toString())
-            binding.formAccount.etNomorHp.textFieldInput.setText(phoneNumberOnly)
+            binding?.formAccount?.etNomorHp?.textFieldInput?.setText(phoneNumberOnly)
         } else if (requestCode == REQUEST_PINPONT_PAGE && resultCode == Activity.RESULT_OK) {
-            val isNegativeFullFlow = data?.getBooleanExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
-            val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
-            saveDataModel = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
-            if (saveDataModel == null) {
-                saveDataModel = data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
+            val isResetToSearchPage = data?.getBooleanExtra(EXTRA_RESET_TO_SEARCH_PAGE, false) ?: false
+            if (isResetToSearchPage) {
+                activity?.run {
+                    setResult(Activity.RESULT_OK, Intent())
+                    finish()
+                }
             }
-            if (isNegativeFullFlow == true && isFromAddressForm == false) {
-                finishActivity(saveDataModel)
-            } else {
+
+            var addressDataFromPinpoint = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)
+            if (addressDataFromPinpoint == null) {
+                addressDataFromPinpoint = data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
+            }
+
+            // if user make any changes from pinpoint page, then update data in this page
+            if (addressDataFromPinpoint != null) {
+                saveDataModel = addressDataFromPinpoint
                 currentKotaKecamatan = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
-                binding.formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
+                binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.setText(currentKotaKecamatan)
                 saveDataModel?.let {
                     if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
                         currentLat = it.latitude.toDouble()
                         currentLong = it.longitude.toDouble()
-                        binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
-                        binding.cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
-                        if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode = currentPostalCode
+                        binding?.cardAddressNegative?.icLocation?.setImage(IconUnify.LOCATION)
+                        binding?.cardAddressNegative?.addressDistrict?.text = context?.let {
+                            HtmlLinkHelper(
+                                it,
+                                getString(R.string.tv_pinpoint_defined)
+                            ).spannedString
+                        }
+                        if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode =
+                            currentPostalCode
                     }
                 }
             }
-
-        }
-    }
-
-    private fun finishActivity(data: SaveAddressDataModel?) {
-        activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
-            })
-            finish()
         }
     }
 
@@ -236,9 +239,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             when (it) {
                 is Success -> {
                     if (it.data.addressId != 0L) {
-                        binding.layoutCbDefaultLoc.visibility = View.VISIBLE
+                        binding?.layoutCbDefaultLoc?.visibility = View.VISIBLE
                     } else {
-                        binding.layoutCbDefaultLoc.visibility = View.GONE
+                        binding?.layoutCbDefaultLoc?.visibility = View.GONE
                     }
                 }
             }
@@ -255,7 +258,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 .build()
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
 
-        binding.run {
+        binding?.run {
             if (userSession.name.isNotEmpty() && !userSession.name.contains(toppers, ignoreCase = true)) {
                 formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
                 formAccount.infoNameLayout.visibility = View.GONE
@@ -282,7 +285,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             setOnTouchLabelAddress(ANA_NEGATIVE)
             setupRvLabelAlamatChips()
             setTextListener()
-            binding.run {
+            binding?.run {
                 cardAddress.root.gone()
                 formAddress.root.gone()
                 formAddressNegative.root.visible()
@@ -325,7 +328,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             setOnTouchLabelAddress(ANA_POSITIVE)
             setupRvLabelAlamatChips()
             setTextListener()
-            binding.run {
+            binding?.run {
                 formattedAddress = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
                 cardAddress.root.visible()
                 formAddress.root.visible()
@@ -340,9 +343,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, binding.userConsent, getString(R.string.btn_simpan), if(isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE)
+        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, binding?.userConsent, getString(R.string.btn_simpan), if(isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE)
 
-        binding.btnSaveAddressNew.setOnClickListener {
+        binding?.btnSaveAddressNew?.setOnClickListener {
             if (validateForm()) {
                 doSaveAddress()
             }
@@ -378,7 +381,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private fun validateForm(): Boolean {
         validated = true
         var field = ""
-        binding.run {
+        binding?.run {
             if (isPositiveFlow) {
                 if (formAddress.etLabel.textFieldInput.text.toString().isEmpty() || formAddress.etLabel.textFieldInput.text.toString() == " ") {
                     validated = false
@@ -511,13 +514,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtBottomSheet = DiscomBottomSheetRevamp()
+        districtBottomSheet = DiscomBottomSheetRevamp(isPinpoint = isPinpoint)
         districtBottomSheet?.setListener(this)
         districtBottomSheet?.show(this.childFragmentManager)
     }
 
     private fun checkKotaKecamatan() {
-        if (binding.formAddressNegative.etKotaKecamatan.textFieldInput.text.toString().isEmpty()) {
+        if (binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.text?.toString()?.isEmpty() ?: true) {
             showDistrictRecommendationBottomSheet(true)
         } else {
             goToPinpointPage()
@@ -578,13 +581,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun setupRvLabelAlamatChips() {
         if (isPositiveFlow) {
-            binding.formAddress.rvLabelAlamatChips.apply {
+            binding?.formAddress?.rvLabelAlamatChips?.apply {
                 staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
                 layoutManager = labelAlamatChipsLayoutManager
                 adapter = labelAlamatChipsAdapter
             }
         } else {
-            binding.formAddressNegative.rvLabelAlamatChips.apply {
+            binding?.formAddressNegative?.rvLabelAlamatChips?.apply {
                 staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
                 layoutManager = labelAlamatChipsLayoutManager
                 adapter = labelAlamatChipsAdapter
@@ -594,7 +597,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun setTextListener() {
-        binding.run {
+        binding?.run {
             formAccount.etNomorHp.textFieldInput.apply {
                 addTextChangedListener(object: TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
@@ -612,7 +615,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 })
             }
 
-            binding.cbDefaultLoc.setOnCheckedChangeListener { buttonView, isChecked ->
+            cbDefaultLoc.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
                     if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaPositive(userSession.userId)
                     else AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaNegative(userSession.userId)
@@ -678,12 +681,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     @SuppressLint("ClickableViewAccessibility")
     private fun setOnTouchLabelAddress(type: String) {
         if (isPositiveFlow) {
-            binding.formAddress.etLabel.textFieldInput.apply {
+            binding?.formAddress?.etLabel?.textFieldInput?.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
                         eventShowListLabelAlamat()
                     } else {
-                        binding.formAddress.rvLabelAlamatChips.visibility = View.GONE
+                        binding?.formAddress?.rvLabelAlamatChips?.visibility = View.GONE
                     }
                 }
                 setOnClickListener {
@@ -714,12 +717,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
             }
         } else {
-            binding.formAddressNegative.etLabel.textFieldInput.apply {
+            binding?.formAddressNegative?.etLabel?.textFieldInput?.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
                         eventShowListLabelAlamat()
                     } else {
-                        binding.formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
+                        binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.GONE
                     }
                 }
                 setOnClickListener {
@@ -761,9 +764,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         val res: Resources = resources
         labelAlamatList = res.getStringArray(R.array.labelAlamatList)
 
-        if (isPositiveFlow) binding.formAddress.rvLabelAlamatChips.visibility = View.VISIBLE
-        else binding.formAddressNegative.rvLabelAlamatChips.visibility = View.VISIBLE
-        ViewCompat.setLayoutDirection(binding.formAddress.rvLabelAlamatChips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        if (isPositiveFlow) binding?.formAddress?.rvLabelAlamatChips?.visibility = View.VISIBLE
+        else binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
+        binding?.formAddress?.rvLabelAlamatChips?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
         labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
     }
 
@@ -776,24 +779,26 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun setSaveAddressDataModel() {
         if (currentLat != 0.0 && currentLong != 0.0) saveDataModel?.address2 = "$currentLat,$currentLong"
-        saveDataModel?.receiverName = binding.formAccount.etNamaPenerima.textFieldInput.text.toString()
-        saveDataModel?.phone = binding.formAccount.etNomorHp.textFieldInput.text.toString()
-        if (isPositiveFlow) {
-            if (binding.formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                saveDataModel?.address1 = "${binding.formAddress.etAlamatNew.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
+        binding?.run {
+            saveDataModel?.receiverName = formAccount.etNamaPenerima.textFieldInput.text.toString()
+            saveDataModel?.phone = formAccount.etNomorHp.textFieldInput.text.toString()
+            if (isPositiveFlow) {
+                if (formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
+                    saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text} (${formAddress.etCourierNote.textFieldInput.text})"
+                } else {
+                    saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text}"
+                }
+                saveDataModel?.addressName =  formAddress.etLabel.textFieldInput.text.toString()
+                saveDataModel?.isAnaPositive = PARAM_ANA_POSITIVE
             } else {
-                saveDataModel?.address1 = "${binding.formAddress.etAlamatNew.textFieldInput.text}"
-            }
-            saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
-            saveDataModel?.isAnaPositive = PARAM_ANA_POSITIVE
-        } else {
-            if (binding.formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} (${binding.formAddressNegative.etCourierNote.textFieldInput.text})"
-            } else {
-                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text}"
-            }
-            saveDataModel?.addressName =  binding.formAddressNegative.etLabel.textFieldInput.text.toString()
-            saveDataModel?.isAnaPositive = PARAM_ANA_NEGATIVE
+                if (formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
+                    saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text} (${formAddressNegative.etCourierNote.textFieldInput.text})"
+                } else {
+                    saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text}"
+                }
+                saveDataModel?.addressName =  formAddressNegative.etLabel.textFieldInput.text.toString()
+                saveDataModel?.isAnaPositive = PARAM_ANA_NEGATIVE
+            }   
         }
 
 
@@ -837,22 +842,23 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onLabelAlamatChipClicked(labelAlamat: String) {
-        if (isPositiveFlow) {
-            binding.formAddress.rvLabelAlamatChips.visibility = View.GONE
-            binding.formAddress.etLabel.textFieldInput.run {
-                AddNewAddressRevampAnalytics.onClickChipsLabelAlamatPositive(userSession.userId)
-                setText(labelAlamat)
-                setSelection(binding.formAddress.etLabel.textFieldInput.text.length)
-            }
-        } else {
-            binding.formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
-            binding.formAddressNegative.etLabel.textFieldInput.run {
-                AddNewAddressRevampAnalytics.onClickChipsLabelAlamatNegative(userSession.userId)
-                setText(labelAlamat)
-                setSelection(binding.formAddressNegative.etLabel.textFieldInput.text.length)
-            }
+        binding?.run {
+            if (isPositiveFlow) {
+                formAddress.rvLabelAlamatChips.visibility = View.GONE
+                formAddress.etLabel.textFieldInput.run {
+                    AddNewAddressRevampAnalytics.onClickChipsLabelAlamatPositive(userSession.userId)
+                    setText(labelAlamat)
+                    setSelection(formAddress.etLabel.textFieldInput.text.length)
+                }
+            } else {
+                formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
+                formAddressNegative.etLabel.textFieldInput.run {
+                    AddNewAddressRevampAnalytics.onClickChipsLabelAlamatNegative(userSession.userId)
+                    setText(labelAlamat)
+                    setSelection(formAddressNegative.etLabel.textFieldInput.text.length)
+                }
+            }   
         }
-
     }
 
     override fun onGetDistrict(districtAddress: Address) {
@@ -863,7 +869,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         val kotaKecamatanText = "${districtAddress.provinceName}, ${districtAddress.cityName}, ${districtAddress.districtName}"
         formattedAddress = "${districtAddress.districtName}, ${districtAddress.cityName}, ${districtAddress.provinceName}"
         currentDistrictName = districtAddress.districtName.toString()
-        binding.formAddressNegative.etKotaKecamatan.textFieldInput.run {
+        binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.run {
             setText(kotaKecamatanText)
             currentKotaKecamatan = kotaKecamatanText
         }
@@ -876,6 +882,17 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.zipCodes = districtAddress.zipCodes
         saveDataModel?.postalCode = postalCode
         currentPostalCode = postalCode
+
+        // reset lat long
+        currentLat = 0.0
+        currentLong = 0.0
+        saveDataModel?.latitude = "0.0"
+        saveDataModel?.longitude = "0.0"
+        this.isPinpoint = false
+        binding?.run {
+            cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
+            cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+        }
 
         if (isPinpoint) goToPinpointPage()
     }
