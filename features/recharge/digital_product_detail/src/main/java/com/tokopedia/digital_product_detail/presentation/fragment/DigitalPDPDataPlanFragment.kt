@@ -331,7 +331,7 @@ class DigitalPDPDataPlanFragment :
         isOperatorChanged: Boolean,
         clientNumber: String
     ) {
-        viewModel.getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey, clientNumber, isOperatorChanged, isOperatorChanged)
+        viewModel.getRechargeCatalogInputMultiTab(menuId, selectedOperatorKey, clientNumber, isOperatorChanged)
     }
 
     private fun getCatalogMenuDetail() {
@@ -482,7 +482,7 @@ class DigitalPDPDataPlanFragment :
 
     private fun onChipClicked(){
         viewModel.updateFilterData()
-        viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false, false)
+        viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
     }
 
     private fun onSuccessDenomFull(denomData: DenomWidgetModel, selectedPosition: Int?) {
@@ -1120,7 +1120,7 @@ class DigitalPDPDataPlanFragment :
     override fun onClickSaveFilter(filterTagComponents: List<TelcoFilterTagComponent>, initialSelectedCounter: Int) {
         viewModel.updateFilterData(filterTagComponents)
         onSuccessSortFilter(initialSelectedCounter)
-        viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false, false)
+        viewModel.getRechargeCatalogInputMultiTab(menuId, operator.id, binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "", false)
     }
 
     override fun onChipClicked(chipName: String) {
