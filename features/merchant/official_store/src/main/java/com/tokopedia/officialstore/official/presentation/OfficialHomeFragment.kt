@@ -941,8 +941,8 @@ class OfficialHomeFragment :
     }
 
     private fun removeRecomWidget() {
-        if (!isEligibleForDisableRemoveRecomWidget()) {
-            officialHomeMapper.removeRecomWidget() {
+        if (!isEligibleForDisableRemoveBestSellerWidget()) {
+            officialHomeMapper.removeRecomWidget {
                 adapter?.submitList(it)
             }
         }
@@ -1136,9 +1136,9 @@ class OfficialHomeFragment :
         }
     }
 
-    private fun isEligibleForDisableRemoveRecomWidget(): Boolean {
+    private fun isEligibleForDisableRemoveBestSellerWidget(): Boolean {
         return try {
-            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_RECOM_WIDGET)
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_BEST_SELLER_WIDGET)
                 ?: false
         } catch (e: Exception) {
             false
