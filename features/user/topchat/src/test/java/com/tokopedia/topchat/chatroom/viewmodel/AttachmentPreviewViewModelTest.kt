@@ -13,6 +13,9 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
 
     @Test
     fun should_add_product_attachment_preview_on_initialization_not_empty() {
+        //Given
+        viewModel.roomMetaData.updateMessageId(testMessageId)
+
         // When
         viewModel.loadProductPreview(arrayListOf())
         viewModel.loadProductPreview(resultProduct)
@@ -23,6 +26,9 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
 
     @Test
     fun should_map_product_preview_product_id() {
+        //Given
+        viewModel.roomMetaData.updateMessageId(testMessageId)
+
         // When
         viewModel.loadProductPreview(resultProduct)
         val productIds = viewModel.getProductIdPreview()
