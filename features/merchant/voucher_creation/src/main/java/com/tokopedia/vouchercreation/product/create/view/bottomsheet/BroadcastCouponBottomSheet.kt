@@ -40,10 +40,11 @@ import com.tokopedia.vouchercreation.databinding.BottomsheetBroadcastCouponBindi
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.BroadcastCouponViewModel
-import com.tokopedia.vouchercreation.product.share.SharingComponentHandler
+import com.tokopedia.vouchercreation.product.share.LinkerDataGenerator
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import javax.inject.Inject
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.vouchercreation.common.consts.ShareComponentConstant
 
 class BroadcastCouponBottomSheet : BottomSheetUnify() {
 
@@ -54,7 +55,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var sharingComponentHandler: SharingComponentHandler
+    lateinit var linkerDataGenerator: LinkerDataGenerator
 
     private var nullableBinding: BottomsheetBroadcastCouponBinding? = null
     private val binding: BottomsheetBroadcastCouponBinding
@@ -228,7 +229,6 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
         onShareOptionsClicked : (ShareModel) -> Unit,
         onCloseOptionClicked : () -> Unit
     ): UniversalShareBottomSheet {
-        val iconUrl = "https://images.tokopedia.net/img/android/campaign_list/npl_icon.png"
         return UniversalShareBottomSheet.createInstance().apply {
             val listener = object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -241,13 +241,13 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
             }
 
             init(listener)
-            setMetaData(tnTitle = title, tnImage = iconUrl, previewImgUrl = imageUrl)
+            setMetaData(tnTitle = title, tnImage = ShareComponentConstant.THUMBNAIL_ICON_IMAGE_URL, previewImgUrl = imageUrl)
             setOgImageUrl(imageUrl)
             setUtmCampaignData(
-                pageName = "shop page - rilisan spesial",
+                pageName = ShareComponentConstant.PAGE_NAME,
                 userId = userSession.userId,
                 pageId = couponId.toString(),
-                feature = "share"
+                feature = ShareComponentConstant.SHARE
             )
         }
     }
@@ -273,7 +273,7 @@ class BroadcastCouponBottomSheet : BottomSheetUnify() {
             override fun onError(linkerError: LinkerError?) {}
         }
 
-        val linkerShareData = sharingComponentHandler.generateLinkerShareData(
+        val linkerShareData = linkerDataGenerator.generate(
             userSession.shopId,
             shopDomain,
             shareModel,

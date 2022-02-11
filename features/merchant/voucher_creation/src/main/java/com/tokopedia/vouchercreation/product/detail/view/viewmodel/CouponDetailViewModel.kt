@@ -27,7 +27,6 @@ class CouponDetailViewModel @Inject constructor(
     val couponDetail: LiveData<Result<CouponDetailWithMetadata>>
         get() = _couponDetail
 
-
     private val _couponImageWithShop = MutableLiveData<Result<CouponImageWithShop>>()
     val couponImageWithShop: LiveData<Result<CouponImageWithShop>> = _couponImageWithShop
 

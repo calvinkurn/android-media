@@ -38,10 +38,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
-import com.tokopedia.vouchercreation.common.consts.NumberConstant
-import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst
-import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
-import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.common.consts.*
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
@@ -56,7 +53,7 @@ import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEsti
 import com.tokopedia.vouchercreation.product.detail.view.viewmodel.CouponDetailViewModel
 import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
 import com.tokopedia.vouchercreation.product.download.DownloadCouponImageBottomSheet
-import com.tokopedia.vouchercreation.product.share.SharingComponentHandler
+import com.tokopedia.vouchercreation.product.share.LinkerDataGenerator
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import javax.inject.Inject
@@ -114,7 +111,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     @Inject
-    lateinit var sharingComponentHandler: SharingComponentHandler
+    lateinit var linkerDataGenerator: LinkerDataGenerator
 
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -712,7 +709,6 @@ class CouponDetailFragment : BaseDaggerFragment() {
         onShareOptionsClicked : (ShareModel) -> Unit,
         onCloseOptionClicked : () -> Unit
     ): UniversalShareBottomSheet {
-        val iconUrl = "https://images.tokopedia.net/img/android/campaign_list/npl_icon.png"
         return UniversalShareBottomSheet.createInstance().apply {
             val listener = object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -725,13 +721,13 @@ class CouponDetailFragment : BaseDaggerFragment() {
             }
 
             init(listener)
-            setMetaData(tnTitle = title, tnImage = iconUrl, previewImgUrl = imageUrl)
+            setMetaData(tnTitle = title, tnImage = ShareComponentConstant.THUMBNAIL_ICON_IMAGE_URL, previewImgUrl = imageUrl)
             setOgImageUrl(imageUrl)
             setUtmCampaignData(
-                pageName = "shop page - rilisan spesial",
+                pageName = ShareComponentConstant.PAGE_NAME,
                 userId = userSession.userId,
                 pageId = couponId.toString(),
-                feature = "share"
+                feature = ShareComponentConstant.SHARE
             )
         }
     }
@@ -744,12 +740,13 @@ class CouponDetailFragment : BaseDaggerFragment() {
     ) {
         val shareCallback = object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
                 SharingUtil.executeShareIntent(
                     shareModel,
                     linkerShareData,
                     activity,
                     view,
-                    description
+                    wording
                 )
                 shareComponentBottomSheet?.dismiss()
             }
@@ -757,12 +754,13 @@ class CouponDetailFragment : BaseDaggerFragment() {
             override fun onError(linkerError: LinkerError?) {}
         }
 
-        val linkerShareData = sharingComponentHandler.generateLinkerShareData(
+        val outgoingDescription = getString(R.string.share_component_outgoing_text_description)
+        val linkerShareData = linkerDataGenerator.generate(
             userSession.shopId,
             shopDomain,
             shareModel,
             title,
-            description
+            outgoingDescription
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(

@@ -6,14 +6,14 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import javax.inject.Inject
 
-class SharingComponentHandler @Inject constructor() {
+class LinkerDataGenerator @Inject constructor() {
 
-    fun generateLinkerShareData(
+    fun generate(
         shopId : String,
         shopDomain : String,
         shareModel: ShareModel,
         title : String,
-        description: String
+        outgoingDescription : String
     ): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.apply {
@@ -25,7 +25,7 @@ class SharingComponentHandler @Inject constructor() {
             name = title
             uri = "https://www.tokopedia.com/${shopDomain}"
             ogTitle = title
-            ogDescription = description
+            ogDescription = outgoingDescription
             if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {
                 ogImageUrl = shareModel.ogImgUrl
             }
