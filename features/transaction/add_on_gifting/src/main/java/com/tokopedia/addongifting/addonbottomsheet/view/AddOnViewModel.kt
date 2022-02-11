@@ -114,11 +114,10 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
             addOns = listOf(
                     AddOnRequest().apply {
                         if (addOnProductData.availableBottomSheetData.isTokoCabang) {
-                            addOnKey = addOnProductData.availableBottomSheetData.cartString
+                            addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-0"
                             addOnLevel = AddOnRequest.ADD_ON_LEVEL_ORDER
                         } else {
-                            addOnKey = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productId
-                                    ?: ""
+                            addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId}"
                             addOnLevel = AddOnRequest.ADD_ON_LEVEL_PRODUCT
                         }
                         addOnUiModel.value?.let {

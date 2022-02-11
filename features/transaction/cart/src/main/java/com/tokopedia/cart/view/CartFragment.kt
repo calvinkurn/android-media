@@ -551,6 +551,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
                 availableBottomSheetData = AvailableBottomSheetData().apply {
                     val product1 = Product().apply {
+                        cartId = "123"
                         productId = "10001"
                         productName = "Product 1"
                         productImageUrl = "https://st.depositphotos.com/1741875/1237/i/600/depositphotos_12376816-stock-photo-stack-of-old-books.jpg"
@@ -558,6 +559,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productQuantity = 1
                     }
                     val product2 = Product().apply {
+                        cartId = "456"
                         productId = "10002"
                         productName = "Product 2"
                         productImageUrl = "https://urip.files.wordpress.com/2010/09/book-open1.jpg"
@@ -565,6 +567,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         productQuantity = 2
                     }
                     val product3 = Product().apply {
+                        cartId = "789"
                         productId = "10003"
                         productName = "Product 3"
                         productImageUrl = "https://cdns.klimg.com/merdeka.com/i/w/news/2015/08/11/579503/540x270/ini-3-alasan-buku-tetap-lebih-unggul-daripada-e-book.jpg"

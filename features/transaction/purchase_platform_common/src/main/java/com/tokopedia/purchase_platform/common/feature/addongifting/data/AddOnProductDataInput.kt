@@ -25,6 +25,7 @@ data class AddOnProductData(
 
 @Parcelize
 data class Product(
+        var cartId: String = "",
         var productId: String = "",
         var productName: String = "",
         var productImageUrl: String = "",
