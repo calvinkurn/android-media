@@ -304,6 +304,49 @@ class CatalogFragmentTest
                 ViewMatchers.isDisplayed())))
     }
 
+    @Test
+    fun check_apply_quick_filter_product_listing_bottom_sheet() {
+        launchProductListingBottomSheet()
+        onView(CommonMatcher.firstView(AllOf.allOf(
+            withId(R.id.sort_filter_items),
+            ViewMatchers.isDisplayed())))
+
+    }
+
+    @Test
+    fun check_click_on_product_product_listing_bottom_sheet() {
+        launchProductListingBottomSheet()
+        onView(CommonMatcher.firstView(AllOf.allOf(
+            withId(R.id.product_recyclerview),
+            ViewMatchers.isDisplayed())))
+        val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.product_recyclerview).let {
+            it.adapter!!.itemCount
+        }
+        if (itemCount > 1) {
+            assert(true)
+        } else {
+            assert(false)
+        }
+
+    }
+
+    @Test
+    fun check_add_remove_wish_list_product_listing_bottom_sheet() {
+        launchProductListingBottomSheet()
+        onView(CommonMatcher.firstView(AllOf.allOf(
+            withId(R.id.product_recyclerview),
+            ViewMatchers.isDisplayed())))
+        val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.product_recyclerview).let {
+            it.adapter!!.itemCount
+        }
+        if (itemCount > 1) {
+            assert(true)
+        } else {
+            assert(false)
+        }
+    }
+
+
     private fun launchProductListingBottomSheet() {
         onView(withId(R.id.bottom_sheet_fragment_container))
                 .perform(
