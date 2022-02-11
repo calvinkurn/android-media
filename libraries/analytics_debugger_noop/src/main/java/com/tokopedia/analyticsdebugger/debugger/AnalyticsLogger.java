@@ -14,5 +14,4 @@ public interface AnalyticsLogger {
 
     void enableNotification(boolean status);
 
-    boolean isNotificationEnabled();
 }

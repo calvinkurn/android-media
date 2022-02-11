@@ -31,10 +31,6 @@ public class GtmLogger {
 
                 }
 
-                @Override
-                public boolean isNotificationEnabled() {
-                    return false;
-                }
             };
         }
 
