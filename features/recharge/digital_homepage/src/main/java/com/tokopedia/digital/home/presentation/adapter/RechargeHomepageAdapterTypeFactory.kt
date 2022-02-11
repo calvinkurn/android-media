@@ -10,67 +10,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomLastItemBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsUnifyBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
-import com.tokopedia.digital.home.model.RechargeHomepageBannerEmptyModel
-import com.tokopedia.digital.home.model.RechargeHomepageBannerModel
-import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
-import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
-import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
-import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
-import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
-import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
-import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastItemModel
-import com.tokopedia.digital.home.model.RechargeHomepageProductCardsModel
-import com.tokopedia.digital.home.model.RechargeHomepageRecommendationBannerModel
-import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
-import com.tokopedia.digital.home.model.RechargeHomepageSwipeBannerModel
-import com.tokopedia.digital.home.model.RechargeHomepageThreeIconsModel
-import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
-import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
-import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
-import com.tokopedia.digital.home.model.RechargeProductCardUnifyModel
-import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageBannerEmptyViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageBannerViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageCarousellViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageCategoryViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualBannersViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualIconsViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageFavoriteViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLastItemViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLoadingViewholder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductBannerViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerV2ViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomLastItemViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardUnifyViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardsViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageRecommendationBannerViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageSingleBannerViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageSwipeBannerViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageThreeIconsViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTickerViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageVideoHighlightViewHolder
+import com.tokopedia.digital.home.model.*
+import com.tokopedia.digital.home.presentation.adapter.viewholder.*
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
-import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
-import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
-import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.visitable.*
 
 class RechargeHomepageAdapterTypeFactory(
     val listener: RechargeHomepageItemListener,
@@ -150,7 +98,7 @@ class RechargeHomepageAdapterTypeFactory(
         RechargeHomepageProductCardCustomLastItemViewHolder.LAYOUT
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
-        return DynamicLegoBannerViewHolder.LAYOUT
+        return RechargeHomepageLegoBannerViewHolder.LAYOUT
     }
 
     override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
@@ -217,7 +165,7 @@ class RechargeHomepageAdapterTypeFactory(
                 parent,
                 reminderWidgetCallback
             )
-            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(
+            RechargeHomepageLegoBannerViewHolder.LAYOUT -> RechargeHomepageLegoBannerViewHolder(
                 parent,
                 dynamicLegoBannerCallback,
                 dynamicLegoBannerCallback
