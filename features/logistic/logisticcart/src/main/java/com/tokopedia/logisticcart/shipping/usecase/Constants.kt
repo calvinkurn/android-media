@@ -143,6 +143,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
         is_promo
         promo_code
         title
+        title_service
         shipper_id
         shipper_product_id
         shipper_name
@@ -185,6 +186,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
         is_promo
         promo_code
         title
+        title_service
         shipper_id
         shipper_product_id
         shipper_name
