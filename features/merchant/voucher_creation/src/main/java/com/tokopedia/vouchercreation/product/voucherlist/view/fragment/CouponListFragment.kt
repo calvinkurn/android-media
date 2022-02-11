@@ -480,20 +480,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         view?.post { filterType.refChipUnify.displayRemoveIcon() }
     }
 
-    private fun showSuccessUpdateToaster() {
-        view?.run {
-            Toaster.build(
-                view = this,
-                text = context?.getString(R.string.mvc_success_update_toaster).toBlankOrString(),
-                duration = Toaster.LENGTH_LONG,
-                type = Toaster.TYPE_NORMAL,
-                actionText = context?.getString(R.string.mvc_oke).toBlankOrString()
-            ) {
-                /* do nothing */
-            }.show()
-        }
-    }
-
     private fun clickMoreMenuItem(menu: MoreMenuUiModel, coupon: VoucherUiModel) {
         when (menu) {
             is EditQuotaCoupon -> editQuotaCoupon(coupon)
@@ -825,13 +811,13 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             }
 
             init(listener)
-            setMetaData(tnTitle = title, tnImage = ShareComponentConstant.THUMBNAIL_ICON_IMAGE_URL)
+            setMetaData(tnTitle = title, tnImage = ShareComponentConstant.VOUCHER_PRODUCT_THUMBNAIL_ICON_IMAGE_URL)
             setOgImageUrl(imageUrl)
             setUtmCampaignData(
-                pageName = ShareComponentConstant.PAGE_NAME,
+                pageName = ShareComponentConstant.VOUCHER_PRODUCT_PAGE_NAME,
                 userId = userSession.userId,
                 pageId = couponId.toString(),
-                feature = ShareComponentConstant.SHARE
+                feature = ShareComponentConstant.VOUCHER_PRODUCT_FEATURE
             )
         }
     }
