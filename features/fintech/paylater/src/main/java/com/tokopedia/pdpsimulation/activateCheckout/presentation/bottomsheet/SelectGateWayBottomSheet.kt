@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.activation_gateway_brand.*
 
 class SelectGateWayBottomSheet : BottomSheetUnify() {
     private val childLayoutRes = R.layout.activation_gateway_brand
+    private  var listOfGateway: List<CheckoutData> = ArrayList()
+    private  var gatewayListAdapter: GatewayListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,24 +37,53 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
     private fun getArgumentData() {
         arguments?.let {
             val gatewayList: PaylaterGetOptimizedModel? = it.getParcelable(GATEWAY_LIST)
+            val selectedId= it.getString(SELECTED_GATEWAY)?:""
             gatewayList?.checkoutData?.let { listOfGateway->
-                 setRecyclerData(listOfGateway)
+                 setRecyclerData(listOfGateway,selectedId)
             }
         } ?: dismiss()
     }
 
-    private fun setRecyclerData(gatewayList: List<CheckoutData>) {
-        gatewayListRecycler.layoutManager = LinearLayoutManager(context)
-        gatewayListRecycler.adapter = context?.let { context ->
-            GatewayListAdapter(gatewayList,object :GateWayCardClicked{
-                override fun gatewayCardSelected(gatewayPosition: Int) {
-                    activity?.let {
-                        (it as GatewaySelectActivityListner).setGatewayValue(gatewayPosition)
-                    }
-                }
-
-            }, context)
+    private fun setRecyclerData(gatewayList: List<CheckoutData>,selectedGateWayId:String) {
+        for(i in gatewayList.indices)
+        {
+            if(gatewayList[i].gateway_id.toString() == selectedGateWayId)
+            {
+                gatewayList[i].selectedGateway = true
+                break
+            }
         }
+        listOfGateway = gatewayList
+          gatewayListAdapter =
+            context?.let { context->
+                GatewayListAdapter(listOfGateway,object :GateWayCardClicked{
+                    override fun gatewayCardSelected(
+                        gatewayId: Int,
+                        oldPosition: Int,
+                        newPosition: Int
+                    ) {
+                        activity?.let { fragmentActivity->
+                            (fragmentActivity as GatewaySelectActivityListner).setGatewayValue(gatewayId)
+                        }
+                        if(oldPosition != newPosition)
+                        {
+                            listOfGateway[oldPosition].selectedGateway = false
+                            listOfGateway[newPosition].selectedGateway = true
+                            gatewayListAdapter?.updateList(listOfGateway,oldPosition,newPosition)
+                        }
+
+                    }
+
+                }, context)
+            }
+
+
+        gatewayListRecycler.layoutManager = LinearLayoutManager(context)
+        gatewayListAdapter?.let {
+            gatewayListRecycler.adapter = it
+        }
+
+
     }
 
 
@@ -77,6 +108,7 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
 
         private const val TAG = "SelectGatewayBottomsheet"
         const val GATEWAY_LIST = "gateway_list"
+        const val SELECTED_GATEWAY = "selected_gateway"
 
         fun show(
             bundle: Bundle,
@@ -92,5 +124,5 @@ class SelectGateWayBottomSheet : BottomSheetUnify() {
 
 interface GateWayCardClicked
 {
-    fun gatewayCardSelected(gatewayId: Int)
+    fun gatewayCardSelected(gatewayId: Int,oldPosition: Int, newPosition: Int)
 }

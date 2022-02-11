@@ -20,24 +20,35 @@ import kotlinx.android.synthetic.main.paylater_activation_individual_tenure.view
 class GatewayViewHolder(itemView: View, private val gatewayCardClicked: GateWayCardClicked, val context: Context) :
     RecyclerView.ViewHolder(itemView) {
 
+    var oldSelectedposition = -1
 
-    fun bindData(checkoutData: CheckoutData) {
+    fun bindData(checkoutData: CheckoutData,position: Int) {
         itemView.apply {
             changeColorToEnableDisable(checkoutData.disable)
             setIcon(checkoutData)
             inflateAllDetails(checkoutData)
-            individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
-            radioGatewaySelector.isChecked = false
+
+            if(!checkoutData.disable && checkoutData.selectedGateway)
+            {
+                oldSelectedposition = position
+                individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                radioGatewaySelector.isChecked = true
+            }
+            else {
+                individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
+                radioGatewaySelector.isChecked = false
+            }
+
             if(!checkoutData.disable) {
                 itemView.radioGatewaySelector.setOnClickListener {
                     individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
-                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id)
+                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id,oldPosition=oldSelectedposition, newPosition = position)
                 }
                 itemView.setOnClickListener {
                     individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioGatewaySelector.isChecked = true
-                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id)
+                    gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id,oldPosition=oldSelectedposition, newPosition = position)
 
                 }
             }

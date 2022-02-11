@@ -28,7 +28,9 @@ data class CheckoutData(
     @SerializedName("disable") val disable: Boolean,
     @SerializedName("reason_long") val reason_long: String,
     @SerializedName("reason_short") val reason_short: String,
-    @SerializedName("detail") val tenureDetail: List<TenureDetail>
+    @SerializedName("detail") val tenureDetail: List<TenureDetail>,
+    var selectedGateway: Boolean = false,
+
 ) : Parcelable
 
 @Parcelize

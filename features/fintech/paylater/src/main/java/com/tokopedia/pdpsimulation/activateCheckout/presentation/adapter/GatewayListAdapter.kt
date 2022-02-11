@@ -29,8 +29,17 @@ class GatewayListAdapter(
     }
 
 
+
     override fun onBindViewHolder(holder: GatewayViewHolder, position: Int) {
-        holder.bindData(gatewayDetailList[position])
+        holder.bindData(gatewayDetailList[position],position)
+    }
+
+    fun updateList(listOfGateway: List<CheckoutData>, oldPosition: Int, newPosition: Int) {
+        this.gatewayDetailList = listOfGateway
+        if(oldPosition >=0 && newPosition>=0) {
+            notifyItemChanged(oldPosition)
+            notifyItemChanged(newPosition)
+        }
     }
 
 }

@@ -23,6 +23,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.GATEWAY_LIST
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet.Companion.SELECTED_GATEWAY
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_CODE
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
@@ -459,6 +460,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     putParcelable(
                         GATEWAY_LIST,
                         listOfGateway
+                    )
+                    putString(
+                        SELECTED_GATEWAY,
+                        gateWayId
                     )
                 }
 
