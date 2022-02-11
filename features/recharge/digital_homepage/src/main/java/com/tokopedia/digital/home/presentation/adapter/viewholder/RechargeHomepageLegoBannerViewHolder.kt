@@ -1,14 +1,13 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
+import android.widget.FrameLayout
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
-import com.tokopedia.home_component.R as resHome
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeLegoBannerBinding
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
@@ -23,6 +22,7 @@ import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.home_component.R as resHome
 
 /**
  * created by @bayazidnasir on 11/2/2022
@@ -155,10 +155,9 @@ class RechargeHomepageLegoBannerViewHolder(
                 }
 
                 val marginBottom: Int = marginValue
-                val marginLayoutParams = (layoutParams as ConstraintLayout.LayoutParams).also {
+                val marginLayoutParams = (layoutParams as FrameLayout.LayoutParams).also {
                     it.leftMargin = marginValue
                     it.rightMargin = marginValue
-                    it.topToBottom = R.id.home_component_header_view
                 }
                 layoutParams = marginLayoutParams
                 setPadding(0, 0, 0, marginBottom)
