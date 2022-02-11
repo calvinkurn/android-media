@@ -40,7 +40,6 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_activation_checkout.*
 import kotlinx.android.synthetic.main.paylater_activation_gateway_detail.view.*
@@ -329,7 +328,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     break
                 }
             }
-            checkoutData.tenureDetail[selectedTenurePosition].isSelected = true
+            checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
             DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]).installmentDetails?.let {
                 installmentModel = it
             }
@@ -596,8 +595,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         tenureSelectedModel.tenure?.let {
             paymentDuration.text = it
         }
-        listOfTenureDetail[selectedTenurePosition].isSelected = false
-        listOfTenureDetail[newPositionToSelect].isSelected = true
+        listOfTenureDetail[selectedTenurePosition].isSelectedTenure = false
+        listOfTenureDetail[newPositionToSelect].isSelectedTenure = true
         activationTenureAdapter.updateList(listOfTenureDetail)
         activationTenureAdapter.notifyItemChanged(newPositionToSelect)
         activationTenureAdapter.notifyItemChanged(selectedTenurePosition)

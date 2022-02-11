@@ -23,7 +23,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
         itemView.apply {
              changeViewColor(tenureSelectListener.isDisable())
             if(!tenureSelectListener.isDisable()) {
-                if (tenureDetail.isSelected) {
+                if (tenureDetail.isSelectedTenure) {
                     individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
                     radioSelector.isChecked = true
                 } else {
