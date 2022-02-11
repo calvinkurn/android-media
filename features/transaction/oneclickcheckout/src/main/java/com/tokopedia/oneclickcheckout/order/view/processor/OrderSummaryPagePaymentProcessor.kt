@@ -6,6 +6,7 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
+import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
@@ -17,6 +18,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCardTenorListUseCase: CreditCardTenorListUseCase,
+                                                           private val goCicilInstallmentOptionUseCase: GoCicilInstallmentOptionUseCase,
                                                            private val executorDispatchers: CoroutineDispatchers) {
 
     suspend fun getCreditCardAdminFee(orderPaymentCreditCard: OrderPaymentCreditCard, userId: String,
