@@ -205,7 +205,7 @@
             android:visibility="gone"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Promo bla bla bla" />
+            tools:text="Promo bla bla bla"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_promo_price"
@@ -217,7 +217,30 @@
             android:visibility="gone"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Rp100.000" />
+            tools:text="Rp100.000"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_add_on_fee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_promo_text"
+            android:layout_marginBottom="16dp"
+            android:text="@string/label_add_on_cost"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_add_on_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_promo_text"
+            android:layout_alignParentEnd="true"
+            android:gravity="end"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Rp 8.000" />
 
     </RelativeLayout>
 

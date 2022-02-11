@@ -99,13 +99,19 @@
                 tools:visibility="visible" />
 
             <!--Gifting: Gifting Experience - Order Level-->
-            <include
-                android:id="@+id/layout_addon_gifting_order_level"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/ll_gifting_addon_order_level"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                layout="@layout/item_shipment_gifting_addon_order_level"
-                tools:visibility="gone" />
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <include
+                    layout="@layout/item_shipment_gifting_addon_order_level"
+                    tools:visibility="gone" />
+
+            </LinearLayout>
 
             <!--Shipping: Option (Insurance, dropshipper, etc)-->
             <include

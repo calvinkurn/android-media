@@ -18,6 +18,8 @@ data class ShipmentAddressFormDataResponse(
         val keroDiscomToken: String = "",
         @SerializedName("kero_unix_time")
         val keroUnixTime: Int = 0,
+        @SerializedName("pop_up")
+        val popup: PopUp = PopUp( ),
         @SerializedName("donation")
         val donation: Donation = Donation(),
         @SerializedName("cod")

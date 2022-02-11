@@ -56,7 +56,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private val mLayoutProductInfo: FlexboxLayout = itemView.findViewById(R.id.layout_product_info)
     private val mIconTooltip: IconUnify = itemView.findViewById(R.id.icon_tooltip)
     private val mPricePerProduct: Typography = itemView.findViewById(R.id.text_item_per_product)
-    private val layoutGiftingAddonProductLevel: ConstraintLayout = itemView.findViewById(R.id.layout_addon_gifting_product_level)
+    private val llGiftingAddOnProductLevel: LinearLayout = itemView.findViewById(R.id.ll_gifting_addon_product_level)
     private val buttonGiftingAddOnProductLevel: ButtonGiftingAddOnView = itemView.findViewById(R.id.button_gifting_addon_product_level)
 
     fun bindViewHolder(cartItem: CartItemModel, listener: ShipmentItemListener?) {
@@ -247,16 +247,18 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private fun renderAddOnProductLevel(cartItemModel: CartItemModel) {
         val addOns = cartItemModel.addOnProductLevelModel
         if (addOns.status == 0) {
-            layoutGiftingAddonProductLevel.visibility = View.GONE
-            buttonGiftingAddOnProductLevel.visibility = View.GONE
+            llGiftingAddOnProductLevel.visibility = View.GONE
+            // buttonGiftingAddOnProductLevel.visibility = View.GONE
+            // buttonGiftingAddOnProductLevel.hideButton()
         } else {
             if (addOns.status == 1) {
                 buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.ACTIVE
             } else if (addOns.status == 2) {
                 buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.INACTIVE
             }
-            layoutGiftingAddonProductLevel.visibility = View.VISIBLE
-            buttonGiftingAddOnProductLevel.visibility = View.VISIBLE
+            // buttonGiftingAddOnProductLevel.showButton()
+            llGiftingAddOnProductLevel.visibility = View.VISIBLE
+            // buttonGiftingAddOnProductLevel.visibility = View.VISIBLE
             buttonGiftingAddOnProductLevel.title = addOns.addOnsButtonModel.title
             buttonGiftingAddOnProductLevel.desc = addOns.addOnsButtonModel.description
             buttonGiftingAddOnProductLevel.urlLeftIcon = addOns.addOnsButtonModel.leftIconUrl

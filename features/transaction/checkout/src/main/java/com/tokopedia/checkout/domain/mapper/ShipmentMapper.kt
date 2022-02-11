@@ -89,6 +89,7 @@ class ShipmentMapper @Inject constructor() {
             if (!isDisableCrossSell) {
                 crossSell = mapCrossSell(shipmentAddressFormDataResponse)
             }
+            popup = mapPopUp(shipmentAddressFormDataResponse.popup)
         }
     }
 
@@ -673,6 +674,20 @@ class ShipmentMapper @Inject constructor() {
         return CodModel().apply {
             isCod = cod.isCod
             counterCod = cod.counterCod
+        }
+    }
+
+    private fun mapPopUp(popup: PopUp): PopUpData {
+        return PopUpData().apply {
+            button = mapButton(popup.button)
+            description = popup.description
+            title = popup.title
+        }
+    }
+
+    private fun mapButton(button: Button): ButtonData {
+        return ButtonData().apply {
+            text = button.text
         }
     }
 

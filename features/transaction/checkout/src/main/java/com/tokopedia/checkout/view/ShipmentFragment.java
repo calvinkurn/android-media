@@ -39,6 +39,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.domain.model.cartshipmentform.PopUpData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
@@ -3268,4 +3269,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         CheckoutLogger.INSTANCE.logOnErrorCheckout(throwable, request, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
     }
 
+    @Override
+    public void showPopUp(PopUpData popUpData) {
+        DialogUnify popUpDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+        popUpDialog.setTitle(popUpData.getTitle());
+        popUpDialog.setDescription(popUpData.getDescription());
+        popUpDialog.setPrimaryCTAText(popUpData.getButton().getText());
+        popUpDialog.setPrimaryCTAClickListener(() -> {
+            shipmentPresenter.processInitialLoadCheckoutPage(
+                    true, isOneClickShipment(), isTradeIn(), true,
+                    true, null, getDeviceId(), getCheckoutLeasingId()
+            );
+            popUpDialog.dismiss();
+            return Unit.INSTANCE;
+        });
+
+        popUpDialog.show();
+    }
 }

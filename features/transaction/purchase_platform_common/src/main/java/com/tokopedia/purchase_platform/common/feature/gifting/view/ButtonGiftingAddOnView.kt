@@ -4,27 +4,20 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.R
+import com.tokopedia.purchase_platform.common.databinding.ItemGiftingAddOnBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
 
 class ButtonGiftingAddOnView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr)  {
 
-    private var leftImage: ImageUnify? = null
-    private var rightImage: ImageUnify? = null
-    private var titleLabel: Typography? = null
-    private var descLabel: Typography? = null
-
-    private fun getLayout(): Int {
-        return R.layout.item_gifting_add_on
-    }
+    private var binding: ItemGiftingAddOnBinding? = ItemGiftingAddOnBinding.inflate(LayoutInflater.from(context), this, true)
 
     var state: State = State.ACTIVE
         set(value) {
@@ -57,13 +50,6 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
         }
 
     init {
-        inflate(context, getLayout(), this)
-
-        leftImage = findViewById(R.id.icon_left)
-        rightImage = findViewById(R.id.icon_right)
-        titleLabel = findViewById(R.id.title_addon)
-        descLabel = findViewById(R.id.desc_addon)
-
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.GiftingButtonView)
         try {
             state = State.fromId(styledAttributes.getInteger(R.styleable.GiftingButtonView_stateAddon, 1))
@@ -90,40 +76,37 @@ class ButtonGiftingAddOnView @JvmOverloads constructor(
     }
 
     private fun loadLeftImage() {
-        if (urlLeftIcon.isNotEmpty()) {
-            leftImage?.loadImage(urlLeftIcon)
-        } else {
-            leftImage?.gone()
-        }
+        binding?.iconLeft?.loadImage(urlLeftIcon)
     }
 
     private fun loadRightImage() {
-        if (urlRightIcon.isNotEmpty()) {
-            rightImage?.loadImage(urlRightIcon)
-        } else {
-            rightImage?.gone()
-        }
+        binding?.iconRight?.loadImage(urlRightIcon)
     }
 
     fun setOnButtonClickedListener(actionListener: () -> Unit) {
-        rootView.setOnClickListener {
+        binding?.root?.setOnClickListener {
             actionListener.invoke()
         }
     }
 
     private fun setViewActive() {
-        titleLabel?.visible()
-        descLabel?.visible()
-        titleLabel?.text = title
-        descLabel?.text = desc
+        binding?.run {
+            titleAddon.visible()
+            titleAddon.text = title
+
+            descAddon.visible()
+            descAddon.text = desc
+        }
     }
 
     private fun setViewInactive() {
-        titleLabel?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
-        descLabel?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+        binding?.run {
+            titleAddon.text = title
+            titleAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
 
-        titleLabel?.text = title
-        descLabel?.text = desc
+            descAddon.text = desc
+            descAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+        }
     }
 
     enum class State(val id: Int) : Parcelable {

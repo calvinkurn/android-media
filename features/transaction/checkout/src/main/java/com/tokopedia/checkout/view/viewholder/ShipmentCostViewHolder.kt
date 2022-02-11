@@ -48,6 +48,8 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     private val mTvShippingDiscountPrice: TextView = itemView.findViewById(R.id.tv_shipping_discount_price)
     private val mTvProductDiscountLabel: TextView = itemView.findViewById(R.id.tv_product_discount_label)
     private val mTvProductDiscountPrice: TextView = itemView.findViewById(R.id.tv_product_discount_price)
+    private val mTvSummaryAddOnLabel: Typography = itemView.findViewById(R.id.tv_summary_add_on_label)
+    private val mTvSummaryAddOnPrice: Typography = itemView.findViewById(R.id.tv_summary_add_on_price)
 
     @SuppressLint("StringFormatInvalid")
     fun bindViewHolder(shipmentCost: ShipmentCostModel) {
@@ -94,6 +96,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         }
         mTvBookingFee.text = getPriceFormat(mTvBookingFeeLabel, mTvBookingFee, shipmentCost.bookingFee.toDouble())
         renderDiscount(shipmentCost)
+        renderAddOnCost(shipmentCost)
     }
 
     private fun renderDiscount(shipmentCost: ShipmentCostModel) {
@@ -140,6 +143,13 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     private fun renderGeneralDiscount(shipmentCost: ShipmentCostModel) {
         mTvDiscountLabel.text = mTvDiscountLabel.context.getString(R.string.label_total_discount)
         mTvDiscountPrice.text = getPriceFormat(mTvDiscountLabel, mTvDiscountPrice, (shipmentCost.discountAmount * -1).toDouble())
+    }
+
+    private fun renderAddOnCost(shipmentCost: ShipmentCostModel) {
+        if (shipmentCost.totalAddOnPrice > 0) {
+            mTvSummaryAddOnLabel.text = mTvDiscountLabel.context.getString(R.string.label_add_on_cost)
+            mTvSummaryAddOnPrice.text = getPriceFormat(mTvSummaryAddOnLabel, mTvSummaryAddOnPrice, shipmentCost.totalAddOnPrice.toDouble())
+        }
     }
 
     private fun getTotalItemLabel(context: Context, totalItem: Int): String {

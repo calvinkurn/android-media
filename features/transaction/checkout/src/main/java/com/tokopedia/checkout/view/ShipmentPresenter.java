@@ -14,6 +14,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest;
+import com.tokopedia.checkout.domain.model.cartshipmentform.PopUpData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest;
@@ -615,6 +616,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHigher, isOneClickShipment);
                 if (cartShipmentAddressFormData.getPopUpMessage().length() > 0) {
                     getView().showToastNormal(cartShipmentAddressFormData.getPopUpMessage());
+                }
+                if (cartShipmentAddressFormData.getPopup() != null) {
+                    PopUpData popUpData = cartShipmentAddressFormData.getPopup();
+                    if (!popUpData.getTitle().isEmpty() && !popUpData.getDescription().isEmpty()) {
+                        getView().showPopUp(popUpData);
+                    }
                 }
             }
 

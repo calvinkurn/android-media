@@ -63,6 +63,7 @@
     <string name="label_order_priority_cost">Biaya Order Prioritas</string>
     <string name="label_promo">Promo</string>
     <string name="label_shop_summary">Ringkasan belanja</string>
+    <string name="label_add_on_cost">Total Pelengkap</string>
     <string name="booking_fee_label">Biaya Layanan Kredit</string>
     <string name="checkout_module_label_asuransi">Asuransi</string>
     <string name="checkout_module_label_trade_in">Tukar Tambah</string>

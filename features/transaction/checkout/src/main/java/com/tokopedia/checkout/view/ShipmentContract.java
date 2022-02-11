@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.domain.model.cartshipmentform.PopUpData;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -159,6 +160,7 @@ public interface ShipmentContract {
 
         void logOnErrorCheckout(Throwable throwable, String request);
 
+        void showPopUp(PopUpData popUpData);
     }
 
     interface AnalyticsActionListener {
