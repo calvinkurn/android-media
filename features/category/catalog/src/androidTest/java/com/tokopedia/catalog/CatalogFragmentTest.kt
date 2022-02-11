@@ -75,41 +75,41 @@ class CatalogFragmentTest
                 ViewMatchers.isDisplayed())))
     }
 
-//    @Test
-//    fun check_image_gallery_opening() {
-//        actionTest {
-//            Thread.sleep(3000)
-//            onView(CommonMatcher.firstView(AllOf.allOf(
-//                    withId(R.id.catalog_images_rv),
-//                    ViewMatchers.isDisplayed())))
-//            Thread.sleep(3000)
-//            val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.catalog_images_rv).let {
-//                it.adapter!!.itemCount
-//            }
-//            if (itemCount > 0) {
-//                Thread.sleep(3000)
-//                onView(withId(R.id.catalog_images_rv))
-//                        .perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0,
-//                        CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
-//                Thread.sleep(3000)
-//                onView(CommonMatcher.firstView(AllOf.allOf(
-//                        withId(R.id.cross),
-//                        ViewMatchers.isDisplayed())))
-//                onView(CommonMatcher.firstView(AllOf.allOf(
-//                        withId(R.id.cross),
-//                        ViewMatchers.isDisplayed()))).perform(ViewActions.click())
-//                Thread.sleep(3000)
-//                onView(withId(R.id.catalog_images_rv))
-//                        .perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0,
-//                                CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
-//                Thread.sleep(3000)
-//                onView(CommonMatcher.firstView(AllOf.allOf(
-//                        withId(R.id.cross),
-//                        ViewMatchers.isDisplayed())))
-//            } else {
-//                assert(false)
-//            }
-//        }.assertTest {
+    @Test
+    fun check_image_gallery_opening() {
+        actionTest {
+            Thread.sleep(3000)
+            onView(CommonMatcher.firstView(AllOf.allOf(
+                    withId(R.id.catalog_images_rv),
+                    ViewMatchers.isDisplayed())))
+            Thread.sleep(3000)
+            val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.catalog_images_rv).let {
+                it.adapter!!.itemCount
+            }
+            if (itemCount > 0) {
+                Thread.sleep(3000)
+                onView(withId(R.id.catalog_images_rv))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0,
+                        CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
+                Thread.sleep(3000)
+                onView(CommonMatcher.firstView(AllOf.allOf(
+                        withId(R.id.cross),
+                        ViewMatchers.isDisplayed())))
+                onView(CommonMatcher.firstView(AllOf.allOf(
+                        withId(R.id.cross),
+                        ViewMatchers.isDisplayed()))).perform(ViewActions.click())
+                Thread.sleep(3000)
+                onView(withId(R.id.catalog_images_rv))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0,
+                                CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
+                Thread.sleep(3000)
+                onView(CommonMatcher.firstView(AllOf.allOf(
+                        withId(R.id.cross),
+                        ViewMatchers.isDisplayed())))
+            } else {
+                assert(false)
+            }
+        }.assertTest {
 //            val query = listOf(
 //                    mapOf(
 //                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
@@ -119,8 +119,8 @@ class CatalogFragmentTest
 //                    )
 //            )
 //            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
-//        }
-//    }
+        }
+    }
 
     @Test
     fun check_image_gallery_swipe() {
@@ -144,24 +144,24 @@ class CatalogFragmentTest
         }
     }
 
-//    @Test
-//    fun check_lihat_description_page_opening() {
-//        actionTest {
-//            onView(withId(R.id.catalog_detail_rv))
-//                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-//                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))),
-//                            ViewActions.scrollTo()))
-//            onView(CommonMatcher.firstView(AllOf.allOf(
-//                    withId(R.id.view_more_description),
-//                    ViewMatchers.isDisplayed())))
-//            onView(CommonMatcher.firstView(AllOf.allOf(
-//                    withId(R.id.view_more_description),
-//                    ViewMatchers.isDisplayed()))
-//            ).perform(ViewActions.click())
-//            onView(CommonMatcher.firstView(AllOf.allOf(
-//                    withId(R.id.view_pager_specs),
-//                    ViewMatchers.isDisplayed())))
-//        }.assertTest {
+    @Test
+    fun check_lihat_description_page_opening() {
+        actionTest {
+            onView(withId(R.id.catalog_detail_rv))
+                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))),
+                            ViewActions.scrollTo()))
+            onView(CommonMatcher.firstView(AllOf.allOf(
+                    withId(R.id.view_more_description),
+                    ViewMatchers.isDisplayed())))
+            onView(CommonMatcher.firstView(AllOf.allOf(
+                    withId(R.id.view_more_description),
+                    ViewMatchers.isDisplayed()))
+            ).perform(ViewActions.click())
+            onView(CommonMatcher.firstView(AllOf.allOf(
+                    withId(R.id.view_pager_specs),
+                    ViewMatchers.isDisplayed())))
+        }.assertTest {
 //            val query = listOf(
 //                    mapOf(
 //                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
@@ -171,35 +171,35 @@ class CatalogFragmentTest
 //                    )
 //            )
 //            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
-//        }
-//    }
+        }
+    }
 
-//    @Test
-//    fun check_lihat_specifications_page_opening() {
-//        actionTest {
-//            onView(withId(R.id.catalog_detail_rv))
-//                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-//                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))),
-//                            ViewActions.scrollTo()))
-//            onView(withId(R.id.catalog_specification_rv)).perform(CatalogViewActions.ScrollToBottomAction())
-//            Thread.sleep(2000)
-//            val viewInteraction = onView(withId(R.id.catalog_specification_rv))
-//                    .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-//            val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.catalog_specification_rv)
-//                    .let { it.adapter!!.itemCount }
-//            viewInteraction.perform(RecyclerViewActions
-//                    .actionOnItemAtPosition<SpecificationsViewHolder>(itemCount - 1,
-//                            CommonActions.clickChildViewWithId(R.id.catalog_specifications_card_parent)))
-//            Thread.sleep(2000)
-//            onView(CommonMatcher.firstView(AllOf.allOf(
-//                    withId(R.id.view_pager_specs),
-//                    ViewMatchers.isDisplayed())))
-//            Thread.sleep(2000)
-//            onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.bottom_sheet_close))))
-//                    .perform(ViewActions.click())
-//            onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.catalog_specification_rv),
-//                    ViewMatchers.isDisplayed())))
-//        }.assertTest {
+    @Test
+    fun check_lihat_specifications_page_opening() {
+        actionTest {
+            onView(withId(R.id.catalog_detail_rv))
+                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))),
+                            ViewActions.scrollTo()))
+            onView(withId(R.id.catalog_specification_rv)).perform(CatalogViewActions.ScrollToBottomAction())
+            Thread.sleep(2000)
+            val viewInteraction = onView(withId(R.id.catalog_specification_rv))
+                    .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.catalog_specification_rv)
+                    .let { it.adapter!!.itemCount }
+            viewInteraction.perform(RecyclerViewActions
+                    .actionOnItemAtPosition<SpecificationsViewHolder>(itemCount - 1,
+                            CommonActions.clickChildViewWithId(R.id.catalog_specifications_card_parent)))
+            Thread.sleep(2000)
+            onView(CommonMatcher.firstView(AllOf.allOf(
+                    withId(R.id.view_pager_specs),
+                    ViewMatchers.isDisplayed())))
+            Thread.sleep(2000)
+            onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.bottom_sheet_close))))
+                    .perform(ViewActions.click())
+            onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.catalog_specification_rv),
+                    ViewMatchers.isDisplayed())))
+        }.assertTest {
 //            val query = listOf(
 //                    mapOf(
 //                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
@@ -209,8 +209,8 @@ class CatalogFragmentTest
 //                    )
 //            )
 //            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
-//        }
-//    }
+        }
+    }
 
     @Test
     fun check_videos_section() {
@@ -308,8 +308,8 @@ class CatalogFragmentTest
     fun check_apply_quick_filter_product_listing_bottom_sheet() {
         launchProductListingBottomSheet()
         onView(CommonMatcher.firstView(AllOf.allOf(
-            withId(R.id.sort_filter_items),
-            ViewMatchers.isDisplayed())))
+                withId(R.id.sort_filter_items),
+                ViewMatchers.isDisplayed())))
 
     }
 
@@ -317,8 +317,8 @@ class CatalogFragmentTest
     fun check_click_on_product_product_listing_bottom_sheet() {
         launchProductListingBottomSheet()
         onView(CommonMatcher.firstView(AllOf.allOf(
-            withId(R.id.product_recyclerview),
-            ViewMatchers.isDisplayed())))
+                withId(R.id.product_recyclerview),
+                ViewMatchers.isDisplayed())))
         val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.product_recyclerview).let {
             it.adapter!!.itemCount
         }
@@ -334,8 +334,8 @@ class CatalogFragmentTest
     fun check_add_remove_wish_list_product_listing_bottom_sheet() {
         launchProductListingBottomSheet()
         onView(CommonMatcher.firstView(AllOf.allOf(
-            withId(R.id.product_recyclerview),
-            ViewMatchers.isDisplayed())))
+                withId(R.id.product_recyclerview),
+                ViewMatchers.isDisplayed())))
         val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.product_recyclerview).let {
             it.adapter!!.itemCount
         }
@@ -345,7 +345,6 @@ class CatalogFragmentTest
             assert(false)
         }
     }
-
 
     private fun launchProductListingBottomSheet() {
         onView(withId(R.id.bottom_sheet_fragment_container))
