@@ -5,9 +5,6 @@
       "reason": [],
       "errorCode": ""
     },
-    "StaticInfo": {
-      "InfoURL": "URL_TO_INFO_BOTTOM_SHEET"
-    },
     "AddOnByProductResponse": [
       {
         "ProductID": "1234",
@@ -54,15 +51,6 @@
               "Price": 10000.00,
               "Stock": "100",
               "UnlimitedStock": true
-            },
-            "Warehouse": {
-              "WarehouseName": "warehouse name",
-              "CityName": "city name"
-            },
-            "Shop": {
-              "Name": "Some Shop",
-              "ShopTier": 3,
-              "ShopType": 1
             }
           }
         ]

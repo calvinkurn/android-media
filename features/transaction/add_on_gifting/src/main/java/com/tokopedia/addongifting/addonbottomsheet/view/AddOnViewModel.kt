@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.GetAddOnByProductResponse
+import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.*
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateRequest
 import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.*
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnByProductUseCase
@@ -47,6 +47,28 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
 
     fun loadAddOnData(addOnProductData: AddOnProductData, mockAddOnResponse: String? = "", mockAddOnSavedStateResponse: String? = "") {
         getAddOnByProductUseCase.mockResponse = mockAddOnResponse ?: ""
+
+        val params = GetAddOnByProductRequest().apply {
+            addOnRequest = addOnProductData.availableBottomSheetData.products.map {
+                AddOnByProductRequest().apply {
+                    productId = it.productId
+                    warehouseId = addOnProductData.availableBottomSheetData.warehouseId
+                    addOnLevel = if (addOnProductData.availableBottomSheetData.isTokoCabang) {
+                        AddOnByProductRequest.ADD_ON_LEVEL_ORDER
+                    } else {
+                        AddOnByProductRequest.ADD_ON_LEVEL_PRODUCT
+                    }
+                }
+            }
+            sourceRequest = SourceRequest().apply {
+                squad = SourceRequest.SQUAD_VALUE
+                useCase = SourceRequest.USE_CASE_VALUE
+            }
+            dataRequest = DataRequest().apply {
+                inventory = true
+            }
+        }
+        getAddOnByProductUseCase.setParams(params)
         getAddOnByProductUseCase.execute(
                 onSuccess = {
                     // Todo : adjust error validation

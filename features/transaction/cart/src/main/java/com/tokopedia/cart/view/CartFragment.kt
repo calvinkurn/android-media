@@ -577,6 +577,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     products = listOf(product1, product2, product3)
                     isTokoCabang = true
                     cartString = "123-456-789"
+                    warehouseId = "111222"
+                    shopName = "Tokoku"
                     addOnFooterMessages = listOf(
                             "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
                             "{{qty}} barang hanya dapat 1 kartu ucapan",

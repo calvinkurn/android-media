@@ -16,7 +16,7 @@ object AddOnUiModelMapper {
         val addOnByProduct = getAddOnByProductResponse.dataResponse.addOnByProducts.firstOrNull()
         return ProductUiModel().apply {
             isTokoCabang = addOnProductData.availableBottomSheetData.isTokoCabang
-            shopName = addOnByProduct?.addOns?.firstOrNull()?.shop?.name ?: ""
+            shopName = addOnProductData.availableBottomSheetData.shopName
             mainProductImageUrl = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productImageUrl ?: ""
             mainProductName = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productName ?: ""
             mainProductPrice = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productPrice ?: 0

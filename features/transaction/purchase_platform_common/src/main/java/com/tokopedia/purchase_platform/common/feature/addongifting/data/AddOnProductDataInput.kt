@@ -39,7 +39,9 @@ data class AvailableBottomSheetData(
         var addOnFooterMessages: List<String> = emptyList(),
         var addOnSavedStates: List<AddOnData> = emptyList(),
         var products: List<Product> = emptyList(),
-        var cartString: String = ""
+        var cartString: String = "",
+        var warehouseId: String = "",
+        var shopName: String = ""
 ) : Parcelable
 
 @Parcelize
