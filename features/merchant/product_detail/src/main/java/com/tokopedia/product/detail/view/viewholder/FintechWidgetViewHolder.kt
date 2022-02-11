@@ -17,11 +17,9 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
     companion object {
         val LAYOUT = R.layout.fintech_widget_layout
     }
-
-
-
+    private val fintechWidget:PdpFintechWidget = view.findViewById(R.id.pdpBasicFintechWidget)
     override fun bind(element: FintechWidgetDataModel?) {
-        val fintechWidget = view.findViewById<PdpFintechWidget>(R.id.pdpBasicFintechWidget)
+
         fintechWidget.updateBaseFragmentContext(
             listener.getParentViewModelStoreOwner(),
             listener.getParentLifeCyclerOwner()
