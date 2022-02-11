@@ -14,8 +14,6 @@ data class Prompt(
 
 @Parcelize
 data class PromptButton(
-        @SerializedName("text")
         var text: String = "",
-        @SerializedName("link")
         var link: String = ""
 ) : Parcelable

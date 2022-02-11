@@ -936,6 +936,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 return Unit.INSTANCE;
             });
             promptDialog.setOverlayClose(false);
+            promptDialog.setCancelable(false);
             promptDialog.show();
         }
     }
