@@ -13,7 +13,6 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogStaggeredShimmerModel
 import com.tokopedia.catalog.viewholder.containers.CatalogProductsContainerViewHolder
 
 class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailListener: CatalogDetailListener, val catalogId: String ,asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
