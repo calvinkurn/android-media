@@ -10,7 +10,7 @@ data class ProductListUiModel(
         val productList: List<ProductUiModel>,
         val productBundlingList: List<ProductBundlingUiModel>,
         val productListHeaderUiModel: ProductListHeaderUiModel,
-        val addonsListUiModel: AddonsListUiModel
+        val addonsListUiModel: AddonsListUiModel?
 ) {
     data class ProductListHeaderUiModel(
             val shopBadgeUrl: String,
@@ -50,7 +50,7 @@ data class ProductListUiModel(
             val totalPrice: String,
             val totalPriceText: String,
             val isProcessing: Boolean = false,
-            val addonsListUiModel: AddonsListUiModel
+            val addonsListUiModel: AddonsListUiModel? = null
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

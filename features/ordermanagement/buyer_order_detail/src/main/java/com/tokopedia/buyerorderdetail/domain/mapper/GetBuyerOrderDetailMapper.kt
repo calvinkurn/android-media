@@ -5,6 +5,8 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConst
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
+import com.tokopedia.buyerorderdetail.domain.models.AddonInfo
+import com.tokopedia.buyerorderdetail.domain.models.Details
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
@@ -17,12 +19,15 @@ import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
+import com.tokopedia.kotlin.extensions.orFalse
 import javax.inject.Inject
 
 class GetBuyerOrderDetailMapper @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) {
-    fun mapDomainModelToUiModel(buyerOrderDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail): BuyerOrderDetailUiModel {
+    fun mapDomainModelToUiModel(
+        buyerOrderDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail
+    ): BuyerOrderDetailUiModel {
         return BuyerOrderDetailUiModel(
             actionButtonsUiModel = mapActionButtons(
                 buyerOrderDetail.button,
@@ -43,10 +48,10 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 buyerOrderDetail.cashbackInfo
             ),
             productListUiModel = mapProductListUiModel(
-                buyerOrderDetail.products,
-                buyerOrderDetail.haveProductBundle,
-                buyerOrderDetail.bundleDetail,
+                buyerOrderDetail.details,
+                buyerOrderDetail.details?.bundleIcon.orEmpty(),
                 buyerOrderDetail.shop,
+                buyerOrderDetail.addonInfo,
                 buyerOrderDetail.orderId,
                 buyerOrderDetail.orderStatus.id
             ),
@@ -65,34 +70,53 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun getAddonsSectionTemp(message: String): AddonsListUiModel {
+    private fun getAddonsSectionProductLevel(
+        details: Details,
+        addonSummary: Details.NonBundle.AddonSummary?
+    ): AddonsListUiModel {
         return AddonsListUiModel(
-            addonsTitle = "Pelengkap",
-            addonsLogoUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
-            totalPriceText = "Rp5.000",
-            addonsItemList = listOf(
+            addonsTitle = details.addonLabel,
+            addonsLogoUrl = details.addonIcon,
+            totalPriceText = addonSummary?.totalPriceStr.orEmpty(),
+            addonsItemList = addonSummary?.addons?.map {
                 AddonsListUiModel.AddonItemUiModel(
-                    priceText = "Rp2.000",
-                    addOnsName = "Happy Birthday",
-                    addonsId = 1.toString(),
-                    quantity = 2,
-                    addOnsThumbnailUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
-                    toStr = "Adam",
-                    fromStr = "John",
-                    message = message
-                ),
-                AddonsListUiModel.AddonItemUiModel(
-                    priceText = "Rp2.000",
-                    addOnsName = "Happy Birthday",
-                    addonsId = 1.toString(),
-                    quantity = 2,
-                    addOnsThumbnailUrl = "https://images.tokopedia.net/img/product-service/addon_icon_color_x2.png",
-                    toStr = "Adam",
-                    fromStr = "John",
-                    message = "happy birthday boss, happy birthday boss, happy birthday boss"
+                    priceText = it.priceStr,
+                    addOnsName = it.name,
+                    addonsId = it.id,
+                    quantity = it.quantity,
+                    addOnsThumbnailUrl = it.imageUrl,
+                    isCustomNote = it.metadata?.addonNote?.isCustomNote.orFalse(),
+                    toStr = it.metadata?.addonNote?.to.orEmpty(),
+                    fromStr = it.metadata?.addonNote?.from.orEmpty(),
+                    message = it.metadata?.addonNote?.notes.orEmpty()
                 )
-            )
+            }.orEmpty()
         )
+    }
+
+    private fun getAddonsSectionOrderLevel(
+        addonInfo: AddonInfo?
+    ): AddonsListUiModel? {
+        return if (addonInfo != null) {
+             AddonsListUiModel(
+                addonsTitle = addonInfo.label,
+                addonsLogoUrl = addonInfo.iconUrl,
+                totalPriceText = addonInfo.orderLevel?.totalPriceStr.orEmpty(),
+                addonsItemList = addonInfo.orderLevel?.addons?.map {
+                    AddonsListUiModel.AddonItemUiModel(
+                        priceText = it.priceStr,
+                        addOnsName = it.name,
+                        addonsId = it.id,
+                        quantity = it.quantity,
+                        addOnsThumbnailUrl = it.imageUrl,
+                        isCustomNote = it.metadata?.addonNote?.isCustomNote.orFalse(),
+                        toStr = it.metadata?.addonNote?.to.orEmpty(),
+                        fromStr = it.metadata?.addonNote?.from.orEmpty(),
+                        message = it.metadata?.addonNote?.notes.orEmpty()
+                    )
+                }.orEmpty()
+            )
+        } else null
     }
 
     private fun mapToRecommendationWidgetUiModel(
@@ -154,33 +178,21 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun mapProductListUiModel(
-        products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>,
-        haveProductBundle: Boolean,
-        bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?,
+        details: Details?,
+        bundleIcon: String,
         shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop,
+        addonInfo: AddonInfo?,
         orderId: String,
         orderStatusId: String
     ): ProductListUiModel {
         val productList =
-            if (haveProductBundle) {
-                bundleDetail?.nonBundleList?.let { nonBundleProducts ->
-                    mapProductList(nonBundleProducts, orderId, orderStatusId)
-                }.orEmpty()
-            } else {
-                mapProductList(products, orderId, orderStatusId)
-            }
-        val productBundlingList =
-            if (haveProductBundle) {
-                mapProductBundle(bundleDetail, orderId, orderStatusId)
-            } else {
-                emptyList()
-            }
-        val message = "happy birthday boss, happy birthday boss, happy birthday"
+            details?.let { mapProductList(it, orderId, orderStatusId) }.orEmpty()
+        val productBundlingList = mapProductBundle(details?.bundles, bundleIcon, orderId, orderStatusId)
         return ProductListUiModel(
             productList = productList,
             productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),
             productBundlingList = productBundlingList,
-            addonsListUiModel = getAddonsSectionTemp(message)
+            addonsListUiModel = getAddonsSectionOrderLevel(addonInfo)
         )
     }
 
@@ -389,21 +401,27 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun mapProductList(
-        products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>,
+        details: Details,
         orderId: String,
         orderStatusId: String
     ): List<ProductListUiModel.ProductUiModel> {
-        return products.map {
-            mapProduct(it, orderId, orderStatusId)
-        }
+        return details.nonBundles?.map {
+            mapProduct(
+                details,
+                it,
+                it.addonSummary,
+                it.button ?: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button(),
+                orderId,
+                orderStatusId
+            )
+        }.orEmpty()
     }
 
-    private fun mapProduct(
-        product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product,
+    private fun mapProductBundleItem(
+        product: Details.Bundle.OrderDetail,
         orderId: String,
         orderStatusId: String
     ): ProductListUiModel.ProductUiModel {
-        val message = "happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss, happy birthday boss,happy birthday boss, happy birthday boss, happy birthday boss. happy birthday boss, happy birthday boss. happy birthday boss"
         return ProductListUiModel.ProductUiModel(
             button = mapActionButton(product.button),
             category = product.category,
@@ -419,24 +437,52 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             productThumbnailUrl = product.thumbnail,
             quantity = product.quantity,
             totalPrice = product.totalPrice,
+            totalPriceText = product.totalPriceText
+        )
+    }
+
+    private fun mapProduct(
+        details: Details,
+        product: Details.NonBundle,
+        addonSummary: Details.NonBundle.AddonSummary?,
+        button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button,
+        orderId: String,
+        orderStatusId: String
+    ): ProductListUiModel.ProductUiModel {
+        return ProductListUiModel.ProductUiModel(
+            button = mapActionButton(button),
+            category = product.category,
+            categoryId = product.categoryId,
+            orderDetailId = product.orderDetailId,
+            orderId = orderId,
+            orderStatusId = orderStatusId,
+            price = product.price,
+            priceText = product.priceText,
+            productId = product.productId,
+            productName = product.productName,
+            productNote = product.notes,
+            productThumbnailUrl = product.thumbnail,
+            quantity = product.quantity,
+            totalPrice = product.totalPrice,
             totalPriceText = product.totalPriceText,
-            addonsListUiModel = getAddonsSectionTemp(message)
+            addonsListUiModel = getAddonsSectionProductLevel(details, addonSummary)
         )
     }
 
     private fun mapProductBundle(
-        bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?,
+        bundleDetail: List<Details.Bundle>?,
+        bundleIcon: String,
         orderId: String,
         orderStatusId: String
     ): List<ProductListUiModel.ProductBundlingUiModel> {
-        return bundleDetail?.bundleList?.map { bundle ->
+        return bundleDetail?.map { bundle ->
             ProductListUiModel.ProductBundlingUiModel(
                 bundleName = bundle.bundleName,
-                bundleIconUrl = bundleDetail.bundleIcon.orEmpty(),
+                bundleIconUrl = bundleIcon,
                 totalPrice = bundle.bundleSubtotalPrice,
                 totalPriceText = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
-                bundleItemList = bundle.orderDetailList.map { bundleDetail ->
-                    mapProduct(bundleDetail, orderId, orderStatusId)
+                bundleItemList = bundle.orderDetail.map { bundleDetail ->
+                    mapProductBundleItem(bundleDetail, orderId, orderStatusId)
                 }
             )
         }.orEmpty()

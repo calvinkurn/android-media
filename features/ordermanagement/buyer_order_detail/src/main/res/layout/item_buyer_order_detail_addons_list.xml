@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivBomDetailAddonsDash"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_dash_divider" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivBomDetailAddonsThumbnail"
@@ -11,7 +21,7 @@
         android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/ivBomDetailAddonsDash" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailAddonsName"
@@ -50,12 +60,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:maxLines="1"
+        android:text="@string/order_addons_to_label"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@id/ivBomDetailAddonsThumbnail"
         app:layout_constraintTop_toBottomOf="@id/ivBomDetailAddonsThumbnail"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        android:text="@string/order_addons_to_label" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailAddonsFromLabel"
@@ -63,49 +73,49 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:maxLines="1"
+        android:text="@string/order_addons_from_label"
         android:textColor="@color/Unify_N700_68"
-        app:typographyWeight="reguler"
         app:layout_constraintStart_toStartOf="@id/ivBomDetailAddonsThumbnail"
         app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsToLabel"
         app:typographyType="body_3"
-        android:text="@string/order_addons_from_label" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailAddonsToValue"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
-        app:typographyWeight="reguler"
-        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/tvBomDetailAddonsToLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guidelineAddonsMessage"
         app:layout_constraintTop_toTopOf="@id/tvBomDetailAddonsToLabel"
-        app:layout_constraintBottom_toBottomOf="@id/tvBomDetailAddonsToLabel"
         app:typographyType="body_3"
+        app:typographyWeight="reguler"
         tools:text="@string/order_addons_to_value" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailAddonsFromValue"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
-        app:typographyWeight="reguler"
-        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/tvBomDetailAddonsFromLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guidelineAddonsMessage"
         app:layout_constraintTop_toTopOf="@id/tvBomDetailAddonsFromLabel"
-        app:layout_constraintBottom_toBottomOf="@id/tvBomDetailAddonsFromLabel"
         app:typographyType="body_3"
+        app:typographyWeight="reguler"
         tools:text="@string/order_addons_from_value" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineAddonsMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.11"
-        android:orientation="vertical"/>
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.11" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailAddonsMessageValue"
@@ -114,11 +124,11 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_N700_68"
-        tools:text="Selamat hari lebaran. Mohon maaf lahir dan batin. Stay safe and see you soon. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec arcu velit. Duis dui elit, convallis quis mattis id, vestibulum at erat. Vestibulum pretium tempor conv."
-        app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvBomDetailAddonsFromLabel"
-        app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsFromLabel"/>
+        app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsFromLabel"
+        app:typographyType="body_3"
+        tools:text="Selamat hari lebaran. Mohon maaf lahir dan batin. Stay safe and see you soon. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec arcu velit. Duis dui elit, convallis quis mattis id, vestibulum at erat. Vestibulum pretium tempor conv." />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBomDetailAddonsReadMoreMessage"
@@ -126,10 +136,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
-        tools:text="@string/order_addons_read_more"
-        app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="@id/tvBomDetailAddonsMessageValue"
         app:layout_constraintStart_toStartOf="@id/tvBomDetailAddonsMessageValue"
-        app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsMessageValue"/>
+        app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsMessageValue"
+        app:typographyType="body_3"
+        tools:text="@string/order_addons_read_more" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,7 +15,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
 
     init {
         useCase.setTypeClass(GetBuyerOrderDetailResponse.Data::class.java)
-        useCase.setGraphqlQuery(TEST_QUERY)
+        useCase.setGraphqlQuery(QUERY)
     }
 
     suspend fun execute(params: GetBuyerOrderDetailParams): BuyerOrderDetailUiModel {
@@ -281,6 +281,8 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 details {
                   total_products
                   bundle_icon
+                  addon_icon
+                  addon_label
                   bundles {
                     bundle_id
                     bundle_variant_id
@@ -293,7 +295,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       product_id
                       product_name
                       product_url
-                      snapshot_url
                       thumbnail
                       price
                       price_text
@@ -302,6 +303,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       total_price_text
                       notes
                       category_id
+                      category
                       button {
                         key
                         display_name
@@ -327,7 +329,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     product_id
                     product_name
                     product_url
-                    snapshot_url
                     thumbnail
                     price
                     price_text
@@ -336,6 +337,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     total_price_text
                     notes
                     category_id
+                    category
                     button {
                       key
                       display_name
@@ -358,10 +360,8 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       addons {
                         order_id
                         id
-                        reference_id
                         level
                         name
-                        price
                         price_str
                         subtotal_price
                         subtotal_price_str
@@ -369,9 +369,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         type
                         image_url
                         metadata {
-                          from
-                          message
-                          to
+                          add_on_note {
+                            from
+                            to
+                            notes
+                            short_notes
+                            is_custom_note
+                          }
                         }
                         create_time
                       }
@@ -389,7 +393,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     addons {
                       order_id
                       id
-                      reference_id
                       level
                       name
                       price
@@ -400,11 +403,14 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       type
                       image_url
                       metadata {
-                        from
-                        message
-                        to
+                        add_on_note {
+                          from
+                          to
+                          notes
+                          short_notes
+                          is_custom_note
+                        }
                       }
-                      create_time
                     }
                     total
                     total_price
@@ -523,6 +529,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                             display_name
                             color
                             type
+                            uri_type
                             uri
                           }
                         }
@@ -556,10 +563,38 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                           display_name
                           color
                           type
+                          uri_type
                           uri
-                        }
+                         }
                       }
                     }
+                    addon_summary {
+                      addons {
+                        order_id
+                        id
+                        level
+                        name
+                        price_str
+                        subtotal_price
+                        subtotal_price_str
+                        quantity
+                        type
+                        image_url
+                        metadata {
+                          add_on_note {
+                            from
+                            to
+                            notes
+                            short_notes
+                            is_custom_note
+                          }
+                        }
+                        create_time
+                      }
+                      total
+                      total_price
+                      total_price_str
+                      total_quantity
                   }
                 }
                 shipment {

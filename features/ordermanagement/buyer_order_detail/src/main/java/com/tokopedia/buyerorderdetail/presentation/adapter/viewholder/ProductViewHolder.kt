@@ -76,9 +76,9 @@ open class ProductViewHolder(
         setupButton(element.button, element.isProcessing)
     }
 
-    private fun setupAddonSection(addonsListUiModel: AddonsListUiModel) {
+    private fun setupAddonSection(addonsListUiModel: AddonsListUiModel?) {
         val addonsViewStub: View = itemView.findViewById(R.id.itemBomDetailAddonsViewStub)
-        if (addonsListUiModel.addonsItemList.isNotEmpty()) {
+        if (addonsListUiModel?.addonsItemList?.isNotEmpty() == true) {
             if (addonsViewStub is ViewStub) addonsViewStub.inflate() else addonsViewStub.show()
             setupAddonsBinding()
             partialProductAddonViewHolder =

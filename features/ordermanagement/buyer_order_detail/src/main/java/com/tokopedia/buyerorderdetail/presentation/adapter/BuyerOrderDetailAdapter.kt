@@ -179,9 +179,11 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addAddonsListSection(
-        addonsListUiModel: AddonsListUiModel
+        addonsListUiModel: AddonsListUiModel?
     ) {
-        add(addonsListUiModel)
+        if (addonsListUiModel != null && addonsListUiModel.addonsItemList.isNotEmpty()) {
+            add(addonsListUiModel)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierDriverInfoSection(

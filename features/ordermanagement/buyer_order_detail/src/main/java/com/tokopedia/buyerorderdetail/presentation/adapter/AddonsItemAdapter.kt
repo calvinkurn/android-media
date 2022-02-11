@@ -13,7 +13,9 @@ import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
@@ -42,14 +44,36 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
 
         fun bind(item: AddonsListUiModel.AddonItemUiModel) {
             with(binding) {
-                setupTextview(item)
-                setupFromMetadata(item.fromStr)
-                setupToMetadata(item.toStr)
-                setupMessageMetadata(item.message)
+                setupDividerAddon()
+                setDataViews(item)
+                setupAddNoteViews(item)
             }
         }
 
-        private fun ItemBuyerOrderDetailAddonsListBinding.setupTextview(item: AddonsListUiModel.AddonItemUiModel) {
+        private fun ItemBuyerOrderDetailAddonsListBinding.setupDividerAddon() {
+            ivBomDetailAddonsDash.showWithCondition(adapterPosition.isMoreThanZero())
+        }
+
+        private fun ItemBuyerOrderDetailAddonsListBinding.setupAddNoteViews(item: AddonsListUiModel.AddonItemUiModel) {
+            if (item.isCustomNote) {
+                setupToMetadata(item.toStr)
+                setupFromMetadata(item.fromStr)
+                setupMessageMetadata(item.message)
+            } else {
+                hideNoteViews()
+            }
+        }
+
+        private fun ItemBuyerOrderDetailAddonsListBinding.hideNoteViews() {
+            tvBomDetailAddonsToValue.hide()
+            tvBomDetailAddonsToLabel.hide()
+            tvBomDetailAddonsFromLabel.hide()
+            tvBomDetailAddonsFromValue.hide()
+            tvBomDetailAddonsMessageValue.hide()
+            tvBomDetailAddonsReadMoreMessage.hide()
+        }
+
+        private fun ItemBuyerOrderDetailAddonsListBinding.setDataViews(item: AddonsListUiModel.AddonItemUiModel) {
             tvBomDetailAddonsName.text = item.addOnsName
             ivBomDetailAddonsThumbnail.setImageUrl(item.addOnsThumbnailUrl)
             tvBomDetailAddonsPriceQuantity.text =
@@ -87,6 +111,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
         private fun ItemBuyerOrderDetailAddonsListBinding.setupMessageMetadata(message: String) {
             if (message.isBlank()) {
                 tvBomDetailAddonsMessageValue.hide()
+                tvBomDetailAddonsReadMoreMessage.hide()
             } else {
                 tvBomDetailAddonsMessageValue.run {
                     show()
@@ -172,9 +197,5 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                 setAddonMessageFormatted(message)
             }
         }
-    }
-
-    companion object {
-        const val MAX_CHAR_MESSAGE = 250
     }
 }

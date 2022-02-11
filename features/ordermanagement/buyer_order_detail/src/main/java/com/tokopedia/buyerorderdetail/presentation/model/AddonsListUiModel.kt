@@ -20,6 +20,7 @@ data class AddonsListUiModel(
         val addonsId: String,
         val addOnsName: String,
         val addOnsThumbnailUrl: String,
+        val isCustomNote: Boolean,
         val toStr: String,
         val fromStr: String,
         val message: String
