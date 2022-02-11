@@ -71,14 +71,14 @@ data class AddOnSummary(
             @SerializedName("from")
             @Expose
             val from: String = "",
-            @SerializedName("message")
+            @SerializedName("notes")
             @Expose
-            val message: String = "",
+            val notes: String = "",
             @SerializedName("to")
             @Expose
             val to: String = ""
         ) {
-            fun isEmpty(): Boolean = from.isBlank() && to.isBlank() && message.isBlank()
+            fun isEmpty(): Boolean = from.isBlank() && to.isBlank() && notes.isBlank()
         }
     }
 }

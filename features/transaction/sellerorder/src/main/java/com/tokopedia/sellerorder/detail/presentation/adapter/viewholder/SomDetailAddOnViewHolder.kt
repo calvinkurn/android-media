@@ -84,7 +84,7 @@ class SomDetailAddOnViewHolder(
                 setIsCopyable(copyable = true)
                 setReceiverName(metadata.to)
                 setSenderName(metadata.from)
-                setDescription(metadata.message, descriptionExpanded)
+                setDescription(metadata.notes, descriptionExpanded)
                 listener = this@SomDetailAddOnViewHolder
                 show()
             }

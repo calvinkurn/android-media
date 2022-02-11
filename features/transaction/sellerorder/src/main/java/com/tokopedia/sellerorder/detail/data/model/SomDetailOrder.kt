@@ -186,7 +186,13 @@ data class SomDetailOrder(
                 val nonBundle: List<Product> = listOf(),
                 @SerializedName("bundle_icon")
                 @Expose
-                val bundleIcon: String = ""
+                val bundleIcon: String = "",
+                @SerializedName("addon_icon")
+                @Expose
+                val addOnIcon: String = "",
+                @SerializedName("addon_label")
+                @Expose
+                val addOnLabel: String = ""
             ) {
                 data class Bundle(
                     @SerializedName("bundle_id")

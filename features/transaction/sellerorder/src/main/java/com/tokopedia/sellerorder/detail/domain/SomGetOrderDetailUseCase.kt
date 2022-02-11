@@ -264,7 +264,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                           image_url
                           metadata {
                             from
-                            message
+                            notes
                             to
                           }
                           create_time
@@ -312,6 +312,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     }
                   }
                   bundle_icon
+                  addon_icon
+                  addon_label
                 }
                 addon_info {
                   order_level {
