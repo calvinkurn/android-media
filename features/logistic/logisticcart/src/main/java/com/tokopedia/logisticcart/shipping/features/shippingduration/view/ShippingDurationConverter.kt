@@ -135,8 +135,7 @@ class ShippingDurationConverter @Inject constructor() {
         shippingCourierUiModel.preOrderModel = preOrderModel
         shippingCourierUiModels.add(shippingCourierUiModel)
     }
-
-    // todo need to adjust this to add image/bo divicer
+    
     private fun convertToPromoModel(promo: PromoStacking?, showPromoBadge: Boolean): LogisticPromoUiModel? {
         if (promo == null || promo.isPromo != 1) return null
         val applied = promo.isApplied == 1

@@ -33,26 +33,13 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?, isOcc: Boolean = false) {
-        // todo need to confirm if this impacting all or only bo eko
         val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
         
         tvTitle.text = formattedTitle
         tvTitle.visibility = View.VISIBLE
         tvTitleExtra.visibility = View.GONE
+        tvEta.visibility = View.GONE
 
-        if (!data.isBebasOngkirExtra || !isOcc) {
-            if (data.etaData.errorCode == 0 && data.etaData.textEta.isNotEmpty()) {
-                tvEta.visibility = View.VISIBLE
-                tvEta.text = data.etaData.textEta
-            } else if (data.etaData.errorCode == 0 && data.etaData.textEta.isEmpty()) {
-                tvEta.visibility = View.VISIBLE
-                tvEta.text = ESTIMASI_TIDAK_TERSEDIA
-            } else {
-                tvEta.visibility = View.GONE
-            }
-        } else {
-            tvEta.visibility = View.GONE
-        }
 
         if (data.codData.isCodAvailable == 1) {
             lblCodAvailableEta.apply {
