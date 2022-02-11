@@ -49,7 +49,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <com.tokopedia.recharge_component.widget.TextField3
+            <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/client_number_widget_input_field"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

@@ -52,6 +52,7 @@ import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDesc
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
+import com.tokopedia.digital_product_detail.presentation.utils.KeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicAppBar
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
@@ -112,6 +113,8 @@ class DigitalPDPDataPlanFragment :
     @Inject
     lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
 
+    private val keyboardWatcher = KeyboardWatcher()
+
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
     private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
@@ -151,6 +154,7 @@ class DigitalPDPDataPlanFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
+        setupKeyboardWatcher()
         initClientNumberWidget()
         initEmptyState()
         setAnimationAppBarLayout()
@@ -158,6 +162,20 @@ class DigitalPDPDataPlanFragment :
 
         getCatalogMenuDetail()
         getPrefixOperatorData()
+    }
+
+    fun setupKeyboardWatcher() {
+        binding?.root?.let {
+            keyboardWatcher.listen(it, object : KeyboardWatcher.Listener {
+                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                    // do nothing
+                }
+
+                override fun onKeyboardHidden() {
+                    binding?.rechargePdpPaketDataClientNumberWidget?.setClearable()
+                }
+            })
+        }
     }
 
     private fun getDataFromBundle() {
