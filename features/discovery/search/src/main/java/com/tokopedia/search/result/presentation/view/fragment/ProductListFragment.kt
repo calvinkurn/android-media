@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -65,10 +67,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
+import com.tokopedia.productcard.helper.ProductVideoPlayer
+import com.tokopedia.productcard.helper.VideoPlayerState
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
@@ -96,7 +101,6 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
-import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
@@ -110,9 +114,7 @@ import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ProductListParameterListener
-import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
@@ -136,11 +138,19 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import timber.log.Timber
-import java.util.ArrayList
-import java.util.HashMap
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class ProductListFragment: BaseDaggerFragment(),
     OnItemChangeView,
@@ -159,7 +169,8 @@ class ProductListFragment: BaseDaggerFragment(),
     ChooseAddressListener,
     BannerListener,
     LastFilterListener,
-    ProductListParameterListener {
+    ProductListParameterListener,
+    CoroutineScope {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -222,13 +233,26 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
+    private val isAutoplayProductVideoEnabled : Boolean by lazy {
+        remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MPC_VIDEO_AUTOPLAY, true)
+    }
+
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
+    private lateinit var masterJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = masterJob + Dispatchers.Main
+
+    private var productVideoAutoPlayJob : Job? = null
+    private var productVideoPlayer : ProductVideoPlayer? = null
+
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        masterJob = Job()
 
         loadDataFromArguments()
         initTrackingQueue()
@@ -429,7 +453,168 @@ class ProductListFragment: BaseDaggerFragment(),
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addOnScrollListener(onScrollListener)
+            setUpProductVideoAutoplayListener(this)
         }
+    }
+
+    private val autoPlayScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                startVideoAutoplayWhenRecyclerViewIsIdle()
+            } else {
+                stopVideoAutoplay()
+            }
+        }
+    }
+
+    private val autoPlayAdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            if (positionStart == 0) {
+                recyclerView?.viewTreeObserver
+                    ?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            startVideoAutoplayWhenRecyclerViewIsIdle()
+                            recyclerView?.viewTreeObserver
+                                ?.removeOnGlobalLayoutListener(this)
+                        }
+                    })
+            }
+        }
+    }
+
+    private fun setUpProductVideoAutoplayListener(recyclerView: RecyclerView) {
+        if(isAutoplayProductVideoEnabled) {
+            recyclerView.addOnScrollListener(autoPlayScrollListener)
+            recyclerView.adapter?.registerAdapterDataObserver(autoPlayAdapterDataObserver)
+        }
+    }
+
+    private fun getFirstVisibleItemIndex(layoutManager: RecyclerView.LayoutManager?) : Int {
+        return when(layoutManager) {
+            is StaggeredGridLayoutManager -> getFirstVisibleItemIndex(layoutManager)
+            is GridLayoutManager -> getFirstVisibleItemIndex(layoutManager)
+            is LinearLayoutManager -> getFirstVisibleItemIndex(layoutManager)
+            else -> -1
+        }
+    }
+
+    private fun getFirstVisibleItemIndex(layoutManager: LinearLayoutManager) : Int {
+        val firstCompleteVisibleItemIndex = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val firstVisibleItemIndex = layoutManager.findFirstVisibleItemPosition()
+        return when {
+            firstCompleteVisibleItemIndex != -1 -> firstCompleteVisibleItemIndex
+            firstVisibleItemIndex != -1 -> firstVisibleItemIndex
+            else -> -1
+        }
+    }
+
+    private fun getFirstVisibleItemIndex(layoutManager: GridLayoutManager) : Int {
+        val firstCompleteVisibleItemIndex = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val firstVisibleItemIndex = layoutManager.findFirstVisibleItemPosition()
+        return when {
+            firstCompleteVisibleItemIndex != -1 -> firstCompleteVisibleItemIndex
+            firstVisibleItemIndex != -1 -> firstVisibleItemIndex
+            else -> -1
+        }
+    }
+
+    private fun getFirstVisibleItemIndex(layoutManager: StaggeredGridLayoutManager) : Int {
+        val firstCompleteVisibleItemIndex = layoutManager
+            .findFirstCompletelyVisibleItemPositions(null)
+            .minOrNull() ?: -1
+        val firstVisibleItemIndex = layoutManager
+            .findFirstVisibleItemPositions(null)
+            .minOrNull() ?: -1
+        return when {
+            firstCompleteVisibleItemIndex != -1 -> firstCompleteVisibleItemIndex
+            else -> firstVisibleItemIndex
+        }
+    }
+
+    private fun getLastVisibleItemIndex(layoutManager: RecyclerView.LayoutManager?) : Int {
+        return when(layoutManager) {
+            is StaggeredGridLayoutManager -> getLastVisibleItemIndex(layoutManager)
+            is GridLayoutManager -> getLastVisibleItemIndex(layoutManager)
+            is LinearLayoutManager -> getLastVisibleItemIndex(layoutManager)
+            else -> -1
+        }
+    }
+
+    private fun getLastVisibleItemIndex(layoutManager : StaggeredGridLayoutManager) : Int {
+        return layoutManager
+            .findLastVisibleItemPositions(null)
+            .maxOrNull() ?: -1
+    }
+
+    private fun getLastVisibleItemIndex(layoutManager: GridLayoutManager) : Int {
+        return layoutManager.findLastVisibleItemPosition()
+    }
+
+    private fun getLastVisibleItemIndex(layoutManager: LinearLayoutManager) : Int {
+        return layoutManager.findLastVisibleItemPosition()
+    }
+
+    private fun startVideoAutoplayWhenRecyclerViewIsIdle() {
+        productVideoAutoPlayJob?.cancel()
+        val firstVisibleItemIndex = getFirstVisibleItemIndex(staggeredGridLayoutManager)
+        val lastCompleteVisibleItemIndex = getLastVisibleItemIndex(staggeredGridLayoutManager)
+        if (!productListAdapter?.itemList.isNullOrEmpty()
+            && firstVisibleItemIndex != -1
+            && lastCompleteVisibleItemIndex != -1
+        ) {
+            val visibleItems = productListAdapter?.itemList
+                ?.subList(
+                    firstVisibleItemIndex,
+                    lastCompleteVisibleItemIndex + 1
+                )
+                ?.filterIsInstance<ProductItemDataView>()
+                ?.filter {
+                    it.hasVideo
+                }
+            val visitableList = productListAdapter?.itemList ?: return
+            val visibleItemIterable = visibleItems?.iterator()?: return
+            productVideoAutoPlayJob = launch {
+                playNextVideo(visibleItemIterable, visitableList, recyclerView)
+            }
+        }
+    }
+
+    private suspend fun playNextVideo(
+        visibleItemIterator: Iterator<Visitable<*>>,
+        visitableList: List<Visitable<*>>,
+        recyclerView: RecyclerView?
+    ) {
+        if(isActive && visibleItemIterator.hasNext()) {
+            val visibleItem = visibleItemIterator.next()
+            val index = visitableList.indexOf(visibleItem)
+            if (index == -1) return
+            val viewHolder = recyclerView?.findViewHolderForAdapterPosition(index) ?: return
+            if (viewHolder is ProductVideoPlayer && viewHolder.hasProductVideo) {
+                productVideoPlayer = viewHolder
+                viewHolder.playVideo()
+                    .filter { state ->
+                        state is VideoPlayerState.Ended
+                                || state is VideoPlayerState.NoVideo
+                                || state is VideoPlayerState.Error
+                    }
+                    .catch { t -> Timber.e(t) }
+                    .collect {
+                        productVideoPlayer = null
+                        if (visibleItemIterator.hasNext() && isActive) {
+                            playNextVideo(visibleItemIterator, visitableList, recyclerView)
+                        }
+                    }
+            } else if (visibleItemIterator.hasNext()) {
+                playNextVideo(visibleItemIterator, visitableList, recyclerView)
+            }
+        }
+    }
+
+    private fun stopVideoAutoplay() {
+        productVideoPlayer?.stopVideo()
+        productVideoAutoPlayJob?.cancel()
     }
 
     private fun createProductItemDecoration(): ProductItemDecoration {
@@ -1168,8 +1353,21 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onDestroyView() {
+        unregisterVideoAutoplayAdapterObserver()
+        masterJob.cancelChildren()
+        stopVideoAutoplay()
         super.onDestroyView()
         presenter?.detachView()
+    }
+
+    private fun unregisterVideoAutoplayAdapterObserver() {
+        if (isAutoplayProductVideoEnabled) {
+            try {
+                recyclerView?.adapter?.unregisterAdapterDataObserver(autoPlayAdapterDataObserver)
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
     }
 
     override fun getScreenName(): String {

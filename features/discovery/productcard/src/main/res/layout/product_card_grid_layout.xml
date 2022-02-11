@@ -35,6 +35,38 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
+        <com.tokopedia.productcard.ProductVideoView
+            android:id="@+id/videoProduct"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/imageVideoIdentifier"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@+id/imageProduct"
+            android:src="@drawable/product_card_ic_video_identifier"
+            tools:visibility="visible"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/mediaBarrier"
+            app:barrierDirection="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="imageProduct, videoProduct"/>
+
         <ImageView
             android:id="@+id/labelCampaignBackground"
             android:layout_width="0dp"

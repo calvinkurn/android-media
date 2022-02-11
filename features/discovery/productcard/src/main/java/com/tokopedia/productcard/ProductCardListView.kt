@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -84,6 +85,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
+
+        imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
         renderProductCardContent(productCardModel, isWideContent = true)
 
@@ -182,6 +185,14 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
     override fun getShopBadgeView(): View? = imageShopBadge
+
+    override fun getProductImageView(): ImageView? {
+        return imageProduct
+    }
+
+    override fun getProductVideoView(): ProductVideoView? {
+        return videoProduct
+    }
 
     /**
      * Special cases for specific pages

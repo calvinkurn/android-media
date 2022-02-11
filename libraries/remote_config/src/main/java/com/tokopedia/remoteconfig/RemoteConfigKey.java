@@ -264,4 +264,5 @@ public class RemoteConfigKey {
     public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
 
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
+    public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
 }
