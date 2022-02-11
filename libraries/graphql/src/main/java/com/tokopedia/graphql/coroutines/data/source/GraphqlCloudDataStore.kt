@@ -86,7 +86,7 @@ class GraphqlCloudDataStore @Inject constructor(
             if (TextUtils.isEmpty(opName)) {
                 opName = CacheHelper.getQueryName(requests[0].query)
             }
-            url = "graphql/operation/$opName"
+            url = "graphql/$opName"
         }
         return api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
     }
@@ -195,7 +195,7 @@ class GraphqlCloudDataStore @Inject constructor(
                             } else {
                                 header[QUERY_HASHING_HEADER] = ""
                             }
-                            val opName = requests[0].operationName
+                            val opName = requests[0]./Name
                             ServerLogger.log(
                                 Priority.P1, "GQL_HASHING",
                                 mapOf(
@@ -215,7 +215,7 @@ class GraphqlCloudDataStore @Inject constructor(
                                 if (TextUtils.isEmpty(opName)) {
                                     opName = CacheHelper.getQueryName(requests[0].query)
                                 }
-                                url = "graphql/operation/$opName"
+                                url = "graphql/$opName"
                             }
                             api.getResponseSuspendWithPath(
                                     url,
