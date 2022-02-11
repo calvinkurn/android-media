@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.pdp.fintech.constants.GQL_GET_WIDGET_DETAIL_V2
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
+import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
 import javax.inject.Inject
 
 
@@ -17,12 +18,12 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         onSuccess: (WidgetDetail) -> Unit,
         onError: (Throwable) -> Unit,
         productCategory: String,
-        listofAmount: HashMap<String, String>,
-        listOfUrls: HashMap<String, String>,
-    ) {
+        listofAmountandUrls: HashMap<String, FintechPriceUrlDataModel>,
+
+        ) {
         try {
             this.setTypeClass(WidgetDetail::class.java)
-            this.setRequestParams(getRequestParams(productCategory, listofAmount, listOfUrls))
+            this.setRequestParams(getRequestParams(productCategory, listofAmountandUrls))
             this.setGraphqlQuery(PayLaterGetPdpWidget.GQL_QUERY)
             this.execute(
                 { result ->
@@ -38,22 +39,21 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
 
 
     private fun getRequestParams(
-        productCategory: String, listofAmount: HashMap<String, String>, listOfUrls: HashMap<String, String>
+        productCategory: String, listofAmountandUrls: HashMap<String, FintechPriceUrlDataModel>
     ): MutableMap<String, Any?> {
 
         var listOfVariantDetail: MutableList<WidgetRequestModel> =
-            setAmountList(listofAmount, listOfUrls)
+            setAmountList(listofAmountandUrls)
 
         return mutableMapOf("request" to setProductDetailMap(productCategory, listOfVariantDetail))
     }
 
     private fun setAmountList(
-        listofAmount: HashMap<String, String>,
-        listOfUrls: HashMap<String, String>
+        listofAmountandUrls: HashMap<String, FintechPriceUrlDataModel>
     ): MutableList<WidgetRequestModel> {
         val listOfVariantDetail: MutableList<WidgetRequestModel> = ArrayList()
-        listofAmount.forEach { (key, value) ->
-            listOfVariantDetail.add(WidgetRequestModel(amount = value.toDouble(), redirectionUrl = listOfUrls[key]))
+        listofAmountandUrls.forEach { (key, value) ->
+            listOfVariantDetail.add(WidgetRequestModel(amount = value.price?.toDouble()?:0.0, redirectionUrl = value.url))
         }
         return listOfVariantDetail
     }

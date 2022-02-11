@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
@@ -276,21 +277,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateFintechData(selectedProductId: String,variantData: ProductVariant?, productInfo: DynamicProductInfoP1?) {
         productInfo?.let{ productDetail->
-            val productIdToPriceMap = HashMap<String, String>()
-            val productIdToProductUrl = HashMap<String, String>()
+            val productIdToPriceURLMap = HashMap<String, FintechPriceUrlDataModel>()
             val productCategoryId: String = productDetail.basic.category.id
             if (variantData == null) {
-                productIdToPriceMap[productDetail.basic.productID] =
-                    productDetail.data.price.value.toString()
-                productIdToProductUrl[productDetail.basic.productID] = productDetail.basic.url
+                productIdToPriceURLMap[productDetail.basic.productID] = FintechPriceUrlDataModel(productDetail.basic.url,productDetail.data.price.value.toString())
 
             } else {
                 for (i in variantData.children.indices) {
-                    productIdToPriceMap[variantData.children[i].productId] =
-                        variantData.children[i].price.toString()
-                    variantData.children[i].url?.let {
-                        productIdToProductUrl[variantData.children[i].productId] = it
-                    }
+                    productIdToPriceURLMap[variantData.children[i].productId] = FintechPriceUrlDataModel( variantData.children[i].url,variantData.children[i].price.toString())
                 }
             }
 
@@ -299,12 +293,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 fintechWidgetMap?.run {
                     productId = selectedProductId
                     categoryId = productCategoryId
-                    idToPriceMap = productIdToPriceMap
-                    idToProductUrlMap = productIdToProductUrl
-
-
+                    idToPriceUrlMap = productIdToPriceURLMap
                 }
             }
+        }?: kotlin.run {
+            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
+            {
+                fintechWidgetMap?.run {
+                    productId = selectedProductId
+                }
+            }
+
         }
     }
 

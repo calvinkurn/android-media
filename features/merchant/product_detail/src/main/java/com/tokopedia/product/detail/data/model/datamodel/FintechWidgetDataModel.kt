@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class FintechWidgetDataModel(
@@ -9,10 +10,9 @@ data class FintechWidgetDataModel(
     val type: String = "",
     var productId: String = "",
     var categoryId: String? = null,
-    var idToPriceMap: HashMap<String, String> = HashMap(),
-    var idToProductUrlMap: HashMap<String, String> = HashMap()
+    var idToPriceUrlMap: HashMap<String, FintechPriceUrlDataModel> = HashMap(),
 
-): DynamicPdpDataModel
+    ): DynamicPdpDataModel
 {
     override fun type() = type
 
@@ -21,7 +21,7 @@ data class FintechWidgetDataModel(
     override fun name() = name
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return newData is FintechWidgetDataModel &&  newData.productId == this.productId
+        return newData is FintechWidgetDataModel &&  (newData.productId == this.productId && newData.idToPriceUrlMap.equals(this.idToPriceUrlMap))
     }
 
     override fun newInstance() = this.copy()

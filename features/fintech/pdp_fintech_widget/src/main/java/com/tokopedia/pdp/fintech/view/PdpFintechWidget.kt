@@ -34,12 +34,11 @@ class PdpFintechWidget @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
 
-    private var idToPriceMap = HashMap<String, String>()
+    private var idToPriceUrlMap = HashMap<String, FintechPriceUrlDataModel>()
     private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
     private var categoryId: String? = null
     private lateinit var productID: String
     private lateinit var productPrice: String
-    private var idToProductUrl = HashMap<String,String>()
 
     @Inject
     lateinit var pdpWidgetAnalytics: dagger.Lazy<PdpFintechWidgetAnalytics>
@@ -83,7 +82,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                          if(baseChipResponse.list.size>0)
                             titleTextView.text = baseChipResponse.list[0].title
                     }
-                    getChipDataAndUpdate(idToPriceMap[productID])
+                    getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
                 }
                 is Fail -> {
                     instanceProductUpdateListner.removeWidget()
@@ -119,7 +118,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                        redirectionUrl =  url,
                        tenure= tenure,
                         gatewayId= gateWayID,
-                       productUrl =  idToProductUrl[productID],
+                       productUrl =  idToPriceUrlMap[productID]?.url,
                        gatewayCode =  gatewayBrand,
                         widgetBottomSheet = widgetBottomsheet
                     )
@@ -149,17 +148,15 @@ class PdpFintechWidget @JvmOverloads constructor(
                 categoryId?.let {
                     fintechWidgetViewModel.getWidgetData(
                         it,
-                        idToPriceMap,
-                        idToProductUrl
+                        idToPriceUrlMap
                     )
                 }
             } else {
-                if (priceToChip.size != 0 && idToPriceMap.size != 0)
-                    getChipDataAndUpdate(idToPriceMap[productID])
+                if (priceToChip.size != 0)
+                    getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
                 else
                     categoryId?.let {
-                        fintechWidgetViewModel.getWidgetData(it, idToPriceMap,
-                            idToProductUrl)
+                        fintechWidgetViewModel.getWidgetData(it, idToPriceUrlMap)
                     }
             }
 
@@ -185,15 +182,18 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     fun updateidToPriceMap(
-        productIdToPrice: HashMap<String, String>,
+        productIdToPrice: HashMap<String, FintechPriceUrlDataModel>,
         productCategoryId: String?,
-        idToProductUrlMap: HashMap<String, String>
     ) {
-        idToPriceMap = productIdToPrice
+        idToPriceUrlMap = productIdToPrice
         categoryId = productCategoryId
-        idToProductUrl = idToProductUrlMap
 
 
     }
 
 }
+
+data class FintechPriceUrlDataModel(
+    var url:String? = null,
+    var price:String? = null
+)
