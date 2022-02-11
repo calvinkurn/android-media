@@ -6,15 +6,13 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
-import android.view.KeyEvent.KEYCODE_BACK
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.iconunify.IconUnify
@@ -224,7 +222,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun setAutoCompleteList(suggestions: List<TopupBillsPersoFavNumberItem>) {
         autoCompleteAdapter?.updateItems(
-            CommonTopupBillsDataMapper
+            FavoriteNumberDataMapper
                 .mapPersoFavNumberItemToContactDataView(suggestions).toMutableList())
     }
 
@@ -433,11 +431,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         Telco(InputType.TYPE_CLASS_TEXT, IconUnify.CONTACT, true),
         Listrik(InputType.TYPE_CLASS_TEXT, IconUnify.QR_CODE, false),
         Emoney(InputType.TYPE_CLASS_NUMBER, IconUnify.CAMERA, false)
-    }
-
-
-    enum class InputNumberActionType {
-        MANUAL, CONTACT, FAVORITE, CHIP, AUTOCOMPLETE
     }
 
     private fun String.isNumeric(): Boolean {

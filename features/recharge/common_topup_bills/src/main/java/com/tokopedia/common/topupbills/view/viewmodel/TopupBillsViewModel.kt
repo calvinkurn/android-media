@@ -8,7 +8,9 @@ import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
+import com.tokopedia.common.topupbills.favorite.domain.usecase.GetRechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.*
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -18,7 +20,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
@@ -31,7 +32,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
 import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -40,6 +40,7 @@ import javax.inject.Inject
 class TopupBillsViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
+    private val getRechargeFavoriteNumberUseCase: GetRechargeFavoriteNumberUseCase,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -58,6 +59,10 @@ class TopupBillsViewModel @Inject constructor(
     private val _favNumberData = MutableLiveData<Result<TopupBillsFavNumber>>()
     val favNumberData: LiveData<Result<TopupBillsFavNumber>>
         get() = _favNumberData
+
+    private val _persoFavNumberData = MutableLiveData<Result<Pair<TopupBillsPersoFavNumber, Boolean>>>()
+    val persoFavNumberData: LiveData<Result<Pair<TopupBillsPersoFavNumber, Boolean>>>
+        get() = _persoFavNumberData
 
     private val _seamlessFavNumberData = MutableLiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>()
     val seamlessFavNumberData: LiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>
@@ -177,7 +182,7 @@ class TopupBillsViewModel @Inject constructor(
         rawQuery: String,
         mapParam: Map<String, Any>,
         shouldRefreshInputNumber: Boolean = true,
-        prevActionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType? = null
+        prevActionType: FavoriteNumberActionType? = null
     ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
@@ -198,10 +203,31 @@ class TopupBillsViewModel @Inject constructor(
         }
     }
 
+    fun getPersoFavoriteNumbers(
+        categoryIds: List<Int>,
+        shouldRefreshInputNumber: Boolean = true,
+        prevActionType: FavoriteNumberActionType? = null
+    ) {
+        launchCatchError(block = {
+            val favoriteNumber = getRechargeFavoriteNumberUseCase.apply {
+                setRequestParams(categoryIds)
+            }.executeOnBackground()
+            _persoFavNumberData.postValue(Success(favoriteNumber.persoFavoriteNumber to shouldRefreshInputNumber))
+        }) {
+            val errMsg = when (prevActionType) {
+                UPDATE -> ERROR_FETCH_AFTER_UPDATE
+                DELETE -> ERROR_FETCH_AFTER_DELETE
+                UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
+                else -> it.message
+            }
+            _persoFavNumberData.postValue(Fail(Throwable(errMsg)))
+        }
+    }
+
     fun modifySeamlessFavoriteNumber(
         rawQuery: String,
         mapParam: Map<String, Any>,
-        actionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType,
+        actionType: FavoriteNumberActionType,
         onModifyCallback: (() -> Unit)? = null
     ) {
         launchCatchError(block = {
