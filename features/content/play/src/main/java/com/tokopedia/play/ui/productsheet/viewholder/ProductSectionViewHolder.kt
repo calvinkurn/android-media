@@ -22,8 +22,8 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
-import java.util.*
-import java.util.concurrent.TimeUnit
+import java.util.Calendar
+import java.util.Date
 
 /**
  * @author by astidhiyaa on 27/01/22
@@ -106,19 +106,11 @@ class ProductSectionViewHolder(
         timerTime = if(item.type == ProductSectionType.Active) item.endTime else item.startTime
 
         val convertedServerTime = item.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS)
+        val convertedTimerTime = timerTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
 
         val dt = DateUtil.getCurrentCalendar().apply {
-                val diff = timerTime.toDate(
-                    DateUtil.YYYY_MM_DD_T_HH_MM_SS
-                ).time - getTimeDiff(serverTime = convertedServerTime, time).time
-                val seconds = TimeUnit.MILLISECONDS.toSeconds(diff).toInt()
-                val minutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
-                val hours = TimeUnit.MILLISECONDS.toHours(diff).toInt()
-                val days = TimeUnit.MILLISECONDS.toDays(diff).toInt()
-                add(Calendar.SECOND, seconds)
-                add(Calendar.MINUTE, minutes)
-                add(Calendar.HOUR, hours)
-                add(Calendar.DAY_OF_MONTH, days)
+                val diff = convertedTimerTime.time - getTimeDiff(serverTime = convertedServerTime, currentTime = time).time
+                add(Calendar.MILLISECOND, diff.toInt())
             }
             timerSection.pause()
             timerSection.targetDate = dt
