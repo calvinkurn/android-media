@@ -34,7 +34,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster

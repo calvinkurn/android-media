@@ -15,7 +15,7 @@ import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.ProductUiModel
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 

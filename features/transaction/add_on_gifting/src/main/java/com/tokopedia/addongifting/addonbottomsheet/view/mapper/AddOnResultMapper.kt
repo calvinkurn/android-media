@@ -1,7 +1,7 @@
 package com.tokopedia.addongifting.addonbottomsheet.view.mapper
 
 import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.*
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.*
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 
 object AddOnResultMapper {
 

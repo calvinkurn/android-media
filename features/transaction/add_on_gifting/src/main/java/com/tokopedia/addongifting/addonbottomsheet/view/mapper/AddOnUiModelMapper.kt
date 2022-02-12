@@ -5,8 +5,8 @@ import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.AddOn
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateResponse
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.ProductUiModel
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnData
-import com.tokopedia.purchase_platform.common.feature.addongifting.data.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import kotlin.math.roundToLong
 
