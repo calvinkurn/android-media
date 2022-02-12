@@ -109,37 +109,6 @@ class GetLayoutUseCase(
               "GetSellerDashboardPageLayout": {
                 "widget": [
                   {
-                    "ID": 833,
-                    "widgetType": "calendar",
-                    "title": "Kalender Event",
-                    "subtitle": "",
-                    "comparePeriode": false,
-                    "tooltip": {
-                      "title": "",
-                      "content": "",
-                      "show": false,
-                      "list": []
-                    },
-                    "tag": "",
-                    "showEmpty": true,
-                    "postFilter": [],
-                    "url": "",
-                    "applink": "",
-                    "dataKey": "sellerCalendarEvent",
-                    "ctaText": "",
-                    "maxData": 0,
-                    "maxDisplay": 0,
-                    "gridSize": 2,
-                    "emptyState": {
-                      "imageUrl": "",
-                      "title": "",
-                      "description": "",
-                      "ctaText": "",
-                      "applink": ""
-                    },
-                    "searchTableColumnFilter": []
-                  },
-                  {
                     "ID": 10,
                     "widgetType": "section",
                     "title": "Penting hari ini",
@@ -639,6 +608,37 @@ class GetLayoutUseCase(
                       "description": "Iklanmu sudah tidak aktif, nih. Mulai beriklan lagi yuk!",
                       "ctaText": "Cek dashboard TopAds",
                       "applink": "tokopedia://topads/dashboard"
+                    },
+                    "searchTableColumnFilter": []
+                  },
+                  {
+                    "ID": 833,
+                    "widgetType": "calendar",
+                    "title": "Kalender Event",
+                    "subtitle": "",
+                    "comparePeriode": false,
+                    "tooltip": {
+                      "title": "",
+                      "content": "",
+                      "show": false,
+                      "list": []
+                    },
+                    "tag": "",
+                    "showEmpty": true,
+                    "postFilter": [],
+                    "url": "",
+                    "applink": "",
+                    "dataKey": "sellerCalendarEvent",
+                    "ctaText": "",
+                    "maxData": 0,
+                    "maxDisplay": 0,
+                    "gridSize": 2,
+                    "emptyState": {
+                      "imageUrl": "",
+                      "title": "",
+                      "description": "",
+                      "ctaText": "",
+                      "applink": ""
                     },
                     "searchTableColumnFilter": []
                   },

@@ -86,31 +86,85 @@ class GetCalendarDataUseCase(
                 "dataKey": "sellerCalendarEvent",
                 "events": [
                   {
-                    "eventName": "WIB",
-                    "description": "waktu indonesia belanja",
+                    "eventName": "Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini",
+                    "description": "Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji.",
                     "label": "campaign",
                     "startDate": "25-01-2022",
                     "endDate": "31-01-2022",
                     "url": "tokopedia.com",
-                    "applink": "app://tokopedia"
+                    "applink": "tokopedia://gold-merchant-statistic-dashboard"
                   },
                   {
-                    "eventName": "WIB",
-                    "description": "waktu indonesia belanja",
+                    "eventName": "Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini",
+                    "description": "Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji.",
                     "label": "campaign",
                     "startDate": "25-01-2022",
                     "endDate": "31-01-2022",
                     "url": "tokopedia.com",
-                    "applink": "app://tokopedia"
+                    "applink": "tokopedia://gold-merchant-statistic-dashboard"
                   },
                   {
-                    "eventName": "WIB",
-                    "description": "waktu indonesia belanja",
+                    "eventName": "Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini",
+                    "description": "Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji.",
                     "label": "campaign",
                     "startDate": "25-01-2022",
                     "endDate": "31-01-2022",
                     "url": "tokopedia.com",
-                    "applink": "app://tokopedia"
+                    "applink": "tokopedia://gold-merchant-statistic-dashboard"
+                  },
+                  {
+                    "eventName": "Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini",
+                    "description": "Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji.",
+                    "label": "campaign",
+                    "startDate": "25-01-2022",
+                    "endDate": "31-01-2022",
+                    "url": "tokopedia.com",
+                    "applink": "tokopedia://gold-merchant-statistic-dashboard"
+                  },
+                  {
+                    "eventName": "Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini",
+                    "description": "Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji.",
+                    "label": "campaign",
+                    "startDate": "25-01-2022",
+                    "endDate": "31-01-2022",
+                    "url": "tokopedia.com",
+                    "applink": "tokopedia://gold-merchant-statistic-dashboard"
+                  },
+                  {
+                    "eventName": "Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini",
+                    "description": "Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji.",
+                    "label": "campaign",
+                    "startDate": "25-01-2022",
+                    "endDate": "31-01-2022",
+                    "url": "tokopedia.com",
+                    "applink": "tokopedia://gold-merchant-statistic-dashboard"
+                  },
+                  {
+                    "eventName": "Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini",
+                    "description": "Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji.",
+                    "label": "campaign",
+                    "startDate": "25-01-2022",
+                    "endDate": "31-01-2022",
+                    "url": "tokopedia.com",
+                    "applink": "tokopedia://gold-merchant-statistic-dashboard"
+                  },
+                  {
+                    "eventName": "Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini",
+                    "description": "Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji.",
+                    "label": "campaign",
+                    "startDate": "25-01-2022",
+                    "endDate": "25-01-2022",
+                    "url": "tokopedia.com",
+                    "applink": "tokopedia://gold-merchant-statistic-dashboard"
+                  },
+                  {
+                    "eventName": "Judul maksimal 2 baris, boleh pakai 1 emoji 🎉 seperti contoh text ini",
+                    "description": "Untuk desktipsi event/campaign maksimal 2 baris, tidak ada emoji.",
+                    "label": "campaign",
+                    "startDate": "25-01-2022",
+                    "endDate": "25-01-2022",
+                    "url": "tokopedia.com",
+                    "applink": "tokopedia://gold-merchant-statistic-dashboard"
                   }
                 ],
                 "error": false,

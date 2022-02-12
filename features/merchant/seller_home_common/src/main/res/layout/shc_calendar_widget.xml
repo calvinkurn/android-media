@@ -24,6 +24,14 @@
             app:typographyWeight="bold"
             tools:text="Kalender Event:" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="22dp"
+            android:background="@drawable/bg_shc_calendar_shadow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcCalendarDate"
             android:layout_width="0dp"
@@ -79,5 +87,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle"
             app:layout_constraintVertical_bias="0" />
+
+        <include
+            android:id="@+id/shcCalendarWidgetErrorState"
+            layout="@layout/shc_calendar_widget_error_state"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle" />
+
+        <include
+            android:id="@+id/shcCalendarWidgetEmptyState"
+            layout="@layout/shc_partial_common_widget_state_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

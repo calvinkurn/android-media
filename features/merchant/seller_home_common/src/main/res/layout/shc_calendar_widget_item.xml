@@ -26,9 +26,19 @@
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarStartDate"
-        app:typographyType="body_3"
+        app:typographyType="small"
         tools:text="Jan" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgShcEventItemDash"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:minHeight="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvShcCalendarEndDate"
+        app:layout_constraintEnd_toEndOf="@+id/tvShcCalendarStartMonth"
+        app:layout_constraintStart_toStartOf="@+id/tvShcCalendarStartMonth"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarStartMonth"
+        tools:src="@drawable/ic_shc_vertical_dash_line" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcCalendarEndDate"
@@ -50,7 +60,7 @@
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="small"
         tools:text="Jan" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -62,7 +72,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvShcCalendarEndDate"
+        app:layout_constraintStart_toEndOf="@+id/tvShcCalendarStartDate"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold"

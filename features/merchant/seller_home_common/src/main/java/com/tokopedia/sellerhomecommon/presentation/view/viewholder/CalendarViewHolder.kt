@@ -33,6 +33,8 @@ class CalendarViewHolder(
 
     private val binding by lazy { ShcCalendarWidgetBinding.bind(itemView) }
     private val loadingStateBinding by lazy { binding.shcCalendarWidgetLoadingState }
+    private val errorStateBinding by lazy { binding.shcCalendarWidgetErrorState }
+    private val emptyStateBinding by lazy { binding.shcCalendarWidgetEmptyState }
 
     private val pagerAdapter by lazy {
         CalendarEventPagerAdapter {
@@ -59,7 +61,9 @@ class CalendarViewHolder(
     }
 
     private fun showSuccessState(element: CalendarWidgetUiModel) {
-        loadingStateBinding.viewShcCalendarLoadingState.gone()
+        loadingStateBinding.viewShcCalendarLoading.gone()
+        errorStateBinding.viewShcCalendarError.gone()
+        emptyStateBinding.commonWidgetErrorState.gone()
 
         with(binding) {
             tvShcCalendarTitle.visible()
@@ -72,11 +76,24 @@ class CalendarViewHolder(
     }
 
     private fun showErrorState(element: CalendarWidgetUiModel) {
+        errorStateBinding.run {
+            viewShcCalendarError.visible()
+            btnShcCalendarReload.setOnClickListener {
 
+            }
+        }
+        emptyStateBinding.commonWidgetErrorState.gone()
+        loadingStateBinding.viewShcCalendarLoading.gone()
+        with(binding) {
+            rvShcCalendar.gone()
+            pageControlShcCalendar.gone()
+        }
     }
 
     private fun showLoadingState() {
-        loadingStateBinding.viewShcCalendarLoadingState.visible()
+        loadingStateBinding.viewShcCalendarLoading.visible()
+        errorStateBinding.viewShcCalendarError.gone()
+        emptyStateBinding.commonWidgetErrorState.gone()
         with(binding) {
             rvShcCalendar.gone()
             pageControlShcCalendar.gone()
