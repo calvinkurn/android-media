@@ -30,7 +30,9 @@ import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
 
 class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
+
     companion object {
+        private const val EMPTY_STRING = ""
         private const val BUNDLE_KEY_VOUCHER = "voucher"
         private const val ERROR_MESSAGE = "Error edit voucher quota"
 
@@ -121,31 +123,32 @@ class UpdateCouponQuotaBottomSheet : BottomSheetUnify() {
 
     private fun observeValidationResult() {
         viewModel.validInput.observe(viewLifecycleOwner) { result ->
+            val error = result !is UpdateCouponQuotaViewModel.QuotaState.Valid
+            binding.textFieldQuota.setError(error)
+            binding.btnSave.isEnabled = result is UpdateCouponQuotaViewModel.QuotaState.Valid
+
             when (result) {
+                UpdateCouponQuotaViewModel.QuotaState.QuotaIsZero -> {
+                    binding.textFieldQuota.setMessage(getString(R.string.error_message_quota_is_zero))
+                }
                 is UpdateCouponQuotaViewModel.QuotaState.BelowMinQuota -> {
-                    binding.textFieldQuota.setError(true)
                     val minQuotaErrorMessage =
                         String.format(
                             getString(R.string.placeholder_minimum_quota).toBlankOrString(),
                             result.minQuota
                         )
                     binding.textFieldQuota.setMessage(minQuotaErrorMessage)
-                    binding.btnSave.isEnabled = false
                 }
                 is UpdateCouponQuotaViewModel.QuotaState.ExceedMaxAllowedQuota -> {
-                    binding.textFieldQuota.setError(true)
                     val maxQuotaErrorMessage =
                         String.format(
                             getString(R.string.placeholder_maximum_quota).toBlankOrString(),
                             result.maxQuota
                         )
                     binding.textFieldQuota.setMessage(maxQuotaErrorMessage)
-                    binding.btnSave.isEnabled = false
                 }
                 is UpdateCouponQuotaViewModel.QuotaState.Valid -> {
-                    binding.textFieldQuota.setError(false)
-                    binding.textFieldQuota.setMessage("")
-                    binding.btnSave.isEnabled = true
+                    binding.textFieldQuota.setMessage(EMPTY_STRING)
                 }
             }
         }

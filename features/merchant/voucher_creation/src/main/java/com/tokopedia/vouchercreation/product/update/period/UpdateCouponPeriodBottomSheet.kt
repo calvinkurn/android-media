@@ -307,7 +307,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
 
     private fun updateCoupon() {
         binding.btnSave.isLoading = true
-        binding.btnSave.loadingText = getString(R.string.please_wait)
+        binding.btnSave.loadingText = getString(R.string.mvc_please_wait)
 
         viewModel.updateCoupon()
     }

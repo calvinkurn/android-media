@@ -220,7 +220,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
             changeButtonBehavior()
             hideTermAndCondition()
             binding.tpgUpdateProduct.text = getString(R.string.manage_product)
-            updatePreviewCouponImageConstraint()
+            updateButtonConstraint()
         }
     }
 
@@ -597,7 +597,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun createCoupon() {
         binding.btnCreateCoupon.isLoading = true
-        binding.btnCreateCoupon.loadingText = getString(R.string.please_wait)
+        binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
         viewModel.createCoupon(
             couponInformation ?: return,
@@ -608,7 +608,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun updateCoupon(couponId : Long) {
         binding.btnCreateCoupon.isLoading = true
-        binding.btnCreateCoupon.loadingText = getString(R.string.please_wait)
+        binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
         viewModel.updateCoupon(
             couponId,
@@ -709,7 +709,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.tpgTermAndConditions.gone()
     }
 
-    private fun updatePreviewCouponImageConstraint() {
+    private fun updateButtonConstraint() {
         val set = ConstraintSet()
         set.clone(binding.layout)
         set.connect(
