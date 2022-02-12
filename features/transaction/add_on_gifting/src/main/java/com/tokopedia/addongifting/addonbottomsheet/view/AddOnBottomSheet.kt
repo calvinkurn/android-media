@@ -5,22 +5,21 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Insets
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateResponse
-import com.tokopedia.addongifting.databinding.LayoutAddOnBottomSheetBinding
 import com.tokopedia.addongifting.addonbottomsheet.view.adapter.AddOnListAdapter
 import com.tokopedia.addongifting.addonbottomsheet.view.adapter.AddOnListAdapterTypeFactory
 import com.tokopedia.addongifting.addonbottomsheet.view.di.AddOnComponent
@@ -29,6 +28,7 @@ import com.tokopedia.addongifting.addonbottomsheet.view.mapper.AddOnResultMapper
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.addongallery.AddOnGalleryActivity
+import com.tokopedia.addongifting.databinding.LayoutAddOnBottomSheetBinding
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -40,10 +40,21 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import android.util.DisplayMetrics
+
+import android.view.WindowInsets
+
+import android.view.WindowMetrics
+
+import android.os.Build
+
+
+
 
 class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
 
@@ -140,8 +151,6 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
 
     private fun initializeObserver(viewBinding: LayoutAddOnBottomSheetBinding) {
         observeGlobalEvent(viewBinding)
-        observeProductData()
-        observeAddOnData()
         observeFragmentData(viewBinding)
     }
 
@@ -188,32 +197,24 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
         }
     }
 
-    private fun observeProductData() {
-        viewModel.productUiModel.observe(this, {
-            hideLoading()
-            addOrModify(it)
-        })
-    }
-
-    private fun observeAddOnData() {
-        viewModel.addOnUiModel.observe(this, {
-            hideLoading()
-            addOrModify(it)
-        })
-    }
-
     private fun observeFragmentData(viewBinding: LayoutAddOnBottomSheetBinding) {
-        viewModel.fragmentUiModel.observe(this, {
-            renderTotalAmount(viewBinding, it)
-        })
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.fragmentUiModel.collect {
+                if (it.hasLoadedData) {
+                    hideLoading()
+                    adapter?.updateList(it.recyclerViewItems)
+                    renderTotalAmount(viewBinding, it)
+                }
+            }
+        }
     }
 
     private fun renderTotalAmount(viewBinding: LayoutAddOnBottomSheetBinding, fragmentUiModel: FragmentUiModel) {
         with(viewBinding.totalAmount) {
             setLabelTitle(context.getString(R.string.add_on_label_total_amount))
-            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.addOnTotalPrice, false).removeDecimalSuffix())
-            if (fragmentUiModel.addOnTotalQuantity > 0) {
-                setCtaText(String.format(context.getString(R.string.add_on_label_total_amount_cta_save), fragmentUiModel.addOnTotalQuantity))
+            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.totalAmount.addOnTotalPrice, false).removeDecimalSuffix())
+            if (fragmentUiModel.totalAmount.addOnTotalQuantity > 0) {
+                setCtaText(String.format(context.getString(R.string.add_on_label_total_amount_cta_save), fragmentUiModel.totalAmount.addOnTotalQuantity))
             } else {
                 setCtaText(context.getString(R.string.add_on_label_total_amount_cta_save))
             }
@@ -228,14 +229,6 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
                     dismiss()
                 }
             }
-        }
-    }
-
-    private fun addOrModify(it: Visitable<*>) {
-        if (adapter?.data?.contains(it) == true) {
-            adapter?.modifyData(adapter?.data?.indexOf(it) ?: RecyclerView.NO_POSITION)
-        } else {
-            adapter?.addVisitable(it)
         }
     }
 
@@ -254,7 +247,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
 
     private fun adjustRecyclerViewPaddingBottom(viewBinding: LayoutAddOnBottomSheetBinding) {
         measureRecyclerViewPaddingDebounceJob?.cancel()
-        measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
+        measureRecyclerViewPaddingDebounceJob = viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             delay(DELAY_ADJUST_RECYCLER_VIEW_MARGIN)
             adjustRecyclerViewPadding(viewBinding)
         }

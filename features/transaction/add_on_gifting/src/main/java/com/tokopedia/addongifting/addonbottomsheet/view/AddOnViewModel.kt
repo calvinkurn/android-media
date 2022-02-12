@@ -1,11 +1,11 @@
 package com.tokopedia.addongifting.addonbottomsheet.view
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.*
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateRequest
+import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateResponse
 import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.*
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnSavedStateUseCase
@@ -14,41 +14,61 @@ import com.tokopedia.addongifting.addonbottomsheet.view.mapper.AddOnUiModelMappe
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.ProductUiModel
+import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.TotalAmountUiModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatchers,
+class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispatchers,
                                          private val getAddOnByProductUseCase: GetAddOnByProductUseCase,
                                          private val getAddOnSavedStateUseCase: GetAddOnSavedStateUseCase,
                                          private val saveAddOnStateUseCase: SaveAddOnStateUseCase)
     : BaseViewModel(executorDispatchers.main) {
 
-    // Global Event
     private val _globalEvent = SingleLiveEvent<GlobalEvent>()
     val globalEvent: LiveData<GlobalEvent>
         get() = _globalEvent
 
-    // Fragment / Global Data
-    private val _fragmentUiModel = MutableLiveData<FragmentUiModel>()
-    val fragmentUiModel: LiveData<FragmentUiModel>
-        get() = _fragmentUiModel
+    private var hasLoadData: Boolean = false
 
-    // Product Data
-    private val _productUiModel = MutableLiveData<ProductUiModel>()
-    val productUiModel: LiveData<ProductUiModel>
-        get() = _productUiModel
+    private val _productUiModel = MutableStateFlow(ProductUiModel())
+    private val _addOnUiModel = MutableStateFlow(AddOnUiModel())
+    private val _totalAmountUiModel = MutableStateFlow(TotalAmountUiModel())
 
-    // Add On Data
-    private val _addOnUiModel = MutableLiveData<AddOnUiModel>()
-    val addOnUiModel: LiveData<AddOnUiModel>
-        get() = _addOnUiModel
+    val fragmentUiModel: Flow<FragmentUiModel> = combine(
+            _productUiModel,
+            _addOnUiModel,
+            _totalAmountUiModel
+    ) { productUiModel, addonUiModel, totalAmountUiModel ->
+        FragmentUiModel().apply {
+            hasLoadedData = hasLoadData
+            recyclerViewItems = listOf(productUiModel, addonUiModel)
+            totalAmount = totalAmountUiModel
+        }
+    }.flowOn(executorDispatchers.immediate)
 
     fun loadAddOnData(addOnProductData: AddOnProductData, mockAddOnResponse: String? = "", mockAddOnSavedStateResponse: String? = "") {
         getAddOnByProductUseCase.mockResponse = mockAddOnResponse ?: ""
 
-        val params = GetAddOnByProductRequest().apply {
+        val params = generateGetAddOnByProductRequestParams(addOnProductData)
+        getAddOnByProductUseCase.setParams(params)
+        getAddOnByProductUseCase.execute(
+                onSuccess = {
+                    handleOnSuccessGetAddOnByProduct(it, addOnProductData, mockAddOnSavedStateResponse)
+                },
+                onError = {
+                    handleOnErrorGetAddOnProduct(it)
+                }
+        )
+    }
+
+    private fun generateGetAddOnByProductRequestParams(addOnProductData: AddOnProductData): GetAddOnByProductRequest {
+        return GetAddOnByProductRequest().apply {
             addOnRequest = addOnProductData.availableBottomSheetData.products.map {
                 AddOnByProductRequest().apply {
                     productId = it.productId
@@ -68,29 +88,45 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                 inventory = true
             }
         }
-        getAddOnByProductUseCase.setParams(params)
-        getAddOnByProductUseCase.execute(
+    }
+
+    private fun handleOnSuccessGetAddOnByProduct(getAddOnByProductResponse: GetAddOnByProductResponse,
+                                                 addOnProductData: AddOnProductData,
+                                                 mockAddOnSavedStateResponse: String?) {
+        // Todo : adjust error validation, should be based on error code not error message
+        if (getAddOnByProductResponse.dataResponse.error.message.isBlank()) {
+            loadSavedStateData(addOnProductData, getAddOnByProductResponse, mockAddOnSavedStateResponse)
+        } else {
+            throw ResponseErrorException(getAddOnByProductResponse.dataResponse.error.message)
+        }
+    }
+
+    private fun handleOnErrorGetAddOnProduct(throwable: Throwable) {
+        _globalEvent.value = GlobalEvent().apply {
+            state = GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA
+            this.throwable = throwable
+        }
+    }
+
+    private fun loadSavedStateData(addOnProductData: AddOnProductData,
+                                   addOnByProductResponse: GetAddOnByProductResponse,
+                                   mockAddOnSavedStateResponse: String? = "") {
+        getAddOnSavedStateUseCase.mockResponse = mockAddOnSavedStateResponse ?: ""
+
+        val params = generateGetAddOnSavedStateRequestParams(addOnProductData)
+        getAddOnSavedStateUseCase.setParams(params)
+        getAddOnSavedStateUseCase.execute(
                 onSuccess = {
-                    // Todo : adjust error validation
-                    if (it.dataResponse.error.message.isBlank()) {
-                        loadSavedStateData(addOnProductData, it, mockAddOnSavedStateResponse)
-                    } else {
-                        throw ResponseErrorException(it.dataResponse.error.message)
-                    }
+                    handleOnSuccessGetAddOnSavedState(it, addOnProductData, addOnByProductResponse)
                 },
                 onError = {
-                    _globalEvent.value = GlobalEvent().apply {
-                        state = GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA
-                        throwable = it
-                    }
+                    handleOnErrorGetAddOnSavedState(addOnProductData, addOnByProductResponse)
                 }
         )
     }
 
-    private fun loadSavedStateData(addOnProductData: AddOnProductData, addOnByProductResponse: GetAddOnByProductResponse, mockAddOnSavedStateResponse: String? = "") {
-        getAddOnSavedStateUseCase.mockResponse = mockAddOnSavedStateResponse ?: ""
-
-        val params = GetAddOnSavedStateRequest().apply {
+    private fun generateGetAddOnSavedStateRequestParams(addOnProductData: AddOnProductData): GetAddOnSavedStateRequest {
+        return GetAddOnSavedStateRequest().apply {
             source = addOnProductData.source
             addOnKeys = listOf(
                     if (addOnProductData.availableBottomSheetData.isTokoCabang) {
@@ -101,37 +137,55 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                     }
             )
         }
-        getAddOnSavedStateUseCase.setParams(params)
-        getAddOnSavedStateUseCase.execute(
-                onSuccess = {
-                    if (it.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
-                        throw ResponseErrorException(it.getAddOns.errorMessage.joinToString(". "))
-                    } else {
-                        _globalEvent.value = GlobalEvent().apply {
-                            state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
-                        }
-                        val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
-                        _productUiModel.value = productUiModel
-                        val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, it)
-                        _addOnUiModel.value = addOnUiModel
-                    }
-                },
-                onError = {
-                    _globalEvent.value = GlobalEvent().apply {
-                        state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
-                    }
-                    val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
-                    _productUiModel.value = productUiModel
-                    val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)
-                    _addOnUiModel.value = addOnUiModel
-                }
-        )
+    }
+
+    private fun handleOnSuccessGetAddOnSavedState(getAddOnSavedStateResponse: GetAddOnSavedStateResponse,
+                                                  addOnProductData: AddOnProductData,
+                                                  addOnByProductResponse: GetAddOnByProductResponse) {
+        hasLoadData = true
+        // Todo : adjust error validation, should be based on error code not error message
+        if (getAddOnSavedStateResponse.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
+            throw ResponseErrorException(getAddOnSavedStateResponse.getAddOns.errorMessage.joinToString(". "))
+        } else {
+            _globalEvent.value = GlobalEvent().apply {
+                state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+            }
+            val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
+            _productUiModel.value = productUiModel
+            val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, getAddOnSavedStateResponse)
+            _addOnUiModel.value = addOnUiModel
+        }
+    }
+
+    private fun handleOnErrorGetAddOnSavedState(addOnProductData: AddOnProductData,
+                                                addOnByProductResponse: GetAddOnByProductResponse) {
+        hasLoadData = true
+        _globalEvent.value = GlobalEvent().apply {
+            state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+        }
+        val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
+        _productUiModel.value = productUiModel
+        val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)
+        _addOnUiModel.value = addOnUiModel
     }
 
     fun saveAddOnState(addOnProductData: AddOnProductData, mockSaveStateResponse: String? = null) {
         saveAddOnStateUseCase.mockResponse = mockSaveStateResponse ?: ""
 
-        val params = SaveAddOnStateRequest().apply {
+        val params = generateSaveAddOnStateRequestParams(addOnProductData)
+        saveAddOnStateUseCase.setParams(params)
+        saveAddOnStateUseCase.execute(
+                onSuccess = {
+                    handleOnSuccessSaveAddOnState(it)
+                },
+                onError = {
+                    handleOnErrorSaveAddOnState()
+                }
+        )
+    }
+
+    private fun generateSaveAddOnStateRequestParams(addOnProductData: AddOnProductData): SaveAddOnStateRequest {
+        return SaveAddOnStateRequest().apply {
             source = addOnProductData.source
             addOns = listOf(
                     AddOnRequest().apply {
@@ -142,7 +196,7 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                             addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId}"
                             addOnLevel = AddOnRequest.ADD_ON_LEVEL_PRODUCT
                         }
-                        addOnUiModel.value?.let {
+                        _addOnUiModel.value.let {
                             addOnData = listOf(
                                     AddOnDataRequest().apply {
                                         addOnId = it.addOnId
@@ -165,28 +219,28 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
                     }
             )
         }
-        saveAddOnStateUseCase.setParams(params)
-        saveAddOnStateUseCase.execute(
-                onSuccess = {
-                    if (it.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
-                        throw ResponseErrorException(it.getAddOns.errorMessage.joinToString(". "))
-                    } else {
-                        _globalEvent.value = GlobalEvent().apply {
-                            state = GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON
-                            data = it
-                        }
-                    }
-                },
-                onError = {
-                    _globalEvent.value = GlobalEvent().apply {
-                        state = GlobalEvent.STATE_FAILED_SAVE_ADD_ON
-                    }
-                }
-        )
+    }
+
+    private fun handleOnSuccessSaveAddOnState(saveAddOnStateResponse: SaveAddOnStateResponse) {
+        // Todo : adjust error validation, should be based on error code not error message
+        if (saveAddOnStateResponse.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
+            throw ResponseErrorException(saveAddOnStateResponse.getAddOns.errorMessage.joinToString(". "))
+        } else {
+            _globalEvent.value = GlobalEvent().apply {
+                state = GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON
+                data = saveAddOnStateResponse
+            }
+        }
+    }
+
+    private fun handleOnErrorSaveAddOnState() {
+        _globalEvent.value = GlobalEvent().apply {
+            state = GlobalEvent.STATE_FAILED_SAVE_ADD_ON
+        }
     }
 
     fun updateFragmentUiModel(addOnUiModel: AddOnUiModel) {
-        _fragmentUiModel.value = FragmentUiModel().apply {
+        _totalAmountUiModel.value = TotalAmountUiModel().apply {
             if (addOnUiModel.isAddOnSelected) {
                 addOnTotalPrice = addOnUiModel.addOnPrice
                 addOnTotalQuantity = 1
@@ -210,12 +264,11 @@ class AddOnViewModel @Inject constructor(executorDispatchers: CoroutineDispatche
     }
 
     fun hasChangedState(): Boolean {
-        addOnUiModel.value?.let {
+        _addOnUiModel.value.let {
             return it.initialSelectedState != it.isAddOnSelected ||
                     it.initialAddOnNote != it.addOnNote ||
                     it.initialAddOnNoteFrom != it.addOnNoteFrom ||
                     it.initialAddOnNoteTo != it.addOnNoteTo
         }
-        return false
     }
 }
