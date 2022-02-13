@@ -141,7 +141,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         val message = ErrorHandler.getErrorMessage(activity, throwable)
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.baselist.R.string.retry_label), listener)
+                getString(com.tokopedia.baselist.R.string.retry_label), listener).show()
         }
     }
 

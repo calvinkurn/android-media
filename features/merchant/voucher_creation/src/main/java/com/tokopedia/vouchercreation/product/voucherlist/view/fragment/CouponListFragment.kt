@@ -149,9 +149,9 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         getBooleanArgs(IS_UPDATE_VOUCHER, IS_UPDATE_VOUCHER_DEFAULT_VALUE)
     }
 
-    private var globalError: GlobalError? = null
-    private var loadingList: View? = null
-    private var emptyStateList: View? = null
+    private val globalError: GlobalError? by lazy { view?.findViewById(R.id.geEmptyData) }
+    private val loadingList: View? by lazy { view?.findViewById(R.id.loadingList) }
+    private val emptyStateList: View? by lazy { view?.findViewById(R.id.emptyStateList) }
     private var shareCouponBottomSheet: ShareVoucherBottomSheet? = null
     private var shopBasicData: ShopBasicDataResult? = null
     private val filterStatus by lazy { SortFilterItem("Status Aktif") }
@@ -189,9 +189,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         setupFilterChips(view)
         setupObserver()
         getInitialValues()
-        globalError = view.findViewById(R.id.geEmptyData)
-        loadingList = view.findViewById(R.id.loadingList)
-        emptyStateList = view.findViewById(R.id.emptyStateList)
     }
 
     override fun createAdapter() = CouponListAdapter(::onCouponOptionClicked, ::onCouponIconCopyClicked)
