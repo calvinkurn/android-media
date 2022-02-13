@@ -8,18 +8,20 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDaggerFragment() {
 
     var adapter: T? = null
-    private var swipeToRefresh: SwipeRefreshLayout? = null
+    var recyclerView: RecyclerView? = null
+    var swipeToRefresh: SwipeRefreshLayout? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var endlessLayoutManagerListener: EndlessLayoutManagerListener? = null
-    private var recyclerView: RecyclerView? = null
     private val recyclerViewLayoutManager
         get() = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     private val isListEmpty
@@ -102,6 +104,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     private fun onGetListErrorWithEmptyData(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(activity, throwable)
         swipeToRefresh?.isEnabled = false
+        recyclerView?.gone()
         onGetListError(message)
     }
 
@@ -150,6 +153,9 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         updateScrollListenerState(hasNextPage)
         if (isListEmpty) {
             onDataEmpty()
+            recyclerView?.gone()
+        } else {
+            recyclerView?.show()
         }
 
         // load next page data if adapter data less than minimum scrollable data

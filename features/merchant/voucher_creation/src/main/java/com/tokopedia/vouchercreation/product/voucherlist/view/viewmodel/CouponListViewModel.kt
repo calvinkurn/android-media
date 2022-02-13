@@ -69,6 +69,8 @@ class CouponListViewModel @Inject constructor(
         get() = _isFreeBroadCastIconVisible
     val isSuccessDialogDisplayed: Boolean
         get() = _isSuccessDialogDisplayed
+    val couponSearchKeyword: String?
+        get() = _couponSearchKeyword
 
     fun setIsFreeBroadCastIconVisible(broadCastQuota: Int) {
         _isFreeBroadCastIconVisible = broadCastQuota.isMoreThanZero()

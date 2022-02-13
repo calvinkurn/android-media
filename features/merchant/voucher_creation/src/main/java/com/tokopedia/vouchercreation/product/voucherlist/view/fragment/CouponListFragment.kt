@@ -17,11 +17,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.toZeroIfNull
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -38,6 +41,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl.NO_VOUCHER_RESULT_URL
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.errorhandler.MvcError
@@ -145,6 +149,9 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         getBooleanArgs(IS_UPDATE_VOUCHER, IS_UPDATE_VOUCHER_DEFAULT_VALUE)
     }
 
+    private var globalError: GlobalError? = null
+    private var loadingList: View? = null
+    private var emptyStateList: View? = null
     private var shareCouponBottomSheet: ShareVoucherBottomSheet? = null
     private var shopBasicData: ShopBasicDataResult? = null
     private val filterStatus by lazy { SortFilterItem("Status Aktif") }
@@ -182,6 +189,9 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         setupFilterChips(view)
         setupObserver()
         getInitialValues()
+        globalError = view.findViewById(R.id.geEmptyData)
+        loadingList = view.findViewById(R.id.loadingList)
+        emptyStateList = view.findViewById(R.id.emptyStateList)
     }
 
     override fun createAdapter() = CouponListAdapter(::onCouponOptionClicked, ::onCouponIconCopyClicked)
@@ -197,6 +207,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     override fun loadData(page: Int) {
+        globalError?.gone()
         viewModel.getCouponList(page)
     }
 
@@ -205,19 +216,50 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     override fun onShowLoading() {
+        if (adapter?.itemCount.isMoreThanZero()) {
+            loadingList?.show()
+        }
         adapter?.showLoading()
     }
 
     override fun onHideLoading() {
+        loadingList?.gone()
+        emptyStateList?.gone()
         adapter?.hideLoading()
     }
 
     override fun onDataEmpty() {
-
+        if (viewModel.couponSearchKeyword.orEmpty().isEmpty()) {
+            showEmptyDataGlobalError()
+        } else {
+            emptyStateList?.show()
+        }
     }
 
     override fun onGetListError(message: String) {
+        showGetListDataGlobalError()
+    }
 
+    private fun showGetListDataGlobalError() {
+        globalError?.show()
+        globalError?.setType(SERVER_ERROR)
+        globalError?.setActionClickListener {
+            loadInitialData()
+        }
+    }
+
+    private fun showEmptyDataGlobalError() {
+        swipeToRefresh?.isEnabled = false // need to disable, to enable Coba Lagi button listener
+        globalError?.apply {
+            errorTitle.text = "Nggak ada Kupon aktif"
+            errorDescription.text = "Yuk, gunakan Kupon Produk untuk meningkatkan peluang penjualan tokomu."
+            errorAction.text = "Buat Kupon Produk"
+            setActionClickListener {
+                onCreateCouponMenuSelected.invoke()
+            }
+            post { errorIllustration.loadImage(NO_VOUCHER_RESULT_URL) }
+            show()
+        }
     }
 
     /**
@@ -371,6 +413,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private fun observeCouponList() = viewModel.couponList.observe(viewLifecycleOwner) {
         if (it is Success) {
             renderList(it.data, it.data.size == getPerPage())
+        } else if (it is Fail) {
+            showGetListError(it.throwable)
         }
     }
 

@@ -86,6 +86,39 @@
         app:layout_constraintTop_toBottomOf="@id/appBarMvc"
         app:layout_constraintBottom_toTopOf="@id/swipeMvcList"/>
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/geEmptyData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:globalerrors_type="SERVER_ERROR"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dividerMvcList" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loadingList"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dividerMvcList" />
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyStateList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:unifyEmptyStateTitle="Kupon yang kamu cari nggak ditemukan"
+        app:unifyEmptyStateDescription="Coba ulangi pencarian dengan kata kunci atau filter lain, ya."
+        app:unifyEmptyStateImageUrl="https://ecs7.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
+        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStateType="section"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerMvcList" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeMvcList"
         android:layout_width="@dimen/layout_lvl0"
