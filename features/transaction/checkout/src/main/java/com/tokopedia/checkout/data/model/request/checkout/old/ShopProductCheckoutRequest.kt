@@ -38,5 +38,6 @@ data class ShopProductCheckoutRequest(
 
         // Additional data
         var cartString: String? = "",
-        var isTokoNow: Boolean = false
+        var isTokoNow: Boolean = false,
+        var giftingAddOnOrderLevel: ArrayList<AddOnGiftingRequest>? = null
 ) : Parcelable

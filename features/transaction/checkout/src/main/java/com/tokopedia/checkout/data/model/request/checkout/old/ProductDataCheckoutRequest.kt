@@ -49,5 +49,6 @@ data class ProductDataCheckoutRequest(
         var campaignId: Int = 0,
         var protectionPricePerProduct: Int = 0,
         var protectionTitle: String = "",
-        var isProtectionAvailable: Boolean = false
+        var isProtectionAvailable: Boolean = false,
+        var addOnGiftingProductLevelRequest: ArrayList<AddOnGiftingRequest>? = null
 ) : Parcelable

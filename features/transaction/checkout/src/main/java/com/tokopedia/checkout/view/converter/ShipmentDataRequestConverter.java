@@ -1,7 +1,10 @@
 package com.tokopedia.checkout.view.converter;
 
+import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest;
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnDataItemModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
@@ -74,7 +77,9 @@ public class ShipmentDataRequestConverter {
         shopProductCheckout.setCartString(shipmentCartItemModel.getCartString());
         shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
         shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
-
+        if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+            shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
+        }
         return shopProductCheckout;
     }
 
@@ -142,6 +147,10 @@ public class ShipmentDataRequestConverter {
                     shopProductCheckout.setDropshipData(dropshipDataCheckoutRequest);
                 } else {
                     shopProductCheckout.setDropship(0);
+                }
+
+                if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+                    shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
                 }
 
                 return shopProductCheckout;
@@ -218,8 +227,23 @@ public class ShipmentDataRequestConverter {
         productDataCheckoutRequest.setProtectionPricePerProduct(cartItem.getProtectionPricePerProduct());
         productDataCheckoutRequest.setProtectionTitle(cartItem.getProtectionTitle());
         productDataCheckoutRequest.setProtectionAvailable(cartItem.isProtectionAvailable());
-
+        productDataCheckoutRequest.setAddOnGiftingProductLevelRequest(convertGiftingAddOnModelRequest(cartItem.getAddOnProductLevelModel()));
         return productDataCheckoutRequest;
+    }
+
+    private ArrayList<AddOnGiftingRequest> convertGiftingAddOnModelRequest(AddOnsDataModel addOnsDataModel) {
+        ArrayList<AddOnGiftingRequest> listAddOnProductRequest = new ArrayList<>();
+        if (addOnsDataModel.getStatus() == 1) {
+            for (AddOnDataItemModel addOnDataItemModel : addOnsDataModel.getAddOnsDataItemModelList()) {
+                AddOnGiftingRequest addOnGiftingRequest = new AddOnGiftingRequest();
+                addOnGiftingRequest.setItemId(String.valueOf(addOnDataItemModel.getAddOnId()));
+                addOnGiftingRequest.setItemType("add_ons");
+                addOnGiftingRequest.setItemQty((int) addOnDataItemModel.getAddOnQty());
+                addOnGiftingRequest.setItemMetadata(addOnDataItemModel.getAddOnMetadata());
+                listAddOnProductRequest.add(addOnGiftingRequest);
+            }
+        }
+        return listAddOnProductRequest;
     }
 
     private List<DataCheckoutRequest> createCheckoutRequestData(
