@@ -3230,7 +3230,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onOpenAddOnBottomSheet(CartItemModel cartItemModel) {
         // internal applink to new bottomsheet
-        System.out.println("++ okeh open bottomsheet!");
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {

@@ -248,17 +248,13 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         val addOns = cartItemModel.addOnProductLevelModel
         if (addOns.status == 0) {
             llGiftingAddOnProductLevel.visibility = View.GONE
-            // buttonGiftingAddOnProductLevel.visibility = View.GONE
-            // buttonGiftingAddOnProductLevel.hideButton()
         } else {
             if (addOns.status == 1) {
                 buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.ACTIVE
             } else if (addOns.status == 2) {
                 buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.INACTIVE
             }
-            // buttonGiftingAddOnProductLevel.showButton()
             llGiftingAddOnProductLevel.visibility = View.VISIBLE
-            // buttonGiftingAddOnProductLevel.visibility = View.VISIBLE
             buttonGiftingAddOnProductLevel.title = addOns.addOnsButtonModel.title
             buttonGiftingAddOnProductLevel.desc = addOns.addOnsButtonModel.description
             buttonGiftingAddOnProductLevel.urlLeftIcon = addOns.addOnsButtonModel.leftIconUrl
