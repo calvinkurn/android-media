@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.play.data.Config
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
@@ -62,13 +63,14 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
                 ),
                 maxFeatured = response.playGetTagsItem.config.peekProductCount,
                 resultState = ResultState.Success,
-                section = SectionUiModel(sectionList),
+                section = SectionUiModel(sectionList, response.playGetTagsItem.config),
                 bottomSheetTitle = response.playGetTagsItem.config.bottomSheetTitle
             )
         }catch (e: Exception){
             return@withContext TagItemUiModel(product = ProductUiModel( productList = emptyList(), canShow = false),
                 voucher = VoucherUiModel(voucherList = emptyList()), maxFeatured = 1, resultState = ResultState.Success, section = SectionUiModel(
-                    emptyList()), bottomSheetTitle = ""
+                    emptyList(), Config()
+                ), bottomSheetTitle = ""
             )
         }
     }

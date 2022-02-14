@@ -1479,6 +1479,14 @@ class PlayViewModel @AssistedInject constructor(
                     productList = mappedProductTags
                 )
             }
+            is ProductSection ->{
+                val mappedData = playSocketToModelMapper.mapProductSection(result)
+                _tagItems.update {
+                    it.copy(
+                        section = mappedData
+                    )
+                }
+            }
             is MerchantVoucher -> {
                 val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
 

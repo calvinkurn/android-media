@@ -1,11 +1,13 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.play.data.Product
+import com.tokopedia.play.data.ProductSection
 import com.tokopedia.play.data.Section
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductSectionUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.SectionUiModel
 import javax.inject.Inject
 
 /**
@@ -13,6 +15,13 @@ import javax.inject.Inject
  */
 @PlayScope
 class PlayProductTagUiMapper @Inject constructor() {
+
+    fun mapSections(input: ProductSection): SectionUiModel{
+        return SectionUiModel(
+            sections = input.sectionList.map(::mapSection),
+            config = input.config
+        )
+    }
 
     fun mapSection(input: Section): PlayProductSectionUiModel.ProductSection {
         return PlayProductSectionUiModel.ProductSection(
