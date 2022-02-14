@@ -103,7 +103,7 @@
         </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.tokopedia.recharge_component.widget.RechargeBuyWidget
+    <com.tokopedia.recharge_component.widget.RechargeSimplifyBuyWidget
         android:id="@+id/recharge_pdp_tagihan_listrik_buy_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

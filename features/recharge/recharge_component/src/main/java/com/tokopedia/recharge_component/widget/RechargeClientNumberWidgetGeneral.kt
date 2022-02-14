@@ -312,6 +312,16 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         hideCheckIcon()
     }
 
+    fun setClearable() {
+        binding.clientNumberWidgetBase.clientNumberWidgetInputField.run {
+            isClearableState = true
+            if (!isLoading) {
+                clearFocus()
+                hideIndicatorIcon(true)
+            }
+        }
+    }
+
     private fun showCheckIcon() {
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.icon1.show()
     }

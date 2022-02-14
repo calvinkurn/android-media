@@ -23,11 +23,12 @@ import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
@@ -35,6 +36,7 @@ import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagiha
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTagihanViewModel
@@ -48,12 +50,12 @@ import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.ClientNumberSortFilterListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
+import com.tokopedia.recharge_component.listener.RechargeSimplifyWidgetListener
 import com.tokopedia.recharge_component.model.InputFieldType
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -62,7 +64,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener {
+class DigitalPDPTagihanFragment: BaseDaggerFragment(),
+    RechargeSimplifyWidgetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -74,8 +77,9 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
     @Inject
     lateinit var digitalPDPTelcoAnalytics: DigitalPDPTelcoAnalytics
 
-    private var binding by autoClearedNullable<FragmentDigitalPdpTagihanBinding>()
+    private val keyboardWatcher = DigitalKeyboardWatcher()
 
+    private var binding by autoClearedNullable<FragmentDigitalPdpTagihanBinding>()
 
     private var clientNumber = ""
     private var loyaltyStatus = ""
@@ -109,6 +113,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
+        setupKeyboardWatcher()
         initClientNumberWidget()
         initEmptyState()
         observeData()
@@ -116,6 +121,21 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
         getOperatorSelectGroup()
         onShowGreenBox()
     }
+
+    fun setupKeyboardWatcher() {
+        binding?.root?.let {
+            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
+                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                    // do nothing
+                }
+
+                override fun onKeyboardHidden() {
+                    binding?.rechargePdpTagihanListrikClientNumberWidget?.setClearable()
+                }
+            })
+        }
+    }
+
 
     private fun observeData() {
         viewModel.menuDetailData.observe(viewLifecycleOwner, {
@@ -156,10 +176,24 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
         viewModel.inquiry.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> {
-                    binding?.rechargePdpTagihanListrikClientNumberWidget?.setInquiryList(it.data.enquiry.attributes)
+
                 }
                 is RechargeNetworkResult.Fail -> {}
                 is RechargeNetworkResult.Loading -> {}
+            }
+        })
+
+        viewModel.addToCartResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> {
+                    onLoadingBuyWidget(false)
+                }
+                is RechargeNetworkResult.Fail -> {
+                    onLoadingBuyWidget(false)
+                }
+                is RechargeNetworkResult.Loading -> {
+                    onLoadingBuyWidget(true)
+                }
             }
         })
 
@@ -173,7 +207,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
                 } else {
                     hideIndicatorIcon()
                     setErrorInputField(msg)
-                    onHideBuyWidget()
                 }
             }
         })
@@ -271,7 +304,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
                     override fun onClickFilterChip(isLabeled: Boolean) {
                         inputNumberActionType = InputNumberActionType.CHIP
                         if (isLabeled) {
-                            onHideBuyWidget()
                             digitalPDPTelcoAnalytics.clickFavoriteContactChips(
                                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                 operator.attributes.name,
@@ -364,6 +396,7 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
 
         renderPrefill(data.userPerso)
         renderTicker(data.tickers)
+        onShowBuyWidget()
     }
 
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
@@ -456,15 +489,9 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
         }
     }
 
-    private fun onShowBuyWidget(denomGrid: DenomData){
+    private fun onShowBuyWidget(){
         binding?.let {
-            it.rechargePdpTagihanListrikBuyWidget.showBuyWidget(denomGrid, this)
-        }
-    }
-
-    private fun onHideBuyWidget(){
-        binding?.let {
-            it.rechargePdpTagihanListrikBuyWidget.hideBuyWidget()
+            it.rechargePdpTagihanListrikBuyWidget.showSimplifyBuyWidget(this)
         }
     }
 
@@ -500,8 +527,6 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
                 ) {
                     hideEmptyState()
 
-                } else {
-                    onHideBuyWidget()
                 }
 
             } else {
@@ -599,6 +624,19 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
         viewModel.getMenuDetail(menuId)
     }
 
+    private fun addToCart(){
+        viewModel.addToCart(
+            viewModel.digitalCheckoutPassData,
+            DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+            DigitalSubscriptionParams(),
+            userSession.userId
+        )
+    }
+
+    private fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, DigitalPDPConstant.REQUEST_CODE_LOGIN)
+    }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -635,35 +673,21 @@ class DigitalPDPTagihanFragment: BaseDaggerFragment(), RechargeBuyWidgetListener
         }
     }
 
-    /**
-     * RechargeBuyWidgetListener
-     */
-    override fun onClickedButtonLanjutkan(denom: DenomData) {
-//        viewModel.updateCheckoutPassData(
-//            denom, userSession.userId.generateRechargeCheckoutToken(),
-//            binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?:"",
-//            operatorId
-//        )
-//        if (userSession.isLoggedIn){
-//            addToCart()
-//        } else {
-//            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-//            startActivityForResult(intent, DigitalPDPConstant.REQUEST_CODE_LOGIN)
-//        }
-        //todo logic when checkout
+    override fun onClickedButton() {
+        //todo firman update checkout pass data
+        if (userSession.isLoggedIn){
+            addToCart()
+        } else {
+            navigateToLoginPage()
+        }
     }
 
-    override fun onClickedChevron(denom: DenomData) {
-        digitalPDPTelcoAnalytics.clickChevronBuyWidget(
-            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
-            operator.attributes.name,
-            denom.price,
-            denom.slashPrice,
-            userSession.userId
-        )
-        fragmentManager?.let {
-            SummaryTelcoBottomSheet(getString(R.string.summary_transaction), denom).show(it, "")
+
+    override fun onDestroyView() {
+        binding?.root?.let {
+            keyboardWatcher.unlisten(it)
         }
+        super.onDestroyView()
     }
 
     companion object {

@@ -11,11 +11,17 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSele
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogDynamicInput
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
@@ -36,6 +42,15 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     var isEligibleToBuy = false
 
     var operatorData: CatalogOperator = CatalogOperator()
+
+    val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
+        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+        .instantCheckout("0")
+        .utmContent(GlobalConfig.VERSION_NAME)
+        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+        .voucherCodeCopied("")
+        .isFromPDP(true).build()
 
     private val _menuDetailData = MutableLiveData<RechargeNetworkResult<MenuDetailModel>>()
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
@@ -60,6 +75,10 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     private val _clientNumberValidatorMsg = MutableLiveData<String>()
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
+
+    private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
+    val addToCartResult: LiveData<RechargeNetworkResult<String>>
+        get() = _addToCartResult
 
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         _menuDetailData.value = RechargeNetworkResult.Loading
@@ -87,7 +106,7 @@ class DigitalPDPTagihanViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getOperatorSelectGroup(menuId)
             val operatorList = data.response.operatorGroups?.firstOrNull()?.operators
-            if (!operatorList.isNullOrEmpty()){
+            if (!operatorList.isNullOrEmpty() && operatorData.id.isNullOrEmpty()){
                 operatorData = operatorList.get(0)
             }
             _catalogSelectGroup.value =  RechargeNetworkResult.Success(data)
@@ -142,6 +161,24 @@ class DigitalPDPTagihanViewModel @Inject constructor(
                 if (it !is CancellationException){
 
                 }
+            }
+        }
+    }
+
+    fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
+                  digitalIdentifierParam: RequestBodyIdentifier,
+                  digitalSubscriptionParams: DigitalSubscriptionParams,
+                  userId: String
+    ){
+        _addToCartResult.postValue(RechargeNetworkResult.Loading)
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
+            _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
+        }) {
+            if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                _addToCartResult.postValue(RechargeNetworkResult.Fail(MessageErrorException(it.message)))
+            } else {
+                _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
             }
         }
     }

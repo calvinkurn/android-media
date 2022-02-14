@@ -5,5 +5,6 @@
     <string name="label_recharge_client_number_token_listrik">No. Meter atau ID Pelanggan</string>
     <string name="buy_widget_total_price">Total Bayar</string>
     <string name="buy_widget_total_price_btn">Lanjutkan</string>
+    <string name="buy_widget_simplify_total_price_btn">Lanjut Bayar</string>
     <string name="client_number_prefix_error">Hmm, nggak ketemu provider-nya. Cek lagi, ya.</string>
 </resources>
