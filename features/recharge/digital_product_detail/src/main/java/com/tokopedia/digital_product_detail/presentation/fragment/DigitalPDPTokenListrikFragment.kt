@@ -566,6 +566,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         )
     }
 
+    private fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, DigitalPDPConstant.REQUEST_CODE_LOGIN)
+    }
+
     private fun handleCallbackSavedNumber(
         clientName: String,
         clientNumber: String,
@@ -785,8 +790,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         if (userSession.isLoggedIn){
             addToCart()
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, DigitalPDPConstant.REQUEST_CODE_LOGIN)
+            navigateToLoginPage()
         }
     }
 
@@ -817,8 +821,16 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             recommendation,
             position
         )
-        context?.let {
-            RouteManager.route(it, recommendation.appUrl)
+
+        viewModel.updateCheckoutPassData(
+            recommendation,
+            userSession.userId.generateRechargeCheckoutToken()
+        )
+
+        if (userSession.isLoggedIn) {
+            addToCart()
+        } else {
+            navigateToLoginPage()
         }
     }
 

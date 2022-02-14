@@ -22,6 +22,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -189,6 +190,19 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             productId = denomData.id
             utmCampaign = denomData.categoryId
             isSpecialProduct = denomData.isSpecialPromo
+            idemPotencyKey = idemPotencyKeyActive
+        }
+    }
+
+    fun updateCheckoutPassData(recom: RecommendationCardWidgetModel, idemPotencyKeyActive: String) {
+        digitalCheckoutPassData.apply {
+            categoryId = recom.categoryId
+            clientNumber = recom.clientNumber
+            isPromo = DigitalPDPPulsaViewModel.CHECKOUT_NO_PROMO
+            operatorId = recom.operatorId
+            productId = recom.productId
+            utmCampaign = recom.categoryId
+            isSpecialProduct = false
             idemPotencyKey = idemPotencyKeyActive
         }
     }

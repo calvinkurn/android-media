@@ -22,6 +22,7 @@ import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.*
@@ -163,6 +164,19 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
+    fun updateCheckoutPassData(recom: RecommendationCardWidgetModel, idemPotencyKeyActive: String) {
+        digitalCheckoutPassData.apply {
+            categoryId = recom.categoryId
+            clientNumber = recom.clientNumber
+            isPromo = CHECKOUT_NO_PROMO
+            operatorId = recom.operatorId
+            productId = recom.productId
+            utmCampaign = recom.categoryId
+            isSpecialProduct = false
+            idemPotencyKey = idemPotencyKeyActive
+        }
+    }
+
     fun updateCategoryCheckoutPassData(categoryId: String){
         digitalCheckoutPassData.categoryId = categoryId
     }
@@ -205,5 +219,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     companion object {
         const val DELAY_TIME = 200L
         const val VALIDATOR_DELAY_TIME = 3000L
+
+        const val CHECKOUT_NO_PROMO = "0"
     }
 }

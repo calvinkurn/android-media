@@ -29,6 +29,7 @@ import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
+import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
@@ -866,6 +867,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
+    private fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
 
     /**
      * RechargeDenomGridListener
@@ -943,8 +948,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         if (userSession.isLoggedIn){
             addToCart()
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+            navigateToLoginPage()
         }
     }
 
@@ -975,8 +979,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             recommendation,
             position
         )
-        context?.let {
-            RouteManager.route(it, recommendation.appUrl)
+
+        viewModel.updateCheckoutPassData(
+            recommendation,
+            userSession.userId.generateRechargeCheckoutToken()
+        )
+
+        if (userSession.isLoggedIn) {
+            addToCart()
+        } else {
+            navigateToLoginPage()
         }
     }
 

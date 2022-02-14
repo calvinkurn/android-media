@@ -836,6 +836,11 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
+    private fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
     /**
      * Input Field Listener
      * */
@@ -975,8 +980,7 @@ class DigitalPDPDataPlanFragment :
         if (userSession.isLoggedIn) {
             addToCart()
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+            navigateToLoginPage()
         }
     }
 
@@ -1007,8 +1011,16 @@ class DigitalPDPDataPlanFragment :
             recommendation,
             position
         )
-        context?.let {
-            RouteManager.route(it, recommendation.appUrl)
+
+        viewModel.updateCheckoutPassData(
+            recommendation,
+            userSession.userId.generateRechargeCheckoutToken()
+        )
+
+        if (userSession.isLoggedIn) {
+            addToCart()
+        } else {
+            navigateToLoginPage()
         }
     }
 
