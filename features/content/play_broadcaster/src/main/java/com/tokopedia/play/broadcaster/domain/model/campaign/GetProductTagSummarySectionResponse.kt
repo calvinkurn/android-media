@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class GetProductTagSummarySectionResponse(
     @SerializedName("sections")
-    val section: List<ProductTagSection> = emptyList()
+    val sections: List<ProductTagSection> = emptyList()
 ) {
     data class ProductTagSection(
         @SerializedName("name")

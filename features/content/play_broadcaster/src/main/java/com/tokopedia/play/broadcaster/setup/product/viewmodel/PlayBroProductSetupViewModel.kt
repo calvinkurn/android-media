@@ -301,11 +301,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     /** Product Summary */
-
-    /** TODO: gonna delete this later */
-    @OptIn(ExperimentalStdlibApi::class)
     private fun handleLoadProductSummary() {
-        /** TODO: change dispatchers.io -> dispatchers.main instead later */
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
 
@@ -320,23 +316,17 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
-    /** TODO: gonna delete this later */
-    @OptIn(ExperimentalStdlibApi::class)
     private fun handleDeleteProduct(product: ProductUiModel) {
         /** TODO: change dispatchers.io -> dispatchers.main instead later */
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _productTagSummary.value = ProductTagSummaryUiModel.Loading
 
             val productSectionList = _productTagSectionList.value
-            /** TODO: gonna delete this later */
-            delay(1000)
 
-            throw Exception("Error")
-            /** TODO: gonna uncomment this later */
-//                val productIds = productSectionList.sections.flatMap { section ->
-//                    section.products.filter { it.id != product.id }.map { it.id }
-//                }
-//                repo.addProductTag(channelId, productIds)
+            val productIds = productSectionList.flatMap { section ->
+                section.products.filter { it.id != product.id }.map { it.id }
+            }
+            repo.setProductTags(channelId, productIds)
 
             getProductTagSummary()
         }) {
@@ -349,12 +339,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
-    /** TODO: gonna delete this later */
-    @ExperimentalStdlibApi
     private suspend fun getProductTagSummary() {
-        /** TODO: gonna remove this delay */
-//        delay(1000)
-        val (response, productCount) = repo.getProductTagSummarySection(channelId.toLong())
+        val (response, productCount) = repo.getProductTagSummarySection(channelId.toInt())
 
         _productTagSectionList.value = response
         _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
