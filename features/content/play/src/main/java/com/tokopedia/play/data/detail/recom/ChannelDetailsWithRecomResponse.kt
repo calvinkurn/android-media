@@ -62,6 +62,12 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("air_time")
         val airTime: String = "",
+
+        @SerializedName("has_follow_button")
+        val hasFollowButton: Boolean = false,
+
+        @SerializedName("empty_bottom_sheet")
+        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet()
     )
 
     data class Partner(
@@ -255,5 +261,16 @@ data class ChannelDetailsWithRecomResponse(
     data class Reminder(
         @SerializedName("is_set")
         val isSet: Boolean = false
+    )
+
+    data class EmptyBottomSheet(
+        @SerializedName("copy_text_header")
+        val headerText: String = "",
+
+        @SerializedName("copy_text_body")
+        val bodyText: String = "",
+
+        @SerializedName("copy_text_redirect_button")
+        val redirectButtonText: String = "",
     )
 }

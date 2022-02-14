@@ -46,7 +46,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoInfo = mapVideoInfo(it.video),
                     bottomSheetTitle = it.config.pinnedProductConfig.bottomSheetTitle,
                 ),
-                partnerInfo = mapPartnerInfo(it.partner),
+                partnerInfo = mapPartnerInfo(it.partner, it.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                 channelReportInfo = mapChannelReportInfo(it.id, extraParams),
                 pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner),
@@ -59,7 +59,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             )
         }
     }
-
     private fun mapChannelInfo(data: ChannelDetailsWithRecomResponse.Data) = PlayChannelInfoUiModel(
             id = data.id,
             channelType = getChannelType(data.isLive, data.airTime),
@@ -75,13 +74,14 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         else PlayChannelType.VOD
     }
 
-    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
+    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner, isFollowBtnShown: Boolean) = PlayPartnerInfo(
         id = partnerResponse.id.toLongOrZero(),
         name = htmlTextTransformer.transform(partnerResponse.name),
         type = PartnerType.getTypeByValue(partnerResponse.type),
         status = PlayPartnerFollowStatus.Unknown,
         iconUrl = partnerResponse.thumbnailUrl,
         badgeUrl = partnerResponse.badgeUrl,
+        isFollowBtnShown = isFollowBtnShown
     )
 
     private fun mapLikeInfo(

@@ -38,14 +38,15 @@ class PartnerInfoViewComponent(
             ivBadge.show()
         } else ivBadge.hide()
         tvPartnerName.text = info.name
-        setFollowStatus(info.status, info.isLoadingFollow)
+        setFollowStatus(info.status, info.isLoadingFollow, info.isFollowBtnShown)
     }
 
     private fun setFollowStatus(
         followStatus: PlayPartnerFollowStatus,
         isLoading: Boolean,
+        isShown: Boolean
     ) {
-        if (followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing) {
+        if (followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing && isShown) {
             btnFollow.isLoading = isLoading
             btnFollow.isEnabled = !isLoading
             btnFollow.show()
