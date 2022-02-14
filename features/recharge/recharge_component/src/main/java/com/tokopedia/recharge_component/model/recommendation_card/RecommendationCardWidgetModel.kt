@@ -11,5 +11,8 @@ data class RecommendationCardWidgetModel(
     val productType: String = "",
     val productExpired: String = "",
     val id: String = "",
+    val clientNumber: String = "",
     val categoryId: String = "",
+    val operatorId: String = "",
+    val productId: String = ""
 ): ImpressHolder()
