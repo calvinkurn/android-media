@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
+
 class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>) :
     RecyclerView.Adapter<AddonsItemAdapter.ViewHolder>() {
 
@@ -38,7 +39,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
 
     override fun getItemCount(): Int = addonsItemList.size
 
-    class ViewHolder(private val binding: ItemBuyerOrderDetailAddonsListBinding) :
+    inner class ViewHolder(private val binding: ItemBuyerOrderDetailAddonsListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: AddonsListUiModel.AddonItemUiModel) {
@@ -114,22 +115,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             } else {
                 tvBomDetailAddonsMessageValue.run {
                     show()
-                    setInitAddonMessageFormatted(message)
-                }
-            }
-        }
-
-
-        private fun setInitAddonMessageFormatted(
-            message: String
-        ) {
-            with(binding) {
-                tvBomDetailAddonsMessageValue.apply {
-                    if (ellipsize == TextUtils.TruncateAt.END && lineCount == Int.ONE) {
-                        showMessageCollapse(message)
-                    } else {
-                        hideInitMessageCollapse(message)
-                    }
+                    setAddonMessageFormatted(message)
                 }
             }
         }
@@ -140,15 +126,27 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             with(binding) {
                 tvBomDetailAddonsMessageValue.apply {
                     if (ellipsize == TextUtils.TruncateAt.END && lineCount == Int.ONE) {
-                        showMessageCollapse(message)
+                        expandAddonMessage(message)
                     } else {
-                        hideMessageCollapse(message)
+                        initCollapseAddonMessage(message)
                     }
                 }
             }
         }
 
-        private fun showMessageCollapse(message: String) {
+        private fun toggleAddonMessage(message: String) {
+            with(binding) {
+                tvBomDetailAddonsMessageValue.apply {
+                    if (ellipsize == TextUtils.TruncateAt.END && lineCount == Int.ONE) {
+                        expandAddonMessage(message)
+                    } else {
+                        collapseAddonMessage(message)
+                    }
+                }
+            }
+        }
+
+        private fun expandAddonMessage(message: String) {
             with(binding) {
                 val hyperLinkText = root.context.getString(R.string.order_addons_close)
                 val messageFmt = message + hyperLinkText
@@ -162,7 +160,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             }
         }
 
-        private fun hideInitMessageCollapse(message: String) {
+        private fun initCollapseAddonMessage(message: String) {
             with(binding) {
                 tvBomDetailAddonsMessageValue.run {
                     text = message
@@ -178,7 +176,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             }
         }
 
-        private fun hideMessageCollapse(message: String) {
+        private fun collapseAddonMessage(message: String) {
             with(binding) {
                 tvBomDetailAddonsMessageValue.run {
                     text = message
@@ -217,7 +215,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             this.movementMethod = LinkMovementMethod.getInstance()
             this.highlightColor = Color.TRANSPARENT
             getHtmlLinkHelper.urlList.getOrNull(Int.ZERO)?.setOnClickListener {
-                setAddonMessageFormatted(message)
+                toggleAddonMessage(message)
             }
         }
     }
