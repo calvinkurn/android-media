@@ -54,11 +54,11 @@ class SellerOnboardingActivity : BaseActivity() {
     private val sobAdapter by lazy { SobAdapter() }
     private val slideItems: List<BaseSliderUiModel> by lazy {
         listOf(
-            SobSliderHomeUiModel(R.drawable.bg_sob_slide_header_home),
-            SobSliderMessageUiModel(R.drawable.bg_sob_slide_header_message),
-            SobSliderManageUiModel(R.drawable.bg_sob_slide_header_manage),
-            SobSliderPromoUiModel(R.drawable.bg_sob_slide_header_promo),
-            SobSliderStatisticsUiModel(R.drawable.bg_sob_slide_header_statistics)
+            SobSliderHomeUiModel(0),
+            SobSliderMessageUiModel(0),
+            SobSliderManageUiModel(0),
+            SobSliderPromoUiModel(0),
+            SobSliderStatisticsUiModel(0)
         )
     }
     private var binding: ActivitySobOnboardingBinding? = null
@@ -111,18 +111,8 @@ class SellerOnboardingActivity : BaseActivity() {
                     setSlideIndicator(position)
                     setPreviousButtonVisibility(position)
                     updateNextButtonState(position)
-                    updateHeaderBackground(position)
                 }
             })
-        }
-    }
-
-    private fun updateHeaderBackground(position: Int) {
-        try {
-            val slideItem = slideItems[position]
-            binding?.imgSobHeader?.loadImage(slideItem.headerResBg)
-        } catch (e: IndexOutOfBoundsException) {
-            //do nothing
         }
     }
 
