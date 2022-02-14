@@ -1,20 +1,26 @@
 package com.tokopedia.home_component.viewholders
 
+import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcMerchantVoucherBinding
+import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.home_component.viewholders.adapter.MerchantVoucherAdapter
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +33,8 @@ class MerchantVoucherViewHolder(
 ) : AbstractViewHolder<MerchantVoucherDataModel>(itemView), CommonProductCardCarouselListener,
     CoroutineScope {
     private var binding: GlobalDcMerchantVoucherBinding? by viewBinding()
+    private var adapter: MerchantVoucherAdapter? = null
+    private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
 
     companion object {
         @LayoutRes
@@ -44,12 +52,11 @@ class MerchantVoucherViewHolder(
     private fun mappingView(channel: ChannelModel) {
         val visitables: MutableList<Visitable<*>> = mappingVisitablesFromChannel(channel)
         binding?.recycleList?.setHasFixedSize(true)
-//
-//        valuateRecyclerViewDecoration()
+        valuateRecyclerViewDecoration()
 //
 //        mappingHeader(channel)
 //        mappingCtaButton(channel.channelBanner.cta)
-//        mappingItem(channel, visitables)
+        mappingItem(channel, visitables)
     }
 
     private fun mappingVisitablesFromChannel(channel: ChannelModel): MutableList<Visitable<*>> {
@@ -70,12 +77,34 @@ class MerchantVoucherViewHolder(
         return visitables
     }
 
+    private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
+        startSnapHelper.attachToRecyclerView(binding?.recycleList)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
+        adapter = MerchantVoucherAdapter(visitables, typeFactoryImpl)
+        binding?.recycleList?.adapter = adapter
+    }
+
     private fun convertDataToMerchantVoucherData(channel: ChannelModel): List<CarouselMerchantVoucherDataModel> {
         val list :MutableList<CarouselMerchantVoucherDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselMerchantVoucherDataModel())
         }
         return list
+    }
+
+    private fun valuateRecyclerViewDecoration() {
+        if (binding?.recycleList?.itemDecorationCount == 0) binding?.recycleList?.addItemDecoration(
+            SimpleHorizontalLinearLayoutDecoration()
+        )
+        binding?.recycleList?.layoutManager = LinearLayoutManager(
+            itemView.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        /**
+         * Attach startSnapHelper to recyclerView
+         */
+        startSnapHelper.attachToRecyclerView(binding?.recycleList)
     }
 
     private fun setChannelDivider(element: MerchantVoucherDataModel) {
