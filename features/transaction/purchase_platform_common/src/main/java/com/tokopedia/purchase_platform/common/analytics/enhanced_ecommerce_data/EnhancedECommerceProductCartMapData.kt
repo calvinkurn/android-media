@@ -188,8 +188,8 @@ class EnhancedECommerceProductCartMapData {
         else Product[KEY_DIMENSION118] = bundleId
     }
 
-    fun setBoAffordability(tickerText: String, boType: Int) {
-        Product[KEY_BO_AFFORDABILITY] = "${tickerText}_${boType}"
+    fun setBoAffordability(boAffordabilityValue: String) {
+        Product[KEY_BO_AFFORDABILITY] = boAffordabilityValue
     }
 
     companion object {

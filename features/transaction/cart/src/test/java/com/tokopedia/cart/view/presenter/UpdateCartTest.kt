@@ -3,13 +3,21 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.network.exception.ResponseErrorException
-import io.mockk.*
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout.Companion.KEY_CHECKOUT
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout.Companion.KEY_PRODUCT
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.verify
 import org.junit.Test
 
 class UpdateCartTest : BaseCartTest() {
@@ -270,6 +278,84 @@ class UpdateCartTest : BaseCartTest() {
         // THEN
         verify {
             view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM)
+        }
+    }
+
+    @Test
+    fun `WHEN update cart for checkout success with not blank BO affordability THEN should send EE dimension119 value`() {
+        // GIVEN
+        val tickerText = "tickerText"
+        val boType = 0
+        val cartItem = CartItemHolderData().apply {
+            isSelected = true
+            shopBoAffordabilityData = CartShopBoAffordabilityData(
+                    tickerText = tickerText
+            )
+            shopBoMetadata = BoMetadata(
+                    boType = boType
+            )
+        }
+        val shopDataList = mutableListOf<CartShopHolderData>().apply {
+            add(CartShopHolderData().apply {
+                productUiModelList = mutableListOf(cartItem)
+                isAllSelected = true
+                isPartialSelected = false
+            })
+        }
+
+        val mockResponse = DataProvider.provideUpdateCartSuccess()
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        }
+        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllSelectedCartDataList() } answers { listOf(cartItem) }
+
+        // WHEN
+        cartListPresenter.processUpdateCartData(false)
+
+        // THEN
+        verify {
+            view.renderToShipmentFormSuccess(match {
+                (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == "${tickerText}_${boType}"
+            }, any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `WHEN update cart for checkout success with blank BO affordability THEN should send EE dimension119 empty`() {
+        // GIVEN
+        val tickerText = ""
+        val cartItem = CartItemHolderData().apply {
+            isSelected = true
+            shopBoAffordabilityData = CartShopBoAffordabilityData(
+                    tickerText = tickerText
+            )
+        }
+        val shopDataList = mutableListOf<CartShopHolderData>().apply {
+            add(CartShopHolderData().apply {
+                productUiModelList = mutableListOf(cartItem)
+                isAllSelected = true
+                isPartialSelected = false
+            })
+        }
+
+        val mockResponse = DataProvider.provideUpdateCartSuccess()
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        }
+        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllSelectedCartDataList() } answers { listOf(cartItem) }
+
+        // WHEN
+        cartListPresenter.processUpdateCartData(false)
+
+        // THEN
+        verify {
+            view.renderToShipmentFormSuccess(match {
+                (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == ""
+            }, any(), any(), any())
         }
     }
 

@@ -43,7 +43,8 @@
           "item_variant": "none/other",
           "dimension49": "",
           "dimension48": "\\d+",
-          "dimension59": ".*"
+          "dimension59": ".*",
+          "dimension119": ".*"
         }
       ],
       "eventLabel": "",
@@ -79,7 +80,8 @@
           "item_variant": "none/other",
           "dimension49": "",
           "dimension48": "\\d+",
-          "dimension59": ".*"
+          "dimension59": ".*",
+          "dimension119": ".*"
         }
       ],
       "eventLabel": "success - (.*)",

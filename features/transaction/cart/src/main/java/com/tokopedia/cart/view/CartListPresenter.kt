@@ -1154,7 +1154,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)
-            setBoAffordability(cartItemHolderData.shopBoAffordabilityData.tickerText, cartItemHolderData.shopBoMetadata.boType)
+            if (cartItemHolderData.shopBoAffordabilityData.tickerText.isNotBlank()) {
+                setBoAffordability("${cartItemHolderData.shopBoAffordabilityData.tickerText}_${cartItemHolderData.shopBoMetadata.boType}")
+            } else {
+                setBoAffordability("")
+            }
         }
         return enhancedECommerceProductCartMapData
     }
@@ -1648,6 +1652,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
             } catch (t: Throwable) {
                 Timber.d(t)
+                cartShopHolderData.boAffordability.tickerText = ""
                 cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.FAILED
                 withContext(dispatchers.main) {
                     view?.updateCartBoAffordability(cartShopHolderData)
