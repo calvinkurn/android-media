@@ -1,6 +1,5 @@
 package com.tokopedia.addongifting.addonbottomsheet.view
 
-import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.*
@@ -17,11 +16,8 @@ import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.ProductUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.TotalAmountUiModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispatchers,
@@ -30,9 +26,8 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
                                          private val saveAddOnStateUseCase: SaveAddOnStateUseCase)
     : BaseViewModel(executorDispatchers.main) {
 
-    private val _globalEvent = SingleLiveEvent<GlobalEvent>()
-    val globalEvent: LiveData<GlobalEvent>
-        get() = _globalEvent
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     private var hasLoadData: Boolean = false
 
@@ -102,9 +97,13 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     }
 
     private fun handleOnErrorGetAddOnProduct(throwable: Throwable) {
-        _globalEvent.value = GlobalEvent().apply {
-            state = GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA
-            this.throwable = throwable
+        launch {
+            _uiEvent.emit(
+                    UiEvent().apply {
+                        state = UiEvent.STATE_FAILED_LOAD_ADD_ON_DATA
+                        this.throwable = throwable
+                    }
+            )
         }
     }
 
@@ -147,26 +146,34 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         if (getAddOnSavedStateResponse.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
             throw ResponseErrorException(getAddOnSavedStateResponse.getAddOns.errorMessage.joinToString(". "))
         } else {
-            _globalEvent.value = GlobalEvent().apply {
-                state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+            launch {
+                _uiEvent.emit(
+                        UiEvent().apply {
+                            state = UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+                        }
+                )
+                val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
+                _productUiModel.emit(productUiModel)
+                val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, getAddOnSavedStateResponse)
+                _addOnUiModel.emit(addOnUiModel)
             }
-            val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
-            _productUiModel.value = productUiModel
-            val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse, getAddOnSavedStateResponse)
-            _addOnUiModel.value = addOnUiModel
         }
     }
 
     private fun handleOnErrorGetAddOnSavedState(addOnProductData: AddOnProductData,
                                                 addOnByProductResponse: GetAddOnByProductResponse) {
         hasLoadData = true
-        _globalEvent.value = GlobalEvent().apply {
-            state = GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+        launch {
+            _uiEvent.emit(
+                    UiEvent().apply {
+                        state = UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+                    }
+            )
+            val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
+            _productUiModel.emit(productUiModel)
+            val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)
+            _addOnUiModel.emit(addOnUiModel)
         }
-        val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
-        _productUiModel.value = productUiModel
-        val addOnUiModel = AddOnUiModelMapper.mapAddOn(addOnProductData, addOnByProductResponse)
-        _addOnUiModel.value = addOnUiModel
     }
 
     fun saveAddOnState(addOnProductData: AddOnProductData, mockSaveStateResponse: String? = null) {
@@ -226,16 +233,24 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         if (saveAddOnStateResponse.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
             throw ResponseErrorException(saveAddOnStateResponse.getAddOns.errorMessage.joinToString(". "))
         } else {
-            _globalEvent.value = GlobalEvent().apply {
-                state = GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON
-                data = saveAddOnStateResponse
+            launch {
+                _uiEvent.emit(
+                        UiEvent().apply {
+                            state = UiEvent.STATE_SUCCESS_SAVE_ADD_ON
+                            data = saveAddOnStateResponse
+                        }
+                )
             }
         }
     }
 
     private fun handleOnErrorSaveAddOnState() {
-        _globalEvent.value = GlobalEvent().apply {
-            state = GlobalEvent.STATE_FAILED_SAVE_ADD_ON
+        launch {
+            _uiEvent.emit(
+                    UiEvent().apply {
+                        state = UiEvent.STATE_FAILED_SAVE_ADD_ON
+                    }
+            )
         }
     }
 
@@ -252,13 +267,19 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     }
 
     fun validateCloseAction() {
-        if (hasChangedState()) {
-            _globalEvent.value = GlobalEvent().apply {
-                state = GlobalEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION
-            }
-        } else {
-            _globalEvent.value = GlobalEvent().apply {
-                state = GlobalEvent.STATE_DISMISS_BOTTOM_SHEET
+        launch {
+            if (hasChangedState()) {
+                _uiEvent.emit(
+                        UiEvent().apply {
+                            state = UiEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION
+                        }
+                )
+            } else {
+                _uiEvent.emit(
+                        UiEvent().apply {
+                            state = UiEvent.STATE_DISMISS_BOTTOM_SHEET
+                        }
+                )
             }
         }
     }

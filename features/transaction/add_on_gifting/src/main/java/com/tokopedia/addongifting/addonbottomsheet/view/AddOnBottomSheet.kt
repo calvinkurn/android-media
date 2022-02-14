@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Insets
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,19 +40,11 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import android.util.DisplayMetrics
-
-import android.view.WindowInsets
-
-import android.view.WindowMetrics
-
-import android.os.Build
-
-
 
 
 class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnify(), AddOnActionListener, HasComponent<AddOnComponent> {
@@ -155,39 +146,41 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     private fun observeGlobalEvent(viewBinding: LayoutAddOnBottomSheetBinding) {
-        viewModel.globalEvent.observe(this, {
-            when (it.state) {
-                GlobalEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA -> {
-                    hideLoading()
-                    renderLayoutNormal(viewBinding)
-                }
-                GlobalEvent.STATE_FAILED_LOAD_ADD_ON_DATA -> {
-                    hideLoading()
-                    renderLayoutError(viewBinding, it.throwable)
-                }
-                GlobalEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION -> {
-                    showCloseConfirmationDialog()
-                }
-                GlobalEvent.STATE_SUCCESS_SAVE_ADD_ON -> {
-                    setResultOnSaveAddOn(it)
-                    dismiss()
-                }
-                GlobalEvent.STATE_FAILED_SAVE_ADD_ON -> {
-                    viewBinding.totalAmount.amountCtaView.isLoading = false
-                    Toaster.build(viewBinding.bottomsheetContainer,
-                            getString(R.string.add_on_toaster_message_failed_save_add_on),
-                            Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-                            .show()
-                }
-                GlobalEvent.STATE_DISMISS_BOTTOM_SHEET -> {
-                    dismiss()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when (it.state) {
+                    UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA -> {
+                        hideLoading()
+                        renderLayoutNormal(viewBinding)
+                    }
+                    UiEvent.STATE_FAILED_LOAD_ADD_ON_DATA -> {
+                        hideLoading()
+                        renderLayoutError(viewBinding, it.throwable)
+                    }
+                    UiEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION -> {
+                        showCloseConfirmationDialog()
+                    }
+                    UiEvent.STATE_SUCCESS_SAVE_ADD_ON -> {
+                        setResultOnSaveAddOn(it)
+                        dismiss()
+                    }
+                    UiEvent.STATE_FAILED_SAVE_ADD_ON -> {
+                        viewBinding.totalAmount.amountCtaView.isLoading = false
+                        Toaster.build(viewBinding.bottomsheetContainer,
+                                getString(R.string.add_on_toaster_message_failed_save_add_on),
+                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                                .show()
+                    }
+                    UiEvent.STATE_DISMISS_BOTTOM_SHEET -> {
+                        dismiss()
+                    }
                 }
             }
-        })
+        }
     }
 
-    private fun setResultOnSaveAddOn(globalEvent: GlobalEvent) {
-        val data = globalEvent.data
+    private fun setResultOnSaveAddOn(uiEvent: UiEvent) {
+        val data = uiEvent.data
         if (data != null && data is SaveAddOnStateResponse) {
             val resultData = AddOnResultMapper.mapResult(data)
             val result = Intent().apply {
@@ -198,8 +191,8 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
     }
 
     private fun observeFragmentData(viewBinding: LayoutAddOnBottomSheetBinding) {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.fragmentUiModel.collect {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.fragmentUiModel.collectLatest {
                 if (it.hasLoadedData) {
                     hideLoading()
                     adapter?.updateList(it.recyclerViewItems)
@@ -247,7 +240,7 @@ class AddOnBottomSheet(val addOnProductData: AddOnProductData) : BottomSheetUnif
 
     private fun adjustRecyclerViewPaddingBottom(viewBinding: LayoutAddOnBottomSheetBinding) {
         measureRecyclerViewPaddingDebounceJob?.cancel()
-        measureRecyclerViewPaddingDebounceJob = viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        measureRecyclerViewPaddingDebounceJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             delay(DELAY_ADJUST_RECYCLER_VIEW_MARGIN)
             adjustRecyclerViewPadding(viewBinding)
         }
