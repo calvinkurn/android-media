@@ -50,6 +50,11 @@ class CalendarViewHolder(
 
     override fun bind(element: CalendarWidgetUiModel) {
         observeState(element)
+        setShadowBackground()
+    }
+
+    private fun setShadowBackground() {
+        binding.viewShcCalendarShadow.setBackgroundResource(R.drawable.bg_shc_calendar_shadow)
     }
 
     private fun observeState(element: CalendarWidgetUiModel) {

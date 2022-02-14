@@ -36,11 +36,11 @@ data class CalendarWidgetUiModel(
             val currentDate = Date()
             val firstDayMonthCal = Calendar.getInstance().apply {
                 time = currentDate
-                set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+                set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))
             }
             val lastDayMonthCal = Calendar.getInstance().apply {
                 time = currentDate
-                set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))
+                set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
             }
             return CalendarFilterDataKeyUiModel(
                 dataKey = dataKey,

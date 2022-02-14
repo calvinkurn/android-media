@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="320dp"
+        android:minHeight="340dp"
         android:paddingBottom="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -25,12 +25,13 @@
             tools:text="Kalender Event:" />
 
         <View
+            android:id="@+id/viewShcCalendarShadow"
             android:layout_width="0dp"
             android:layout_height="22dp"
-            android:background="@drawable/bg_shc_calendar_shadow"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle"
+            tools:background="@drawable/bg_shc_calendar_shadow" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcCalendarDate"
@@ -58,6 +59,7 @@
             android:id="@+id/rvShcCalendar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -38,12 +38,7 @@ class GetCalendarDataUseCase(
                 val mDataKeys = dataKeys.map {
                     DataKeyModel(
                         key = it.dataKey,
-                        jsonParams = """
-                          {
-                            start_date: ${it.startDate},
-                            end_date: ${it.endDate}
-                          }
-                        """.trimIndent()
+                        jsonParams = "{\"start_date\":\"${it.startDate}\", \"end_date\": \"${it.endDate}\"}"
                     )
                 }
                 putObject(DATA_KEYS, mDataKeys)
