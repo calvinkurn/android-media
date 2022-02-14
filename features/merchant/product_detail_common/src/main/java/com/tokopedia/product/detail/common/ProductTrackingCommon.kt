@@ -245,7 +245,7 @@ object ProductTrackingCommon {
                 ))))))
     }
 
-    private fun generateBusinessUnit(pageSource: String) = if (pageSource == AtcVariantHelper.PDP_PAGESOURCE) {
+    private fun generateBusinessUnit(pageSource: String) = if (pageSource == VariantPageSource.PDP_PAGESOURCE.source) {
         ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
     } else {
         ProductTrackingConstant.Tracking.BUSINESS_UNIT

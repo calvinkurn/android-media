@@ -6,9 +6,9 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.model.checkout.ErrorReporter
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
+import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.DataProvider
@@ -21,6 +21,7 @@ import com.tokopedia.fingerprint.util.FingerPrintUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -93,6 +94,9 @@ class ShipmentPresenterCheckoutTest {
     @MockK
     private lateinit var releaseBookingUseCase: ReleaseBookingUseCase
 
+    @MockK
+    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
+
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
@@ -115,7 +119,7 @@ class ShipmentPresenterCheckoutTest {
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
 
@@ -654,6 +658,36 @@ class ShipmentPresenterCheckoutTest {
             view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
             analyticsPurchaseProtection.eventClickOnBuy(any(), any())
             view.renderCheckoutCartSuccess(any())
+        }
+    }
+
+    @Test
+    fun `WHEN checkout error with prompt THEN should show prompt`(){
+        // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.listShipmentCrossSellModel = arrayListOf()
+
+        val prompt = Prompt().apply {
+            eligible = true
+            title = "Title"
+            description = "Description"
+        }
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.isError = true
+            this.prompt = prompt
+        })
+
+        // When
+        presenter.processCheckout(false, false, false, "", "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.hideLoading()
+            view.renderPrompt(prompt)
         }
     }
 

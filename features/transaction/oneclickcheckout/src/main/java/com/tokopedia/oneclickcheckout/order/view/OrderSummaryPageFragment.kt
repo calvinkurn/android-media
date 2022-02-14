@@ -45,7 +45,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
@@ -347,6 +346,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         observeGlobalEvent()
 
+        observeEligibilityForAnaRevamp()
+
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
             val productId = arguments?.getString(QUERY_PRODUCT_ID)
@@ -355,6 +356,35 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 refresh()
             } else {
                 atcOcc(productId)
+            }
+        }
+    }
+
+    private fun observeEligibilityForAnaRevamp() {
+        viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner) {
+            when (it) {
+                is OccState.Success -> {
+                    if (it.data.eligibleForAddressFeatureData.eligibleForRevampAna.eligible) {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                            putExtra(EXTRA_IS_FULL_FLOW, true)
+                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                            putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
+                        }, REQUEST_CODE_ADD_NEW_ADDRESS)
+                    } else {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                            putExtra(EXTRA_IS_FULL_FLOW, true)
+                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                            putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
+                        }, REQUEST_CODE_ADD_NEW_ADDRESS)
+                    }
+                }
+
+                is OccState.Failed -> {
+                    view?.let { view ->
+                        Toaster.build(view, it.getFailure()?.throwable?.message
+                                ?: getString(R.string.default_osp_error_message), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    }
+                }
             }
         }
     }
@@ -771,17 +801,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         binding.layoutNoAddress.iuNoAddress.setImageUrl(NO_ADDRESS_IMAGE)
         binding.layoutNoAddress.descNoAddress.text = getString(R.string.occ_lbl_desc_no_address)
         binding.layoutNoAddress.btnOccAddNewAddress.setOnClickListener {
-            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_NEW_ADDRESS)
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_NEW_ADDRESS)
-            }
+            viewModel.checkUserEligibilityForAnaRevamp()
         }
     }
 
@@ -1221,19 +1241,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     }
 
                     override fun onAddAddress(token: Token?) {
-                        if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                                putExtra(EXTRA_IS_FULL_FLOW, true)
-                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                                putExtra(CheckoutConstant.KERO_TOKEN, token)
-                            }, REQUEST_CODE_ADD_ADDRESS)
-                        } else {
-                            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                                putExtra(EXTRA_IS_FULL_FLOW, true)
-                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                                putExtra(CheckoutConstant.KERO_TOKEN, token)
-                            }, REQUEST_CODE_ADD_ADDRESS)
-                        }
+                        viewModel.checkUserEligibilityForAnaRevamp(token)
                     }
                 }).show(this@OrderSummaryPageFragment, currentAddressId, viewModel.addressState.value.address.state)
             }

@@ -32,6 +32,7 @@
                 android:layout_marginStart="@dimen/dp_3"
                 android:gravity="center_vertical"
                 android:text="@string/cm_app_title_name"
+                android:singleLine="true"
                 android:textColor="@color/medium_green_70"
                 android:textSize="@dimen/sp_12" />
 
@@ -49,6 +50,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/cm_grey_255"
                 android:textSize="@dimen/sp_12"
+                android:ellipsize="end"
+                android:singleLine="true"
                 tools:text="11:00 am" />
             
           </LinearLayout>
@@ -73,9 +76,9 @@
             android:layout_marginTop="1dp"
             android:ellipsize="end"
             android:singleLine="true"
-            tools:text="@tools:sample/lorem/random"
             android:textColor="@color/cm_light_grey_255"
-            android:textSize="@dimen/cm_sp_13" />
+            android:textSize="@dimen/cm_sp_13"
+            tools:text="@tools:sample/lorem/random" />
 
     </RelativeLayout>
 

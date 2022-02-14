@@ -28,5 +28,6 @@ annotation class TokoNowLayoutType {
         const val EDUCATIONAL_INFORMATION = "tokonow_usp"
         const val SHARING_EDUCATION = "tokonow_share"
         const val MAIN_QUEST = "tokonow_main_quest"
+        const val MIX_LEFT_CAROUSEL = "left_carousel"
     }
 }

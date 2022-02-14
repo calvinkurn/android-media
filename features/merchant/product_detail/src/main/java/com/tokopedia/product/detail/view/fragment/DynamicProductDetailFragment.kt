@@ -43,8 +43,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
@@ -59,7 +57,6 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.iris.util.IrisSession
@@ -97,6 +94,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -198,7 +196,6 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -322,7 +319,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             setListener(this@DynamicProductDetailFragment)
         })
     }
-    private val coachMarkBoePref by lazy { CoachMarkLocalCache(context) }
     private val adapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtilCallback())
                 .build()
@@ -1023,7 +1019,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = recomItem.productId.toString(),
-                    pageSource = "tokonow",
+                    pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                     isTokoNow = true,
                     shopId = recomItem.shopId.toString(),
                     startActivitResult = { data, _ ->
@@ -1800,40 +1796,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun showCoachmark(view: Typography?, isBoeType: Boolean) {
-        context?.let {
-            if (view != null) {
-                val showLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it)
-                        ?: false
-                val showBoe = if (!isBoeType) false else coachMarkBoePref.shouldShowBoeCoachmark()
-
-                if (showLocalization || showBoe) {
-                    val coachMarkList = arrayListOf<CoachMark2Item>()
-                    if (showBoe) {
-                        coachMarkList.add(CoachMark2Item(view,
-                                it.getString(R.string.pdp_boe_coachmark_title),
-                                it.getString(R.string.pdp_boe_coachmark_desc)
-                        ).also {
-                            it.position = 1
-                        })
-                    }
-
-                    if (showLocalization) {
-                        coachMarkList.add(ChooseAddressUtils.coachMark2Item(it, view).also {
-                            it.position = 1
-                        })
-                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
-                    }
-
-                    if (coachMarkList.isNotEmpty()) {
-                        val coachmark = CoachMark2(it)
-                        coachmark.showCoachMark(coachMarkList, null, 0)
-                    }
-                }
-            }
-        }
-    }
-
     private fun openBottomSheetTopAds() {
         if (GlobalConfig.isSellerApp() && !activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
                 !alreadyPerformSellerMigrationAction && viewModel.isShopOwner()) {
@@ -2266,16 +2228,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     )
 
                     val p2Data = viewModel.p2Data.value
-                    val cartTypeData = if (customCartRedirection != null)
-                        customCartRedirection
-                    else
-                        p2Data?.cartRedirection
+                    var saveAfterClose = true
+                    var cartTypeData = p2Data?.cartRedirection
+                    if (customCartRedirection != null) {
+                        saveAfterClose = false
+                        cartTypeData = customCartRedirection
+                    }
 
                     viewModel.clearCacheP2Data()
 
                     AtcVariantHelper.pdpToAtcVariant(
                             context = ctx,
-                            pageSource = AtcVariantHelper.PDP_PAGESOURCE,
+                            pageSource = VariantPageSource.PDP_PAGESOURCE,
                             productId = p1.basic.productID,
                             productInfoP1 = p1,
                             warehouseId = warehouseId ?: "",
@@ -2291,7 +2255,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             rates = p2Data?.ratesEstimate ?: listOf(),
                             restrictionData = p2Data?.restrictionInfo,
                             isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
-                            uspImageUrl = p2Data?.uspImageUrl ?: ""
+                            uspImageUrl = p2Data?.uspImageUrl ?: "",
+                            saveAfterClose = saveAfterClose
                     ) { data, code ->
                         startActivityForResult(data, code)
                     }

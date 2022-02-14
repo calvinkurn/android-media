@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="green_neutral_30">#4D03AC0E</color>
+    <color name="dms_green_neutral_30">#4D03AC0E</color>
+    <color name="dms_grey_neutral_200">#D6DFEB</color>
 </resources>

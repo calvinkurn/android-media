@@ -9,16 +9,19 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:ellipsize="end"
         android:lineSpacingExtra="4sp"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_cr"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
         tools:text="Duplikasi Produk Tanpa Izin" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -28,6 +31,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

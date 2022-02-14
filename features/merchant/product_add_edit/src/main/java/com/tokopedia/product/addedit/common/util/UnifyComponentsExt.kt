@@ -131,6 +131,8 @@ fun TextFieldUnify2?.setText(text: String) = this?.editText?.setText(text)
 
 fun TextFieldUnify2?.getText(): String = this?.editText?.text.toString()
 
+fun TextFieldUnify2?.getTrimmedText(): String = this?.editText?.text.toString().trim().replace("\\s+".toRegex(), " ")
+
 // set text listener only has a focus
 fun TextFieldUnify2?.afterTextChanged(listener: (String) -> Unit) {
     this?.editText?.let { editText ->
