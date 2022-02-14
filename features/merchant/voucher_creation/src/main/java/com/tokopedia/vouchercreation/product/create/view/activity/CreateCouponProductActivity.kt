@@ -187,7 +187,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_ADD_PRODUCT) {
             if(resultCode == Activity.RESULT_OK){
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
-                couponPreviewFragment.setSelectedProducts(selectedProducts)
+                couponPreviewFragment.addProducts(selectedProducts)
             }
         }
     }

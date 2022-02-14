@@ -102,8 +102,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private var onCreateCouponSuccess: (Coupon) -> Unit = {}
     private var couponSettings: CouponSettings? = null
     private var couponInformation: CouponInformation? = null
-    private var couponProducts: List<CouponProduct> = emptyList()
-    private var selectedProducts: List<ProductUiModel> = emptyList()
+    private var couponProducts: MutableList<CouponProduct> = mutableListOf()
+    private var selectedProducts: MutableList<ProductUiModel> = mutableListOf()
     private var isCardExpanded = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CouponPreviewViewModel::class.java) }
@@ -199,7 +199,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                 is Success -> {
                     showContent()
                     this.couponInformation = result.data.information
-                    this.couponProducts = result.data.products
+                    this.couponProducts = result.data.products.toMutableList()
                     this.couponSettings = result.data.settings
                     refreshCouponInformationSection(couponInformation ?: return@observe)
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
@@ -338,17 +338,17 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     }
 
     fun setCouponProductsData(couponProducts: List<CouponProduct>) {
-        this.couponProducts = couponProducts
+        this.couponProducts = couponProducts.toMutableList()
     }
 
     fun setCouponInformationData(couponInformation: CouponInformation) {
         this.couponInformation = couponInformation
     }
 
-    fun setSelectedProducts(selectedProducts: List<ProductUiModel>) {
+    fun addProducts(selectedProducts: List<ProductUiModel>) {
         val couponProductData = viewModel.mapSelectedProductsToCouponProductData(selectedProducts)
-        this.selectedProducts = selectedProducts
-        this.couponProducts = couponProductData
+        this.selectedProducts.addAll(selectedProducts)
+        this.couponProducts.addAll(couponProductData)
         refreshCouponDetail()
     }
 
