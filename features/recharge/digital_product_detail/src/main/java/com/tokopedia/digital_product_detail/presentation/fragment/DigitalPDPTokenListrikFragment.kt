@@ -22,7 +22,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
-import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -45,6 +44,7 @@ import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTokenL
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
+import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
@@ -71,7 +71,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.fragment_digital_pdp_token_listrik.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -80,7 +79,8 @@ import javax.inject.Inject
 class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
     RechargeDenomGridListener,
     RechargeBuyWidgetListener,
-    RechargeRecommendationCardListener
+    RechargeRecommendationCardListener,
+    DigitalHistoryIconListener
 {
 
     @Inject
@@ -293,6 +293,12 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             it.rechargePdpTickerWidgetProductDesc.apply {
                 setText(dummyInfo)
                 setLinks(clickableInfo, View.OnClickListener {
+                    digitalPDPTelcoAnalytics.clickTransactionDetailInfo(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                        loyaltyStatus,
+                        userSession.userId
+                    )
                     showMoreInfoBottomSheet(dummyListInfo)
                 })
             }
@@ -641,8 +647,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
                     }
 
                     override fun onClickNavigationIcon() {
-                        digitalPDPTelcoAnalytics.clickOnContactIcon(
+                        digitalPDPTelcoAnalytics.clickScanBarcode(
                             DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                            loyaltyStatus,
                             userSession.userId
                         )
 
@@ -722,6 +729,11 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
 
                     override fun onClickIcon(isSwitchChecked: Boolean) {
                         binding?.run {
+                            digitalPDPTelcoAnalytics.clickListFavoriteNumber(
+                                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                                DigitalPDPCategoryUtil.getOperatorName(operatorId),
+                                userSession.userId
+                            )
                             val clientNumber = rechargePdpTokenListrikClientNumberWidget.getInputNumber()
                             val dgCategoryIds = arrayListOf(categoryId.toString())
                             navigateToContact(
@@ -861,6 +873,16 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             userSession.userId,
             recommendation,
             position
+        )
+    }
+
+    /** DigitalHistoryIconListener */
+
+    override fun onClickDigitalIconHistory() {
+        digitalPDPTelcoAnalytics.clickTransactionHistoryIcon(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
         )
     }
 
