@@ -27,7 +27,7 @@ interface TopChatContract {
 
         fun showSnackbarError(stringResource: String)
 
-        fun onSuccessGetTemplate(list: List<Visitable<Any>>)
+        fun onSuccessGetTemplate(list: List<Visitable<*>>)
 
         fun onErrorGetTemplate()
 
@@ -73,6 +73,7 @@ interface TopChatContract {
         fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
         fun notifyPreviewRemoved(model: SendablePreview)
+        fun reloadCurrentAttachment()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
