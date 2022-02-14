@@ -52,10 +52,6 @@ class PlaySocketToModelMapper @Inject constructor(
         return PlayQuickReplyInfoUiModel(input.data)
     }
 
-    fun mapProductTag(input: ProductTag): Pair<List<PlayProductUiModel.Product>, Boolean> {
-        return input.listOfProducts.map(productTagMapper::mapProductTag) to input.isShowProductTagging
-    }
-
     fun mapProductSection(input: ProductSection): SectionUiModel{
         return productTagMapper.mapSections(input)
     }
