@@ -24,9 +24,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
-import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
+import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
+import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
@@ -40,6 +40,12 @@ import java.io.File
 import javax.inject.Inject
 
 class PlayCoverCameraActivity : AppCompatActivity() {
+
+    private val retainedComponent by retainedComponent {
+        DaggerActivityRetainedComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+    }
 
     private var cameraTimerEnum: CameraTimerEnum = CameraTimerEnum.Immediate
     private var isTimerRunning = false
@@ -157,11 +163,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun inject() {
-        DaggerPlayBroadcastComponent.builder()
-                .playBroadcastModule(PlayBroadcastModule(this))
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        retainedComponent.inject(this)
     }
 
     private fun setupInsets() {

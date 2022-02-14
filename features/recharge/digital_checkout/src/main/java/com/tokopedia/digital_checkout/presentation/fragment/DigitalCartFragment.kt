@@ -133,9 +133,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             viewModel.requestCheckoutParam =
                 savedInstanceState.getParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER)
                     ?: DigitalCheckoutDataParameter()
-            viewModel.requestCheckoutParam.deviceId = cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
             cartPassData?.needGetCart = true
+        } else {
+            viewModel.requestCheckoutParam = DigitalCheckoutDataParameter()
         }
+
+        viewModel.requestCheckoutParam.deviceId =
+            cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
 
         initViews()
         loadData()
@@ -485,9 +489,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
         if (postPaidPopupAttribute.title.isNotEmpty() || postPaidPopupAttribute.content.isNotEmpty()) {
             val dialog =
-                DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
             dialog.setTitle(postPaidPopupAttribute.title)
             dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content))
+            dialog.setImageUrl(postPaidPopupAttribute.imageUrl)
             dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle)
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()

@@ -32,10 +32,21 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import androidx.lifecycle.ViewModelProviders
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
-import com.tokopedia.affiliate.PAGE_ZERO
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -73,11 +84,26 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
+        sendOpenScreenTracking()
+    }
+
+    private fun sendOpenScreenTracking() {
+        context?.let {
+            AffiliateAnalytics.sendOpenScreenEvent(
+                AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+                AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE,
+                UserSession(it).isLoggedIn,
+                UserSession(it).userId
+            )
+        }
+
     }
 
     override fun getScreenName(): String {
         return  ""
     }
+
+    private var lastItem : Visitable<AffiliateAdapterTypeFactory>? = null
 
     private fun setObservers() {
         affiliateIncomeViewModel.getAffiliateBalanceData().observe(this, {
@@ -89,9 +115,11 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
         affiliateIncomeViewModel.getAffiliateDataItems().observe(this, {
             adapter.removeShimmer(listSize)
+            stopSwipeRefresh()
             if(it.isEmpty() && listSize == 0){
                 showGlobalErrorEmptyState()
             } else {
+                lastItem = it[it.lastIndex]
                 hideGlobalErrorEmptyState()
                 listSize += it.size
                 adapter.addMoreData(it)
@@ -102,8 +130,10 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             if (visibility != null) {
                 if (visibility)
                     adapter.addShimmer()
-                else
+                else {
+                    stopSwipeRefresh()
                     adapter.removeShimmer(listSize)
+                }
             }
         })
         affiliateIncomeViewModel.getErrorMessage().observe(this, { error ->
@@ -135,6 +165,41 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
                 view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
             }
         })
+        affiliateIncomeViewModel.getAffiliateKycData().observe(this,{
+            onGetAffiliateKycData(it)
+        })
+
+        affiliateIncomeViewModel.getAffiliateKycLoader().observe(this,{ show ->
+            if(show){
+                view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.invisible()
+                view?.findViewById<LoaderUnify>(R.id.tarik_saldo_loader)?.show()
+            }
+            else{
+                view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.show()
+                view?.findViewById<LoaderUnify>(R.id.tarik_saldo_loader)?.hide()
+            }
+        })
+
+        affiliateIncomeViewModel.getKycErrorMessage().observe(this,{
+            view?.let {
+            Toaster.build(it, getString(R.string.affiliate_retry_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
+        })}
+
+    private fun onGetAffiliateKycData(kycProjectInfo: AffiliateKycDetailsData.KycProjectInfo) {
+        when(kycProjectInfo.status){
+            KYC_DONE ->{
+                if(TokopediaUrl.getInstance().GQL.contains("staging"))
+                    RouteManager.route(context, WITHDRAWAL_APPLINK_STAGING)
+                else
+                    RouteManager.route(context, WITHDRAWAL_APPLINK_PROD)
+            }
+            else -> RouteManager.route(context, APP_LINK_KYC)
+        }
+    }
+
+    private fun stopSwipeRefresh() {
+        view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.isRefreshing = false
     }
 
     private fun hideGlobalErrorEmptyState() {
@@ -152,21 +217,18 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun showGlobalErrorEmptyState() {
-        val defaultSelected = affiliateIncomeViewModel.getSelectedDate() == AffiliateBottomDatePicker.SEVEN_DAYS
-        if(defaultSelected) view?.findViewById<DeferredImageView>(R.id.affiliate_no__default_transaction_iv)?.show()
-        else view?.findViewById<DeferredImageView>(R.id.affiliate_no_transaction_iv)?.show()
+        view?.findViewById<DeferredImageView>(R.id.affiliate_no_transaction_iv)?.show()
 
         view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.apply {
             show()
             errorIllustration.hide()
-            errorTitle.text = if(!defaultSelected) getString(R.string.affiliate_empty_transaction) else getString(R.string.affiliate_default_no_transaction)
-            errorDescription.text = if(!defaultSelected) getString(R.string.affiliate_empty_transaction_description) else getString(R.string.affiliate_default_no_transaction_description)
+            errorTitle.text = getString(R.string.affiliate_empty_transaction)
+            errorDescription.text = getString(R.string.affiliate_empty_transaction_description)
             setButtonFull(true)
             errorSecondaryAction.gone()
-            errorAction.text = if(!defaultSelected) getString(R.string.affiliate_choose_date) else getString(R.string.affiliate_promote_product_cta)
+            errorAction.text = getString(R.string.affiliate_choose_date)
             setActionClickListener {
-                if (!defaultSelected) AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this@AffiliateIncomeFragment).show(childFragmentManager, "")
-                else bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
+                AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this@AffiliateIncomeFragment).show(childFragmentManager, "")
             }
         }
     }
@@ -185,6 +247,18 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
     }
 
+    private fun sendPendapatanEvent(eventAction: String,eventCategory:String ,eventLabel: String) {
+        context?.let {
+            AffiliateAnalytics.sendEvent(
+                AffiliateAnalytics.EventKeys.CLICK_PG,
+                eventAction,
+                eventCategory,
+                eventLabel,
+                UserSession(it).userId
+            )
+        }
+    }
+
     private fun setAffiliateBalance(affiliateBalance: AffiliateBalance.AffiliateBalance.Data) {
         affiliateBalance.apply {
             view?.findViewById<Typography>(R.id.saldo_amount_affiliate)?.let {
@@ -196,8 +270,22 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun afterViewCreated() {
+        initUi()
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
+        view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.let {
+            it.setOnRefreshListener {
+                affiliateIncomeViewModel.getAffiliateBalance()
+                resetItems()
+            }
+            view?.findViewById<AppBarLayout>(R.id.appbar)?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {appBarLayout, verticalOffset ->
+                it.isEnabled = verticalOffset == 0
+            })
+        }
+        view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
+           sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,"")
+           openWithdrawalScreen()
+        }
         ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
         view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
@@ -227,8 +315,23 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         affiliateIncomeViewModel.getAffiliateBalance()
     }
 
+    private fun initUi() {
+        when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            AFFILIATE_WITHDRAWAL,
+            ""
+        )) {
+            AFFILIATE_WITHDRAWAL -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.show()
+            else -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.invisible()
+        }
+    }
+
+    private fun openWithdrawalScreen() {
+        affiliateIncomeViewModel.getKycDetails()
+    }
+
     private fun initDateRangeClickListener() {
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
+            sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_FILTER_DATE,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,"")
             AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this).show(childFragmentManager, "")
         }
     }
@@ -236,9 +339,30 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                sendImpressionTracker()
                 if(affiliateIncomeViewModel.hasNext)
                     affiliateIncomeViewModel.getAffiliateTransactionHistory(page - 1)
             }
+        }
+    }
+
+    private fun sendImpressionTracker() {
+        val item = (lastItem as? AffiliateTransactionHistoryItemModel)?.transaction
+        var transactionID = ""
+        var label = ""
+        item?.transactionID?.let {
+            transactionID = it
+        }
+        item?.transactionType?.let {
+            if(it == TRANSACTION_TYPE_DEPOSIT) label = AffiliateAnalytics.LabelKeys.DEPOSIT
+            else if(it == TRANSACTION_TYPE_WITHDRAWAL) label = AffiliateAnalytics.LabelKeys.WITHDRAWAL
+        }
+
+        context?.let {
+            AffiliateAnalytics.sendIcomeTracker(
+                AffiliateAnalytics.EventKeys.VIEW_ITEM,AffiliateAnalytics.ActionKeys.IMPRESSION_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                label,listSize,transactionID,UserSession(it).userId
+            )
         }
     }
 
@@ -265,6 +389,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 //    }
 
     override fun rangeChanged(range: AffiliateDatePickerData) {
+        sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE_FILTER,range.value)
         affiliateIncomeViewModel.onRangeChanged(range)
     }
 

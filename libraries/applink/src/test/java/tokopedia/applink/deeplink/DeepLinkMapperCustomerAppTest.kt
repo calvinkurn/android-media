@@ -1218,6 +1218,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check address list appLink then should return tokopedia internal manage address in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/manageaddress/"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_ADDRESS, expectedDeepLink)
+    }
+
+    @Test
     fun `check flight appLink then should return tokopedia internal ticket detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://pesawat/dashboard"
         assertEqualsDeepLinkMapper(ApplinkConst.FLIGHT, expectedDeepLink)
@@ -1485,24 +1492,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check saldo appLink then should return tokopedia internal saldo in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/saldo"
         assertEqualsDeepLinkMapper(ApplinkConst.SALDO, expectedDeepLink)
-    }
-
-    @Test
-    fun `check instant debit bca appLink then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/instantdebitbca"
-        assertEqualsDeepLinkMapper(
-            ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_APPLINK,
-            expectedDeepLink
-        )
-    }
-
-    @Test
-    fun `check instant debit bca edit limit appLink then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/editbcaoneklik"
-        assertEqualsDeepLinkMapper(
-            ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK,
-            expectedDeepLink
-        )
     }
 
     @Test

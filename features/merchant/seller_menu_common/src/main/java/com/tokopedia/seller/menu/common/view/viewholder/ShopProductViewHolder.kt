@@ -28,10 +28,8 @@ class ShopProductViewHolder(
 
     override fun bind(product: ShopProductUiModel) {
         val productCountTxt = itemView.context.getString(R.string.seller_menu_product_count, product.count)
-        val chevronRight = ContextCompat.getDrawable(itemView.context, R.drawable.ic_seller_menu_chevron_right)
 
         binding.textProductCount.text = productCountTxt
-        binding.imageChevronRight.setImageDrawable(chevronRight)
 
         itemView.setOnClickListener {
             itemView.context?.let {

@@ -70,7 +70,6 @@ class SearchActivity : BaseActivity(),
     private var autocompleteApplink = ""
     private var searchNavigationClickListener: SearchNavigationListener.ClickListener? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    private var isEnableChooseAddress = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -100,8 +99,6 @@ class SearchActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity_search)
 
-        isEnableChooseAddress = getIsEnableChooseAddress()
-
         setStatusBarColor()
         getExtrasFromIntent(intent)
         initActivityOnCreate()
@@ -122,10 +119,6 @@ class SearchActivity : BaseActivity(),
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(SearchConstant.SEARCH_RESULT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
-    }
-
-    private fun getIsEnableChooseAddress(): Boolean {
-        return true
     }
 
     private fun setStatusBarColor() {
@@ -265,9 +258,9 @@ class SearchActivity : BaseActivity(),
     private fun onPageSelected(position: Int) {
         when (position) {
             SearchTabPosition.TAB_FIRST_POSITION ->
-                SearchTracking.eventSearchResultTabClick(this, productTabTitle)
+                SearchTracking.eventSearchResultTabClick(productTabTitle)
             SearchTabPosition.TAB_SECOND_POSITION ->
-                SearchTracking.eventSearchResultTabClick(this, shopTabTitle)
+                SearchTracking.eventSearchResultTabClick(shopTabTitle)
         }
     }
 
@@ -310,7 +303,7 @@ class SearchActivity : BaseActivity(),
         initViewModel()
         observeViewModel()
         performProductSearch()
-        setToolbarTitle(searchParameter.getSearchQuery())
+        setToolbarTitle()
     }
 
     private fun initResources() {
@@ -433,7 +426,7 @@ class SearchActivity : BaseActivity(),
                 else -> SearchTabPosition.TAB_FIRST_POSITION
             }
 
-    private fun setToolbarTitle(query: String?) {
+    private fun setToolbarTitle() {
         configureSearchNavigationSearchBar()
     }
 
@@ -451,7 +444,7 @@ class SearchActivity : BaseActivity(),
         )
     }
 
-    private fun onSearchNavigationSearchBarClicked(keyword: String) {
+    private fun onSearchNavigationSearchBarClicked(ignored: String) {
         moveToAutoCompleteActivity()
     }
 
@@ -545,6 +538,6 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun updateKeyword() {
-        setToolbarTitle(searchParameter.getSearchQuery())
+        setToolbarTitle()
     }
 }

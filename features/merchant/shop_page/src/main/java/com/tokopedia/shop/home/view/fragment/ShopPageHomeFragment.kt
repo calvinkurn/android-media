@@ -409,6 +409,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                     is Fail -> {
                         val throwable = it.throwable
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                     tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -422,6 +423,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                     errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                             )
                         }
+                        showErrorToast(errorMessage)
                     }
                 }
                 getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -608,6 +610,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
                 is Fail -> {
                     val throwable = it.throwable
+                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -616,10 +619,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
-                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = errorMessage,
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                         )
+                    }
+                    if(shopHomeAdapter.isProductGridListPlaceholderExists()){
+                        showErrorToast(errorMessage)
                     }
                 }
             }
@@ -978,11 +984,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    private fun onErrorAddToCart(
-            exception: Throwable
-    ) {
+    private fun onErrorAddToCart(exception: Throwable) {
         view?.let { view ->
-            val errorMessage = ErrorHandler.getErrorMessage(context, exception)
+            val errorMessage = if (exception is MessageErrorException) {
+                exception.message
+            } else {
+                ErrorHandler.getErrorMessage(context, exception)
+            }
             NetworkErrorHelper.showRedCloseSnackbar(view, errorMessage)
         }
     }
@@ -2656,7 +2664,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopId,
                     ShopUtil.getActualPositionFromIndex(position),
                     isSeeCampaign,
-                    selectedBanner?.imageId.toString(),
+                    selectedBanner?.imageId.orEmpty(),
                     selectedBanner?.imageUrl ?: "",
                     customDimensionShopPage,
                     isOwner
@@ -2754,7 +2762,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ))
         initialProductListData = null
         shopHomeAdapter.refreshSticky()
-        if (!isLoadInitialData)
+        if (!isLoadInitialData && shopHomeAdapter.productListViewModel.isNotEmpty())
             refreshProductList()
     }
 

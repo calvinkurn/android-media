@@ -555,7 +555,7 @@ object ShopPageHomeMapper {
     ): List<ShopHomeShowcaseListItemUiModel> {
         val uiModelData = data.map {
             ShopHomeShowcaseListItemUiModel().apply {
-                id = it.linkId.toString()
+                id = it.linkId
                 imageUrl = it.imageUrl
                 appLink = it.appLink
                 name = it.showcaseName

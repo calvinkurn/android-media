@@ -53,6 +53,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.util.extension.setValue
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
@@ -76,7 +77,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
-    private val playBroadcastWebSocket: PlayBroadcastWebSocket,
+    private val playBroadcastWebSocket: PlayWebSocket,
     private val playBroadcastMapper: PlayBroadcastMapper,
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val repo: PlayBroadcastRepository,
@@ -675,7 +676,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun connectWebSocket(channelId: String, socketCredential: GetSocketCredentialResponse.SocketCredential) {
-        playBroadcastWebSocket.connectSocket(channelId, socketCredential.gcToken)
+        playBroadcastWebSocket.connect(channelId, socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_BROADCASTER)
     }
 
     private fun closeWebSocket() {
@@ -898,5 +899,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         private const val START_LIVE_TIMER_DELAY = 1000L
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
+
+        private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }
 }

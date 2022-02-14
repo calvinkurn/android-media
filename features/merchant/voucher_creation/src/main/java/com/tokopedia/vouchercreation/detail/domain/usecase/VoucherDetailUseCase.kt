@@ -13,40 +13,46 @@ class VoucherDetailUseCase @Inject constructor(private val gqlRepository: Graphq
                                                private val voucherMapper: VoucherMapper): BaseGqlUseCase<VoucherUiModel>() {
 
     companion object {
-        const val QUERY = "query GetVoucherDataById (\$voucher_id: Int!, \$source: String!){\n" +
-                "  merchantPromotionGetMVDataByID(voucher_id: \$voucher_id, source: \$source){\n" +
-                "    header{\n" +
-                "      process_time\n" +
-                "      message\n" +
-                "      reason\n" +
-                "      error_code\n" +
-                "    }\n" +
-                "    data{\n" +
-                "      voucher_id\n" +
-                "      voucher_name\n" +
-                "      voucher_type\n" +
-                "      voucher_image\n" +
-                "      voucher_image_square\n" +
-                "      voucher_status\n" +
-                "      voucher_discount_type\n" +
-                "      voucher_discount_amt\n" +
-                "      voucher_discount_amt_max\n" +
-                "      voucher_minimum_amt\n" +
-                "      voucher_quota\n" +
-                "      voucher_start_time\n" +
-                "      voucher_finish_time\n" +
-                "      voucher_code\n" +
-                "      create_time\n" +
-                "      update_time\n" +
-                "      is_public\n" +
-                "      voucher_type_formatted\n" +
-                "      voucher_discount_type_formatted\n" +
-                "      voucher_discount_amt_formatted\n" +
-                "      confirmed_global_quota\n" +
-                "      booked_global_quota\n" +
-                "    }\n" +
-                "  }\n" +
-                "}"
+        const val QUERY = """
+            query GetVoucherDataById (${'$'}voucher_id: Int!, ${'$'}source: String!) {
+                merchantPromotionGetMVDataByID(voucher_id: ${'$'}voucher_id, source: ${'$'}source) {                
+                    header {
+                      process_time
+                      message
+                      reason
+                      error_code
+                    }
+                    data {
+                      voucher_id
+                      voucher_name
+                      voucher_type
+                      voucher_image
+                      voucher_image_square
+                      voucher_status
+                      voucher_discount_type
+                      voucher_discount_amt
+                      voucher_discount_amt_max
+                      voucher_minimum_amt
+                      voucher_quota
+                      voucher_start_time
+                      voucher_finish_time
+                      voucher_code
+                      create_time
+                      update_time
+                      is_public
+                      voucher_type_formatted
+                      voucher_discount_type_formatted
+                      voucher_discount_amt_formatted
+                      confirmed_global_quota
+                      booked_global_quota
+                      is_vps
+                      package_name
+                      is_subsidy
+                      tnc
+                    }                    
+                }
+            }
+        """
 
         private const val VOUCHER_ID_KEY = "voucher_id"
 

@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.repurchase.domain.mapper
 
-import TokoNowDateFilterBottomSheet.Companion.ALL_DATE_TRANSACTION_POSITION
-import TokoNowDateFilterBottomSheet.Companion.LAST_ONE_MONTH_POSITION
-import TokoNowDateFilterBottomSheet.Companion.LAST_THREE_MONTHS_POSITION
+import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.ALL_DATE_TRANSACTION_POSITION
+import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_ONE_MONTH_POSITION
+import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_THREE_MONTHS_POSITION
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -71,8 +71,8 @@ object RepurchaseLayoutMapper {
         removeAll { it is RepurchaseProductUiModel }
     }
 
-    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?) {
-        val categoryList = RepurchaseCategoryMapper.mapToCategoryList(response)
+    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, warehouseId: String) {
+        val categoryList = RepurchaseCategoryMapper.mapToCategoryList(response, warehouseId)
         add(TokoNowCategoryGridUiModel(
                 id = "",
                 title = "",

@@ -14,6 +14,12 @@ buildscript {
     }
 }
 
+android {
+    buildFeatures {
+        buildConfig true
+    }
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
@@ -32,7 +38,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
@@ -41,8 +47,8 @@ dependencies {
     }
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.url

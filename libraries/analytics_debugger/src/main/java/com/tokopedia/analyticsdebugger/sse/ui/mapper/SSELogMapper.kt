@@ -1,12 +1,10 @@
 package com.tokopedia.analyticsdebugger.sse.ui.mapper
 
-import com.google.gson.Gson
 import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogGeneralInfoUiModel
-import com.tokopedia.analyticsdebugger.sse.util.DateTimeUtil
+import com.tokopedia.analyticsdebugger.util.DateTimeUtil
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created By : Jonathan Darwin on November 09, 2021

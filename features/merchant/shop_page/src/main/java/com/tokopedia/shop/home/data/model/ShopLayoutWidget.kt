@@ -7,9 +7,9 @@ data class ShopLayoutWidget(
         @SerializedName("layoutID")
         val layoutId: String = "",
         @SerializedName("masterLayoutID")
-        val masterLayoutID: Int = -1,
+        val masterLayoutID: String = "",
         @SerializedName("merchantTierID")
-        val merchantTierID: Int = -1,
+        val merchantTierID: String = "",
         @SerializedName("status")
         val status: Int = -1,
         @SerializedName("maxWidgets")
@@ -80,7 +80,7 @@ data class ShopLayoutWidget(
                 @SerializedName("linkUrl")
                 val linkUrl: String = "",
                 @SerializedName("linkID")
-                val linkId: Long = 0,
+                val linkId: String = "",
                 @SerializedName("productID")
                 val productID: String = "",
                 @SerializedName("name")
@@ -183,7 +183,7 @@ data class ShopLayoutWidget(
 
             data class Banner(
                     @SerializedName("imageID")
-                    val imageId: Int = -1,
+                    val imageId: String = "",
                     @SerializedName("imageURL")
                     val imageUrl: String = "",
                     @SerializedName("bannerType")

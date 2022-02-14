@@ -73,8 +73,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int ITEM_EVENTS = 3;
     private static final int ITEM_DEFAULT = 4;
     private static final int ITEM_INSURANCE = 5;
+    public static final int ITEM_DEALS_OMP = 6;
     OrderListDetailPresenter presenter;
     public static String categoryDeals = "deal";
+    public static String categoryDealsOMP = "Food & Voucher";
     public static String categoryEvents = "event";
     private static final String CATEGORY_PRODUCT = "Kategori Produk";
     SetEventDetails setEventDetails;
@@ -84,8 +86,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int TEXT_SIZE_LARGE = 14;
     private int totalTicketCount;
     private OrderDetails orderDetails;
+    private String upstream = "";
 
-    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId, OrderDetails orderDetails) {
+    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId, OrderDetails orderDetails, String upstream) {
         this.context = context;
         this.itemsList = itemsList;
         this.isShortLayout = isShortLayout;
@@ -93,6 +96,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.setEventDetails = setEventDetails;
         this.orderId = orderId;
         this.orderDetails = orderDetails;
+        this.upstream = upstream;
     }
 
     @Override
@@ -119,6 +123,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 v = inflater.inflate(R.layout.voucher_item_card_deals_short, parent, false);
                 holder = new ItemViewHolder(v, viewType);
                 break;
+            case ITEM_DEALS_OMP:
+                v = inflater.inflate(R.layout.voucher_item_card_deals, parent, false);
+                holder = new DealsOMPViewHolder(setEventDetails, ItemsAdapter.this, v, presenter, ItemsAdapter.this);
+                break;
             case ITEM_EVENTS:
                 v = inflater.inflate(R.layout.voucher_item_card_events, parent, false);
                 holder = new ItemViewHolder(v, viewType);
@@ -144,6 +152,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).setIndex(position);
             ((ItemViewHolder) holder).bindData(orderDetails,itemsList.get(position), holder.getItemViewType());
+        } else if (holder instanceof DealsOMPViewHolder) {
+            ((DealsOMPViewHolder) holder).bind(orderDetails,itemsList.get(position), position);
         } else {
             ((DefaultViewHolder) holder).setIndex(position);
             ((DefaultViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
@@ -152,9 +162,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID) {
+        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategory().equalsIgnoreCase(categoryDealsOMP) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID) {
             if (isShortLayout)
                 return ITEM_DEALS_SHORT;
+            else if (upstream != null && upstream.equalsIgnoreCase("ORDERINTERNAL"))
+                return ITEM_DEALS_OMP;
             else
                 return ITEM_DEALS;
         } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2
@@ -219,6 +231,47 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         }
 
+    }
+
+    public Typography renderActionButtons(int position, ActionButton actionButton, Items item) {
+        Typography tapActionTextView = new Typography(context);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
+        tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
+        tapActionTextView.setLayoutParams(params);
+        tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+        tapActionTextView.setText(actionButton.getLabel());
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        if (!actionButton.getActionColor().getBackground().equals("")) {
+            shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
+        } else {
+            shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
+        }
+        if (!actionButton.getActionColor().getBorder().equals("")) {
+            shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
+        }
+        tapActionTextView.setBackground(shape);
+        if (!actionButton.getActionColor().getTextColor().equals("")) {
+            tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
+        } else {
+            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        }
+
+
+        if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
+            float radius = context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4);
+            shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
+
+        } else {
+
+            shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
+        }
+
+        tapActionTextView.setBackground(shape);
+
+        return tapActionTextView;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -375,6 +428,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
                 if (itemType == ITEM_DEALS) {
                     setEventDetails.sendThankYouEvent(metaDataInfo, ITEM_DEALS, orderDetails);
+                    setEventDetails.sendOpenScreenDeals(false);
                     final MetaDataInfo metaDataInfo1 = metaDataInfo;
                     if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                         validDate.setText(" ".concat(metaDataInfo.getEndDate()));
@@ -563,7 +617,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         }
 
-        private void setActionButtonClick(TextView view, ActionButton actionButton, Items item, int totalTicketCount) {
+        public void setActionButtonClick(TextView view, ActionButton actionButton, Items item, int totalTicketCount) {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
                     if (view == null) {
@@ -595,47 +649,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         && actionButton.getHeaderObject().getContentType().equalsIgnoreCase(CONTENT_TYPE);
             }
             return false;
-        }
-
-        private Typography renderActionButtons(int position, ActionButton actionButton, Items item) {
-            Typography tapActionTextView = new Typography(context);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
-            tapActionTextView.setLayoutParams(params);
-            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
-            tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-            tapActionTextView.setText(actionButton.getLabel());
-            GradientDrawable shape = new GradientDrawable();
-            shape.setShape(GradientDrawable.RECTANGLE);
-            if (!actionButton.getActionColor().getBackground().equals("")) {
-                shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
-            } else {
-                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
-            }
-            if (!actionButton.getActionColor().getBorder().equals("")) {
-                shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
-            }
-            tapActionTextView.setBackground(shape);
-            if (!actionButton.getActionColor().getTextColor().equals("")) {
-                tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
-            } else {
-                tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
-            }
-
-
-            if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                float radius = context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4);
-                shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
-
-            } else {
-
-                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
-            }
-
-            tapActionTextView.setBackground(shape);
-
-            return tapActionTextView;
         }
 
         /*
@@ -673,6 +686,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void askPermission(String uri, Boolean isDownloadable, String downloadFileName);
 
         void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType, OrderDetails orderDetails);
+
+        void sendOpenScreenDeals(Boolean isOMP);
 
         void showRetryButtonToaster(String msg);
 
@@ -729,6 +744,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             if (metaDataInfo != null) {
                 setEventDetails.sendThankYouEvent(metaDataInfo, ITEM_DEALS, orderDetails);
+                setEventDetails.sendOpenScreenDeals(false);
                 setEventDetails.setDetailTitle(context.getResources().getString(R.string.purchase_detail));
                 if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                     validDate.setText(" ".concat(metaDataInfo.getEndDate()));

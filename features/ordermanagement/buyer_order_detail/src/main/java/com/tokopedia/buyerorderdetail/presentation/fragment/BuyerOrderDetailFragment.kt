@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
@@ -28,12 +28,12 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
@@ -42,6 +42,7 @@ import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDia
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
@@ -49,7 +50,6 @@ import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailT
 import com.tokopedia.buyerorderdetail.presentation.scroller.BuyerOrderDetailRecyclerViewScroller
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
@@ -59,6 +59,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -68,7 +69,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 open class BuyerOrderDetailFragment : BaseDaggerFragment(),
@@ -135,7 +136,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             this
         )
     }
-    private val adapter: BuyerOrderDetailAdapter by lazy {
+    protected open val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
     }
     private val requestCancelResultDialog: RequestCancelResultDialog by lazy {
@@ -411,7 +412,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
                     trackSuccessATC(listOf(result.first), requestResult.data)
                     onSuccessAddToCart(requestResult.data)
                 }
-                is Fail -> onFailedAddToCart(requestResult.throwable)
+                is Fail -> onFailedSingleAddToCart(requestResult.throwable)
             }
             adapter.updateItem(result.first, result.first.copy(isProcessing = false))
         }
@@ -420,16 +421,15 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private fun observeAddMultipleToCart() {
         viewModel.multiAtcResult.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Success -> {
+                is MultiATCState.Success -> {
                     trackSuccessATC(viewModel.getProducts(), result.data)
                     onSuccessAddToCart(result.data)
                 }
-                is Fail -> onFailedAddToCart(result.throwable)
+                is MultiATCState.Fail -> onFailedMultiAddToCart(result)
             }
             stickyActionButton?.finishPrimaryActionButtonLoading()
         }
     }
-
 
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
         val orderId = viewModel.getOrderId()
@@ -438,7 +438,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             containerBuyerOrderDetail?.isStickyActionButtonsShowed() ?: false
         )
         setupToolbarMenu(!containsAskSellerButton(data.actionButtonsUiModel) && orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
-        adapter.updateItems(data)
+        adapter.updateItems(context, data)
         contentVisibilityAnimator.animateToShowContent(containsActionButtons(data.actionButtonsUiModel)) {
             coachMarkManager?.notifyUpdatedAdapter()
         }
@@ -484,12 +484,24 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onFailedAddToCart(throwable: Throwable) {
+    private fun onFailedSingleAddToCart(throwable: Throwable) {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
         } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information)
             .orEmpty()
         showErrorToaster(errorMessage)
+    }
+
+    private fun onFailedMultiAddToCart(result: MultiATCState.Fail) {
+        if (result.throwable == null) {
+            showErrorToaster(result.message.getString(context))
+        } else {
+            val errorMessage = context?.let {
+                ErrorHandler.getErrorMessage(it, result.throwable)
+            } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information)
+                .orEmpty()
+            showErrorToaster(errorMessage)
+        }
     }
 
     private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.config.GlobalConfig
+import java.lang.Exception
 
 
 /**
@@ -25,10 +25,15 @@ object RouteManagerKt {
             return false
         }
         if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.MOBILE_HOST)
-            && !UriUtil.isHostStaging(url)) {
+            && !UriUtil.isHostStaging(url)
+        ) {
             return false
         }
-        val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(activity.applicationContext, Uri.parse(url), url)
+        val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(
+            activity.applicationContext,
+            Uri.parse(url),
+            url
+        )
         if (!TextUtils.isEmpty(registeredNavigation)) {
             val intent = RouteManager.getIntentNoFallback(activity, registeredNavigation)
             if (intent != null) {
@@ -41,14 +46,19 @@ object RouteManagerKt {
             DeepLinkChecker.HOME -> {
                 val intent = RouteManager.getIntentNoFallback(activity, ApplinkConst.HOME)
                 if (intent != null) {
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
                     activity.startActivity(intent)
                 }
                 return true
             }
             DeepLinkChecker.CATEGORY -> {
                 val departmentId = getLinkSegment(url)[1]
-                RouteManager.route(activity, ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId)
+                RouteManager.route(
+                    activity,
+                    ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL,
+                    departmentId
+                )
                 return true
             }
             DeepLinkChecker.BROWSE -> {
@@ -82,7 +92,14 @@ object RouteManagerKt {
                 return RouteManager.route(activity, url)
             }
             DeepLinkChecker.ORDER_LIST -> {
-                return RouteManager.route(activity, url)
+                val intent =
+                    RouteManager.getIntentNoFallback(activity, ApplinkConst.MARKETPLACE_ORDER)
+                if (intent != null) {
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                    activity.startActivity(intent)
+                }
+                return true
             }
             DeepLinkChecker.TRAVEL_HOMEPAGE -> {
                 return RouteManager.route(activity, url)
@@ -90,8 +107,10 @@ object RouteManagerKt {
             DeepLinkChecker.NATIVE_THANK_YOU -> {
                 val merchantCode = getLinkSegment(url)[2]
                 val paymentId = getLinkSegment(url)[3]
-                return RouteManager.route(activity, ApplinkConst.THANKYOU_PAGE_NATIVE,
-                        paymentId, merchantCode)
+                return RouteManager.route(
+                    activity, ApplinkConst.THANKYOU_PAGE_NATIVE,
+                    paymentId, merchantCode
+                )
             }
             DeepLinkChecker.SALDO_DEPOSIT -> {
                 return RouteManager.route(activity, ApplinkConst.SALDO)
@@ -102,5 +121,32 @@ object RouteManagerKt {
 
     private fun getLinkSegment(url: String): List<String> {
         return Uri.parse(url).pathSegments
+    }
+
+    /**
+     * Method to fix backend wrong double pattern
+     * Example:
+     * tokopedia://tokopedia://tokopedia://discovery/clp_otomotif_63
+     * tokopedia://tokopedia://discovery/clp_fashion-pria_1759
+     * tokopedia://tokopedia://discovery/clp_fashion-wanita_1758
+     * AN-33822
+     */
+    @JvmStatic
+    fun trimDoubleSchemeDeeplink(url: String): String {
+        var urlTrimmed = url
+        val scheme = urlTrimmed.substringBefore("://")
+        while (hasDoubleScheme(urlTrimmed, scheme)) {
+            urlTrimmed = urlTrimmed.replace("$scheme://$scheme://", "$scheme://")
+        }
+        return urlTrimmed
+    }
+
+    private fun hasDoubleScheme(url: String, scheme: String?): Boolean {
+        return try {
+            val doubleScheme = "$scheme://$scheme://"
+            url.startsWith(doubleScheme)
+        } catch (e: Exception) {
+            false
+        }
     }
 }

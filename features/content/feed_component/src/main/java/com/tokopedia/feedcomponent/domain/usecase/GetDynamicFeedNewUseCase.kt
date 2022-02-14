@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.domain.usecase
 
+import android.text.TextUtils
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXData
 import com.tokopedia.feedcomponent.domain.mapper.DynamicFeedNewMapper
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -64,6 +65,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           }
           mods
         }
+        mediaRatio {
+          width
+          height
+        }
         tags {
           id
           name
@@ -88,6 +93,12 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
+        views {
+          label
+          count
+          countFmt
+          mods
+        }
         like {
           label
           count
@@ -289,6 +300,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
       }
       ... on FeedXCardProductsHighlight {
         id
+        type
         author {
           id
           type
@@ -370,6 +382,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           mods
         }
         publishedAt
+        deletable
         mods
       }
       ... on FeedXCardPlaceholder {
@@ -390,6 +403,8 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
 
 private const val CURSOR: String = "cursor"
 private const val LIMIT = "limit"
+val DETAIL_ID = "sourceID"
+val SOURCE = "source"
 
 @GqlQuery("GetFeedXHomeQuery", FEED_X_QUERY)
 class GetDynamicFeedNewUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
@@ -401,18 +416,22 @@ class GetDynamicFeedNewUseCase @Inject constructor(graphqlRepository: GraphqlRep
         setGraphqlQuery(GetFeedXHomeQuery.GQL_QUERY)
     }
 
-    fun setParams(cursor: String, limit: Int) {
+    fun setParams(cursor: String, limit: Int, detailId: String = "") {
         val queryMap = mutableMapOf(
                 CURSOR to cursor,
                 LIMIT to limit
         )
+        if (!TextUtils.isEmpty(detailId)) {
+            queryMap[DETAIL_ID] = detailId
+            queryMap[SOURCE] = "detail"
+        }
         val map = mutableMapOf("req" to queryMap)
         setRequestParams(map)
     }
 
-    suspend fun execute(cursor: String = "", limit: Int = 5):
+    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = ""):
             DynamicFeedDomainModel {
-        this.setParams(cursor, limit)
+        this.setParams(cursor, limit, detailId)
         val dynamicFeedResponse = executeOnBackground()
         return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor)
     }

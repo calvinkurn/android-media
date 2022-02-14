@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
@@ -47,6 +47,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

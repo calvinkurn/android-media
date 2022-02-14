@@ -10,7 +10,7 @@
     <string name="title_activity_developer_options">DeveloperOptions</string>
     <string name="title_flight_travel">Tiket Pesawat</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
-    <string name="flight_order_list">Daftar Transaksi</string>
+    <string name="flight_order_detail_title">Daftar Transaksi</string>
     <string name="activity_label_flight_cancellation">Isi Data Pembatalan</string>
     <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
     <string name="search_flight">Search Flight</string>
@@ -32,6 +32,8 @@
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
     <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
+    <string name="travel_contact_data_activity_title">Data Pemesan</string>
+    <string name="activity_label_travel_country_code">Kode Telepon Negara</string>
 
     <!--User Settings-->
     <string name="title_module_user_settings">Settings</string>
@@ -70,6 +72,7 @@
     <string name="saldo_deposit_app_name">Saldo</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="ovop2p_app_name">Saldo</string>
+    <string name="title_kyc_info_simple">Dokumen Data Diri</string>
     <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
     <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
 
@@ -220,8 +223,6 @@
     <string name="notif_troubleshooter_app_name">Push Notification Troubleshooter</string>
 
     <!-- Payment-Setting-->
-    <string name="df_payment_instant_debit_bca">Instant Debit BCA</string>
-    <string name="instant_debit_bca_title">Tambah Kartu BCA</string>
     <string name="payment_setting_app_name">payment_setting</string>
     <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
     <string name="payment_label_credit_card">Kartu Kredit</string>
@@ -319,7 +320,6 @@
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
-    <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
 
@@ -386,4 +386,5 @@
     <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
     <string name="cu_surey_layana">Survey Layana</string>
+    <string name="title_dynamic_libraries">Libraries</string>
 </resources>

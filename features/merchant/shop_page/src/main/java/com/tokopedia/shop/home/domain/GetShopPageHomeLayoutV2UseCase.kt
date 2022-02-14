@@ -51,6 +51,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                     cover
                     ratio
                     isATC
+                    isShowEtalaseName
                   }
                   data {
                     ... on BundleWidget {

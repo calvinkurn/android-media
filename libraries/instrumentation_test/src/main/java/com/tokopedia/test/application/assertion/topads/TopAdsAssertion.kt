@@ -60,7 +60,7 @@ class TopAdsAssertion(val context: Context,
         verifyUrlWithTopAdsVerificator(callerClass)
     }
 
-    private fun readDataFromDatabase(context: Context): List<TopAdsLogDB> {
+    private fun readDataFromDatabase(context: Context, isForTopadsVerificator: Boolean = false): List<TopAdsLogDB> {
         val topAdsLogDBSource = TopAdsLogDBSource(context)
         val graphqlUseCase = GraphqlUseCase()
         val topAdsVerificationNetworkSource = TopAdsVerificationNetworkSource(context, graphqlUseCase)
@@ -68,13 +68,14 @@ class TopAdsAssertion(val context: Context,
         val topAdsLogLocalRepository = TopAdsLogLocalRepository(topAdsLogDBSource, topAdsVerificationNetworkSource)
         val getTopAdsLogDataUseCase = GetTopAdsLogDataUseCase(topAdsLogLocalRepository)
 
-        setRequestParams(1, "")
+        setRequestParams(1, "", isForTopadsVerificator)
         return getTopAdsLogDataUseCase.getData(requestParams)
     }
 
-    private fun setRequestParams(page: Int, keyword: String) {
+    private fun setRequestParams(page: Int, keyword: String, isForTopadsVerificator: Boolean = false) {
         requestParams.putString(AnalyticsDebuggerConst.KEYWORD, keyword)
         requestParams.putInt(AnalyticsDebuggerConst.PAGE, page)
+        requestParams.putBoolean(AnalyticsDebuggerConst.TOPADS_VERIFICATOR_BE, isForTopadsVerificator)
         requestParams.putString(AnalyticsDebuggerConst.ENVIRONMENT, AnalyticsDebuggerConst.ENVIRONMENT_TEST)
     }
 
@@ -107,7 +108,7 @@ class TopAdsAssertion(val context: Context,
         logTestMessage("Waiting for topads backend verificator ready...")
         waitForVerificatorReady()
 
-        val listTopAdsDb = readDataFromDatabase(context)
+        val listTopAdsDb = readDataFromDatabase(context, isForTopadsVerificator = true)
 
         writeTopAdsVerificatorReportCoverage(callerClass, listTopAdsDb)
 
