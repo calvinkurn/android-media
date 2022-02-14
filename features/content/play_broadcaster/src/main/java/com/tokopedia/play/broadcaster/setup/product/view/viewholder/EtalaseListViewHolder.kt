@@ -76,9 +76,7 @@ internal class EtalaseListViewHolder private constructor() {
                 if (item.campaignUiModel.status.status == CampaignStatus.Unknown) View.GONE
                 else View.VISIBLE
 
-            binding.icEtalaseChecked.visibility =
-                if(item.campaignUiModel.isChecked) View.VISIBLE
-                else View.GONE
+            binding.icEtalaseChecked.visibility = if (item.isSelected) View.VISIBLE else View.GONE
 
             itemView.setOnClickListener {
                 listener.onCampaignClicked(item.campaignUiModel)
@@ -96,9 +94,7 @@ internal class EtalaseListViewHolder private constructor() {
             binding.tvDateDesc.visibility = View.GONE
             binding.labelStatus.visibility = View.GONE
 
-            binding.icEtalaseChecked.visibility =
-                if(item.etalaseUiModel.isChecked) View.VISIBLE
-                else View.GONE
+            binding.icEtalaseChecked.visibility = if (item.isSelected) View.VISIBLE else View.GONE
 
             itemView.setOnClickListener {
                 listener.onEtalaseClicked(item.etalaseUiModel)

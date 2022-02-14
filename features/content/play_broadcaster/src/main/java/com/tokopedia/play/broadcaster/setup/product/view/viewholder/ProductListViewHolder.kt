@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemLoadingBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductListBinding
@@ -22,12 +23,18 @@ internal class ProductListViewHolder private constructor() {
     internal class Product(
         private val binding: ItemProductListBinding,
         private val onSelected: (ProductUiModel) -> Unit,
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : BaseViewHolder(binding.root) {
 
         init {
             itemView.setOnClickListener {
                 binding.checkboxProduct.isChecked = !binding.checkboxProduct.isChecked
             }
+        }
+
+        override fun onViewRecycled() {
+            super.onViewRecycled()
+            binding.checkboxProduct.setOnCheckedChangeListener(null)
+            binding.checkboxProduct.isChecked = false
         }
 
         fun bind(item: ProductListAdapter.Model.Product) {
