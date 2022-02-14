@@ -29,13 +29,16 @@ class DigitalMenuDetailUiMapper @Inject constructor() {
             RecommendationCardWidgetModel(
                 if (isBigRecommendation) RecommendationCardEnum.BIG else RecommendationCardEnum.SMALL,
                 imageUrl = it.iconUrl,
+                clientNumber = it.clientNumber,
                 title = if (it.description.isEmpty()) it.clientNumber else it.description,
                 price = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.productPrice, false),
                 appUrl = it.applink,
                 id = it.productId.toString(),
                 categoryId = it.categoryId.toString(),
+                productId = it.productId.toString(),
+                operatorId = it.operatorId.toString(),
                 productType = if (isBigRecommendation) "30GB" else "", //todo get data from gql
-                productExpired = if (isBigRecommendation) "30 Days" else "" //todo get data from gql
+                productExpired = if (isBigRecommendation) "30 Days" else "", //todo get data from gql
             )
         }
     }
