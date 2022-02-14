@@ -22,7 +22,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
-import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
@@ -274,7 +273,7 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
             it.rechargePdpTickerWidgetProductDesc.apply {
                 setText(dummyInfo)
                 setLinks(clickableInfo, View.OnClickListener {
-                    showMoreInfoBottomSheet(dummyListInfo, dummyInfo)
+                    showMoreInfoBottomSheet(dummyListInfo)
                 })
             }
 
@@ -726,9 +725,9 @@ class DigitalPDPTokenListrikFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun showMoreInfoBottomSheet(listInfo: List<String>, tickerInfo: String){
+    private fun showMoreInfoBottomSheet(listInfo: List<String>){
         fragmentManager?.let {
-            MoreInfoPDPBottomsheet(tickerInfo, listInfo).show(it, "")
+            MoreInfoPDPBottomsheet(listInfo).show(it, "")
         }
     }
 
