@@ -1,7 +1,24 @@
 package com.tokopedia.sellerhome.analytic
 
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ticker.Ticker
 
@@ -693,8 +710,10 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendHomeTickerCtaClickEvent(tickerId: String,
-                                    tickerType: Int) {
+    fun sendHomeTickerCtaClickEvent(
+        tickerId: String,
+        tickerType: Int
+    ) {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
             category = arrayOf(
@@ -710,8 +729,10 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendHomeTickerImpressionEvent(tickerId: String,
-                                      tickerType: Int) {
+    fun sendHomeTickerImpressionEvent(
+        tickerId: String,
+        tickerType: Int
+    ) {
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
             category = arrayOf(
@@ -857,6 +878,73 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendCalendarItemClickEvent(element: CalendarWidgetUiModel, event: CalendarEventUiModel) {
+        val isEmpty = element.data?.eventGroups.isNullOrEmpty()
+        val emptyLabel = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val dateRage = "${element.filter.startDate} - ${element.filter.endDate}"
+        val eventTitle = "${event.label} ${event.eventName}"
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_CALENDAR_EVENT,
+            label = arrayOf(
+                element.dataKey,
+                emptyLabel,
+                dateRage,
+                event.label,
+                eventTitle
+            ).joinToString(" - "),
+            businessUnit = TrackingConstant.PHYSICAL_GOODS.asCamelCase(),
+            currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendCalendarFilterClickEvent(element: CalendarWidgetUiModel) {
+        val isEmpty = element.data?.eventGroups.isNullOrEmpty()
+        val emptyLabel = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val dateRage = "${element.filter.startDate} - ${element.filter.endDate}"
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_CALENDAR_SELECT_DATE_RANGE,
+            label = arrayOf(
+                element.dataKey,
+                emptyLabel,
+                dateRage
+            ).joinToString(" - "),
+            businessUnit = TrackingConstant.PHYSICAL_GOODS.asCamelCase(),
+            currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {
+        val isEmpty = element.data?.eventGroups.isNullOrEmpty()
+        val label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.IMPRESSION_WIDGET_CALENDAR,
+            label = arrayOf(element.dataKey, label).joinToString(" - "),
+            businessUnit = TrackingConstant.PHYSICAL_GOODS.asCamelCase(),
+            currentSite = TrackingConstant.TOKOPEDIA_MARKETPLACE
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
@@ -869,7 +957,7 @@ object SellerHomeTracking {
     }
 
     private fun getTickerTypeString(tickerType: Int?): String {
-        return when(tickerType) {
+        return when (tickerType) {
             Ticker.TYPE_ANNOUNCEMENT -> TrackingConstant.TICKER_ANNOUNCEMENT
             Ticker.TYPE_ERROR -> TrackingConstant.TICKER_DANGER
             Ticker.TYPE_INFORMATION -> TrackingConstant.TICKER_INFO
@@ -882,11 +970,13 @@ object SellerHomeTracking {
         event: String,
         category: String,
         action: String,
-        label: String = TrackingConstant.EMPTY_STRING
+        label: String = TrackingConstant.EMPTY_STRING,
+        businessUnit: String = TrackingConstant.PHYSICAL_GOODS,
+        currentSite: String = TrackingConstant.TOKOPEDIA_SELLER
     ): MutableMap<String, Any> {
         val map = TrackingHelper.createMap(event, category, action, label)
-        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
-        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+        map[TrackingConstant.BUSINESS_UNIT] = businessUnit
+        map[TrackingConstant.CURRENT_SITE] = currentSite
         return map
     }
 

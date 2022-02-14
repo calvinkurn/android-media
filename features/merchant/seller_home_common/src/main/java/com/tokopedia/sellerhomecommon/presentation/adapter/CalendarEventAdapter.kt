@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -20,7 +19,9 @@ import java.util.*
  * Created by @ilhamsuaib on 09/02/22.
  */
 
-class CalendarEventAdapter : RecyclerView.Adapter<CalendarEventAdapter.ViewHolder>() {
+class CalendarEventAdapter(
+    private val onItemClick: (CalendarEventUiModel) -> Unit
+) : RecyclerView.Adapter<CalendarEventAdapter.ViewHolder>() {
 
     companion object {
         private const val ONE = 1
@@ -38,6 +39,7 @@ class CalendarEventAdapter : RecyclerView.Adapter<CalendarEventAdapter.ViewHolde
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item)
+        holder.setOnItemClicked(onItemClick)
     }
 
     override fun getItemCount(): Int = items.size
@@ -51,6 +53,8 @@ class CalendarEventAdapter : RecyclerView.Adapter<CalendarEventAdapter.ViewHolde
     inner class ViewHolder(
         private val binding: ShcCalendarWidgetItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        private var onItemClick: ((CalendarEventUiModel) -> Unit)? = null
 
         fun bind(item: CalendarEventUiModel) {
             with(binding) {
@@ -66,9 +70,13 @@ class CalendarEventAdapter : RecyclerView.Adapter<CalendarEventAdapter.ViewHolde
                 showDateEvent(item)
 
                 root.setOnClickListener {
-                    RouteManager.route(root.context, item.appLink)
+                    onItemClick?.invoke(item)
                 }
             }
+        }
+
+        fun setOnItemClicked(onItemClick: (CalendarEventUiModel) -> Unit) {
+            this.onItemClick = onItemClick
         }
 
         private fun showDateEvent(item: CalendarEventUiModel) {

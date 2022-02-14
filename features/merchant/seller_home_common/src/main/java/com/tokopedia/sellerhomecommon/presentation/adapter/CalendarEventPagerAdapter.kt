@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetPageBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventGroupUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 
 /**
  * Created by @ilhamsuaib on 09/02/22.
@@ -14,6 +15,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventGroupUiMod
 class CalendarEventPagerAdapter : RecyclerView.Adapter<CalendarEventPagerAdapter.ViewHolder>() {
 
     var eventPages = listOf<CalendarEventGroupUiModel>()
+    private var onItemClick: (CalendarEventUiModel) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ShcCalendarWidgetPageBinding.inflate(
@@ -29,11 +31,15 @@ class CalendarEventPagerAdapter : RecyclerView.Adapter<CalendarEventPagerAdapter
 
     override fun getItemCount(): Int = eventPages.size
 
+    fun setOnItemClicked(onItemClick: (CalendarEventUiModel) -> Unit) {
+        this.onItemClick = onItemClick
+    }
+
     inner class ViewHolder(
         private val binding: ShcCalendarWidgetPageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val pagerAdapter by lazy { CalendarEventAdapter() }
+        private val pagerAdapter by lazy { CalendarEventAdapter(onItemClick) }
         private val layoutManager by lazy {
             object : LinearLayoutManager(itemView.context) {
                 override fun canScrollVertically(): Boolean = false

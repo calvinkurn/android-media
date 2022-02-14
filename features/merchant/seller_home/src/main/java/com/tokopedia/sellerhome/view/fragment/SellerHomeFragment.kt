@@ -699,6 +699,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getWidgetsData(widgets)
     }
 
+    override fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {
+        SellerHomeTracking.sendCalendarImpressionEvent(element)
+    }
+
+    override fun sendCalendarItemClickEvent(
+        element: CalendarWidgetUiModel,
+        event: CalendarEventUiModel
+    ) {
+        SellerHomeTracking.sendCalendarItemClickEvent(element, event)
+    }
+
+    override fun sendCalendarFilterClickEvent(element: CalendarWidgetUiModel) {
+        SellerHomeTracking.sendCalendarFilterClickEvent(element)
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -14,6 +15,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.CalendarEventPagerAdapter
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -38,7 +40,9 @@ class CalendarViewHolder(
     private val errorStateBinding by lazy { binding.shcCalendarWidgetErrorState }
     private val emptyStateBinding by lazy { binding.shcCalendarWidgetEmptyState }
 
-    private val pagerAdapter by lazy { CalendarEventPagerAdapter() }
+    private val pagerAdapter by lazy {
+        CalendarEventPagerAdapter()
+    }
     private val layoutManager by lazy {
         return@lazy object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
             override fun canScrollVertically(): Boolean = false
@@ -142,6 +146,13 @@ class CalendarViewHolder(
                 pageControlShcCalendar.invisible()
             }
 
+            pagerAdapter.setOnItemClicked {
+                val routing = RouteManager.route(itemView.context, it.appLink)
+                if (routing) {
+                    listener.sendCalendarItemClickEvent(element, it)
+                }
+            }
+
             pagerAdapter.eventPages = pages
             rvShcCalendar.layoutManager = layoutManager
             rvShcCalendar.adapter = pagerAdapter
@@ -193,5 +204,15 @@ class CalendarViewHolder(
         fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {}
 
         fun reloadCalendarWidget(element: CalendarWidgetUiModel) {}
+
+        fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {}
+
+        fun sendCalendarItemClickEvent(
+            element: CalendarWidgetUiModel,
+            event: CalendarEventUiModel
+        ) {
+        }
+
+        fun sendCalendarFilterClickEvent(element: CalendarWidgetUiModel) {}
     }
 }
