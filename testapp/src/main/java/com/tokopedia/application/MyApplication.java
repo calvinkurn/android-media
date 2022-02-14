@@ -74,8 +74,6 @@ public class MyApplication extends BaseMainApplication
         setVersionCode();
         initFileDirConfig();
 
-        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
-        TokopediaUrl.Companion.deleteInstance();
         TokopediaUrl.Companion.init(this); // generate base url
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
