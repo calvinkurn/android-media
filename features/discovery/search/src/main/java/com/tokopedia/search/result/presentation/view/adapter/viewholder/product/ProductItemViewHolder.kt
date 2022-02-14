@@ -143,8 +143,6 @@ abstract class ProductItemViewHolder(
     }
 
     override fun onPlayerBuffering() {
-        val productCardView = this.productCardView ?: return
-        productCardView.getProductVideoView()?.show()
         launch {
             videoPlayerStateFlow?.emit(VideoPlayerState.Buffering)
         }
