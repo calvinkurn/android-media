@@ -16,6 +16,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcCalendarWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.CalendarEventPagerAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
+import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
  * Created by @ilhamsuaib on 07/02/22.
@@ -51,6 +52,20 @@ class CalendarViewHolder(
     override fun bind(element: CalendarWidgetUiModel) {
         observeState(element)
         setShadowBackground()
+        showTag(element)
+    }
+
+    private fun showTag(element: CalendarWidgetUiModel) {
+        if (element.tag.isBlank()) {
+            binding.notifShcTagCalendar.gone()
+        } else {
+            binding.notifShcTagCalendar.visible()
+            binding.notifShcTagCalendar.setNotification(
+                element.tag,
+                NotificationUnify.TEXT_TYPE,
+                NotificationUnify.COLOR_TEXT_TYPE
+            )
+        }
     }
 
     private fun setShadowBackground() {
