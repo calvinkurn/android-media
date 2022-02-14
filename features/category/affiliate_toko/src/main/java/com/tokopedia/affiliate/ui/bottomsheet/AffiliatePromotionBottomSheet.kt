@@ -47,6 +47,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
     private var productId : String = ""
     private var currentName: String? = null
     private var currentServiceFormat = ""
+    private var commission = ""
     private var originScreen = ORIGIN_PROMOSIKAN
     private var url: String? = null
     private var identifier: String? = null
@@ -73,6 +74,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         private const val KEY_PRODUCT_NAME = "KEY_PRODUCT_NAME"
         private const val KEY_PRODUCT_IMAGE = "KEY_PRODUCT_IMAGE"
         private const val KEY_PRODUCT_URL = "KEY_PRODUCT_URL"
+        private const val KEY_COMMISON_PRICE = "KEY_COMMISION_PRICE"
         private const val KEY_PRODUCT_IDENTIFIER = "KEY_PRODUCT_IDENTIFIER"
         private const val KEY_ORIGIN = "KEY_ORIGIN"
         private const val KEY_LINK_GEN_ENABLED = "KEY_LINK_GEN_ENABLED"
@@ -90,7 +92,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                         idArray : ArrayList<Int>?,
                         productId : String, productName: String, productImage: String,
                         productUrl: String, productIdentifier: String, origin : Int = ORIGIN_PROMOSIKAN,
-                        isLinkGenerationEnabled :Boolean = true): AffiliatePromotionBottomSheet {
+                        isLinkGenerationEnabled :Boolean = true,commission: String = ""): AffiliatePromotionBottomSheet {
             return AffiliatePromotionBottomSheet().apply {
                 sheetType = bottomSheetType
                 affiliatePromotionBottomSheetInterface = bottomSheetInterface
@@ -103,6 +105,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                     putString(KEY_PRODUCT_IDENTIFIER, productIdentifier)
                     putInt(KEY_ORIGIN,origin)
                     putBoolean(KEY_LINK_GEN_ENABLED,isLinkGenerationEnabled)
+                    putString(KEY_COMMISON_PRICE,commission)
                 }
             }
         }
@@ -144,6 +147,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                 identifier = bundle.getString(KEY_PRODUCT_IDENTIFIER)
                 originScreen = bundle.getInt(KEY_ORIGIN, ORIGIN_PROMOSIKAN)
                 isLinkGenerationEnabled = bundle.getBoolean(KEY_LINK_GEN_ENABLED)
+                commission = bundle.getString(KEY_COMMISON_PRICE,"")
             }
 
             if(sheetType == SheetType.ADD_SOCIAL){
@@ -260,6 +264,15 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
             ORIGIN_HOME_GENERATED -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+            }
+            ORIGIN_PERNAH_DIBELI_PROMOSIKA -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+
+            }
+            ORIGIN_TERAKHIR_DILIHAT -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
             }
         }
         AffiliateAnalytics.sendEvent(AffiliateAnalytics.EventKeys.CLICK_PG,eventAction,eventCategory,eventLabel,userSessionInterface.userId)
