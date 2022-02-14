@@ -58,6 +58,8 @@ object GqlQueryConstant {
                          parent_product_id
                          child_product_id
                       }
+                      applink
+                      weblink
                     }                    
                 }
             }
