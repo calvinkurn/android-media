@@ -343,11 +343,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
                         if (error != null) throw error
                         setSelectedProduct(productMap)
-
-//                val err = getChannelById(configUiModel.channelId)
-//                if (err != null) {
-//                    throw err
-//                }
             }
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
@@ -414,7 +409,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
             setChannelInfo(channelInfo)
             setAddedTags(tags.recommendedTags.tags.toSet())
 
-//            setSelectedProduct(playBroadcastMapper.mapChannelProductTags(channel.productTags))
             setSelectedCover(playBroadcastMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl))
             setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp))
 
@@ -740,8 +734,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 if (result.remaining <= 0) logger.logSocketType(result)
                 restartLiveDuration(result)
             }
-            //TODO("Set new selected product")
-//            is ProductTagging -> setSelectedProduct(playBroadcastMapper.mapProductTag(result))
             is SectionedProductTagSocketResponse -> {
                 setSelectedProduct(productMapper.mapSectionedProduct(result))
             }

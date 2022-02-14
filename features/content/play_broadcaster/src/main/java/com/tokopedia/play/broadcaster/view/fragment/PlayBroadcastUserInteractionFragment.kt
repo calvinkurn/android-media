@@ -501,7 +501,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         childFragmentManager.beginTransaction()
             .add(ProductSetupFragment::class.java, null, null)
             .commit()
-//        getProductLiveBottomSheet().show(childFragmentManager)
     }
 
     private fun navigateToSummary() {

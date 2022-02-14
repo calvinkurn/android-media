@@ -14,7 +14,6 @@ import java.util.*
 import javax.inject.Inject
 
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(
-//        private val productDataStore: ProductDataStore,
         private val coverDataStore: CoverDataStore,
         private val titleDataStore: TitleDataStore,
         private val tagsDataStore: TagsDataStore,
@@ -26,10 +25,6 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     InteractiveDataStore by interactiveDataStore {
 
     override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
-//        if (!modeExclusion.contains(OverwriteMode.Product)) {
-//            overwriteProductDataStore(dataStore)
-//        }
-
         if (!modeExclusion.contains(OverwriteMode.Cover)) {
             overwriteCoverDataStore(dataStore)
         }
@@ -56,10 +51,6 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     override fun getInteractiveDataStore(): InteractiveDataStore {
         return interactiveDataStore
     }
-//
-//    private fun overwriteProductDataStore(dataStore: ProductDataStore) {
-//        setSelectedProducts(dataStore.getSelectedProducts())
-//    }
 
     private fun overwriteCoverDataStore(dataStore: CoverDataStore) {
         dataStore.getSelectedCover()?.let(::setFullCover)
@@ -100,22 +91,6 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
         return coverDataStore.uploadSelectedCover(channelId)
-    }
-
-    private fun validateCover() {
-        val selectedCover = getSelectedCover()
-//        val selectedProducts = getSelectedProducts()
-        val chosenCoverSource = when (val croppedCover = selectedCover?.croppedCover) {
-            is CoverSetupState.Cropped -> croppedCover.coverSource
-            is CoverSetupState.Cropping.Image -> croppedCover.coverSource
-            else -> null
-        }
-
-//        if (chosenCoverSource is CoverSource.Product) {
-//            val productId = chosenCoverSource.id
-//            if (selectedProducts.none { it.id == productId })
-//                updateCoverState(CoverSetupState.Blank)
-//        }
     }
 
     /**

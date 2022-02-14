@@ -73,10 +73,6 @@ class PlayCoverSetupViewModel @Inject constructor(
         it.croppedCover
     }
 
-//    val observableSelectedProducts: LiveData<List<CarouselCoverUiModel.Product>> = setupDataStore.getObservableSelectedProducts()
-//            .map { dataList -> dataList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) } }
-//            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
-
     val observableUploadCoverEvent: LiveData<NetworkResult<Event<Unit>>>
         get() = _observableUploadCoverEvent
     private val _observableUploadCoverEvent = MutableLiveData<NetworkResult<Event<Unit>>>()

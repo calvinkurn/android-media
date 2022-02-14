@@ -68,15 +68,6 @@ class ProductTagViewComponent(
         }
     }
 
-//    fun setProducts(products: List<ProductUiModel>) {
-//        if(!isProductInitialized && products.isNotEmpty()) {
-//            listener.impressProductTag(this)
-//            isProductInitialized = true
-//        }
-//
-//        adapter.setItemsAndAnimateChanges(products)
-//    }
-
     fun setProducts(products: List<ProductUiModel>) {
         if(!isProductInitialized && products.isNotEmpty()) {
             listener.impressProductTag(this)
