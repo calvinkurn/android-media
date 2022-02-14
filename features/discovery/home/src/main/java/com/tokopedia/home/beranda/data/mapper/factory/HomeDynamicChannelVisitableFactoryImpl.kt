@@ -184,6 +184,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
                     createQuestChannel(channel, position , questData = QuestData())
                 }
+                DynamicHomeChannel.Channels.LAYOUT_MERCHANT_VOUCHER -> {
+                    createMerchantVoucher(channel, position)
+                }
             }
         }
         if (addLoadingMore) {
@@ -588,6 +591,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 )
             )
         }
+    }
+
+    private fun createMerchantVoucher(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(mappingMixLeftComponent(
+                channel, isCache, verticalPosition
+        ))
     }
 
     override fun build(): List<Visitable<*>> = visitableList
