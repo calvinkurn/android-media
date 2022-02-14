@@ -13,6 +13,8 @@ class VariantListAdapter(private val variantItemClickListener: OnVariantItemClic
     : RecyclerView.Adapter<ProductItemVariantViewHolder>() {
 
     private var variantList: List<VariantUiModel> = listOf()
+    private var dataSetPosition: Int? = null
+    private var parentAdapterPosition: Int? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductItemVariantViewHolder {
         val binding = ItemProductListVariantLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -20,7 +22,7 @@ class VariantListAdapter(private val variantItemClickListener: OnVariantItemClic
     }
 
     override fun onBindViewHolder(holder: ProductItemVariantViewHolder, position: Int) {
-        holder.bindData(variantList[position])
+        holder.bindData(variantList[position], position)
     }
 
     override fun getItemCount(): Int {
@@ -31,5 +33,13 @@ class VariantListAdapter(private val variantItemClickListener: OnVariantItemClic
     fun setVariantList(variantList: List<VariantUiModel>) {
         this.variantList = variantList
         notifyDataSetChanged()
+    }
+
+    fun setDataSetPosition(dataSetPosition: Int) {
+        this.dataSetPosition = dataSetPosition
+    }
+
+    fun setParentAdapterPosition(parentAdapterPosition: Int) {
+        this.parentAdapterPosition = parentAdapterPosition
     }
 }

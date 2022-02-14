@@ -19,6 +19,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
+import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -205,5 +206,43 @@ class CouponPreviewViewModel @Inject constructor(
 
     fun isDuplicateMode(mode : CouponPreviewFragment.Mode): Boolean {
         return mode == CouponPreviewFragment.Mode.DUPLICATE
+    }
+
+    fun mapSelectedProductsToCouponProductData(selectedProducts: List<ProductUiModel>): List<CouponProduct> {
+        val couponProductData = mutableListOf<CouponProduct>()
+        selectedProducts.forEach { selectedProduct ->
+            val isParentProductSelected = selectedProduct.isSelected
+            if (isParentProductSelected) {
+                couponProductData.add(CouponProduct(
+                        id = selectedProduct.id,
+                        imageUrl = selectedProduct.imageUrl,
+                        soldCount = selectedProduct.sold
+                ))
+            }
+            if (selectedProduct.hasVariant) {
+                val variants = selectedProduct.variants
+                variants.forEach { variant ->
+                    val isVariantSelected = variant.isSelected
+                    if (isVariantSelected) {
+                        couponProductData.add(CouponProduct(
+                                id = variant.variantId,
+                                imageUrl = selectedProduct.imageUrl,
+                                soldCount = selectedProduct.sold
+                        ))
+                    }
+                }
+            }
+        }
+        return couponProductData.toList()
+    }
+
+    fun mapCouponProductDataToSelectedProducts(couponProductData: List<CouponProduct>): List<ProductUiModel> {
+        return couponProductData.map { couponProduct ->
+            ProductUiModel(
+                    id = couponProduct.id,
+                    imageUrl = couponProduct.imageUrl,
+                    sold = couponProduct.soldCount
+            )
+        }
     }
 }

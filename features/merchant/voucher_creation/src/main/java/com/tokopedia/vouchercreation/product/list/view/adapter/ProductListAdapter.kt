@@ -6,24 +6,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.vouchercreation.databinding.ItemProductListLayoutBinding
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
-import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemVariantViewHolder.OnVariantItemClickListener
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder.OnProductItemClickListener
 
-class ProductListAdapter(
-        private val productItemClickListener: OnProductItemClickListener,
-        private val variantItemClickListener: OnVariantItemClickListener
-) : RecyclerView.Adapter<ProductItemViewHolder>() {
+class ProductListAdapter(private val listener: OnProductItemClickListener)
+    : RecyclerView.Adapter<ProductItemViewHolder>(), OnProductItemClickListener {
+
+    interface OnProductItemClickListener {
+        fun onProductCheckBoxClicked(isSelected: Boolean)
+    }
 
     private var productUiModelList: List<ProductUiModel> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductItemViewHolder {
         val binding = ItemProductListLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProductItemViewHolder(binding, productItemClickListener, variantItemClickListener)
+        return ProductItemViewHolder(binding, this)
     }
 
     override fun onBindViewHolder(holder: ProductItemViewHolder, position: Int) {
-        holder.bindData(productUiModelList[position])
+        holder.bindData(productUiModelList[position], position)
     }
 
     override fun getItemCount(): Int {
@@ -43,16 +44,33 @@ class ProductListAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun selectAllProduct() {
+    fun updateAllProductSelections(isSelectAll: Boolean) {
         this.productUiModelList.forEach {
-            it.isSelectAll = true
-            it.isSelected = true
+            it.isSelectAll = isSelectAll
+            it.isSelected = isSelectAll
         }
         notifyDataSetChanged()
     }
 
-    fun updateSelectionState(isSelectAll: Boolean, adapterPosition: Int) {
-        this.productUiModelList[adapterPosition].isSelectAll = isSelectAll
-        notifyItemChanged(adapterPosition)
+    @SuppressLint("NotifyDataSetChanged")
+    fun isProductListEnabled(isEnabled: Boolean) {
+        this.productUiModelList.forEach {
+            it.isEnabled = isEnabled
+        }
+        notifyDataSetChanged()
+    }
+
+    override fun onProductCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int) {
+        productUiModelList[dataSetPosition].isSelected = isSelected
+        listener.onProductCheckBoxClicked(isSelected)
+    }
+
+    override fun onProductVariantCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int, variantIndex: Int): Int {
+        productUiModelList[dataSetPosition].variants[variantIndex].isSelected = isSelected
+        return productUiModelList[dataSetPosition].getSelectedVariants().size
+    }
+
+    override fun onProductVariantHeaderClicked(isExpanded: Boolean, dataSetPosition: Int) {
+        productUiModelList[dataSetPosition].isVariantHeaderExpanded = isExpanded
     }
 }

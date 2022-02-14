@@ -40,6 +40,7 @@ import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEsti
 import com.tokopedia.vouchercreation.product.create.view.bottomsheet.TermAndConditionBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.dialog.CreateProductCouponFailedDialog
 import com.tokopedia.vouchercreation.product.create.view.dialog.UpdateProductCouponFailedDialog
+import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import java.net.URLEncoder
 import java.util.*
@@ -56,6 +57,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         private const val ROTATION_ANGLE_HALF_CIRCLE = 180f
         private const val ROTATION_ANIM_DURATION_IN_MILLIS: Long = 300
         const val COUPON_ID_NOT_YET_CREATED : Long = -1
+        const val BUNDLE_KEY_SELECTED_PRODUCTS = "selectedProducts"
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
@@ -102,7 +104,8 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private var onCreateCouponSuccess: (Coupon) -> Unit = {}
     private var couponSettings: CouponSettings? = null
     private var couponInformation: CouponInformation? = null
-    private var couponProducts: List<CouponProduct> = emptyList()
+    private var couponProducts: MutableList<CouponProduct> = mutableListOf()
+    private var selectedProducts: MutableList<ProductUiModel> = mutableListOf()
     private var isCardExpanded = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CouponPreviewViewModel::class.java) }
@@ -198,12 +201,12 @@ class CouponPreviewFragment: BaseDaggerFragment() {
                 is Success -> {
                     showContent()
                     this.couponInformation = result.data.information
-                    this.couponProducts = result.data.products
+                    this.couponProducts = result.data.products.toMutableList()
                     this.couponSettings = result.data.settings
-
                     refreshCouponInformationSection(couponInformation ?: return@observe)
                     refreshCouponSettingsSection(couponSettings ?: return@observe)
-                    refreshProductsSection(couponProducts)
+                    val selectedProducts = viewModel.mapCouponProductDataToSelectedProducts(result.data.products)
+                    refreshProductsSection(selectedProducts)
                 }
                 is Fail -> {
                     hideLoading()
@@ -328,7 +331,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     private fun refreshCouponDetail() {
         couponInformation?.let { coupon -> refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
-        refreshProductsSection(couponProducts)
+        refreshProductsSection(selectedProducts)
         viewModel.validateCoupon(pageMode, couponSettings, couponInformation, couponProducts)
     }
 
@@ -337,15 +340,24 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     }
 
     fun setCouponProductsData(couponProducts: List<CouponProduct>) {
-        this.couponProducts = couponProducts
+        this.couponProducts = couponProducts.toMutableList()
     }
 
     fun setCouponInformationData(couponInformation: CouponInformation) {
         this.couponInformation = couponInformation
     }
 
+    fun addProducts(selectedProducts: List<ProductUiModel>) {
+        val couponProductData = viewModel.mapSelectedProductsToCouponProductData(selectedProducts)
+        this.selectedProducts.addAll(selectedProducts)
+        this.couponProducts.addAll(couponProductData)
+        refreshCouponDetail()
+    }
+
     fun getCouponInformationData() = this.couponInformation
     fun getCouponSettingsData() = this.couponSettings
+    fun getMaxAllowedProduct() = this.maxAllowedProduct
+    fun getSelectedProductIds() = this.selectedProducts.map { it.id }
 
     private fun refreshCouponInformationSection(coupon: CouponInformation) {
         binding.imgCopyToClipboard.visible()
@@ -428,14 +440,14 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun refreshProductsSection(products: List<CouponProduct>) {
-        binding.tpgUpdateProduct.isVisible = products.isNotEmpty()
-        if (products.isNotEmpty()) {
+    private fun refreshProductsSection(selectedProducts: List<ProductUiModel>) {
+        binding.tpgUpdateProduct.isVisible = selectedProducts.isNotEmpty()
+        if (selectedProducts.isNotEmpty()) {
             binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
             binding.labelProductCompleteStatus.setLabel(getString(R.string.completed))
 
             binding.tpgProductCount.text =
-                String.format(getString(R.string.placeholder_registered_product), products.size, maxAllowedProduct)
+                    String.format(getString(R.string.placeholder_registered_product), selectedProducts.size, maxAllowedProduct)
         } else {
             binding.labelProductCompleteStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             binding.labelProductCompleteStatus.setLabel(getString(R.string.incomplete))
