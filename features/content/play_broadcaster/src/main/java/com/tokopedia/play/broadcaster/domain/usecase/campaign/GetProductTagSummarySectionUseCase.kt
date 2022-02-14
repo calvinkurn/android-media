@@ -36,7 +36,7 @@ class GetProductTagSummarySectionUseCase @Inject constructor(
 
         const val QUERY_NAME = "GetProductTagSummarySectionUseCaseQuery"
         const val QUERY = """
-            query BroadcasterGetProductTagSection(${"$${PARAM_CHANNEL_ID}"}: Int!) {
+            query BroadcasterGetProductTagSection(${"$${PARAM_CHANNEL_ID}"}: Int) {
                 broadcasterGetProductTagSection(req: {
                     channelID: ${"$${PARAM_CHANNEL_ID}"}
                 }) {
