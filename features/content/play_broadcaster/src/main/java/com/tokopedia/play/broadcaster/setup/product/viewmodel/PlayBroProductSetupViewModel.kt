@@ -245,20 +245,16 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private fun handleLoadProductSummary() {
         /** TODO: change dispatchers.io -> dispatchers.main instead later */
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            withContext(dispatchers.main) {
-                _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
-            }
+            _productTagSummary.value = ProductTagSummaryUiModel.LoadingWithPlaceholder
 
             getProductTagSummary()
         }) {
-            withContext(dispatchers.main) {
-                _productTagSummary.value = ProductTagSummaryUiModel.Unknown
-                _uiEvent.emit(
-                    PlayBroProductSummaryUiEvent.GetDataError(it) {
-                        submitAction(PlayBroProductSummaryAction.LoadProductSummary)
-                    }
-                )
-            }
+            _productTagSummary.value = ProductTagSummaryUiModel.Unknown
+            _uiEvent.emit(
+                PlayBroProductSummaryUiEvent.GetDataError(it) {
+                    submitAction(PlayBroProductSummaryAction.LoadProductSummary)
+                }
+            )
         }
     }
 
@@ -267,10 +263,7 @@ class PlayBroProductSetupViewModel @Inject constructor(
     private fun handleDeleteProduct(product: ProductUiModel) {
         /** TODO: change dispatchers.io -> dispatchers.main instead later */
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            withContext(dispatchers.main) {
-                _productTagSummary.value = ProductTagSummaryUiModel.Loading
-            }
-
+            _productTagSummary.value = ProductTagSummaryUiModel.Loading
 
             val productSectionList = _productTagSectionList.value
             /** TODO: gonna delete this later */
@@ -285,14 +278,12 @@ class PlayBroProductSetupViewModel @Inject constructor(
 
             getProductTagSummary()
         }) {
-            withContext(dispatchers.main) {
-                _productTagSummary.value = ProductTagSummaryUiModel.Unknown
-                _uiEvent.emit(
-                    PlayBroProductSummaryUiEvent.DeleteProductError(it) {
-                        submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
-                    }
-                )
-            }
+            _productTagSummary.value = ProductTagSummaryUiModel.Unknown
+            _uiEvent.emit(
+                PlayBroProductSummaryUiEvent.DeleteProductError(it) {
+                    submitAction(PlayBroProductSummaryAction.DeleteProduct(product))
+                }
+            )
         }
     }
 
@@ -308,10 +299,8 @@ class PlayBroProductSetupViewModel @Inject constructor(
             productCount += it.products.size
         }
 
-        withContext(dispatchers.main) {
-            _productTagSectionList.value = response
-            _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
-        }
+        _productTagSectionList.value = response
+        _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
     }
 
 
