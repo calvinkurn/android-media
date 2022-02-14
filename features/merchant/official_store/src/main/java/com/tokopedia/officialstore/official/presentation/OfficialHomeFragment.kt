@@ -960,7 +960,7 @@ class OfficialHomeFragment :
         swipeRefreshLayout?.setOnRefreshListener {
             counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
-            officialHomeMapper.removeRecomWidget()
+            removeRecomWidget()
             officialHomeMapper.removeTopAdsHeadlineWidget(adapter)
             loadData(true)
             viewModel.resetShopWidgetImpressionCount()
