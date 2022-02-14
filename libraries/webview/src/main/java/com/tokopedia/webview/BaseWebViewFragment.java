@@ -713,6 +713,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (uri.getHost() == null) {
             return false;
         }
+        if (isBriIntent(uri) ) {
+            return handlingBriIntent(url);
+        }
 
         String queryParam = null;
         String headerText = null;
@@ -815,6 +818,33 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean isBriIntent (Uri uri){
+        return uri.getScheme().equals("intent") &&
+                uri.getHost().contains("kartukreditbri.co.id") &&
+                uri.toString().contains("browser_fallback_url=");
+    }
+
+    private boolean handlingBriIntent(String briUrl) {
+        String newUrl = briUrl.substring(briUrl.indexOf("browser_fallback_url=") + 21, briUrl.length() - 1);
+        newUrl = newUrl.substring(0, newUrl.indexOf(";"));
+        return launchWebviewForNewUrl(UrlEncoderExtKt.decode(newUrl));
+    }
+
+    private boolean launchWebviewForNewUrl(String newUrl) {
+        if (webView != null) {
+            if (Uri.parse(newUrl).getHost().contains(TOKOPEDIA_STRING)) {
+                webView.loadAuthUrl(newUrl, userSession);
+            } else {
+                webView.loadUrl(newUrl);
+            }
+            return true;
+        } else {
+            // change first url directly
+            url = newUrl;
+            return false;
+        }
     }
 
     private void gotoAlaCarteKyc(Uri uri) {

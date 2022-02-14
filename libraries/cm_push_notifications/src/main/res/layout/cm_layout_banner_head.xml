@@ -32,6 +32,7 @@
                 android:layout_marginStart="@dimen/dp_3"
                 android:gravity="center_vertical"
                 android:text="@string/cm_app_title_name"
+                android:singleLine="true"
                 android:textColor="@color/medium_green_70"
                 android:textSize="@dimen/sp_12" />
 
@@ -48,6 +49,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_N700_44"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textSize="@dimen/sp_12"
                 tool:text="11:11 am" />
 
