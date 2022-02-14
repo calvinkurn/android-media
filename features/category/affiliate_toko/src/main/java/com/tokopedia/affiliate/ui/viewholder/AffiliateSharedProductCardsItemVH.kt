@@ -56,7 +56,7 @@ class AffiliateSharedProductCardsItemVH(itemView: View, private val productClick
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_DAFTAR_LINK_PRODUK,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_LINK_HISTORY,
-            UserSession(itemView.context).userId,product.itemID,adapterPosition-1,product.itemTitle,"${product.itemID} - $label",
+            UserSession(itemView.context).userId,product.itemID,adapterPosition+1,product.itemTitle,"${product.itemID} - $label",
             AffiliateAnalytics.ItemKeys.AFFILIATE_DAFTAR_LINK_PRODUK)
 
     }
