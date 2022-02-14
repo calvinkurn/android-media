@@ -85,4 +85,6 @@ interface ActionListener {
 
     fun onLocalizingAddressUpdatedFromWidget()
 
+    fun onClickAddOnCart(productId: String)
+
 }
