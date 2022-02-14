@@ -5,25 +5,26 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
-import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
+import java.lang.Exception
 
-class ShopCardlViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class ShopCardViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private var constraint: ConstraintLayout = itemView.findViewById(R.id.parent_container)
     private var mBgImage: ImageUnify = itemView.findViewById(R.id.bg_image)
     private var mShopCardRecyclerView: RecyclerView = itemView.findViewById(R.id.shop_card_rv)
@@ -45,6 +46,9 @@ class ShopCardlViewHolder(itemView: View, private val fragment: Fragment) : Abst
         getSubComponent().inject(mShopCardViewModel)
         mShopCardRecyclerView.show()
         shopEmptyState?.hide()
+        if (mShopCardViewModel.shouldShowShimmer()) {
+            addShimmer()
+        }
         addDefaultItemDecorator()
         handleShopCardPagination()
     }
@@ -53,18 +57,44 @@ class ShopCardlViewHolder(itemView: View, private val fragment: Fragment) : Abst
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mShopCardViewModel.getShopCardBackgroundData().observe(it, Observer { item ->
-                mBgImage.loadImage(item?.properties?.backgroundImageUrl)
-                constraint.setBackgroundColor(Color.parseColor("#5C5CFF"))
+            mShopCardViewModel.getShopCardBackgroundData().observe(it, { item ->
+                setHolderBackgroundData(item)
             })
-
-            mShopCardViewModel.getShopCardItemsListData().observe(it, Observer { item ->
+            mShopCardViewModel.syncData.observe(it, { sync ->
+                if (sync) {
+                    mDiscoveryRecycleAdapter.notifyDataSetChanged()
+                }
+            })
+            mShopCardViewModel.getShopCardItemsListData().observe(it, { item ->
+                mShopCardRecyclerView.show()
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
 
-            mShopCardViewModel.getShopLoadState().observe(it, Observer{
-                if (it) handleErrorState()
+            mShopCardViewModel.getShopLoadState().observe(it, { shouldShowErrorState ->
+                if (shouldShowErrorState) handleErrorState()
             })
+
+            mShopCardViewModel.hideShimmer().observe(it, { shouldShowErrorState ->
+                if(shouldShowErrorState) hideShimmer()
+            })
+        }
+    }
+
+    private fun setHolderBackgroundData(item: ComponentsItem?) {
+        try {
+            if(item?.properties?.backgroundImageUrl.isNullOrEmpty()){
+                mBgImage.hide()
+            }else {
+                mBgImage.show()
+                mBgImage.loadImageWithoutPlaceholder(item?.properties?.backgroundImageUrl)
+            }
+            if(!item?.properties?.backgroundColor.isNullOrEmpty()) {
+                constraint.setBackgroundColor(Color.parseColor(item?.properties?.backgroundColor))
+            }else{
+                constraint.setBackgroundColor(MethodChecker.getColor(itemView.context,R.color.discovery2_dms_shop_card_bg))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -93,10 +123,11 @@ class ShopCardlViewHolder(itemView: View, private val fragment: Fragment) : Abst
 
     private fun handleErrorState() {
         mDiscoveryRecycleAdapter.notifyDataSetChanged()
+        hideShimmer()
         if (constraint.childCount > 0)
             constraint.removeAllViews()
 
-        if (mShopCardViewModel.getProductList() == null) {
+        if (mShopCardViewModel.getShopList() == null) {
             shopEmptyState?.run {
                 title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
                 description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
@@ -120,6 +151,21 @@ class ShopCardlViewHolder(itemView: View, private val fragment: Fragment) : Abst
         if (mShopCardRecyclerView.itemDecorationCount > 0)
             mShopCardRecyclerView.removeItemDecorationAt(0)
 //        mBannerCarouselRecyclerView.addItemDecoration(bannerRecyclerViewDecorator)
+    }
+
+    private fun addShimmer() {
+        val list: ArrayList<ComponentsItem> = ArrayList()
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        list.add(ComponentsItem(name = ComponentNames.BannerCarouselShimmer.componentName))
+        mDiscoveryRecycleAdapter.setDataList(list)
+    }
+
+    private fun hideShimmer() {
+        mDiscoveryRecycleAdapter.setDataList(arrayListOf())
     }
 
 

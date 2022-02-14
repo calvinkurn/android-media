@@ -60,5 +60,6 @@
     <color name="discovery2_dms_white_95">#f2ffffff</color>
     <color name="discovery2_dms_clr_262626">#262626</color>
     <color name="discovery2_dms_clr_2F89FC">#2F89FC</color>
+    <color name="discovery2_dms_shop_card_bg">@color/Unify_NN0</color>
 
 </resources>

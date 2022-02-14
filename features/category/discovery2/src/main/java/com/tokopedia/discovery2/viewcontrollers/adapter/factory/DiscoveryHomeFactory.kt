@@ -107,7 +107,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.myco
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardlViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewModel
@@ -218,7 +218,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.TopadsHeadlineView, ::TopAdsHeadlineViewHolder, ::TopAdsHeadlineViewModel)
 
             //Rilisan Spesial View
-            initializeComponent(ComponentsList.ShopCardView, ::ShopCardlViewHolder, ::ShopCardViewModel)
+            initializeComponent(ComponentsList.ShopCardView, ::ShopCardViewHolder, ::ShopCardViewModel)
             //Rilisan Spesial ItemView
             initializeComponent(ComponentsList.ShopCardItemView, ::ShopCardItemViewHolder, ::ShopCardItemViewModel)
 

@@ -3,9 +3,12 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.car
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
+import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
@@ -19,8 +22,13 @@ class CarouselErrorLoadViewModel(val application: Application,
         DiscoveryBaseViewModel(), CoroutineScope {
 
     private val showLoader: MutableLiveData<Boolean> = MutableLiveData()
+
     @Inject
     lateinit var productCardUseCase: ProductCardsUseCase
+
+    @Inject
+    lateinit var shopCardUseCase: ShopCardUseCase
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -31,7 +39,14 @@ class CarouselErrorLoadViewModel(val application: Application,
     fun loadData() {
         showLoader.value = true
         launchCatchError(block = {
-            syncData.value = productCardUseCase.getCarouselPaginatedData(components.parentComponentId, components.pageEndPoint)
+            getComponent(components.parentComponentId, components.pageEndPoint)?.let {
+                syncData.value = when (components.parentComponentName) {
+                    ComponentNames.ShopCardView.componentName ->
+                        shopCardUseCase.getShopCardPaginatedData(components.parentComponentId, components.pageEndPoint)
+                    else -> productCardUseCase.getCarouselPaginatedData(components.parentComponentId, components.pageEndPoint)
+                }
+
+            }
         }, onError = {
             showLoader.value = false
         })

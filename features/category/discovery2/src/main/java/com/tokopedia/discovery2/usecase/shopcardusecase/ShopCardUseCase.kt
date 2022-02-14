@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCardRepository) {
     companion object {
-        private const val SHOP_PER_PAGE = 20
+        private const val SHOP_PER_PAGE = 10
         private const val PAGE_START = 1
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
         private const val RPC_NEXT_PAGE = "rpc_next_page"
@@ -24,7 +24,6 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
         val component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
-            val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
             val isDynamic = it.properties?.dynamic ?: false
             val (shopCardListData, nextPage) = shopCardRepository.getShopCardData(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
@@ -45,41 +44,9 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
         return false
     }
 
-    suspend fun getProductCardsUseCase(componentId: String, pageEndPoint: String, shopLimit: Int = SHOP_PER_PAGE): Boolean {
-        val component = getComponent(componentId, pageEndPoint)
-        val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
-        parentComponent?.let { component1 ->
-            val isDynamic = component1.properties?.dynamic ?: false
-            val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
-            val (shopCardListData, nextPage) = shopCardRepository.getShopCardData(
-                    if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
-                        component1.dynamicOriginalId!! else component1.id,
-                    getQueryParameterMap(component1.pageLoadedCounter,
-                            shopLimit,
-                            component1.nextPageKey),
-                    pageEndPoint,
-                    component1.name)
-            component1.nextPageKey = nextPage
-            if (shopCardListData.isEmpty()) {
-                component1.showVerticalLoader = false
-            } else {
-                component1.pageLoadedCounter += 1
-                component1.showVerticalLoader = true
-                (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(shopCardListData)
-            }
-            component1.verticalProductFailState = false
-            return true
-        }
-        return false
-    }
-
     suspend fun getShopCardPaginatedData(componentId: String, pageEndPoint: String, shopLimit: Int = SHOP_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         component?.let {
-            it.properties?.let { properties ->
-                if (properties.limitProduct && properties.limitNumber.toIntOrZero() == it.getComponentsItem()?.size) return false
-            }
-            val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
             val isDynamic = it.properties?.dynamic ?: false
             val (shopCardListData, nextPage) = shopCardRepository.getShopCardData(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
@@ -105,16 +72,6 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
 
         queryParameterMap[RPC_PAGE__SIZE] = shopPerPage.toString()
         queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
-
-        discoComponentQuery?.let {
-            if (!it[PIN_PRODUCT].isNullOrEmpty()) {
-                queryParameterMap[PIN_PRODUCT] = it[PIN_PRODUCT] ?: ""
-                queryParameterMap[PRODUCT_ID] = it[PRODUCT_ID] ?: ""
-            } else if (!it[EMBED_CATEGORY].isNullOrEmpty()) {
-                queryParameterMap[EMBED_CATEGORY] = it[EMBED_CATEGORY] ?: ""
-                queryParameterMap[CATEGORY_ID] = it[CATEGORY_ID] ?: ""
-            }
-        }
 
         queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""
 

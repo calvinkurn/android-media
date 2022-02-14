@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import javax.inject.Inject
 
@@ -19,12 +20,14 @@ class ShopCardGQLRepository @Inject constructor() : BaseRepository(), ShopCardRe
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
         val nextPage = response.data.component?.compAdditionalInfo?.nextPage
+        val componentsItem = getComponent(componentId,pageEndPoint)
+        val componentsListSize = componentsItem?.getComponentsItem()?.size ?: 0
         val list = when (shopCardComponentName) {
             ComponentNames.ShopCardView.componentName -> {
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ShopCardItemView.componentName, componentProperties, creativeName)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ShopCardItemView.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
             }
             else ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ShopCardItemView.componentName, null, creativeName)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ShopCardItemView.componentName, null, creativeName, parentListSize = componentsListSize)
 
         }
         return Pair(list, nextPage)

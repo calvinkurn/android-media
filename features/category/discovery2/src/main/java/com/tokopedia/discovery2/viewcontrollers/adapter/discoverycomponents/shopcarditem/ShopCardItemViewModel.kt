@@ -1,15 +1,9 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem
 
 import android.app.Application
-import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,30 +27,10 @@ class ShopCardItemViewModel(val application: Application, val components: Compon
 
     fun getComponentPosition() = componentPosition
 
-    fun getComponentName(): String {
-        var componentName = ""
-        components.name?.let {
-            componentName = it
-        }
-        return componentName
-    }
-
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
     }
 
-    fun getUserID(): String? {
-        return UserSession(application).userId
-    }
-
     fun getComponentLiveData() = componentData
-
-    fun getShopCardData(): DataItem? {
-        return getShopCardDataItem()
-    }
-
-    private fun getShopCardDataItem(): DataItem? {
-        return components.data?.firstOrNull()
-    }
 
 }

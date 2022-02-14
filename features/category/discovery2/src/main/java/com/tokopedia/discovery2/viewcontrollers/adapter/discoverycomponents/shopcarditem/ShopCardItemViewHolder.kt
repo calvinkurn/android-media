@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -11,18 +10,19 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import java.lang.Exception
 
 class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
         AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private lateinit var mShopCardItemViewModel: ShopCardItemViewModel
     private var parentCardView: CardUnify = itemView.findViewById(R.id.parentLayout)
-    private var constraint: ConstraintLayout = itemView.findViewById(R.id.constraint_parent)
     private var imageShop: ImageUnify = itemView.findViewById(R.id.imageShop)
     private var shopLogo: ImageUnify = itemView.findViewById(R.id.shop_logo)
     private var shopSubLogo: ImageUnify = itemView.findViewById(R.id.shop_sub_logo)
@@ -31,8 +31,8 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var benefitSymbol: Typography = itemView.findViewById(R.id.benefit_symbol)
     private var benefitAmount: Typography = itemView.findViewById(R.id.benefit_amount)
     private var benefitSymbolImage: ImageUnify = itemView.findViewById(R.id.benefit_symbol_image)
+    private var timerLogo: ImageUnify = itemView.findViewById(R.id.timer_logo)
     private var timerTextView: Typography = itemView.findViewById(R.id.tv_timer)
-    private var ShopCardName = ""
     private var shopCardDataItem: DataItem? = null
     private var componentPosition: Int? = null
 
@@ -49,9 +49,8 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        ShopCardName = mShopCardItemViewModel.getComponentName()
         lifecycleOwner?.let { lifecycle ->
-            mShopCardItemViewModel.getComponentLiveData().observe(lifecycle, Observer { item ->
+            mShopCardItemViewModel.getComponentLiveData().observe(lifecycle, { item ->
                 item.data?.let {
                     if (it.isNotEmpty()) {
                         shopCardDataItem = it.first()
@@ -59,14 +58,14 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     }
                 }
             })
-            mShopCardItemViewModel.getComponentPosition().observe(lifecycle, Observer { position ->
+            mShopCardItemViewModel.getComponentPosition().observe(lifecycle, { position ->
                 componentPosition = position
             })
 
-            mShopCardItemViewModel.getComponentPosition().observe(lifecycle, Observer {
+            mShopCardItemViewModel.getComponentPosition().observe(lifecycle, {
                 componentPosition = it
             })
-            mShopCardItemViewModel.getSyncPageLiveData().observe(lifecycle, Observer {
+            mShopCardItemViewModel.getSyncPageLiveData().observe(lifecycle, {
                 if (it) (fragment as DiscoveryFragment).reSync()
             })
         }
@@ -90,13 +89,13 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
             if (!dataItem.shopName.isNullOrEmpty()) {
                 shopNameTextView.show()
                 shopNameTextView.text = dataItem.shopName
-            }else{
+            } else {
                 shopNameTextView.hide()
             }
             if (!dataItem.benefitTitle.isNullOrEmpty()) {
                 headerTitleTextView.show()
                 headerTitleTextView.text = dataItem.benefitTitle
-            }else{
+            } else {
                 headerTitleTextView.hide()
             }
             if (dataItem.showBenefitCurrency == true) {
@@ -108,22 +107,22 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
             if (!dataItem.benefitAmount.isNullOrEmpty()) {
                 benefitAmount.show()
                 benefitAmount.text = dataItem.benefitAmount
-            }else{
+            } else {
                 benefitAmount.hide()
             }
             benefitSymbolImage.loadImage(dataItem.benefitSymbolImageUrl)
             if (dataItem.showTimer == true) {
-                timerTextView.drawableState
+                timerLogo.show()
+            }else{
+                timerLogo.invisible()
             }
             if (!dataItem.timeDescription.isNullOrEmpty()) {
                 timerTextView.show()
                 timerTextView.text = dataItem.timeDescription
-            }else{
-                timerTextView.hide()
+            } else {
+                timerTextView.invisible()
             }
-
-
-        } catch (exception: NumberFormatException) {
+        } catch (exception: Exception) {
             parentCardView.hide()
             exception.printStackTrace()
         }
