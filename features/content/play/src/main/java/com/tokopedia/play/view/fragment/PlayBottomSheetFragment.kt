@@ -43,6 +43,7 @@ import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUi
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
@@ -723,7 +724,8 @@ class PlayBottomSheetFragment @Inject constructor(
                     prevState?.tagItems,
                     state.tagItems,
                     state.channel.bottomSheetTitle,
-                    state.partner.id
+                    state.partner.id,
+                    state.channel.emptyBottomSheetInfo
                 )
 
                 renderVoucherSheet(state.tagItems)
@@ -747,6 +749,7 @@ class PlayBottomSheetFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomSheetTitle: String,
         partnerId: Long,
+        emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUi
     ) {
         if (tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
             productSheetView.showPlaceholder()
@@ -765,7 +768,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
             if (tagItem.product.productList != prevTagItem?.product?.productList) trackImpressedProduct()
         } else {
-            productSheetView.showEmpty(partnerId)
+            productSheetView.showEmpty(partnerId, emptyBottomSheetInfoUi)
         }
     }
 

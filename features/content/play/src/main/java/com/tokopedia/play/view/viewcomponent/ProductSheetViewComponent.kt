@@ -24,6 +24,7 @@ import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUi
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
@@ -53,6 +54,8 @@ class ProductSheetViewComponent(
 
     private val clProductEmpty: ConstraintLayout = findViewById(R.id.cl_product_empty)
     private val btnProductEmpty: UnifyButton = findViewById(R.id.btn_action_product_empty)
+    private val tvHeaderProductEmpty: TextView = findViewById(R.id.tv_title_product_empty)
+    private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: PlayProductUiModel.Product) {
@@ -206,9 +209,13 @@ class ProductSheetViewComponent(
         )
     }
 
-    fun showEmpty(partnerId: Long) {
+    fun showEmpty(partnerId: Long, emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUi) {
         showContent(false)
         globalError.hide()
+
+        tvHeaderProductEmpty.text = emptyBottomSheetInfoUi.header
+        tvBodyProductEmpty.text = emptyBottomSheetInfoUi.body
+        btnProductEmpty.text = emptyBottomSheetInfoUi.button
 
         btnProductEmpty.setOnClickListener {
             listener.onEmptyButtonClicked(this@ProductSheetViewComponent, partnerId)

@@ -45,6 +45,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     ),
                     videoInfo = mapVideoInfo(it.video),
                     bottomSheetTitle = it.config.pinnedProductConfig.bottomSheetTitle,
+                    emptyBottomSheetInfo = mapEmptyBottomSheet(it.config.emptyBottomSheet)
                 ),
                 partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
@@ -293,6 +294,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     ) = FreezeUiModel(
         title = String.format(freezeDataResponse.title, title),
     )
+
+    private fun mapEmptyBottomSheet(emptyBottomSheet: ChannelDetailsWithRecomResponse.EmptyBottomSheet) =
+        PlayEmptyBottomSheetInfoUi(header = emptyBottomSheet.headerText, body = emptyBottomSheet.bodyText, button = emptyBottomSheet.redirectButtonText)
 
     companion object {
         private const val MS_PER_SECOND = 1000
