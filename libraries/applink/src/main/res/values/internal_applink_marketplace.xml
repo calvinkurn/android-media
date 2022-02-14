@@ -23,6 +23,7 @@
     <string name="path_normal_checkout" translatable="false">/normal-checkout</string>
     <string name="path_checkout_address_selection" translatable="false">/checkout-address-selection</string>
     <string name="path_one_click_checkout" translatable="false">/one-click-checkout</string>
+    <string name="path_add_on_gifting" translatable="false">/add-on-gifting</string>
 
     <string name="path_gold_merchant_statistic_dashboard" translatable="false">/gold-merchant-statistic-dashboard</string>
     <string name="path_gold_merchant_subscribe_dashboard" translatable="false">/gold-merchant-subscribe-dashboard</string>

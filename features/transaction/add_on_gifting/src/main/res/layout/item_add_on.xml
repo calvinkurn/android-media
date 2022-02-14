@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_add_on"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_add_on_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_add_on"
+        app:typographyType="body_3"
+        tools:text="Bungkus barang dengan (opsional):" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_add_on"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_add_on_header" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_add_on_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        app:layout_constraintEnd_toStartOf="@+id/check_box_add_on"
+        app:layout_constraintStart_toEndOf="@+id/image_add_on"
+        app:layout_constraintTop_toTopOf="@+id/image_add_on"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Kemasan dan Kartu Ucapan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_add_on_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/check_box_add_on"
+        app:layout_constraintStart_toStartOf="@+id/label_add_on_name"
+        app:layout_constraintTop_toBottomOf="@+id/label_add_on_name"
+        app:typographyType="body_3"
+        tools:text="Simple &amp; Polos" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_add_on_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/check_box_add_on"
+        app:layout_constraintStart_toStartOf="@+id/label_add_on_name"
+        app:layout_constraintTop_toBottomOf="@+id/label_add_on_description"
+        app:typographyType="body_3"
+        tools:text="Rp4.000" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/check_box_add_on"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/image_add_on"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/image_add_on" />
+
+    <com.tokopedia.unifycomponents.ContainerUnify
+        android:id="@+id/container_add_on_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:container_color="GREEN"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_add_on">
+
+        <com.tokopedia.unifycomponents.CardUnify
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="16dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp">
+
+                <com.tokopedia.unifycomponents.TextFieldUnify2
+                    android:id="@+id/text_field_add_on_to"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:unify_text_field_label="Ke" />
+
+                <com.tokopedia.unifycomponents.TextFieldUnify2
+                    android:id="@+id/text_field_add_on_from"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_field_add_on_to"
+                    app:unify_text_field_label="Dari" />
+
+                <com.tokopedia.unifycomponents.TextFieldUnify2
+                    android:id="@+id/text_field_add_on_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_field_add_on_from"
+                    app:unify_text_field_label="Tulis pesan di kartu ucapan" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.tokopedia.unifycomponents.CardUnify>
+
+        <LinearLayout
+            android:id="@+id/container_footer_messages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp" />
+
+    </com.tokopedia.unifycomponents.ContainerUnify>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

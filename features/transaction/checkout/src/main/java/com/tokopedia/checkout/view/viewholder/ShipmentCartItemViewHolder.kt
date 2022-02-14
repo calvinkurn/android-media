@@ -270,7 +270,6 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     interface ShipmentItemListener {
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
         fun navigateToWebView(cartItem: CartItemModel)
-        fun openAddOnBottomSheet(cartItem: CartItemModel)
     }
 
     companion object {

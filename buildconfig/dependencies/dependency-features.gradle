@@ -149,7 +149,6 @@ ext {
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             reviewInbox                     : ":features:merchant:review_inbox",
-            sellerAction                    : ":features:merchant:seller_action",
             sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerAppWidget                 : ":features:merchant:seller_app_widget",
             sellerHome                      : ":features:merchant:seller_home",
@@ -212,6 +211,7 @@ ext {
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             topAdsHeadline                  : ":features:top_ads:top_ads_headline",
             topAdsHeadlineUseCase           : ":features:top_ads:top_ads_headline_usecase",
+            topAdsOnBoarding                : ":features:top_ads:top_ads_on_boarding",
 
             atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
@@ -222,6 +222,7 @@ ext {
             checkout                        : ":features:transaction:checkout",
             promoCheckoutMarketplace        : ":features:transaction:promo_checkout_marketplace",
             minicart                        : ":features:transaction:minicart",
+            addOnGifting                    : ":features:transaction:add_on_gifting",
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",

@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Add on</string>
+    <string name="add_on_gifting_activity_add_on_label">Add on activity</string>
+    <string name="add_on_gifting_activity_add_on_gallery_label">Add on gallery activity</string>
+    <string name="add_on_toaster_message_failed_save_add_on">Gagal menyimpan pelengkap. Silakan coba lagi.</string>
+    <string name="add_on_bottomsheet_title">Atur pelengkap barang</string>
+    <string name="add_on_label_total_amount">Total Pelengkap</string>
+    <string name="add_on_label_total_amount_cta_save">Simpan</string>
+    <string name="add_on_label_total_amount_cta_save_with_quantity">Simpan (%d)</string>
+    <string name="add_on_label_dialog_confirmation_title">Batal tambah pelengkap?</string>
+    <string name="add_on_label_dialog_confirmation_description">Pesan kartu ucapan nggak akan tersimpan kalau kamu keluar dari sini.</string>
+    <string name="add_on_label_dialog_confirmation_primary_cta">Ya, Batal</string>
+    <string name="add_on_label_dialog_confirmation_secondary_cta">Tetap di Sini</string>
+    <string name="add_on_label_header">Bungkus barang dengan (opsional):</string>
+    <string name="add_on_label_header_toko_cabang_single_product">Bungkus barang jadi satu dengan (opsional):</string>
+    <string name="add_on_label_header_toko_cabang_multiple_product">Bungkus %d barang jadi satu dengan (opsional):</string>
+    <string name="add_on_label_message_custom_note">Bisa ubah pesan yang disediakan</string>
+    <string name="add_on_label_message_pre_defined_note">Menggunakan pesan yang disediakan</string>
+    <string name="add_on_label_note_filled">Pesan</string>
+    <string name="add_on_label_note_empty">Tulis pesan di kartu ucapan</string>
+    <string name="add_on_label_header_product_from_toko_cabang">Eksklusif dari Tokocabang</string>
+    <string name="add_on_label_header_product">Disediakan oleh %s</string>
+
+</resources>

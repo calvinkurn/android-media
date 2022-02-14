@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -31,6 +32,7 @@ class ProductDataView() : Parcelable {
     var categoryIdL2 = ""
     var lastFilterDataView = LastFilterDataView()
     var pageComponentId = ""
+    var violation: ViolationDataView? = null
 
     fun getTotalItem(): Int {
         return productList.size + (adsModel?.data?.size ?: 0)
