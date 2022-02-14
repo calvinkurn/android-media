@@ -162,6 +162,12 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 
+    public static final String DISABLE_OFFICIAL_STORE_SHOP_WIDGET = "android_disable_officialstore_shop_widget";
+    public static final String DISABLE_OFFICIAL_STORE_BEST_SELLER_WIDGET = "android_disable_officialstore_best_seller_widget";
+    public static final String DISABLE_OFFICIAL_STORE_MAPPING_BANNERS = "android_disable_officialstore_mapping_banners";
+    public static final String DISABLE_OFFICIAL_STORE_REMOVE_BEST_SELLER_WIDGET = "android_disable_officialstore_remove_best_seller_widget";
+    public static final String DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET = "android_disable_officialstore_remove_shop_widget";
+
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
@@ -238,8 +244,6 @@ public class RemoteConfigKey {
     public static final String NAVIGATION_ENABLE_NOTIF = "android_customer_navigation_enable_notif";
 
     public static final String ENABLE_UOH = "android_enable_uoh";
-
-    public static final String ENABLE_SLICE_ACTION_SELLER = "android_sellerapp_enable_slice_action";
 
     public static final String MAINAPP_USING_OLD_ACCOUNT = "android_mainapp_old_account_page";
 
