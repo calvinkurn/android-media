@@ -13,6 +13,7 @@ data class GroupShop(
         var unblockingErrorMessage: String = "",
         var firstProductErrorIndex: Int = -1,
         var shop: Shop = Shop(),
+        var addOns: AddOns = AddOns(),
         var shopShipments: List<ShopShipment> = emptyList(),
         var products: List<Product> = emptyList(),
         var shippingId: Int = 0,

@@ -44,6 +44,9 @@ import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnButtonModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnDataItemModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -53,6 +56,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
+import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifycomponents.HtmlLinkHelper;
@@ -232,6 +236,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private IconUnify mIconTooltip;
     private Typography mPricePerProduct;
 
+    // Gifting AddOn
+    private LinearLayout llGiftingAddOnOrderLevel;
+    private LinearLayout llGiftingAddOnProductLevel;
+    private ButtonGiftingAddOnView buttonGiftingAddonOrderLevel;
+    private ButtonGiftingAddOnView buttonGiftingAddonProductLevel;
+    private Typography tvAddOnCostLabel;
+    private Typography tvAddOnPrice;
+
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
@@ -364,6 +376,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelFreeShippingEtaText = itemView.findViewById(R.id.label_free_shipping_eta);
         imageMerchantVoucher = itemView.findViewById(R.id.img_mvc);
 
+        // AddOn Experience
+        llGiftingAddOnOrderLevel = itemView.findViewById(R.id.ll_gifting_addon_order_level);
+        llGiftingAddOnProductLevel = itemView.findViewById(R.id.ll_gifting_addon_product_level);
+        buttonGiftingAddonOrderLevel = itemView.findViewById(R.id.button_gifting_addon_order_level);
+        buttonGiftingAddonProductLevel = itemView.findViewById(R.id.button_gifting_addon_product_level);
+        tvAddOnCostLabel = itemView.findViewById(R.id.tv_add_on_fee);
+        tvAddOnPrice = itemView.findViewById(R.id.tv_add_on_price);
+
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
     }
@@ -413,6 +433,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderErrorAndWarning(shipmentCartItemModel);
         renderCustomError(shipmentCartItemModel);
         renderShippingVibrationAnimation(shipmentCartItemModel);
+        renderAddOnOrderLevel(shipmentCartItemModel);
     }
 
     public void unsubscribeDebouncer() {
@@ -631,6 +652,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderProductTicker(cartItemModel);
         renderProductProperties(cartItemModel);
         renderBundlingInfo(cartItemModel);
+        renderAddOnProductLevel(cartItemModel);
     }
 
     private void renderBundlingInfo(CartItemModel cartItemModel) {
@@ -668,6 +690,25 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             vSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
             productContainerLayoutParams.bottomMargin = bottomMargin;
             productInfoLayoutParams.bottomMargin = bottomMargin;
+        }
+    }
+
+    private void renderAddOnProductLevel(CartItemModel cartItemModel) {
+        AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
+        int status = addOnsDataModel.getStatus();
+        if (status == 0) {
+            llGiftingAddOnProductLevel.setVisibility(View.GONE);
+        } else {
+            if (status == 1) {
+                buttonGiftingAddonProductLevel.setState(ButtonGiftingAddOnView.State.ACTIVE);
+            } else if (status == 2) {
+                buttonGiftingAddonProductLevel.setState(ButtonGiftingAddOnView.State.INACTIVE);
+            }
+            llGiftingAddOnProductLevel.setVisibility(View.VISIBLE);
+            buttonGiftingAddonProductLevel.setTitle(addOnsDataModel.getAddOnsButtonModel().getTitle());
+            buttonGiftingAddonProductLevel.setDesc(addOnsDataModel.getAddOnsButtonModel().getDescription());
+            buttonGiftingAddonProductLevel.setUrlLeftIcon(addOnsDataModel.getAddOnsButtonModel().getLeftIconUrl());
+            buttonGiftingAddonProductLevel.setUrlRightIcon(addOnsDataModel.getAddOnsButtonModel().getRightIconUrl());
         }
     }
 
@@ -1072,6 +1113,29 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         });
     }
 
+    private void renderAddOnOrderLevel(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+            AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
+            AddOnButtonModel addOnButtonModel = addOnsDataModel.getAddOnsButtonModel();
+            int statusAddOn = addOnsDataModel.getStatus();
+            if (statusAddOn == 0) {
+                llGiftingAddOnOrderLevel.setVisibility(View.GONE);
+            } else {
+                if (statusAddOn == 1) {
+                    buttonGiftingAddonOrderLevel.setState(ButtonGiftingAddOnView.State.ACTIVE);
+                } else if (statusAddOn == 2) {
+                    buttonGiftingAddonOrderLevel.setState(ButtonGiftingAddOnView.State.INACTIVE);
+                }
+
+                llGiftingAddOnOrderLevel.setVisibility(View.VISIBLE);
+                buttonGiftingAddonOrderLevel.setTitle(addOnButtonModel.getTitle());
+                buttonGiftingAddonOrderLevel.setDesc(addOnButtonModel.getDescription());
+                buttonGiftingAddonOrderLevel.setUrlLeftIcon(addOnButtonModel.getLeftIconUrl());
+                buttonGiftingAddonOrderLevel.setUrlRightIcon(addOnButtonModel.getRightIconUrl());
+            }
+        }
+    }
+
     private View.OnClickListener getOnChangeCourierClickListener(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress) {
         return view -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION) {
@@ -1213,6 +1277,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         int additionalPrice = 0;
         long subTotalPrice = 0;
         long totalItemPrice = 0;
+        int totalAddOnPrice = 0;
 
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
@@ -1240,8 +1305,27 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     totalPurchaseProtectionItem += cartItemModel.getQuantity();
                     totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
                 }
+
+                if (cartItemModel.getAddOnProductLevelModel().getStatus() == 1) {
+                    if (!cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList().isEmpty()) {
+                        for (AddOnDataItemModel addOnDataItemModel : cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList()) {
+                            totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                        }
+                    }
+                }
             }
         }
+
+        if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+            if (shipmentCartItemModel.getAddOnsOrderLevelModel().getStatus() == 1) {
+                if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsDataItemModelList().isEmpty()) {
+                    for (AddOnDataItemModel addOnDataItemModel : shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsDataItemModelList()) {
+                        totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                    }
+                }
+            }
+        }
+
         totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
         @SuppressLint("DefaultLocale") String totalPPPItemLabel = String.format("Proteksi Produk (%d Barang)", totalPurchaseProtectionItem);
 
@@ -1281,6 +1365,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             subTotalPrice = totalItemPrice;
         }
+        subTotalPrice += totalAddOnPrice;
         TextViewExtKt.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(subTotalPrice, false)), R.string.content_desc_tv_sub_total_price);
         TextViewExtKt.setTextAndContentDescription(tvTotalItemPrice, totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice), R.string.content_desc_tv_total_item_price_subtotal);
         tvTotalItem.setText(totalItemLabel);
@@ -1300,6 +1385,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvProtectionLabel.setText(totalPPPItemLabel);
         tvProtectionFee.setText(getPriceFormat(tvProtectionLabel, tvProtectionFee, totalPurchaseProtectionPrice));
         tvAdditionalFeePrice.setText(getPriceFormat(tvAdditionalFee, tvAdditionalFeePrice, additionalPrice));
+
+        tvAddOnPrice.setText(getPriceFormat(tvAddOnCostLabel, tvAddOnPrice, totalAddOnPrice));
         rlCartSubTotal.setOnClickListener(getCostDetailOptionListener(shipmentCartItemModel));
     }
 

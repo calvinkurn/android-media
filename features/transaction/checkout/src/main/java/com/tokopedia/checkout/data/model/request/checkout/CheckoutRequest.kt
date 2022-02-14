@@ -61,7 +61,9 @@ data class ShopOrder(
         var shopId: Long = 0,
         @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
-        var warehouseId: Long = 0
+        var warehouseId: Long = 0,
+        @SerializedName("items")
+        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList()
 )
 
 data class Bundle(
@@ -75,7 +77,20 @@ data class Product(
         @SerializedName("is_ppp")
         var isPpp: Boolean = false,
         @SerializedName("product_id")
-        var productId: String = ""
+        var productId: String = "",
+        @SerializedName("items")
+        var checkoutGiftingProductLevel: List<CheckoutGiftingAddOn> = emptyList()
+)
+
+data class CheckoutGiftingAddOn(
+        @SerializedName("item_type")
+        var itemType: String = "",
+        @SerializedName("item_id")
+        var itemId: String = "",
+        @SerializedName("item_qty")
+        var itemQty: String = "",
+        @SerializedName("item_metadata")
+        var itemMetadata: String = ""
 )
 
 data class BundleInfo(
@@ -226,6 +241,7 @@ object CheckoutRequestMapper {
                 dropship = mapDropshipData(it.dropshipData, it.isDropship)
                 promos = mapPromos(it.promos)
                 bundle = mapBundle(it.productData)
+                checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
             })
         }
 
@@ -269,6 +285,7 @@ object CheckoutRequestMapper {
         val product = Product().apply {
             productId = it.productId.toString()
             isPpp = it.isPurchaseProtection
+            checkoutGiftingProductLevel = mapGiftingAddOn(it.addOnGiftingProductLevelRequest)
         }
         return product
     }
@@ -303,4 +320,17 @@ object CheckoutRequestMapper {
         }
     }
 
+    private fun mapGiftingAddOn(listAddOnRequest: ArrayList<AddOnGiftingRequest>?): List<CheckoutGiftingAddOn> {
+        val listCheckoutGiftingAddOn = arrayListOf<CheckoutGiftingAddOn>()
+        listAddOnRequest?.forEach {
+            val addOnRequest = CheckoutGiftingAddOn().apply {
+                itemType = it.itemType
+                itemId = it.itemId
+                itemQty = it.itemQty.toString()
+                itemMetadata = it.itemMetadata
+            }
+            listCheckoutGiftingAddOn.add(addOnRequest)
+        }
+        return listCheckoutGiftingAddOn.toList()
+    }
 }

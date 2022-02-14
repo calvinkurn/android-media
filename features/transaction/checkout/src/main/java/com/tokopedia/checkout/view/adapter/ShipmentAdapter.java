@@ -37,6 +37,8 @@ import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHold
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnDataItemModel;
+import com.tokopedia.logisticcart.shipping.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
@@ -812,6 +814,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         double insuranceFee = 0;
         double orderPriorityFee = 0;
         int totalBookingFee = 0;
+        int totalAddOnPrice = 0;
         for (Object shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentSingleAddressItem =
@@ -837,6 +840,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             }
                         } else {
                             totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                        }
+
+                        if (cartItemModel.getAddOnProductLevelModel().getStatus() == 1) {
+                            if (!cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList().isEmpty()) {
+                                for (AddOnDataItemModel addOnDataItemModel : cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList()) {
+                                    totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                                }
+                            }
                         }
                     }
                 }
@@ -884,6 +895,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (shipmentSingleAddressItem.isLeasingProduct()) {
                     totalBookingFee += shipmentSingleAddressItem.getBookingFee();
                 }
+                if (((ShipmentCartItemModel) shipmentData).getAddOnsOrderLevelModel() != null) {
+                    AddOnsDataModel addOnsDataModel = ((ShipmentCartItemModel) shipmentData).getAddOnsOrderLevelModel();
+                    if (addOnsDataModel != null
+                            && addOnsDataModel.getStatus() == 1
+                            && !addOnsDataModel.getAddOnsDataItemModelList().isEmpty()) {
+                        for (AddOnDataItemModel addOnDataItemModel : addOnsDataModel.getAddOnsDataItemModelList()) {
+                            totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                        }
+                    }
+                }
             }
         }
         double finalShippingFee = shippingFee - shipmentCostModel.getShippingDiscountAmount();
@@ -902,6 +923,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentCostModel.setTotalPurchaseProtectionItem(totalPurchaseProtectionItem);
         shipmentCostModel.setPurchaseProtectionFee(totalPurchaseProtectionPrice);
         shipmentCostModel.setTradeInPrice(tradeInPrice);
+        shipmentCostModel.setTotalAddOnPrice(totalAddOnPrice);
         if (shipmentDonationModel != null && shipmentDonationModel.isChecked()) {
             shipmentCostModel.setDonation(shipmentDonationModel.getDonation().getNominal());
         } else {

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 
 data class Product(
@@ -88,5 +89,7 @@ data class Product(
         @SerializedName("product_ticker")
         val productTicker: ProductTicker = ProductTicker(),
         @SerializedName("variant_description_detail")
-        val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail()
+        val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
+        @SerializedName("add_ons")
+        val addOns: AddOnsResponse = AddOnsResponse()
 )

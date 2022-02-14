@@ -32,6 +32,9 @@ class ShipmentCartItemModel(
         var shopTypeInfoData: ShopTypeInfoData? = null,
         var isTokoNow: Boolean = false,
 
+        // AddOns
+        var addOnsOrderLevelModel: AddOnsDataModel? = null,
+
         // Cart item state
         var cartString: String? = null,
         var shippingId: Int = 0,
