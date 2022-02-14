@@ -25,14 +25,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
-import com.tokopedia.logisticCommon.data.response.WarehousesAddAddress
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
