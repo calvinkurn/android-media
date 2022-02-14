@@ -281,6 +281,9 @@ object CommonTopupBillsGqlQuery {
                 clientNumber
                 lastOrderDate
                 totalTransaction
+                productID
+                operatorID
+                categoryID
               }
             }
           }

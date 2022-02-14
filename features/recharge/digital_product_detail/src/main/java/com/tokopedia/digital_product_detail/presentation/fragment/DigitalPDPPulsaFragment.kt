@@ -21,18 +21,20 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
-import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity
+import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
+import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
+import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
-import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_SPACE_HEIGHT
@@ -70,7 +72,6 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget.InputNumberActionType
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -575,8 +576,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         isSwitchChecked: Boolean = false
     ) {
         context?.let {
-            val intent = TopupBillsSavedNumberActivity.createInstance(
-                it, clientNumber, mutableListOf(), dgCategoryIds, categoryName, viewModel.operatorData, isSwitchChecked
+            val intent = TopupBillsPersoSavedNumberActivity.createInstance(
+                it, clientNumber, dgCategoryIds, categoryName, viewModel.operatorData, isSwitchChecked
             )
 
             val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -884,6 +885,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
 
+    private fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
 
     /**
      * RechargeDenomGridListener
@@ -961,8 +966,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         if (userSession.isLoggedIn){
             addToCart()
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+            navigateToLoginPage()
         }
     }
 
@@ -993,8 +997,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             recommendation,
             position
         )
-        context?.let {
-            RouteManager.route(it, recommendation.appUrl)
+
+        viewModel.updateCheckoutPassData(
+            recommendation,
+            userSession.userId.generateRechargeCheckoutToken()
+        )
+
+        if (userSession.isLoggedIn) {
+            addToCart()
+        } else {
+            navigateToLoginPage()
         }
     }
 
@@ -1038,7 +1050,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
                 if (data != null) {
                     val orderClientNumber =
-                        data.getParcelableExtra<Parcelable>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
 
                     handleCallbackSavedNumber(
                         orderClientNumber.clientName,
