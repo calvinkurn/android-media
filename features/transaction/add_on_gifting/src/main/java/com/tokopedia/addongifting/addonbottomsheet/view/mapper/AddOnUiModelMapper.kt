@@ -33,8 +33,10 @@ object AddOnUiModelMapper {
         return AddOnUiModel().apply {
             isTokoCabang = addOnProductData.availableBottomSheetData.isTokoCabang
             productCount = addOnProductData.availableBottomSheetData.products.size
+            mainProductQuantity = addOnProductData.availableBottomSheetData.products.firstOrNull()?.productQuantity ?: 0
             addOnId = addOn?.basicInfo?.id ?: ""
             addOnName = addOn?.basicInfo?.name ?: ""
+            addOnType = addOn?.basicInfo?.productAddOnType ?: ""
             addOnDescription = ""
             addOnPrice = addOn?.inventory?.price?.roundToLong() ?: 0
             addOnQty = 1
@@ -70,7 +72,9 @@ object AddOnUiModelMapper {
                 addOnNote = initialAddOnNote
             }
             isCustomNote = addOn?.basicInfo?.rules?.customNote ?: false
-            addOnFooterMessages = addOnProductData.availableBottomSheetData.addOnFooterMessages
+            onlyGreetingCardInfo = addOnProductData.availableBottomSheetData.onlyGreetingCardInfo
+            packagingAndGreetingCardInfo = addOnProductData.availableBottomSheetData.packagingAndGreetingCardInfo
+            invoiceNotSentToRecipientInfo = addOnProductData.availableBottomSheetData.invoiceNotSentToRecipientInfo
             isLoadingNoteState = false
         }
     }

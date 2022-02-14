@@ -6,8 +6,10 @@ import com.tokopedia.addongifting.addonbottomsheet.view.adapter.AddOnListAdapter
 data class AddOnUiModel(
         var isTokoCabang: Boolean = false,
         var productCount: Int = 0,
+        var mainProductQuantity: Int = 0,
         var addOnId: String = "",
         var addOnName: String = "",
+        var addOnType: String = "",
         var addOnDescription: String = "",
         var addOnQty: Int = 0,
         var addOnPrice: Long = 0,
@@ -21,7 +23,9 @@ data class AddOnUiModel(
         var addOnNoteTo: String = "",
         var addOnNoteFrom: String = "",
         var addOnNote: String = "",
-        var addOnFooterMessages: List<String> = emptyList(),
+        var packagingAndGreetingCardInfo: String = "",
+        var onlyGreetingCardInfo: String = "",
+        var invoiceNotSentToRecipientInfo: String = "",
         var isCustomNote: Boolean = false,
         var isLoadingNoteState: Boolean = false
 ) : Visitable<AddOnListAdapterTypeFactory> {
