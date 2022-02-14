@@ -109,7 +109,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
 
     override suspend fun getProductTagSummarySection(channelID: Int) = withContext(dispatchers.io) {
         val response = getProductTagSummarySectionUseCase.apply {
-            setRequestParams(GetProductTagSummarySectionUseCase.createparams(channelID))
+            setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID))
         }.executeOnBackground()
 
         return@withContext productMapper.mapProductTagSection(response)
