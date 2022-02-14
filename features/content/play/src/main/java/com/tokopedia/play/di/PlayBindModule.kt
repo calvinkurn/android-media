@@ -47,7 +47,19 @@ abstract class PlayBindModule {
 
     @Binds
     @PlayScope
-    abstract fun bindCartRepository(repo: PlayViewerCartRepositoryImpl): PlayViewerCartRepository
+    abstract fun bindCartRepository(repo: PlayViewerChannelRepositoryImpl): PlayViewerChannelRepository
+
+    @Binds
+    @PlayScope
+    abstract fun bindChannelRepository(repo: PlayViewerCartRepositoryImpl): PlayViewerCartRepository
+
+    @Binds
+    @PlayScope
+    abstract fun bindTagItemRepository(repo: PlayViewerTagItemRepositoryImpl): PlayViewerTagItemRepository
+
+    @Binds
+    @PlayScope
+    abstract fun bindBroTrackerRepository(repo: PlayViewerBroTrackerRepositoryImpl): PlayViewerBroTrackerRepository
 
     @Binds
     @PlayScope

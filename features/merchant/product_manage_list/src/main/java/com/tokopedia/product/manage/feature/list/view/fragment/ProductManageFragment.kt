@@ -1594,9 +1594,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickEditVariantPriceButton(product: ProductUiModel) {
-        val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(product.id, product.isProductBundling) { result ->
-            viewModel.editVariantsPrice(result)
-        }
+        val editVariantBottomSheet =
+            QuickEditVariantPriceBottomSheet.createInstance(
+                product.id,
+                product.isProductBundling,
+                userSession.isMultiLocationShop) { result ->
+                viewModel.editVariantsPrice(result)
+            }
         editVariantBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
         ProductManageTracking.eventClickEditPriceVariant()
     }
@@ -1646,7 +1650,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickEditPriceButton(product: ProductUiModel) {
-        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(product, this) }
+        val editPriceBottomSheet = context?.let {
+            ProductManageQuickEditPriceFragment.createInstance(
+                it,
+                product,
+                userSession.isMultiLocationShop,
+                this)
+        }
         editPriceBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
         ProductManageTracking.eventEditPrice(product.id)
     }
@@ -2693,12 +2703,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun renderProductCount() {
-        val productCount = if (filterTab?.isFilterActive() == true) {
-            filterTab?.getProductCount()
-            filterTab?.getProductCount()
-        } else {
-            viewModel.getTotalProductCount()
-        }
+        val productCount = viewModel.getTotalProductCount()
         textProductCount?.text = getString(R.string.product_manage_count_format, productCount)
     }
 

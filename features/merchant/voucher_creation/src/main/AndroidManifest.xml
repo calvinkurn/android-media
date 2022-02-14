@@ -138,7 +138,7 @@
 
                 <data
                     android:host="@string/host_sellerapp"
-                    android:path="@string/path_voucher_product_list"
+                    android:pathPattern="@string/path_voucher_product_list"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

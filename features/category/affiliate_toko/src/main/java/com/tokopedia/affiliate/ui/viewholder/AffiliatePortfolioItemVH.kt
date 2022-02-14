@@ -65,7 +65,7 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
 
     private fun isValidUrl(text: String, element: AffiliatePortfolioUrlModel?): Boolean {
         return if(element?.portfolioItm?.regex != null){
-            val regex = Regex(element.portfolioItm.regex!!)
+            val regex = Regex(element.portfolioItm.regex!!, setOf(RegexOption.IGNORE_CASE))
             regex.matches(text) && Patterns.WEB_URL.matcher(text).matches()
         } else{
             Patterns.WEB_URL.matcher(text).matches()

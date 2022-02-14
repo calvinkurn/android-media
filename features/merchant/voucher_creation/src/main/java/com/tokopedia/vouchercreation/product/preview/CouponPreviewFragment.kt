@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -16,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -219,13 +221,9 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         if (viewModel.isUpdateMode(pageMode)) {
             changeToolbarTitle(getString(R.string.update_coupon_product))
             changeButtonBehavior()
-        }
-    }
-
-    private fun changeButtonBehavior() {
-        binding.btnCreateCoupon.text = getString(R.string.save_changes)
-        binding.btnCreateCoupon.setOnClickListener {
-            updateCoupon(couponId)
+            hideTermAndCondition()
+            binding.tpgUpdateProduct.text = getString(R.string.manage_product)
+            updateButtonConstraint()
         }
     }
 
@@ -262,6 +260,10 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         viewModel.areInputValid.observe(viewLifecycleOwner, { areInputValid ->
             binding.btnCreateCoupon.isEnabled = areInputValid
             binding.btnPreviewCouponImage.isEnabled = areInputValid
+            if (areInputValid) {
+                binding.btnPreviewCouponImage.buttonType = UnifyButton.Type.MAIN
+            }
+
         })
     }
 
@@ -607,7 +609,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun createCoupon() {
         binding.btnCreateCoupon.isLoading = true
-        binding.btnCreateCoupon.loadingText = getString(R.string.please_wait)
+        binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
         viewModel.createCoupon(
             couponInformation ?: return,
@@ -618,7 +620,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun updateCoupon(couponId : Long) {
         binding.btnCreateCoupon.isLoading = true
-        binding.btnCreateCoupon.loadingText = getString(R.string.please_wait)
+        binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
         viewModel.updateCoupon(
             couponId,
@@ -708,4 +710,27 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.content.gone()
     }
 
+    private fun changeButtonBehavior() {
+        binding.btnCreateCoupon.text = getString(R.string.save_changes)
+        binding.btnCreateCoupon.setOnClickListener {
+            updateCoupon(couponId)
+        }
+    }
+
+    private fun hideTermAndCondition() {
+        binding.tpgTermAndConditions.gone()
+    }
+
+    private fun updateButtonConstraint() {
+        val set = ConstraintSet()
+        set.clone(binding.layout)
+        set.connect(
+            binding.btnPreviewCouponImage.id,
+            ConstraintSet.BOTTOM,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.BOTTOM,
+            resources.getDimension(R.dimen.unify_space_24).toIntSafely()
+        )
+        set.applyTo(binding.layout)
+    }
 }

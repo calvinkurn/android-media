@@ -1,13 +1,11 @@
 package com.tokopedia.vouchercreation.product.update
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
@@ -15,8 +13,8 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
-import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import com.tokopedia.vouchercreation.product.list.view.activity.ProductListActivity
+import com.tokopedia.vouchercreation.product.preview.CouponPreviewFragment
 import javax.inject.Inject
 
 class UpdateCouponActivity : AppCompatActivity() {
@@ -25,13 +23,8 @@ class UpdateCouponActivity : AppCompatActivity() {
     lateinit var router: FragmentRouter
 
     companion object {
-        private const val BUNDLE_KEY_COUPON_ID = "coupon-id"
-        @JvmStatic
-        fun start(context: Context, couponId: Long) {
-            val starter = Intent(context, UpdateCouponActivity::class.java)
-                .putExtra(BUNDLE_KEY_COUPON_ID, couponId)
-            context.startActivity(starter)
-        }
+        const val BUNDLE_KEY_COUPON_ID = "coupon-id"
+        const val REQUEST_CODE_UPDATE_COUPON = 200
     }
 
     private val couponId by lazy { intent.extras?.getLong(BUNDLE_KEY_COUPON_ID).orZero() }
@@ -70,17 +63,8 @@ class UpdateCouponActivity : AppCompatActivity() {
 
 
     private fun onUpdateCouponSuccess() {
-        showToaster(getString(R.string.coupon_updated))
-        finish()
+        notifyUpdateCouponSuccessToCouponListPage()
     }
-
-
-    private fun showToaster(text: String) {
-        if (text.isEmpty()) return
-        val view = findViewById<FrameLayout>(R.id.parent_view)
-        Toaster.build(view, text).show()
-    }
-
 
     private fun navigateToCouponInformationPage() {
         router.replaceAndAddToBackstack(supportFragmentManager, R.id.parent_view, setupCreateCouponDetailFragment())
@@ -108,7 +92,6 @@ class UpdateCouponActivity : AppCompatActivity() {
         val couponSettingsData = couponPreviewFragment.getCouponSettingsData()
         val fragment = CouponSettingFragment.newInstance(couponSettingsData)
         fragment.setOnCouponSaved {
-            //couponSettingFragment.setCouponSettings(couponSettings)
 
             //Stub the products data for testing purpose
             couponPreviewFragment.setCouponProductsData(buildDummyProducts())
@@ -142,5 +125,11 @@ class UpdateCouponActivity : AppCompatActivity() {
             )
         )
 
+    }
+
+    private fun notifyUpdateCouponSuccessToCouponListPage() {
+        val intent = Intent()
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.vouchercreation.product.voucherlist.view.fragment
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,71 +17,74 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.toZeroIfNull
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.base.BaseSimpleListFragment
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
-import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
-import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherUiModel
+import com.tokopedia.vouchercreation.common.consts.NumberConstant
+import com.tokopedia.vouchercreation.common.consts.ShareComponentConstant
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl.NO_VOUCHER_RESULT_URL
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
-import com.tokopedia.vouchercreation.common.mapper.CouponMapper
+import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.download.CouponImageUiModel
+import com.tokopedia.vouchercreation.product.download.DownloadCouponImageBottomSheet
+import com.tokopedia.vouchercreation.product.share.LinkerDataGenerator
 import com.tokopedia.vouchercreation.product.update.period.UpdateCouponPeriodBottomSheet
 import com.tokopedia.vouchercreation.product.update.quota.UpdateCouponQuotaBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.adapter.CouponListAdapter
 import com.tokopedia.vouchercreation.product.voucherlist.view.bottomsheet.CouponFilterBottomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.CANCEL_VOUCHER_ERROR
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.GET_SHOP_BASIC_DATA_ERROR
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.GET_VOUCHER_DETAIL_ERROR
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_SUCCESS_VOUCHER
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_SUCCESS_VOUCHER_DEFAULT_VALUE
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_UPDATE_VOUCHER
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.IS_UPDATE_VOUCHER_DEFAULT_VALUE
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.LIST_COUPON_PER_PAGE
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.PAGE_MODE_ACTIVE
+import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.PAGE_MODE_HISTORY
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.STOP_VOUCHER_ERROR
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.SUCCESS_VOUCHER_DEFAULT_VALUE
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_CANCEL_VOUCHER_ERROR
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_GET_SHOP_BASIC_DATA_ERROR
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_GET_VOUCHER_DETAIL_ERROR
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TAG_SCALYR_MVC_STOP_VOUCHER_ERROR
 import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.TYPE_MESSAGE_KEY
-import com.tokopedia.vouchercreation.product.voucherlist.view.constant.CouponListConstant.VOUCHER_ID_KEY
 import com.tokopedia.vouchercreation.product.voucherlist.view.viewmodel.CouponListViewModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.filter.CouponStatusFilterBotomSheet
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.data.uimodel.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.product.voucherlist.view.widget.moremenu.presentation.bottomsheet.MoreMenuBottomSheet
-import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
-import com.tokopedia.vouchercreation.shop.voucherlist.view.fragment.VoucherListFragment
-import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.BroadCastVoucherBottomSheet
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
-import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
-import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 import java.util.*
 import javax.inject.Inject
 
@@ -90,14 +92,16 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     companion object {
         fun newInstance(
+            pageMode: String,
             onCreateCouponMenuSelected: () -> Unit,
             onEditCouponMenuSelected: (Long) -> Unit,
             onDuplicateCouponMenuSelected: (Long) -> Unit,
-            onViewCouponDetailMenuSelected : (Long) -> Unit = {}
+            onViewCouponDetailMenuSelected: (Long) -> Unit = {}
         ): CouponListFragment {
             val args = Bundle()
             val fragment = CouponListFragment().apply {
                 arguments = args
+                this.pageMode = pageMode
                 this.onCreateCouponMenuSelected = onCreateCouponMenuSelected
                 this.onEditCouponMenuSelected = onEditCouponMenuSelected
                 this.onDuplicateCouponMenuSelected = onDuplicateCouponMenuSelected
@@ -106,6 +110,8 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             return fragment
         }
     }
+
+    private var pageMode: String = PAGE_MODE_ACTIVE
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -117,7 +123,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     @Inject
-    lateinit var couponMapper: CouponMapper
+    lateinit var linkerDataGenerator: LinkerDataGenerator
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -128,20 +134,10 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         return@lazy MoreMenuBottomSheet.createInstance()
     }
 
-    private val successCouponId by lazy {
-        getIntArgs(VOUCHER_ID_KEY, SUCCESS_VOUCHER_DEFAULT_VALUE)
-    }
+    private val globalError: GlobalError? by lazy { view?.findViewById(R.id.geEmptyData) }
+    private val loadingList: View? by lazy { view?.findViewById(R.id.loadingList) }
+    private val emptyStateList: View? by lazy { view?.findViewById(R.id.emptyStateList) }
 
-    private val isNeedToShowSuccessDialog by lazy {
-        getBooleanArgs(IS_SUCCESS_VOUCHER, IS_SUCCESS_VOUCHER_DEFAULT_VALUE)
-    }
-
-    private val isNeedToShowSuccessUpdateDialog by lazy {
-        getBooleanArgs(IS_UPDATE_VOUCHER, IS_UPDATE_VOUCHER_DEFAULT_VALUE)
-    }
-
-    private var shareCouponBottomSheet: ShareVoucherBottomSheet? = null
-    private var shopBasicData: ShopBasicDataResult? = null
     private val filterStatus by lazy { SortFilterItem("Status Aktif") }
     private val filterType by lazy { SortFilterItem("Gratis Ongkir") }
     private val filterTarget by lazy { SortFilterItem("Publik") }
@@ -150,6 +146,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     private var onEditCouponMenuSelected : (Long) -> Unit = {}
     private var onDuplicateCouponMenuSelected : (Long) -> Unit = {}
     private var onViewCouponDetailMenuSelected : (Long) -> Unit = {}
+    private var shareComponentBottomSheet : UniversalShareBottomSheet? = null
 
     override fun getScreenName(): String = CouponListFragment::class.java.simpleName
 
@@ -165,6 +162,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setupPageMode()
         return inflater.inflate(R.layout.fragment_mvc_coupon_list, container, false)
     }
 
@@ -175,7 +173,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         setupSearchField(view)
         setupFilterChips(view)
         setupObserver()
-        getInitialValues()
     }
 
     override fun createAdapter() = CouponListAdapter(::onCouponOptionClicked, ::onCouponIconCopyClicked)
@@ -191,6 +188,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     override fun loadData(page: Int) {
+        globalError?.gone()
         viewModel.getCouponList(page)
     }
 
@@ -199,24 +197,61 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
     }
 
     override fun onShowLoading() {
+        if (adapter?.itemCount.isMoreThanZero()) {
+            loadingList?.show()
+        }
         adapter?.showLoading()
     }
 
     override fun onHideLoading() {
+        loadingList?.gone()
+        emptyStateList?.gone()
         adapter?.hideLoading()
     }
 
     override fun onDataEmpty() {
-
+        if (viewModel.couponSearchKeyword.orEmpty().isEmpty()) {
+            showEmptyDataGlobalError()
+        } else {
+            emptyStateList?.show()
+        }
     }
 
     override fun onGetListError(message: String) {
-
+        showGetListDataGlobalError()
     }
 
-    private fun getInitialValues() {
-        viewModel.getBroadCastMetaData()
-        viewModel.getShopBasicData()
+    private fun showGetListDataGlobalError() {
+        globalError?.show()
+        globalError?.setType(SERVER_ERROR)
+        globalError?.setActionClickListener {
+            loadInitialData()
+        }
+    }
+
+    private fun showEmptyDataGlobalError() {
+        swipeToRefresh?.isEnabled = false // need to disable, to enable Coba Lagi button listener
+        globalError?.apply {
+            errorTitle.text = "Nggak ada Kupon aktif"
+            errorDescription.text = "Yuk, gunakan Kupon Produk untuk meningkatkan peluang penjualan tokomu."
+            errorAction.text = "Buat Kupon Produk"
+            setActionClickListener {
+                onCreateCouponMenuSelected.invoke()
+            }
+            post { errorIllustration.loadImage(NO_VOUCHER_RESULT_URL) }
+            show()
+        }
+    }
+
+    /**
+     * Initiate page mode, should be called before setupObservers() function to prevent
+     * re-invoking data
+     */
+    private fun setupPageMode() {
+        if (pageMode == PAGE_MODE_HISTORY) {
+            viewModel.setStatusFilter(VoucherStatus.HISTORY)
+            filterStatus.title = getString(R.string.mvc_coupon_status_inactive)
+        }
     }
 
     private fun onFilterSelected(
@@ -344,16 +379,17 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         observeCouponList()
         observeCancelCoupon()
         observeStopCoupon()
-        observeBroadCastMetadata()
-        observeDetailCoupon()
-        observeShopBasicData()
         observeSelectedFilterType()
         observeSelectedFilterTarget()
+        observeCouponDetail()
+        observeGenerateImage()
     }
 
     private fun observeCouponList() = viewModel.couponList.observe(viewLifecycleOwner) {
         if (it is Success) {
             renderList(it.data, it.data.size == getPerPage())
+        } else if (it is Fail) {
+            showGetListError(it.throwable)
         }
     }
 
@@ -361,19 +397,16 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         when(result) {
             is Success -> {
                 loadInitialData()
-                showCancellationSuccessToaster(
-                    successMessageRes = R.string.mvc_cancel_success,
-                    couponId = result.data
+                showCancellationToaster(
+                    successMessageRes = R.string.coupon_cancellation_success,
+                    toasterType = Toaster.TYPE_NORMAL
                 )
             }
             is Fail -> {
-                if (result.throwable is VoucherCancellationException) {
-                    showCancellationFailToaster(
-                        messageRes = R.string.mvc_cancel_fail,
-                        couponId = (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull(),
-                        status = CancelVoucherUseCase.CancelStatus.STOP
-                    )
-                }
+                showCancellationToaster(
+                    successMessageRes = R.string.coupon_cancellation_fail,
+                    toasterType = Toaster.TYPE_ERROR
+                )
                 // send crash report to firebase crashlytics
                 MvcErrorHandler.logToCrashlytics(
                     throwable = result.throwable,
@@ -389,23 +422,51 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
+    private fun observeCouponDetail() {
+        viewModel.couponDetail.observe(viewLifecycleOwner, { result ->
+            when(result) {
+                is Success -> {
+                    viewModel.setCoupon(result.data)
+                    viewModel.generateImage(result.data)
+                }
+                is Fail -> {
+                    showError(result.throwable)
+                }
+            }
+        })
+    }
+
+    private fun observeGenerateImage() {
+        viewModel.couponImageWithShop.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    displayShareBottomSheet(
+                        viewModel.getCoupon() ?: return@observe,
+                        result.data.imageUrl,
+                        result.data.shop
+                    )
+                }
+                is Fail -> {
+                    showError(result.throwable)
+                }
+            }
+        })
+    }
+
     private fun observeStopCoupon() = viewModel.stopCoupon.observe(viewLifecycleOwner) { result ->
         when(result) {
             is Success -> {
                 loadInitialData()
-                showCancellationSuccessToaster(
-                    successMessageRes = R.string.mvc_stop_success,
-                    couponId = result.data
+                showCancellationToaster(
+                    successMessageRes = R.string.coupon_discontinuance_success,
+                    toasterType = Toaster.TYPE_NORMAL
                 )
             }
             is Fail -> {
-                if (result.throwable is VoucherCancellationException) {
-                    showCancellationFailToaster(
-                        messageRes = R.string.mvc_stop_fail,
-                        couponId = (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull(),
-                        status = CancelVoucherUseCase.CancelStatus.DELETE
-                    )
-                }
+                showCancellationToaster(
+                    successMessageRes = R.string.coupon_discontinuance_fail,
+                    toasterType = Toaster.TYPE_ERROR
+                )
                 // send crash report to firebase crashlytics
                 MvcErrorHandler.logToCrashlytics(
                     throwable = result.throwable,
@@ -421,83 +482,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         }
     }
 
-    private fun observeBroadCastMetadata() = viewModel.broadCastMetadata.observe(viewLifecycleOwner) { result ->
-        shareCouponBottomSheet = when (result) {
-            is Success -> {
-                val broadCastMetaData = result.data
-                // determine the free broadcast icon on success bottom sheet
-                viewModel.setIsFreeBroadCastIconVisible(broadCastMetaData.promo)
-                setupShareCouponBottomSheet(
-                    status = broadCastMetaData.status,
-                    promo = broadCastMetaData.promo
-                )
-            }
-            is Fail -> {
-                setupShareCouponBottomSheet()
-            }
-        }
-
-        // execute get detail coupon to show bottomsheet
-        if (successCouponId != VoucherListFragment.INVALID_VOUCHER_ID && isNeedToShowSuccessDialog && !viewModel.isSuccessDialogDisplayed) {
-            viewModel.getDetailCoupon(successCouponId)
-        } else if (isNeedToShowSuccessUpdateDialog) {
-            showSuccessUpdateToaster()
-        }
-    }
-
-    private fun observeDetailCoupon() = viewModel.detailCoupon.observe(viewLifecycleOwner) { result ->
-        when (result) {
-            is Success -> {
-                result.data.let { uiModel ->
-                    uiModel.isFreeIconVisible = viewModel.isFreeBroadCastIconVisible
-                    showBroadCastCouponBottomSheet(uiModel)
-                    viewModel.setIsSuccessDialogDisplayed(true)
-                }
-            }
-            is Fail -> {
-                // send crash report to firebase crashlytics
-                MvcErrorHandler.logToCrashlytics(
-                    throwable = result.throwable,
-                    message = GET_VOUCHER_DETAIL_ERROR
-                )
-                // log error type to scalyr
-                val errorMessage = ErrorHandler.getErrorMessage(
-                    context = context,
-                    e = result.throwable
-                )
-                ServerLogger.log(
-                    priority = Priority.P2,
-                    tag = TAG_SCALYR_MVC_GET_VOUCHER_DETAIL_ERROR,
-                    message = mapOf(TYPE_MESSAGE_KEY to errorMessage)
-                )
-            }
-        }
-    }
-
-    private fun observeShopBasicData() = viewModel.shopBasicData.observe(viewLifecycleOwner) { result ->
-        when (result) {
-            is Success -> {
-                shopBasicData = result.data
-            }
-            is Fail -> {
-                // send crash report to firebase crashlytics
-                MvcErrorHandler.logToCrashlytics(
-                    throwable = result.throwable,
-                    message = GET_SHOP_BASIC_DATA_ERROR
-                )
-                // log error type to scalyr
-                val errorMessage = ErrorHandler.getErrorMessage(
-                    context = context,
-                    e = result.throwable
-                )
-                ServerLogger.log(
-                    priority = Priority.P2,
-                    tag = TAG_SCALYR_MVC_GET_SHOP_BASIC_DATA_ERROR,
-                    message = mapOf(TYPE_MESSAGE_KEY to errorMessage)
-                )
-            }
-        }
-    }
 
     private fun observeSelectedFilterTarget() {
         viewModel.selectedFilterTarget.observe(viewLifecycleOwner) {
@@ -531,51 +515,6 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         view?.post { filterType.refChipUnify.displayRemoveIcon() }
     }
 
-    private fun showBroadCastCouponBottomSheet(coupon: VoucherUiModel) {
-        BroadCastVoucherBottomSheet.createInstance(coupon)
-            .setOnShareClickListener {
-                VoucherCreationTracking.sendCreateVoucherClickTracking(
-                    step = VoucherCreationStep.REVIEW,
-                    action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_SHARE_NOW,
-                    userId = userSession.userId
-                )
-                shareCoupon(coupon)
-            }
-            .setOnBroadCastClickListener {
-                VoucherCreationTracking.sendBroadCastChatClickTracking(
-                    category = VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.PAGE,
-                    shopId = userSession.shopId
-                )
-                broadCastChat(coupon)
-            }
-            .apply {
-                clearContentPadding = true
-                setCloseClickListener {
-                    VoucherCreationTracking.sendCreateVoucherClickTracking(
-                        step = VoucherCreationStep.REVIEW,
-                        action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
-                        userId = userSession.userId
-                    )
-                    dismiss()
-                }
-            }
-            .show(childFragmentManager)
-    }
-
-    private fun showSuccessUpdateToaster() {
-        view?.run {
-            Toaster.build(
-                view = this,
-                text = context?.getString(R.string.mvc_success_update_toaster).toBlankOrString(),
-                duration = Toaster.LENGTH_LONG,
-                type = Toaster.TYPE_NORMAL,
-                actionText = context?.getString(R.string.mvc_oke).toBlankOrString()
-            ) {
-                /* do nothing */
-            }.show()
-        }
-    }
-
     private fun clickMoreMenuItem(menu: MoreMenuUiModel, coupon: VoucherUiModel) {
         when (menu) {
             is EditQuotaCoupon -> editQuotaCoupon(coupon)
@@ -584,7 +523,7 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             is BroadCastChat -> broadCastChat(coupon)
             is ShareCoupon -> shareCoupon(coupon)
             is EditPeriodCoupon -> editPeriodCoupon(coupon)
-            is DownloadCoupon -> downloadCoupon(coupon)
+            is DownloadCoupon -> downloadCoupon(coupon.image, coupon.imageSquare, coupon.imagePortrait)
             is CancelCoupon -> cancelCoupon(coupon)
             is StopCoupon -> stopCoupon(coupon)
             is DuplicateCoupon -> duplicateCoupon(coupon)
@@ -615,28 +554,26 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
 
     private fun shareCoupon(coupon: VoucherUiModel) {
         if (!isAdded) return
-
-        shareCouponBottomSheet?.show(childFragmentManager)
-        shareCouponBottomSheet?.setOnItemClickListener { socmedType ->
-            clickShareCoupon(coupon, socmedType)
-        }
+        viewModel.getCouponDetail(coupon.id.toLong())
     }
 
     private fun editPeriodCoupon(coupon: VoucherUiModel) {
         showUpdateCouponPeriodBottomSheet(coupon)
     }
 
-    private fun downloadCoupon(coupon: VoucherUiModel) {
-        if (!isAdded) return
 
-        DownloadVoucherBottomSheet.createInstance(
-            bannerUrl = coupon.image,
-            squareUrl = coupon.imageSquare,
-            userId = userSession.userId
-        ).setOnDownloadClickListener { couponList ->
-            clickDownloadCoupon(couponList)
-        }.show(childFragmentManager)
+    private fun downloadCoupon(bannerImageUrl : String, squareImageUrl : String, portraitImageUrl : String) {
+        if (!isAdded) return
+        val bottomSheet = DownloadCouponImageBottomSheet.newInstance(
+            bannerImageUrl,
+            squareImageUrl,
+            portraitImageUrl,
+            userSession.userId
+        )
+        bottomSheet.setOnDownloadClickListener { couponList -> checkDownloadPermission(couponList) }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
+
 
     private fun cancelCoupon(coupon: VoucherUiModel) {
         CancelVoucherDialog(
@@ -713,133 +650,19 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun showCancellationSuccessToaster(successMessageRes: Int, couponId: Int) {
+    private fun showCancellationToaster(successMessageRes: Int, toasterType: Int) {
         val successMessage = context?.getString(successMessageRes).toBlankOrString()
-        val actionText = context?.getString(R.string.mvc_lihat).toBlankOrString()
+        val actionText = context?.getString(R.string.coupon_toaster_cta_oke).toBlankOrString()
 
         view?.run {
             Toaster.build(this,
                 successMessage,
                 Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
+                toasterType,
                 actionText
             ) {
-                onViewCouponDetailMenuSelected(couponId.toLong())
+                /* nothing to do */
             }.show()
-        }
-    }
-
-    private fun showCancellationFailToaster(messageRes: Int, couponId: Int, @CancelVoucherUseCase.CancelStatus status: String) {
-        val errorMessage = context?.getString(messageRes).toBlankOrString()
-        val actionText = context?.getString(R.string.mvc_retry).toBlankOrString()
-
-        view?.run {
-            Toaster.build(this,
-                errorMessage,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                actionText
-            ) {
-                viewModel.cancelCoupon(couponId, status)
-            }.show()
-        }
-    }
-
-    private fun setupShareCouponBottomSheet(status: Int = 0, promo: Int = 0): ShareVoucherBottomSheet {
-        val shareCouponBottomSheet = ShareVoucherBottomSheet.createInstance()
-        shareCouponBottomSheet.setBroadCastChatStatus(status)
-        shareCouponBottomSheet.setBroadCastChatPromo(promo)
-        return shareCouponBottomSheet
-    }
-
-    private fun clickShareCoupon(coupon: VoucherUiModel, @SocmedType socmedType: Int) {
-        context?.run {
-            shopBasicData?.shareVoucher(
-                context = this,
-                socmedType = socmedType,
-                voucher = coupon,
-                userId = userSession.userId,
-                shopId = userSession.shopId
-            )
-        }
-    }
-
-    private fun clickDownloadCoupon(couponList: List<DownloadVoucherUiModel>) {
-        context?.run {
-            permissionCheckerHelper.checkPermission(
-                fragment = this@CouponListFragment,
-                permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                listener = permissionCheckListenerImpl(this@run, couponList)
-            )
-        }
-
-        VoucherCreationTracking.sendVoucherListClickTracking(
-            action = VoucherCreationAnalyticConstant.EventAction.Click.DOWNLOAD_VOUCHER,
-            isActive = false,
-            userId = userSession.userId
-        )
-    }
-
-    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    private fun downloadFiles(uri: String) {
-        activity?.let {
-            try {
-                val helper = DownloadHelper(
-                    context = it,
-                    uri = uri,
-                    filename = System.currentTimeMillis().toString() + VoucherCreationConst.JPEG_EXT,
-                    listener = downloadHelperListenerImpl()
-                )
-                helper.downloadFile { true }
-            } catch (se: SecurityException) {
-                MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
-                view?.showDownloadActionTicker(
-                    isSuccess = false,
-                    isInternetProblem = false
-                )
-            } catch (iae: IllegalArgumentException) {
-                MvcErrorHandler.logToCrashlytics(iae, MvcError.ERROR_URI)
-                view?.showDownloadActionTicker(
-                    isSuccess = false,
-                    isInternetProblem = false
-                )
-            } catch (ex: Exception) {
-                MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
-                view?.showDownloadActionTicker(
-                    isSuccess = false
-                )
-            }
-        }
-    }
-
-    private fun permissionCheckListenerImpl(context: Context, couponList: List<DownloadVoucherUiModel>) = object : PermissionCheckerHelper.PermissionCheckListener {
-        override fun onPermissionDenied(permissionText: String) {
-            permissionCheckerHelper.onPermissionDenied(context, permissionText)
-            view?.let {
-                Toaster.build(
-                    view = it,
-                    text = getString(R.string.mvc_storage_permission_enabled_needed),
-                    duration = Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-
-        override fun onNeverAskAgain(permissionText: String) {
-            permissionCheckerHelper.onNeverAskAgain(context, permissionText)
-        }
-
-        override fun onPermissionGranted() {
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                couponList.forEach {
-                    downloadFiles(it.downloadVoucherType.imageUrl)
-                }
-            }
-        }
-    }
-
-    private fun downloadHelperListenerImpl() = object : DownloadHelper.DownloadHelperListener {
-        override fun onDownloadComplete() {
-            view?.showDownloadActionTicker(true)
         }
     }
 
@@ -852,5 +675,212 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
             }
             refChipUnify.gone()
         }
+    }
+
+    private fun checkDownloadPermission(couponList: List<CouponImageUiModel>) {
+        val listener = object : PermissionCheckerHelper.PermissionCheckListener {
+            override fun onPermissionDenied(permissionText: String) {
+                permissionCheckerHelper.onPermissionDenied(requireActivity(), permissionText)
+                Toaster.build(
+                    view = view ?: return,
+                    text = getString(R.string.mvc_storage_permission_enabled_needed),
+                    duration = Toast.LENGTH_LONG
+                ).show()
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+                permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
+            }
+
+            override fun onPermissionGranted() {
+                if (ActivityCompat.checkSelfPermission(
+                        requireActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    couponList.forEach {
+                        downloadFiles(it.imageType.imageUrl)
+                    }
+                }
+            }
+        }
+
+        permissionCheckerHelper.checkPermission(
+            fragment = this,
+            permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+            listener = listener
+        )
+
+        VoucherCreationTracking.sendVoucherListClickTracking(
+            action = VoucherCreationAnalyticConstant.EventAction.Click.DOWNLOAD_VOUCHER,
+            isActive = false,
+            userId = userSession.userId
+        )
+    }
+
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private fun downloadFiles(uri: String) {
+        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
+            override fun onDownloadComplete() {
+                showDownloadCompleteStatus(true)
+            }
+        }
+
+        try {
+            val helper = DownloadHelper(
+                context = requireActivity(),
+                uri = uri,
+                filename = System.currentTimeMillis()
+                    .toString() + VoucherCreationConst.JPEG_EXT,
+                listener = downloadCompleteListener
+            )
+            helper.downloadFile { true }
+        } catch (se: SecurityException) {
+            MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
+            showDownloadCompleteStatus(
+                isSuccess = false,
+                isInternetProblem = false
+            )
+        } catch (iae: IllegalArgumentException) {
+            MvcErrorHandler.logToCrashlytics(iae, MvcError.ERROR_URI)
+            showDownloadCompleteStatus(
+                isSuccess = false,
+                isInternetProblem = false
+            )
+        } catch (ex: Exception) {
+            MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
+            showDownloadCompleteStatus(
+                isSuccess = false
+            )
+        }
+
+    }
+
+    fun showDownloadCompleteStatus(isSuccess: Boolean, isInternetProblem: Boolean = true) {
+        val toasterType: Int
+        val toasterMessage: String
+
+        if (isSuccess) {
+            toasterType = Toaster.TYPE_NORMAL
+            toasterMessage = getString(R.string.download_coupon_product_success).toBlankOrString()
+        } else {
+            toasterType = Toaster.TYPE_ERROR
+            val errorMessageSuffix =
+                if (isInternetProblem) {
+                    getString(R.string.mvc_fail_download_voucher_suffix).toBlankOrString()
+                } else {
+                    ""
+                }
+            toasterMessage = "${getString(R.string.download_coupon_product_failed).toBlankOrString()}$errorMessageSuffix"
+        }
+
+        longToaster(toasterMessage, toasterType)
+    }
+
+
+    private fun longToaster(text: String, toasterType: Int) {
+        if (text.isEmpty()) return
+        Toaster.build(
+            view ?: return,
+            text,
+            Toaster.LENGTH_LONG,
+            toasterType,
+            getString(R.string.mvc_oke)
+        ).show()
+    }
+
+    private fun displayShareBottomSheet(coupon: CouponUiModel, imageUrl: String, shop: ShopBasicDataResult) {
+        val title = String.format(getString(R.string.placeholder_share_component_outgoing_title), shop.shopName)
+        val endDate = coupon.finishTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
+            .parseTo(DateTimeUtils.DATE_FORMAT)
+        val endHour = coupon.finishTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
+            .parseTo(DateTimeUtils.HOUR_FORMAT)
+        val description = String.format(getString(R.string.placeholder_share_component_text_description), shop.shopName, endDate, endHour)
+
+
+        shareComponentBottomSheet = buildShareComponentInstance(
+            imageUrl,
+            title,
+            coupon.id.toLong(),
+            onShareOptionsClicked = { shareModel ->
+                handleShareOptionSelection(shareModel, title, description, shop.shopDomain)
+            }, onCloseOptionClicked = {}
+        )
+        shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
+    }
+
+    private fun buildShareComponentInstance(
+        imageUrl: String,
+        title: String,
+        couponId: Long,
+        onShareOptionsClicked : (ShareModel) -> Unit,
+        onCloseOptionClicked : () -> Unit
+    ): UniversalShareBottomSheet {
+
+        return UniversalShareBottomSheet.createInstance().apply {
+            val listener = object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    onShareOptionsClicked(shareModel)
+                }
+
+                override fun onCloseOptionClicked() {
+                    onCloseOptionClicked()
+                }
+            }
+
+            init(listener)
+            setMetaData(tnTitle = title, tnImage = ShareComponentConstant.VOUCHER_PRODUCT_THUMBNAIL_ICON_IMAGE_URL)
+            setOgImageUrl(imageUrl)
+            setUtmCampaignData(
+                pageName = ShareComponentConstant.VOUCHER_PRODUCT_PAGE_NAME,
+                userId = userSession.userId,
+                pageId = couponId.toString(),
+                feature = ShareComponentConstant.VOUCHER_PRODUCT_FEATURE
+            )
+        }
+    }
+
+    private fun handleShareOptionSelection(
+        shareModel: ShareModel,
+        title: String,
+        description: String,
+        shopDomain: String
+    ) {
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
+                com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil.executeShareIntent(
+                    shareModel,
+                    linkerShareData,
+                    activity,
+                    view,
+                    wording
+                )
+                shareComponentBottomSheet?.dismiss()
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+        val outgoingDescription = getString(R.string.share_component_outgoing_text_description)
+        val linkerShareData = linkerDataGenerator.generate(
+            userSession.shopId,
+            shopDomain,
+            shareModel,
+            title,
+            outgoingDescription
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                NumberConstant.ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
+    }
+
+    private fun showError(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(requireActivity(), throwable)
+        Toaster.build(view ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 }

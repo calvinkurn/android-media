@@ -18,6 +18,7 @@ object PromoCreationStaticData {
         broadcastChatUrl: String,
         freeShippingEnabled: Boolean,
         isVoucherCashbackEligible: Boolean,
+        isTopAdsOnBoardingEnable: Boolean,
         isVoucherCashbackFirstTime: Boolean,
         isProductCouponFirstTime: Boolean
     ): PromoCreationListUiModel {
@@ -27,7 +28,12 @@ object PromoCreationStaticData {
                 resourceProvider.getPromoCreationTitleTopAds(),
                 resourceProvider.getPromoCreationDescriptionTopAds(),
                 "",
-                ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                if (isTopAdsOnBoardingEnable){
+                    ApplinkConst.SellerApp.TOPADS_ONBOARDING
+                }else{
+                    ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                }
+
             ),
             PromoCreationUiModel(
                 R.drawable.ic_broadcast_chat,

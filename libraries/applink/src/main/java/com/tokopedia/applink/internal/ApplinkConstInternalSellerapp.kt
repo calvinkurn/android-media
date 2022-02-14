@@ -64,7 +64,7 @@ object ApplinkConstInternalSellerapp {
     const val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
     const val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
     const val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
-    const val VOUCHER_PRODUCT_LIST = "$INTERNAL_SELLERAPP/voucher-product-list"
+    const val VOUCHER_PRODUCT_LIST = "$INTERNAL_SELLERAPP/voucher-product-list/{mode}/"
 
     //VoucherDetailActivity
     const val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
@@ -75,9 +75,6 @@ object ApplinkConstInternalSellerapp {
 
     //SellerMenuActivity
     const val SELLER_MENU = "$INTERNAL_SELLERAPP/seller-menu"
-
-    // SellerActionActivity
-    const val SELLER_ACTION = "$INTERNAL_SELLERAPP/seller-action"
 
     // SellerSettingsActivity
     const val SELLER_SETTINGS = "$INTERNAL_SELLERAPP/seller-settings"

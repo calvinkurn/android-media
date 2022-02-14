@@ -431,8 +431,7 @@
     <string name="save_changes">Simpan Perubahan</string>
     <string name="coupon_updated">Kupon berhasil diperbarui.</string>
     <string name="coupon_duplicated">Kupon berhasil di duplikat</string>
-    <string name="placeholder_share_coupon_product_wording">Tersedia kupon untuk produk tertentu dari toko %s hanya di \@Tokopedia. Mulai %s sampai %s! %s</string>
-    <string name="please_wait">Mohon tunggu</string>
+    <string name="mvc_please_wait">Mohon tunggu</string>
     <string name="used_coupon">Kupon terpakai</string>
     <string name="error_message_failed_get_image">Terjadi kesalahan dalam menampilkan gambar. Mohon coba lagi</string>
     <string name="error_message_failed_get_coupon_detail">Terjadi kesalahan dalam menampilkan detail kupon. Mohon coba lagi</string>
@@ -447,7 +446,17 @@
     <string name="start">Mulai</string>
     <string name="end">Selesai</string>
     <string name="update">Ubah</string>
-
+    <string name="download_coupon_product_success">Download Kupon Produk berhasil</string>
+    <string name="download_coupon_product_failed">Download Kupon Produk tidak berhasil</string>
+    <string name="download_coupon">Download Kupon</string>
+    <string name="choose_coupon_image_ratio">Pilih Ratio Kupon</string>
+    <string name="download_coupon_image_description">Download kupon menggunakan ukuran yang sesuai kebutuhanmu dari 3 ukuran berikut: </string>
+    <string name="banner">Banner</string>
+    <string name="banner_image_description">Untuk sampul tokomu</string>
+    <string name="placeholder_share_component_text_description">Dapatkan Voucher Toko %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
+    <string name="share_component_outgoing_text_description">Yuk, belanja dan pakai Voucher Tokonya sekarang!</string>
+    <string name="placeholder_share_component_outgoing_title">Voucher Toko dari %s</string>
+    <string name="error_message_quota_is_zero">Min. 1 Kupon</string>
     <!--create coupon-->
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
@@ -460,8 +469,8 @@
     <string name="mvc_coupon_product_sold">Produk Terjual</string>
     <string name="mvc_coupon_product_min_payment">Min. pembelian Rp. %s</string>
     <string name="mvc_coupon_product_max_benefit">hingga Rp. %s</string>
-    <string name="dmvc_coupon_status_active">Status Aktif</string>
-    <string name="dmvc_coupon_status_inactive">Status Tidak Aktif</string>
+    <string name="mvc_coupon_status_active">Status Aktif</string>
+    <string name="mvc_coupon_status_inactive">Status Tidak Aktif</string>
 
     <!-- add product -->
     <string name="mvc_search_product">Cari Produk</string>
@@ -476,6 +485,13 @@
     <string name="mvc_empty_products_message">Buat produk pertamamu\ndulu ya.</string>
     <string name="mvc_max_product_limit_reached_title">Jumlah produk sudah mencapai batas</string>
     <string name="mvc_max_product_limit_reached_message">Kamu tidak bisa tambah produk lagi, ya</string>
+
+    <!-- more menu bottom sheet -->
+    <string name="coupon_toaster_cta_oke">Oke</string>
+    <string name="coupon_cancellation_success">Kupon dibatalkan</string>
+    <string name="coupon_cancellation_fail">Pembatalan kupon gagal</string>
+    <string name="coupon_discontinuance_success">Kupon dihentikan dan status menjadi berakhir</string>
+    <string name="coupon_discontinuance_fail">Penghentian kupon gagal</string>
 
     <!-- id tag -->
     <item name="product" type="id"/>

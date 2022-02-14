@@ -13,6 +13,7 @@ data class CouponUiModel(
     val typeFormatted: String,
     val image: String,
     val imageSquare: String,
+    val imagePortrait: String,
     @VoucherStatusConst val status: Int,
     val discountTypeFormatted: String,
     val discountAmt: Int,

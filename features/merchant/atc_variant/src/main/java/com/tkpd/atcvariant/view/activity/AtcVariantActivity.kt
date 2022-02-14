@@ -12,6 +12,7 @@ import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESULT
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -63,6 +64,10 @@ class AtcVariantActivity : BaseSimpleActivity() {
             paramsData.productId = productId
             paramsData.shopId = shopId
             paramsData.cacheId = bundle.getString(ATC_VARIANT_CACHE_ID, "") ?: ""
+            paramsData.dismissAfterTransaction = intent
+                    .getBooleanExtra(AtcVariantHelper.KEY_DISMISS_AFTER_ATC, false)
+            paramsData.saveAfterClose = intent
+                    .getBooleanExtra(AtcVariantHelper.KEY_SAVE_AFTER_CLOSE, true)
         }
 
         super.onCreate(savedInstanceState)
