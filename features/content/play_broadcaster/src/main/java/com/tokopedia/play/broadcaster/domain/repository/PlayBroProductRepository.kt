@@ -27,7 +27,7 @@ interface PlayBroProductRepository {
         page: Int,
     ): PagedDataUiModel<ProductUiModel>
 
-    suspend fun addProductTag(channelId: String, productIds: List<String>)
+    suspend fun setProductTags(channelId: String, productIds: List<String>)
 
     suspend fun getProductTagSummarySection(
         channelID: Long,

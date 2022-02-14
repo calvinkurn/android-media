@@ -382,7 +382,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             it.copy(isLoading = true)
         }
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            repo.addProductTag(
+            repo.setProductTags(
                 channelId = configStore.getChannelId(),
                 productIds = _selectedProductMap.value.values.flatMap { productList ->
                     productList.map { it.id }

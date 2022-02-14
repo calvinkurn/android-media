@@ -96,7 +96,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         return@withContext productMapper.mapProductsInCampaign(response)
     }
 
-    override suspend fun addProductTag(channelId: String, productIds: List<String>) {
+    override suspend fun setProductTags(channelId: String, productIds: List<String>) {
         withContext(dispatchers.io) {
             addProductTagUseCase.apply {
                 params = AddProductTagUseCase.createParams(

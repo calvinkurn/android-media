@@ -169,12 +169,12 @@ class ProductChooserBottomSheet @Inject constructor(
             viewModel.uiEvent.collect {
                 when (it) {
                     PlayBroProductChooserEvent.SaveProductSuccess -> {
-                        (requireParentFragment() as ProductSetupFragment)
-                            .openProductSummary()
+                        container?.openProductSummary()
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
                         //TODO("Show Error")
                     }
+                    else -> {}
                 }
             }
         }
