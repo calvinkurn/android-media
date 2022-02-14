@@ -705,7 +705,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun trackImpression(postTagItemList: List<FeedXProduct>) {
         if (impressionProductList == null) {
             impressionProductList = ArrayList()
-            if (lastScrollPosition < postTagItemList.size && lastScrollPosition > 0 ) {
+            if (lastScrollPosition < postTagItemList.size && lastScrollPosition >= 0 ) {
                 impressionProductList?.addAll(postTagItemList.slice(0..lastScrollPosition))
             }
         } else {
