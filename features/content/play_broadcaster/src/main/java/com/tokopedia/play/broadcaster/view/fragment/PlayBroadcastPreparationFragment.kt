@@ -14,9 +14,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -136,9 +135,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         when (childFragment) {
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
-                    override fun getProductMap(): EtalaseProductListMap {
+                    override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                         //TODO("Revamp this")
-                        return parentViewModel.productMap
+                        return parentViewModel.productSectionList
                     }
                 })
             }
@@ -283,7 +282,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                 if (prevState?.selectedProduct != state.selectedProduct) {
                     binding.viewPreparationMenu.isSetProductChecked(
-                        state.selectedProduct.values.flatten().isNotEmpty()
+                        state.selectedProduct.any { it.products.isNotEmpty() }
                     )
                 }
 

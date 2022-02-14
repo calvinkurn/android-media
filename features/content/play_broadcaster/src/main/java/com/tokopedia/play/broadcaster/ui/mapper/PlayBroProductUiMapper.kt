@@ -1,19 +1,17 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
-import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
+import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
 import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.ProductSectionKey
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
@@ -109,11 +107,14 @@ class PlayBroProductUiMapper @Inject constructor() {
         )
     }
 
-    fun mapSectionedProduct(response: SectionedProductTagSocketResponse): EtalaseProductListMap {
-        return response.sections.associateBy(
-            keySelector = { ProductSectionKey(it.title, it.type) },
-            valueTransform = {
-                it.products.map { product ->
+    fun mapSectionedProduct(
+        response: SectionedProductTagSocketResponse
+    ): List<ProductTagSectionUiModel> {
+        return response.sections.map {
+            ProductTagSectionUiModel(
+                name = it.title,
+                campaignStatus = mapCampaignStatusFromType(it.type),
+                products = it.products.map { product ->
                     ProductUiModel(
                         id = product.id,
                         name = product.name,
@@ -132,23 +133,18 @@ class PlayBroProductUiMapper @Inject constructor() {
                         }
                     )
                 }
-            }
-        )
+            )
+        }
     }
 
-    fun mapProductTagSection(response: GetProductTagSummarySectionResponse): Pair<List<ProductTagSectionUiModel>, Int> {
-        var totalProductSize = 0
-        val productTagSectionList = response.section.map { section ->
-            totalProductSize += section.products.size
-
+    fun mapProductTagSection(
+        response: GetProductTagSummarySectionResponse
+    ): List<ProductTagSectionUiModel> {
+        return response.section.map {
             ProductTagSectionUiModel(
-                name = section.name,
-                campaignStatus = when(section.statusFmt) {
-                    "mendatang" -> CampaignStatus.Ready
-                    "berlangsung" -> CampaignStatus.Ongoing
-                    else -> CampaignStatus.Unknown
-                },
-                products = section.products.map { product ->
+                name = it.name,
+                campaignStatus = mapCampaignStatusFromType(it.statusFmt),
+                products = it.products.map { product ->
                     ProductUiModel(
                         id = product.productID,
                         name = product.productName,
@@ -168,14 +164,13 @@ class PlayBroProductUiMapper @Inject constructor() {
                 }
             )
         }
-
-        return Pair(productTagSectionList, totalProductSize)
     }
 
-    @ExperimentalStdlibApi
+
     /** TODO: gonna remove this annotation */
-    fun mapProductTagSection(): Pair<List<ProductTagSectionUiModel>, Int> {
-        val productTagSectionList = buildList<ProductTagSectionUiModel> {
+    @OptIn(ExperimentalStdlibApi::class)
+    fun mapProductTagSection(): List<ProductTagSectionUiModel> {
+        return buildList {
             for(i in 1..3) {
                 add(ProductTagSectionUiModel(
                     name = "Sale $i",
@@ -193,8 +188,14 @@ class PlayBroProductUiMapper @Inject constructor() {
                 ))
             }
         }
+    }
 
-        return Pair(productTagSectionList, 3)
+    private fun mapCampaignStatusFromType(type: String): CampaignStatus {
+        return when(type) {
+            "mendatang" -> CampaignStatus.Ready
+            "berlangsung" -> CampaignStatus.Ongoing
+            else -> CampaignStatus.Unknown
+        }
     }
 
     private fun Long.forceToUTCWithoutTimezone(): Date {

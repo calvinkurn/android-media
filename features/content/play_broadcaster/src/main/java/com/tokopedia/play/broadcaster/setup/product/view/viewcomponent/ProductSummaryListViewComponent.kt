@@ -2,15 +2,11 @@ package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSummaryViewHolder
-import com.tokopedia.play.broadcaster.type.DiscountedPrice
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import kotlinx.coroutines.*
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022
@@ -37,9 +33,9 @@ internal class ProductSummaryListViewComponent(
 
     @OptIn(ExperimentalStdlibApi::class)
     /** TODO: gonna delete this later */
-    fun setProductList(productTagSection: List<ProductTagSectionUiModel>) {
+    fun setProductList(productSectionList: List<ProductTagSectionUiModel>) {
         val finalList = buildList {
-            productTagSection.forEach { section ->
+            productSectionList.forEach { section ->
                 add(ProductSummaryAdapter.Model.Header(section.name, section.campaignStatus))
                 addAll(section.products.map { product ->
                     ProductSummaryAdapter.Model.Body(product)

@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.setup.product.model
 
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 
@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 data class PlayBroProductChooserUiState(
     val campaignAndEtalase: CampaignAndEtalaseUiModel,
     val focusedProductList: ProductListPaging,
-    val selectedProductList: EtalaseProductListMap,
+    val selectedProductSectionList: List<ProductTagSectionUiModel>,
     val loadParam: ProductListPaging.Param,
     val shopName: String,
     val saveState: ProductSaveStateUiModel,
@@ -23,7 +23,7 @@ data class PlayBroProductChooserUiState(
             get() = PlayBroProductChooserUiState(
                 campaignAndEtalase = CampaignAndEtalaseUiModel.Empty,
                 focusedProductList = ProductListPaging.Empty,
-                selectedProductList = emptyMap(),
+                selectedProductSectionList = emptyList(),
                 loadParam = ProductListPaging.Param.Empty,
                 shopName = "",
                 saveState = ProductSaveStateUiModel.Empty,

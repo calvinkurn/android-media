@@ -13,7 +13,6 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -23,27 +22,19 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
-import com.tokopedia.play.broadcaster.type.OriginalPrice
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
-import com.tokopedia.play.broadcaster.ui.model.etalase.ProductSectionKey
-import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
-import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
-import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastPreparationUiState
-import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
-import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -160,8 +151,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
     val observableLivePusherInfo: LiveData<PlayLiveLogState>
         get() = _observableLivePusherInfo
 
-    val productMap: EtalaseProductListMap
-        get() = _productMap.value
+    val productSectionList: List<ProductTagSectionUiModel>
+        get() = _productSectionList.value
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -192,7 +183,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
         PinnedMessageUiModel.Empty()
     )
-    private val _productMap = MutableStateFlow<EtalaseProductListMap>(emptyMap())
+    private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
 
     private val _channelUiState = _configInfo
@@ -223,7 +214,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
-        _productMap,
+        _productSectionList,
         _isExiting
     ) { channelState, pinnedMessage, productMap, isExiting ->
         PlayBroadcastUiState(
@@ -344,18 +335,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
                     || configUiModel.channelType == ChannelType.Draft) {
                         val deferredChannel = async { getChannelById(configUiModel.channelId) }
                         val deferredProductMap = async {
-                            //TODO("Use real data")
-                            mapOf(
-                                ProductSectionKey("", "") to listOf(
-                                    ProductUiModel(
-                                        id = "1",
-                                        name = "Test",
-                                        imageUrl = "",
-                                        stock = 1,
-                                        price = OriginalPrice("Rp1000,00", 1000.0)
-                                    )
-                                )
-                            )
+                            repo.getProductTagSummarySection(channelID = configUiModel.channelId)
                         }
 
                         val error = deferredChannel.await()
@@ -799,9 +779,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private fun setSelectedProduct(productMap: EtalaseProductListMap) {
+    private fun setSelectedProduct(productSectionList: List<ProductTagSectionUiModel>) {
 //        getCurrentSetupDataStore().setSelectedProducts(products)
-        _productMap.value = productMap
+        _productSectionList.value = productSectionList
     }
 
     private fun setSelectedCover(cover: PlayCoverUiModel) {

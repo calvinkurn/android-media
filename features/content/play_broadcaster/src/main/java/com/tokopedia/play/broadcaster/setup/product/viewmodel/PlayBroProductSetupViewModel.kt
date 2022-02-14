@@ -14,14 +14,13 @@ import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserE
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.ProductSectionKey
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
@@ -43,12 +42,13 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductSetupViewModel @AssistedInject constructor(
-    @Assisted productMap: EtalaseProductListMap,
+    @Assisted productSectionList: List<ProductTagSectionUiModel>,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     private val userSession: UserSessionInterface,
@@ -59,7 +59,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            productMap: EtalaseProductListMap,
+            productSectionList: List<ProductTagSectionUiModel>,
         ): PlayBroProductSetupViewModel
     }
 
@@ -69,10 +69,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val maxProduct: Int
         get() = configStore.getMaxProduct()
 
-//    private val _campaignList = MutableStateFlow(emptyList<CampaignUiModel>())
-//    private val _etalaseList = MutableStateFlow(emptyList<EtalaseUiModel>())
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
-    private val _selectedProductMap = MutableStateFlow(productMap)
+    private val _selectedProductSectionList = MutableStateFlow(productSectionList)
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
     private val _productTagSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
@@ -91,14 +89,14 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val uiState = combine(
         _campaignAndEtalase,
         _focusedProductList,
-        _selectedProductMap,
+        _selectedProductSectionList,
         _loadParam,
         _saveState,
-    ) { campaignAndEtalase, focusedProductList, selectedProductList, loadParam, saveState ->
+    ) { campaignAndEtalase, focusedProductList, selectedProductSectionList, loadParam, saveState ->
         PlayBroProductChooserUiState(
             campaignAndEtalase = campaignAndEtalase,
             focusedProductList = focusedProductList,
-            selectedProductList = selectedProductList,
+            selectedProductSectionList = selectedProductSectionList,
             loadParam = loadParam,
             shopName = userSession.shopName,
             saveState = saveState,
@@ -138,10 +136,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch {
-            _selectedProductMap.collectLatest { map ->
+            _selectedProductSectionList.collectLatest { sections ->
                 _saveState.update {
                     it.copy(
-                        canSave = map.values.flatten().isNotEmpty()
+                        canSave = sections.any { section -> section.products.isNotEmpty() }
                     )
                 }
             }
@@ -218,14 +216,27 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProduct(product: ProductUiModel) {
-        //when select product, we can just use default key
-        val etalase = ProductSectionKey("", "")
-        _selectedProductMap.update { map ->
-            val prevSelectedProducts = map[etalase].orEmpty()
-            val newSelectedProducts = if (prevSelectedProducts.any { it.id == product.id }) {
-                prevSelectedProducts.filter { it.id != product.id }
-            } else prevSelectedProducts + product
-            map + mapOf(etalase to newSelectedProducts)
+        _selectedProductSectionList.update { sections ->
+            var hasProduct = false
+            val newSections = sections.map { section ->
+                val newProducts = section.products.filter { it.id != product.id }
+                if (newProducts.size != section.products.size) hasProduct = true
+                section.copy(
+                    products = newProducts
+                )
+            }
+            if (!hasProduct) {
+                val section = sections.lastOrNull() ?: ProductTagSectionUiModel(
+                    //when select product, we can just use default key
+                    name = "",
+                    campaignStatus = CampaignStatus.Unknown,
+                    products = emptyList(),
+                )
+                val tempSections = newSections.toMutableList()
+                tempSections.remove(section)
+                tempSections.add(section.copy(products = section.products + product))
+                tempSections
+            } else newSections
         }
     }
 
@@ -350,13 +361,16 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     /** TODO: gonna delete this later */
     @ExperimentalStdlibApi
-    private suspend fun getProductTagSummary() {
+    private suspend fun getProductTagSummary() = withContext(dispatchers.io) {
         /** TODO: gonna remove this delay */
-//        delay(1000)
-        val (response, productCount) = repo.getProductTagSummarySection(channelId.toLong())
 
-        _productTagSectionList.value = response
-        _productTagSummary.value = ProductTagSummaryUiModel.Success(productCount)
+//        delay(1000)
+        val productSectionList = repo.getProductTagSummarySection(channelId)
+
+        _productTagSectionList.value = productSectionList
+        _productTagSummary.value = ProductTagSummaryUiModel.Success(
+            productSectionList.sumOf { it.products.size }
+        )
     }
 
     private fun handleSearchProduct(keyword: String) {
@@ -370,8 +384,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             repo.setProductTags(
                 channelId = configStore.getChannelId(),
-                productIds = _selectedProductMap.value.values.flatMap { productList ->
-                    productList.map { it.id }
+                productIds = _selectedProductSectionList.value.flatMap { section ->
+                    section.products.map { it.id }
                 },
             )
             _uiEvent.emit(PlayBroProductChooserEvent.SaveProductSuccess)

@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.bottomsheet
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.R as materialR
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,8 +20,8 @@ import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiMo
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserAction
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
@@ -181,8 +179,8 @@ class ProductChooserBottomSheet @Inject constructor(
                 renderProductList(
                     prevState?.focusedProductList,
                     state.focusedProductList,
-                    prevState?.selectedProductList,
-                    state.selectedProductList,
+                    prevState?.selectedProductSectionList,
+                    state.selectedProductSectionList,
                 )
                 renderSortChips(prevState?.loadParam, state.loadParam, state.campaignAndEtalase)
                 renderEtalaseChips(prevState?.loadParam, state.loadParam, state.campaignAndEtalase)
@@ -193,7 +191,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     prevState?.shopName,
                     state.shopName
                 )
-                renderBottomSheetTitle(state.selectedProductList)
+                renderBottomSheetTitle(state.selectedProductSectionList)
                 renderSaveButton(state.saveState)
                 renderProductError(state.campaignAndEtalase, state.focusedProductList)
                 renderChipsContainer(state.campaignAndEtalase, state.focusedProductList)
@@ -234,15 +232,15 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun renderProductList(
         prevProductListPaging: ProductListPaging?,
         productListPaging: ProductListPaging,
-        prevSelectedMap: EtalaseProductListMap?,
-        selectedMap: EtalaseProductListMap,
+        prevSelectedProducts: List<ProductTagSectionUiModel>?,
+        selectedProducts: List<ProductTagSectionUiModel>,
     ) {
-        if (prevProductListPaging == productListPaging && prevSelectedMap == selectedMap) return
+        if (prevProductListPaging == productListPaging && prevSelectedProducts == selectedProducts) return
 
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             productListView.setProductList(
                 productList = productListPaging.productList,
-                selectedList = selectedMap.values.flatten(),
+                selectedList = selectedProducts.flatMap { it.products },
                 showLoading = productListPaging.resultState !is PageResultState.Success ||
                         productListPaging.resultState.hasNextPage,
             )
@@ -305,12 +303,12 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun renderBottomSheetTitle(
-        selectedProductList: EtalaseProductListMap,
+        selectedProductSections: List<ProductTagSectionUiModel>,
     ) {
         setTitle(
             getString(
                 R.string.play_bro_selected_product_title,
-                selectedProductList.values.sumOf { it.size },
+                selectedProductSections.sumOf { it.products.size },
                 30
             )
         )

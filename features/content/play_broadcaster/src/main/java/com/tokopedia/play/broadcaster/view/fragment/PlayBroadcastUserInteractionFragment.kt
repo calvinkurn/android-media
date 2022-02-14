@@ -22,13 +22,13 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseProductListMap
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
@@ -219,9 +219,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (childFragment) {
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
-                    override fun getProductMap(): EtalaseProductListMap {
+                    override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                         //TODO("Revamp this")
-                        return parentViewModel.productMap
+                        return parentViewModel.productSectionList
                     }
                 })
             }
@@ -755,12 +755,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun renderProductTagView(
-        prevState: EtalaseProductListMap?,
-        state: EtalaseProductListMap
+        prevState: List<ProductTagSectionUiModel>?,
+        state: List<ProductTagSectionUiModel>
     ) {
         if (prevState == state) return
 
-        productTagView.setProducts(state.values.flatten())
+        productTagView.setProducts(state.flatMap { it.products })
     }
 
     private fun isPinnedFormVisible(): Boolean {
