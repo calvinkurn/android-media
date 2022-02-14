@@ -33,6 +33,8 @@ class CreateCouponDetailViewModel @Inject constructor(
     companion object {
         private const val DATE_FORMAT = "yyyy-MM-dd"
         private const val HOUR_FORMAT = "HH:mm"
+        private const val MIN_CHAR_COUPON_NAME = 5
+        private const val MIN_CHAR_COUPON_CODE = 5
     }
 
     private val mCouponTargetList = MutableLiveData<List<CouponTargetUiModel>>()
@@ -140,6 +142,10 @@ class CreateCouponDetailViewModel @Inject constructor(
             }
         )
     }
+
+    fun validateMinCharCouponCode(couponCode: String) = couponCode.length > MIN_CHAR_COUPON_CODE
+
+    fun validateMinCharCouponName(couponName: String) = couponName.length > MIN_CHAR_COUPON_NAME
 
     fun setCouponInformation(couponInformationData: CouponInformation) {
         couponInformationData.let {
