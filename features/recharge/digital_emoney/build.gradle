@@ -30,7 +30,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)

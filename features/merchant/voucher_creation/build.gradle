@@ -13,6 +13,12 @@ buildscript {
     }
 }
 
+android {
+    buildFeatures {
+        buildConfig true
+    }
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -44,7 +50,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.supportLibDependencies.constraintLayout
