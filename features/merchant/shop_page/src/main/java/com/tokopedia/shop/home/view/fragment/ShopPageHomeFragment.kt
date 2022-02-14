@@ -120,6 +120,7 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -3024,6 +3025,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun thematicWidgetProductClickListenerImpl(): ThematicWidgetViewHolder.ThematicWidgetListener = object : ThematicWidgetViewHolder.ThematicWidgetListener {
         override fun onThematicWidgetProductClickListener(appLink: String?) {
             RouteManager.route(context, appLink)
+        }
+
+        override fun onThematicWidgetImpression(model: ThematicWidgetUiModel?, position: Int) {
+            model?.apply {
+                shopPageHomeTracking.impressionCampaignThematicWidget(
+                    campaignName = model.name,
+                    campaignId = model.campaignId,
+                    statusCampaign = model.header.statusCampaign,
+                    shopId = shopId,
+                    userId = userId,
+                    position = position
+                )
+            }
         }
     }
 

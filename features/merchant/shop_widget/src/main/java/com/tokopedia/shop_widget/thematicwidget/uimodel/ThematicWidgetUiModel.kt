@@ -15,6 +15,7 @@ data class ThematicWidgetUiModel(
     val productList: List<ProductCardUiModel>,
     val firstBackgroundColor: String,
     val secondBackgroundColor: String,
+    val campaignId: String,
     var widgetState: WidgetState = WidgetState.INIT,
     var isNewData: Boolean = false,
     var widgetMasterId: String = "",

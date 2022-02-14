@@ -84,6 +84,7 @@ class ThematicWidgetViewHolder (
         setupRecyclerView(element)
         setupImage(element.imageBanner)
         setupBackgroundColor(element.firstBackgroundColor, element.secondBackgroundColor)
+        listener.onThematicWidgetImpression(uiModel, adapterPosition)
     }
 
     private fun setupRecyclerView(element: ThematicWidgetUiModel) {
@@ -184,5 +185,6 @@ class ThematicWidgetViewHolder (
 
     interface ThematicWidgetListener {
         fun onThematicWidgetProductClickListener(appLink: String?)
+        fun onThematicWidgetImpression(model: ThematicWidgetUiModel?, position: Int)
     }
 }

@@ -109,6 +109,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
@@ -234,6 +235,38 @@ class ShopPageHomeTracking(
                                 customDimensionShopPage.shopType.orEmpty(),
                                 shopId
                         ))))
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun impressionCampaignThematicWidget(
+        campaignName: String,
+        campaignId: String,
+        statusCampaign: String,
+        shopId: String,
+        userId: String,
+        position: Int
+    ) {
+        val ecommerce = mutableMapOf(
+            PROMO_VIEW to mutableMapOf(
+                PROMOTIONS to listOf(
+                    createEcommerceFlashSaleItemMap(
+                        creative = statusCampaign,
+                        id = campaignId,
+                        name = campaignName,
+                        position = position
+                    )
+                )
+            )
+        )
+        val eventMap = createFlashSaleTrackerMap(
+            eventName = PROMO_VIEW,
+            eventAction = THEMATIC_WIDGET_IMPRESSION,
+            eventCategory = SHOP_PAGE_BUYER,
+            eventLabel = joinDash(shopId, campaignId, campaignName),
+            shopId = shopId,
+            userId = userId,
+            ecommerceMap = ecommerce
+        )
         sendDataLayerEvent(eventMap)
     }
 

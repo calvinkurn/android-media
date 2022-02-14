@@ -60,6 +60,7 @@ object ShopPageTrackingConstant {
     const val SHOP_SHOWCASE_LIST = "etalase toko list"
     const val SHOP_SHOWCASE = "etalase toko"
     const val FLASH_SALE = "flash sale"
+    const val THEMATIC_WIDGET_IMPRESSION = "thematic widget impression"
     const val SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase shop"
     const val SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY = "click %1s - etalase shop - no result"
     const val SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia"
