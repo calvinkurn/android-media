@@ -21,6 +21,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
 import com.tokopedia.oneclickcheckout.order.view.model.*
@@ -551,39 +552,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>) {
+    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
         launch(executorDispatchers.immediate) {
-            var param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
             val walletData = orderPayment.value.walletData
-            if (param == null) {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+            val newWalletData = walletData.copy(goCicilData = walletData.goCicilData.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
+            orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
+            calculateTotal(skipDynamicFee = true)
+            if (isSilent) {
                 return@launch
             }
-//            globalEvent.value = OccGlobalEvent.Loading
-//            try {
-//                val metadata = JsonParser().parse(param.profile.metadata)
-//                val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
-//                if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
-//                    // unexpected null installment term param
-//                    throw IllegalStateException()
-//                }
-//                expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
-//                param = param.copy(profile = param.profile.copy(metadata = metadata.toString()),
-//                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
-//                        source = SOURCE_UPDATE_OCC_PAYMENT)
-//            } catch (e: RuntimeException) {
-//                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-//                return@launch
-//            }
+            var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value) ?: return@launch
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
-            if (isSuccess) {
-                val newWalletData = walletData.copy(goCicilData = walletData.goCicilData.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
-                orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
-                calculateTotal(skipDynamicFee = true)
-                globalEvent.value = OccGlobalEvent.Normal
-                return@launch
+            if (!isSuccess) {
+                globalEvent.value = newGlobalEvent
             }
-            globalEvent.value = newGlobalEvent
         }
     }
 

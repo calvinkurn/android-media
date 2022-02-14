@@ -71,7 +71,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
             j = launch {
                 val result = paymentProcessor.getGopayAdminFee(0)
                 if (result != null) {
-                    listener.onSelectInstallment(result.first, result.second)
+                    listener.onSelectInstallment(result.first, result.second, isSilent = true)
                     setupInstallments(fragment, walletData.goCicilData.copy(selectedTerm = result.first, availableTerms = result.second))
                 } else {
                     dismiss()
@@ -144,7 +144,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
 
     interface InstallmentDetailBottomSheetListener {
 
-        fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>)
+        fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean = false)
 
         fun onFailedLoadInstallment()
     }
