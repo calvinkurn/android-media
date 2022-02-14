@@ -397,19 +397,16 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         when(result) {
             is Success -> {
                 loadInitialData()
-                showCancellationSuccessToaster(
-                    successMessageRes = R.string.mvc_cancel_success,
-                    couponId = result.data
+                showCancellationToaster(
+                    successMessageRes = R.string.coupon_cancellation_success,
+                    toasterType = Toaster.TYPE_NORMAL
                 )
             }
             is Fail -> {
-                if (result.throwable is VoucherCancellationException) {
-                    showCancellationFailToaster(
-                        messageRes = R.string.mvc_cancel_fail,
-                        couponId = (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull(),
-                        status = CancelVoucherUseCase.CancelStatus.STOP
-                    )
-                }
+                showCancellationToaster(
+                    successMessageRes = R.string.coupon_cancellation_fail,
+                    toasterType = Toaster.TYPE_ERROR
+                )
                 // send crash report to firebase crashlytics
                 MvcErrorHandler.logToCrashlytics(
                     throwable = result.throwable,
@@ -460,19 +457,16 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         when(result) {
             is Success -> {
                 loadInitialData()
-                showCancellationSuccessToaster(
-                    successMessageRes = R.string.mvc_stop_success,
-                    couponId = result.data
+                showCancellationToaster(
+                    successMessageRes = R.string.coupon_discontinuance_success,
+                    toasterType = Toaster.TYPE_NORMAL
                 )
             }
             is Fail -> {
-                if (result.throwable is VoucherCancellationException) {
-                    showCancellationFailToaster(
-                        messageRes = R.string.mvc_stop_fail,
-                        couponId = (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull(),
-                        status = CancelVoucherUseCase.CancelStatus.DELETE
-                    )
-                }
+                showCancellationToaster(
+                    successMessageRes = R.string.coupon_discontinuance_fail,
+                    toasterType = Toaster.TYPE_ERROR
+                )
                 // send crash report to firebase crashlytics
                 MvcErrorHandler.logToCrashlytics(
                     throwable = result.throwable,
@@ -656,34 +650,18 @@ class CouponListFragment: BaseSimpleListFragment<CouponListAdapter, VoucherUiMod
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun showCancellationSuccessToaster(successMessageRes: Int, couponId: Int) {
+    private fun showCancellationToaster(successMessageRes: Int, toasterType: Int) {
         val successMessage = context?.getString(successMessageRes).toBlankOrString()
-        val actionText = context?.getString(R.string.mvc_lihat).toBlankOrString()
+        val actionText = context?.getString(R.string.coupon_toaster_cta_oke).toBlankOrString()
 
         view?.run {
             Toaster.build(this,
                 successMessage,
                 Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
+                toasterType,
                 actionText
             ) {
-                onViewCouponDetailMenuSelected(couponId.toLong())
-            }.show()
-        }
-    }
-
-    private fun showCancellationFailToaster(messageRes: Int, couponId: Int, @CancelVoucherUseCase.CancelStatus status: String) {
-        val errorMessage = context?.getString(messageRes).toBlankOrString()
-        val actionText = context?.getString(R.string.mvc_retry).toBlankOrString()
-
-        view?.run {
-            Toaster.build(this,
-                errorMessage,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                actionText
-            ) {
-                viewModel.cancelCoupon(couponId, status)
+                /* nothing to do */
             }.show()
         }
     }
