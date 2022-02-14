@@ -1,25 +1,5 @@
 package com.tokopedia.pdp.fintech.constants
 
-const val GQL_GET_PRODUCT_DETAIL_V3 =
-    """query GetoductV3(${'$'}productID: String!, ${'$'}options:OptionV3!){
-  getProductV3(productID: ${'$'}productID, options: ${'$'}options) {
-    productName
-    url
-    price
-    category {
-      id
-    }
-    variant{
-    products{
-      productID
-      price
-    }
-  }
-  
-  }
-}"""
-
-
 const val GQL_GET_WIDGET_DETAIL_V2 =
     """query PaylaterGetPDPWidgetV2(${'$'}request: PaylaterGetPDPWidgetV2Request!) {
   paylater_getPDPWidgetV2(request: ${'$'}request) {
@@ -39,6 +19,9 @@ const val GQL_GET_WIDGET_DETAIL_V2 =
           subheader_color
           product_icon_light
           product_icon_dark
+          user_state
+          user_balance_amt
+          installment_amt
           cta {
             type
             web_url

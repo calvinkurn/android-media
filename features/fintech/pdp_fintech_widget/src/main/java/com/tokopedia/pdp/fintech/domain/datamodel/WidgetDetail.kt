@@ -44,6 +44,9 @@ data class ChipsData(
     @SerializedName("subheader_color") var subheaderColor: String? = null,
     @SerializedName("product_icon_light") var productIconLight: String? = null,
     @SerializedName("product_icon_dark") var productIconDark: String? = null,
+    @SerializedName("user_state") var userStatus :String? = null,
+    @SerializedName("user_balance_amt") var userBalanceAmount: String? = null,
+    @SerializedName("installment_amt") var installmentAmount: String? = null,
     @SerializedName("cta") var cta: Cta? = Cta()
 ): Parcelable
 

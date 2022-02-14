@@ -1,13 +1,5 @@
 package com.tokopedia.pdp.fintech.analytics
 
-open class BaseAnalyticsData()
-{
-    var productId:String = ""
-    var timeStamp: Long = System.currentTimeMillis()
-    var partnerName:String = ""
-
-}
-
-open class StatusBuyer:BaseAnalyticsData(){
-    val userStatus: String = ""
+sealed class FintechWidgetAnalyticsEvent{
+    data class PdpWidgetImression(val productId: String,val userStatus:String,val partnerId:String):FintechWidgetAnalyticsEvent()
 }

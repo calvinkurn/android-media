@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
+import com.tokopedia.pdp.fintech.analytics.FintechWidgetAnalyticsEvent
 import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
@@ -173,11 +174,24 @@ class PdpFintechWidget @JvmOverloads constructor(
             priceToChip[it]?.let { chipList ->
                 instanceProductUpdateListner.showWidget()
                 fintechWidgetAdapter.setData(chipList)
+                sendPdpImpression(chipList)
             } ?: run {
                 instanceProductUpdateListner.removeWidget()
             }
         } ?: run {
             instanceProductUpdateListner.removeWidget()
+        }
+    }
+
+    private fun sendPdpImpression(chipList: ArrayList<ChipsData>) {
+        for(i in 0 until chipList.size) {
+            chipList[i].userStatus?.let { userStatus->
+                chipList[i].productCode?.let { partnerName->
+                    pdpWidgetAnalytics.get().sendAnalyticsEvent(FintechWidgetAnalyticsEvent.PdpWidgetImression(productID, userStatus,
+                        partnerName
+                    ))
+                }
+            }
         }
     }
 
