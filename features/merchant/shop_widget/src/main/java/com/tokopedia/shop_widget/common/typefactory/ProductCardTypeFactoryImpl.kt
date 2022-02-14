@@ -5,8 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop_widget.common.uimodel.ProductCardSeeAllUiModel
+import com.tokopedia.shop_widget.common.uimodel.ProductCardSpaceUiModel
 import com.tokopedia.shop_widget.common.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.common.viewholder.ProductCardSeeAllViewHolder
+import com.tokopedia.shop_widget.common.viewholder.ProductCardSpaceViewHolder
 import com.tokopedia.shop_widget.common.viewholder.ProductCardViewHolder
 
 class ProductCardTypeFactoryImpl(private val productCardListener: ProductCardViewHolder.ProductCardListener):  BaseAdapterTypeFactory(), ProductCardTypeFactory {
@@ -14,10 +16,13 @@ class ProductCardTypeFactoryImpl(private val productCardListener: ProductCardVie
 
     override fun type(uiModel: ProductCardSeeAllUiModel): Int = ProductCardSeeAllViewHolder.LAYOUT
 
+    override fun type(uiModel: ProductCardSpaceUiModel): Int = ProductCardSpaceViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ProductCardViewHolder.LAYOUT -> ProductCardViewHolder(view, productCardListener)
             ProductCardSeeAllViewHolder.LAYOUT -> ProductCardSeeAllViewHolder(view)
+            ProductCardSpaceViewHolder.LAYOUT -> ProductCardSpaceViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

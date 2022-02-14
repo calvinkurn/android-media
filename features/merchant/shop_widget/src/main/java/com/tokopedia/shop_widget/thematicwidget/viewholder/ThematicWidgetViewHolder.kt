@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_widget.R
@@ -17,8 +16,8 @@ import com.tokopedia.shop_widget.common.adapter.ProductCardDiffer
 import com.tokopedia.shop_widget.common.customview.DynamicHeaderCustomView
 import com.tokopedia.shop_widget.common.typefactory.ProductCardTypeFactoryImpl
 import com.tokopedia.shop_widget.common.uimodel.ProductCardSeeAllUiModel
+import com.tokopedia.shop_widget.common.uimodel.ProductCardSpaceUiModel
 import com.tokopedia.shop_widget.common.util.ColorUtil.getBackGroundColor
-import com.tokopedia.shop_widget.common.util.ProductCardItemDecoration
 import com.tokopedia.shop_widget.common.viewholder.ProductCardViewHolder
 import com.tokopedia.shop_widget.databinding.ItemThematicWidgetBinding
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -38,7 +37,7 @@ class ThematicWidgetViewHolder (
         @LayoutRes
         val LAYOUT = R.layout.item_thematic_widget
 
-        private const val MIN_TOTAL_PRODUCT = 10
+        private const val MAX_TOTAL_PRODUCT = 10
     }
 
     private var binding: ItemThematicWidgetBinding? by viewBinding()
@@ -73,7 +72,6 @@ class ThematicWidgetViewHolder (
                 calculateParallaxImage(dx)
             }
         })
-        addItemDecoration()
     }
 
     override val coroutineContext = masterJob + Dispatchers.Main
@@ -97,11 +95,13 @@ class ThematicWidgetViewHolder (
     }
 
     private fun submitList(element: ThematicWidgetUiModel) {
-        if (element.header.totalProduct <= MIN_TOTAL_PRODUCT) {
-            adapter.submitList(element.productList)
+        val newList = mutableListOf<Visitable<*>>()
+        newList.add(ProductCardSpaceUiModel())
+        if (element.header.totalProduct <= MAX_TOTAL_PRODUCT) {
+            newList.addAll(element.productList)
+            adapter.submitList(newList)
         } else {
-            val newList = mutableListOf<Visitable<*>>()
-            newList.addAll(element.productList.take(MIN_TOTAL_PRODUCT))
+            newList.addAll(element.productList.take(MAX_TOTAL_PRODUCT))
             newList.add(ProductCardSeeAllUiModel(element.header.ctaTextLink))
             adapter.submitList(newList)
         }
@@ -128,12 +128,6 @@ class ThematicWidgetViewHolder (
                     }
                 }
             }
-        }
-    }
-
-    private fun addItemDecoration() {
-        ivParallaxImage?.post {
-            rvProduct?.addItemDecoration(ProductCardItemDecoration(ivParallaxImage?.width.orZero()))
         }
     }
 
