@@ -185,7 +185,7 @@ class PdpSimulationAnalytics @Inject constructor(
                 pdpSimulationEvent.variant,
                 pdpSimulationEvent.userStatus
             )
-            is PdpSimulationEvent.OccChangeVariantListener ->
+            is PdpSimulationEvent.OccChangeVariantListener -> {}
             is PdpSimulationEvent.OccProceedToCheckout -> sendToCheckoutPageClickImpression(
                 pdpSimulationEvent.emiAmount,
                 pdpSimulationEvent.limit,
