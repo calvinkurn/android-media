@@ -1,6 +1,5 @@
 package com.tokopedia.test.application.environment.interceptor
 
-import android.os.Build
 import com.tokopedia.instrumentation.test.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
