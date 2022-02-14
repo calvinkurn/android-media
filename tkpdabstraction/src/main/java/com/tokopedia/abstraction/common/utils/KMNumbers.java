@@ -14,18 +14,18 @@ public class KMNumbers {
 
     public static final NavigableMap<Long, String> suffixes = new TreeMap<>();
     public static final String FORMAT_2_DOUBLE = "%.2f";
-    public static final String SUFFIX_FORMAT = "%s%s";
+    public static final String SUFFIX_FORMAT = "%s %s";
     public static final String RUPIAH_FORMAT = "Rp%s";
     public static final String PERCENT_FORMAT = "%s%%";
     private static final Locale locale = new Locale("in", "ID");
     public static NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
     public static DecimalFormat amountDf = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 
-    public static final String SUFFIX_RB = " rb";
-    public static final String SUFFIX_JT = " jt";
-    public static final String SUFFIX_M = " M";
-    public static final String SUFFIX_T = " T";
-    public static final String SUFFIX_B = " B";
+    public static final String SUFFIX_RB = "rb";
+    public static final String SUFFIX_JT = "jt";
+    public static final String SUFFIX_M = "M";
+    public static final String SUFFIX_T = "T";
+    public static final String SUFFIX_B = "B";
 
     static {
         suffixes.put(1000L, SUFFIX_RB);
