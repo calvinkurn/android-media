@@ -20,6 +20,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.kotlin.extensions.orFalse
+import java.lang.StringBuilder
 import javax.inject.Inject
 
 class GetBuyerOrderDetailMapper @Inject constructor(
@@ -79,6 +80,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             addonsLogoUrl = details.addonIcon,
             totalPriceText = addonSummary?.totalPriceStr.orEmpty(),
             addonsItemList = addonSummary?.addons?.map {
+                val message = it.metadata?.addonNote?.notes.orEmpty()
                 AddonsListUiModel.AddonItemUiModel(
                     priceText = it.priceStr,
                     addOnsName = it.name,
@@ -88,7 +90,9 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                     isCustomNote = it.metadata?.addonNote?.isCustomNote.orFalse(),
                     toStr = it.metadata?.addonNote?.to.orEmpty(),
                     fromStr = it.metadata?.addonNote?.from.orEmpty(),
-                    message = it.metadata?.addonNote?.notes.orEmpty()
+                    message = StringBuilder(message).append(message).append(message).append(message)
+                        .append(message).append(message).append(message).append(message)
+                        .append(message).toString()
                 )
             }.orEmpty()
         )
@@ -98,7 +102,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         addonInfo: AddonInfo?
     ): AddonsListUiModel? {
         return if (addonInfo != null) {
-             AddonsListUiModel(
+            AddonsListUiModel(
                 addonsTitle = addonInfo.label,
                 addonsLogoUrl = addonInfo.iconUrl,
                 totalPriceText = addonInfo.orderLevel?.totalPriceStr.orEmpty(),
@@ -187,7 +191,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     ): ProductListUiModel {
         val productList =
             details?.let { mapProductList(it, orderId, orderStatusId) }.orEmpty()
-        val productBundlingList = mapProductBundle(details?.bundles, bundleIcon, orderId, orderStatusId)
+        val productBundlingList =
+            mapProductBundle(details?.bundles, bundleIcon, orderId, orderStatusId)
         return ProductListUiModel(
             productList = productList,
             productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),

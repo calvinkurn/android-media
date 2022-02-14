@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter
 
-import android.content.Context
 import android.graphics.Color
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
@@ -90,7 +89,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                 tvBomDetailAddonsToLabel.hide()
             } else {
                 tvBomDetailAddonsToValue.text =
-                    itemView.context.getString(R.string.order_addons_to_value, toStr)
+                    root.context.getString(R.string.order_addons_to_value, toStr)
                 tvBomDetailAddonsToValue.show()
                 tvBomDetailAddonsToLabel.show()
             }
@@ -102,7 +101,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                 tvBomDetailAddonsFromValue.hide()
             } else {
                 tvBomDetailAddonsFromValue.text =
-                    itemView.context.getString(R.string.order_addons_to_value, fromStr)
+                    root.context.getString(R.string.order_addons_to_value, fromStr)
                 tvBomDetailAddonsFromLabel.show()
                 tvBomDetailAddonsFromValue.show()
             }
@@ -115,11 +114,25 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             } else {
                 tvBomDetailAddonsMessageValue.run {
                     show()
-                    setAddonMessageFormatted(message)
+                    setInitAddonMessageFormatted(message)
                 }
             }
         }
 
+
+        private fun setInitAddonMessageFormatted(
+            message: String
+        ) {
+            with(binding) {
+                tvBomDetailAddonsMessageValue.apply {
+                    if (ellipsize == TextUtils.TruncateAt.END && lineCount == Int.ONE) {
+                        showMessageCollapse(message)
+                    } else {
+                        hideInitMessageCollapse(message)
+                    }
+                }
+            }
+        }
 
         private fun setAddonMessageFormatted(
             message: String
@@ -149,7 +162,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             }
         }
 
-        private fun hideMessageCollapse(message: String) {
+        private fun hideInitMessageCollapse(message: String) {
             with(binding) {
                 tvBomDetailAddonsMessageValue.run {
                     text = message
@@ -161,6 +174,20 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                         isSingleLine = true
                         setupReadMoreMessage(message)
                     }
+                }
+            }
+        }
+
+        private fun hideMessageCollapse(message: String) {
+            with(binding) {
+                tvBomDetailAddonsMessageValue.run {
+                    text = message
+                    if (lineCount > Int.ONE) {
+                        ellipsize = TextUtils.TruncateAt.END
+                    }
+                    maxLines = Int.ONE
+                    isSingleLine = true
+                    setupReadMoreMessage(message)
                 }
             }
         }
@@ -181,15 +208,11 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             }
         }
 
-        private fun getHtmlLinkHelper(context: Context, hyperLinkText: String): HtmlLinkHelper {
-            return HtmlLinkHelper(context, hyperLinkText)
-        }
-
         private fun Typography.setupHyperlinkText(
             hyperLinkText: String,
             message: String
         ) {
-            val getHtmlLinkHelper = getHtmlLinkHelper(context, hyperLinkText)
+            val getHtmlLinkHelper = HtmlLinkHelper(context, hyperLinkText)
             text = getHtmlLinkHelper.spannedString
             this.movementMethod = LinkMovementMethod.getInstance()
             this.highlightColor = Color.TRANSPARENT
